@@ -1,4 +1,15 @@
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  allow_browser versions: :modern
+  # 全てのアクションで認証チェックを行う
+  before_action :authenticate_user!
+
+  # Devise利用時のストロングパラメータを設定するためのフック
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  protected #privateではない理由は継承クラス（Deviseクラスから呼び出しOKにするため）
+
+  # Deviseのパラメータを許可するメソッド
+  def configure_permitted_parameters
+    # 新規登録の際に、nameのデータ操作を許可する
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
+  end
 end
