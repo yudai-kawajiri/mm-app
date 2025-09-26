@@ -53,6 +53,11 @@ Rails.application.configure do
   # （パスワードリセットなどのメール機能に必要）
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
+  # MailCatcherのSMTPサーバーを使用するように設定
+  # MailCatcherはデフォルトでポート1025でSMTPを受け付ける
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = { :address => "mailcatcher", :port => 1025 }
+
   # --- ロギングとデバッグ設定 ---
 
   # 非推奨通知（deprecation notices）をRailsロガーに出力する

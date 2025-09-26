@@ -77,6 +77,9 @@ end
 group :development do
   # 例外ページでコンソールを使用可能にする [https://github.com/rails/web-console]
   gem "web-console"
+
+  # メール送信内容をブラウザで確認するGem
+  gem 'mailcatcher'
 end
 
 
