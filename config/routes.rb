@@ -6,49 +6,14 @@ Rails.application.routes.draw do
   devise_for :users
 
   # 認証済みユーザー向けのルート設定
-  # Userモデルでログインしている場合（user_signed_in?がtrueの場合）に適用
   authenticated :user do
     # ルートパス ("/") を DashboardsControllerのindexアクションに設定
     root to: 'dashboards#index', as: :authenticated_root
   end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  # 未認証ユーザー向けのルート設定
+  devise_scope :user do
     # ルートパス ("/") を Deviseのログイン画面（sessions#new）に設定
     root to: 'devise/sessions#new'
   end
+end
