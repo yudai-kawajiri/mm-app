@@ -49,7 +49,6 @@ Rails.application.routes.draw do
 
 
 
-
     # ルートパス ("/") を Deviseのログイン画面（sessions#new）に設定
     root to: 'devise/sessions#new'
   end
