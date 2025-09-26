@@ -1,18 +1,55 @@
 Rails.application.routes.draw do
+  # ダッシュボードへのGETルートを定義（コントローラとアクションを紐付け）
+  get "dashboards/index"
 
-  # --- Devise (認証機能) のルート定義 ---
-
-  # Userモデルのサインアップ、ログイン、ログアウトなどのルーティングを定義
+  # Deviseの認証機能に必要な全ルーティングを生成
   devise_for :users
 
-  # --- アプリケーションのルート設定 ---
+  # 認証済みユーザー向けのルート設定
+  # Userモデルでログインしている場合（user_signed_in?がtrueの場合）に適用
+  authenticated :user do
+    # ルートパス ("/") を DashboardsControllerのindexアクションに設定
+    root to: 'dashboards#index', as: :authenticated_root
+  end
 
-  # アプリケーションのルートパス ("/") にアクセスがあった場合、Deviseのログイン画面を表示
-  root to: "devise/sessions#new"
 
-  # --- Rails 標準機能のルート ---
 
-  # ヘルスチェック用のルート。外部監視ツールなどがアプリの稼働状況を確認するために使用。
-  get "up" => "rails/health#show", as: :rails_health_check
 
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # ルートパス ("/") を Deviseのログイン画面（sessions#new）に設定
+    root to: 'devise/sessions#new'
+  end
