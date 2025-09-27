@@ -56,7 +56,7 @@ Rails.application.configure do
   # MailCatcherのSMTPサーバーを使用するように設定
   # MailCatcherはデフォルトでポート1025でSMTPを受け付ける
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = { :address => "mailcatcher", :port => 1025 }
+  config.action_mailer.smtp_settings = { address: "mailcatcher", port: 1025 }
 
   # --- ロギングとデバッグ設定 ---
 
