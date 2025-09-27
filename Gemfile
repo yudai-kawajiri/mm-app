@@ -12,7 +12,11 @@ gem "bootsnap", require: false
 gem "cssbundling-rails"
 
 # 認証機能（ログイン、ユーザー登録、パスワードリセットなど）のためのGem
-gem 'devise'
+gem "devise"
+
+# JavaScript の管理
+gem "importmap-rails"
+
 
 # JSON APIを簡単に構築するためのGem [https://github.com/rails/jbuilder]
 gem "jbuilder"
@@ -79,7 +83,7 @@ group :development do
   gem "web-console"
 
   # メール送信内容をブラウザで確認するGem
-  gem 'mailcatcher'
+  gem "mailcatcher"
 end
 
 
