@@ -1,4 +1,9 @@
 <h1>Dashboards#index</h1>
 <p>Find me in app/views/dashboards/index.html.erb</p>
+
+<%# アカウント設定へのリンク %>
+<%= link_to 'アカウント編集', edit_user_registration_path %>
+<br>
+
 <%#  臨時ログアウトリンク %>
 <%= link_to 'ログアウト', destroy_user_session_path, data: { turbo_method: :delete } %>
