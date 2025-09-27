@@ -1,47 +1,39 @@
-<%# ページのタイトル %>
-<h2>Sign up</h2>
+<turbo-frame id="auth_form">
+<div class="row justify-content-center">
+<div class="col-lg-6 col-md-8">
+<div class="card p-4">
+<h1 class="card-title text-center mb-4">寿司管理システム</h1>
+<%= render "devise/shared/tabs" %>
 
-<%# Ruby on Railsヘルパー: form_for (Deviseの認証フォーム開始) %>
+<h2 class="h5">Sign up</h2>
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-
-  <%# 名前（name）の入力欄 %>
-  <div class="field">
-    <%= f.label :name %><br /> <%# Railsフォームヘルパー: name属性のラベルを表示 %>
-    <%= f.text_field :name, autofocus: true, autocomplete: "name" %>
-    <%# Railsフォームヘルパー: テキスト入力フィールドを生成 %>
-  </div>
-
-  <%# Eメールの入力欄 %>
-  <div class="field">
-    <%= f.label :email %><br /> <%# Railsフォームヘルパー: email属性のラベルを表示 %>
-    <%= f.email_field :email, autocomplete: "email" %>
-    <%# Railsフォームヘルパー: Eメール形式の入力フィールドを生成 %>
-  </div>
-
-  <%# パスワードの入力欄 %>
-  <div class="field">
-    <%= f.label :password %> <%# Railsフォームヘルパー: password属性のラベルを表示 %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <%# Ruby/ERBロジック: パスワード最小文字数（Deviseから提供されるインスタンス変数）を表示 %>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-    <%# Railsフォームヘルパー: パスワード入力フィールドを生成 %>
-  </div>
-
-  <%# パスワード確認の入力欄 %>
-  <div class="field">
-    <%= f.label :password_confirmation %><br /> <%# Railsフォームヘルパー: password_confirmationのラベルを表示 %>
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-    <%# Railsフォームヘルパー: パスワード入力フィールドを生成 %>
-  </div>
-
-  <%# 登録ボタン %>
-  <div class="actions">
-    <%= f.submit "Sign up" %> <%# Railsフォームヘルパー: フォーム送信ボタンを生成 %>
-  </div>
+<%= render "devise/shared/error_messages", resource: resource %>
+<div class="mb-3">
+<%= f.label :name, class: "form-label" %><br />
+<%= f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control" %>
+</div>
+<div class="mb-3">
+<%= f.label :email, class: "form-label" %><br />
+<%= f.email_field :email, autocomplete: "email", class: "form-control" %>
+</div>
+<div class="mb-3">
+<%= f.label :password, class: "form-label" %>
+<% if @minimum_password_length %>
+<small class="text-muted">(<%= @minimum_password_length %> characters minimum)</small>
 <% end %>
-
-<%# Devise 認証関連のリンク %>
+<%= f.password_field :password, autocomplete: "new-password", class: "form-control" %>
+</div>
+<div class="mb-3">
+<%= f.label :password_confirmation, class: "form-label" %><br />
+<%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control" %>
+</div>
+<div class="d-grid gap-2">
+<%= f.submit "Sign up", class: "btn btn-success" %>
+</div>
+<% end %>
 <%= render "devise/shared/links" %>
-<%# Deviseが提供する共通パーシャル（_links.html.erb）を読み込み、ログインやパスワードリセットリンクを表示 %>
+
+</div>
+</div>
+</div>
+</turbo-frame>

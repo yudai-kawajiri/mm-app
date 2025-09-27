@@ -10,14 +10,14 @@ Devise.setup do |config|
 
   # Devise::Mailerの送信元アドレス。パスワードリセットメールなどに使用される。
   # 【必須変更】本番環境に合わせて必ず変更してください。
-  config.mailer_sender = 'info@your-app-domain.com' # 例として変更
+  config.mailer_sender = "info@your-app-domain.com" # 例として変更
 
   # config.mailer = 'Devise::Mailer' # Deviseのメール送信クラス（デフォルトのまま）
 
   # --- ORM configuration (O/Rマッピング設定) ---
 
   # Active Recordを使用することを明示（Rails標準）
-  require 'devise/orm/active_record'
+  require "devise/orm/active_record"
 
   # --- Authentication Configuration (認証全般設定) ---
 
@@ -25,13 +25,13 @@ Devise.setup do |config|
   # config.authentication_keys = [:email]
 
   # 認証時に大文字小文字を区別しないキー。デフォルトは[:email]。（変更不要）
-  config.case_insensitive_keys = [:email]
+  config.case_insensitive_keys = [ :email ]
 
   # 認証時に前後の空白を削除するキー。デフォルトは[:email]。（変更不要）
-  config.strip_whitespace_keys = [:email]
+  config.strip_whitespace_keys = [ :email ]
 
   # 複数の認証パス（セッション）からストレージへの保存をスキップする戦略
-  config.skip_session_storage = [:http_auth]
+  config.skip_session_storage = [ :http_auth ]
 
   # --- Database Authenticatable (パスワード設定) ---
 
