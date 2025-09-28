@@ -100,5 +100,5 @@ test:
 #     migrations_paths: db/cable_migrate
 production:
   <<: *default
-  # Renderが提供するデータベースURLを直接使用
+  # Renderが提供するデータベースURLを使用
   url: <%= ENV['DATABASE_URL'] %>
