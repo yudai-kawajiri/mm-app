@@ -20,14 +20,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_015715) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "name"], name: "index_categories_on_user_id_and_name", unique: true
     t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
   create_table "materials", force: :cascade do |t|
-    t.string "name"
-    t.string "unit_for_product"
+    t.string "name", null: false
+    t.string "unit_for_product", null: false
     t.decimal "unit_weight_for_product", precision: 10, scale: 3, null: false
-    t.string "unit_for_order"
+    t.string "unit_for_order", null: false
     t.decimal "unit_weight_for_order", precision: 10, scale: 3, null: false
     t.bigint "user_id", null: false
     t.bigint "category_id", null: false
