@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: mm-app-web # Renderダッシュボードに表示される名前
+    runtime: ruby
+    plan: free
+    region: oregon # デプロイする物理的な場所
+
+    buildCommand: './bin/render-build.sh'
+
+    startCommand: 'bundle exec rails server -b 0.0.0.0'
+
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase: # 接続情報を、Renderが自動で作成したデータベースから参照する
+          name: mm-app-db
+          property: connectionString # 接続文字列を取得
+
+      # Railsのマスターキー（機密情報）
+      - key: RAILS_MASTER_KEY
+        sync: false # Gitに含めないので、Renderダッシュボードで手動で設定
+
+      # サーバープロセス数
+      - key: WEB_CONCURRENCY
+        value: 2
+
+databases: # Webサービスが使用するデータベース
+  - name: mm-app-db
+    plan: free
+    region: oregon
