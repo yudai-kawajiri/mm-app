@@ -7,5 +7,8 @@ class CreateCategories < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
+
+    # ユーザーIDと名前の組み合わせでユニークインデックスを追加
+    add_index :categories, [:user_id, :name], unique: true
   end
 end
