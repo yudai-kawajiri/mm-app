@@ -7,6 +7,12 @@ set -o errexit
 # GemfileとGemfile.lockに基づき、必要な全てのRubyライブラリをインストールします。
 bundle install
 
+# JavaScriptの依存関係をインストール (Yarn/Node.js)
+yarn install --frozen-lockfile
+
+# JavaScriptのビルド
+yarn build
+
 # JavaScript、CSS、画像などの静的ファイル（アセット）を結合・圧縮し、本番環境で使えるように準備します。
 bin/rails assets:precompile
 
