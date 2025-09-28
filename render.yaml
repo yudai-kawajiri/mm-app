@@ -2,6 +2,7 @@ services:
   - type: web
     name: mm-app-web # Renderダッシュボードに表示される名前
     runtime: ruby
+    rubyVersion: 3.3.6
     plan: free
     region: oregon # デプロイする物理的な場所
 
