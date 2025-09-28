@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  unit_for_product: MyString
+  unit_weight_for_product: 9.99
+  unit_for_order: MyString
+  unit_weight_for_order: 9.99
+  user: one
+  category: one
+
+two:
+  name: MyString
+  unit_for_product: MyString
+  unit_weight_for_product: 9.99
+  unit_for_order: MyString
+  unit_weight_for_order: 9.99
+  user: two
+  category: two
