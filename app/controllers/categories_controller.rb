@@ -20,6 +20,20 @@ class CategoriesController < ApplicationController
   end
 
   def edit
+     # 編集対象のレコードを取得(idはURLから)
+    @category = current_user.categories.find(params[:id])
+  end
+
+  def update
+    @category = current_user.categories.find(params[:id])
+
+    if @category.update(category_params)
+      # 更新成功したら一覧画面へリダイレクト
+      redirect_to categories_path
+    else
+      # 更新失敗したら編集画面を再表示
+      render :edit
+    end
   end
 
   private
