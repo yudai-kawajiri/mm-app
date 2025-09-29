@@ -1,4 +1,6 @@
 class Category < ApplicationRecord
+  # データベースには 0, 1, 2 が保存されるが、コードでは :material, :product, :plan で扱う
+  enum :category_type, { material: 0, product: 1, plan: 2 }
   # ユーザーとの関連付け
   belongs_to :user
   # Materialモデルとの関連付け

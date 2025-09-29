@@ -1,8 +1,5 @@
 Rails.application.routes.draw do
-  get "categories/index"
-  get "categories/show"
-  get "categories/new"
-  get "categories/edit"
+
   # ダッシュボードへのGETルートを定義（コントローラとアクションを紐付け）
   get "dashboards/index"
 
@@ -21,8 +18,8 @@ Rails.application.routes.draw do
     root to: "devise/sessions#new"
   end
 
-  # Category の CRUD ルーティングを一括定義
-  resources :categories
+  # showアクションのみを除外
+  resources :categories, except: [:show]
 
   # Material のルーティングも将来のために定義しておく
   resources :materials
