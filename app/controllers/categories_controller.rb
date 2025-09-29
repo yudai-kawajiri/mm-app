@@ -5,7 +5,18 @@ class CategoriesController < ApplicationController
   end
 
   def new
-    @Category = Category.new
+    @category = current_user.categories.build
+  end
+
+  def create
+    # Strong Parametersで安全なデータを受け取る
+    @category = Category.new(category_params)
+
+    if @category.save
+      redirect_to categories_path
+    else
+      render :new
+    end
   end
 
   def show
@@ -16,9 +27,9 @@ class CategoriesController < ApplicationController
 
   private
 
-  def Category_params
+  def category_params
     # name属性のみ安全に受付
-    params.require(:Category).permit(:name)
+    params.require(:category).permit(:name, :category_type)
   end
 end
 
