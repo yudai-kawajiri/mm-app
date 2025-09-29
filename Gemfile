@@ -11,6 +11,9 @@ gem "bootsnap", require: false
 # CSSのバンドルと処理を行う [https://github.com/rails/cssbundling-rails]
 gem "cssbundling-rails"
 
+# SassコンパイラとRailsを連携させるためのGem
+gem "sassc-rails"
+
 # 認証機能（ログイン、ユーザー登録、パスワードリセットなど）のためのGem
 gem "devise"
 
