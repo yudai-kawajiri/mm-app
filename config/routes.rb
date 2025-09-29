@@ -18,8 +18,8 @@ Rails.application.routes.draw do
     root to: "devise/sessions#new"
   end
 
-  # Category の CRUD ルーティングを一括定義
-  resources :categories
+  # showアクションのみを除外
+  resources :categories, except: [:show]
 
   # Material のルーティングも将来のために定義しておく
   resources :materials
