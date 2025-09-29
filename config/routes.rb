@@ -1,8 +1,5 @@
 Rails.application.routes.draw do
-  get "categories/index"
-  get "categories/show"
-  get "categories/new"
-  get "categories/edit"
+
   # ダッシュボードへのGETルートを定義（コントローラとアクションを紐付け）
   get "dashboards/index"
 

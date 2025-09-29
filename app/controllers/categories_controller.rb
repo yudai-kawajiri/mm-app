@@ -9,8 +9,8 @@ class CategoriesController < ApplicationController
   end
 
   def create
-    # Strong Parametersで安全なデータを受け取る
-    @category = Category.new(category_params)
+    # current_userに関連付けてインスタンスを作成（user_idを自動設定）
+    @category = current_user.categories.build(category_params)
 
     if @category.save
       redirect_to categories_path

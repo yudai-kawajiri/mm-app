@@ -11,8 +11,8 @@
   <div class="form-group">
     <%= f.label :category_type %>
     <%# 選択肢にはキ<ーの文字列がそのまま表示されます %>
-    <%#<%= f.select :category_type, Category.category_types.keys %>
-  </div>
+    <%= f.select :category_type, Category.category_types.keys %>
+  </div %>
 
   <%= f.submit "登録" %>
 <% end %>
