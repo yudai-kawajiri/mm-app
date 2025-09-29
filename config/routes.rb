@@ -1,8 +1,5 @@
 Rails.application.routes.draw do
 
-  # ダッシュボードへのGETルートを定義（コントローラとアクションを紐付け）
-  get "dashboards/index"
-
   # Deviseの認証機能に必要な全ルーティングを生成
   devise_for :users
 
