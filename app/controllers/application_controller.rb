@@ -15,4 +15,10 @@ class ApplicationController < ActionController::Base
     # アカウント編集の際に、nameのデータ操作を許可する
     devise_parameter_sanitizer.permit(:account_update, keys: [ :name ])
   end
+
+  # Deviseでのログイン成功後に遷移するパスを明示的に指定
+  def after_sign_in_path_for(resource)
+    # 認証済みユーザーのルートパスへ遷移
+    authenticated_root_path
+  end
 end
