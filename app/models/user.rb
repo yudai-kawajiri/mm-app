@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  # 修正点：Categoryモデルへの関連付けを追加
+  has_many :categories, dependent: :destroy
   # Deviseの認証モジュールを設定
   # :database_authenticatable（パスワード認証）
   # :registerable（ユーザー登録・編集）
