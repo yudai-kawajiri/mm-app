@@ -20,7 +20,7 @@ class CategoriesController < ApplicationController
   end
 
   def edit
-     # 編集対象のレコードを取得(idはURLから)
+    # 編集対象のレコードを取得(idはURLから)
     @category = current_user.categories.find(params[:id])
   end
 
@@ -35,6 +35,16 @@ class CategoriesController < ApplicationController
       render :edit
     end
   end
+
+  def destroy
+    # 削除対象のレコードを、current_userのカテゴリーの中から探す
+    @category = current_user.categories.find(params[:id])
+    # レコードを削除
+    @category.destroy
+    # 削除成功後、一覧画面へリダイレクト
+    redirect_to categories_path
+  end
+
 
   private
 
