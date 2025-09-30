@@ -1,6 +1,6 @@
 <div class="row min-vh-100">
 
-  <%# 1. 左側ナビゲーションエリアの土台（サイドバー） %>
+  <%# 左側ナビゲーションエリアの土台 %>
   <div class="col-md-3 bg-light border-end p-4">
     <h2>メニュー</h2>
     <div class="list-group">
@@ -14,13 +14,14 @@
       <%# アカウント設定 %>
       <%= link_to 'アカウント設定', edit_user_registration_path, class: "list-group-item list-group-item-action" %>
 
-      <%# ログアウト %>
-      <%= link_to 'ログアウト', destroy_user_session_path, data: { turbo_method: :delete }, class: "list-group-item list-group-item-action text-danger" %>
+      <%# ログアウトの修正 %>
+      <%= button_to destroy_user_session_path, method: :delete, class: "list-group-item list-group-item-action text-danger mt-2" do %>
+        ログアウト
+      <% end %>
     </div>
-
   </div>
 
-  <%# 2. 右側メインコンテンツエリアの土台 %>
+  <%# 右側メインコンテンツエリアの土台 %>
   <div class="col-md-9 p-4">
     <h1>ようこそ！ <%= current_user.name %> さんのダッシュボード</h1>
     <p class="mt-4">メインコンテンツはここに表示されます</p>

@@ -1,0 +1,83 @@
+ja:
+  time:
+    formats:
+      default: "%Y/%m/%d %H:%M:%S"
+
+  helpers:
+    submit:
+      update: "更新"
+      destroy: "削除"
+
+    link: # リンクのテキストを追加
+      back: "戻る"
+
+    label:
+      user:
+        remember_me: "ログイン情報を記憶する"
+
+  errors:
+    messages:
+      not_saved: "以下の %{count} 件のエラーにより、%{resource} を保存できませんでした。"
+      blank: "を入力してください"
+      too_short:
+        one: "%{count} 文字以上で入力してください"
+        other: "%{count} 文字以上で入力してください"
+      taken: "は既に使用されています"
+      confirmation: "と%{attribute}の入力が一致しません"
+
+  devise:
+    sessions:
+      new:
+        sign_in: "ログイン"
+        submit: "ログイン"
+      signed_in: "ログインしました。"
+      signed_out: "ログアウトしました。"
+
+    confirmations:
+      confirmed: "アカウントを認証しました。"
+
+    failure:
+      unauthenticated: "アカウント登録もしくはログインが必要です。"
+      invalid: "メールアドレスまたはパスワードが違います。"
+      not_found_in_database: "メールアドレスまたはパスワードが違います。"
+
+    registrations:
+      new:
+        submit: "登録"
+      edit:
+        heading: "ユーザー編集"
+        current_password_hint: "現在のパスワード"
+      signed_up: "アカウント登録が完了しました。"
+      confirm_delete: "本当にアカウントを削除してもよろしいですか？"
+
+    shared:
+      minimum_password_length: "(%{count}文字以上)"
+      links:
+        sign_up: "新規登録"
+        forgot_your_password: "パスワードを忘れた方"
+
+    passwords:
+      send_instructions: "パスワード再設定のメールを送信しました。"
+      updated: "パスワードを変更しました。"
+
+      new:
+        forgot_your_password: "パスワードを忘れた方"
+        submit: "パスワード再設定のメールを送信"
+
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              not_found: "メールアドレスが見つかりません"
+
+    models:
+      user: "ユーザー"
+
+    attributes:
+      user:
+        email: "メールアドレス"
+        password: "パスワード"
+        name: "名前"
+        password_confirmation: "パスワード（確認）"
