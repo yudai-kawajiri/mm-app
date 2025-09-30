@@ -4,7 +4,6 @@
 <h1 class="card-title text-center mb-4">寿司管理システム</h1>
 <%= render "devise/shared/tabs" %>
 
-<h2 class="h5">Log in</h2>
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
 <div class="mb-3">
 <%= f.label :email, class: "form-label" %><br />
@@ -21,7 +20,8 @@
 </div>
 <% end %>
 <div class="d-grid gap-2">
-<%= f.submit "Log in", class: "btn-primary" %>  </div>
+  <%= f.submit t("devise.sessions.new.submit"), class: "btn-primary" %>
+</div>
 <% end %>
 <%= render "devise/shared/links" %>
 

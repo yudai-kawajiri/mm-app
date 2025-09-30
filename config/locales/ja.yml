@@ -1,0 +1,52 @@
+ja:
+  # タイムフォーマット
+  time:
+    formats:
+      default: "%Y/%m/%d %H:%M:%S"
+
+  # Deviseの翻訳キー設定
+  devise:
+    sessions:
+      new:
+        sign_in: "ログイン"
+        # ログインボタンのテキスト
+        submit: "ログイン"
+
+      signed_in: "ログインしました。"
+      signed_out: "ログアウトしました。"
+
+    confirmations:
+      confirmed: "アカウントを認証しました。"
+
+    failure:
+      unauthenticated: "アカウント登録もしくはログインが必要です。"
+      invalid: "メールアドレスまたはパスワードが違います。"
+      # ユーザーが見つからないエラーメッセージを追加
+      not_found_in_database: "メールアドレスまたはパスワードが違います。"
+
+    registrations:
+      submit: "ログイン"
+      signed_up: "アカウント登録が完了しました。"
+
+    # リンクなどの共通部分の翻訳を追加
+    shared:
+      links:
+        sign_up: "新規登録"
+        forgot_your_password: "パスワードを忘れた方"
+
+    passwords:
+      send_instructions: "パスワード再設定のメールを送信しました。"
+      updated: "パスワードを変更しました。"
+
+  # Active Recordの属性名
+  activerecord:
+    attributes:
+      user: # モデル名を確認
+        email: "メールアドレス"
+        password: "パスワード"
+
+  # ヘルパーテキスト
+  helpers:
+    label:
+      user: # モデル名を確認
+        remember_me: "ログイン情報を記憶する"
