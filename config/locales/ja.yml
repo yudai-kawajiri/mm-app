@@ -44,10 +44,21 @@ ja:
       send_instructions: "パスワード再設定のメールを送信しました。"
       updated: "パスワードを変更しました。"
 
+      new:
+        forgot_your_password: "パスワードを忘れた方"
+        submit: "パスワード再設定のメールを送信"
+
   activerecord:
     errors:
       models:
-        user: "ユーザー"
+        user:
+          attributes:
+            email:
+              not_found: "メールアドレスが見つかりません"
+
+    models:
+      user: "ユーザー"
+
     attributes:
       user:
         email: "メールアドレス"
