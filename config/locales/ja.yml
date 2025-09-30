@@ -3,6 +3,18 @@ ja:
     formats:
       default: "%Y/%m/%d %H:%M:%S"
 
+  helpers:
+    submit:
+      update: "更新"
+      destroy: "削除"
+
+    link: # リンクのテキストを追加
+      back: "戻る"
+
+    label:
+      user:
+        remember_me: "ログイン情報を記憶する"
+
   errors:
     messages:
       not_saved: "以下の %{count} 件のエラーにより、%{resource} を保存できませんでした。"
@@ -32,7 +44,11 @@ ja:
     registrations:
       new:
         submit: "登録"
+      edit:
+        heading: "ユーザー編集"
+        current_password_hint: "現在のパスワード"
       signed_up: "アカウント登録が完了しました。"
+      confirm_delete: "本当にアカウントを削除してもよろしいですか？"
 
     shared:
       minimum_password_length: "(%{count}文字以上)"
@@ -65,8 +81,3 @@ ja:
         password: "パスワード"
         name: "名前"
         password_confirmation: "パスワード（確認）"
-
-  helpers:
-      label:
-        user:
-          remember_me: "ログイン情報を記憶する"
