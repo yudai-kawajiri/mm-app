@@ -1,26 +1,23 @@
-
-
-<%# アカウント設定へのリンク %>
-<%= link_to 'アカウント編集', edit_user_registration_path %>
-<br>
-
-<%#  臨時ログアウトリンク %>
-<%= link_to 'ログアウト', destroy_user_session_path, data: { turbo_method: :delete } %>
-
-<h2>管理機能</h2>
-<ul>
-  <li>
-    <%# カテゴリー一覧リンク %>
-    <%= link_to 'カテゴリー管理', categories_path %>
-  </li>
-</ul>
-
 <div class="row min-vh-100">
 
   <%# 1. 左側ナビゲーションエリアの土台（サイドバー） %>
   <div class="col-md-3 bg-light border-end p-4">
     <h2>メニュー</h2>
-    <p>ここにナビゲーションリンクが入ります</p>
+    <div class="list-group">
+      <%# ダッシュボード %>
+      <%= link_to 'ダッシュボード', authenticated_root_path, class: "list-group-item list-group-item-action active" %>
+
+      <%# カテゴリー管理　%>
+      <%= link_to 'カテゴリー管理', categories_path, class: "list-group-item list-group-item-action" %>
+
+      <hr>
+      <%# アカウント設定 %>
+      <%= link_to 'アカウント設定', edit_user_registration_path, class: "list-group-item list-group-item-action" %>
+
+      <%# ログアウト %>
+      <%= link_to 'ログアウト', destroy_user_session_path, data: { turbo_method: :delete }, class: "list-group-item list-group-item-action text-danger" %>
+    </div>
+
   </div>
 
   <%# 2. 右側メインコンテンツエリアの土台 %>
