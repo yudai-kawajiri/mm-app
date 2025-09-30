@@ -39,3 +39,5 @@ RUN gem install bundler
 
 # ホストマシンの全ファイルをコンテナの /myapp にコピー
 COPY . /myapp
+
+RUN yarn install --check-files
