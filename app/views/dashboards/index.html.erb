@@ -1,5 +1,4 @@
-<h1>Dashboards#index</h1>
-<p>Find me in app/views/dashboards/index.html.erb</p>
+
 
 <%# アカウント設定へのリンク %>
 <%= link_to 'アカウント編集', edit_user_registration_path %>
@@ -15,3 +14,18 @@
     <%= link_to 'カテゴリー管理', categories_path %>
   </li>
 </ul>
+
+<div class="row min-vh-100">
+
+  <%# 1. 左側ナビゲーションエリアの土台（サイドバー） %>
+  <div class="col-md-3 bg-light border-end p-4">
+    <h2>メニュー</h2>
+    <p>ここにナビゲーションリンクが入ります</p>
+  </div>
+
+  <%# 2. 右側メインコンテンツエリアの土台 %>
+  <div class="col-md-9 p-4">
+    <h1>ようこそ！ <%= current_user.name %> さんのダッシュボード</h1>
+    <p class="mt-4">メインコンテンツはここに表示されます</p>
+  </div>
+</div>
