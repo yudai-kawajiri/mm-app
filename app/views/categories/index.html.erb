@@ -10,6 +10,10 @@
 
         <td>
           <%= link_to '編集', edit_category_path(category) %>
+
+          <%= link_to '削除', category_path(category),
+                      data: { turbo_method: :delete } %>
+
         </td>
       </tr>
     <% end %>
@@ -18,3 +22,6 @@
 
 <%# 新規作成ページへの導線%>
 <%= link_to '新規カテゴリー作成', new_category_path, class: "btn btn-primary mt-3" %>
+
+<%# ✅ ダッシュボードへの導線を追加 %>
+<%= link_to 'ダッシュボードへ戻る', authenticated_root_path, class: "btn btn-secondary mt-3" %>
