@@ -1,4 +1,7 @@
 class CategoriesController < ApplicationController
+  # 'authenticated_layout' を適用
+  layout 'authenticated_layout'
+
   def index
     # 複数形注意。昇順に並べます。
     @categories = current_user.categories.order(name: :asc)

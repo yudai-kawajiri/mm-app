@@ -1,0 +1,21 @@
+<%# 左側ナビゲーションエリアの土台 %>
+  <div class="col-md-3 bg-light border-end p-4">
+    <h2><%= t('dashboard.menu.title') %></h2>
+    <div class="list-group">
+
+      <%# ダッシュボード %>
+      <%= link_to t('dashboard.menu.dashboard'), authenticated_root_path, class: "list-group-item list-group-item-action active" %>
+
+      <%# カテゴリー管理　%>
+      <%= link_to t('dashboard.menu.category_management'), categories_path, class: "list-group-item list-group-item-action" %>
+
+      <hr>
+      <%# アカウント設定 %>
+      <%= link_to t('dashboard.menu.account_settings'), edit_user_registration_path, class: "list-group-item list-group-item-action" %>
+
+      <%# ログアウト %>
+      <%= button_to destroy_user_session_path, method: :delete, class: "list-group-item list-group-item-action text-danger mt-2" do %>
+        <%= t('devise.sessions.sign_out') %>
+      <% end %>
+    </div>
+  </div>
