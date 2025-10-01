@@ -21,6 +21,6 @@ Rails.application.routes.draw do
   # showアクションのみを除外
   resources :categories, except: [:show]
 
-  # Material のルーティングも将来のために定義しておく
+  # Material のルーティング
   resources :materials
 end
