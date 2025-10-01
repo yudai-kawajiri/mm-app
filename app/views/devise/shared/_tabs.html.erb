@@ -1,11 +1,11 @@
 <ul class="nav nav-tabs mb-4">
   <li class="nav-item">
-    <%= link_to 'ログイン', new_user_session_path,
+    <%= link_to t('devise.sessions.new.sign_in'), new_user_session_path,
       data: { turbo_frame: '_top' },
       class: "nav-link #{'active' if current_page?(new_user_session_path)}" %>
   </li>
   <li class="nav-item">
-    <%= link_to '新規登録', new_user_registration_path,
+    <%= link_to t('devise.shared.links.sign_up'), new_user_registration_path,
       data: { turbo_frame: '_top' },
       class: "nav-link #{'active' if current_page?(new_user_registration_path)}" %>
   </li>

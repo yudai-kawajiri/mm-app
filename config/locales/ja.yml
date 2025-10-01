@@ -62,6 +62,7 @@ ja:
       not_found: "が見つかりません"
 
   devise:
+    system_title: "寿司管理システム"
     sessions:
       new:
         sign_in: "ログイン"
@@ -85,6 +86,7 @@ ja:
         title: "アカウント編集"
         cancel_my_account: "アカウンを削除する"
       signed_up: "アカウント登録が完了しました。"
+      pending_reconfirmation: "現在、%{unconfirmed_email} の確認待ちです。"
       user:
         updated: "アカウント情報が正常に更新されました。"
         destroyed: "アカウントを削除しました。"
@@ -101,6 +103,18 @@ ja:
       new:
         forgot_your_password: "パスワードを忘れた方"
         submit: "パスワード再設定のメールを送信"
+      edit:
+        title: "パスワードの変更"
+        submit: "パスワードを変更"
+
+    mailer:
+      reset_password_instructions:
+        subject: "【寿司管理システム】パスワード再設定のご案内"
+        greeting: "こんにちは %{name} さん！"
+        action: "パスワードの変更"
+        instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください。"
+        instruction_2: "このメールに心当たりがない場合は、無視して構いません。"
+        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを作成するまで変更されません。"
 
   activerecord:
     errors:
