@@ -19,6 +19,14 @@ ja:
     index:
       title: "カテゴリー一覧"
 
+  dashboard: # 新規追加
+    menu:
+      title: "メニュー"
+      dashboard: "ダッシュボード"
+      category_management: "カテゴリー管理"
+      account_settings: "アカウント設定"
+    welcome_message: "ようこそ！ %{name} さんのダッシュボード"
+
   helpers:
     submit:
       create: "登録"
@@ -60,6 +68,7 @@ ja:
         submit: "ログイン"
       signed_in: "ログインしました。"
       signed_out: "ログアウトしました。"
+      sign_out: "ログアウト"
 
     confirmations:
       confirmed: "アカウントを認証しました。"
