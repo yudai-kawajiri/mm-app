@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
 
-  # Deviseの認証機能に必要な全ルーティングを生成
-  devise_for :users
-
+  # controllersオプションを追加し、RegistrationsControllerを指定
+  devise_for :users, controllers: {
+    registrations: 'users/registrations' # usersフォルダ内のregistrations_controllerを使う
+  }
   # 認証済みユーザー向けのルート設定
   authenticated :user do
     # ルートパス ("/") を DashboardsControllerのindexアクションに設定
@@ -21,6 +22,6 @@ Rails.application.routes.draw do
   # showアクションのみを除外
   resources :categories, except: [:show]
 
-  # Material のルーティングも将来のために定義しておく
+  # Material のルーティング
   resources :materials
 end

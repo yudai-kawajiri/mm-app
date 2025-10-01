@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="row justify-content-center">
   <div class="col-lg-6 col-md-8">
     <div class="card p-4">
@@ -40,3 +41,41 @@
     </div>
   </div>
 </div>
+=======
+<%= render layout: 'devise/shared/auth_card_frame' do %>
+    
+    <%= render "devise/shared/tabs" %>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div class="mb-3">
+      <%= f.label :name, class: "form-label" %><br />
+      <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :email, class: "form-label" %><br />
+      <%= f.email_field :email, autocomplete: "email", class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :password, class: "form-label" %>
+      <% if @minimum_password_length %>
+        <small class="text-muted"><%= t('devise.shared.minimum_password_length', count: @minimum_password_length) %></small>
+      <% end %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :password_confirmation, class: "form-label" %><br />
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control" %>
+    </div>
+
+    <div class="d-grid gap-2">
+      <%= f.submit t("devise.registrations.new.submit"), class: "btn btn-success" %>
+    </div>
+  <% end %>
+
+<% end %>
+>>>>>>> 4177660 (feat: Devise認証画面のレイアウトを共通化しデザインを統一)

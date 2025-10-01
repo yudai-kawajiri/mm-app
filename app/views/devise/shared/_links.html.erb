@@ -16,8 +16,9 @@
   <% end %>
 <% end %>
 
-<%- if controller_name == 'passwords' || controller_name == 'registrations' %>
+<%# パスワード画面（passwords）でのみ表示するように条件を変更します %>
+<%# 'registrations'（新規登録）画面はタブがあるため、ここで除外します。 %>
+<%- if controller_name == 'passwords' %>
   <br>
   <%= link_to "ログイン画面に戻る", new_session_path(resource_name) %>
 <% end %>
-
