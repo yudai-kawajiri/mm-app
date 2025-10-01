@@ -3,13 +3,47 @@ ja:
     formats:
       default: "%Y/%m/%d %H:%M:%S"
 
+  controllers:
+    create:
+      success: "%{resource}を作成しました。"
+    update:
+      success: "%{resource}を更新しました。"
+    destroy:
+      success: "%{resource}を削除しました。"
+
+  categories:
+    new:
+      title: "新規カテゴリー登録"
+    edit:
+      title: "カテゴリー編集"
+    index:
+      title: "カテゴリー一覧"
+
+  dashboard: # 新規追加
+    menu:
+      title: "メニュー"
+      dashboard: "ダッシュボード"
+      category_management: "カテゴリー管理"
+      account_settings: "アカウント設定"
+    welcome_message: "ようこそ！ %{name} さんのダッシュボード"
+
   helpers:
     submit:
+      create: "登録"
       update: "更新"
       destroy: "削除"
 
+    action: "アクション"
+
+    confirm:
+      destroy: "本当にこの%{resource}を削除してもよろしいですか？"
+
     link: # リンクのテキストを追加
       back: "戻る"
+      edit: "編集"
+      destroy: "削除"
+      new: "新規%{resource}作成"
+      back_to_dashboard: "ダッシュボードへ戻る"
 
     label:
       user:
@@ -24,14 +58,18 @@ ja:
         other: "%{count} 文字以上で入力してください"
       taken: "は既に使用されています"
       confirmation: "と%{attribute}の入力が一致しません"
+      invalid: "が正しくありません"
+      not_found: "が見つかりません"
 
   devise:
+    system_title: "寿司管理システム"
     sessions:
       new:
         sign_in: "ログイン"
         submit: "ログイン"
       signed_in: "ログインしました。"
       signed_out: "ログアウトしました。"
+      sign_out: "ログアウト"
 
     confirmations:
       confirmed: "アカウントを認証しました。"
@@ -45,10 +83,13 @@ ja:
       new:
         submit: "登録"
       edit:
-        heading: "ユーザー編集"
-        current_password_hint: "現在のパスワード"
+        title: "アカウント編集"
+        cancel_my_account: "アカウンを削除する"
       signed_up: "アカウント登録が完了しました。"
-      confirm_delete: "本当にアカウントを削除してもよろしいですか？"
+      pending_reconfirmation: "現在、%{unconfirmed_email} の確認待ちです。"
+      user:
+        updated: "アカウント情報が正常に更新されました。"
+        destroyed: "アカウントを削除しました。"
 
     shared:
       minimum_password_length: "(%{count}文字以上)"
@@ -59,10 +100,21 @@ ja:
     passwords:
       send_instructions: "パスワード再設定のメールを送信しました。"
       updated: "パスワードを変更しました。"
-
       new:
         forgot_your_password: "パスワードを忘れた方"
         submit: "パスワード再設定のメールを送信"
+      edit:
+        title: "パスワードの変更"
+        submit: "パスワードを変更"
+
+    mailer:
+      reset_password_instructions:
+        subject: "【寿司管理システム】パスワード再設定のご案内"
+        greeting: "こんにちは %{name} さん！"
+        action: "パスワードの変更"
+        instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください。"
+        instruction_2: "このメールに心当たりがない場合は、無視して構いません。"
+        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを作成するまで変更されません。"
 
   activerecord:
     errors:
@@ -73,7 +125,9 @@ ja:
               not_found: "メールアドレスが見つかりません"
 
     models:
-      user: "ユーザー"
+      user: "アカウント"
+      category: "カテゴリー"
+      material: "原材料"
 
     attributes:
       user:
@@ -81,3 +135,12 @@ ja:
         password: "パスワード"
         name: "名前"
         password_confirmation: "パスワード（確認）"
+        current_password: "現在のパスワード"
+
+      category:
+        name: "名称"
+        category_type: "カテゴリー種別"
+        category_types:
+          material: "原材料"
+          product: "商品"
+          plan: "計画"

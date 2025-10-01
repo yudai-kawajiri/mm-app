@@ -1,4 +1,7 @@
-<h1>新規カテゴリー登録</h1>
+<h1><%= t('.title') %></h1>
+
+<%# パーシャルを呼び出し、@categoryを渡す %>
+<%= render 'shared/error_messages', resource: @category %>
 
 <%# form_withに model: @category を渡すことで、新規作成（createアクションへのPOST）と自動的に判断される %>
 <%= form_with model: @category do |f| %>
@@ -14,7 +17,7 @@
     <%= f.select :category_type, Category.category_types.keys %>
   </div %>
 
-  <%= f.submit "登録" %>
+  <%= f.submit t("helpers.submit.create") %>
 <% end %>
 <%# 一覧画面へのリンク %>
-<%= link_to 'カテゴリー一覧へ戻る', categories_path %>
+<%= link_to t('helpers.link.back'), categories_path %>

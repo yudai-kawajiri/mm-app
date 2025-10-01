@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   devise_scope :user do
     # ルートパス ("/") を Deviseのログイン画面（sessions#new）に設定
     root to: "devise/sessions#new"
+
+    # GET /users リクエストをログインページ（/）へリダイレクトしてエラーを防ぐ
+    get '/users', to: redirect('/')
   end
 
   # showアクションのみを除外

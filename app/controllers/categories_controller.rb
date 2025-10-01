@@ -14,7 +14,7 @@ class CategoriesController < ApplicationController
 
     # メッセージ追加: 新規作成成功
     if @category.save
-      redirect_to categories_path, notice: "カテゴリー「#{@category.name}」を新規作成しました。"
+      redirect_to categories_path, notice: t('controllers.create.success', resource: Category.model_name.human)
     else
       render :new
     end
@@ -30,7 +30,7 @@ class CategoriesController < ApplicationController
 
     if @category.update(category_params)
       # 更新成功したら一覧画面へリダイレクト
-      redirect_to categories_path, notice: "カテゴリー「#{@category.name}」を更新しました。"
+      redirect_to categories_path, notice: t('controllers.update.success', resource: Category.model_name.human)
     else
       # 更新失敗したら編集画面を再表示
       render :edit
@@ -43,7 +43,7 @@ class CategoriesController < ApplicationController
     # レコードを削除
     @category.destroy
     # 削除成功後、一覧画面へリダイレクト
-    redirect_to categories_path, notice: "カテゴリー「#{@category.name}」を削除しました。"
+      redirect_to categories_path, notice: t('controllers.destroy.success', resource: Category.model_name.human)
   end
 
 

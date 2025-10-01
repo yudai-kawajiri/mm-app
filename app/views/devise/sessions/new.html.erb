@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
   <div class="col-lg-6 col-md-8">
     <div class="card p-4">
-      <h1 class="card-title text-center mb-4">寿司管理システム</h1>
+      <h1 class="card-title text-center mb-4"><%= t('devise.system_title') %></h1>
       <%= render "devise/shared/tabs" %>
 
       <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
