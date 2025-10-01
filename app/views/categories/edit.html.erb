@@ -1,4 +1,7 @@
-<h1>カテゴリー編集</h1>
+<h1><%= t('.title') %></h1>
+
+<%# エラーパーシャルを呼び出し、@categoryを渡す %>
+<%= render 'shared/error_messages', resource: @category %>
 
 <%# form_withに @category を渡すことで、自動的に update アクションへ送信 %>
 <%= form_with model: @category do |f| %>
@@ -13,8 +16,8 @@
     <%= f.select :category_type, Category.category_types.keys %>
   </div %>
 
-  <%= f.submit "更新" %>
+  <%= f.submit t("helpers.submit.update") %>
 <% end %>
 
 <hr>
-<%= link_to 'カテゴリー一覧へ戻る', categories_path %>
+<%= link_to t('helpers.link.back'), categories_path %>
