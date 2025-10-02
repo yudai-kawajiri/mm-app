@@ -82,11 +82,15 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  primary: &primary_production
+  # Renderで提供される単一のDATABASE_URLを使用します
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
+
+  # Solid Queueのための 'queue' 接続設定
+  # メインDBと同じ接続情報を共有します
+  queue:
     <<: *default
-    database: myapp_production
-    username: myapp
-    password: <%= ENV["MYAPP_DATABASE_PASSWORD"] %>
+    url: <%= ENV['DATABASE_URL'] %>
   # cache:
   #   <<: *primary_production
   #   database: myapp_production_cache
