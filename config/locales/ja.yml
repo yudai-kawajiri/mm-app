@@ -5,11 +5,22 @@ ja:
 
   controllers:
     create:
-      success: "%{resource}を作成しました。"
+      success: "%{resource}を作成しました"
+      failure: "%{resource}の作成に失敗しました"
     update:
-      success: "%{resource}を更新しました。"
+      success: "%{resource}を更新しました"
+      failure: "%{resource}の更新に失敗しました"
     destroy:
-      success: "%{resource}を削除しました。"
+      success: "%{resource}を削除しました"
+
+  dashboard:
+    menu:
+      title: "メニュー"
+      dashboard: "ダッシュボード"
+      category_management: "カテゴリー管理"
+      dashboard.menu.material_management: "原材料管理"
+      account_settings: "アカウント設定"
+    welcome_message: "ようこそ！ %{name} さんのダッシュボード"
 
   categories:
     new:
@@ -19,13 +30,12 @@ ja:
     index:
       title: "カテゴリー一覧"
 
-  dashboard: # 新規追加
-    menu:
-      title: "メニュー"
-      dashboard: "ダッシュボード"
-      category_management: "カテゴリー管理"
-      account_settings: "アカウント設定"
-    welcome_message: "ようこそ！ %{name} さんのダッシュボード"
+  materials:
+    new:
+      title: "新規原材料登録"
+    index:
+      title: "原材料一覧"
+
 
   helpers:
     submit:
@@ -51,8 +61,10 @@ ja:
 
   errors:
     messages:
-      not_saved: "以下の %{count} 件のエラーにより、%{resource} を保存できませんでした。"
+      not_saved: "以下の %{count} 件のエラーにより、%{resource} を保存できませんでした"
       blank: "を入力してください"
+      not_a_number: "は数値で入力してください"
+      greater_than: "%{count} より大きい値を入力してください"
       too_short:
         one: "%{count} 文字以上で入力してください"
         other: "%{count} 文字以上で入力してください"
@@ -67,17 +79,17 @@ ja:
       new:
         sign_in: "ログイン"
         submit: "ログイン"
-      signed_in: "ログインしました。"
-      signed_out: "ログアウトしました。"
+      signed_in: "ログインしました"
+      signed_out: "ログアウトしました"
       sign_out: "ログアウト"
 
     confirmations:
-      confirmed: "アカウントを認証しました。"
+      confirmed: "アカウントを認証しました"
 
     failure:
-      unauthenticated: "アカウント登録もしくはログインが必要です。"
-      invalid: "メールアドレスまたはパスワードが違います。"
-      not_found_in_database: "メールアドレスまたはパスワードが違います。"
+      unauthenticated: "アカウント登録もしくはログインが必要です"
+      invalid: "メールアドレスまたはパスワードが違います"
+      not_found_in_database: "メールアドレスまたはパスワードが違います"
 
     registrations:
       new:
@@ -85,11 +97,11 @@ ja:
       edit:
         title: "アカウント編集"
         cancel_my_account: "アカウンを削除する"
-      signed_up: "アカウント登録が完了しました。"
-      pending_reconfirmation: "現在、%{unconfirmed_email} の確認待ちです。"
+      signed_up: "アカウント登録が完了しました"
+      pending_reconfirmation: "現在、%{unconfirmed_email} の確認待ちです"
       user:
-        updated: "アカウント情報が正常に更新されました。"
-        destroyed: "アカウントを削除しました。"
+        updated: "アカウント情報が正常に更新されました"
+        destroyed: "アカウントを削除しました"
 
     shared:
       minimum_password_length: "(%{count}文字以上)"
@@ -98,8 +110,8 @@ ja:
         forgot_your_password: "パスワードを忘れた方"
 
     passwords:
-      send_instructions: "パスワード再設定のメールを送信しました。"
-      updated: "パスワードを変更しました。"
+      send_instructions: "パスワード再設定のメールを送信しました"
+      updated: "パスワードを変更しました"
       new:
         forgot_your_password: "パスワードを忘れた方"
         submit: "パスワード再設定のメールを送信"
@@ -112,9 +124,9 @@ ja:
         subject: "【寿司管理システム】パスワード再設定のご案内"
         greeting: "こんにちは %{name} さん！"
         action: "パスワードの変更"
-        instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください。"
-        instruction_2: "このメールに心当たりがない場合は、無視して構いません。"
-        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを作成するまで変更されません。"
+        instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください"
+        instruction_2: "このメールに心当たりがない場合は、無視して構いません"
+        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを作成するまで変更されません"
 
   activerecord:
     errors:
@@ -144,3 +156,12 @@ ja:
           material: "原材料"
           product: "商品"
           plan: "計画"
+
+      material: # 原材料の属性定義を追加
+        name: "原材料名"
+        unit_for_product: "商品単位"
+        unit_weight_for_product: "重量（商品単位）"
+        unit_for_order: "発注単位"
+        unit_weight_for_order: "重量（発注単位）"
+        category_id: "カテゴリー"
+        category: "カテゴリー"

@@ -45,7 +45,7 @@
 
   <div class="actions mt-4">
   <%# <button>の生成$ %>
-  <%= f.submit "登録", class: "btn btn-success" %>
+  <%= f.submit t('helpers.submit.create'), class: "btn btn-success" %>
   <%# ボタンは練習で色付け %>
-  <%= link_to '一覧へ戻る', materials_path, class: "btn btn-outline-secondary" %>
+  <%= link_to t('helpers.link.back'), materials_path, class: "btn btn-outline-secondary" %>
 <% end %>
