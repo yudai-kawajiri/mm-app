@@ -1,7 +1,7 @@
 <h1><%= t('.title') %></h1>
 
 <%# パーシャルを呼び出し、@categoryを渡す %>
-<%= render 'shared/error_messages', resource: @category %>
+<%= render 'shared/error_messages', model: @category %>
 
 <%# form_withに model: @category を渡すことで、新規作成（createアクションへのPOST）と自動的に判断される %>
 <%= form_with model: @category do |f| %>

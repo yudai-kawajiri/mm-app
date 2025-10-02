@@ -1,20 +1,20 @@
-<h2>原材料管理</h2>
+<h2><%= t('.title') %></h2>
 
 <div class= "d-flex justify-content-end mb-3">
-  <%= link_to '新規原材料を追加', new_material_path, class: 'btn btn-primary' %>
+  <%= link_to t('helpers.link.new', resource: Material.model_name.human), new_material_path, class: 'btn btn-primary' %>
 </div>
 
 <table class ="table mt-4">
 <%# 後でカテゴリー別で検索して表示する%>
   <thead class= "table-light">
-    <tr>
-      <th>カテゴリー</th>
-      <th>原材料名</th>
-      <th>商品単位</th>
-      <th>重量（商品単位）</th>
-      <th>発注単位</th>
-      <th>重量（発注単位）</th>
-      <th>操作</th>
+    <tr><%# モデルの時に使用できるRailsヘルパー %>
+      <th><%= Material.human_attribute_name(:category_id) %></th>
+      <th><%= Material.human_attribute_name(:name) %></th>
+      <th><%= Material.human_attribute_name(:unit_for_product) %></th>
+      <th><%= Material.human_attribute_name(:unit_weight_for_product) %></th>
+      <th><%= Material.human_attribute_name(:unit_for_order) %></th>
+      <th><%= Material.human_attribute_name(:unit_weight_for_order) %></th>
+      <th><%= t('helpers.action') %></th>
     </tr>
   </thead>
   <tbody>
