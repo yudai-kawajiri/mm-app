@@ -2,41 +2,43 @@
 <%# newとcreateの共通利用。local: true不要で同期通信 %>
 <%= form_with(model: @material) do |f| %>
 
+  <%= render 'shared/error_messages', model: f.object %>
+
   <%# 原材料名 %>
   <div class="mb-3">
   <%# <input>要素に適切な縦の間隔（マージン）を設定%>
-    <%= f.label :name, "名前", class: "form-label" %>
+    <%= f.label :name, class: "form-label" %>
     <%= f.text_field :name, class: "form-control" %>
   </div>
 
   <%# 商品単位 %>
   <div class="mb-3">
-    <%= f.label :unit_for_product, "商品での単位", class: "form-label" %>
+    <%= f.label :unit_for_product, class: "form-label" %>
     <%= f.text_field :unit_for_product, class: "form-control" %>
   </div>
 
   <%# 商品単位あたりの重量 %>
   <div class="mb-3">
-    <%= f.label :unit_weight_for_product, "商品単位あたりの重さ", class: "form-label" %>
+    <%= f.label :unit_weight_for_product, class: "form-label" %>
     <%# 'step: :any'でスピナー対応%>
     <%= f.number_field :unit_weight_for_product, step: :any, class: "form-control" %>
   </div>
 
   <%# 発注単位 %>
   <div class="mb-3">
-    <%= f.label :unit_for_order, "発注単位", class: "form-label" %>
+    <%= f.label :unit_for_order, class: "form-label" %>
     <%= f.text_field :unit_for_order, class: "form-control" %>
   </div>
 
   <%# 発注単位あたりの重量 %>
   <div class="mb-3">
-    <%= f.label :unit_weight_for_order, "発注単位あたりの重さ", class: "form-label" %>
+    <%= f.label :unit_weight_for_order, class: "form-label" %>
     <%= f.number_field :unit_weight_for_order, step: :any, class: "form-control" %>
   </div>
 
   <%# カテゴリー%>
   <div class="mb-3">
-    <%= f.label :category_id, "カテゴリー", class: "form-label" %>
+    <%= f.label :category_id, class: "form-label" %>
     <%# カテゴリーデータを使用してプルダウンメニュー(<select>)を生成 %>
     <%= f.collection_select :category_id, Category.all, :id, :name, { prompt: "選択してください" }, class: "form-select" %>
   </div>
