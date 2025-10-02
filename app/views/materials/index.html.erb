@@ -1,0 +1,32 @@
+<h2>原材料管理</h2>
+
+<div class= "d-flex justify-content-end mb-3">
+  <%= link_to '新規原材料を追加', new_material_path, class: 'btn btn-primary' %>
+</div>
+
+<table class ="table mt-4">
+<%# 後でカテゴリー別で検索して表示する%>
+  <thead class= "table-light">
+    <tr>
+      <th>カテゴリー</th>
+      <th>原材料名</th>
+      <th>商品単位</th>
+      <th>重量（商品単位）</th>
+      <th>発注単位</th>
+      <th>重量（発注単位）</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @materials.each do |material| %>
+    <tr>
+      <td><%= material.category.name %></td>
+      <td><%= material.name %></td>
+      <td><%= material.unit_for_product %></td>
+      <%# 小数点以下3桁まで表示 %>
+      <td><%= number_with_precision(material.unit_weight_for_product, precision: 3) %></td>
+      <td><%= material.unit_for_order %></td>
+      <td><%= number_with_precision(material.unit_weight_for_order, precision: 3) %></td>
+    <% end %>
+  </tbody>
+</table>

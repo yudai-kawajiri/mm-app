@@ -1,7 +1,4 @@
 class ApplicationController < ActionController::Base
-  # 全てのアクションで認証チェックを行う
-  before_action :authenticate_user!
-
   # Devise利用時のストロングパラメータを設定するためのフック
   before_action :configure_permitted_parameters, if: :devise_controller?
 

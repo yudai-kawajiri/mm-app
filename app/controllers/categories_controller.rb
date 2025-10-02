@@ -1,6 +1,4 @@
-class CategoriesController < ApplicationController
-  # 'authenticated_layout' を適用
-  layout 'authenticated_layout'
+class CategoriesController < AuthenticatedController
 
   def index
     # 複数形注意。昇順に並べます。

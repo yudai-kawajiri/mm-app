@@ -1,13 +1,7 @@
 class User < ApplicationRecord
-  # 修正点：Categoryモデルへの関連付けを追加
   has_many :categories, dependent: :destroy
+  has_many :materials, dependent: :destroy
   # Deviseの認証モジュールを設定
-  # :database_authenticatable（パスワード認証）
-  # :registerable（ユーザー登録・編集）
-  # :recoverable（パスワードリセット）
-  # :rememberable（「ログイン情報を記憶する」チェックボックス）
-  # :validatable（メールアドレスとパスワードのバリデーション）
-  # ※ その他、:confirmable, :lockable, :timeoutable, :trackable, :omniauthable などが必要に応じて追加可能
   devise :database_authenticatable, :registerable,
         :recoverable, :rememberable, :validatable
 
