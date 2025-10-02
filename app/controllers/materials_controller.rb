@@ -1,4 +1,4 @@
-class MaterialsController <  ApplicationController
+class MaterialsController <  AuthenticatedController
   def index
     @materials = Material.all
   end
