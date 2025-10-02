@@ -1,4 +1,4 @@
-class MaterialsController < ApplicationController
+class MaterialsController <  ApplicationController
   def index
     @materials = Material.all
   end
@@ -13,7 +13,7 @@ class MaterialsController < ApplicationController
 
   def create
     # 'build'でインスタンスにデータを属性として割り当ててから安全に保存
-    @material = current_user.materials.build(params_params)
+    @material = current_user.materials.build(material_params)
 
     if @material.save
       # 'redirect_to'で遷移
@@ -36,7 +36,7 @@ class MaterialsController < ApplicationController
   private
   # ストロングパラメータ設定
   def material_params
-    params_require(:material).permit(
+    params.require(:material).permit(
     :name, :unit_for_product,
     :unit_weight_for_product,
     :unit_for_order,
