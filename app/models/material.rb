@@ -2,6 +2,8 @@ class Material < ApplicationRecord
   belongs_to :user
   belongs_to :category
 
+  validates :category_id, presence: true
+
   # 各バリデーションを設定
   validates :name, presence: true
   validates :unit_for_product, presence: true
