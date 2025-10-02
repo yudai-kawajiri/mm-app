@@ -83,6 +83,8 @@ test:
 #
 production:
   # Renderで提供される単一のDATABASE_URLを使用します
+  production:
+  # Renderで提供される単一のDATABASE_URLを使用します
   <<: *default
   url: <%= ENV['DATABASE_URL'] %>
 
