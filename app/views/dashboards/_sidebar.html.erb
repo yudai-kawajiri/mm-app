@@ -6,8 +6,11 @@
       <%# ダッシュボード %>
       <%= link_to t('dashboard.menu.dashboard'), authenticated_root_path, class: "list-group-item list-group-item-action active" %>
 
-      <%# カテゴリー管理　%>
+      <%# カテゴリー管理 %>
       <%= link_to t('dashboard.menu.category_management'), categories_path, class: "list-group-item list-group-item-action" %>
+
+      <%# 原材料管理 %>
+      <%= link_to '原材料管理', materials_path, class: "list-group-item list-group-item-action" %>
 
       <hr>
       <%# アカウント設定 %>
