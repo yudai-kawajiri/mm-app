@@ -6,7 +6,8 @@ class MaterialsController < ApplicationController
   end
 
   def new
-
+    # フォームに渡すための、新しい空の Material インスタンスを準備
+    @material = Material.new
   end
 
   def create

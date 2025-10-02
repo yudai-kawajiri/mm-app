@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+  get "materials/index"
+  get "materials/show"
+  get "materials/new"
+  get "materials/create"
+  get "materials/edit"
+  get "materials/update"
+  get "materials/destroy"
 
   # controllersオプションを追加し、RegistrationsControllerを指定
   devise_for :users, controllers: {
