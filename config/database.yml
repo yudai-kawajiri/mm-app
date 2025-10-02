@@ -82,19 +82,11 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  # ★<<: *default を削除し、Renderの DATABASE_URL のみを使う
-  url: <%= ENV['DATABASE_URL'] %>
-  adapter: postgresql
-  encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
-  # Solid Queueのための 'queue' 接続設定
-  queue:
-    # ★<<: *default も削除
-    url: <%= ENV['DATABASE_URL'] %>
-    adapter: postgresql
-    encoding: unicode
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  primary: &primary_production
+    <<: *default
+    database: myapp_production
+    username: myapp
+    password: <%= ENV["MYAPP_DATABASE_PASSWORD"] %>
   # cache:
   #   <<: *primary_production
   #   database: myapp_production_cache
