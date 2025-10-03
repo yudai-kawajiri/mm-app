@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= t('devise.system_title') %></title>
+    <title>
+      <%= content_for?(:page_title) ? "#{yield(:page_title)} | #{t('application_name')}" : t('application_name') %>
+    </title>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%# Bootstrap CSSをCDNで読み込み %>

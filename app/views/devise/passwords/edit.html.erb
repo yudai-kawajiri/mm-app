@@ -1,4 +1,5 @@
-<%= render 'layouts/auth_card_frame', title: t('devise.system_title') do %>
+<% content_for :page_title, t('devise.passwords.edit.title') %>
+<%= render layout: 'devise/shared/auth_card_frame' do %>
 
   <h2 class="text-center mb-4"><%= t("devise.passwords.edit.title") %></h2>
 
