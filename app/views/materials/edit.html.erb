@@ -1,2 +1,8 @@
-<h1>Materials#edit</h1>
-<p>Find me in app/views/materials/edit.html.erb</p>
+<%= content_for :page_title, "#{@material.name} - #{t('materials.edit.title')}" %>
+<div class="mb-4">
+  <h2>
+    <%= "#{@material.name} - #{t('materials.edit.title')}" %>
+  </h2>
+</div>
+<%# パーシャルでインスタンス変数をmaterialで扱える %>
+<%= render 'form', material: @material %>

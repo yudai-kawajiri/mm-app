@@ -1,67 +1,8 @@
-<%# ページタイトル %>
 <%= content_for :page_title, t('materials.show.title') %>
-
-<div class="mb-4">
-  <h2>
-    <%= @material.name %> - <%= t('materials.show.title') %>
-  </h2>
-</div>
-<%# カード風のデザイン %>
-<div class="card p-4 mb-4">
-<%# 横並びの土台  %>
-  <div class="row">
-    <%# 原材料名、横幅50% %>
-    <div class="col-6 mb-3">
-    　<%# 太字 %>
-      <p class="mb-2 fw-bold"><%= Material.human_attribute_name(:name) %></p>
-      <div class="border p-3 rounded">
-        <p class="mb-0"><%= @material.name %></p>
-      </div>
-    </div>
-
-    <%# カテゴリー項目 %>
-    <div class="col-6 mb-3">
-      <p class="mb-2 fw-bold"><%= Material.human_attribute_name(:category_id) %></p>
-      <div class="border p-3 rounded">
-        <p class="mb-0"><%= @material.category.name %></p>
-      </div>
-    </div>
-
-    <%# 商品単位 %>
-    <div class="col-6 mb-3">
-      <p class="mb-2 fw-bold"><%= Material.human_attribute_name(:unit_for_product) %></p>
-      <div class="border p-3 rounded">
-        <p class="mb-0"><%= @material.unit_for_product %></p>
-      </div>
-    </div>
-
-    <%# 発注単位 %>
-    <div class="col-6 mb-3">
-      <p class="mb-2 fw-bold"><%= Material.human_attribute_name(:unit_for_order) %></p>
-      <div class="border p-3 rounded">
-        <p class="mb-0"><%= @material.unit_for_order %></p>
-      </div>
-    </div>
-
-    <%# 重量（商品単位） %>
-    <div class="col-6 mb-3">
-      <p class="mb-2 fw-bold"><%= Material.human_attribute_name(:unit_weight_for_product) %></p>
-      <div class="border p-3 rounded">
-        <p class="mb-0"><%= number_with_precision(@material.unit_weight_for_product, precision: 3) %></p>
-      </div>
-    </div>
-
-    <%# 重量（発注単位） %>
-    <div class="col-6 mb-3">
-      <p class="mb-2 fw-bold"><%= Material.human_attribute_name(:unit_weight_for_order) %></p>
-      <div class="border p-3 rounded">
-        <p class="mb-0"><%= number_with_precision(@material.unit_weight_for_order, precision: 3) %></p>
-      </div>
-    </div>
-  </div>
+<%# flexコンテナの子要素を左右を均等にして上下も中央揃えにする %>
+<div class="d-flex justify-content-between al">
+  <h2><%= t('materials.show.title') %></h2>
 </div>
 
-<%# アクションボタン %>
-<div class="mt-4">
-  <%= link_to t('helpers.link.back'), materials_path, class: 'btn btn-secondary' %>
-</div>
+  <%# 共通パーシャル呼び出し %>
+  <%= render 'details', material: @material %>

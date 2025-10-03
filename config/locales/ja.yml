@@ -39,12 +39,17 @@ ja:
       title: "原材料一覧"
     show:
       title: "原材料詳細"
+    edit:
+      title: "原材料編集"
 
   helpers:
+    no_setting: "未設定"
     submit:
       create: "登録"
+      edit: "編集"
       update: "更新"
       destroy: "削除"
+
 
     action: "アクション"
 
