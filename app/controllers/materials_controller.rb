@@ -1,5 +1,5 @@
 class MaterialsController <  AuthenticatedController
-  before_action :set_material, only: [:show]
+  before_action :set_material, only: [:show, :edit, :update]
   def index
     @materials = Material.all
   end
@@ -20,7 +20,7 @@ class MaterialsController <  AuthenticatedController
     if @material.save
       # 'モデル名を参照する'
       flash[:notice] = t('flash_massages.create.success', resource: Material.model_name.human)
-      redirect_to materials_path
+      redirect_to @material
     else
       # 'render'で再表示
       flash.now[:alert] = t('flash_massages.create.failure', resource: Material.model_name.human)
@@ -30,10 +30,16 @@ class MaterialsController <  AuthenticatedController
   end
 
   def edit
-
+    # before_actionで完結
   end
 
   def update
+    if @material.update(material_params)
+      # railsオブジェクトを渡してパスに変換(idがあれば使用可能)
+      redirect_to @material
+    else
+      render :edit
+    end
   end
 
   def destroy
