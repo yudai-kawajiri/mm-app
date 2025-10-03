@@ -15,8 +15,9 @@ class CategoriesController < AuthenticatedController
 
     # メッセージ追加: 新規作成成功
     if @category.save
-      redirect_to categories_path, notice: t('controllers.create.success', resource: Category.model_name.human)
+      redirect_to categories_path, notice: t('flash_massages.create.success', resource: Category.model_name.human)
     else
+      flash.now[:alert] = t('flash_messages.create.failure', resource: Category.model_name.human)
       render :new
     end
   end
@@ -31,9 +32,10 @@ class CategoriesController < AuthenticatedController
 
     if @category.update(category_params)
       # 更新成功したら一覧画面へリダイレクト
-      redirect_to categories_path, notice: t('controllers.update.success', resource: Category.model_name.human)
+      redirect_to categories_path, notice: t('flash_massages.update.success', resource: Category.model_name.human)
     else
       # 更新失敗したら編集画面を再表示
+      flash.now[:alert] = t('flash_messages.update.failure', resource: Category.model_name.human)
       render :edit
     end
   end
@@ -44,7 +46,7 @@ class CategoriesController < AuthenticatedController
     # レコードを削除
     @category.destroy
     # 削除成功後、一覧画面へリダイレクト
-      redirect_to categories_path, notice: t('controllers.destroy.success', resource: Category.model_name.human)
+      redirect_to categories_path, notice: t('flash_massages.destroy.success', resource: Category.model_name.human)
   end
 
 

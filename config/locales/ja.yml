@@ -5,7 +5,7 @@ ja:
     formats:
       default: "%Y/%m/%d %H:%M:%S"
 
-  controllers:
+  flash_massagers:
     create:
       success: "%{resource}を作成しました"
       failure: "%{resource}の作成に失敗しました"
@@ -96,7 +96,6 @@ ja:
     registrations:
       new:
         title: "新規登録"
-        submit: "登録"
       edit:
         title: "アカウント編集"
         cancel_my_account: "アカウンを削除する"
@@ -117,7 +116,6 @@ ja:
       updated: "パスワードを変更しました"
       new:
         title: "パスワードを忘れた方"
-        forgot_your_password: "パスワードを忘れた方"
         submit: "パスワード再設定のメールを送信"
       edit:
         title: "パスワード変更"
