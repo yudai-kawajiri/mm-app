@@ -1,9 +1,11 @@
 class MaterialsController <  AuthenticatedController
+  before_action :set_material, only: [:show]
   def index
     @materials = Material.all
   end
 
   def show
+    # before_actionで完結
   end
 
   def new
@@ -28,6 +30,7 @@ class MaterialsController <  AuthenticatedController
   end
 
   def edit
+
   end
 
   def update
@@ -46,5 +49,10 @@ class MaterialsController <  AuthenticatedController
     :unit_weight_for_order,
     :category_id
   )
+  end
+
+  # @materialの検索（ログインユーザーのもの）
+  def set_material
+    @material = current_user.materials.find(params[:id])
   end
 end

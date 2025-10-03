@@ -1,2 +1,27 @@
-<h1>Materials#show</h1>
-<p>Find me in app/views/materials/show.html.erb</p>
+<%# タイトルタグ %>
+<div class="mb-4">
+  <h2>原材料詳細:<%= @material.name %></h2>
+</div>
+
+<dt class="col-sm-3">原材料名</dt>
+    <dd class="col-sm-9"><%= @material.name %></dd>
+
+    <dt class="col-sm-3">カテゴリー</dt>
+    <dd class="col-sm-9"><%= @material.category.name %></dd>
+
+    <dt class="col-sm-3">商品単位</dt>
+    <dd class="col-sm-9"><%= @material.unit_for_product %></dd>
+
+    <dt class="col-sm-3">商品単位重量</dt>
+    <%# 小数点以下3桁まで表示（number_with_precision は標準ヘルパーとして利用） %>
+    <dd class="col-sm-9"><%= number_with_precision(@material.unit_weight_for_product, precision: 3) %></dd>
+
+    <dt class="col-sm-3">発注単位</dt>
+    <dd class="col-sm-9"><%= @material.unit_for_order %></dd>
+  </dl>
+
+  <div class="mt-4">
+    <%= link_to "一覧へ戻る", materials_path, class: 'btn btn-secondary' %>
+  <div>
+</div>
+
