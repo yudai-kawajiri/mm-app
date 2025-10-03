@@ -37,6 +37,8 @@ ja:
       title: "原材料登録"
     index:
       title: "原材料一覧"
+    show:
+      title: "原材料詳細"
 
 
   helpers:
