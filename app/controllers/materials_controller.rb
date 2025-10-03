@@ -17,11 +17,11 @@ class MaterialsController <  AuthenticatedController
 
     if @material.save
       # 'モデル名を参照する'
-      flash[:notice] = t('controllers.create.success', resource: Material.model_name.human)
+      flash[:notice] = t('flash_massages.create.success', resource: Material.model_name.human)
       redirect_to materials_path
     else
       # 'render'で再表示
-      flash.now[:alert] = t('controllers.create.failure', resource: Material.model_name.human)
+      flash.now[:alert] = t('flash_massages.create.failure', resource: Material.model_name.human)
       # 'ステータスコード422'
       render :new ,status: :unprocessable_entity
     end

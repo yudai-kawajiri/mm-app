@@ -1,9 +1,11 @@
 ja:
+  application_name: "寿司管理システム"
+
   time:
     formats:
       default: "%Y/%m/%d %H:%M:%S"
 
-  controllers:
+  flash_massages:
     create:
       success: "%{resource}を作成しました"
       failure: "%{resource}の作成に失敗しました"
@@ -18,13 +20,13 @@ ja:
       title: "メニュー"
       dashboard: "ダッシュボード"
       category_management: "カテゴリー管理"
-      dashboard.menu.material_management: "原材料管理"
+      material_management: "原材料管理"
       account_settings: "アカウント設定"
     welcome_message: "ようこそ！ %{name} さんのダッシュボード"
 
   categories:
     new:
-      title: "新規カテゴリー登録"
+      title: "カテゴリー登録"
     edit:
       title: "カテゴリー編集"
     index:
@@ -32,7 +34,7 @@ ja:
 
   materials:
     new:
-      title: "新規原材料登録"
+      title: "原材料登録"
     index:
       title: "原材料一覧"
 
@@ -74,9 +76,9 @@ ja:
       not_found: "が見つかりません"
 
   devise:
-    system_title: "寿司管理システム"
     sessions:
       new:
+        title: "ログイン"
         sign_in: "ログイン"
         submit: "ログイン"
       signed_in: "ログインしました"
@@ -93,7 +95,7 @@ ja:
 
     registrations:
       new:
-        submit: "登録"
+        title: "新規登録"
       edit:
         title: "アカウント編集"
         cancel_my_account: "アカウンを削除する"
@@ -113,11 +115,11 @@ ja:
       send_instructions: "パスワード再設定のメールを送信しました"
       updated: "パスワードを変更しました"
       new:
-        forgot_your_password: "パスワードを忘れた方"
+        title: "パスワードを忘れた方"
         submit: "パスワード再設定のメールを送信"
       edit:
-        title: "パスワードの変更"
-        submit: "パスワードを変更"
+        title: "パスワード変更"
+        submit: "パスワード変更"
 
     mailer:
       reset_password_instructions:
