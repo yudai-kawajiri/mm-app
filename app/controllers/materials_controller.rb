@@ -36,9 +36,11 @@ class MaterialsController <  AuthenticatedController
   def update
     if @material.update(material_params)
       # railsオブジェクトを渡してパスに変換(idがあれば使用可能)
+      flash[:notice] = '原材料の更新に成功しました'
       redirect_to @material
     else
-      render :edit
+      flash now[:alert] = '原材料の更新に失敗しました'
+      render :edit, status: :unprocessable_entity
     end
   end
 
