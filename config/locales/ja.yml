@@ -40,7 +40,6 @@ ja:
     show:
       title: "原材料詳細"
 
-
   helpers:
     submit:
       create: "登録"
