@@ -26,7 +26,7 @@ ja:
 
   categories:
     new:
-      title: "新規カテゴリー登録"
+      title: "カテゴリー登録"
     edit:
       title: "カテゴリー編集"
     index:
@@ -34,7 +34,7 @@ ja:
 
   materials:
     new:
-      title: "新規原材料登録"
+      title: "原材料登録"
     index:
       title: "原材料一覧"
 

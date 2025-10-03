@@ -1,7 +1,8 @@
+<%= content_for :page_title, t('categories.edit.title') %>
 <h1><%= t('.title') %></h1>
 
 <%# エラーパーシャルを呼び出し、@categoryを渡す %>
-<%= render 'shared/error_messages', resource: @category %>
+<%= render 'shared/error_messages', model: @category %>
 
 <%# form_withに @category を渡すことで、自動的に update アクションへ送信 %>
 <%= form_with model: @category do |f| %>
