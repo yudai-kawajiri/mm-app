@@ -45,9 +45,13 @@ class MaterialsController <  AuthenticatedController
   end
 
   def destroy
-    @material.destroy
-    # 削除された新しいページを出すのでmaterials_urlで記載
-    redirect_to materials_url, status: :see_other
+    if @material.destroy
+      flash[:notice] = '原材料を削除しました'
+      # 削除された新しいページを出すのでmaterials_urlで記載
+      redirect_to materials_url, status: :see_other
+    end
+
+
   end
 
   private
