@@ -5,7 +5,7 @@ ja:
     formats:
       default: "%Y/%m/%d %H:%M:%S"
 
-  flash_massages:
+  flash_messages:
     create:
       success: "%{resource}を作成しました"
       failure: "%{resource}の作成に失敗しました"

@@ -46,7 +46,7 @@ class MaterialsController <  AuthenticatedController
 
   def destroy
     if @material.destroy
-      flash[:notice] = '原材料を削除しました'
+      flash[:notice] = t('flash_messages.destroy.success', resource: Material.model_name.human)
       # 削除された新しいページを出すのでmaterials_urlで記載
       redirect_to materials_url, status: :see_other
     end
