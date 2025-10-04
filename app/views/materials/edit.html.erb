@@ -1,8 +1,11 @@
 <%= content_for :page_title, "#{@material.name} - #{t('materials.edit.title')}" %>
 <div class="mb-4">
-  <h2>
-    <%= "#{@material.name} - #{t('materials.edit.title')}" %>
-  </h2>
+  <h2><%= "#{@material.name} - #{t('materials.edit.title')}" %></h2>
 </div>
+
 <%# パーシャルでインスタンス変数をmaterialで扱える %>
-<%= render 'form', material: @material %>
+<%= render 'shared/form_wrapper', resource: @material, back_path: @material do |f| %>
+
+  <%# Material固有のフォーム項目を挿入 %>
+  <%= render 'material_fields', f: f %>
+<% end %>

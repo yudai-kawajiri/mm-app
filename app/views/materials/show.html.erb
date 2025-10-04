@@ -1,8 +1,9 @@
-<%= content_for :page_title, t('materials.show.title') %>
-<%# flexコンテナの子要素を左右を均等にして上下も中央揃えにする %>
+<%# flexコンテナの子要素を左右を均等にして上下も中央揃えにする<%# ページタイトルを「原材料名 - 詳細」にする %>
+<%= content_for :page_title, "#{@material.name} - #{t('materials.show.title')}" %> %>
+
 <div class="d-flex justify-content-between al">
-  <h2><%= t('materials.show.title') %></h2>
+  <h2><%= "#{@material.name} - #{t('materials.show.title')}" %></h2>
 </div>
 
   <%# 共通パーシャル呼び出し %>
-  <%= render 'details', material: @material %>
+  <%= render 'shared/resource_details', resource: @material %>
