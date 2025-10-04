@@ -7,13 +7,13 @@ ja:
 
   flash_messages:
     create:
-      success: "%{resource}を作成しました"
+      success: "%{resource} 「%{name}」を作成しました"
       failure: "%{resource}の作成に失敗しました"
     update:
-      success: "%{resource}を更新しました"
+      success: "%{resource} 「%{name}」を更新しました"
       failure: "%{resource}の更新に失敗しました"
     destroy:
-      success: "%{resource}を削除しました"
+      success: "%{resource} 「%{name}」を削除しました"
 
   dashboard:
     menu:

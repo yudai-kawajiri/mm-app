@@ -5,6 +5,7 @@
     <title>
       <%= content_for?(:page_title) ? "#{yield(:page_title)} | #{t('application_name')}" : t('application_name') %>
     </title>
+    <%= csp_meta_tag %>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%# Bootstrap CSSをCDNで読み込み %>
