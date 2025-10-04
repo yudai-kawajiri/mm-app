@@ -1,0 +1,23 @@
+<%# resource: モデルインスタンス（@material, @categoryなど）をローカル変数として受け取る %>
+<% resource_class = resource.class %>
+
+<div class="card p-4 mb-4">
+  <%#  固有のフィールドを表示するパーシャルを呼び出す %>
+  <%# resourceをローカル変数として渡す %>
+  <%= render resource %>
+
+<%# アクションボタン %>
+  <div class="actions mt-4">
+    <%# 編集: url_for([:edit, resource]) で汎用パスを生成 %>
+    <%= link_to t('helpers.submit.edit'), url_for([:edit, resource]), class: "btn btn-primary me-2" %>
+
+    <%# 戻る: url_for(resource.class) で一覧パスを生成 %>
+    <%= link_to t('helpers.link.back'), url_for(resource.class), class: "btn btn-outline-secondary me-2" %>
+
+    <%# 削除: resource を渡して自動解決 %>
+    <%= button_to t('helpers.link.destroy'), resource,
+        method: :delete,
+        data: { turbo_confirm: t('confirm.destroy') },
+        class: 'btn btn-danger' %>
+  </div>
+</div>
