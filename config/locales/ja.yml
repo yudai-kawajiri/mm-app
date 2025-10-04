@@ -5,15 +5,15 @@ ja:
     formats:
       default: "%Y/%m/%d %H:%M:%S"
 
-  flash_massages:
+  flash_messages:
     create:
-      success: "%{resource}を作成しました"
+      success: "%{resource} 「%{name}」を作成しました"
       failure: "%{resource}の作成に失敗しました"
     update:
-      success: "%{resource}を更新しました"
+      success: "%{resource} 「%{name}」を更新しました"
       failure: "%{resource}の更新に失敗しました"
     destroy:
-      success: "%{resource}を削除しました"
+      success: "%{resource} 「%{name}」を削除しました"
 
   dashboard:
     menu:
@@ -71,6 +71,7 @@ ja:
     messages:
       not_saved: "以下の %{count} 件のエラーにより、%{resource} を保存できませんでした"
       blank: "を入力してください"
+      required: "を入力してください"
       not_a_number: "は数値で入力してください"
       greater_than: "%{count} より大きい値を入力してください"
       too_short:

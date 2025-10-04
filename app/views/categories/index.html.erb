@@ -18,12 +18,11 @@
         <td>
           <%= link_to t('helpers.link.edit'), edit_category_path(category) %>
 
-          <%= link_to t('helpers.link.destroy'), category_path(category),
-            data: {
-              "turbo-method": "delete",
-              "turbo-confirm": t('helpers.confirm.destroy', resource: t('activerecord.models.category'))
-            },
-            class: "btn btn-danger btn-sm" %>
+          <%= button_to "削除", category_path(category),
+    method: :delete,
+    data: { turbo_confirm: "本当に削除しますか？" },
+    class: "btn btn-danger btn-sm",
+    form: { style: "display: inline-block;" } %>
         </td>
       </tr>
     <% end %>
