@@ -55,6 +55,6 @@
   <div class="actions mt-4">
     <%= link_to t('helpers.submit.edit'), edit_material_path(@material), class: "btn btn-primary" %>
     <%= link_to t('helpers.link.back'), materials_path, class: "btn btn-outline-secondary" %>
-    <%= button_to t('helpers.link.back'), @material,method: :delete, class: 'btn btn-danger' %>
+    <%= button_to t('helpers.link.destroy'), @material,method: :delete, class: 'btn btn-danger' %>
   </div>
 </div>

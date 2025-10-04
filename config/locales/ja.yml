@@ -71,6 +71,7 @@ ja:
     messages:
       not_saved: "以下の %{count} 件のエラーにより、%{resource} を保存できませんでした"
       blank: "を入力してください"
+      required: "を入力してください"
       not_a_number: "は数値で入力してください"
       greater_than: "%{count} より大きい値を入力してください"
       too_short:
