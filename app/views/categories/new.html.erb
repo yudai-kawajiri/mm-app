@@ -1,24 +1,9 @@
-<%= content_for :page_title, t('categories.new.title') %>
-<h1><%= t('.title') %></h1>
+<%# 修正前のコードのすべてを、この共通ラッパーの呼び出しに置き換える %>
+<%= render 'shared/form_wrapper',
+    title: t('.title'),
+    resource: @category,       
+    back_path: categories_path do |f| %>
 
-<%# パーシャルを呼び出し、@categoryを渡す %>
-<%= render 'shared/error_messages', model: @category %>
-
-<%# form_withに model: @category を渡すことで、新規作成（createアクションへのPOST）と自動的に判断される %>
-<%= form_with model: @category do |f| %>
-
-  <div class="form-group">
-    <%= f.label :name %>
-    <%= f.text_field :name %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :category_type %>
-    <%# 選択肢にはキ<ーの文字列がそのまま表示されます %>
-    <%= f.select :category_type, Category.category_types.keys %>
-  </div %>
-
-  <%= f.submit t("helpers.submit.create") %>
+  <%# Step 1で作成した入力部品パーシャルを、フォームビルダーfを渡して呼び出す %>
+  <%= render 'category_fields', f: f %>
 <% end %>
-<%# 一覧画面へのリンク %>
-<%= link_to t('helpers.link.back'), categories_path %>
