@@ -9,4 +9,10 @@ class Category < ApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :user_id }
   # カテゴリ分類が空欄でないことを要求
   validates :category_type, presence: true
+
+  scope :search_by_name, ->(query) {
+    if query.present?
+      where("name ILIKE ?", "%#{sanitize_sql_like(query)}%")
+    end
+  }
 end

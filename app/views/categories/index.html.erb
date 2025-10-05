@@ -3,6 +3,9 @@
     new_path: new_category_path,
     new_resource_name: Category.model_name.human do %>
 
+  <%# 検索フォームを呼び出し %>
+  <%= render 'search_form' %>
+
   <%# ローカル変数 categories に @categories の値を渡す %>
   <%= render 'category_table', categories: @categories %>
 <% end %>
