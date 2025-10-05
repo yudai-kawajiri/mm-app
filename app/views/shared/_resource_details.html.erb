@@ -1,3 +1,9 @@
+<%# 呼び出し元から title を受け取る %>
+<%= content_for :page_title, title %>
+<div class="d-flex justify-content-between al">
+  <h2><%= title %></h2>
+</div>
+
 <%# resource: モデルインスタンス（@material, @categoryなど）をローカル変数として受け取る %>
 <% resource_class = resource.class %>
 

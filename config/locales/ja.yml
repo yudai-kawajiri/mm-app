@@ -38,7 +38,7 @@ ja:
     index:
       title: "原材料一覧"
     show:
-      title: "原材料詳細"
+      title: "%{material_name} - 詳細 "
     edit:
       title: "原材料編集"
 
