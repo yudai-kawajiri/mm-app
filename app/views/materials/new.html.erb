@@ -1,11 +1,11 @@
-<%= content_for :page_title, t('materials.new.title') %>
-<%# flexコンテナの子要素を左右を均等にして上下も中央揃えにする %>
-<div class="d-flex justify-content-between al">
-  <h2><%= t('materials.new.title') %></h2>
-</div>
+<%# content_for や <h2> タグはラッパーに委譲するため削除 %>
 
 <%# 共通パーシャル参照し@materialをresourceとして渡す %>
-<%= render 'shared/form_wrapper', resource: @material, back_path: materials_path do |f| %>
+<%= render 'shared/form_wrapper',
+    title: t('.title'),
+    resource: @material,
+    back_path: materials_path do |f| %>
+
   <%# Material固有のフォーム項目を挿入 %>
   <%= render 'material_fields', f: f %>
 <% end %>

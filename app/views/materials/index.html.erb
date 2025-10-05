@@ -1,34 +1,7 @@
-<%= content_for :page_title, t('materials.index.title') %>
-<h2><%= t('.title') %></h2>
+<%= render 'shared/resource_list',
+    title: t('.title'),
+    new_path: new_material_path,
+    new_resource_name: Material.model_name.human do %>
 
-<div class= "d-flex justify-content-end mb-3">
-  <%= link_to t('helpers.link.new', resource: Material.model_name.human), new_material_path, class: 'btn btn-primary' %>
-</div>
-
-<table class ="table mt-4">
-<%# 後でカテゴリー別で検索して表示する%>
-  <thead class= "table-light">
-    <tr><%# モデルの時に使用できるRailsヘルパー %>
-      <th><%= Material.human_attribute_name(:category_id) %></th>
-      <th><%= Material.human_attribute_name(:name) %></th>
-      <th><%= Material.human_attribute_name(:unit_for_product) %></th>
-      <th><%= Material.human_attribute_name(:unit_weight_for_product) %></th>
-      <th><%= Material.human_attribute_name(:unit_for_order) %></th>
-      <th><%= Material.human_attribute_name(:unit_weight_for_order) %></th>
-      <th><%= t('helpers.action') %></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @materials.each do |material| %>
-    <tr>
-      <td><%= material.category.name %></td>
-      <td><%= material.name %></td>
-      <td><%= material.unit_for_product %></td>
-      <%# 小数点以下3桁まで表示 %>
-      <td><%= number_with_precision(material.unit_weight_for_product, precision: 3) %></td>
-      <td><%= material.unit_for_order %></td>
-      <td><%= number_with_precision(material.unit_weight_for_order, precision: 3) %></td>
-      <td><%= link_to"詳細", material_path(material)%></td>
-    <% end %>
-  </tbody>
-</table>
+  <%= render 'material_table', materials: @materials %>
+<% end %>

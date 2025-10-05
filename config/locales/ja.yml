@@ -38,9 +38,9 @@ ja:
     index:
       title: "原材料一覧"
     show:
-      title: "原材料詳細"
+      title: "%{material_name} - 詳細 "
     edit:
-      title: "原材料編集"
+      title: "%{material_name} - 編集 "
 
   helpers:
     no_setting: "未設定"
@@ -59,8 +59,9 @@ ja:
     link: # リンクのテキストを追加
       back: "戻る"
       edit: "編集"
+      show: "詳細"
       destroy: "削除"
-      new: "新規%{resource}作成"
+      new: "新規作成"
       back_to_dashboard: "ダッシュボードへ戻る"
 
     label:
