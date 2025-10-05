@@ -1,33 +1,8 @@
-<%= content_for :page_title, t('categories.index.title') %>
-<h1><%= t('.title') %></h1>
+<%= render 'shared/resource_list',
+    title: t('.title'),
+    new_path: new_category_path,
+    new_resource_name: Category.model_name.human do %>
 
-<table class="table">
-
-    <thead>
-      <tr>
-        <th><%= Category.human_attribute_name(:name) %></th>
-        <th><%= t('helpers.action') %></th>
-      </tr>
-    </thead>
-
-  <tbody>
-    <% @categories.each do |category| %>
-      <tr>
-        <td><%= category.name %></td>
-
-        <td>
-          <%= link_to t('helpers.link.edit'), edit_category_path(category) %>
-
-          <%= button_to "削除", category_path(category),
-    method: :delete,
-    data: { turbo_confirm: "本当に削除しますか？" },
-    class: "btn btn-danger btn-sm",
-    form: { style: "display: inline-block;" } %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<%= link_to t('helpers.link.new', resource: Category.model_name.human), new_category_path, class: "btn btn-primary mt-3" %>
-<%= link_to t('helpers.link.back_to_dashboard'), authenticated_root_path, class: "btn btn-secondary mt-3" %>
+  <%# ローカル変数 categories に @categories の値を渡す %>
+  <%= render 'category_table', categories: @categories %>
+<% end %>
