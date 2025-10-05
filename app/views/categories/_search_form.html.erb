@@ -1,0 +1,21 @@
+<%# tagを置き換え %>
+<%= form_with url: categories_path,
+                    method: :get,
+                    local: true,
+                    class: "mb-3" do |f| %>
+  <%# 要素をひとまとめにして、入力値も維持  %>
+  <div class="input-group">
+    <%= f.text_field :q,
+        value: params[:q],
+        class: "form-control",
+        placeholder: "名前検索" %>
+      <%# 右にぴったりくっつける %>
+    <div class="input-group-append" >
+      <%= f.submit "検索", class: "btn btn-outline-secondary" %>
+      <%# 検索実行時のみクリアリンクを表示 %>
+      <% if params[:q].present? %>
+        <%= link_to "クリア", categories_path, class: "btn btn-outline-secondary" %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
