@@ -1,0 +1,9 @@
+<%= content_for :page_title, title %>
+<h2><%= title %></h2>
+
+<div class= "d-flex justify-content-end mb-3">
+  <%= link_to t('helpers.link.new'), new_path, class: 'btn btn-primary' %>
+</div>
+
+<%# 呼び出し元から渡されるコンテンツブロックを展開 %>
+<%= yield %>
