@@ -40,7 +40,7 @@ ja:
     show:
       title: "%{material_name} - 詳細 "
     edit:
-      title: "原材料編集"
+      title: "%{material_name} - 編集 "
 
   helpers:
     no_setting: "未設定"
