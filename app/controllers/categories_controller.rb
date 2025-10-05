@@ -1,4 +1,6 @@
 class CategoriesController < AuthenticatedController
+  # privateメソッドの set_category を、edit, update, destroy アクションの前に実行する
+  before_action :set_category, only: [:edit, :update, :destroy]
 
   def index
     # 複数形注意。昇順に並べます。
@@ -10,11 +12,10 @@ class CategoriesController < AuthenticatedController
   end
 
   def create
-    # current_userに関連付けてインスタンスを作成（user_idを自動設定）
     @category = current_user.categories.build(category_params)
 
-    # メッセージ追加: 新規作成成功
     if @category.save
+      # I18nキーは 'flash_messages' で統一されており、nameも正しく渡されています
       redirect_to categories_path, notice: t('flash_messages.create.success', resource: Category.model_name.human, name: @category.name)
     else
       flash.now[:alert] = t('flash_messages.create.failure', resource: Category.model_name.human)
@@ -23,38 +24,34 @@ class CategoriesController < AuthenticatedController
   end
 
   def edit
-    # 編集対象のレコードを取得(idはURLから)
-    @category = current_user.categories.find(params[:id])
+    # @category の取得は before_action :set_category に移動
   end
 
   def update
-    @category = current_user.categories.find(params[:id])
-
     if @category.update(category_params)
-      # 更新成功したら一覧画面へリダイレクト
       redirect_to categories_path, notice: t('flash_messages.update.success', resource: Category.model_name.human, name: @category.name)
     else
-      # 更新失敗したら編集画面を再表示
       flash.now[:alert] = t('flash_messages.update.failure', resource: Category.model_name.human)
       render :edit
     end
   end
 
   def destroy
-    # 削除対象のレコードを、current_userのカテゴリーの中から探す
-    @category = current_user.categories.find(params[:id])
-    # レコードを削除
     @category.destroy
-    # 削除成功後、一覧画面へリダイレクト
-      redirect_to categories_url, notice: t('flash_messages.destroy.success', resource: Category.model_name.human, name: @category.name)
+    redirect_to categories_url, notice: t('flash_messages.destroy.success', resource: Category.model_name.human, name: @category.name)
   end
 
 
   private
 
+  # 重複していた @category の取得処理をまとめる
+  def set_category
+    # 編集・更新・削除対象のレコードを、current_userのカテゴリーの中から探す
+    @category = current_user.categories.find(params[:id])
+  end
+
   def category_params
-    # name属性のみ安全に受付
+    # name と category_type を受付
     params.require(:category).permit(:name, :category_type)
   end
 end
-
