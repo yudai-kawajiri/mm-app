@@ -1,7 +1,7 @@
 <%# 修正前のコードのすべてを、この共通ラッパーの呼び出しに置き換える %>
 <%= render 'shared/form_wrapper',
     title: t('.title'),
-    resource: @category,       
+    resource: @category,
     back_path: categories_path do |f| %>
 
   <%# Step 1で作成した入力部品パーシャルを、フォームビルダーfを渡して呼び出す %>
