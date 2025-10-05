@@ -59,8 +59,9 @@ ja:
     link: # リンクのテキストを追加
       back: "戻る"
       edit: "編集"
+      show: "詳細"
       destroy: "削除"
-      new: "新規%{resource}作成"
+      new: "新規作成"
       back_to_dashboard: "ダッシュボードへ戻る"
 
     label:

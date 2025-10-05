@@ -1,0 +1,91 @@
+[33mcommit b59e7087b246996544b31dc3d0e6da26f63dabbd[m
+Author: Kawajiri Yudai <adgj2419@yahoo.co.jp>
+Date:   Sun Oct 5 09:14:16 2025 +0900
+
+    fix: 詳細画面の共通のフォームを修正
+
+[1mdiff --git a/app/views/materials/_material.html.erb b/app/views/materials/_material.html.erb[m
+[1mindex 3e893c5..4973dce 100644[m
+[1m--- a/app/views/materials/_material.html.erb[m
+[1m+++ b/app/views/materials/_material.html.erb[m
+[36m@@ -2,56 +2,70 @@[m
+ <% material_class = material.class %>[m
+ <% no_setting = t('helpers.no_setting') %>[m
+ [m
+[31m-<dl class="row mb-3">[m
+[32m+[m[32m<%# 名前 %>[m
+[32m+[m[32m<div class="mb-3">[m
+[32m+[m[32m  <%# 項目名（上） %>[m
+[32m+[m[32m  <label class="form-label"><%= material_class.human_attribute_name(:name) %></label>[m
+ [m
+[31m-  <%# 名前 %>[m
+[31m-  <dt class="col-sm-3"><%= material_class.human_attribute_name(:name) %></dt>[m
+[31m-  <dd class="col-sm-9">[m
+[31m-    <div class="form-control-plaintext">[m
+[31m-      <%= material.name.presence || no_setting %>[m
+[31m-    </div>[m
+[31m-  </dd>[m
+[32m+[m[32m  <%# 値（下） - 枠線が必要なため form-control を維持 %>[m
+[32m+[m[32m  <div class="form-control">[m
+[32m+[m[32m    <%= material.name.presence || no_setting %>[m
+[32m+[m[32m  </div>[m
+[32m+[m[32m</div>[m
+ [m
+[31m-  <%# 商品単位 %>[m
+[31m-  <dt class="col-sm-3"><%= material_class.human_attribute_name(:unit_for_product) %></dt>[m
+[31m-  <dd class="col-sm-9">[m
+[31m-    <div class="form-control-plaintext">[m
+[31m-      <%= material.unit_for_product.presence || no_setting %>[m
+[31m-    </div>[m
+[31m-  </dd>[m
+[32m+[m[32m<%# 商品単位 %>[m
+[32m+[m[32m<div class="mb-3">[m
+[32m+[m[32m  <%# 項目名（上） %>[m
+[32m+[m[32m  <label class="form-label"><%= material_class.human_attribute_name(:unit_for_product) %></label>[m
+ [m
+[31m-  <%# 商品単位あたりの重量 %>[m
+[31m-  <dt class="col-sm-3"><%= material_class.human_attribute_name(:unit_weight_for_product) %></dt>[m
+[31m-  <dd class="col-sm-9">[m
+[31m-    <div class="form-control-plaintext">[m
+[31m-      <%= material.unit_weight_for_product ? number_with_precision(material.unit_weight_for_product, precision: 3) : no_setting %>[m
+[31m-    </div>[m
+[31m-  </dd>[m
+[32m+[m[32m  <%# 値（下） %>[m
+[32m+[m[32m  <div class="form-control">[m
+[32m+[m[32m    <%= material.unit_for_product.presence || no_setting %>[m
+[32m+[m[32m  </div>[m
+[32m+[m[32m</div>[m
+ [m
+[31m-  <%# 発注単位 %>[m
+[31m-  <dt class="col-sm-3"><%= material_class.human_attribute_name(:unit_for_order) %></dt>[m
+[31m-  <dd class="col-sm-9">[m
+[31m-    <div class="form-control-plaintext">[m
+[31m-      <%= material.unit_for_order.presence || no_setting %>[m
+[31m-    </div>[m
+[31m-  </dd>[m
+[32m+[m[32m<%# 商品単位あたりの重量 %>[m
+[32m+[m[32m<div class="mb-3">[m
+[32m+[m[32m  <%# 項目名（上） %>[m
+[32m+[m[32m  <label class="form-label"><%= material_class.human_attribute_name(:unit_weight_for_product) %></label>[m
+[32m+[m
+[32m+[m[32m  <%# 値（下） %>[m
+[32m+[m[32m  <div class="form-control">[m
+[32m+[m[32m    <%= material.unit_weight_for_product ? number_with_precision(material.unit_weight_for_product, precision: 3) : no_setting %>[m
+[32m+[m[32m  </div>[m
+[32m+[m[32m</div>[m
+[32m+[m
+[32m+[m[32m<%# 発注単位 %>[m
+[32m+[m[32m<div class="mb-3">[m
+[32m+[m[32m  <%# 項目名（上） %>[m
+[32m+[m[32m  <label class="form-label"><%= material_class.human_attribute_name(:unit_for_order) %></label>[m
+[32m+[m
+[32m+[m[32m  <%# 値（下） %>[m
+[32m+[m[32m  <div class="form-control">[m
+[32m+[m[32m    <%= material.unit_for_order.presence || no_setting %>[m
+[32m+[m[32m  </div>[m
+[32m+[m[32m</div>[m
+[32m+[m
+[32m+[m[32m<%# 発注単位あたりの重量 %>[m
+[32m+[m[32m<div class="mb-3">[m
+[32m+[m[32m  <%# 項目名（上） %>[m
+[32m+[m[32m  <label class="form-label"><%= material_class.human_attribute_
