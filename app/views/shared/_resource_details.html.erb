@@ -1,10 +1,11 @@
 <%# resource: モデルインスタンス（@material, @categoryなど）をローカル変数として受け取る %>
 <% resource_class = resource.class %>
 
+<%# カード構造で全体を囲む %>
 <div class="card p-4 mb-4">
-  <%#  固有のフィールドを表示するパーシャルを呼び出す %>
-  <%# resourceをローカル変数として渡す %>
-  <%= render resource %>
+
+  <%# _details_fieldsを挿入 %>
+  <%= yield %>
 
 <%# アクションボタン %>
   <div class="actions mt-4">
