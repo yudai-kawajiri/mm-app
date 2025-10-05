@@ -1,24 +1,12 @@
-<%= content_for :page_title, t('categories.edit.title') %>
-<h1><%= t('.title') %></h1>
+<%# パーシャルでインスタンス変数をcategoryで扱える %>
+<%= render 'shared/form_wrapper',
+    # 1. タイトル設定: materials と完全に同じ I18n パターン
+    title: t('.title', category_name: @category.name),
+    # 2. リソース: materials と同じく @category を渡す
+    resource: @category,
+    # 3. 戻り先: カテゴリには詳細がないため、一覧画面 categories_path に固定
+    back_path: categories_path do |f| %>
 
-<%# エラーパーシャルを呼び出し、@categoryを渡す %>
-<%= render 'shared/error_messages', model: @category %>
-
-<%# form_withに @category を渡すことで、自動的に update アクションへ送信 %>
-<%= form_with model: @category do |f| %>
-
-  <div class="form-group">
-    <%= f.label :name %>
-    <%= f.text_field :name %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :category_type %>
-    <%= f.select :category_type, Category.category_types.keys %>
-  </div %>
-
-  <%= f.submit t("helpers.submit.update") %>
+  <%# Category固有のフォーム項目を挿入 %>
+  <%= render 'category_fields', f: f %>
 <% end %>
-
-<hr>
-<%= link_to t('helpers.link.back'), categories_path %>
