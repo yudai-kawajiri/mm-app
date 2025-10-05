@@ -1,0 +1,21 @@
+<%# resource: モデルインスタンス, back_path: 戻り先パス をローカル変数として受け取る %>
+<div id="<%= dom_id(resource, :form) %>">
+
+  <%= form_with(model: resource) do |f| %>
+
+    <%= render 'shared/error_messages', model: f.object %>
+
+    <div class="card p-4 mb-4">
+
+      <%# 固有のフォーム項目をブロックとして挿入 %>
+      <%= yield f %>
+
+      <div class="actions mt-4">
+        <% button_text = resource.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
+        <%= f.submit button_text, class: "btn btn-success me-2" %>
+
+        <%= link_to t('helpers.link.back'), back_path, class: "btn btn-outline-secondary" %>
+      </div>
+    </div>
+  <% end %>
+</div>

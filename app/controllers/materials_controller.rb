@@ -19,7 +19,7 @@ class MaterialsController <  AuthenticatedController
 
     if @material.save
       # 'モデル名を参照する'
-      flash[:notice] = t('flash_messages.create.success', resource: Material.model_name.human)
+      flash[:notice] = t('flash_messages.create.success', resource: Material.model_name.human, name: @material.name)
       redirect_to @material
     else
       # 'render'で再表示
@@ -36,7 +36,7 @@ class MaterialsController <  AuthenticatedController
   def update
     if @material.update(material_params)
       # railsオブジェクトを渡してパスに変換(idがあれば使用可能)
-      flash[:notice] = t('flash_messages.update.success', resource: Material.model_name.human)
+      flash[:notice] = t('flash_messages.update.success', resource: Material.model_name.human, name: @material.name)
       redirect_to @material
     else
       flash.now[:alert] = t('flash_messages.update.failure', resource: Material.model_name.human)
@@ -46,7 +46,7 @@ class MaterialsController <  AuthenticatedController
 
   def destroy
     if @material.destroy
-      flash[:notice] = t('flash_messages.destroy.success', resource: Material.model_name.human)
+      flash[:notice] = t('flash_messages.destroy.success', resource: Material.model_name.human, name: @material.name)
       # 削除された新しいページを出すのでmaterials_urlで記載
       redirect_to materials_url, status: :see_other
     end

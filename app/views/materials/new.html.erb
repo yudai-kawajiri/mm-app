@@ -4,6 +4,8 @@
   <h2><%= t('materials.new.title') %></h2>
 </div>
 
-<%# 共通パーシャル呼び出し %>
-<%= render 'form', material: @material %>
-
+<%# 共通パーシャル参照し@materialをresourceとして渡す %>
+<%= render 'shared/form_wrapper', resource: @material, back_path: materials_path do |f| %>
+  <%# Material固有のフォーム項目を挿入 %>
+  <%= render 'material_fields', f: f %>
+<% end %>

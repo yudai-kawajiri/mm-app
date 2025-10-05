@@ -1,0 +1,71 @@
+<%# resource: Materialインスタンス をローカル変数として受け取る %>
+<% material_class = material.class %>
+<% no_setting = t('helpers.no_setting') %>
+
+<%# 名前 %>
+<div class="mb-3">
+  <%# 項目名（上） %>
+  <label class="form-label"><%= material_class.human_attribute_name(:name) %></label>
+
+  <%# 値（下） - 枠線が必要なため form-control を維持 %>
+  <div class="form-control">
+    <%= material.name.presence || no_setting %>
+  </div>
+</div>
+
+<%# 商品単位 %>
+<div class="mb-3">
+  <%# 項目名（上） %>
+  <label class="form-label"><%= material_class.human_attribute_name(:unit_for_product) %></label>
+
+  <%# 値（下） %>
+  <div class="form-control">
+    <%= material.unit_for_product.presence || no_setting %>
+  </div>
+</div>
+
+<%# 商品単位あたりの重量 %>
+<div class="mb-3">
+  <%# 項目名（上） %>
+  <label class="form-label"><%= material_class.human_attribute_name(:unit_weight_for_product) %></label>
+
+  <%# 値（下） %>
+  <div class="form-control">
+    <%= material.unit_weight_for_product ? number_with_precision(material.unit_weight_for_product, precision: 3) : no_setting %>
+  </div>
+</div>
+
+<%# 発注単位 %>
+<div class="mb-3">
+  <%# 項目名（上） %>
+  <label class="form-label"><%= material_class.human_attribute_name(:unit_for_order) %></label>
+
+  <%# 値（下） %>
+  <div class="form-control">
+    <%= material.unit_for_order.presence || no_setting %>
+  </div>
+</div>
+
+<%# 発注単位あたりの重量 %>
+<div class="mb-3">
+  <%# 項目名（上） %>
+  <label class="form-label"><%= material_class.human_attribute_name(:unit_weight_for_order) %></label>
+
+  <%# 値（下） %>
+  <div class="form-control">
+    <%= material.unit_weight_for_order ? number_with_precision(material.unit_weight_for_order, precision: 3) : no_setting %>
+  </div>
+</div>
+
+<%# カテゴリー %>
+<% if material.category.present? %>
+  <div class="mb-3">
+    <%# 項目名（上） %>
+    <label class="form-label"><%= material_class.human_attribute_name(:category) %></label>
+
+    <%# 値（下） %>
+    <div class="form-control">
+      <%= material.category.name.presence || no_setting %>
+    </div>
+  </div>
+<% end %>
