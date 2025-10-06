@@ -3,5 +3,10 @@
     new_path: new_material_path,
     new_resource_name: Material.model_name.human do %>
 
+    <%# 共有検索フォームにcategory_idを渡す %>
+    <%= render 'shared/search_form',
+    form_path: materials_path,
+    search_target: :category_id %>
+
   <%= render 'material_table', materials: @materials %>
 <% end %>

@@ -3,8 +3,8 @@
     new_path: new_category_path,
     new_resource_name: Category.model_name.human do %>
 
-  <%# 検索フォームを呼び出し %>
-  <%= render 'search_form' %>
+  <%# 共有パーシャルを呼び出し、ローカル変数として categories_path を渡す %>
+  <%= render 'shared/search_form', form_path: categories_path, search_target: :category_type  %>
 
   <%# ローカル変数 categories に @categories の値を渡す %>
   <%= render 'category_table', categories: @categories %>
