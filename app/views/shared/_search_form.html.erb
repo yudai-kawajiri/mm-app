@@ -1,5 +1,5 @@
-<%# tagを置き換え %>
-<%= form_with url: categories_path,
+<%# 検索フォームの送信先URL (form_path) を呼び出し元からローカル変数として受け取る %>
+<%= form_with url: form_path,
                     method: :get,
                     local: true,
                     class: "mb-3" do |f| %>
@@ -8,7 +8,7 @@
   <div class="d-flex flex-row align-items-center">
     <%# mapで配列化してhumanizeで翻訳する→ユーザーとシステムの差別化 %>
     <div class="p-1" style="min-width: 200px;" >
-      <%= f.select :Category_type,
+      <%= f.select :category_type,
           options_for_select(
             Category.category_types.keys.map { |k| [k.humanize, k ] },
             params[:category_type]
@@ -28,9 +28,9 @@
         <%# 右にぴったりくっつける %>
         <div class="input-group-append" >
           <%= f.submit "検索", class: "btn btn-primary" %>
-          <%# クリアボタンの表示条件も q または category_type がある場合に変更 %>
+          <%# クリアボタンのリンク先も変更 %>
           <% if params[:q].present? || params[:category_type].present? %>
-            <%= link_to "クリア", categories_path,  class: "btn btn-outline-secondary" %>
+            <%= link_to "クリア", form_path,  class: "btn btn-outline-secondary" %>
           <% end %>
         </div>
       </div>
