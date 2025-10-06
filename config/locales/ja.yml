@@ -42,6 +42,19 @@ ja:
     edit:
       title: "%{material_name} - 編集 "
 
+  # 汎用的なテキストは ja: 直下  にまとめる
+  common:
+    search: "検索"
+    clear: "クリア"
+    action: "アクション" # helpersから移動
+
+  search:
+    placeholders:
+      select_type: "種別を選択"
+      select_category: "カテゴリーを選択"
+      enter_name: "名前を入力"
+
+  # ヘルパーメソッドで使用されるテキストをまとめる
   helpers:
     no_setting: "未設定"
     submit:
@@ -50,13 +63,10 @@ ja:
       update: "更新"
       destroy: "削除"
 
-
-    action: "アクション"
-
     confirm:
       destroy: "本当にこの%{resource}を削除してもよろしいですか？"
 
-    link: # リンクのテキストを追加
+    link:
       back: "戻る"
       edit: "編集"
       show: "詳細"
@@ -87,8 +97,6 @@ ja:
     sessions:
       new:
         title: "ログイン"
-        sign_in: "ログイン"
-        submit: "ログイン"
       signed_in: "ログインしました"
       signed_out: "ログアウトしました"
       sign_out: "ログアウト"
@@ -167,7 +175,7 @@ ja:
           product: "商品"
           plan: "計画"
 
-      material: # 原材料の属性定義を追加
+      material:
         name: "原材料名"
         unit_for_product: "商品単位"
         unit_weight_for_product: "重量（商品単位）"

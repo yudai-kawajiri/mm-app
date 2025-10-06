@@ -17,7 +17,7 @@
               Category.category_types.keys.map { |k| [k.humanize, k ] },
               params[:category_type]
             ),
-            { include_blank: "種別を選択" },
+            { include_blank: t('search.placeholders.select_type') },
             { class: "form-control custom-select" } %>
       <%#カテゴリー管理以外での検索機能 %>
       <% elsif search_target == :category_id %>
@@ -28,7 +28,7 @@
             :name,
             params[:category_id]
           ),
-          { include_blank: "カテゴリーを選択" },
+          { include_blank: t('search.placeholders.select_category') },
           { class: "form-control custom-select" } %>
       <% end %>
 
@@ -42,13 +42,13 @@
         <%= f.text_field :q,
           value: params[:q],
           class: "form-control",
-          placeholder: "名前を入力" %>
+          placeholder: t('search.placeholders.enter_name') %>
         <%# 右にぴったりくっつける %>
         <div class="input-group-append" >
-          <%= f.submit "検索", class: "btn btn-primary" %>
+          <%= f.submit t('common.search'), class: "btn btn-primary" %>
           <%# クリアボタンのリンク先も変更 %>
           <% if params[:q].present? || params[:category_type].present? || params[:category_id].present? %>
-            <%= link_to "クリア", form_path,  class: "btn btn-outline-secondary" %>
+            <%= link_to t('common.clear'), form_path,  class: "btn btn-outline-secondary" %>
           <% end %>
         </div>
       </div>
