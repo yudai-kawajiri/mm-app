@@ -1,4 +1,6 @@
 class Category < ApplicationRecord
+  # 名前検索スコープを組み込み
+  include NameSearchable
   # データベースには 0, 1, 2 が保存されるが、コードでは :material, :product, :plan で扱う
   enum :category_type, { material: 0, product: 1, plan: 2 }
   # ユーザーとの関連付け
@@ -9,10 +11,4 @@ class Category < ApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :user_id }
   # カテゴリ分類が空欄でないことを要求
   validates :category_type, presence: true
-
-  scope :search_by_name, ->(query) {
-    if query.present?
-      where("name ILIKE ?", "%#{sanitize_sql_like(query)}%")
-    end
-  }
 end
