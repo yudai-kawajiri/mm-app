@@ -1,4 +1,4 @@
-aclass Category < ApplicationRecord
+class Category < ApplicationRecord
   # 名前検索スコープを組み込み
   include NameSearchable
   # データベースには 0, 1, 2 が保存されるが、コードでは :material, :product, :plan で扱う
