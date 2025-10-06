@@ -26,7 +26,8 @@ class CategoriesController < AuthenticatedController
       redirect_to categories_path, notice: t('flash_messages.create.success', resource: Category.model_name.human, name: @category.name)
     else
       flash.now[:alert] = t('flash_messages.create.failure', resource: Category.model_name.human)
-      render :new
+      # ステータスコード 422 を明示的に指定
+    render :new, status: :unprocessable_entity
     end
   end
 
@@ -39,7 +40,8 @@ class CategoriesController < AuthenticatedController
       redirect_to categories_path, notice: t('flash_messages.update.success', resource: Category.model_name.human, name: @category.name)
     else
       flash.now[:alert] = t('flash_messages.update.failure', resource: Category.model_name.human)
-      render :edit
+      # ステータスコード 422 を明示的に指定
+      render :edit, status: :unprocessable_entity
     end
   end
 
