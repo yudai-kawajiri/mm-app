@@ -11,14 +11,15 @@
     <% categories.each do |category| %>
       <tr>
         <td><%= category.name %></td>
-        <td><%= category.category_type %></td>
+        <%# category_type_i18n メソッドを呼び出す %>
+        <td><%= category.category_type_i18n %></td>
         <td>
           <%# 詳細画面がないため、編集と削除アクションを配置 %>
           <%= link_to t('helpers.link.edit'), edit_category_path(category) %>
 
-          <%= button_to "削除", category_path(category),
+          <%= button_to t('helpers.link.destroy'), category_path(category),
               method: :delete,
-              data: { turbo_confirm: "本当に削除しますか？" },
+              data: { turbo_confirm: t('helpers.confirm.destroy'), resource: Category.model_name.human },
               class: "btn btn-danger btn-sm",
               form: { style: "display: inline-block;" } %>
         </td>
