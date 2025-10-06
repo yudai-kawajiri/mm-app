@@ -1,17 +1,11 @@
 class MaterialsController <  AuthenticatedController
   before_action :set_material, only: [:show, :edit, :update, :destroy]
+
   def index
-    @materials = Material.all
-
-    # 名前検索の適用
-    if search_params[:q].present?
-      @materials = @materials.search_by_name(search_params[:q])
-    end
-
-    if search_params[:category_id].present?
-      @materials = @materials.filter_by_category_id(search_params[:category_id])
-    end
-
+    @materials = current_user.materials
+                              # 記載方法の短縮
+                              .search_by_name(search_params[:q])
+                              .filter_by_category_id(search_params[:category_id])
   end
 
   def show
