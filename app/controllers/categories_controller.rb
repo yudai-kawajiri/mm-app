@@ -3,8 +3,8 @@ class CategoriesController < AuthenticatedController
   before_action :set_category, only: [:edit, :update, :destroy]
 
   def index
-    # 複数形注意。昇順に並べます。
-    @categories = current_user.categories.order(name: :asc)
+    # モジュールにソート責任を移譲
+    @categories = current_user.categories
     # モデル層に検索を指示し、結果をフィルタリング
     @categories = @categories.search_by_name(search_params[:q])
     # カテゴリ種別による絞り込みの適用
