@@ -1,14 +1,18 @@
 class CategoriesController < AuthenticatedController
+  # ページネーションを使用
+  include PaginationConcern
   # privateメソッドの set_category を、edit, update, destroy アクションの前に実行する
   before_action :set_category, only: [:edit, :update, :destroy]
 
   def index
     # モジュールにソート責任を移譲
-    @categories = current_user.categories
+    @categories = apply_pagination(
+      current_user.categories
                               # モデル層に検索を指示し、結果をフィルタリング
                               .search_by_name(search_params[:q])
                               # カテゴリ種別による絞り込みをモジュールから
                               .filter_by_category_type(search_params[:category_type])
+    )
 
     # 検索結果のフィードバック表示のため、検索結果をビューに渡す
     @search_term = search_params[:q]

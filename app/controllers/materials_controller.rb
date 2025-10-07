@@ -1,10 +1,13 @@
 class MaterialsController <  AuthenticatedController
+  # ページネーションを使用
+  include PaginationConcern
   before_action :set_material, only: [:show, :edit, :update, :destroy]
   def index
-    @materials = current_user.materials
+    @materials = apply_pagination(current_user.materials
                               # 記載方法の短縮
                               .search_by_name(search_params[:q])
                               .filter_by_category_id(search_params[:category_id])
+    )
 
   end
 
