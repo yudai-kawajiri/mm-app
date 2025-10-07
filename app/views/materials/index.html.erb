@@ -10,3 +10,6 @@
 
   <%= render 'material_table', materials: @materials %>
 <% end %>
+
+<%# ページネーション設定 %>
+<%= paginate @materials, theme: 'bootstrap-5' %>
