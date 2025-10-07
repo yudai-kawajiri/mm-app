@@ -1,8 +1,8 @@
 source "https://rubygems.org"
 
-# Rails本体と基盤となる主要Gemのグループ
+# 主要グループ
 
-# Active Model has_secure_passwordを使用する場合に必要 (今回はDeviseを使用するためコメントアウト維持)
+# Active Model has_secure_passwordを使用する場合に必要 (今回はDeviseを使用するためコメントアウト)
 # gem "bcrypt", "~> 3.1.7"
 
 # キャッシュを通じて起動時間を短縮（config/boot.rbで必要）
@@ -26,6 +26,12 @@ gem "jsbundling-rails"
 
 # DockerコンテナとしてデプロイするためのGem [https://kamal-deploy.org]
 gem "kamal", require: false
+
+# ページネーション機能を提供するGem [https://github.com/kaminari/kaminari]
+gem 'kaminari', '1.2.2'
+
+# KaminariのBootstrap5対応ビューテンプレート [https://github.com/bootstrap-ruby/bootstrap_form]
+gem 'bootstrap5-kaminari-views'
 
 # データベースとしてPostgreSQLを使用するためのGem
 gem "pg", "~> 1.1"
