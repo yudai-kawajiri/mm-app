@@ -9,3 +9,8 @@
   <%# ローカル変数 categories に @categories の値を渡す %>
   <%= render 'category_table', categories: @categories %>
 <% end %>
+
+<%# ページネーション設定 %>
+<%= paginate @categories, theme: 'bootstrap-5' %>
+
+
