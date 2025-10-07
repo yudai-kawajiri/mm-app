@@ -25,7 +25,8 @@ module NameSearchable
     # カテゴリー種別による絞り込みのスコープ
     scope :filter_by_category_type, ->(category_type) do
       # category_type が存在する場合のみ絞り込み適用
-      where(category_type: categories_type) if categories_type.present?
+      # タイポ修正
+      where(category_type: category_type) if category_type.present?
     end
   end
 end
