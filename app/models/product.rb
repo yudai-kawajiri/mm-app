@@ -2,6 +2,10 @@ class Product < ApplicationRecord
   # 名前検索スコープを組み込み
   include NameSearchable
 
+  # データベースに追加したstatusカラムをenumとして定義
+  # 0:draft (下書き) , 1: active (販売中), 2:  (販売停止)
+  enum status: {  draft: 1, active: 0, stopped: 2 }
+
   # 多対1
   belongs_to :user
   belongs_to :category
