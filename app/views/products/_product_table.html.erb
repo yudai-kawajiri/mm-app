@@ -2,6 +2,7 @@
   <thead class="table-light">
     <tr>
     <%# Product.human_attribute_name を利用して属性名を表示 %>
+    <th><%= Product.human_attribute_name(:image) %></th>
     <th><%= Product.human_attribute_name(:category_id) %></th>
     <th><%= Product.human_attribute_name(:item_number) %></th>
     <th><%= Product.human_attribute_name(:name) %></th>
@@ -12,7 +13,16 @@
   <tbody>
   <% products.each do |product| %>
     <tr>
-      <%# カテゴリ名 %>
+      <%# 属性名 %>
+      <%# 画像があればリサイズして表示 %>
+      <td>
+        <% if product.image.attached? %>
+          <%= image_tag product.image.variant(resize_to_limit: [50, 50]),
+                        class: "img-thumbnail"%>
+        <% else %>
+          -
+        <% end %>
+      </td>
       <td><%= product.category.name %></td>
       <td><%= product.item_number %></td>
       <td><%= product.name %></td>

@@ -7,7 +7,9 @@
 <%# resource: モデルインスタンス, back_path: 戻り先パス をローカル変数として受け取る %>
 <div id="<%= dom_id(resource, :form) %>">
 
-  <%= form_with(model: resource) do |f| %>
+  <%= form_with(model: resource,
+                local: true,
+                **(defined?(form_options) ? form_options : {})) do |f| %>
 
     <%= render 'shared/error_messages', model: f.object %>
 

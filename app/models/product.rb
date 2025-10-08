@@ -1,4 +1,7 @@
 class Product < ApplicationRecord
+  # 名前検索スコープを組み込み
+  include NameSearchable
+
   # 多対1
   belongs_to :user
   belongs_to :category
@@ -8,6 +11,9 @@ class Product < ApplicationRecord
 
   # 多対多
   has_many :materials, through: :product_materials
+
+  # 1対1で画像を紐づけ
+  has_one_attached :image
 
   # バリデーション
   validates :name, presence: true

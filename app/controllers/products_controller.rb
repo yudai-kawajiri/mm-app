@@ -1,7 +1,11 @@
 class ProductsController < AuthenticatedController
+  include PaginationConcern
 
   def index
-    @products = current_user.products.all
+    @products =  apply_pagination(current_user.products
+                              .search_by_name(search_params[:q])
+                              .filter_by_category_id(search_params[:category_id])
+    )
   end
 
   def new
@@ -14,9 +18,11 @@ class ProductsController < AuthenticatedController
     @product = current_user.products.build(product_params)
     # 詳細画面に遷移（レシピ登録へ）
     if @product.save
+      flash[:notice] = t('flash_messages.create.success', resource: Product.model_name.human, name: @product.name)
       redirect_to @product
     else
-      render :new
+      flash.now[:alert] = t('flash_messages.create.failure', resource: Product.model_name.human)
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -34,7 +40,12 @@ class ProductsController < AuthenticatedController
       :item_number,
       :price,
       :category_id,
+      :image
   )
+  end
+
+  def search_params
+    params.permit(:q, :category_id)
   end
 
 end
