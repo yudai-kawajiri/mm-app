@@ -4,9 +4,11 @@ class Material < ApplicationRecord
   belongs_to :user
   belongs_to :category
 
-  validates :category_id, presence: true
+  # 多対多
+  has_many :products, through: :product_materials
 
   # 各バリデーションを設定
+  validates :category_id, presence: true
   validates :name, presence: true
   validates :unit_for_product, presence: true
   validates :unit_for_order, presence: true

@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get "products/index"
+  get "products/new"
+  get "products/show"
+  get "products/edit"
 
   # controllersオプションを追加し、RegistrationsControllerを指定
   devise_for :users, controllers: {
@@ -22,6 +26,9 @@ Rails.application.routes.draw do
   # showアクションのみを除外
   resources :categories, except: [:show]
 
-  # Material のルーティング
+  # Materialのルーティング
   resources :materials
+
+  # Productのルーティング
+  resources :products
 end
