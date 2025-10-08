@@ -1,0 +1,25 @@
+<table class="table mt-4">
+  <thead class="table-light">
+    <tr>
+    <%# Product.human_attribute_name を利用して属性名を表示 %>
+    <th><%= Product.human_attribute_name(:category_id) %></th>
+    <th><%= Product.human_attribute_name(:item_number) %></th>
+    <th><%= Product.human_attribute_name(:name) %></th>
+    <th><%= Product.human_attribute_name(:price) %></th>
+    <th><%= t('common.action') %></th>
+  </tr>
+</thead>
+  <tbody>
+  <% products.each do |product| %>
+    <tr>
+      <%# カテゴリ名 %>
+      <td><%= product.category.name %></td>
+      <td><%= product.item_number %></td>
+      <td><%= product.name %></td>
+      <%# 金額表示ヘルパーを使用 %>
+      <td><%= number_to_currency(product.price) %></td>
+      <td><%= link_to t('helpers.link.show'), product_path(product)%></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
