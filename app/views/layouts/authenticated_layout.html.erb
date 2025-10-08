@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <%# 1. タイトル、CSRFタグ、CSSを戻す！ (必須) %>
+    <%# タイトル、CSRFタグ、CSSを戻す %>
     <title>
       <%= content_for?(:page_title) ? "#{yield(:page_title)} | #{t('application_name')}" : t('application_name') %>
     </title>
@@ -17,7 +17,7 @@
   <body>
     <%# フラッシュメッセージは yield の外に %>
     <div class="container-fluid pt-3">
-      <%# 💡 閉じるボタン付きのAlertコンポーネントに変更 %>
+      <%# 閉じるボタン付きのAlertコンポーネントに変更 %>
       <% if notice %>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
           <%= notice %>

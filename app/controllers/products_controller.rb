@@ -18,8 +18,10 @@ class ProductsController < AuthenticatedController
     @product = current_user.products.build(product_params)
     # 詳細画面に遷移（レシピ登録へ）
     if @product.save
+      flash[:notice] = t('flash_messages.create.success', resource: Product.model_name.human, name: @product.name)
       redirect_to @product
     else
+      flash.now[:alert] = t('flash_messages.create.failure', resource: Product.model_name.human)
       render :new
     end
   end
