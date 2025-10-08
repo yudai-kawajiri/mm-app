@@ -21,6 +21,7 @@ ja:
       dashboard: "ダッシュボード"
       category_management: "カテゴリー管理"
       material_management: "原材料管理"
+      product_management: "商品管理"
       account_settings: "アカウント設定"
     welcome_message: "ようこそ！ %{name} さんのダッシュボード"
 
@@ -41,6 +42,12 @@ ja:
       title: "%{material_name} - 詳細 "
     edit:
       title: "%{material_name} - 編集 "
+
+  products:
+    new:
+      title: "商品登録"
+    index:
+      title: "商品一覧"
 
   # 汎用的なテキストは ja: 直下  にまとめる
   common:
@@ -158,6 +165,7 @@ ja:
       user: "アカウント"
       category: "カテゴリー"
       material: "原材料"
+      product: "商品"
 
     attributes:
       user:
@@ -183,3 +191,11 @@ ja:
         unit_weight_for_order: "重量（発注単位）"
         category_id: "カテゴリー"
         category: "カテゴリー"
+
+      product:
+        name: "商品名"
+        item_number: "品番"
+        price: "売価"
+        category_id: "カテゴリー"
+        category: "カテゴリー"
+        image: "画像"

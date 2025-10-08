@@ -22,7 +22,7 @@ class ProductsController < AuthenticatedController
       redirect_to @product
     else
       flash.now[:alert] = t('flash_messages.create.failure', resource: Product.model_name.human)
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 

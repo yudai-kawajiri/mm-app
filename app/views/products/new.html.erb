@@ -1,7 +1,7 @@
 <%# フォームラッパーにローカル変数を渡し、フォームビルダーオブジェクトが生成 %>
 <%#  orm_wrappeで生成したfをここでproduct_fieldsに渡す %>
 <%= render 'shared/form_wrapper',
-    title: t('title'),
+    title: t('.title'),
     resource: @product,
     back_path: products_path,
     form_options: { multipart: true } do |f| %>
