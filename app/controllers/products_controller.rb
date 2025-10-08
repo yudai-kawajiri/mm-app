@@ -34,6 +34,7 @@ class ProductsController < AuthenticatedController
       :item_number,
       :price,
       :category_id,
+      :image
   )
   end
 
