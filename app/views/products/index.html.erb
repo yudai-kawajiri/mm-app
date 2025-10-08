@@ -3,6 +3,11 @@
             title: t('.title'),
             new_path: new_product_path do %>
 
+    <%# 共有検索フォームにcategory_idを渡す %>
+    <%= render 'shared/search_form',
+    form_path: products_path,
+    search_target: :category_id %>
+
   <%= render 'product_table', products: @products %>
 
 <% end %>

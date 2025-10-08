@@ -1,7 +1,11 @@
 class ProductsController < AuthenticatedController
+  include PaginationConcern
 
   def index
-    @products = current_user.products.all
+    @products =  apply_pagination(current_user.products
+                              .search_by_name(search_params[:q])
+                              .filter_by_category_id(search_params[:category_id])
+    )
   end
 
   def new
@@ -36,6 +40,10 @@ class ProductsController < AuthenticatedController
       :category_id,
       :image
   )
+  end
+
+  def search_params
+    params.permit(:q, :category_id)
   end
 
 end
