@@ -3,7 +3,8 @@
 <%= render 'shared/form_wrapper',
     title: t('title'),
     resource: @product,
-    back_path: products_path do |f| %>
+    back_path: products_path,
+    form_options: { multipart: true } do |f| %>
 
   <%= render 'product_fields', f: f %>
 <% end %>
