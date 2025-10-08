@@ -1,5 +1,6 @@
 
 
+<% if materials.any? %>
 <table class ="table mt-4">
 <%# 後でカテゴリー別で検索して表示する%>
   <thead class= "table-light">
@@ -15,15 +16,16 @@
   </thead>
   <tbody>
     <% materials.each do |material| %>
-    <tr>
-      <td><%= material.category.name %></td>
-      <td><%= material.name %></td>
-      <td><%= material.unit_for_product %></td>
-      <%# 小数点以下3桁まで表示 %>
-      <td><%= number_with_precision(material.unit_weight_for_product, precision: 3) %></td>
-      <td><%= material.unit_for_order %></td>
-      <td><%= number_with_precision(material.unit_weight_for_order, precision: 3) %></td>
-      <td><%= link_to t('helpers.link.show'), material_path(material)%></td>
+      <tr>
+        <td><%= material.category.name %></td>
+        <td><%= material.name %></td>
+        <td><%= material.unit_for_product %></td>
+        <%# 小数点以下3桁まで表示 %>
+        <td><%= number_with_precision(material.unit_weight_for_product, precision: 3) %></td>
+        <td><%= material.unit_for_order %></td>
+        <td><%= number_with_precision(material.unit_weight_for_order, precision: 3) %></td>
+        <td><%= link_to t('helpers.link.show'), material_path(material)%></td>
+      <tr>
     <% end %>
   </tbody>
 </table>

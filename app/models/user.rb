@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_many :categories, dependent: :destroy
   has_many :materials, dependent: :destroy
+  has_many :products, dependent: :destroy
   # Deviseの認証モジュールを設定
   devise :database_authenticatable, :registerable,
         :recoverable, :rememberable, :validatable
