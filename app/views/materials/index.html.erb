@@ -1,7 +1,7 @@
 <%= render 'shared/resource_list',
-    title: t('.title'),
-    new_path: new_material_path,
-    new_resource_name: Material.model_name.human do %>
+            title: t('.title'),
+            new_path: new_material_path,
+            new_resource_name: Material.model_name.human do %>
 
     <%# 共有検索フォームにcategory_idを渡す %>
     <%= render 'shared/search_form',

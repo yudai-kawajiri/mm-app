@@ -1,2 +1,8 @@
-<h1>Products#index</h1>
-<p>Find me in app/views/products/index.html.erb</p>
+<%# Listラッパーにローカル変数をを渡す  %>
+<%= render 'shared/resource_list',
+            title: t('.title'),
+            new_path: new_product_path do %>
+
+  <%= render 'product_table', products: @products %>
+
+<% end %>
