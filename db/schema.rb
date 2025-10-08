@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_06_053853) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_08_011106) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -38,6 +38,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_053853) do
     t.index ["user_id"], name: "index_materials_on_user_id"
   end
 
+  create_table "product_materials", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "material_id", null: false
+    t.decimal "quantity", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["material_id"], name: "index_product_materials_on_material_id"
+    t.index ["product_id"], name: "index_product_materials_on_product_id"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "price", null: false
+    t.string "item_number", null: false
+    t.string "image_url"
+    t.bigint "user_id", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["user_id"], name: "index_products_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -54,4 +77,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_053853) do
   add_foreign_key "categories", "users"
   add_foreign_key "materials", "categories"
   add_foreign_key "materials", "users"
+  add_foreign_key "product_materials", "materials"
+  add_foreign_key "product_materials", "products"
+  add_foreign_key "products", "categories"
+  add_foreign_key "products", "users"
 end
