@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get "products/index"
+  get "products/new"
+  get "products/show"
+  get "products/edit"
 
   # controllersオプションを追加し、RegistrationsControllerを指定
   devise_for :users, controllers: {
