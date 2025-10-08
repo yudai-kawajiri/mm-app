@@ -48,6 +48,9 @@ gem "rails", "~> 8.0.3"
 # Active Storageの画像変換機能（variants）を使用する場合に必要
 # gem "image_processing", "~> 1.2"
 
+# MiniMagick本体のGemを追加
+gem "mini_magick"
+
 # Rails.cache, Active Job, Action Cableのためのデータベースバックアップアダプタ (Action Cable用)
 gem "solid_cable"
 
