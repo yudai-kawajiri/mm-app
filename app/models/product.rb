@@ -9,6 +9,9 @@ class Product < ApplicationRecord
   # 多対多
   has_many :materials, through: :product_materials
 
+  # 1対1で画像を紐づけ
+  has_one_attached :image
+
   # バリデーション
   validates :name, presence: true
   validates :item_number, presence: true, uniqueness: true
