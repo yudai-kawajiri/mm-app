@@ -104,8 +104,10 @@ ja:
     sessions:
       new:
         title: "ログイン"
+        submit: 'ログイン'
       signed_in: "ログインしました"
       signed_out: "ログアウトしました"
+      sign_in: "ログイン"
       sign_out: "ログアウト"
 
     confirmations:
