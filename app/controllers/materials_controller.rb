@@ -65,9 +65,9 @@ class MaterialsController <  AuthenticatedController
   # ストロングパラメータ設定
   def material_params
     params.require(:material).permit(
-    :name, :unit_for_product,
+    :name, :unit_for_product_id,
     :unit_weight_for_product,
-    :unit_for_order,
+    :unit_for_order_id,
     :unit_weight_for_order,
     :category_id
   )
