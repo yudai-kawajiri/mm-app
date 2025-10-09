@@ -2,21 +2,22 @@
 <table class="table mt-4">
   <thead class="table-light">
     <tr>
-      <th>単位名</th>
-      <th>分類</th>
-      <th>操作</th>
+      <th><%= Unit.human_attribute_name(:name) %></th>
+      <th><%= Unit.human_attribute_name(:category) %></th>
+      <th><%= t('common.action') %></th>
     </tr>
   </thead>
   <tbody>
     <% units.each do |unit| %>
       <tr>
         <td><%= unit.name %></td>
-        <td><%= unit.category %></td>
+        <td><%= unit.category_i18n %></td>
         <td>
-          <%= link_to '編集', edit_unit_path(unit) %>
+          <%= link_to t('helpers.link.edit'), edit_unit_path(unit) %>
 
-          <%= button_to '削除', unit_path(unit),
+          <%= button_to t('helpers.link.destroy'), unit_path(unit),
               method: :delete,
+              data: { turbo_confirm: t('helpers.confirm.destroy', resource: Unit.model_name.human) },
               class: "btn btn-danger btn-sm",
               form: { style: "display: inline-block;" } %>
         </td>

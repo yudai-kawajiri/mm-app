@@ -1,7 +1,18 @@
 class UnitsController < AuthenticatedController
+  include PaginationConcern
   before_action :set_unit, only: [:edit, :update, :destroy]
   def index
-    @units = current_user.units.all
+    # ページネーションと検索を適用
+    @units = apply_pagination(
+      current_user.units
+        # 単位名で検索
+        .search_by_name(search_params[:q])
+        # categoryで絞り込み
+        .filter_by_category(search_params[:category])
+    )
+
+    # 検索結果のフィードバック表示のため、検索クエリをビューに渡す
+    @search_term = search_params[:q]
   end
 
   def new
@@ -52,5 +63,11 @@ class UnitsController < AuthenticatedController
 
   def set_unit
     @unit = current_user.units.find(params[:id])
+  end
+
+  # 検索パラメーター専用のストロングパラメーターを定義
+  def search_params
+    # 単位名検索(q)とcategory種別による絞り込みを許可
+    params.permit(:q, :category)
   end
 end
