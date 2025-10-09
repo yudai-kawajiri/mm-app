@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_many :categories, dependent: :destroy
+  has_many :units, dependent: :destroy
   has_many :materials, dependent: :destroy
   has_many :products, dependent: :destroy
   # Deviseの認証モジュールを設定
