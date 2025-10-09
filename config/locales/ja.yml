@@ -20,6 +20,7 @@ ja:
       title: "メニュー"
       dashboard: "ダッシュボード"
       category_management: "カテゴリー管理"
+      unit_management: "単位管理"
       material_management: "原材料管理"
       product_management: "商品管理"
       account_settings: "アカウント設定"
@@ -32,6 +33,14 @@ ja:
       title: "カテゴリー編集"
     index:
       title: "カテゴリー一覧"
+
+  units:
+    new:
+      title: "単位登録"
+    edit:
+      title: "単位編集"
+    index:
+      title: "単位一覧"
 
   materials:
     new:
@@ -99,6 +108,9 @@ ja:
       confirmation: "と%{attribute}の入力が一致しません"
       invalid: "が正しくありません"
       not_found: "が見つかりません"
+      restrict_dependent_destroy:
+        # has_many の関連付けの場合
+        has_many: "%{record}で使用しているため、この%{model}を削除できません"
 
   devise:
     sessions:
@@ -166,6 +178,7 @@ ja:
     models:
       user: "アカウント"
       category: "カテゴリー"
+      unit: "単位"
       material: "原材料"
       product: "商品"
 
@@ -180,10 +193,12 @@ ja:
       category:
         name: "名称"
         category_type: "カテゴリー種別"
-        category_types:
-          material: "原材料"
-          product: "商品"
-          plan: "計画"
+
+      unit:
+        name: "単位名"
+        category: "カテゴリー"
+        materials_as_product_unit: "原材料（商品単位）"
+        materials_as_order_unit: "原材料（発注単位）"
 
       material:
         name: "原材料名"
@@ -193,6 +208,7 @@ ja:
         unit_weight_for_order: "重量（発注単位）"
         category_id: "カテゴリー"
         category: "カテゴリー"
+        description: "説明"
 
       product:
         name: "商品名"
@@ -201,3 +217,14 @@ ja:
         category_id: "カテゴリー"
         category: "カテゴリー"
         image: "画像"
+
+    enums:
+      category:
+        category_type:
+          material: "原材料"
+          product: "商品"
+          plan: "計画"
+      unit:
+        category:
+          production: "商品単位"
+          ordering: "発注単位"

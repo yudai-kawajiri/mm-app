@@ -4,7 +4,7 @@ one:
   name: MyString
   price: 1
   item_number: MyString
-  image_url: MyString
+  status: 1
   user: one
   category: one
 
@@ -12,6 +12,6 @@ two:
   name: MyString
   price: 1
   item_number: MyString
-  image_url: MyString
+  status: 1
   user: two
   category: two

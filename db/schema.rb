@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_08_094213) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_09_103255) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,15 +54,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_094213) do
 
   create_table "materials", force: :cascade do |t|
     t.string "name", null: false
-    t.string "unit_for_product", null: false
     t.decimal "unit_weight_for_product", precision: 10, scale: 3, null: false
-    t.string "unit_for_order", null: false
     t.decimal "unit_weight_for_order", precision: 10, scale: 3, null: false
     t.bigint "user_id", null: false
     t.bigint "category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "unit_for_order_id", null: false
+    t.text "description"
+    t.bigint "unit_for_product_id", null: false
     t.index ["category_id"], name: "index_materials_on_category_id"
+    t.index ["unit_for_order_id"], name: "index_materials_on_unit_for_order_id"
+    t.index ["unit_for_product_id"], name: "index_materials_on_unit_for_product_id"
     t.index ["user_id"], name: "index_materials_on_user_id"
   end
 
@@ -80,12 +83,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_094213) do
     t.string "name", null: false
     t.integer "price", null: false
     t.string "item_number", null: false
+    t.integer "status"
     t.bigint "user_id", null: false
     t.bigint "category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["user_id"], name: "index_products_on_user_id"
+  end
+
+  create_table "units", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "category", default: 0, null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_units_on_name", unique: true
+    t.index ["user_id"], name: "index_units_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -105,9 +120,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_094213) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "categories", "users"
   add_foreign_key "materials", "categories"
+  add_foreign_key "materials", "units", column: "unit_for_order_id"
+  add_foreign_key "materials", "units", column: "unit_for_product_id"
   add_foreign_key "materials", "users"
   add_foreign_key "product_materials", "materials"
   add_foreign_key "product_materials", "products"
   add_foreign_key "products", "categories"
   add_foreign_key "products", "users"
+  add_foreign_key "units", "users"
 end

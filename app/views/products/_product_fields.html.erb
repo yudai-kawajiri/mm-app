@@ -1,37 +1,59 @@
-<%# 画像 %>
-<div class="mb-3">
-  <%= f.label :image, '画像', class: "form-label" %>
-  <%= f.file_field :image, class: "form-control" %>
-</div>
+<div class="row">
+  <%# 左カラム (col-md-6) %>
+  <div class="col-md-6">
+    <%# 画像 %>
+    <div class="mb-4">
+      <%= f.label :image, '画像', class: "form-label" %>
+      <%= f.file_field :image, class: "form-control" %>
+    </div>
 
-<%# 製品名 %>
-<div class="mb-3">
-  <%= f.label :name, class: "form-label" %>
-  <%= f.text_field :name, class: "form-control" %>
-</div>
+    <%# 製品名 %>
+    <div class="mb-3">
+      <%= f.label :name, class: "form-label" %>
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
 
-<%# 品目番号 %>
-<div class="mb-3">
-  <%= f.label :item_number, class: "form-label" %>
-  <%= f.text_field :item_number, class: "form-control" %>
-</div>
+    <%# 品目番号 %>
+    <div class="mb-3">
+      <%= f.label :item_number, class: "form-label" %>
+      <%= f.text_field :item_number, class: "form-control" %>
+    </div>
 
-<%# 売価 %>
-<div class="mb-3">
-  <%= f.label :price, class: "form-label" %>
-  <div class="input-group">
-    <%= f.number_field :price, class: "form-control", step: 1, min: 0 %>
-    <span class="input-group-text">円</span>
+    <%# 売価 %>
+    <div class="mb-3">
+      <%= f.label :price, class: "form-label" %>
+      <div class="input-group">
+        <%= f.number_field :price, class: "form-control", step: 1, min: 0 %>
+        <span class="input-group-text">円</span>
+      </div>
+    </div>
+  </div>
+
+  <%# 右カラム (col-md-6) %>
+  <div class="col-md-6">
+    <%# カテゴリ %>
+    <div class="mb-3">
+      <%= f.label :category_id, class: "form-label" %>
+      <%= f.collection_select :category_id, current_user.categories,
+                                :id,
+                                :name,
+                                { prompt: "カテゴリを選択してください" },
+                                { class: "form-select" } %>
+    </div>
+
+    <%# ステータス (status) %>
+    <div class="mb-3">
+      <%= f.label :status, class: "form-label" %>
+      <%# Productモデルのenum定義を利用 %>
+      <%= f.select :status, Product.statuses.keys.map { |k| [k.capitalize, k] },
+                             { prompt: "ステータスを選択してください" },
+                             { class: "form-select" } %>
+    </div>
+
+    <%# 商品説明 (description) - 右側に大きく表示 %>
+    <div class="mb-3">
+      <%= f.label :description, class: "form-label" %>
+      <%= f.text_area :description, rows: 9, class: "form-control" %>
+    </div>
   </div>
 </div>
-
-<%# カテゴリ %>
-<div class="mb-3">
-  <%= f.label :category_id, class: "form-label" %>
-  <%= f.collection_select :category_id, current_user.categories,
-                          :id,
-                          :name,
-                          { prompt: "カテゴリを選択してください" },
-                          { class: "form-select" } %>
-</div>
-

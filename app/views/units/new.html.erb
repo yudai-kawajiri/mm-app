@@ -1,0 +1,9 @@
+<%# 共通ラッパーを使用してフォームを表示 %>
+<%= render 'shared/form_wrapper',
+    title: t('.title'),
+    resource: @unit,
+    back_path: units_path do |f| %>
+
+  <%# 単位の入力項目パーシャルを呼び出す %>
+  <%= render 'unit_fields', f: f %>
+<% end %>

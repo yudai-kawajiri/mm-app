@@ -1,0 +1,27 @@
+<%# units: ローカル変数として渡された単位のコレクション %>
+<table class="table mt-4">
+  <thead class="table-light">
+    <tr>
+      <th><%= Unit.human_attribute_name(:name) %></th>
+      <th><%= Unit.human_attribute_name(:category) %></th>
+      <th><%= t('common.action') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% units.each do |unit| %>
+      <tr>
+        <td><%= unit.name %></td>
+        <td><%= unit.category_i18n %></td>
+        <td>
+          <%= link_to t('helpers.link.edit'), edit_unit_path(unit) %>
+
+          <%= button_to t('helpers.link.destroy'), unit_path(unit),
+              method: :delete,
+              data: { turbo_confirm: t('helpers.confirm.destroy', resource: Unit.model_name.human) },
+              class: "btn btn-danger btn-sm",
+              form: { style: "display: inline-block;" } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
