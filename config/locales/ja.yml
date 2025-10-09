@@ -37,6 +37,8 @@ ja:
   units:
     new:
       title: "単位登録"
+    edit:
+      title: "単位編集"
     index:
       title: "単位一覧"
 
@@ -173,6 +175,7 @@ ja:
     models:
       user: "アカウント"
       category: "カテゴリー"
+      unit: "単位"
       material: "原材料"
       product: "商品"
 
