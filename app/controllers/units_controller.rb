@@ -3,6 +3,7 @@ class UnitsController < AuthenticatedController
   end
 
   def new
+    @unit = current_user.units.build
   end
 
   def create
