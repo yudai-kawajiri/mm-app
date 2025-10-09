@@ -2,70 +2,88 @@
 <% material_class = material.class %>
 <% no_setting = t('helpers.no_setting') %>
 
-<%# 名前 %>
-<div class="mb-3">
-  <%# 項目名（上） %>
-  <label class="form-label"><%= material_class.human_attribute_name(:name) %></label>
-
-  <%# 値（下） - 枠線が必要なため form-control を維持 %>
-  <div class="form-control">
-    <%= material.name.presence || no_setting %>
-  </div>
-</div>
-
-<%# 商品単位 %>
-<div class="mb-3">
-  <%# 項目名（上） %>
-  <label class="form-label"><%= material_class.human_attribute_name(:unit_for_product) %></label>
-
-  <%# 値（下） %>
-  <div class="form-control">
-    <%= material.unit_for_product.presence || no_setting %>
-  </div>
-</div>
-
-<%# 商品単位あたりの重量 %>
-<div class="mb-3">
-  <%# 項目名（上） %>
-  <label class="form-label"><%= material_class.human_attribute_name(:unit_weight_for_product) %></label>
-
-  <%# 値（下） %>
-  <div class="form-control">
-    <%= material.unit_weight_for_product ? number_with_precision(material.unit_weight_for_product, precision: 3) : no_setting %>
-  </div>
-</div>
-
-<%# 発注単位 %>
-<div class="mb-3">
-  <%# 項目名（上） %>
-  <label class="form-label"><%= material_class.human_attribute_name(:unit_for_order) %></label>
-
-  <%# 値（下） %>
-  <div class="form-control">
-    <%= material.unit_for_order.presence || no_setting %>
-  </div>
-</div>
-
-<%# 発注単位あたりの重量 %>
-<div class="mb-3">
-  <%# 項目名（上） %>
-  <label class="form-label"><%= material_class.human_attribute_name(:unit_weight_for_order) %></label>
-
-  <%# 値（下） %>
-  <div class="form-control">
-    <%= material.unit_weight_for_order ? number_with_precision(material.unit_weight_for_order, precision: 3) : no_setting %>
-  </div>
-</div>
-
-<%# カテゴリー %>
-<% if material.category.present? %>
-  <div class="mb-3">
-    <%# 項目名（上） %>
-    <label class="form-label"><%= material_class.human_attribute_name(:category) %></label>
-
-    <%# 値（下） %>
-    <div class="form-control">
-      <%= material.category.name.presence || no_setting %>
+<div class="row">
+  <%# 左カラム: 原材料名 (必須) %>
+  <div class="col-md-6">
+    <div class="mb-4">
+      <label class="form-label h5"><%= material_class.human_attribute_name(:name) %></label>
+      <%# NOT NULLなので、値が存在 %>
+      <div class="form-control form-control-lg">
+        <%= material.name %>
+      </div>
     </div>
   </div>
-<% end %>
+
+  <%# 右カラム: カテゴリー (nilの可能性あり) %>
+  <div class="col-md-6">
+    <div class="mb-4">
+      <label class="form-label h5"><%= material_class.human_attribute_name(:category) %></label>
+      <%# 関連オブジェクトはnilの可能性があるため、存在チェックが必要 %>
+      <div class="form-control form-control-lg">
+        <%# カテゴリーは必須ではない可能性があるため、存在チェック %>
+        <%= material.category.present? ? material.category.name : no_setting %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <%# 左カラム: 商品単位 (必須) %>
+  <div class="col-md-6">
+    <div class="mb-4">
+      <label class="form-label h5"><%= material_class.human_attribute_name(:unit_for_product) %></label>
+      <%# NOT NULLであり、.nameで単位名を表示 %>
+      <div class="form-control form-control-lg">
+        <%= material.unit_for_product.name %>
+      </div>
+    </div>
+  </div>
+
+  <%# 右カラム: 商品単位あたりの重量 (必須) %>
+  <div class="col-md-6">
+    <div class="mb-4">
+      <label class="form-label h5"><%= material_class.human_attribute_name(:unit_weight_for_product) %></label>
+      <%# NOT NULLだが、0判定対応のため三項演算子で対応 %>
+      <div class="form-control form-control-lg">
+        <%= material.unit_weight_for_product ? number_with_precision(material.unit_weight_for_product, precision: 3) : no_setting %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <%# 左カラム: 発注単位 (必須) %>
+  <div class="col-md-6">
+    <div class="mb-4">
+      <label class="form-label h5"><%= material_class.human_attribute_name(:unit_for_order) %></label>
+      <%# NOT NULLであり、.nameで単位名を表示 %>
+      <div class="form-control form-control-lg">
+        <%= material.unit_for_order.name %>
+      </div>
+    </div>
+  </div>
+
+  <%# 右カラム: 発注単位あたりの重量 (必須) %>
+  <div class="col-md-6">
+    <div class="mb-4">
+      <label class="form-label h5"><%= material_class.human_attribute_name(:unit_weight_for_order) %></label>
+      <%# NOT NULLだが、0判定対応のため三項演算子で対応 %>
+      <div class="form-control form-control-lg">
+        <%= material.unit_weight_for_order ? number_with_precision(material.unit_weight_for_order, precision: 3) : no_setting %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <%# 説明（Description） - 1行全体を使用 %>
+  <div class="col-md-12">
+    <div class="mb-4">
+      <label class="form-label h5"><%= material_class.human_attribute_name(:description) %></label>
+      <%# 説明欄はNULLを許容し、複数行表示のためsimple_formatを使用 %>
+      <div class="form-control form-control-lg" style="height: auto; min-height: 150px;">
+        <%= material.description&.present? ? simple_format(material.description) : no_setting %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -203,6 +203,7 @@ ja:
         unit_weight_for_order: "重量（発注単位）"
         category_id: "カテゴリー"
         category: "カテゴリー"
+        description: "説明"
 
       product:
         name: "商品名"

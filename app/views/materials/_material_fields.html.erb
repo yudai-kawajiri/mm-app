@@ -67,4 +67,16 @@
       <%= f.number_field :unit_weight_for_order, step: :any, class: "form-control form-control-lg" %>
     </div>
   </div>
+
+  <div class="row">
+  <%# 説明（Description） - 1行全体を使用 %>
+  <div class="col-md-12">
+    <div class="mb-4">
+      <%# 項目名 %>
+      <%= f.label :description, class: "form-label h5" %>
+
+      <%# f.text_area %>
+      <%= f.text_area :description, rows: 5, class: "form-control form-control-lg" %>
+    </div>
+  </div>
 </div>
