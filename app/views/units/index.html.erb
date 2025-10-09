@@ -1,0 +1,14 @@
+<%# 共有の resource_list パーシャルで画面を構成 %>
+<%= render 'shared/resource_list',
+    title: t('.title'),
+    # Unit のパスとモデル名を使用
+    new_path: new_unit_path,
+    new_resource_name: Unit.model_name.human do %>
+
+  <%# 検索フ ォーム %>
+
+  <%# ローカル変数 units に @units の値を渡す %>
+  <%= render 'unit_table', units: @units %>
+<% end %>
+
+<%# ページネーション設定 %>
