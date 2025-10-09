@@ -191,6 +191,10 @@ ja:
         name: "名称"
         category_type: "カテゴリー種別"
 
+      unit:
+        name: "単位名"
+        category: "カテゴリー"
+
       material:
         name: "原材料名"
         unit_for_product: "商品単位"
