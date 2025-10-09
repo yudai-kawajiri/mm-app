@@ -1,16 +1,26 @@
-<%# カテゴリ名 %>
-<div class="mb-3">
-  <%= f.label :name, class: "form-label" %>
-  <%= f.text_field :name, class: "form-control" %>
-</div>
+<div class="row">
+  <%# 左カラム : カテゴリー名 %>
+  <div class="col-md-6">
+    <div class="mb-4">
+      <%# ラベルに h5 クラス、入力欄に form-control-lg クラスを追加 %>
+      <%= f.label :name, class: "form-label h5" %>
+      <%= f.text_field :name, class: "form-control form-control-lg" %>
+    </div>
+  </div>
 
-<%# カテゴリ種別をメソッド仕様に修正%>
-<div class="mb-3">
-  <%= f.label :category_type, class: "form-label" %>
-  <%= f.select :category_type,
-      Category.category_types.keys.map { |k|
-        [I18n.t("activerecord.attributes.category.category_types.#{k}"), k]
-      },
-      { prompt: t('search.placeholders.select_type') },
-      class: "form-select" %>
+  <%# 右カラム: カテゴリータイプ %>
+  <div class="col-md-6">
+    <div class="mb-4">
+      <%# ラベルに h5 クラス、プルダウンに form-select-lg クラスを追加 %>
+      <%= f.label :category_type, class: "form-label h5" %>
+
+      <%# カテゴリ種別をメソッドで翻訳 (元のコードをそのまま利用) %>
+      <%= f.select :category_type,
+          Category.category_types.keys.map { |k|
+            [I18n.t("activerecord.attributes.category.category_types.#{k}"), k]
+          },
+          { prompt: t('search.placeholders.select_type') },
+          class: "form-select form-select-lg" %>
+    </div>
+  </div>
 </div>
