@@ -96,9 +96,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_025457) do
   create_table "units", force: :cascade do |t|
     t.string "name", null: false
     t.integer "category", default: 0, null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_units_on_name", unique: true
+    t.index ["user_id"], name: "index_units_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -125,4 +127,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_025457) do
   add_foreign_key "product_materials", "products"
   add_foreign_key "products", "categories"
   add_foreign_key "products", "users"
+  add_foreign_key "units", "users"
 end
