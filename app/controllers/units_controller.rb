@@ -29,7 +29,7 @@ class UnitsController < AuthenticatedController
     else
       flash.now[:alert] = t('flash_messages.create.failure',
                             resource: Unit.model_name.human)
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -49,12 +49,20 @@ class UnitsController < AuthenticatedController
   end
 
   def destroy
-    @unit.destroy
-    flash[:notice] = t('flash_messages.destroy.success',
-                      resource: Unit.model_name.human,
-                      name: @unit.name)
+    if @unit.destroy
+      flash[:notice] = t('flash_messages.destroy.success',
+                        resource: Unit.model_name.human,
+                        name: @unit.name)
+      redirect_to units_path
+    else
+    # flashにエラーメッセージをセット (リダイレクト後も保持される)
+    flash[:alert] = @unit.errors.full_messages.to_sentence
+
+    # 一覧画面へリダイレクト
     redirect_to units_path
+    end
   end
+
   private
 
   def unit_params

@@ -108,6 +108,9 @@ ja:
       confirmation: "と%{attribute}の入力が一致しません"
       invalid: "が正しくありません"
       not_found: "が見つかりません"
+      restrict_dependent_destroy:
+        # has_many の関連付けの場合
+        has_many: "%{record}で使用しているため、この%{model}を削除できません"
 
   devise:
     sessions:
@@ -194,6 +197,8 @@ ja:
       unit:
         name: "単位名"
         category: "カテゴリー"
+        materials_as_product_unit: "原材料（商品単位）"
+        materials_as_order_unit: "原材料（発注単位）"
 
       material:
         name: "原材料名"
@@ -221,5 +226,5 @@ ja:
           plan: "計画"
       unit:
         category:
-          production: "製造単位"
+          production: "商品単位"
           ordering: "発注単位"

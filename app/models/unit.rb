@@ -3,6 +3,18 @@ class Unit < ApplicationRecord
   include NameSearchable
   # Userとの関連付けを追加
   belongs_to :user
+
+  # この単位を参照している原材料がある場合、エラーメッセージをUnitオブジェクトに追加する
+  has_many :materials_as_product_unit,
+            class_name: 'Material',
+            foreign_key: 'unit_for_product_id',
+            dependent: :restrict_with_error
+
+  has_many :materials_as_order_unit,
+            class_name: 'Material',
+            foreign_key: 'unit_for_order_id',
+            dependent: :restrict_with_error
+
   # falseを追加したので、バリデーションも追加
   validates :name, presence: true
   validates :category, presence: true

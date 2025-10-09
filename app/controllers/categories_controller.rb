@@ -56,10 +56,14 @@ class CategoriesController < AuthenticatedController
   end
 
   def destroy
-    @category.destroy
-    redirect_to categories_url, notice: t('flash_messages.destroy.success',
+    if @category.destroy
+      redirect_to categories_url, notice: t('flash_messages.destroy.success',
                                           resource: Category.model_name.human,
                                           name: @category.name)
+    else
+      flash[:alert] = @category.errors.full_messages.to_sentence
+      redirect_to categories_url
+    end
   end
 
 
