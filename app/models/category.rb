@@ -15,6 +15,6 @@ class Category < ApplicationRecord
   # selfでメソッドを呼び出しているインスタンスのcategory_typeを翻訳
   def category_type_i18n
     return '' if category_type.blank? # 未入力は空文字で対応
-    I18n.t("activerecord.attributes.category.category_types.#{self.category_type}")
+    I18n.t("activerecord.enums.category.category_type.#{self.category_type}")
   end
 end

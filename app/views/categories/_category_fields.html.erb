@@ -17,7 +17,7 @@
       <%# カテゴリ種別をメソッドで翻訳 (元のコードをそのまま利用) %>
       <%= f.select :category_type,
           Category.category_types.keys.map { |k|
-            [I18n.t("activerecord.attributes.category.category_types.#{k}"), k]
+            [I18n.t("activerecord.enums.category.category_type.#{k}"), k]
           },
           { prompt: t('search.placeholders.select_type') },
           class: "form-select form-select-lg" %>
