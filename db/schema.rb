@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_09_025457) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_09_103255) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -60,12 +60,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_025457) do
     t.bigint "category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "basic_unit_id", null: false
-    t.bigint "ordering_unit_id", null: false
+    t.bigint "unit_for_order_id", null: false
     t.text "description"
-    t.index ["basic_unit_id"], name: "index_materials_on_basic_unit_id"
+    t.bigint "unit_for_product_id", null: false
     t.index ["category_id"], name: "index_materials_on_category_id"
-    t.index ["ordering_unit_id"], name: "index_materials_on_ordering_unit_id"
+    t.index ["unit_for_order_id"], name: "index_materials_on_unit_for_order_id"
+    t.index ["unit_for_product_id"], name: "index_materials_on_unit_for_product_id"
     t.index ["user_id"], name: "index_materials_on_user_id"
   end
 
@@ -120,8 +120,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_025457) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "categories", "users"
   add_foreign_key "materials", "categories"
-  add_foreign_key "materials", "units", column: "basic_unit_id"
-  add_foreign_key "materials", "units", column: "ordering_unit_id"
+  add_foreign_key "materials", "units", column: "unit_for_order_id"
+  add_foreign_key "materials", "units", column: "unit_for_product_id"
   add_foreign_key "materials", "users"
   add_foreign_key "product_materials", "materials"
   add_foreign_key "product_materials", "products"

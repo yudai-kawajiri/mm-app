@@ -4,14 +4,22 @@ class Material < ApplicationRecord
   belongs_to :user
   belongs_to :category
 
+  # unit_for_product_id カラムを参照し、Unitモデルであることを明示
+  belongs_to :unit_for_product, class_name: 'Unit'
+
+  # unit_for_order_id カラムを参照し、Unitモデルであることを明示
+  belongs_to :unit_for_order, class_name: 'Unit'
+
   # 多対多
   has_many :products, through: :product_materials
 
   # 各バリデーションを設定
   validates :category_id, presence: true
   validates :name, presence: true
-  validates :unit_for_product, presence: true
-  validates :unit_for_order, presence: true
+
+  # 関連オブジェクトではなく外部キーIDに対するバリデーションに変更
+  validates :unit_for_product_id, presence: true
+  validates :unit_for_order_id, presence: true
 
   # 数値項目は必須かつ0より大きい値のみ許可（エラー回避）
   validates :unit_weight_for_product,
