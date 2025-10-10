@@ -1,12 +1,31 @@
-<%# ページタイトルはラッパー(_resource_details)に任せるため、content_for を削除 %>
+<% material_class = @material.class %>
+<% resource = @material %>
+<% title = t('.title', material_name: @material.name) %>
 
+<%# 共通ラッパーの代わりに、ここでページタイトルを定義 %>
+<%= content_for :page_title, title %>
+<div class="d-flex justify-content-between al">
+  <h2><%= title %></h2>
+</div>
 
-<%# 共通詳細ラッパーを呼び出し、ブロックで固有の詳細項目を挿入 %>
-<%= render 'shared/resource_details',
-    # ページタイトルとメインタイトルを翻訳ファイル(.title)から取得するよう変更
-    title: t('.title', material_name: @material.name),
-    resource: @material do %>
+<%# カード構造で全体を囲む (共通ラッパーの役割を代替) %>
+<div class="card p-4 mb-4">
 
-  <%# Material固有の詳細項目を挿入 %>
+  <%# 詳細項目を挿入: _material_details.html.erb を呼び出し %>
   <%= render 'material_details', material: @material %>
-<% end %>
+
+  <%# アクションボタン (共通ラッパーの役割を代替) %>
+  <div class="actions mt-4">
+    <%# 編集 %>
+    <%= link_to t('helpers.submit.edit'), url_for([:edit, resource]), class: "btn btn-primary me-2" %>
+
+    <%# 戻る %>
+    <%= link_to t('helpers.link.back'), url_for(resource.class), class: "btn btn-outline-secondary me-2" %>
+
+    <%# 削除 %>
+    <%= button_to t('helpers.link.destroy'), resource,
+        method: :delete,
+        data: { turbo_confirm: t('confirm.destroy') },
+        class: 'btn btn-danger' %>
+  </div>
+</div>
