@@ -57,6 +57,8 @@ ja:
       title: "商品登録"
     index:
       title: "商品一覧"
+    show:
+      title: "商品詳細"
 
   # 汎用的なテキストは ja: 直下  にまとめる
   common:

@@ -1,6 +1,7 @@
 class ProductMaterial < ApplicationRecord
   belongs_to :product
   belongs_to :material
+  belongs_to :unit # ネストしたリソースで使用
 
   # 小数点も含めて設定
   validates :quantity,

@@ -1,4 +1,6 @@
 class Product < ApplicationRecord
+  # 名前検索スコープを組み込み
+  include NameSearchable
 
   # 0: 下書き (初期値として最も安全) 1: 販売中 (公開状態) 2: 販売中止
   enum :status, { draft: 0, published: 1, discontinued: 2 }
@@ -9,6 +11,13 @@ class Product < ApplicationRecord
 
   has_many :product_materials, dependent: :destroy
   has_many :materials, through: :product_materials
+
+  # ネストされたフォームから product_materials を受け入れる設定
+  # allow_destroy: true で、削除フラグによるレコード削除を許可
+  accepts_nested_attributes_for :product_materials, allow_destroy: true
+
+  #消えていたActive Storageを再追記
+  has_one_attached :image
 
   # バリデーション
   validates :name, presence: true

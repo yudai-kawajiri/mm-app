@@ -1,30 +1,47 @@
-<%# 呼び出し元から title を受け取る %>
+<%# locals で渡された title, resource, content_left_title/edit_path, content_right_title/edit_path をそのまま使用します %>
 <%= content_for :page_title, title %>
-<div class="d-flex justify-content-between al">
-  <h2><%= title %></h2>
+
+<%#  ページタイトルと上部アクションボタン %>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2><%= title %></h2>
+  </div>
+
+  <div class="actions-top">
+    <%= link_to t('helpers.link.back', default: '戻る'), url_for(resource.class), class: "btn btn-secondary" %>
+  </div>
 </div>
 
-<%# resource: モデルインスタンス（@material, @categoryなど）をローカル変数として受け取る %>
-<% resource_class = resource.class %>
+<%# 2カラムコンテンツ (content_for で定義されたものを呼び出す) %>
+<div class="row">
 
-<%# カード構造で全体を囲む %>
-<div class="card p-4 mb-4">
+  <%# 左カラム %>
+  <div class="col-md-6 mb-4">
+    <div class="card shadow-sm h-100 p-3">
 
-  <%# _details_fieldsを挿入 %>
-  <%= yield %>
+      <%# タイトルと編集ボタン %>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="card-title h5 mb-0" style="font-size: 1.5em;"><%= content_left_title %></div>
+          <%= link_to t('helpers.submit.edit', default: '編集'), content_left_edit_path, class: "btn btn-sm btn-primary" %>
+      </div>
 
-<%# アクションボタン %>
-  <div class="actions mt-4">
-    <%# 編集: url_for([:edit, resource]) で汎用パスを生成 %>
-    <%= link_to t('helpers.submit.edit'), url_for([:edit, resource]), class: "btn btn-primary me-2" %>
+      <%# 左カラムの内容を呼び出す %>
+      <%= yield :content_left %>
+    </div>
+  </div>
 
-    <%# 戻る: url_for(resource.class) で一覧パスを生成 %>
-    <%= link_to t('helpers.link.back'), url_for(resource.class), class: "btn btn-outline-secondary me-2" %>
+  <%# 右カラム %>
+  <div class="col-md-6 mb-4">
+    <div class="card shadow-sm h-100 p-3">
 
-    <%# 削除: resource を渡して自動解決 %>
-    <%= button_to t('helpers.link.destroy'), resource,
-        method: :delete,
-        data: { turbo_confirm: t('confirm.destroy') },
-        class: 'btn btn-danger' %>
+      <%# タイトルと編集ボタン %>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="card-title h5 mb-0" style="font-size: 1.5em;"><%= content_right_title %></div>
+          <%= link_to t('helpers.submit.edit', default: '編集'), content_right_edit_path, class: "btn btn-sm btn-primary" %>
+      </div>
+
+      <%# 右カラムの内容を呼び出す %>
+      <%= yield :content_right %>
+    </div>
   </div>
 </div>

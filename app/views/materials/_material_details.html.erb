@@ -1,89 +1,96 @@
-<%# resource: Materialインスタンス をローカル変数として受け取る %>
+<% material = local_assigns[:material] %>
 <% material_class = material.class %>
 <% no_setting = t('helpers.no_setting') %>
 
-<div class="row">
-  <%# 左カラム: 原材料名 (必須) %>
-  <div class="col-md-6">
-    <div class="mb-4">
-      <label class="form-label h5"><%= material_class.human_attribute_name(:name) %></label>
-      <%# NOT NULLなので、値が存在 %>
-      <div class="form-control form-control-lg">
-        <%= material.name %>
+<div class="pt-1">
+
+  <%# --------------------- 1段目: 原材料名とカテゴリー --------------------- %>
+  <div class="row">
+    <%# 項目1: 原材料名 (左カラム) %>
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:name) %></label>
+        <%# 🚨 padding-top を pt-2 に変更して、値を下にずらし、縦方向のゆとりを作る %>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= material.name %>
+        </div>
+      </div>
+    </div>
+
+    <%# 項目2: カテゴリー (右カラム) %>
+    <div class="col-md-6">
+      <% if material.category.present? %>
+        <div class="mb-3 border-bottom py-3">
+          <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:category) %></label>
+          <%# 🚨 padding-top を pt-2 に変更 %>
+          <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+            <%= material.category.name %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# --------------------- 2段目: 商品単位と重量 --------------------- %>
+  <div class="row">
+    <%# 項目3: 商品単位 (左カラム) %>
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_for_product) %></label>
+        <%# 🚨 padding-top を pt-2 に変更 %>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= material.unit_for_product.name %>
+        </div>
+      </div>
+    </div>
+
+    <%# 項目4: 商品単位あたりの重量 (右カラム) %>
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_weight_for_product) %></label>
+        <%# 🚨 padding-top を pt-2 に変更 %>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= material.unit_weight_for_product ? number_with_precision(material.unit_weight_for_product, precision: 3) : no_setting %>
+        </div>
       </div>
     </div>
   </div>
 
-  <%# 右カラム: カテゴリー (nilの可能性あり) %>
-  <div class="col-md-6">
-    <div class="mb-4">
-      <label class="form-label h5"><%= material_class.human_attribute_name(:category) %></label>
-      <%# 関連オブジェクトはnilの可能性があるため、存在チェックが必要 %>
-      <div class="form-control form-control-lg">
-        <%# カテゴリーは必須ではない可能性があるため、存在チェック %>
-        <%= material.category.present? ? material.category.name : no_setting %>
+  <%# --------------------- 3段目: 発注単位と重量 --------------------- %>
+  <div class="row">
+    <%# 項目5: 発注単位 (左カラム) %>
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_for_order) %></label>
+        <%# 🚨 padding-top を pt-2 に変更 %>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= material.unit_for_order.name %>
+        </div>
+      </div>
+    </div>
+
+    <%# 項目6: 発注単位あたりの重量 (右カラム) %>
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_weight_for_order) %></label>
+        <%# 🚨 padding-top を pt-2 に変更 %>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= material.unit_weight_for_order ? number_with_precision(material.unit_weight_for_order, precision: 3) : no_setting %>
+        </div>
       </div>
     </div>
   </div>
+
 </div>
 
-<div class="row">
-  <%# 左カラム: 商品単位 (必須) %>
-  <div class="col-md-6">
-    <div class="mb-4">
-      <label class="form-label h5"><%= material_class.human_attribute_name(:unit_for_product) %></label>
-      <%# NOT NULLであり、.nameで単位名を表示 %>
-      <div class="form-control form-control-lg">
-        <%= material.unit_for_product.name %>
-      </div>
-    </div>
-  </div>
+<%# --------------------- 項目7: 説明（このパーシャル内に残す） --------------------- %>
+<div class="mt-4 p-3 border rounded">
+  <h6 class="text-muted" style="font-size: 1.1em;"><%= material_class.human_attribute_name(:description) %></h6>
 
-  <%# 右カラム: 商品単位あたりの重量 (必須) %>
-  <div class="col-md-6">
-    <div class="mb-4">
-      <label class="form-label h5"><%= material_class.human_attribute_name(:unit_weight_for_product) %></label>
-      <%# NOT NULLだが、0判定対応のため三項演算子で対応 %>
-      <div class="form-control form-control-lg">
-        <%= material.unit_weight_for_product ? number_with_precision(material.unit_weight_for_product, precision: 3) : no_setting %>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <%# 左カラム: 発注単位 (必須) %>
-  <div class="col-md-6">
-    <div class="mb-4">
-      <label class="form-label h5"><%= material_class.human_attribute_name(:unit_for_order) %></label>
-      <%# NOT NULLであり、.nameで単位名を表示 %>
-      <div class="form-control form-control-lg">
-        <%= material.unit_for_order.name %>
-      </div>
-    </div>
-  </div>
-
-  <%# 右カラム: 発注単位あたりの重量 (必須) %>
-  <div class="col-md-6">
-    <div class="mb-4">
-      <label class="form-label h5"><%= material_class.human_attribute_name(:unit_weight_for_order) %></label>
-      <%# NOT NULLだが、0判定対応のため三項演算子で対応 %>
-      <div class="form-control form-control-lg">
-        <%= material.unit_weight_for_order ? number_with_precision(material.unit_weight_for_order, precision: 3) : no_setting %>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <%# 説明（Description） - 1行全体を使用 %>
-  <div class="col-md-12">
-    <div class="mb-4">
-      <label class="form-label h5"><%= material_class.human_attribute_name(:description) %></label>
-      <%# 説明欄はNULLを許容し、複数行表示のためsimple_formatを使用 %>
-      <div class="form-control form-control-lg" style="height: auto; min-height: 150px;">
-        <%= material.description&.present? ? simple_format(material.description) : no_setting %>
-      </div>
-    </div>
-  </div>
+  <% material_description = material.description.presence %>
+  <%# 🚨 説明欄も font-size を 1.1em に変更 %>
+  <p class="text-dark <%= material_description ? '' : 'text-center text-muted d-flex justify-content-center pt-3' %>"
+     style="font-size: 1.1em; min-height: 100px;">
+    <%= simple_format(material_description || no_setting) %>
+  </p>
 </div>

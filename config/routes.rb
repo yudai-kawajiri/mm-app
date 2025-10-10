@@ -28,5 +28,8 @@ Rails.application.routes.draw do
   resources :materials
 
   # Productのルーティング
-  resources :products
+  # edit_product_product_material_pathで商品原材料の詳細画面を定義するため
+  resources :products do
+    resource :product_materials, only: [:show, :edit, :update]
+  end
 end

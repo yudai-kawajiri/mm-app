@@ -1,0 +1,45 @@
+<% product = local_assigns[:product] %>
+<% product_class = product.class %>
+
+<%# 品番  %>
+<div class="mb-3 border-bottom py-2">
+    <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:item_number) %></label>
+    <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
+        <%= product.item_number.presence %>
+    </div>
+</div>
+
+<%# カテゴリー %>
+<div class="mb-3 border-bottom py-2">
+    <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:category_id) %></label>
+    <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
+        <%= product.category&.name.presence %>
+    </div>
+</div>
+
+<%# 売価 %>
+<div class="mb-3 border-bottom py-2">
+    <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:price) %></label>
+    <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
+      <%= number_with_precision(product.price, precision: 0) %>
+    </div>
+</div>
+
+<%# ステータス  %>
+<div class="mb-3 border-bottom py-2">
+    <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:status) %></label>
+    <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
+        <span class="badge bg-primary"><%= product.status %></span>
+    </div>
+</div>
+
+<%# 説明 %>
+<div class="mt-4 p-3 border rounded">
+    <h6 class="text-muted" style="font-size: 1.1em;"><%= product_class.human_attribute_name(:description) %></h6>
+    <% description_content = product.description.presence %>
+    <%# 値が入っている場合は左寄せ。未設定の場合のみ中央寄せ %>
+    <p class="text-dark <%= description_content ? '' : 'text-center text-muted d-flex justify-content-center pt-3' %>"
+      style="font-size: 1.1em; min-height: 100px;">
+      <%= simple_format(description_content || t('helpers.no_setting', default: '説明なし')) %>
+    </p>
+</div>
