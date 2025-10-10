@@ -91,6 +91,9 @@ Rails.application.configure do
   # `before_action` の `only`/`except` オプションで存在しないアクションを参照した場合にエラーを発生させる
   config.action_controller.raise_on_missing_callback_actions = true
 
+  # 【Active Storage / 画像URL生成】コントローラー生成リンクのホストとポートを設定
+  config.action_controller.default_url_options = { host: "localhost", port: 3000 }
+
   # `bin/rails generate`で生成されたファイルにRuboCopの自動修正を適用する設定（現在はコメントアウト）
   # config.generators.apply_rubocop_autocorrect_after_generate!
 end
