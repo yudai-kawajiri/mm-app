@@ -7,8 +7,14 @@
     <h2><%= title %></h2>
   </div>
 
-  <div class="actions-top">
-    <%= link_to t('helpers.link.back', default: '戻る'), url_for(resource.class), class: "btn btn-secondary" %>
+  <%# 統合された編集ボタンを配置  %>
+  <div class="btn-group" role="group">
+
+    <%# 編集ボタン  %>
+    <%= link_to t('helpers.link.edit'), url_for([:edit, resource]), class: "btn btn-primary" %>
+    <%# 戻るボタン %>
+    <%= link_to t('helpers.link.back'), url_for(resource.class), class: "btn btn-outline-secondary" %>
+
   </div>
 </div>
 
@@ -19,10 +25,9 @@
   <div class="col-md-6 mb-4">
     <div class="card shadow-sm h-100 p-3">
 
-      <%# タイトルと編集ボタン %>
+      <%# タイトル%>
       <div class="d-flex justify-content-between align-items-center mb-3">
           <div class="card-title h5 mb-0" style="font-size: 1.5em;"><%= content_left_title %></div>
-          <%= link_to t('helpers.submit.edit', default: '編集'), content_left_edit_path, class: "btn btn-sm btn-primary" %>
       </div>
 
       <%# 左カラムの内容を呼び出す %>
@@ -34,10 +39,9 @@
   <div class="col-md-6 mb-4">
     <div class="card shadow-sm h-100 p-3">
 
-      <%# タイトルと編集ボタン %>
+      <%# タイトル %>
       <div class="d-flex justify-content-between align-items-center mb-3">
           <div class="card-title h5 mb-0" style="font-size: 1.5em;"><%= content_right_title %></div>
-          <%= link_to t('helpers.submit.edit', default: '編集'), content_right_edit_path, class: "btn btn-sm btn-primary" %>
       </div>
 
       <%# 右カラムの内容を呼び出す %>
