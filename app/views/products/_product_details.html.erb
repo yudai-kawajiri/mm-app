@@ -1,0 +1,63 @@
+<% product = local_assigns[:product] %>
+<% product_class = product.class %>
+
+<%# 画像表示 %>
+<div class="mb-4 text-center">
+  <% if product.image.attached? %>
+    <%= image_tag url_for(product.image), size: "300x200", class: "img-fluid rounded border" %>
+  <% else %>
+    <div style="width: 300px; height: 200px; line-height: 200px; border: 1px dashed #dee2e6; color: #adb5bd; margin: 0 auto;">
+      [画像なし]
+    </div>
+  <% end %>
+</div>
+
+<div class="pt-1">
+
+  <%#  品番 %>
+  <div class="row py-2 border-bottom mx-0">
+    <dt class="col-sm-6 text-muted ps-0">
+      <span style="font-size: 1.1em;"><%= product_class.human_attribute_name(:item_number) %></span>
+    </dt>
+    <dd class="col-sm-6 text-dark text-end pe-0">
+      <span style="font-size: 1.1em;"><%= product.item_number %></span>
+    </dd>
+  </div>
+
+  <%# カテゴリ %>
+  <div class="row py-2 border-bottom mx-0">
+    <dt class="col-sm-6 text-muted ps-0">
+      <span style="font-size: 1.1em;"><%= product_class.human_attribute_name(:category_id) %></span>
+    </dt>
+    <dd class="col-sm-6 text-dark text-end pe-0">
+      <span style="font-size: 1.1em;"><%= product.category.name %></span>
+    </dd>
+  </div>
+
+  <%# 価格 %>
+  <div class="row py-2 border-bottom mx-0">
+    <dt class="col-sm-6 text-muted ps-0">
+      <span style="font-size: 1.1em;"><%= product_class.human_attribute_name(:price) %></span>
+    </dt>
+    <dd class="col-sm-6 text-dark text-end pe-0">
+      <span style="font-size: 1.1em;"><%= number_to_currency(product.price) %></span>
+    </dd>
+  </div>
+
+  <%# Status %>
+  <div class="row py-2 border-bottom mx-0">
+    <dt class="col-sm-6 text-muted ps-0">
+      <span style="font-size: 1.1em;"><%= product_class.human_attribute_name(:status) %></span>
+    </dt>
+    <dd class="col-sm-6 text-dark text-end pe-0">
+      <span style="font-size: 1.1em;"><span class="badge bg-primary"><%= product.status %></span></span>
+    </dd>
+  </div>
+
+</div>
+
+<%# 商品説明 %>
+<div class="mt-4 p-3 border rounded">
+  <h6 class="text-muted" style="font-size: 1.1em;"><%= product_class.human_attribute_name(:description) %></h6>
+  <p class="text-dark" style="font-size: 1.1em; min-height: 100px;"><%= simple_format(product.description.presence || '説明なし') %></p>
+</div>
