@@ -1,31 +1,39 @@
 <% material_class = @material.class %>
 <% resource = @material %>
-<% title = t('.title', material_name: @material.name) %>
+<% material_name = @material.name %>
 
-<%# 共通ラッパーの代わりに、ここでページタイトルを定義 %>
+<%# 画面全体のタイトルを「まぐろ赤身」（原材料名）に設定 %>
+<% title = material_name %>
+
+<%# ページタイトル %>
 <%= content_for :page_title, title %>
-<div class="d-flex justify-content-between al">
-  <h2><%= title %></h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2><%= title %></h2> <%# 画面上部H2は「まぐろ赤身」 %>
+  </div>
+
+  <div class="actions-top">
+    <%# 「戻る」ボタンは右上に残す %>
+    <%= link_to t('helpers.link.back', default: '戻る'), url_for(resource.class), class: "btn btn-secondary" %>
+  </div>
 </div>
 
-<%# カード構造で全体を囲む (共通ラッパーの役割を代替) %>
-<div class="card p-4 mb-4">
+<%# 詳細セクション（全てを統合した単一カード） %>
+<div class="card p-4 mb-4 shadow-sm">
+    <%# 🚨 カード内にタイトルなし。ボタンのみを右端に配置。 %>
+    <div class="d-flex justify-content-end align-items-center mb-3">
+        <div class="card-actions d-flex">
+            <%# 編集ボタンをカードヘッダー内に配置（横並び） %>
+            <%= link_to t('helpers.submit.edit', default: '編集'), url_for([:edit, resource]), class: "btn btn-sm btn-primary me-2" %>
 
-  <%# 詳細項目を挿入: _material_details.html.erb を呼び出し %>
-  <%= render 'material_details', material: @material %>
+            <%# 削除ボタンをカードヘッダー内に配置（横並び） %>
+            <%= button_to t('helpers.link.destroy', default: '削除'), resource,
+                method: :delete,
+                data: { turbo_confirm: t('confirm.destroy') },
+                class: 'btn btn-sm btn-danger' %>
+        </div>
+    </div>
 
-  <%# アクションボタン (共通ラッパーの役割を代替) %>
-  <div class="actions mt-4">
-    <%# 編集 %>
-    <%= link_to t('helpers.submit.edit'), url_for([:edit, resource]), class: "btn btn-primary me-2" %>
-
-    <%# 戻る %>
-    <%= link_to t('helpers.link.back'), url_for(resource.class), class: "btn btn-outline-secondary me-2" %>
-
-    <%# 削除 %>
-    <%= button_to t('helpers.link.destroy'), resource,
-        method: :delete,
-        data: { turbo_confirm: t('confirm.destroy') },
-        class: 'btn btn-danger' %>
-  </div>
+    <%# 🚨 2カラム構成と説明項目をパーシャルから呼び出す %>
+    <%= render 'material_details', material: @material %>
 </div>
