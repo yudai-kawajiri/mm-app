@@ -39,8 +39,8 @@ class ProductsController < AuthenticatedController
       :name,
       :item_number,
       :price,
-      :status,       #  追加
-      :description,  #  追加
+      :status,
+      :description,
       :category_id,
       :image
   )
