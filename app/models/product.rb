@@ -12,6 +12,10 @@ class Product < ApplicationRecord
   has_many :product_materials, dependent: :destroy
   has_many :materials, through: :product_materials
 
+  # ネストされたフォームから product_materials を受け入れる設定
+  # allow_destroy: true で、削除フラグによるレコード削除を許可
+  accepts_nested_attributes_for :product_materials, allow_destroy: true
+
   #消えていたActive Storageを再追記
   has_one_attached :image
 

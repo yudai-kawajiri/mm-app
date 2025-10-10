@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_09_103255) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_10_072757) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -75,8 +75,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_103255) do
     t.decimal "quantity", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "unit_id", null: false
     t.index ["material_id"], name: "index_product_materials_on_material_id"
     t.index ["product_id"], name: "index_product_materials_on_product_id"
+    t.index ["unit_id"], name: "index_product_materials_on_unit_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -125,6 +127,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_103255) do
   add_foreign_key "materials", "users"
   add_foreign_key "product_materials", "materials"
   add_foreign_key "product_materials", "products"
+  add_foreign_key "product_materials", "units"
   add_foreign_key "products", "categories"
   add_foreign_key "products", "users"
   add_foreign_key "units", "users"
