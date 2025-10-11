@@ -1,6 +1,6 @@
 class ProductsController < AuthenticatedController
   include PaginationConcern
-  before_action :set_product, only: [:show, :edit, :update, :destroy]
+  before_action :set_product, only: [:show, :edit, :update, :destroy, :purge_image]
 
   def index
     @products =  apply_pagination(current_user.products
@@ -60,6 +60,17 @@ class ProductsController < AuthenticatedController
     redirect_to products_url, status: :unprocessable_entity
   end
 end
+
+# ユーザーが編集画面を保存する前に、ブラウザ側からJavaScriptを使って画像を即座に削除する
+  def purge_image
+    # set_product (before_action) で @product は設定済み
+    if @product.image.attached?
+      @product.image.purge # Active Storageの添付ファイルを削除
+      head :no_content # 成功（204 No Content）を返す
+    else
+      head :not_found # 画像がない場合は404
+    end
+  end
 
   private
 
