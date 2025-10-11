@@ -14,6 +14,9 @@ gem "cssbundling-rails"
 # 認証機能（ログイン、ユーザー登録、パスワードリセットなど）のためのGem
 gem "devise"
 
+# イーナムの翻訳簡素化
+gem "enum_help"
+
 # JavaScript の管理
 gem "importmap-rails"
 
