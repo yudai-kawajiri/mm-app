@@ -1,6 +1,6 @@
 class ProductsController < AuthenticatedController
   include PaginationConcern
-  before_action :set_product, only: [:show, :edit, :update]
+  before_action :set_product, only: [:show, :edit, :update, :destroy, :purge_image]
 
   def index
     @products =  apply_pagination(current_user.products
@@ -42,6 +42,33 @@ class ProductsController < AuthenticatedController
     else
       flash.now[:alert] = t('flash_messages.update.failure', resource: Product.model_name.human)
       render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    # flash_messagesの書き方変更(後で共通化するか選択)
+    # 削除前に名前を保持
+    product_name = @product.name
+    # リソース名（"商品"）を取得
+    resource_name = Product.model_name.human
+
+  if @product.destroy
+    flash[:notice] = t('flash_messages.destroy.success', resource: resource_name, name: product_name)
+    redirect_to products_url, status: :see_other
+  else
+    flash[:alert] = t('flash_messages.destroy.failure', resource: resource_name, name: product_name)
+    redirect_to products_url, status: :unprocessable_entity
+  end
+end
+
+# ユーザーが編集画面を保存する前に、ブラウザ側からJavaScriptを使って画像を即座に削除する
+  def purge_image
+    # set_product (before_action) で @product は設定済み
+    if @product.image.attached?
+      @product.image.purge # Active Storageの添付ファイルを削除
+      head :no_content # 成功（204 No Content）を返す
+    else
+      head :not_found # 画像がない場合は404
     end
   end
 

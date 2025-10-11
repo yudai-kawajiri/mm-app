@@ -28,8 +28,14 @@ Rails.application.routes.draw do
   resources :materials
 
   # Productのルーティング
-  # edit_product_product_material_pathで商品原材料の詳細画面を定義するため
   resources :products do
+    # 特定の商品の画像のみを削除するためのカスタムルート
+    # （/products/:id/purge_image というDELETEリクエストに対応）
+    member do
+      delete 'purge_image', to: 'products#purge_image', as: :purge_image
+    end
+    # ネストされたリソースを定義
+    #（/products/:product_id/product_materials/show などに対応）
     resource :product_materials, only: [:show, :edit, :update]
   end
 end
