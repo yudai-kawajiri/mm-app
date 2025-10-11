@@ -1,6 +1,6 @@
 class ProductsController < AuthenticatedController
   include PaginationConcern
-  before_action :set_product, only: [:show, :edit, :update]
+  before_action :set_product, only: [:show, :edit, :update, :destroy]
 
   def index
     @products =  apply_pagination(current_user.products
@@ -44,6 +44,22 @@ class ProductsController < AuthenticatedController
       render :edit, status: :unprocessable_entity
     end
   end
+
+  def destroy
+    # flash_messagesの書き方変更(後で共通化するか選択)
+    # 削除前に名前を保持
+    product_name = @product.name
+    # リソース名（"商品"）を取得
+    resource_name = Product.model_name.human
+
+  if @product.destroy
+    flash[:notice] = t('flash_messages.destroy.success', resource: resource_name, name: product_name)
+    redirect_to products_url, status: :see_other
+  else
+    flash[:alert] = t('flash_messages.destroy.failure', resource: resource_name, name: product_name)
+    redirect_to products_url, status: :unprocessable_entity
+  end
+end
 
   private
 
