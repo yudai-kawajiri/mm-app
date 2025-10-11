@@ -57,7 +57,7 @@ class MaterialsController <  AuthenticatedController
       # 削除された新しいページを出すのでmaterials_urlで記載
       redirect_to materials_url, status: :see_other
     else
-      削除に失敗した場合の処理を追加
+      # 削除に失敗した場合の処理を追加
       flash[:alert] = @material.errors.full_messages.to_sentence
       # 一覧画面に戻す
       redirect_to materials_url, status: :unprocessable_entity # 422ステータスでリダイレクト
