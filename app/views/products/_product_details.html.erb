@@ -1,7 +1,8 @@
+<%# このパーシャルは、親から product: @product として渡される想定 %>
 <% product = local_assigns[:product] %>
 <% product_class = product.class %>
 
-<%# 品番  %>
+<%# 品番  %>
 <div class="mb-3 border-bottom py-2">
     <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:item_number) %></label>
     <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
@@ -25,7 +26,7 @@
     </div>
 </div>
 
-<%# ステータス  %>
+<%# ステータス  %>
 <div class="mb-3 border-bottom py-2">
     <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:status) %></label>
     <div class="text-dark text-center pt-2" style="font-size: 1.1em;">

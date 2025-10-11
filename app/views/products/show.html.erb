@@ -5,9 +5,7 @@
 
 <%# 右カラムの内容を content_for で登録 %>
 <%= content_for :content_right do %>
-  <div class="card-body p-0">
-    <p class="text-muted text-center" style="padding-top: 100px; font-size: 1.2em;">※レシピはまだ設定されていません。</p>
-  </div>
+  <%= render 'product_material_details', product: @product %>
 <% end %>
 
 <%# 共通ラッパーをハッシュ構文で呼び出し、localsを渡す %>
@@ -15,7 +13,5 @@
   title: @product.name,
   resource: @product,
   content_left_title: '基本情報',
-  content_left_edit_path: url_for([:edit, @product]),
   content_right_title: '使用原材料',
-  content_right_edit_path: edit_product_path(@product)
 } %>

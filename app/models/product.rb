@@ -2,8 +2,8 @@ class Product < ApplicationRecord
   # 名前検索スコープを組み込み
   include NameSearchable
 
-  # 0: 下書き (初期値として最も安全) 1: 販売中 (公開状態) 2: 販売中止
-  enum :status, { draft: 0, published: 1, discontinued: 2 }
+  # 0: 下書き 1: 販売中  2: 販売中止
+  enum :status, { draft: 0, selling: 1, discontinued: 2 }
 
   # アソシエーション
   belongs_to :user

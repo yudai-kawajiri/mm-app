@@ -5,7 +5,7 @@ class ProductMaterial < ApplicationRecord
 
   # 小数点も含めて設定
   validates :quantity,
-            presence:: true,
+            presence: true,
             numericality: { greater_than: 0}
 
   # 同じ商品に同じ原材料を登録不可にする

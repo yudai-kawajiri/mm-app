@@ -1,2 +1,35 @@
-<h1>Products#edit</h1>
-<p>Find me in app/views/products/edit.html.erb</p>
+<%# 共通レイアウトにタイトルを渡す %>
+<%= content_for :page_title, t('.title', name: @product.name) %>
+
+<%# フォーム %>
+<%= form_with(model: @product, local: true, class: "row") do |f| %>
+
+  <%# 共通エラーメッセージの表示 %>
+  <%= render 'shared/error_messages', model: @product %>
+
+  <%# 左カラム: 基本情報 %>
+  <div class="col-md-6 mb-4">
+    <div class="card shadow-sm h-100 p-4">
+      <h4 class="card-title mb-4"><%= t('.basic_info') %></h4>
+
+      <%# 基本情報フォームのパーシャルを呼び出す %>
+      <%= render 'basic_fields', f: f %>
+    </div>
+  </div>
+
+  <%# 右カラム: 使用原材料 %>
+  <div class="col-md-6 mb-4">
+    <div class="card shadow-sm h-100 p-4">
+      <h4 class="card-title mb-4"><%= t('.material_info') %></h4>
+
+      <%# ネストフォームのパーシャルを呼び出す %>
+      <%= render 'product_materials_fields', f: f %>
+    </div>
+  </div>
+
+  <%# フォーム送信ボタ %>
+  <div class="col-12 text-center mt-3">
+    <%= f.submit t('helpers.submit.update'), class: "btn btn-primary btn-lg me-3" %>
+    <%= link_to t('helpers.link.back'), product_path(@product), class: "btn btn-outline-secondary btn-lg" %>
+  </div>
+<% end %>

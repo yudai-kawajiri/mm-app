@@ -1,6 +1,6 @@
 class ProductsController < AuthenticatedController
   include PaginationConcern
-  before_action :set_product, only: [:show]
+  before_action :set_product, only: [:show, :edit, :update]
 
   def index
     @products =  apply_pagination(current_user.products
@@ -28,9 +28,21 @@ class ProductsController < AuthenticatedController
   end
 
   def show
+    # N+1対策: material と unit の情報を事前に includes で取得
+    @product_materials = @product.product_materials.includes(:material, :unit).order(:id)
   end
 
   def edit
+  end
+
+  def update
+    if @product.update(product_params)
+      flash[:notice] = t('flash_messages.update.success', resource: Product.model_name.human, name: @product.name)
+      redirect_to @product
+    else
+      flash.now[:alert] = t('flash_messages.update.failure', resource: Product.model_name.human)
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   private
@@ -43,7 +55,16 @@ class ProductsController < AuthenticatedController
       :status,
       :description,
       :category_id,
-      :image
+      :image,
+
+      # ネストフォームの属性を許可する
+      product_materials_attributes: [
+        :id,            # 既存レコードを特定し更新するため
+        :material_id,   # 原材料ID
+        :unit_id,       # 単位ID
+        :quantity,      # 数量
+        :_destroy       # 削除チェックボックス（allow_destroy: trueと連携）
+    ]
   )
   end
 

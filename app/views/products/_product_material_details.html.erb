@@ -1,0 +1,39 @@
+<%# 親から product: @product として渡される %>
+<% product = local_assigns[:product] %>
+
+<div class="card-body p-0">
+
+  <% product_materials = product.product_materials %>
+
+  <% if product_materials.present? %>
+    <table class="table table-sm table-borderless">
+      <thead>
+        <tr>
+          <th class="text-muted">原材料名</th>
+          <th class="text-end text-muted">分量</th>
+          <th class="text-start text-muted">単位</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% product_materials.each do |pm| %>
+          <tr>
+            <td>
+              <%# 原材料名 %>
+              <%= pm.material.name %>
+            </td>
+            <td class="text-end">
+              <%# 分量 %>
+              <%= number_with_precision(pm.quantity, precision: 3) %>
+            </td>
+            <td class="text-start text-dark">
+              <%# 単位名 %>
+              <%= pm.unit.name %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-muted text-center" style="padding-top: 50px; font-size: 1.0em;">※使用原材料はまだ設定されていません。</p>
+  <% end %>
+</div>

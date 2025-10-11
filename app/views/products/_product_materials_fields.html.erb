@@ -1,0 +1,25 @@
+<%# f: 親フォームビルダー %>
+<%# コントローラーとコンテナ指定 %>
+<div data-controller="nested-form">
+  <div data-nested-form-target="target">
+
+    <%# 既存の product_materials の入力欄を表示 %>
+    <%= f.fields_for :product_materials do |material_fields| %>
+      <%= render 'product_material_fields', f: material_fields %>
+    <% end %>
+
+  </div>
+
+  <%#  新規行のテンプレート  %>
+  <%# child_index: 'NEW_RECORD' が Stimulus でタイムスタンプに置換 %>
+  <template data-nested-form-target="template">
+    <%= f.fields_for :product_materials, ProductMaterial.new, child_index: 'NEW_RECORD' do |material_fields| %>
+      <%= render 'product_material_fields', f: material_fields %>
+    <% end %>
+  </template>
+
+  <%# 行を追加するボタン %>
+  <button type="button" class="btn btn-outline-success w-100 mt-3" data-action="nested-form#add">
+    <%= t('helpers.link.add_material') %>
+  </button>
+</div>

@@ -1,0 +1,33 @@
+<%# f: product_materials のフォームビルダー %>
+<div class="row align-items-center mb-3 border-bottom py-2" data-controller="nested-form-item">
+
+  <%# 既存レコードのIDを保持（更新/削除に必要） %>
+  <%= f.hidden_field :id %>
+
+  <%# 削除フラグの非表示フィールド  %>
+  <%# 既存レコードの場合のみ。削除時に Stimulus が値を '0'→'1' にセットする %>
+  <%= f.hidden_field :_destroy, data: { 'nested-form-item-target': 'destroy' } %>
+
+  <%# 原材料名 %>
+  <%# :material_idは保存先 %>
+  <div class="col-4">
+    <%= f.collection_select :material_id, current_user.materials, :id, :name, {  prompt: t('.material_name_prompt') }, class: "form-select form-select-sm" %>
+  </div>
+
+  <%# 分量 %>
+  <div class="col-3">
+    <%= f.number_field :quantity, class: "form-control form-control-sm text-end", step: :any, placeholder: t('.quantity_placeholder') %>
+  </div>
+
+  <%# 単位 %>
+  <div class="col-3">
+    <%= f.collection_select :unit_id, Unit.all, :id, :name, { prompt: t('.unit_prompt') }, class: "form-select form-select-sm" %>
+  </div>
+
+  <%# 削除ボタン %>
+  <div class="col-2 text-end">
+    <button type="button" class="btn btn-outline-danger btn-sm" data-action="nested-form-item#remove">
+      <i class="bi bi-trash"></i> <%= t('.delete_button') %>
+    </button>
+  </div>
+</div>
