@@ -59,8 +59,17 @@ ja:
       title: "商品一覧"
     show:
       title: "商品詳細"
+    edit:
+      title: "%{name} - 編集"
+      basic_info: "基本情報"
+      material_info: "使用原材料"
 
-  # 汎用的なテキストは ja: 直下  にまとめる
+    product_material_fields:
+      material_name_prompt: "原材料名"
+      quantity_placeholder: "分量"
+      unit_prompt: "単位"
+      delete_button: "削除"
+
   common:
     search: "検索"
     clear: "クリア"
@@ -75,6 +84,7 @@ ja:
   # ヘルパーメソッドで使用されるテキストをまとめる
   helpers:
     no_setting: "未設定"
+    prompt: "選択してください"
     submit:
       create: "登録"
       edit: "編集"
@@ -91,6 +101,7 @@ ja:
       destroy: "削除"
       new: "新規作成"
       back_to_dashboard: "ダッシュボードへ戻る"
+      add_material: "原材料を追加"
 
     label:
       user:
@@ -219,6 +230,8 @@ ja:
         category_id: "カテゴリー"
         category: "カテゴリー"
         image: "画像"
+        status: "ステータス"
+        description: "説明"
 
     enums:
       category:
@@ -230,3 +243,8 @@ ja:
         category:
           production: "商品単位"
           ordering: "発注単位"
+      product:
+        status:
+          draft: "下書き"
+          selling: "販売中"
+          discontinued: "販売中止"
