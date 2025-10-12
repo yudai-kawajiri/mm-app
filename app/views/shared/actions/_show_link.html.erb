@@ -1,0 +1,9 @@
+<%# 必須引数: url %>
+<%# オプション引数: custom_class %>
+<% custom_class ||= nil %>
+
+<% link_text = t('helpers.link.show') %>
+<% default_class = "btn btn-sm btn-outline-primary" %>
+<% final_class = "#{default_class} #{custom_class}".strip %>
+
+<%= link_to link_text, url, class: final_class %>
