@@ -31,6 +31,26 @@ class Product < ApplicationRecord
   validates :item_number, presence: true, length: { maximum: 4 }, uniqueness: { scope: :user_id }
   validates :status, presence: true
 
+   # 🔴 追加: Categoryの名前を表示するための安全なメソッド 🔴
+  def category_name_for_display
+    # category (belongs_to) が存在すれば、その name 属性を返す
+    category.present? ? category.name : ''
+  end
+
+   # 🔴 追加: 金額表示用のヘルパーメソッド 🔴
+  # 呼び出し元: product.price_with_currency
+  def price_with_currency
+    # number_to_currency ヘルパーはビューまたはヘルパーで呼び出すのが正しいが、
+    # Modelのメソッドとして定義するなら、ロジック自体はシンプルにする
+    price # ビュー側で number_to_currency を使用するのが最もDRY
+  end
+
+  def translated_status
+    return '' if status.blank?
+    # Categoryと同様にI18n.tで正しいパスを指定し、強制的に翻訳させる
+    I18n.t("activerecord.enums.product.status.#{self.status}")
+  end
+
   private
 
   # 実際に画像を削除するメソッド
