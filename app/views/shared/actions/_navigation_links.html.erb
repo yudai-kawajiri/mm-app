@@ -1,0 +1,28 @@
+<%# 必須引数: f  %>
+<%# オプション引数: back_url %>
+
+<%# 戻る %>
+<% back_url ||= nil %>
+
+<%# 実行ボタン %>
+<% if f.object.persisted? == false %>
+  <% submit_text = t('helpers.submit.create') %>
+<% else %>
+  <% submit_text = t('helpers.submit.update') %>
+<% end %>
+
+<div class="d-flex justify-content-end mt-4">
+
+  <%# 1. 左側: 戻る %>
+  <div>
+    <% if back_url.present? %>
+      <%= link_to t('helpers.link.back'), back_url, class: "btn btn-secondary me-2" %>
+    <% end %>
+  </div>
+
+  <%# 2. 右側: 登録or更新 %>
+  <div>
+    <%# フォーム送信ボタンは常に primary で目立たせる %>
+    <%= f.submit submit_text, class: "btn btn-primary" %>
+  </div>
+</div>
