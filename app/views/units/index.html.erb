@@ -1,16 +1,16 @@
-<%# 共有の resource_list パーシャルで画面を構成 %>
+<%= paginate @units, theme: 'bootstrap-5' %>
 <%= render 'shared/resource_list',
     title: t('.title'),
-    # Unit のパスとモデル名を使用
+    resources: @units,
     new_path: new_unit_path,
-    new_resource_name: Unit.model_name.human do %>
+    resource_class: Unit,
+    show_action_link: false,
+    search_target: :category,
+    columns: [
+      { header: :name, data: :name },
+      { header: :category, data: :category_i18n }
+    ]
+%>
 
-  <%# 共有パーシャルを呼び出し、ローカル変数として units_path を渡す %>
-  <%= render 'shared/search_form', form_path: units_path, search_target: :category  %>
-
-  <%# ローカル変数 units に @units の値を渡す %>
-  <%= render 'unit_table', units: @units %>
-<% end %>
-
-<%# ページネーション設定 %>
+<%# ページネーションはラッパーの外側で呼び出す %>
 <%= paginate @units, theme: 'bootstrap-5' %>

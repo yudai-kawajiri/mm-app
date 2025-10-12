@@ -61,7 +61,7 @@
         <div class="input-group-append" >
           <%= f.submit t('common.search'), class: "btn btn-primary" %>
           <%# クリアボタンのリンク先も変更 %>
-          <% if params[:q].present? || params[:category_type].present? || params[:category_id].present? %>
+          <% if params[:q].present? || params[:category_type].present? || params[:category_id].present? || params[:category].present? %>
             <%= link_to t('common.clear'), form_path,  class: "btn btn-outline-secondary" %>
           <% end %>
         </div>
