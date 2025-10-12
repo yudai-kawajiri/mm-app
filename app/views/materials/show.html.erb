@@ -26,11 +26,11 @@
             <%# 編集ボタンをカードヘッダー内に配置（横並び） %>
             <%= link_to t('helpers.submit.edit', default: '編集'), url_for([:edit, resource]), class: "btn btn-sm btn-primary me-2" %>
 
-            <%# 削除ボタンをカードヘッダー内に配置（横並び） %>
-            <%= button_to t('helpers.link.destroy', default: '削除'), resource,
-                method: :delete,
-                data: { turbo_confirm: t('confirm.destroy') },
-                class: 'btn btn-sm btn-danger' %>
+            <%# 削除ボタンを共通パーシャルに置き換え %>
+            <%= render 'shared/actions/delete_link',
+                url: resource,
+                resource_name: material_class.model_name.human
+          %>
         </div>
     </div>
 

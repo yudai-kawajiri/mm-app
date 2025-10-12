@@ -21,7 +21,12 @@
         <td><%= number_with_precision(material.unit_weight_for_product, precision: 3) %></td>
         <td><%= material.unit_for_order.name %></td>
         <td><%= number_with_precision(material.unit_weight_for_order, precision: 3) %></td>
-        <td><%= link_to t('helpers.link.show'), material_path(material)%></td>
+        <td>
+          <%# 集合部品でアクションカラム全体を生成 %>
+          <%= render 'shared/actions/action_links',
+              resource: material,
+              resource_name: Material.model_name.human
+          %></td>
       <tr>
     <% end %>
   </tbody>

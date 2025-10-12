@@ -13,13 +13,12 @@
         <td><%= unit.name %></td>
         <td><%= unit.category_i18n %></td>
         <td>
-          <%= link_to t('helpers.link.edit'), edit_unit_path(unit) %>
-
-          <%= button_to t('helpers.link.destroy'), unit_path(unit),
-              method: :delete,
-              data: { turbo_confirm: t('helpers.confirm.destroy', resource: Unit.model_name.human) },
-              class: "btn btn-danger btn-sm",
-              form: { style: "display: inline-block;" } %>
+          <%# 集合部品でアクションカラム全体を生成 %>
+          <%= render 'shared/actions/action_links',
+              resource: unit,
+              resource_name: Unit.model_name.human,
+              show_link: false # 詳細リンクを非表示
+          %>
         </td>
       </tr>
     <% end %>

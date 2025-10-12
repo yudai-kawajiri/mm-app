@@ -14,14 +14,12 @@
         <%# category_type_i18n メソッドを呼び出す %>
         <td><%= category.category_type_i18n %></td>
         <td>
-          <%# 詳細画面がないため、編集と削除アクションを配置 %>
-          <%= link_to t('helpers.link.edit'), edit_category_path(category) %>
-
-          <%= button_to t('helpers.link.destroy'), category_path(category),
-              method: :delete,
-              data: { turbo_confirm: t('helpers.confirm.destroy'), resource: Category.model_name.human },
-              class: "btn btn-danger btn-sm",
-              form: { style: "display: inline-block;" } %>
+          <%# 集合部品でアクションカラム全体を生成 %>
+          <%= render 'shared/actions/action_links',
+              resource: category,
+              resource_name: Category.model_name.human,
+              show_link: false # 詳細リンクを非表示
+          %>
         </td>
       </tr>
     <% end %>
