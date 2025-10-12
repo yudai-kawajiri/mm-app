@@ -9,10 +9,7 @@
 <%# 1. ページタイトルと新規作成ボタンのエリア %>
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2><%= title %></h2>
-
-  <%= link_to t('helpers.link.new'),
-              new_path,
-              class: 'btn btn-primary' %>
+  <%= render 'shared/actions/new_link', url: new_path %>
 </div>
 
 <%# 2.検索フォーム %>
