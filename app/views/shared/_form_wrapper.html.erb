@@ -1,6 +1,5 @@
-<%# 呼び出し元から title を受け取ることを想定 %>
 <%= content_for :page_title, title %>
-<%# flexコンテナの子要素を左右を均等にして上下も中央揃えにする %>
+
 <div class="d-flex justify-content-between al">
   <h2><%= title %></h2>
 </div>
@@ -17,11 +16,11 @@
 
       <%# 固有のフォーム項目をブロックとして挿入 %>
       <%= yield f %>
-
-      <%# フォームフッターナビゲーションを共通パーシャルに置き換え  %>
+>
       <%# f と back_path を back_url として渡す %>
       <%= render 'shared/actions/form_action_links',
           f: f,
+          resource: resource,
           back_url: back_path
       %>
 

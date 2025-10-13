@@ -1,28 +1,24 @@
-<%# 必須引数: f  %>
+<%# 必須引数: f , resource %>
+<% f = local_assigns[:f] %>
+<% resource = local_assigns[:resource] %>
+
 <%# オプション引数: back_url %>
+<% back_url = local_assigns.fetch(:back_url, nil) %>
 
-<%# 戻る %>
-<% back_url ||= nil %>
+<%# 戻るリンクのURLを決定。back_urlがない場合は一覧パスをデフォルトとする %>
+<% resource_list_path = send(resource.class.model_name.route_key + '_path') %>
+<% final_back_url = back_url.presence || resource_list_path %>
 
-<%# 実行ボタン %>
-<% if f.object.persisted? == false %>
-  <% submit_text = t('helpers.submit.create') %>
-<% else %>
-  <% submit_text = t('helpers.submit.update') %>
-<% end %>
+<%# 実行ボタンのテキスト判定 %>
+<% submit_text = t("helpers.submit.#{resource.persisted? ? 'update' : 'create'}") %>
 
 <div class="d-flex justify-content-end mt-4">
 
-  <%# 1. 左側: 戻る %>
-  <div>
-    <% if back_url.present? %>
-      <%= link_to t('helpers.link.back'), back_url, class: "btn btn-secondary me-2" %>
-    <% end %>
-  </div>
+    <%# 戻る/キャンセルボタンを _back_link パーシャルでレンダリング %>
+    <%= render 'shared/actions/back_link', url: final_back_url, custom_class: "me-2" %>
 
-  <%# 2. 右側: 登録or更新 %>
-  <div>
-    <%# フォーム送信ボタンは常に primary で目立たせる %>
-    <%= f.submit submit_text, class: "btn btn-primary" %>
-  </div>
+    <%# 登録or更新ボタン %>
+    <div>
+        <%= f.submit submit_text, class: "btn btn-primary" %>
+    </div>
 </div>

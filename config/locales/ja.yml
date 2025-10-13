@@ -58,7 +58,7 @@ ja:
     index:
       title: "商品一覧"
     show:
-      title: "商品詳細"
+      title: "%{name} - 詳細 "
     edit:
       title: "%{name} - 編集"
       basic_info: "基本情報"
