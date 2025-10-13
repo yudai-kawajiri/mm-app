@@ -8,10 +8,14 @@
   <%= render 'product_material_details', product: @product %>
 <% end %>
 
+<%# 「商品名 - 詳細」となるタイトルを定義%>
+<% product_title = t('products.show.title', name: @product.name) %>
+
 <%# 共通ラッパーをハッシュ構文で呼び出し、localsを渡す %>
 <%= render partial: 'shared/resource_details', locals: {
-  title: @product.name,
+  title: product_title,
   resource: @product,
   content_left_title: '基本情報',
   content_right_title: '使用原材料',
 } %>
+
