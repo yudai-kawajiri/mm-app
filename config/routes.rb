@@ -1,9 +1,5 @@
 Rails.application.routes.draw do
-  get "plans/index"
-  get "plans/new"
-  get "plans/edit"
-  get "plans/create"
-  get "plans/update"
+
   # controllersオプションを追加し、RegistrationsControllerを指定
   devise_for :users, controllers: {
     registrations: 'users/registrations' # usersフォルダ内のregistrations_controllerを使う
@@ -43,4 +39,6 @@ Rails.application.routes.draw do
     #（/products/:product_id/product_materials/show などに対応）
     resource :product_materials, only: [:show, :edit, :update]
   end
+
+  resource :plan, only: [:index, :new, :create]
 end
