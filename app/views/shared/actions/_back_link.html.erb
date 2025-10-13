@@ -1,0 +1,10 @@
+<% custom_class ||= nil %>
+
+<%# 必須引数: url %>
+<% url = local_assigns[:url] %>
+
+<% link_text = t('helpers.link.back') %>
+<% default_class = "btn btn-outline-secondary" %>
+<% final_class = "#{default_class} #{custom_class}".strip %>
+
+<%= link_to link_text, url, class: final_class %>

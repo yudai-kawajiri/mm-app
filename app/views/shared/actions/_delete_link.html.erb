@@ -1,0 +1,19 @@
+<%# NameError回避のため、オプション引数を初期化 %>
+<% custom_class ||= nil %>
+
+<%# 必要引数: url, resource_name %>
+<%# オプション引数: custom_class %>
+<% link_text = t('helpers.link.destroy') %>
+
+<%# クラスのデフォルト値を設定 %>
+<% default_class = "btn btn-danger btn-sm" %>
+<%# 個々のカスタムクラスと結合。その際は空欄でもstripで対応 %>
+<% final_class = "#{default_class} #{custom_class}".strip %>
+
+<%= link_to link_text, url,
+  data: {
+    turbo_method: :delete,
+    turbo_confirm: t('helpers.confirm.destroy', resource: resource_name)
+  },
+  class: final_class
+%>

@@ -29,4 +29,24 @@ class Material < ApplicationRecord
   validates :unit_weight_for_order,
             presence: true,
             numericality: { greater_than: 0 }
+
+  # Categoryの名前を表示
+  # 未 本当にいるのか？
+  def category_name_for_display
+    # 関連付けられた Category が存在すれば name 属性を返し、なければ空文字列を返す
+    category.present? ? category.name : ''
+  end
+
+  # 製品単位の名前を表示するためのメソッド
+  # 未 本当にいるのか？
+  def unit_for_product_name
+    unit_for_product.present? ? unit_for_product.name : ''
+  end
+
+
+  # 発注単位の名前を表示するためのメソッド
+  # 未 本当にいるのか？
+  def unit_for_order_name
+    unit_for_order.present? ? unit_for_order.name : ''
+  end
 end

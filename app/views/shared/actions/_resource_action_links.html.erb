@@ -1,0 +1,29 @@
+<%# 必須引数: resource, resource_name %>
+<%# オプション引数: show_link %>
+<%# 詳細リンクの表示/非表示を切り替えるためのオプション %>
+<% show_link = local_assigns.fetch(:show_link, true) %>
+
+<% return if resource.nil? %>
+
+<div class="d-flex">
+  <%# 1. 詳細リンク %>
+  <%# show_linkがtrueの場合にのみ表示 %>
+  <% if show_link %>
+    <%= render 'shared/actions/show_link',
+        url: resource,
+        custom_class: 'me-2' %>
+  <% end %>
+
+  <%# 2. 編集リンク %>
+  <%# 常に表示 %>
+  <%= render 'shared/actions/edit_link',
+      url: url_for([:edit, resource]),
+      custom_class: 'me-2' %>
+
+  <%# 3. 削除リンク %>
+  <%# 常に表示 %>
+  <%= render 'shared/actions/delete_link',
+      url: resource,
+      resource_name: resource_name
+  %>
+</div>

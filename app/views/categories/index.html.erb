@@ -1,14 +1,18 @@
+<%= paginate @categories, theme: 'bootstrap-5' %>
 <%= render 'shared/resource_list',
     title: t('.title'),
+    resources: @categories,
     new_path: new_category_path,
-    new_resource_name: Category.model_name.human do %>
+    resource_class: Category,
+    show_action_link: false,
+    search_target: :category_type,
 
-  <%# 共有パーシャルを呼び出し、ローカル変数として categories_path を渡す %>
-  <%= render 'shared/search_form', form_path: categories_path, search_target: :category_type  %>
+    columns: [
+      { header: :name, data: :name },
+      # ヘッダー名には元の属性名（category_type）を、データにはメソッド名（category_type_i18n）を渡す
+      { header: :category_type, data: :category_type_i18n }
+    ]
+%>
 
-  <%# ローカル変数 categories に @categories の値を渡す %>
-  <%= render 'category_table', categories: @categories %>
-<% end %>
 
-<%# ページネーション設定 %>
 <%= paginate @categories, theme: 'bootstrap-5' %>

@@ -3,37 +3,24 @@
 <% material_name = @material.name %>
 
 <%# 画面全体のタイトルを「まぐろ赤身」（原材料名）に設定 %>
-<% title = material_name %>
+<% title = t('materials.show.title', material_name: material_name) %>
 
 <%# ページタイトル %>
 <%= content_for :page_title, title %>
-<div class="d-flex justify-content-between align-items-center mb-4">
+
+<%# タイトルとアクション %>
+<div class="d-flex justify-content-between align-items-center mb-4 mt-n4">
+
+  <%# 1. タイトル部分 %>
   <div>
-    <h2><%= title %></h2> <%# 画面上部H2は「まぐろ赤身」 %>
+    <h2 class="mb-0"><%= title %></h2>
   </div>
 
-  <div class="actions-top">
-    <%# 「戻る」ボタンは右上に残す %>
-    <%= link_to t('helpers.link.back', default: '戻る'), url_for(resource.class), class: "btn btn-secondary" %>
-  </div>
+  <%# 2. アクションボタン %>
+  <%= render 'shared/actions/resource_header_actions', resource: @material, is_show_page: true %>
 </div>
 
-<%# 詳細セクション（全てを統合した単一カード） %>
+<%# 詳細 %>
 <div class="card p-4 mb-4 shadow-sm">
-    <%# カード内にタイトルなし。ボタンのみを右端に配置。 %>
-    <div class="d-flex justify-content-end align-items-center mb-3">
-        <div class="card-actions d-flex">
-            <%# 編集ボタンをカードヘッダー内に配置（横並び） %>
-            <%= link_to t('helpers.submit.edit', default: '編集'), url_for([:edit, resource]), class: "btn btn-sm btn-primary me-2" %>
-
-            <%# 削除ボタンをカードヘッダー内に配置（横並び） %>
-            <%= button_to t('helpers.link.destroy', default: '削除'), resource,
-                method: :delete,
-                data: { turbo_confirm: t('confirm.destroy') },
-                class: 'btn btn-sm btn-danger' %>
-        </div>
-    </div>
-
-    <%# 2カラム構成と説明項目をパーシャルから呼び出す %>
-    <%= render 'material_details', material: @material %>
+  <%= render 'material_details', material: @material %>
 </div>
