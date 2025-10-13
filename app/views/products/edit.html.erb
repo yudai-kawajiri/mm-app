@@ -19,17 +19,18 @@
 
   <%# 右カラム: 使用原材料 %>
   <div class="col-md-6 mb-4">
-    <div class="card shadow-sm h-100 p-4">
+    <div class="card shadow-sm h-100 p-4 d-flex flex-column">
       <h4 class="card-title mb-4"><%= t('.material_info') %></h4>
 
-      <%# ネストフォームのパーシャルを呼び出す %>
-      <%= render 'product_materials_fields', f: f %>
-    </div>
-  </div>
+      <div class="flex-grow-1">
+        <%= render 'product_materials_fields', f: f %>
+      </div>
 
-  <%# フォーム送信ボタ %>
-  <div class="col-12 text-center mt-3">
-    <%= f.submit t('helpers.submit.update'), class: "btn btn-primary btn-lg me-3" %>
-    <%= link_to t('helpers.link.back'), product_path(@product), class: "btn btn-outline-secondary btn-lg" %>
+      <div class="mt-auto pt-3 mt-4" style="z-index: 10;">
+        <div class="d-flex justify-content-end">
+          <%= render 'shared/actions/form_action_links', f: f, resource: @product, back_url: product_path(@product) %>
+        </div>
+      </div>
+    </div>
   </div>
 <% end %>
