@@ -60,7 +60,7 @@
 
         <%# アクションカラム %>
         <td>
-          <%= render 'shared/actions/action_links',
+          <%= render 'shared/actions/_resource_action_links',
               resource: resource,
               resource_name: resource.class.model_name.human,
               show_link: defined?(show_action_link) ? show_action_link : true
