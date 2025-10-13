@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  get "plans/index"
+  get "plans/new"
+  get "plans/edit"
+  get "plans/create"
+  get "plans/update"
   # controllersオプションを追加し、RegistrationsControllerを指定
   devise_for :users, controllers: {
     registrations: 'users/registrations' # usersフォルダ内のregistrations_controllerを使う
