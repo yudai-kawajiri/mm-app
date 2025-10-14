@@ -11,5 +11,7 @@ class Plan < ApplicationRecord
 
   # バリデーション
   validates :plan_date, presence: true
+  validates :name, presence: true
+  validates :category_id, presence: true
 
 end
