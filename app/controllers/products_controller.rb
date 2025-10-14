@@ -20,7 +20,7 @@ class ProductsController < AuthenticatedController
     # 編集画面に遷移（商品原材料登録へ）
     if @product.save
       flash[:notice] = t('flash_messages.create.success', resource: Product.model_name.human, name: @product.name)
-      redirect_to edit_product_product_material_path(@product)
+      redirect_to edit_product_product_materials_path(@product)
     else
       flash.now[:alert] = t('flash_messages.create.failure', resource: Product.model_name.human)
       render :new, status: :unprocessable_entity
