@@ -34,11 +34,15 @@ Rails.application.routes.draw do
     # （/products/:id/purge_image というDELETEリクエストに対応）
     member do
       delete 'purge_image', to: 'products#purge_image', as: :purge_image
+
+      # 製造計画の非同期計算に必要な情報を取得するAPI
+      get :details_for_plan
     end
     # ネストされたリソースを定義
     #（/products/:product_id/product_materials/show などに対応）
     resource :product_materials, only: [:show, :edit, :update]
   end
 
-  resource :plan, only: [:index, :new, :create]
+  # Planのルーティング
+  resources :plans
 end
