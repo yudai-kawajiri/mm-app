@@ -1,22 +1,26 @@
-class PlansController < ApplicationController
+class PlansController < AuthenticatedController
+  before_action :authenticate_user!, except: [:index]
   def index
     # 未　全員閲覧できるようにするためcurrent_userはなし。他もどうするか考え中
-    @plan = Plan.all.includes(:category, :user).order(plan_date: desc)
+    @plans = Plan.all.includes(:category, :user).order(created_at: :desc)
 
   end
 
   def new
     @plan = Plan.new
-    # ネストフォーム用に、子レコードを最低1つビルドしておく
-    @plan.product_plans.build
+    @tabs_categories = Category.where(category_type: 'product')
+
   end
 
   def create
-    @plan = Plan.new(plan_params(:id))
+    @plan =  current_user.plans.build(plan_params)
     if @plan.save
-      redirect_to @plan
+      redirect_to plans_path
     else
-      render :new
+      # エラー確認のため
+      flash.now[:error] = @plan.errors.full_messages.join("、")
+      @tabs_categories = Category.where(category_type: 'product')
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -30,11 +34,15 @@ class PlansController < ApplicationController
 
   def plan_params
     params.require(:plan).permit(
-      :plan_date,
       :category_id,
       :user_id,
+      :name,
+      :description,
+      :status,
       # ネストしたリソースで使用
       product_plans_attributes: [
+        :id,
+        :_destroy,
         :product_id,
         :production_count
       ]
