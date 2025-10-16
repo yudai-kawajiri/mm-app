@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_13_092643) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_14_121859) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -70,12 +70,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_13_092643) do
   end
 
   create_table "plans", force: :cascade do |t|
-    t.date "plan_date", null: false
     t.bigint "category_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.integer "status", default: 0, null: false
     t.index ["category_id"], name: "index_plans_on_category_id"
+    t.index ["name"], name: "index_plans_on_name", unique: true
     t.index ["user_id"], name: "index_plans_on_user_id"
   end
 
@@ -94,7 +97,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_13_092643) do
   create_table "product_plans", force: :cascade do |t|
     t.bigint "plan_id", null: false
     t.bigint "product_id", null: false
-    t.integer "puroduction_count", null: false
+    t.integer "production_count", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["plan_id", "product_id"], name: "index_product_plans_on_plan_id_and_product_id", unique: true

@@ -20,7 +20,7 @@ class ProductsController < AuthenticatedController
     # 編集画面に遷移（商品原材料登録へ）
     if @product.save
       flash[:notice] = t('flash_messages.create.success', resource: Product.model_name.human, name: @product.name)
-      redirect_to edit_product_product_material_path(@product)
+      redirect_to edit_product_product_materials_path(@product)
     else
       flash.now[:alert] = t('flash_messages.create.failure', resource: Product.model_name.human)
       render :new, status: :unprocessable_entity
@@ -69,6 +69,26 @@ end
       head :no_content # 成功（204 No Content）を返す
     else
       head :not_found # 画像がない場合は404
+    end
+  end
+
+  # 製造計画に必要な商品詳細（価格とカテゴリID）を返すAPIアクション
+  def details_for_plan
+    # set_product はこのアクションでは使用できないため、params[:id]で直接検索します
+    # 未 ActiveRecord::RecordNotFound が発生する可能性があるため、例外処理を追加
+
+    begin
+      # 商品を見つける
+      product = Product.find(params[:id])
+
+      # 価格とカテゴリIDをJSONで返す
+      render json: {
+        price: product.price,
+        category_id: product.category_id
+      }
+    rescue ActiveRecord::RecordNotFound
+      # 商品IDが見つからない場合は 404 ステータスを返す
+      render json: { error: "Product not found" }, status: :not_found
     end
   end
 

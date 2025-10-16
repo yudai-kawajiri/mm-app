@@ -1,0 +1,60 @@
+<%# ✅ 修正: data-controller に nested-form-item を追加 %>
+<div class="row align-items-center mb-2 p-2 border-bottom"
+    data-controller="plan-product nested-form-item"
+    data-plan-product-price-value="<%= f.object.product&.price %>"
+    data-plan-product-category-id="<%= f.object.product&.category_id %>">
+
+
+  <%# ---------------------- 削除フラグ（隠しフィールド） ---------------------- %>
+   <%# ✅ 修正: 誤って "false" を渡すのを避け、value: f.object.marked_for_destruction? ? 1 : 0 とする %>
+  <%= f.hidden_field :_destroy, value: f.object.marked_for_destruction? ? 1 : 0,
+      data: { nested_form_item_target: 'destroy', 'plan-product-target': 'destroy' } %>
+
+  <%= f.hidden_field :id %>
+
+  <%# ---------------------- 1. 商品選択ドロップダウン ---------------------- %>
+  <div class="col-md-5">
+    <%= f.label :product_id, '商品名', class: 'form-label visually-hidden' %>
+
+    <% current_category_id = f.object.product&.category_id %>
+    <% products = current_category_id ? Product.where(category_id: current_category_id) : Product.all %>
+
+    <%= f.collection_select(:product_id, products, :id, :name,
+        { include_blank: '--- 商品を選択 ---' },
+        { class: 'form-select',
+          data: {
+            action: 'change->plan-product#updateProduct',
+            'plan-product-target': 'productSelect'
+          }
+        }) %>
+  </div>
+
+  <%# ---------------------- 2. 数量入力 ---------------------- %>
+  <div class="col-md-3">
+    <%= f.label :production_count, '数量', class: 'form-label visually-hidden' %>
+    <%= f.number_field :production_count,
+        class: 'form-control',
+        min: 0,
+        placeholder: '数量',
+        data: {
+          'plan-product-target': 'quantity',
+          action: 'input->plan-product#calculate'
+        } %>
+  </div>
+
+  <%# ---------------------- 3. 小計表示 ---------------------- %>
+  <div class="col-md-2 text-end fw-bold">
+    <div data-plan-product-target="subtotal">
+      <%= number_to_currency(f.object.subtotal_calculated_for_view, unit: '¥') rescue number_to_currency(0, unit: '¥') %>
+    </div>
+  </div>
+
+  <%# ---------------------- 4. 削除ボタン ---------------------- %>
+  <div class="col-md-2 text-end">
+    <button type="button"
+            class="btn btn-sm btn-outline-danger"
+            data-action="click->nested-form-item#remove"> <%# ✅ 修正: アクションを nested-form-item#remove に変更 %>
+      削除
+    </button>
+  </div>
+</div>

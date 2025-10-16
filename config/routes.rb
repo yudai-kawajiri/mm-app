@@ -1,9 +1,5 @@
 Rails.application.routes.draw do
-  get "plans/index"
-  get "plans/new"
-  get "plans/edit"
-  get "plans/create"
-  get "plans/update"
+
   # controllersオプションを追加し、RegistrationsControllerを指定
   devise_for :users, controllers: {
     registrations: 'users/registrations' # usersフォルダ内のregistrations_controllerを使う
@@ -38,9 +34,15 @@ Rails.application.routes.draw do
     # （/products/:id/purge_image というDELETEリクエストに対応）
     member do
       delete 'purge_image', to: 'products#purge_image', as: :purge_image
+
+      # 製造計画の非同期計算に必要な情報を取得するAPI
+      get :details_for_plan
     end
     # ネストされたリソースを定義
     #（/products/:product_id/product_materials/show などに対応）
     resource :product_materials, only: [:show, :edit, :update]
   end
+
+  # Planのルーティング
+  resources :plans
 end

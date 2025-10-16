@@ -3,6 +3,8 @@ class User < ApplicationRecord
   has_many :units, dependent: :destroy
   has_many :materials, dependent: :destroy
   has_many :products, dependent: :destroy
+  has_many :plans, dependent: :destroy
+  
   # Deviseの認証モジュールを設定
   devise :database_authenticatable, :registerable,
         :recoverable, :rememberable, :validatable

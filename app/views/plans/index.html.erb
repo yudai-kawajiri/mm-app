@@ -1,2 +1,14 @@
-<h1>Plans#index</h1>
-<p>Find me in app/views/plans/index.html.erb</p>
+<%= render('shared/resource_list',
+    # I18nのキーではなく、直接タイトルを指定
+    title: "製造計画一覧",
+    resources: @plans,
+    new_path: new_plan_path,
+    resource_class: Plan,
+
+    columns: [
+      # Planモデルのカラムを定義
+      { header: :name, data: :name },
+      { header: :category_id, data: :category_name_for_display },
+      { header: :status, data: :translated_status }
+    ]
+) %>
