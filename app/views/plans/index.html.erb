@@ -1,3 +1,8 @@
+<%# 未 ページネーションをアクションビューに移動 %>
+<div class="d-flex justify-content-center mt-4">
+  <%= paginate @plans, theme: 'bootstrap-5' %>
+</div>
+
 <% content_for(:title, t('plans.index.title')) %>
 <h1><%= t('plans.index.title') %></h1>
 <%= render('shared/resource_list',
@@ -16,3 +21,7 @@
       { header: :status, data: :translated_status }
     ]
 ) %>
+
+<div class="d-flex justify-content-center mt-4">
+  <%= paginate @plans, theme: 'bootstrap-5' %>
+</div>
