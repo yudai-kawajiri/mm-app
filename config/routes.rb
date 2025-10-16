@@ -26,8 +26,13 @@ Rails.application.routes.draw do
   resources :units, except: [:show]
 
   # Materialのルーティング
-  resources :materials
-
+  resources :materials do
+  # カスタムルートを追加
+    member do
+      get :product_unit_data # GET /materials/:id/product_unit_data に対応
+    end
+  end
+  
   # Productのルーティング
   resources :products do
     # 特定の商品の画像のみを削除するためのカスタムルート
