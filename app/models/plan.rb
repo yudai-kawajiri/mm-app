@@ -20,13 +20,13 @@ class Plan < ApplicationRecord
 
   private
 
-
   def category_name_for_display
     self.category.name
   end
 
   def translated_status
     # enum で定義されたステータスの値 (draft, completedなど) に対応する、
+    # I18nファイルに定義された日本語名を取得します。
     I18n.t("activerecord.attributes.plan.statuses.#{self.status}")
   end
 

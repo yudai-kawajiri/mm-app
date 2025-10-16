@@ -31,13 +31,13 @@ class Product < ApplicationRecord
   validates :item_number, presence: true, length: { maximum: 4 }, uniqueness: { scope: :user_id }
   validates :status, presence: true
 
-   # 🔴 追加: Categoryの名前を表示するための安全なメソッド 🔴
+   # Categoryの名前を表示するための安全なメソッド
   def category_name_for_display
     # category (belongs_to) が存在すれば、その name 属性を返す
     category.present? ? category.name : ''
   end
 
-   # 🔴 追加: 金額表示用のヘルパーメソッド 🔴
+   # 金額表示用のヘルパーメソッド
   # 呼び出し元: product.price_with_currency
   def price_with_currency
     # number_to_currency ヘルパーはビューまたはヘルパーで呼び出すのが正しいが、
