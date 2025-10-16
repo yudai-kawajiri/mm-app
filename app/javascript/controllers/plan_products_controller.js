@@ -1,70 +1,84 @@
-// 総合計とカテゴリ合計の集計
-
 import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["totalPrice", "totalContainer", "categoryTotal"]
 
   connect() {
     this.updateTotalPrice();
-    this.updateCategoryTotals(); // カテゴリ合計も初期計算
+    this.updateCategoryTotals();
   }
 
   // 子コントローラーからのイベントを捕捉するアクション
   recalculate(event) {
     this.updateTotalPrice();
-    this.updateCategoryTotals(); // 総合計とカテゴリ合計を更新
+    this.updateCategoryTotals();
   }
 
   // 1. 総合計の計算ロジック
   updateTotalPrice() {
     let total = 0;
-
-    // 全ての plan-product コントローラーの要素（商品行）を取得
     const productRows = this.element.querySelectorAll('[data-controller~="plan-product"]');
 
     productRows.forEach(row => {
-      // 削除対象でないことを確認
-      const isDestroyed = row.querySelector('[data-plan-product-target="destroy"]').value === '1';
+        // 1. テンプレート行（'NEW_RECORD'）を除外
+        if (row.id && row.id.includes('NEW_RECORD')) return;
 
-      if (!isDestroyed) {
-        // 子コントローラーの Stimulus Value（データ属性）から price を取得
-        const price = parseFloat(row.dataset.planProductPriceValue) || 0;
-        // 数量入力フィールドから quantity を取得
-        const quantity = parseFloat(row.querySelector('[data-plan-product-target="quantity"]').value) || 0;
+        // 2. 削除フィールドの要素を安全に取得（エラー回避）
+        const destroyInput = row.querySelector('[data-plan-product-target="destroy"]');
+        if (!destroyInput) return; // destroyInput が null の場合はスキップ
 
-        total += quantity * price;
-      }
+        const isDestroyed = destroyInput.value === '1';
+
+        if (!isDestroyed) {
+
+            // 数量入力フィールドの存在を確認（エラー回避）
+            const quantityInput = row.querySelector('[data-plan-product-target="quantity"]');
+            if (!quantityInput) return;
+
+            // 値の取得と計算
+            const price = parseFloat(row.dataset.planProductPriceValue) || 0;
+            const quantity = parseFloat(quantityInput.value) || 0;
+
+            total += quantity * price;
+        }
     });
 
-    // 総合計を表示
     this.totalPriceTarget.textContent = this.formatCurrency(total);
-  }
+}
 
   // 2. カテゴリ合計の計算ロジック
   updateCategoryTotals() {
     let categoryTotals = {};
 
-    //  全ての製品行をループして集計
     const productRows = this.element.querySelectorAll('[data-controller~="plan-product"]');
 
     productRows.forEach(row => {
-      const isDestroyed = row.querySelector('[data-plan-product-target="destroy"]').value === '1';
-      //  修正後の子ERBから data-plan-product-category-id を取得
-      const categoryId = row.dataset.planProductCategoryId;
-      // 読み取った文字列を数値（例: 5）に変換し、quantity 変数に代入する。
-      if (!isDestroyed && categoryId) {
-        const price = parseFloat(row.dataset.planProductPriceValue) || 0;
-        const quantity = parseFloat(row.querySelector('[data-plan-product-target="quantity"]').value) || 0;
-        const subtotal = quantity * price;
+       // テンプレート行（NEW_RECORD）を除外
+      if (row.id && row.id.includes('NEW_RECORD')) return;
 
-        if (!categoryTotals.hasOwnProperty(categoryId)) {
-          categoryTotals[categoryId] = 0;
+        // 削除フィールドの要素を安全に取得（エラー回避）
+        const destroyInput = row.querySelector('[data-plan-product-target="destroy"]');
+        if (!destroyInput) return;
+
+        const isDestroyed = destroyInput.value === '1';
+
+        const categoryId = row.dataset.planProductCategoryId;
+
+        if (!isDestroyed && categoryId) {
+
+            const quantityInput = row.querySelector('[data-plan-product-target="quantity"]');
+            if (!quantityInput) return;
+
+            const price = parseFloat(row.dataset.planProductPriceValue) || 0;
+            const quantity = parseFloat(quantityInput.value) || 0;
+            const subtotal = quantity * price;
+
+            if (!categoryTotals.hasOwnProperty(categoryId)) {
+              categoryTotals[categoryId] = 0;
+            }
+            categoryTotals[categoryId] += subtotal;
         }
-        categoryTotals[categoryId] += subtotal;
-      }
     });
 
-    //  結果を全ての categoryTotal ターゲットに書き込む
     this.categoryTotalTargets.forEach(target => {
       const categoryId = target.dataset.categoryId;
       const total = categoryTotals[categoryId] || 0;
@@ -75,5 +89,5 @@ export default class extends Controller {
   // 通貨整形ヘルパー
   formatCurrency(amount) {
     return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY', minimumFractionDigits: 0 }).format(amount);
-  }
+}
 }

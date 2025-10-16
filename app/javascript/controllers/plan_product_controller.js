@@ -19,7 +19,7 @@ export default class extends Controller {
     this.subtotalTarget.textContent = this.formatCurrency(subtotal);
 
    // 親コントローラーに通知し、総合計とカテゴリ合計を更新
-    this.dispatch("calculated", { prefix: "plan-product" });
+    this.dispatch('calculated', { prefix: 'plan-product' });
   }
 
   // 2. 商品選択時の処理 (API呼び出し)
