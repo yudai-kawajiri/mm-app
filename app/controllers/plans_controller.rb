@@ -18,10 +18,10 @@ class PlansController < AuthenticatedController
   def create
     @plan =  current_user.plans.build(plan_params)
     if @plan.save
+      flash[:notice] = t("flash_messages.create.success", resource: Plan.model_name.human, name: @plan.name)
       redirect_to plans_path
     else
-      # エラー確認のため
-      flash.now[:error] = @plan.errors.full_messages.join("、")
+      flash.now[:alert] = t("flash_messages.create.failure", resource: Plan.model_name.human)
       @tabs_categories = Category.where(category_type: 'product')
       set_plan_categories # <-- この行を追加！
       render :new, status: :unprocessable_entity
