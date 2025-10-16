@@ -1,0 +1,33 @@
+  <%# 未 ブラウザでの警告は共通化予定 %>
+  <div class="mb-3">
+    <%= f.label :name, '計画名', class: 'form-label' %>
+    <%= f.text_field :name, class: 'form-control', required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :category_id, '分類カテゴリ', class: 'form-label' %>
+    <%# Categoryを category_type: 'plan' に限定 %>
+    <%= f.collection_select :category_id, @plan_categories, :id, :name,
+      ({ include_blank: ' 選択してください ' }),
+      ({
+        class: 'form-select',
+        required: true
+      }) %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :status, '計画ステータス', class: 'form-label' %>
+
+    <%# enum のキーと値を使ってドロップダウンを生成 未 翻訳 %>
+    <%= f.select :status,
+              Plan.statuses.keys.map { |k| [t("activerecord.enums.plan.status.#{k}"), k] },
+              { include_blank: '選択してください' },
+              { class: 'form-select',
+                required: true, } %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :description, '備考/説明', class: 'form-label' %>
+    <%= f.text_area :description, class: 'form-control', rows: 4 %>
+  </div>
+
