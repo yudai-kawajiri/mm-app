@@ -70,6 +70,13 @@ ja:
       unit_prompt: "単位"
       delete_button: "削除"
 
+  plans:
+    new:
+      title: "製造計画登録"
+    index:
+      title: "製造計画一覧"
+    total_price_label: "総合計"
+
   common:
     search: "検索"
     clear: "クリア"
@@ -101,6 +108,10 @@ ja:
       new: "新規作成"
       back_to_dashboard: "ダッシュボードへ戻る"
       add_material: "原材料を追加"
+      add_item: "+ %{resource}を追加"
+
+    product_material_fields:
+      quantity_placeholder: "数量"
 
     label:
       user:
@@ -193,6 +204,7 @@ ja:
       unit: "単位"
       material: "原材料"
       product: "商品"
+      plan: "製造計画"
 
     attributes:
       user:
@@ -232,6 +244,12 @@ ja:
         status: "ステータス"
         description: "説明"
 
+      plan:
+        name: "計画名"
+        category_id: "カテゴリー"
+        status: "ステータス"
+        description: "備考"
+
     enums:
       category:
         category_type:
@@ -247,3 +265,7 @@ ja:
           draft: "下書き"
           selling: "販売中"
           discontinued: "販売中止"
+      plan:
+        status:
+          draft: "編集中"
+          completed: "完了"
