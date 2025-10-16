@@ -1,67 +1,80 @@
-<%# f: form builder をローカル変数として受け取ることを想定 %>
+<%# 1. 製品名 %>
+<div class="mb-4">
+  <%= f.label :name, class: "form-label h5" %>
+  <%= f.text_field :name, class: "form-control form-control-lg" %>
+</div>
 
-<div class="row">
-  <%# 左カラム (col-md-6): 基本情報 %>
-  <div class="col-md-6">
-    <%# 製品名 %>
-    <div class="mb-4">
-      <%= f.label :name, class: "form-label h5" %>
-      <%= f.text_field :name, class: "form-control form-control-lg" %>
-    </div>
+<%# 2. 品目番号 %>
+<div class="mb-4">
+  <%= f.label :item_number, class: "form-label h5" %>
+  <%= f.text_field :item_number, class: "form-control form-control-lg" %>
+</div>
 
-    <%# 品目番号 %>
-    <div class="mb-4">
-      <%= f.label :item_number, class: "form-label h5" %>
-      <%= f.text_field :item_number, class: "form-control form-control-lg" %>
-    </div>
+<%# 3. 売価 %>
+<div class="mb-4">
+  <%= f.label :price, class: "form-label h5" %>
+  <div class="input-group input-group-lg">
+    <%= f.number_field :price, class: "form-control", step: 1, min: 0 %>
+    <span class="input-group-text">円</span>
+  </div>
+</div>
 
-    <%# 売価 %>
-    <div class="mb-4">
-      <%= f.label :price, class: "form-label h5" %>
-      <div class="input-group input-group-lg">
-        <%= f.number_field :price, class: "form-control", step: 1, min: 0 %>
-        <span class="input-group-text">円</span>
+<%# 4. カテゴリ %>
+<div class="mb-4">
+  <%= f.label :category_id, class: "form-label h5" %>
+  <%= f.collection_select :category_id, current_user.categories,
+                          :id,
+                          :name,
+                          { prompt: t('helpers.prompt.select') },
+                          { class: "form-select form-select-lg" } %>
+</div>
+
+<%# 5. ステータス %>
+<div class="mb-4">
+  <%= f.label :status, class: "form-label h5" %>
+  <%= f.select :status, Product.statuses.keys.map { |k| [k.capitalize, k] },
+                      { prompt: t('helpers.prompt.select') },
+                      { class: "form-select form-select-lg" } %>
+</div>
+
+<%# 6. 説明 %>
+<div class="mb-4">
+  <%= f.label :description, class: "form-label h5" %>
+  <%= f.text_area :description, rows: 5, class: "form-control form-control-lg" %>
+</div>
+
+  <%# [右カラム] 画像の表示・アップロード・削除機能 %>
+    <div class="mb-3">
+      <%= f.label :image, class: "form-label" %>
+
+      <%# 既存の画像表示エリアとプレビュー %>
+      <div class="text-center">
+        <%# image_tagは一行記述で構文安定化済み %>
+        <%= image_tag(f.object.image.attached? ? f.object.image : '', id: 'image-preview', style: "max-width: 200px; height: auto; #{f.object.image.attached? ? 'display: block;' : 'display: none;'}", class: "img-thumbnail mb-2", data: { existing_image: f.object.image.attached?.to_s }) %>
+      </div>
+
+      <%# ボタン表示 %>
+      <div class="text-center mb-2 mt-1">
+        <%# 1. 既存画像削除ボタン (初期表示: 既存画像がある場合のみ) %>
+        <% if f.object.image.attached? %>
+          <div id="current-image-container-<%= f.object.id %>">
+            <%# link_toは一行記述で構文安定化済み %>
+            <%= link_to t('helpers.delete_image', default: '画像削除'), "#", data: { product_id: f.object.id, url: purge_image_product_path(f.object) }, class: "btn btn-sm btn-danger", id: "delete-button-#{f.object.id}" %>
+          </div>
+        <% end %>
+
+        <%# 2. 新規画像選択時のキャンセルボタン (初期表示: 非表示) %>
+        <div id="new-image-action" style="display: none;">
+          <button type="button" id="cancel-new-image-button" class="btn btn-sm btn-outline-danger">
+            <%= t('helpers.cancel_new_image', default: '選択をキャンセル') %>
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <%= f.file_field :image, id: 'product-image-input', class: "form-control" %>
+        <small class="text-muted">
+          <%= f.object.image.attached? ? '新しい画像に変更する場合のみ選択' : '画像を選択してください' %>
+        </small>
       </div>
     </div>
-  </div>
-
-  <%# 右カラム (col-md-6): 分類・ステータス %>
-  <div class="col-md-6">
-    <%# カテゴリ %>
-    <div class="mb-4">
-      <%= f.label :category_id, class: "form-label h5" %>
-      <%= f.collection_select :category_id, current_user.categories,
-                              :id,
-                              :name,
-                              { prompt: "カテゴリを選択してください" },
-                              { class: "form-select form-select-lg" } %>
-    </div>
-
-    <%# ステータス %>
-    <div class="mb-4">
-      <%= f.label :status, class: "form-label h5" %>
-      <%= f.select :status, Product.statuses.keys.map { |k| [k.capitalize, k] },
-                            { prompt: "ステータスを選択してください" },
-                            { class: "form-select form-select-lg" } %>
-    </div>
-</div>
-
-<%#  説明 - 全幅エリア %>
-<div class="row">
-  <div class="col-md-12">
-    <div class="mb-4">
-      <%= f.label :description, class: "form-label h5" %>
-      <%= f.text_area :description, rows: 5, class: "form-control form-control-lg" %>
-    </div>
-  </div>
-</div>
-
-<%#  画像 - 全幅エリア %>
-<div class="row">
-  <div class="col-md-12">
-    <div class="mb-4">
-      <%= f.label :image, class: "form-label h5" %>
-      <%= f.file_field :image, class: "form-control form-control-lg" %>
-    </div>
-  </div>
-</div>

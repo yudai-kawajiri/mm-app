@@ -1,25 +1,47 @@
-<%# f: 親フォームビルダー %>
-<%# コントローラーとコンテナ指定 %>
 <div data-controller="nested-form">
-  <div data-nested-form-target="target">
 
-    <%# 既存の product_materials の入力欄を表示 %>
-    <%= f.fields_for :product_materials do |material_fields| %>
-      <%= render 'product_material_fields', f: material_fields %>
-    <% end %>
+  <h3><%= t('products.edit.material_info') %></h3>
 
+  <%#フォームヘッダー  %>
+  <div class="row fw-bold mb-2 pb-1 border-bottom">
+    <div class="col-md-4"><%= t('activerecord.attributes.material.name') %></div>
+    <div class="col-md-2 text-center"><%= t('helpers.product_material_fields.quantity_placeholder') %></div>
+    <div class="col-md-2"><%= t('activerecord.attributes.material.unit_weight_for_product') %></div>
+    <div class="col-md-2"><%= t('activerecord.attributes.material.unit_for_product') %></div>
+    <div class="col-md-2 text-end"><%= t('common.action') %></div>
   </div>
 
-  <%#  新規行のテンプレート  %>
-  <%# child_index: 'NEW_RECORD' が Stimulus でタイムスタンプに置換 %>
-  <template data-nested-form-target="template">
-    <%= f.fields_for :product_materials, ProductMaterial.new, child_index: 'NEW_RECORD' do |material_fields| %>
-      <%= render 'product_material_fields', f: material_fields %>
+  <%#  フォーム行の挿入ターゲット  %>
+  <div data-nested-form-target="target" data-category-id="<%= f.object.category_id.to_i %>">
+    <%# 既存レコードの描画 %>
+    <%= f.fields_for :product_materials do |material_f| %>
+      <%= render 'product_material_fields', f: material_f %>
     <% end %>
-  </template>
 
-  <%# 行を追加するボタン %>
-  <button type="button" class="btn btn-outline-success w-100 mt-3" data-action="nested-form#add">
+    <%#初期行の表示ロジック %>
+    <% if f.object.new_record? && f.object.product_materials.empty? %>
+      <%= f.fields_for :product_materials, f.object.product_materials.build, child_index: "initial_record" do |material_f| %>
+        <%= render 'product_material_fields', f: material_f %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# 新規追加ボタン  %>
+  <div class="d-grid mt-3">
+  <button type="button" class="btn btn-sm btn-outline-success"
+          data-action="nested-form#add"
+          data-association="product_materials"
+          data-template-id="product_material_fields_template"
+          data-category-id="<%= f.object.category_id.to_i %>">
     <%= t('helpers.link.add_material') %>
   </button>
+</div>
+
+  <%# テンプレート定義 %>
+  <%= f.fields_for :product_materials, f.object.product_materials.build, child_index: 'NEW_RECORD' do |material_f| %>
+    <template data-nested-form-target="template" id="product_material_fields_template">
+      <%= render 'product_material_fields', f: material_f %>
+    </template>
+  <% end %>
+
 </div>

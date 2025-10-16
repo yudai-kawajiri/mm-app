@@ -1,10 +1,14 @@
-<%# フォームラッパーにローカル変数を渡し、フォームビルダーオブジェクトが生成 %>
-<%#  orm_wrappeで生成したfをここでproduct_fieldsに渡す %>
-<%= render 'shared/form_wrapper',
-    title: t('.title'),
-    resource: @product,
-    back_path: products_path,
-    form_options: { multipart: true } do |f| %>
+<% content_for(:page_title, t('products.new.title')) %>
 
-  <%= render 'product_fields', f: f %>
+<h2><%= t('.title') %></h2> <%# ページ内のH2見出しを表示 %>
+
+<%# form_with のブロックを定義。画像を扱うため multipart: true を設定 %>
+<%= form_with model: @product, local: true, html: { multipart: true } do |f| %>
+  <%# 共通の二分割レイアウト (①) を呼び出し、パーシャルを渡す %>
+  <%= render 'shared/resource_two_column_form',
+              f: f,
+              basic_fields: 'products/product_fields',
+              detail_fields: 'products/product_materials_fields',
+              resource_name: 'products'
+  %>
 <% end %>
