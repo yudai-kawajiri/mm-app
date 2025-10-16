@@ -1,0 +1,42 @@
+<%# app/views/shared/_resource_two_column_form.html.erb %>
+
+<%# 必須ローカル変数: f (form_builder), basic_fields (左カラムのパーシャルパス), detail_fields (右カラムのパーシャルパス) %>
+<%# 推奨ローカル変数: resource_name (アクションリンク生成に使用) %>
+
+<%# 共通エラーメッセージの表示 %>
+<%= render 'shared/error_messages', resource: f.object %>
+
+<div class="row">
+
+  <%# 左カラム: 基本情報と送信ボタン %>
+  <div class="col-md-6">
+    <div class="card p-4">
+      <h3>基本情報</h3>
+
+      <%# 左カラムの内容描画 %>
+      <%= render basic_fields, f: f %>
+
+      <%# フォーム送信ボタンと戻るリンク (共通アクションパーシャルに置き換え) %>
+      <%# f と f.object (リソース) を渡すことで、_form_action_links.html.erb が動作 %>
+      <%= render 'shared/actions/form_action_links',
+                 f: f,
+                 resource: f.object,
+                 resource_name: resource_name # 戻るリンクのパス生成のために渡す
+      %>
+
+    </div>
+  </div>
+
+  <%# 右カラム: 詳細リスト（ネストフォーム）と集計 %>
+  <div class="col-md-6">
+    <div class="card p-4">
+      <%# 製造計画のためにタイトルを「製造商品」に修正済み %>
+      <h3>製造商品</h3>
+
+      <%# 右カラムの内容描画 %>
+      <%= render detail_fields, f: f %>
+    </div>
+  </div>
+
+</div>
+<%# form_with のブロックは呼び出し元で閉じられます %>
