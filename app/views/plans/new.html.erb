@@ -1,34 +1,13 @@
-<h1>新しい製造計画の作成</h1>
+<%# 1. ページタイトルをI18nキーに修正 %>
+<h1><%= t('plans.new.title') %></h1>
 
+<%# 2. フォームの中身を全て共通パーシャルに置き換え %>
 <%= form_with model: @plan, local: true do |f| %>
-
-  <%# 未 バリデーションエラーの表示 %>
-  <%#= render 'shared/error_messages', resource: @plan %>
-
-  <div class="row">
-
-    <%#  左カラム: 基本情報  %>
-    <div class="col-md-6">
-      <div class="card p-4">
-        <h3>基本情報</h3>
-
-        <%= render 'plan_fields', f: f %>
-
-        <%# フォーム送信ボタン %>
-        <div class="d-flex justify-content-start mt-4">
-          <%= f.submit '登録', class: 'btn btn-primary me-2' %>
-          <%= link_to '一覧に戻る', plans_path, class: 'btn btn-secondary' %>
-        </div>
-      </div>
-    </div>
-
-    <%# 右カラム: 商品リストと集計 %>
-    <div class="col-md-6">
-      <div class="card p-4">
-        <h3>計画商品</h3>
-        <%= render 'plan_products_fields', f: f %>
-      </div>
-    </div>
-
-  </div>
+  <%# 共通の二分割レイアウトを呼び出す %>
+  <%= render 'shared/resource_two_column_form',
+             f: f,
+             basic_fields: 'plans/plan_fields',
+             detail_fields: 'plans/plan_products_fields',
+             resource_name: 'plans' # 戻るリンクの動的生成のためにリソース名を渡す
+  %>
 <% end %>
