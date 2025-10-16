@@ -1,8 +1,4 @@
-<%# app/views/shared/_resource_two_column_form.html.erb %>
-
-<%# 必須ローカル変数: f (form_builder), basic_fields (左カラムのパーシャルパス), detail_fields (右カラムのパーシャルパス) %>
-<%# 推奨ローカル変数: resource_name (アクションリンク生成に使用) %>
-
+<%= content_for :page_title, title %>
 <%# 共通エラーメッセージの表示 %>
 <%= render 'shared/error_messages', resource: f.object %>
 
@@ -19,9 +15,9 @@
       <%# フォーム送信ボタンと戻るリンク (共通アクションパーシャルに置き換え) %>
       <%# f と f.object (リソース) を渡すことで、_form_action_links.html.erb が動作 %>
       <%= render 'shared/actions/form_action_links',
-                 f: f,
-                 resource: f.object,
-                 resource_name: resource_name # 戻るリンクのパス生成のために渡す
+                f: f,
+                resource: f.object,
+                resource_name: resource_name # 戻るリンクのパス生成のために渡す
       %>
 
     </div>

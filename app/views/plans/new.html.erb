@@ -6,6 +6,7 @@
 <%= form_with model: @plan, local: true do |f| %>
   <%# 共通の二分割レイアウトを呼び出す %>
   <%= render 'shared/resource_two_column_form',
+             title: t('.title'),
              f: f,
              basic_fields: 'plans/plan_fields',
              detail_fields: 'plans/plan_products_fields',
