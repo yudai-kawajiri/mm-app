@@ -91,7 +91,10 @@ ja:
   # ヘルパーメソッドで使用されるテキストをまとめる
   helpers:
     no_setting: "未設定"
-    prompt: "選択してください"
+    prompt:
+      # 未 階層変更
+      select: "選択してください"
+      category_select: "カテゴリを選択してください"
     submit:
       create: "登録"
       edit: "編集"
