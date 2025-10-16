@@ -27,7 +27,7 @@ class Plan < ApplicationRecord
   def translated_status
     # enum で定義されたステータスの値 (draft, completedなど) に対応する、
     # I18nファイルに定義された日本語名を取得します。
-    I18n.t("activerecord.attributes.plan.statuses.#{self.status}")
+    I18n.t("activerecord.enums.plan.status.#{self.status}")
   end
 
   # product_id と production_count の両方が空の場合にレコードを無視する
