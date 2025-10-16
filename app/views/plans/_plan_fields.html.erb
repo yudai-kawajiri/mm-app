@@ -8,7 +8,7 @@
   <%= f.label :category_id, class: 'form-label' %>
   <%# Categoryを category_type: 'plan' に限定 %>
   <%= f.collection_select :category_id, @plan_categories, :id, :name,
-    ({ include_blank: t('helpers.prompt') }),
+    ({ include_blank: t('helpers.prompt.select') }),
     ({
       class: 'form-select',
       required: true
@@ -20,7 +20,7 @@
 
   <%= f.select :status,
             Plan.statuses.keys.map { |k| [t("activerecord.enums.plan.status.#{k}"), k] },
-            { include_blank: t('helpers.prompt') },
+            { include_blank: t('helpers.prompt.select') },
             { class: 'form-select',
               required: true, } %>
 </div>

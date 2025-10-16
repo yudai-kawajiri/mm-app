@@ -1,4 +1,3 @@
-<%# ✅ 修正: data-controller に nested-form-item を追加 %>
 <div class="row align-items-center mb-2 p-2 border-bottom"
     data-controller="plan-product nested-form-item"
     data-plan-product-price-value="<%= f.object.product&.price.to_f || 0.0 %>"
@@ -9,7 +8,7 @@
 
   <%= f.hidden_field :id %>
 
-  <%# ---------------------- 1. 商品選択ドロップダウン ---------------------- %>
+  <%# 1. 商品選択ドロップダウン 未 ドロップダウンの翻訳パス変更 %>
   <div class="col-md-5">
     <%= f.label :product_id, class: 'form-label visually-hidden' %>
 
@@ -17,7 +16,7 @@
     <% products = current_category_id ? Product.where(category_id: current_category_id) : Product.all %>
 
     <%= f.collection_select(:product_id, products, :id, :name,
-        { include_blank: t('helpers.prompt') },
+        { include_blank: t('helpers.prompt.select') },
         { class: 'form-select',
           required: true,
           data: {
@@ -27,7 +26,7 @@
         }) %>
   </div>
 
-  <%# ---------------------- 2. 数量入力 ---------------------- %>
+  <%#  2. 数量入力  %>
   <div class="col-md-3">
     <%= f.label :production_count, class: 'form-label visually-hidden' %>
     <%= f.number_field :production_count,
@@ -40,18 +39,18 @@
         } %>
   </div>
 
-  <%# ---------------------- 3. 小計表示 ---------------------- %>
+  <%#  3. 小計表示  %>
   <div class="col-md-2 text-end fw-bold">
     <div data-plan-product-target="subtotal">
       <%= number_to_currency((f.object.subtotal_calculated_for_view rescue 0), unit: '¥') %>%>
     </div>
   </div>
 
-  <%# ---------------------- 4. 削除ボタン ---------------------- %>
+  <%#  4. 削除ボタン  %>
   <div class="col-md-2 text-end">
     <button type="button"
             class="btn btn-sm btn-outline-danger"
-            data-action="click->nested-form-item#remove"> <%# ✅ 修正: アクションを nested-form-item#remove に変更 %>
+            data-action="click->nested-form-item#remove">
       <%= t('helpers.link.destroy') %>
     </button>
   </div>
