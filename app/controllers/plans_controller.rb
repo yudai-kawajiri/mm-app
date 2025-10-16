@@ -1,11 +1,15 @@
 class PlansController < AuthenticatedController
+  include PaginationConcern
   before_action :authenticate_user!, except: [:index]
   before_action :set_plan_categories, only: [:new]
 
   def index
     # 未　全員閲覧できるようにするためcurrent_userはなし。他もどうするか考え中
-    @plans = Plan.all.includes(:category, :user).order(created_at: :desc)
-
+    plans = Plan.all.includes(:category, :user)
+              .order(created_at: :desc)
+              .search_by_name(search_params[:q])
+              .filter_by_category_id(search_params[:category_id])
+    @plans = apply_pagination(plans)
   end
 
   def new
@@ -56,5 +60,10 @@ class PlansController < AuthenticatedController
   def set_plan_categories
     # 必要なデータをコントローラーで取得する
     @plan_categories = Category.where(category_type: 'plan')
+  end
+
+  def search_params
+    # 検索で許可するパラメータ を定義
+    params.permit(:q, :category_id)
   end
 end

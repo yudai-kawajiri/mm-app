@@ -1,11 +1,13 @@
-<% content_for(:title, t('plans.new.title')) %>
+<% content_for(:title, t('plans.index.title')) %>
 <h1><%= t('plans.index.title') %></h1>
 <%= render('shared/resource_list',
     # I18nのキーではなく、直接タイトルを指定
+    # 未 商品カテゴリーのものだけ出す
     title: t('.title'),
     resources: @plans,
     new_path: new_plan_path,
     resource_class: Plan,
+    search_target: :category_id,
 
     columns: [
       # Planモデルのカラムを定義
