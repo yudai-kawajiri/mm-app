@@ -1,4 +1,3 @@
-<%= content_for :page_title, title %>
 <%# 共通エラーメッセージの表示 %>
 <%= render 'shared/error_messages', resource: f.object %>
 
@@ -12,7 +11,6 @@
       <%# 左カラムの内容描画 %>
       <%= render basic_fields, f: f %>
 
-      <%# フォーム送信ボタンと戻るリンク (共通アクションパーシャルに置き換え) %>
       <%# f と f.object (リソース) を渡すことで、_form_action_links.html.erb が動作 %>
       <%= render 'shared/actions/form_action_links',
                 f: f,
@@ -35,4 +33,3 @@
   </div>
 
 </div>
-<%# form_with のブロックは呼び出し元で閉じられます %>
