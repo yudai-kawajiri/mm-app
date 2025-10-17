@@ -1,39 +1,37 @@
-<%# 親から product: @product として渡される %>
 <% product = local_assigns[:product] %>
+<% all_materials = product.product_materials %>
+<% material_categories = @material_categories %>
 
-<div class="card-body p-0">
+<%# タブナビゲーションの構造を新規作成画面と統一 %>
+<nav>
+  <div class="nav nav-tabs" id="materialTab" role="tablist">
+    <%# Allタブ %>
+    <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#material-all" type="button" role="tab" aria-controls="material-all" aria-selected="true">
+      <%= t('product_materials.tabs.all') %>
+    </button>
 
-  <% product_materials = product.product_materials %>
+    <%# カテゴリ別のタブ %>
+    <% material_categories.each do |category| %>
+      <button class="nav-link" id="<%= category.id %>-tab" data-bs-toggle="tab" data-bs-target="#material-<%= category.id %>" type="button" role="tab" aria-controls="material-<%= category.id %>" aria-selected="false">
+        <%= category.name %>
+      </button>
+    <% end %>
+  </div>
+</nav>
 
-  <% if product_materials.present? %>
-    <table class="table table-sm table-borderless">
-      <thead>
-        <tr>
-          <th class="text-muted">原材料名</th>
-          <th class="text-end text-muted">分量</th>
-          <th class="text-start text-muted">単位</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% product_materials.each do |pm| %>
-          <tr>
-            <td>
-              <%# 原材料名 %>
-              <%= pm.material.name %>
-            </td>
-            <td class="text-end">
-              <%# 分量 %>
-              <%= number_with_precision(pm.quantity, precision: 3) %>
-            </td>
-            <td class="text-start text-dark">
-              <%# 単位名 %>
-              <%= pm.unit.name %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% else %>
-    <p class="text-muted text-center" style="padding-top: 50px; font-size: 1.0em;">※使用原材料はまだ設定されていません。</p>
-  <% end %>
+<%# タブの内容表示部分 %>
+<div class="tab-content pt-3" id="materialTabContent">
+
+    <%# Allタブの内容 %>
+    <div class="tab-pane fade show active" id="material-all" role="tabpanel" aria-labelledby="all-tab">
+      <%= render 'material_table', materials: all_materials %>
+    </div>
+
+    <%# カテゴリ別のタブの内容 %>
+    <% material_categories.each do |category| %>
+      <% filtered_materials = all_materials.select { |pm| pm.material.category_id == category.id } %>
+        <div class="tab-pane fade" id="material-<%= category.id %>" role="tabpanel" aria-labelledby="<%= category.id %>-tab">
+          <%= render 'material_table', materials: filtered_materials %>
+        </div>
+    <% end %>
 </div>

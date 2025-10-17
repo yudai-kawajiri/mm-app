@@ -1,19 +1,23 @@
-<%# 左カラムの内容を content_for で登録 %>
+<%# ページタイトルの設定 %>
+<% product_title = t('products.show.title', name: @product.name) %>
+<%= content_for(:title, product_title) %>
+
+<%# ページ見出し %>
+<h1><%= t('.title', name: @product.name) %></h1>
+
+<%# 左カラム %>
 <%= content_for :content_left do %>
   <%= render 'product_details', product: @product %>
 <% end %>
 
-<%# 右カラムの内容を content_for で登録 %>
+<%# 右カラム %>
 <%= content_for :content_right do %>
   <%= render 'product_material_details', product: @product %>
 <% end %>
 
-<%# 「商品名 - 詳細」となるタイトルを定義%>
-<% product_title = t('products.show.title', name: @product.name) %>
-
-<%# 共通ラッパーをハッシュ構文で呼び出し、localsを渡す %>
-<%= render partial: 'shared/resource_details', locals: {
-  title: product_title,
+<%# カラムラッパーを呼び出し、必要なローカル変数を渡す %>
+<%= render partial: 'shared/resource_two_column_details', locals: {
   resource: @product,
+  content_left_title: t('common.information_about_model', model: t('activerecord.models.product')),
+  content_right_title: t('product_materials.title'),
 } %>
-

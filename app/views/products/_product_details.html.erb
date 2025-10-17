@@ -1,8 +1,8 @@
-<%# このファイルだけインテンドが4になるエラー %>
+<%# product: @product として渡される %>
 <% product = local_assigns[:product] %>
 <% product_class = product.class %>
 
-<%# 商品名  %>
+<%# 商品名 %>
 <div class="mb-3 border-bottom py-2">
     <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:name) %></label>
     <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<%# 品番  %>
+<%# 品番 %>
 <div class="mb-3 border-bottom py-2">
     <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:item_number) %></label>
     <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
@@ -34,16 +34,16 @@
     </div>
 </div>
 
-<%# ステータス  %>
+<%# ステータス %>
 <div class="mb-3 border-bottom py-2">
     <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:status) %></label>
     <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
-        <%= t("enums.product.status.#{product.status}", default: product.status.capitalize)  %>
+    <%= t("enums.product.status.#{product.status}", default: product.status.capitalize) %>
     </div>
 </div>
 
 <div class="row mt-4">
-    <%# 左カラム: 説明 %>
+    <%# 説明 %>
     <div class="col-md-6">
     <h6 class="text-muted" style="font-size: 1.1em;"><%= Product.human_attribute_name(:description) %></h6>
 
@@ -56,6 +56,7 @@
     </div>
 </div>
 
+    <%# 画像 %>
     <div class="col-md-6">
     <h6 class="text-muted" style="font-size: 1.1em;"><%= Product.human_attribute_name(:image) %></h6>
 

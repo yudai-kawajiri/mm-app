@@ -12,7 +12,6 @@ class ProductsController < AuthenticatedController
   def new
     # ユーザーに紐づいた新しいProductインスタンスを準備
     @product = current_user.products.build
-    @material_categories = Category.where(category_type: 'material').order(:name)
   end
 
   def create
@@ -31,6 +30,8 @@ class ProductsController < AuthenticatedController
   def show
     # N+1対策: material と unit の情報を事前に includes で取得
     @product_materials = @product.product_materials.includes(:material, :unit).order(:id)
+    # 原材料カテゴリのタブ表示に必要なデータを取得
+    @material_categories = Category.where(category_type: 'material').order(:name)
   end
 
   def edit
@@ -79,7 +80,6 @@ end
     # 未 ActiveRecord::RecordNotFound が発生する可能性があるため、例外処理を追加
 
     begin
-      # 商品を見つける
       product = Product.find(params[:id])
 
       # 価格とカテゴリIDをJSONで返す
@@ -124,6 +124,7 @@ end
     params.permit(:q, :category_id)
   end
 
+  # 未 定義間違い
   def set_material_categories
     @material_categories = current_user.categories.where(category_type: 'product').order(:name)
   end
