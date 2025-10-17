@@ -15,8 +15,6 @@ class PlansController < AuthenticatedController
   def new
     @plan = Plan.new
     @plan.status = nil
-    @tabs_categories = Category.where(category_type: 'product')
-
   end
 
   def create
@@ -27,7 +25,7 @@ class PlansController < AuthenticatedController
     else
       flash.now[:alert] = t("flash_messages.create.failure", resource: Plan.model_name.human)
       @tabs_categories = Category.where(category_type: 'product')
-      set_plan_categories # <-- この行を追加！
+      set_plan_categories
       render :new, status: :unprocessable_entity
     end
   end
@@ -58,8 +56,10 @@ class PlansController < AuthenticatedController
   end
 
   def set_plan_categories
+    # タブ表示用のカテゴリ
+    @product_categories = Category.where(category_type: 'product').order(:name)
     # 必要なデータをコントローラーで取得する
-    @plan_categories = Category.where(category_type: 'plan')
+    @plan_categories = Category.where(category_type: 'plan').order(:name)
   end
 
   def search_params

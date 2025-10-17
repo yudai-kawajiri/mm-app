@@ -1,7 +1,7 @@
 class ProductsController < AuthenticatedController
   include PaginationConcern
   before_action :set_product, only: [:show, :edit, :update, :destroy, :purge_image]
-
+  before_action :set_material_categories, only: [:new]
   def index
     @products =  apply_pagination(current_user.products
                               .search_by_name(search_params[:q])
@@ -12,6 +12,7 @@ class ProductsController < AuthenticatedController
   def new
     # ユーザーに紐づいた新しいProductインスタンスを準備
     @product = current_user.products.build
+    @material_categories = Category.where(category_type: 'material').order(:name)
   end
 
   def create
@@ -123,4 +124,7 @@ end
     params.permit(:q, :category_id)
   end
 
+  def set_material_categories
+    @material_categories = current_user.categories.where(category_type: 'product').order(:name)
+  end
 end
