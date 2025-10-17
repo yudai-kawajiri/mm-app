@@ -12,7 +12,6 @@ export default class extends Controller {
     if (!materialId) {
       this.unitDisplayTarget.textContent = "未設定";
       this.unitWeightDisplayTarget.textContent = "未設定"; // 追加
-      this.quantityInputTarget.value = ""; // 変更
       return;
     }
 
@@ -29,9 +28,6 @@ export default class extends Controller {
         // data.unit_name を単位表示ターゲットに設定
         this.unitDisplayTarget.textContent = data.unit_name || "未設定";
 
-        // data.quantity を数量入力フィールドに設定 (valueプロパティを使う)
-        this.quantityInputTarget.value = data.quantity ? data.quantity : '0'; // 変更
-
         // data.unit_weight を商品単位重量表示ターゲットに設定 (textContentプロパティを使う)
         this.unitWeightDisplayTarget.textContent = data.unit_weight || "未設定"; // 追加
       })
@@ -39,7 +35,6 @@ export default class extends Controller {
         console.error("単位データの取得に失敗しました:", error);
         this.unitDisplayTarget.textContent = "エラー";
         this.unitWeightDisplayTarget.textContent = "エラー"; // 追加
-        this.quantityInputTarget.value = ""; // 変更
       });
   }
 }

@@ -9,7 +9,7 @@
   <%= f.hidden_field :id %>
 
   <%# 1. 商品選択ドロップダウン 未 ドロップダウンの翻訳パス変更 %>
-  <div class="col-md-5">
+  <div class="col-md-4">
     <%= f.label :product_id, class: 'form-label visually-hidden' %>
 
     <% current_category_id = f.object.product&.category_id %>
@@ -27,8 +27,7 @@
   </div>
 
   <%#  2. 数量入力  %>
-  <div class="col-md-3">
-    <%= f.label :production_count, class: 'form-label visually-hidden' %>
+  <div class="col-md-2">
     <%= f.number_field :production_count,
         class: 'form-control',
         min: 0,
@@ -39,7 +38,14 @@
         } %>
   </div>
 
-  <%#  3. 小計表示  %>
+  <%# 3. 商品売価 %>
+  <div class="col-md-2 text-end">
+    <span data-plan-product-target="priceDisplay" class="form-control-plaintext">
+      <%= number_to_currency(f.object.product&.price.to_f || 0, unit: t('number.currency.format.unit'), precision: 0) %>
+    </span>
+  </div>
+
+  <%#  4. 小計表示  %>
   <div class="col-md-2 text-end fw-bold">
     <div data-plan-product-target="subtotal">
       <%= number_to_currency((f.object.subtotal_calculated_for_view rescue 0), unit: t('number.currency.format.unit')) %>%>

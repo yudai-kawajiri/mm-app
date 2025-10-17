@@ -82,6 +82,7 @@ ja:
       title: "製造計画一覧"
     category_total_label: "合計"
     total_price_label: "総合計"
+    plan_product_subtotal: "小計"
 
   common:
     search: "検索"

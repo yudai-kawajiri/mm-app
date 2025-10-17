@@ -6,9 +6,15 @@
                     data: { nested_form_item_target: 'destroy' } %>
   <%= f.hidden_field :id %>
 
+  <%# カテゴリIDの取得とリストの絞り込みロジックを追加 %>
+  <% current_category_id = f.object.material&.category_id %>
+
+  <%# current_category_id を使ってリストを絞り込む %>
+  <% materials = current_category_id ? Material.where(category_id: current_category_id).order(:name) : Material.all %>
+
   <%# 1. 原材料選択ドロップダウン %>
   <div class="col-md-4">
-    <%= f.collection_select(:material_id, current_user.materials, :id, :name,
+    <%= f.collection_select(:material_id, materials, :id, :name,
       { include_blank: t('helpers.prompt.select') },
       { class: 'form-select', required: true,
         data: {
