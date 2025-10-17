@@ -1,6 +1,6 @@
 <%= paginate @units, theme: 'bootstrap-5' %>
+<h1><%= t('units.index.title') %></h1>
 <%= render 'shared/resource_list',
-    title: t('.title'),
     resources: @units,
     new_path: new_unit_path,
     resource_class: Unit,
