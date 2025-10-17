@@ -62,8 +62,6 @@ ja:
       title: "%{name} - 詳細 "
     edit:
       title: "%{name} - 編集"
-      basic_info: "基本情報"
-      material_info: "使用原材料"
 
     product_material_fields:
       material_name_prompt: "原材料名"
@@ -82,6 +80,12 @@ ja:
     search: "検索"
     clear: "クリア"
     action: "アクション" # helpersから移動
+
+  forms:
+    titles:
+      basic_info: "基本情報"
+      plan_product: "製造商品"
+      product_material: "商品原材料"
 
   search:
     placeholders:
