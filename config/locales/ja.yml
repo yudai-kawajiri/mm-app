@@ -74,6 +74,7 @@ ja:
       quantity_placeholder: "分量"
       unit_prompt: "単位"
       delete_button: "削除"
+      no_materials_set: "原材料はまだ設定されていません"
 
   plans:
     new:

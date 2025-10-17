@@ -38,7 +38,7 @@
 <div class="mb-3 border-bottom py-2">
     <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:status) %></label>
     <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
-    <%= t("enums.product.status.#{product.status}", default: product.status.capitalize) %>
+    <%= t("activerecord.enums.product.status.#{product.status}") %>
     </div>
 </div>
 

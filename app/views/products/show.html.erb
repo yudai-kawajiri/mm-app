@@ -18,6 +18,6 @@
 <%# カラムラッパーを呼び出し、必要なローカル変数を渡す %>
 <%= render partial: 'shared/resource_two_column_details', locals: {
   resource: @product,
-  content_left_title: t('common.information_about_model', model: t('activerecord.models.product')),
-  content_right_title: t('product_materials.title'),
+  content_left_title:t('forms.titles.basic_info', model: t('activerecord.models.product')),
+  content_right_title: t('forms.titles.product_material'),
 } %>
