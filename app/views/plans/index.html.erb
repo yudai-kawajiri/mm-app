@@ -8,7 +8,6 @@
 <%= render('shared/resource_list',
     # I18nのキーではなく、直接タイトルを指定
     # 未 商品カテゴリーのものだけ出す
-    title: t('.title'),
     resources: @plans,
     new_path: new_plan_path,
     resource_class: Plan,
