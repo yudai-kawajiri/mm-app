@@ -5,6 +5,12 @@ ja:
     formats:
       default: "%Y/%m/%d %H:%M:%S"
 
+  number:
+    currency:
+      format:
+        unit: "¥"
+        format: "%u%n"
+
   flash_messages:
     create:
       success: "%{resource} 「%{name}」を作成しました"
@@ -74,6 +80,7 @@ ja:
       title: "製造計画登録"
     index:
       title: "製造計画一覧"
+    category_total_label: "合計"
     total_price_label: "総合計"
 
   common:
@@ -117,8 +124,10 @@ ja:
       back_to_dashboard: "ダッシュボードへ戻る"
       add_material: "原材料を追加"
       add_item: "+ %{resource}を追加"
+      delete_image: "画像削除"
+      cancel_new_image: "選択をキャンセル"
 
-    product_material_fields:
+    forms:
       quantity_placeholder: "数量"
 
     label:

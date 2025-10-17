@@ -9,7 +9,7 @@
     <div class="col-12 text-end">
       <span class="fw-bold me-2"><%= t('plans.total_price_label') %>:</span>
       <span class="fw-bold text-end text-danger" data-plan-products-target="totalPrice">
-        <%= number_to_currency(0, unit: '¥') %>
+        <%= number_to_currency(0, unit: t('number.currency.format.unit')) %>
       </span>
     </div>
 
@@ -64,11 +64,11 @@
 
         <%# カテゴリ合計の表示エリア %>
         <div class="d-flex justify-content-end mt-3 fw-bold">
-            <span class="me-2"><%= category.name %> 合計:</span>
+            <span class="me-2"><%= category.name %> <%= t('plans.category_total_label') %>:</span>
             <span data-plan-products-target="categoryTotal"
                   data-category-id="<%= category.id %>"
                   class="text-end text-success">
-                <%= number_to_currency(0, unit: '¥') %>
+                <%= number_to_currency(0, unit: t('number.currency.format.unit')) %>
             </span>
         </div>
 

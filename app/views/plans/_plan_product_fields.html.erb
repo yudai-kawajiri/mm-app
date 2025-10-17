@@ -32,7 +32,7 @@
     <%= f.number_field :production_count,
         class: 'form-control',
         min: 0,
-        placeholder:  t('helpers.product_material_fields.quantity_placeholder'),
+        placeholder:  t('helpers.forms.quantity_placeholder'),
         data: {
           'plan-product-target': 'quantity',
           action: 'input->plan-product#calculate'
@@ -42,7 +42,7 @@
   <%#  3. 小計表示  %>
   <div class="col-md-2 text-end fw-bold">
     <div data-plan-product-target="subtotal">
-      <%= number_to_currency((f.object.subtotal_calculated_for_view rescue 0), unit: '¥') %>%>
+      <%= number_to_currency((f.object.subtotal_calculated_for_view rescue 0), unit: t('number.currency.format.unit')) %>%>
     </div>
   </div>
 
