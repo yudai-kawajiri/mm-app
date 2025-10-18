@@ -2,6 +2,7 @@ class PlansController < AuthenticatedController
   include PaginationConcern
   before_action :authenticate_user!, except: [:index]
   before_action :set_plan_categories, only: [:new]
+  before_action :set_plan, only: [:show]
 
   def index
     # 未　全員閲覧できるようにするためcurrent_userはなし。他もどうするか考え中
@@ -29,6 +30,8 @@ class PlansController < AuthenticatedController
       render :new, status: :unprocessable_entity
     end
   end
+
+  def show; end
 
   def edit
   end
@@ -65,5 +68,16 @@ class PlansController < AuthenticatedController
   def search_params
     # 検索で許可するパラメータ を定義
     params.permit(:q, :category_id)
+  end
+
+  # 未 メソッド内でn+1対応
+  def set_plan
+    @plan = Plan.find(params[:id])
+
+    # 計画に含まれる商品を取得
+    @plan_products = @plan.product_plans.includes(:product)
+
+    # 製造商品タブのカテゴリーとして、商品のカテゴリーを使用
+    @product_categories = Category.where(category_type: :product).order(:name)
   end
 end
