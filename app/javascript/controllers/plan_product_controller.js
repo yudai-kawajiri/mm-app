@@ -57,6 +57,18 @@ export default class extends Controller {
     }
   }
 
+  // 3. 論理削除（_destroy）に対応した削除アクション
+  remove(event) {
+    // 1. _destroy 隠しフィールドの値を '1' に設定（Railsに削除を伝える）
+    this.destroyTarget.value = '1';
+
+    // 2. 行全体を非表示
+    this.element.style.display = 'none';
+
+    // 3. 親コントローラーに再計算を要求
+    this.dispatch('calculated', { prefix: 'plan-product', bubbles: true });
+  }
+
   // 売価表示を更新するヘルパーメソッド
   updatePriceDisplay(price) {
     this.priceDisplayTarget.textContent = this.formatCurrency(price);

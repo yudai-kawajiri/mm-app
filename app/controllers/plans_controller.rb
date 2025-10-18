@@ -1,8 +1,8 @@
 class PlansController < AuthenticatedController
   include PaginationConcern
   before_action :authenticate_user!, except: [:index]
-  before_action :set_plan_categories, only: [:new]
-  before_action :set_plan, only: [:show]
+  before_action :set_plan_categories, only: [:new, :edit]
+  before_action :set_plan, only: [:show, :edit, :update]
 
   def index
     # 未　全員閲覧できるようにするためcurrent_userはなし。他もどうするか考え中
@@ -25,7 +25,6 @@ class PlansController < AuthenticatedController
       redirect_to plans_path
     else
       flash.now[:alert] = t("flash_messages.create.failure", resource: Plan.model_name.human)
-      @tabs_categories = Category.where(category_type: 'product')
       set_plan_categories
       render :new, status: :unprocessable_entity
     end
@@ -34,9 +33,18 @@ class PlansController < AuthenticatedController
   def show; end
 
   def edit
+    # 未 コントローラの仕事？ビューの仕事？
+    @plan.product_plans.build unless @plan.product_plans.any?
   end
 
   def update
+    if @plan.update(plan_params)
+      redirect_to plan_path(@plan)
+    else
+      set_plan_categories
+      @plan.product_plans.build unless @plan.product_plans.any?
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   private
@@ -72,10 +80,10 @@ class PlansController < AuthenticatedController
 
   # 未 メソッド内でn+1対応
   def set_plan
-    @plan = Plan.find(params[:id])
+    @plan = Plan.includes(product_plans: :product).find(params[:id])
 
     # 計画に含まれる商品を取得
-    @plan_products = @plan.product_plans.includes(:product)
+    @plan_products = @plan.product_plans
 
     # 製造商品タブのカテゴリーとして、商品のカテゴリーを使用
     @product_categories = Category.where(category_type: :product).order(:name)

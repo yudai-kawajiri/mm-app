@@ -1,35 +1,10 @@
-<%# 共通レイアウトにタイトルを渡す %>
-<%= content_for :page_title, t('.title', name: @product.name) %>
+<% content_for(:page_title, t('products.edit.title')) %>
+<h1><%= t('.title') %>: <%= @product.name %></h1>
 
-<%# フォーム %>
-<%= form_with(model: @product, local: true, class: "row") do |f| %>
-
-  <%# 共通エラーメッセージの表示 %>
-  <%= render 'shared/error_messages', resource: @product %>
-
-  <%# 左カラム: 基本情報 %>
-  <div class="col-md-6 mb-4">
-    <div class="card shadow-sm h-100 p-4">
-      <h4 class="card-title mb-4"><%= t('.basic_info') %></h4>
-
-      <%# 基本情報フォームのパーシャルを呼び出す %>
-      <%= render 'basic_fields', f: f %>
-    </div>
-  </div>
-
-  <%# 右カラム: 使用原材料 %>
-  <div class="col-md-6 mb-4">
-    <div class="card shadow-sm h-100 p-4 d-flex flex-column">
-
-      <div class="flex-grow-1">
-        <%= render 'product_materials_fields', f: f %>
-      </div>
-
-      <div class="mt-auto pt-3 mt-4" style="z-index: 10;">
-        <div class="d-flex justify-content-end">
-          <%= render 'shared/actions/form_action_links', f: f, resource: @product, back_url: product_path(@product) %>
-        </div>
-      </div>
-    </div>
-  </div>
+<%= form_with model: @product, local: true do |f| %>
+  <%= render 'shared/resource_two_column_form',
+              f: f,
+              basic_fields: 'products/product_fields',
+              detail_fields: 'products/product_materials_fields',
+              resource_name: 'products' %>
 <% end %>

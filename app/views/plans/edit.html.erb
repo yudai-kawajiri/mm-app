@@ -1,2 +1,11 @@
-<h1>Plans#edit</h1>
-<p>Find me in app/views/plans/edit.html.erb</p>
+<% content_for(:page_title, t('plans.edit.title')) %>
+<h1><%= t('.title') %>: <%= @plan.name %></h1>
+
+<%= form_with model: @plan, local: true do |f| %>
+  <%= render 'shared/resource_two_column_form',
+              f: f,
+              basic_fields: 'plans/plan_fields',
+              detail_fields: 'plans/plan_products_fields',
+              resource_name: 'plans'
+  %>
+<% end %>
