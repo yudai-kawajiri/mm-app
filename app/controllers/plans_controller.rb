@@ -2,7 +2,7 @@ class PlansController < AuthenticatedController
   include PaginationConcern
   before_action :authenticate_user!, except: [:index]
   before_action :set_plan_categories, only: [:new, :edit]
-  before_action :set_plan, only: [:show, :edit, :update]
+  before_action :set_plan, only: [:show, :edit, :update, :_destroy]
 
   def index
     # 未　全員閲覧できるようにするためcurrent_userはなし。他もどうするか考え中
@@ -45,6 +45,11 @@ class PlansController < AuthenticatedController
       @plan.product_plans.build unless @plan.product_plans.any?
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def _destroy
+    @product._destroy
+    redirect_to products_url, status: :see_other
   end
 
   private
