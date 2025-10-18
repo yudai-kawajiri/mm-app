@@ -5,6 +5,12 @@ ja:
     formats:
       default: "%Y/%m/%d %H:%M:%S"
 
+  number:
+    currency:
+      format:
+        unit: "¥"
+        format: "%u%n"
+
   flash_messages:
     create:
       success: "%{resource} 「%{name}」を作成しました"
@@ -23,6 +29,7 @@ ja:
       unit_management: "単位管理"
       material_management: "原材料管理"
       product_management: "商品管理"
+      plan_management: "商品計画管理"
       account_settings: "アカウント設定"
     welcome_message: "ようこそ！ %{name} さんのダッシュボード"
 
@@ -61,19 +68,33 @@ ja:
       title: "%{name} - 詳細 "
     edit:
       title: "%{name} - 編集"
-      basic_info: "基本情報"
-      material_info: "使用原材料"
 
     product_material_fields:
       material_name_prompt: "原材料名"
       quantity_placeholder: "分量"
       unit_prompt: "単位"
       delete_button: "削除"
+      no_materials_set: "原材料はまだ設定されていません"
+
+  plans:
+    new:
+      title: "製造計画登録"
+    index:
+      title: "製造計画一覧"
+    category_total_label: "合計"
+    total_price_label: "総合計"
+    plan_product_subtotal: "小計"
 
   common:
     search: "検索"
     clear: "クリア"
     action: "アクション" # helpersから移動
+
+  forms:
+    titles:
+      basic_info: "基本情報"
+      plan_product: "製造商品"
+      product_material: "商品原材料"
 
   search:
     placeholders:
@@ -84,7 +105,10 @@ ja:
   # ヘルパーメソッドで使用されるテキストをまとめる
   helpers:
     no_setting: "未設定"
-    prompt: "選択してください"
+    prompt:
+      # 未 階層変更
+      select: "選択してください"
+      category_select: "カテゴリを選択してください"
     submit:
       create: "登録"
       edit: "編集"
@@ -101,6 +125,12 @@ ja:
       new: "新規作成"
       back_to_dashboard: "ダッシュボードへ戻る"
       add_material: "原材料を追加"
+      add_item: "+ %{resource}を追加"
+      delete_image: "画像削除"
+      cancel_new_image: "選択をキャンセル"
+
+    forms:
+      quantity_placeholder: "数量"
 
     label:
       user:
@@ -193,6 +223,7 @@ ja:
       unit: "単位"
       material: "原材料"
       product: "商品"
+      plan: "製造計画"
 
     attributes:
       user:
@@ -232,6 +263,12 @@ ja:
         status: "ステータス"
         description: "説明"
 
+      plan:
+        name: "計画名"
+        category_id: "カテゴリー"
+        status: "ステータス"
+        description: "備考"
+
     enums:
       category:
         category_type:
@@ -247,3 +284,7 @@ ja:
           draft: "下書き"
           selling: "販売中"
           discontinued: "販売中止"
+      plan:
+        status:
+          draft: "編集中"
+          completed: "完了"

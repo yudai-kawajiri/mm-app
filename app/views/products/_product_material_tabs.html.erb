@@ -1,0 +1,50 @@
+<%# product: f.object として渡される (フォームビルダーのオブジェクト) %>
+<% f = local_assigns[:f] %>
+
+<%# タブのナビゲーション部分 %>
+<ul class="nav nav-tabs" id="materialFormTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="materials-tab" data-bs-toggle="tab" data-bs-target="#materials-form" type="button" role="tab" aria-controls="materials-form" aria-selected="true">
+      <%= t('product_materials.tabs.materials_form') %>
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="standards-tab" data-bs-toggle="tab" data-bs-target="#standards-form" type="button" role="tab" aria-controls="standards-form" aria-selected="false">
+      <%= t('product_materials.tabs.standards') %>
+    </button>
+  </li>
+</ul>
+
+<%# タブの内容表示部分 %>
+<div class="tab-content" id="materialFormTabContent">
+
+  <%# 原材料設定フォームのタブの内容 (ネストフォームが入る場所) %>
+  <div class="tab-pane fade show active" id="materials-form" role="tabpanel" aria-labelledby="materials-tab">
+    <div class="p-3">
+      <%= f.fields_for :product_materials do |pmf| %>
+        <%= render 'product_material_fields', f: pmf %>
+      <% end %>
+
+      <%# 新しい原材料を追加するためのボタン %>
+      <div class="d-flex justify-content-end mt-3">
+        <%= link_to_add_association t('helpers.add_material'), f, :product_materials,
+            partial: 'product_material_fields',
+            class: 'btn btn-sm btn-outline-primary',
+            data: {
+              association_insertion_node: '#product_materials_fields',
+              association_insertion_method: :append
+            } %>
+      </div>
+      <div id="product_materials_fields">
+        <%# 既存のレコードやJavaScriptで追加される新しいレコードがここに入る %>
+      </div>
+    </div>
+  </div>
+
+  <%# 規格情報タブの内容  %>
+  <div class="tab-pane fade" id="standards-form" role="tabpanel" aria-labelledby="standards-tab">
+    <div class="p-3">
+      <p class="text-muted"><%= t('product_materials.standards_form_placeholder') %></p>
+    </div>
+  </div>
+</div>

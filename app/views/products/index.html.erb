@@ -1,6 +1,6 @@
 <%= paginate @products, theme: 'bootstrap-5' %>
+<h1><%= t('plans.index.title') %></h1>
 <%= render('shared/resource_list',
-    title: t('.title'),
     resources: @products,
     new_path: new_product_path,
     resource_class: Product,

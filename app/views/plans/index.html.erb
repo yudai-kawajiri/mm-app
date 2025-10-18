@@ -1,9 +1,17 @@
+<%# 未 ページネーションをアクションビューに移動 %>
+<div class="d-flex justify-content-center mt-4">
+  <%= paginate @plans, theme: 'bootstrap-5' %>
+</div>
+
+<% content_for(:title, t('plans.index.title')) %>
+<h1><%= t('plans.index.title') %></h1>
 <%= render('shared/resource_list',
     # I18nのキーではなく、直接タイトルを指定
-    title: "製造計画一覧",
+    # 未 商品カテゴリーのものだけ出す
     resources: @plans,
     new_path: new_plan_path,
     resource_class: Plan,
+    search_target: :category_id,
 
     columns: [
       # Planモデルのカラムを定義
@@ -12,3 +20,7 @@
       { header: :status, data: :translated_status }
     ]
 ) %>
+
+<div class="d-flex justify-content-center mt-4">
+  <%= paginate @plans, theme: 'bootstrap-5' %>
+</div>

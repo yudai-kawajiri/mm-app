@@ -4,7 +4,6 @@ class MaterialsController <  AuthenticatedController
   before_action :set_material, only: [:show, :edit, :update, :destroy]
   def index
     @materials = apply_pagination(current_user.materials
-                              # 記載方法の短縮
                               .search_by_name(search_params[:q])
                               .filter_by_category_id(search_params[:category_id])
     )
@@ -62,6 +61,27 @@ class MaterialsController <  AuthenticatedController
       # 一覧画面に戻す
       redirect_to materials_url, status: :unprocessable_entity # 422ステータスでリダイレクト
     end
+  end
+
+
+  # GET /materials/:id/product_unit_data
+  def product_unit_data
+    @material = Material.find(params[:id])
+
+    # 1. 単位名を取得
+    unit_name = @material.unit_for_product&.name
+
+    # 2. 数量/重量を取得（unit_weight_for_product）
+    quantity_value = @material.unit_weight_for_product || 0
+
+    # JSON 形式で単位名と数量の両方を返す
+    render json: {
+      unit_name: unit_name,  # 単位名
+      quantity: quantity_value, # 数量/重量
+      unit_weight: @material.unit_weight_for_product
+    }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Material not found' }, status: :not_found
   end
 
   private

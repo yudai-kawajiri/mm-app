@@ -1,56 +1,65 @@
-// 個々の商品行の計算と API アクセス機能
+// 商品行の計算と API アクセス機能
 
 import { Controller } from "@hotwired/stimulus";
 
-// 個別項目の小計を計算し、親コントローラーに通知
 export default class extends Controller {
-  static targets = ["subtotal", "quantity", "destroy"];
+  static targets = ["subtotal", "quantity", "destroy", "priceDisplay"];
+
+  // 内部プロパティで価格を管理
+  priceValue = 0;
 
   connect() {
-    this.calculate(); // 初期計算を実行
+    this.priceValue = parseFloat(this.element.dataset.planProductPriceValue) || 0;
+    this.calculate();
   }
 
   // 1. 数量変更時の計算ロジック
   calculate() {
-    const price = parseFloat(this.element.dataset.planProductPriceValue) || this.priceValue || 0;
+    const price = this.priceValue;
     const quantity = parseFloat(this.quantityTarget.value) || 0;
     const subtotal = quantity * price;
-    // 小計を整形して表示
-    this.subtotalTarget.textContent = this.formatCurrency(subtotal);
 
-   // 親コントローラーに通知し、総合計とカテゴリ合計を更新
-    this.dispatch("calculated", { prefix: "plan-product" });
+    this.subtotalTarget.textContent = this.formatCurrency(subtotal);
+    this.updatePriceDisplay(price);
+
+    this.dispatch('calculated', { prefix: 'plan-product' });
   }
 
   // 2. 商品選択時の処理 (API呼び出し)
   updateProduct(event) {
-    // 選択された商品IDの取得と条件判定
     const productId = event.target.value;
 
     if (productId) {
-       //  API呼び出しと状態の更新 (メインロジック)
       this.fetchProductDetails(productId).then(data => {
-        this.priceValue = data.price;
-        this.element.dataset.planProductPriceValue = data.price;
-        // HTML要素にカテゴリIDをデータ属性として保存
+        this.priceValue = data.price || 0;
+
         this.element.dataset.planProductCategoryId = data.category_id;
 
-        // カテゴリIDもイベントに含めて親に渡す (カテゴリ別合計に利用)
+        this.updatePriceDisplay(this.priceValue);
+
+        if (data.unit_weight && (this.quantityTarget.value === "" || parseFloat(this.quantityTarget.value) === 0)) {
+            this.quantityTarget.value = data.unit_weight;
+        }
+
         this.dispatch("plan-product:category-updated", { detail: { categoryId: data.category_id } });
         this.calculate();
-      //   エラーハンドリング
       }).catch(error => {
         console.error("Failed to fetch product details:", error);
         this.priceValue = 0;
+        this.updatePriceDisplay(0);
         this.calculate();
       });
     } else {
-      // 解除した場合
       this.priceValue = 0;
-      this.element.dataset.planProductPriceValue = 0;
+      this.updatePriceDisplay(0);
       this.dispatch("plan-product:category-updated", { detail: { categoryId: null } });
       this.calculate();
     }
+  }
+
+  // 売価表示を更新するヘルパーメソッド
+  updatePriceDisplay(price) {
+    this.priceDisplayTarget.textContent = this.formatCurrency(price);
   }
 
   // APIを介して商品詳細を取得する非同期関数

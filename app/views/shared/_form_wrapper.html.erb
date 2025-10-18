@@ -10,7 +10,7 @@
                 local: true,
                 **(defined?(form_options) ? form_options : {})) do |f| %>
 
-    <%= render 'shared/error_messages', model: f.object %>
+    <%= render 'shared/error_messages', resource: f.object %>
 
     <div class="card p-4 mb-4">
 

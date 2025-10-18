@@ -1,35 +1,31 @@
-<%= content_for :page_title, title %>
+<% resource = local_assigns[:resource] %>
+<% content_left_title = local_assigns[:content_left_title] %>
+<% content_right_title = local_assigns[:content_right_title] %>
 
-  < <%# 共通パーシャル %>
+<%# ページアクションボタン %>
+<div class="d-flex justify-content-end mb-4">
   <%= render 'shared/actions/resource_header_actions', resource: resource, is_show_page: true %>
 </div>
-<%# 2カラムコンテンツ (content_for で定義されたものを呼び出す) %>
+
+<%# 2カラムコンテンツの枠組み %>
 <div class="row">
 
-  <%# 左カラム %>
+  <%# 左カラムの枠 %>
   <div class="col-md-6 mb-4">
     <div class="card shadow-sm h-100 p-3">
-
-      <%# タイトル%>
       <div class="d-flex justify-content-between align-items-center mb-3">
           <div class="card-title h5 mb-0" style="font-size: 1.5em;"><%= content_left_title %></div>
       </div>
-
-      <%# 左カラムの内容 %>
       <%= yield :content_left %>
     </div>
   </div>
 
-  <%# 右カラム %>
+  <%# 右カラムの枠 %>
   <div class="col-md-6 mb-4">
     <div class="card shadow-sm h-100 p-3">
-
-      <%# タイトル %>
       <div class="d-flex justify-content-between align-items-center mb-3">
           <div class="card-title h5 mb-0" style="font-size: 1.5em;"><%= content_right_title %></div>
       </div>
-
-      <%# 右カラムの内容  %>
       <%= yield :content_right %>
     </div>
   </div>

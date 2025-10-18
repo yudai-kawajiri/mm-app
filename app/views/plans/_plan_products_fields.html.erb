@@ -3,18 +3,20 @@
     data-plan-product-tabs-category-id-value="<%= @plan.category_id %>"
     data-action="plan-product:calculated->plan-products#recalculate">
 
- <%# --------------------- 総合計表示 (シンプルな形に戻す) - %>
-    <div class="d-flex justify-content-end mb-3">
-        <span class="fw-bold me-2">総合計:</span>
-        <span class="fw-bold text-end text-danger" data-plan-products-target="totalPrice">
-            <%= number_to_currency(@plan.total_price_calculated_for_view, unit: '¥') rescue number_to_currency(0, unit: '¥') %>
-        </span>
+  <h3><%= t('forms.titles.plan_product') %></h3>
+
+    <%#  総合計表示 %>
+    <div class="col-12 text-end">
+      <span class="fw-bold me-2"><%= t('plans.total_price_label') %>:</span>
+      <span class="fw-bold text-end text-danger" data-plan-products-target="totalPrice">
+        <%= number_to_currency(0, unit: t('number.currency.format.unit')) %>
+      </span>
     </div>
 
-  <%# --------------------- タブナビゲーション (ul) --------------------- %>
+  <%# タブナビゲーション %>
   <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-      <% @tabs_categories.each_with_index do |category, index| %>
+      <% @product_categories.each_with_index do |category, index| %>
         <button class="nav-link <%= index == 0 ? 'active' : '' %>"
                 id="nav-<%= category.id %>-tab"
                 data-bs-toggle="tab"
@@ -30,28 +32,37 @@
     </div>
   </nav>
 
-  <%# --------------------- タブコンテンツ (div.tab-content) --------------------- %>
+  <%#  タブコンテンツ (div.tab-content)  %>
   <div class="tab-content pt-3" id="nav-tabContent">
-    <% @tabs_categories.each_with_index do |category, index| %>
+    <% @product_categories.each_with_index do |category, index| %>
       <div class="tab-pane fade <%= index == 0 ? 'show active' : '' %>"
-           id="nav-<%= category.id %>"
-           role="tabpanel"
-           aria-labelledby="nav-<%= category.id %>-tab"
-           data-plan-product-tabs-target="category"
-           data-category-id="<%= category.id %>">
+          id="nav-<%= category.id %>"
+          role="tabpanel"
+          aria-labelledby="nav-<%= category.id %>-tab"
+          data-plan-product-tabs-target="category"
+          data-category-id="<%= category.id %>">
 
-        <%# --------------------- カテゴリー内のフォーム（商品リスト本体） --------------------- %>
-        <%# ✅ 修正: data-category-id を追加して、JS側でターゲットを特定できるようにする %>
+        <%# ヘッダー行%>
+        <div class="row fw-bold mb-2 pb-1 border-bottom">
+          <div class="col-md-4"><%= t('activerecord.attributes.product.name') %></div>
+          <div class="col-md-2 text-start"><%= t('helpers.forms.quantity_placeholder') %></div>
+          <div class="col-md-2 text-end"><%= t('activerecord.attributes.product.price') %></div>
+          <div class="col-md-2 text-end"><%= t('plans.plan_product_subtotal') %></div>
+          <div class="col-md-2 text-end"><%= t('common.action') %></div>
+        </div>
+
+        <%#  カテゴリー内のフォーム %>
+        <%# data-category-id を追加して、JS側でターゲットを特定できるようにする %>
         <div data-nested-form-target="target" data-category-id="<%= category.id %>">
 
-          <%# 💡 既存レコードの描画 (編集画面対応) %>
+          <%# 既存レコードの描画 %>
           <% @plan.product_plans.select { |pp| pp.product.present? && pp.product.category_id == category.id }.each do |plan_product| %>
             <%= f.fields_for :product_plans, plan_product, child_index: plan_product.object_id do |plan_product_f| %>
               <%= render 'plan_product_fields', f: plan_product_f %>
             <% end %>
           <% end %>
 
-          <%# --------------------- 初期レコードのビルド --------------------- %>
+          <%# 初期レコードのビルド  %>
           <% if @plan.new_record? && index == 0 %>
             <%= f.fields_for :product_plans, f.object.product_plans.build(product: Product.new(category_id: category.id)), child_index: "initial_record" do |plan_product_f| %>
               <%= render 'plan_product_fields', f: plan_product_f %>
@@ -60,24 +71,24 @@
         </div>
 
 
-         <%# ⭐ 追加: カテゴリ合計の表示エリア (各タブの最下部) %>
+        <%# カテゴリ合計の表示エリア %>
         <div class="d-flex justify-content-end mt-3 fw-bold">
-            <span class="me-2"><%= category.name %> 合計:</span>
+            <span class="me-2"><%= category.name %> <%= t('plans.category_total_label') %>:</span>
             <span data-plan-products-target="categoryTotal"
                   data-category-id="<%= category.id %>"
                   class="text-end text-success">
-                <%= number_to_currency(0, unit: '¥') %>
+                <%= number_to_currency(0, unit: t('number.currency.format.unit')) %>
             </span>
         </div>
 
-        <%# --------------------- 商品追加ボタン --------------------- %>
+        <%# 商品追加ボタン %>
         <div class="d-grid mt-3 mb-4">
           <button type="button" class="btn btn-sm btn-outline-success"
                   data-action="nested-form#add"
                   data-association="product_plans"
                   data-category-id="<%= category.id %>"
                   data-template-id="plan_product_fields_template_<%= category.id %>">
-            + <%= category.name %> を追加
+          <%= t('helpers.link.add_item', resource: category.name) %>
           </button>
         </div>
 
@@ -85,14 +96,15 @@
     <% end %>
   </div>
 
-  <%# --------------------- テンプレート（複製元） --------------------- %>
-  <% @tabs_categories.each do |category| %>
-    <%= f.fields_for :product_plans, f.object.product_plans.build(product: Product.new(category_id: category.id)), child_index: 'NEW_RECORD' do |plan_product_f| %>
+  <%# テンプレート %>
+  <% @product_categories.each do |category| %>
+    <%= f.fields_for :product_plans,
+                    f.object.product_plans.build(product: Product.new(category_id: category.id)),
+                    child_index: 'NEW_RECORD' do |plan_product_f| %>
       <template data-nested-form-target="template"
                 id="plan_product_fields_template_<%= category.id %>">
         <%= render 'plan_product_fields', f: plan_product_f %>
       </template>
     <% end %>
   <% end %>
-
 </div>

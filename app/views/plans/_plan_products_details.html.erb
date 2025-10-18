@@ -1,0 +1,42 @@
+<% all_plan_products = @plan_products %>
+<% product_categories = @product_categories %>
+
+<%# 総合計の表示を追加 %>
+<% total_amount = all_plan_products.sum { |pp| pp.production_count * pp.product&.price } %>
+<div class="text-end mb-3">
+  <span class="text-muted"><%= t('plans.grand_total', default: '総合計') %>:</span>
+  <span class="h4 text-dark"><%= number_to_currency(total_amount, precision: 0) %></span>
+</div>
+
+<%# タブナビゲーションを呼び出す %>
+<%= render 'plans/plan_products_tabs', product_categories: product_categories %>
+
+<div class="tab-content pt-3" id="planProductTabContent">
+
+    <%# 1. すべて (All) タブの内容 %>
+    <div class="tab-pane fade show active" id="plan-product-all" role="tabpanel" aria-labelledby="all-tab">
+      <%= render 'plans/plan_product_table', plan_products: all_plan_products %>
+
+      <%# タブ内の合計金額表示 %>
+      <div class="text-end mt-3 border-top pt-2">
+        <span class="text-muted"><%= t('plans.tab_total', default: 'カテゴリ合計') %>:</span>
+        <% all_tab_total = total_amount %>
+        <span class="h5 text-dark"><%= number_to_currency(all_tab_total, precision: 0) %></span>
+      </div>
+    </div>
+
+    <%# 2. カテゴリ別のタブの内容 %>
+    <% (product_categories || []).each do |category| %>
+      <% filtered_plan_products = all_plan_products.select { |pp| pp.product&.category_id == category.id } %>
+      <div class="tab-pane fade" id="plan-product-<%= category.id %>" role="tabpanel" aria-labelledby="<%= category.id %>-tab">
+        <%= render 'plans/plan_product_table', plan_products: filtered_plan_products %>
+
+        <%# カテゴリタブ内の合計金額表示 %>
+        <div class="text-end mt-3 border-top pt-2">
+          <span class="text-muted"><%= t('plans.tab_total', default: 'カテゴリ合計') %>:</span>
+          <% category_tab_total = filtered_plan_products.sum { |pp| pp.production_count * pp.product&.price } %>
+          <span class="h5 text-dark"><%= number_to_currency(category_tab_total, precision: 0) %></span>
+        </div>
+      </div>
+    <% end %>
+</div>

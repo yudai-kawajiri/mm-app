@@ -20,18 +20,28 @@ class Plan < ApplicationRecord
 
   private
 
-
   def category_name_for_display
     self.category.name
   end
 
   def translated_status
     # enum で定義されたステータスの値 (draft, completedなど) に対応する、
-    I18n.t("activerecord.attributes.plan.statuses.#{self.status}")
+    # I18nファイルに定義された日本語名を取得します。
+    I18n.t("activerecord.enums.plan.status.#{self.status}")
   end
 
   # product_id と production_count の両方が空の場合にレコードを無視する
   def reject_product_plans(attributes)
     attributes['product_id'].blank? && attributes['production_count'].blank?
   end
+
+  # 名前での部分一致検索
+  scope :search_by_name, ->(query) {
+    where("name LIKE ?", "%#{query}%") if query.present?
+  }
+
+  # カテゴリIDでの絞り込み
+  scope :filter_by_category_id, ->(category_id) {
+    where(category_id: category_id) if category_id.present?
+  }
 end

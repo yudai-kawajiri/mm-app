@@ -1,0 +1,33 @@
+<%# 共通エラーメッセージの表示 %>
+<%= render 'shared/error_messages', resource: f.object %>
+
+<div class="row">
+
+  <%# 左カラム: 基本情報と送信ボタン %>
+  <div class="col-md-6">
+    <div class="card p-4">
+      <h3><%= t('forms.titles.basic_info')%></h3>
+
+      <%# 左カラムの内容描画 %>
+      <%= render basic_fields, f: f %>
+
+      <%# f と f.object (リソース) を渡すことで、_form_action_links.html.erb が動作 %>
+      <%= render 'shared/actions/form_action_links',
+                f: f,
+                resource: f.object,
+                resource_name: resource_name # 戻るリンクのパス生成のために渡す
+      %>
+
+    </div>
+  </div>
+
+  <%# 右カラム: 詳細リスト（ネストフォーム）と集計 %>
+  <div class="col-md-6">
+    <div class="card p-4">
+
+      <%# 右カラムの内容描画 %>
+      <%= render detail_fields, f: f %>
+    </div>
+  </div>
+
+</div>

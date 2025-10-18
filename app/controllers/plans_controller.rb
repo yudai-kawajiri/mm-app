@@ -1,32 +1,37 @@
 class PlansController < AuthenticatedController
+  include PaginationConcern
   before_action :authenticate_user!, except: [:index]
   before_action :set_plan_categories, only: [:new]
+  before_action :set_plan, only: [:show]
 
   def index
     # 未　全員閲覧できるようにするためcurrent_userはなし。他もどうするか考え中
-    @plans = Plan.all.includes(:category, :user).order(created_at: :desc)
-
+    plans = Plan.all.includes(:category, :user)
+              .order(created_at: :desc)
+              .search_by_name(search_params[:q])
+              .filter_by_category_id(search_params[:category_id])
+    @plans = apply_pagination(plans)
   end
 
   def new
     @plan = Plan.new
     @plan.status = nil
-    @tabs_categories = Category.where(category_type: 'product')
-
   end
 
   def create
     @plan =  current_user.plans.build(plan_params)
     if @plan.save
+      flash[:notice] = t("flash_messages.create.success", resource: Plan.model_name.human, name: @plan.name)
       redirect_to plans_path
     else
-      # エラー確認のため
-      flash.now[:error] = @plan.errors.full_messages.join("、")
+      flash.now[:alert] = t("flash_messages.create.failure", resource: Plan.model_name.human)
       @tabs_categories = Category.where(category_type: 'product')
-      set_plan_categories # <-- この行を追加！
+      set_plan_categories
       render :new, status: :unprocessable_entity
     end
   end
+
+  def show; end
 
   def edit
   end
@@ -54,7 +59,25 @@ class PlansController < AuthenticatedController
   end
 
   def set_plan_categories
+    # タブ表示用のカテゴリ
+    @product_categories = Category.where(category_type: 'product').order(:name)
     # 必要なデータをコントローラーで取得する
-    @plan_categories = Category.where(category_type: 'plan')
+    @plan_categories = Category.where(category_type: 'plan').order(:name)
+  end
+
+  def search_params
+    # 検索で許可するパラメータ を定義
+    params.permit(:q, :category_id)
+  end
+
+  # 未 メソッド内でn+1対応
+  def set_plan
+    @plan = Plan.find(params[:id])
+
+    # 計画に含まれる商品を取得
+    @plan_products = @plan.product_plans.includes(:product)
+
+    # 製造商品タブのカテゴリーとして、商品のカテゴリーを使用
+    @product_categories = Category.where(category_type: :product).order(:name)
   end
 end

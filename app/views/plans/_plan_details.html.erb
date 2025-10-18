@@ -1,0 +1,44 @@
+<%# 'shared/resource_two_column_details' から resource: @plan が local_assigns[:resource] として渡される %>
+<% plan = local_assigns[:resource] %>
+<% plan_class = plan.class %>
+
+<div class="card-body">
+
+  <%# 計画名 %>
+  <div class="mb-3 border-bottom py-2">
+      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:name) %></label>
+      <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
+          <%= plan.name.presence %>
+      </div>
+  </div>
+
+  <%# カテゴリー %>
+  <div class="mb-3 border-bottom py-2">
+      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:category_id) %></label>
+      <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
+          <%= plan.category&.name.presence %>
+      </div>
+  </div>
+
+  <%# ステータス %>
+  <div class="mb-3 border-bottom py-2">
+      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:status) %></label>
+      <div class="text-dark text-center pt-2" style="font-size: 1.1em;">
+          <%= t("activerecord.enums.plan.status.#{plan.status}") %>
+      </div>
+  </div>
+
+  <%# 備考  %>
+  <div class="mt-4">
+      <h6 class="text-muted" style="font-size: 1.1em;"><%= plan_class.human_attribute_name(:description) %></h6>
+
+      <div class="p-3 border rounded" style="min-height: 100px;">
+          <% description_content = plan.description.presence %>
+          <p class="text-dark <%= description_content ? '' : 'text-center text-muted d-flex justify-content-center pt-3' %>"
+          style="font-size: 1.1em;">
+          <%= simple_format(description_content || t('helpers.no_setting')) %>
+          </p>
+      </div>
+  </div>
+
+</div>

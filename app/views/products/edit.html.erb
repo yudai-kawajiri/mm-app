@@ -5,7 +5,7 @@
 <%= form_with(model: @product, local: true, class: "row") do |f| %>
 
   <%# 共通エラーメッセージの表示 %>
-  <%= render 'shared/error_messages', model: @product %>
+  <%= render 'shared/error_messages', resource: @product %>
 
   <%# 左カラム: 基本情報 %>
   <div class="col-md-6 mb-4">
@@ -20,7 +20,6 @@
   <%# 右カラム: 使用原材料 %>
   <div class="col-md-6 mb-4">
     <div class="card shadow-sm h-100 p-4 d-flex flex-column">
-      <h4 class="card-title mb-4"><%= t('.material_info') %></h4>
 
       <div class="flex-grow-1">
         <%= render 'product_materials_fields', f: f %>
