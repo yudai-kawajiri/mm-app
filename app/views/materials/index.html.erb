@@ -6,6 +6,8 @@
     resource_class: Material,
     search_target: :category_id,
 
+    search_categories: @search_categories,
+
     columns: [
       { header: :name, data: :name },
       { header: :category, data: :category_name_for_display },

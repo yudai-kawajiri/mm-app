@@ -82,6 +82,6 @@ class CategoriesController < AuthenticatedController
 
   # 検索パラメーター専用のストロングパラメーターを定義し、セキュリティを確保
   def search_params
-    params.permit(:q, :category_type)
+    get_and_normalize_search_params(:q, :category_type)
   end
 end

@@ -26,6 +26,9 @@ default: &default
 development:
   <<: *default
   database: myapp_development
+  # 開発環境で日本語ソートを有効にする
+  collation: C.UTF-8
+  ctype: C.UTF-8
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -60,7 +63,9 @@ development:
 test:
   <<: *default
   database: myapp_test
-
+  # テスト環境で日本語ソートを有効にする
+  collation: C.UTF-8
+  ctype: C.UTF-8
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
 # ever seen by anyone, they now have access to your database.
@@ -87,6 +92,9 @@ production:
     database: myapp_production
     username: myapp
     password: <%= ENV["MYAPP_DATABASE_PASSWORD"] %>
+    # 本番環境で日本語ソートを有効にする
+    collation: C.UTF-8
+    ctype: C.UTF-8
   # cache:
   #   <<: *primary_production
   #   database: myapp_production_cache

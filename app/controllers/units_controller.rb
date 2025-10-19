@@ -75,7 +75,6 @@ class UnitsController < AuthenticatedController
 
   # 検索パラメーター専用のストロングパラメーターを定義
   def search_params
-    # 単位名検索(q)とcategory種別による絞り込みを許可
-    params.permit(:q, :category)
+    get_and_normalize_search_params(:q, :category)
   end
 end

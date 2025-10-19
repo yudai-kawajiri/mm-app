@@ -1,7 +1,10 @@
 class PlansController < AuthenticatedController
   include PaginationConcern
+  # 未
   before_action :authenticate_user!, except: [:index]
-  before_action :set_plan_categories, only: [:new, :edit]
+  before_action :set_form_categories, only: [:new, :edit, :create, :update]
+  before_action :set_search_categories, only: [:index]
+
   before_action :set_plan, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -74,6 +77,19 @@ class PlansController < AuthenticatedController
     )
   end
 
+  # フォーム用カテゴリーを設定
+  def set_form_categories
+    # フォームで利用する商品計画カテゴリーのみを設定
+    @plan_categories = fetch_categories_by_type(:plan)
+    # 未 商品カテゴリーは show/edit のネストフォームで使用
+    @product_categories = fetch_categories_by_type(:product)
+  end
+
+  # 一覧画面の検索用カテゴリーを設定
+  def set_search_categories
+    @search_categories = fetch_categories_by_type(:plan)
+  end
+
   def set_plan_categories
     # タブ表示用のカテゴリ
     @product_categories = Category.where(category_type: 'product').order(:name)
@@ -82,18 +98,13 @@ class PlansController < AuthenticatedController
   end
 
   def search_params
-    # 検索で許可するパラメータ を定義
-    params.permit(:q, :category_id)
+    get_and_normalize_search_params(:q, :category_id)
   end
 
   # 未 メソッド内でn+1対応
   def set_plan
     @plan = Plan.includes(product_plans: :product).find(params[:id])
-
     # 計画に含まれる商品を取得
     @plan_products = @plan.product_plans
-
-    # 製造商品タブのカテゴリーとして、商品のカテゴリーを使用
-    @product_categories = Category.where(category_type: :product).order(:name)
   end
 end
