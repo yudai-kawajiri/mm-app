@@ -2,6 +2,11 @@ class MaterialsController <  AuthenticatedController
   # ページネーションを使用
   include PaginationConcern
   before_action :set_material, only: [:show, :edit, :update, :destroy]
+  # フォーム用カテゴリー取得
+  before_action :set_form_categories, only: [:new, :create, :edit, :update]
+  # 一覧画面用の検索カテゴリー取得
+  before_action :set_search_categories, only: [:index]
+
   def index
     @materials = apply_pagination(current_user.materials
                               .search_by_name(search_params[:q])
@@ -103,6 +108,16 @@ class MaterialsController <  AuthenticatedController
   end
 
   def search_params
-    get_and_normalize_search_params(:q, :category_type)
+    get_and_normalize_search_params(:q,:category_id)
+  end
+
+  # フォーム用のカテゴリーを設定
+  def set_form_categories
+    @material_categories = fetch_categories_by_type(:material)
+  end
+
+  # 検索フォーム用（一覧画面用）のカテゴリーを設定
+  def set_search_categories
+    @search_categories = fetch_categories_by_type(:material)
   end
 end

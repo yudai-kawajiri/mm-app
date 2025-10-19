@@ -1,7 +1,11 @@
 class ProductsController < AuthenticatedController
   include PaginationConcern
   before_action :set_product, only: [:show, :edit, :update, :destroy, :purge_image]
-  before_action :set_material_categories, only: [:new, :edit, :update]
+  # フォーム用の商品カテゴリーを設定
+  before_action :set_form_categories, only: [:new, :edit, :update]
+  # 一覧画面の検索カテゴリーを設定
+  before_action :set_search_categories, only: [:index]
+
   def index
     @products =  apply_pagination(current_user.products
                               .search_by_name(search_params[:q])
@@ -31,7 +35,7 @@ class ProductsController < AuthenticatedController
     # N+1対策: material と unit の情報を事前に includes で取得
     @product_materials = @product.product_materials.includes(:material, :unit).order(:id)
     # 原材料カテゴリのタブ表示に必要なデータを取得
-    @material_categories = Category.where(category_type: 'material').order(:name)
+    @material_categories = Category.where(category_type: :material)
   end
 
   def edit
@@ -116,16 +120,22 @@ end
   )
   end
 
+  # フォーム用のカテゴリーを設定
+  def set_form_categories
+    @product_categories = fetch_categories_by_type(:product)
+  end
+
   def set_product
     @product = current_user.products.find(params[:id])
   end
 
   def search_params
-    get_and_normalize_search_params(:q, :category_type)
+    get_and_normalize_search_params(:q, :category_id)
   end
 
-  # 未 定義間違い
-  def set_material_categories
-    @material_categories = current_user.categories.where(category_type: 'material').order(:name)
+  # 検索フォーム用のカテゴリーを設定
+  def set_search_categories
+    @search_categories = fetch_categories_by_type(:product)
   end
+
 end
