@@ -32,13 +32,15 @@ export default class extends Controller {
 
       // 削除されていない行のみを対象とする
       if (!isDestroyed) {
+        const priceValue = row.dataset.planProductPriceValue;
         // 数量と価格の取得
-        const price = parseFloat(row.dataset.planProductPriceValue || 0);
+        const price = (priceValue && priceValue !== '') ? parseFloat(priceValue) || 0 : 0;
         const categoryId = row.dataset.planProductCategoryId;
 
         // 数量のフォーム入力値を取得
         const quantityInput = row.querySelector('[data-plan-product-target="quantity"]');
-        const quantity = parseFloat(quantityInput ? quantityInput.value : 0);
+        const quantityValue = quantityInput ? quantityInput.value : null;
+        const quantity = (quantityValue && quantityValue !== '') ? parseFloat(quantityValue) || 0 : 0;
 
         const subtotal = quantity * price;
 
