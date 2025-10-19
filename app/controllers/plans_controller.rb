@@ -2,7 +2,7 @@ class PlansController < AuthenticatedController
   include PaginationConcern
   before_action :authenticate_user!, except: [:index]
   before_action :set_plan_categories, only: [:new, :edit]
-  before_action :set_plan, only: [:show, :edit, :update]
+  before_action :set_plan, only: [:show, :edit, :update, :destroy]
 
   def index
     # 未　全員閲覧できるようにするためcurrent_userはなし。他もどうするか考え中
@@ -39,12 +39,20 @@ class PlansController < AuthenticatedController
 
   def update
     if @plan.update(plan_params)
+      flash[:notice] = t("flash_messages.update.success", resource: Plan.model_name.human, name: @plan.name)
       redirect_to plan_path(@plan)
     else
+      flash.now[:alert] = t("flash_messages.update.failure", resource: Plan.model_name.human)
       set_plan_categories
       @plan.product_plans.build unless @plan.product_plans.any?
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @plan.destroy
+    flash[:notice] = t("flash_messages.destroy.success", resource: Plan.model_name.human, name: @plan.name)
+    redirect_to plans_url, status: :see_other
   end
 
   private
