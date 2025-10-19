@@ -1,7 +1,7 @@
 class ProductsController < AuthenticatedController
   include PaginationConcern
   before_action :set_product, only: [:show, :edit, :update, :destroy, :purge_image]
-  before_action :set_material_categories, only: [:new, :edit]
+  before_action :set_material_categories, only: [:new, :edit, :update]
   def index
     @products =  apply_pagination(current_user.products
                               .search_by_name(search_params[:q])
