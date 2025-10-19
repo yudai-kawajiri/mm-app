@@ -1,10 +1,11 @@
 <%= paginate @products, theme: 'bootstrap-5' %>
-<h1><%= t('plans.index.title') %></h1>
+<h1><%= t('products.index.title') %></h1>
 <%= render('shared/resource_list',
     resources: @products,
     new_path: new_product_path,
     resource_class: Product,
     search_target: :category_id,
+    search_categories: @search_categories,
 
     columns: [
       { header: :image, data: :image },

@@ -35,17 +35,20 @@
 
       <%#カテゴリー管理以外での検索機能 %>
       <% elsif search_target == :category_id %>
-        <%= f.select :category_id,
-            options_from_collection_for_select(
-            Category.all,
-            :id,
-            :name,
-            params[:category_id]
-          ),
-          { include_blank: t('search.placeholders.select_category') },
-          { class: "form-control custom-select" } %>
-      <% end %>
 
+        <%# ローカル変数 search_categories が渡されているか確認 %>
+        <% search_categories = local_assigns[:search_categories] %>
+
+          <%= f.select :category_id,
+              options_from_collection_for_select(
+              search_categories || [],
+              :id,
+              :name,
+              params[:category_id]
+            ),
+            { include_blank: t('search.placeholders.select_category') },
+            { class: "form-control custom-select" } %>
+      <% end %>
     </div>
     <% end %>
 

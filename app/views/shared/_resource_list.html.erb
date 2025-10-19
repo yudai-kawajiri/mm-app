@@ -3,6 +3,7 @@
 <%# 未 他もページタイトルを削除 %>
 <% search_target = local_assigns[:search_target] %>
 <% resource_class = local_assigns[:resource_class] %>
+<% search_categories = local_assigns[:search_categories] %>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
   <%# 新規作成ボタンを ms-auto で右端に寄せる %>
@@ -16,7 +17,8 @@
   <%= render 'shared/search_form',
       # resource_class (Product) からルーティングパス (products_path) を動的に生成
       form_path: send(resource_class.model_name.route_key + '_path'),
-      search_target: search_target %>
+      search_target: search_target,
+      search_categories: search_categories %>
 <% end %>
 
 <%# 3. テーブル全体の描画 %>
