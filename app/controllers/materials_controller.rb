@@ -101,8 +101,8 @@ class MaterialsController <  AuthenticatedController
   def set_material
     @material = current_user.materials.find(params[:id])
   end
-  # 後でモジュール化
+
   def search_params
-    params.permit(:q, :category_id)
+    get_and_normalize_search_params(:q, :category_type)
   end
 end

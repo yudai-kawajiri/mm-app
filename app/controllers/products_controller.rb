@@ -121,7 +121,7 @@ end
   end
 
   def search_params
-    params.permit(:q, :category_id)
+    get_and_normalize_search_params(:q, :category_type)
   end
 
   # 未 定義間違い

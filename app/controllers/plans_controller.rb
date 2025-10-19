@@ -82,8 +82,7 @@ class PlansController < AuthenticatedController
   end
 
   def search_params
-    # 検索で許可するパラメータ を定義
-    params.permit(:q, :category_id)
+    get_and_normalize_search_params(:q, :category_type)
   end
 
   # 未 メソッド内でn+1対応
