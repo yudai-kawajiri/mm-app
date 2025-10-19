@@ -4,4 +4,7 @@ class AuthenticatedController < ApplicationController
 
   # 検索パラメーターの正規化 Concern を組み込む
   include SearchParameterNormalizer
+
+  # カテゴリー取得共通ロジックを組み込む
+  include CategoryFetchable
 end
