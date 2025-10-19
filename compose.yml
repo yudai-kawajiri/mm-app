@@ -5,6 +5,8 @@ services: # コンテナの定義開始
     environment: # 環境変数の設定
       TZ: Asia/Tokyo # タイムゾーンを日本に設定
       POSTGRES_PASSWORD: password # データベースのパスワード設定
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
     volumes: # データの永続化設定
       - postgresql_data:/var/lib/postgresql # DBデータを永続化
     ports: # ポート設定
