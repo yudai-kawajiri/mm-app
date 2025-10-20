@@ -1,7 +1,9 @@
 class Material < ApplicationRecord
   # 名前検索スコープを組み込み
   include NameSearchable
-  belongs_to :user
+  # belongs_to :user
+  include UserAssociatable
+  
   belongs_to :category
 
   # unit_for_product_id カラムを参照し、Unitモデルであることを明示

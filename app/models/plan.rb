@@ -1,8 +1,12 @@
 class Plan < ApplicationRecord
+   # 名前検索スコープを組み込み
+  include NameSearchable
+  # belongs_to :user
+  include UserAssociatable
   # 関連付け
+
   # 未 userとの関連
   belongs_to :category
-  belongs_to :user
   has_many :product_plans, dependent: :destroy
 
   # ネストフォームの設定: ProductPlanの追加・更新・削除を許可

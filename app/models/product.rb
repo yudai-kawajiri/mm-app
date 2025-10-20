@@ -1,12 +1,12 @@
 class Product < ApplicationRecord
   # 名前検索スコープを組み込み
   include NameSearchable
+  include UserAssociatable
 
   # 0: 下書き 1: 販売中  2: 販売中止
   enum :status, { draft: 0, selling: 1, discontinued: 2 }
 
   # アソシエーション
-  belongs_to :user
   belongs_to :category
 
   has_many :product_materials, dependent: :destroy
