@@ -5,6 +5,7 @@ class ProductsController < AuthenticatedController
   before_action :set_form_categories, only: [:new, :edit, :update]
   # 一覧画面の検索カテゴリーを設定
   before_action :set_search_categories, only: [:index]
+  before_action :set_material_categories, only: [:new, :create, :show, :edit, :update]
 
   def index
     @products =  apply_pagination(current_user.products
@@ -24,7 +25,7 @@ class ProductsController < AuthenticatedController
     # 編集画面に遷移（商品原材料登録へ）
     if @product.save
       flash[:notice] = t('flash_messages.create.success', resource: Product.model_name.human, name: @product.name)
-      redirect_to edit_product_product_materials_path(@product)
+      redirect_to @product
     else
       flash.now[:alert] = t('flash_messages.create.failure', resource: Product.model_name.human)
       render :new, status: :unprocessable_entity
@@ -34,8 +35,6 @@ class ProductsController < AuthenticatedController
   def show
     # N+1対策: material と unit の情報を事前に includes で取得
     @product_materials = @product.product_materials.includes(:material, :unit).order(:id)
-    # 原材料カテゴリのタブ表示に必要なデータを取得
-    @material_categories = Category.where(category_type: :material)
   end
 
   def edit
@@ -136,6 +135,11 @@ end
   # 検索フォーム用のカテゴリーを設定
   def set_search_categories
     @search_categories = fetch_categories_by_type(:product)
+  end
+
+  def set_material_categories
+    # MaterialsControllerと同じように、Categoryモデルからデータを取得
+    @material_categories = Category.where(category_type: :material)
   end
 
 end
