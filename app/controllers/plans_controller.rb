@@ -4,9 +4,6 @@ class PlansController < AuthenticatedController
   before_action :set_plan_categories, only: [:index, :new, :edit, :create, :update]
   before_action :set_plan, only: [:show, :edit, :update, :destroy]
 
-  # 未
-  before_action :authenticate_user!, except: [:index]
-
   def index
     Rails.logger.debug "--- Search Params: #{search_params.inspect} ---"
     # 未　全員閲覧できるようにするためcurrent_userはなし。他もどうするか考え中
