@@ -1,7 +1,6 @@
 class CategoriesController < AuthenticatedController
 
- before_action :set_plan_categories, only: [:index, :new, :edit, :create, :update]
- before_action :set_plan, only: [:show, :edit, :update, :destroy]
+  find_resource :category, only: [:edit, :update, :destroy]
 
   def index
     # モジュールにソート責任を移譲
@@ -64,12 +63,6 @@ class CategoriesController < AuthenticatedController
 
 
   private
-
-  # 重複していた @category の取得処理をまとめる
-  def set_category
-    # 編集・更新・削除対象のレコードを、current_userのカテゴリーの中から探す
-    @category = current_user.categories.find(params[:id])
-  end
 
   def category_params
     # name と category_type を受付

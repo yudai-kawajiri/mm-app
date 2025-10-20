@@ -1,14 +1,11 @@
 class MaterialsController <  AuthenticatedController
 
-  before_action :set_material, only: [:show, :edit, :update, :destroy]
-  # フォーム用カテゴリー取得
-  before_action :set_form_categories, only: [:index, :new, :create, :edit, :update]
+  find_resource :material, only: [:show, :edit, :update, :destroy]
 
   def index
     @materials = apply_pagination(current_user.materials
                               .search_and_filter(search_params)
     )
-
   end
 
   def show
@@ -77,17 +74,8 @@ class MaterialsController <  AuthenticatedController
   )
   end
 
-  # @materialの検索（ログインユーザーのもの）
-  def set_material
-    @material = current_user.materials.find(params[:id])
-  end
-
   def search_params
     get_and_normalize_search_params(:q,:category_id)
   end
 
-  # フォーム用のカテゴリーを設定
-  def set_form_categories
-    @search_categories = fetch_categories_by_type(:material)
-  end
 end

@@ -1,7 +1,6 @@
 class ProductsController < AuthenticatedController
 
-  before_action :set_product, only: [:show, :edit, :update, :destroy, :purge_image]
-  # フォーム用の商品カテゴリーを設定
+  find_resource :product, only: [:show, :edit, :update, :destroy, :purge_image]
   before_action :set_product_categories, only: [:index, :new, :edit, :update]
   before_action :set_material_categories, only: [:new, :create, :show, :edit, :update]
 
@@ -97,22 +96,7 @@ end
   )
   end
 
-  # フォーム用のカテゴリーを設定
-  def set_product_categories
-    @search_categories = fetch_categories_by_type(:product)
-  end
-
-  def set_product
-    @product = current_user.products.find(params[:id])
-  end
-
   def search_params
     get_and_normalize_search_params(:q, :category_id)
   end
-
-  def set_material_categories
-    # MaterialsControllerと同じように、Categoryモデルからデータを取得
-    @material_categories = Category.where(category_type: :material)
-  end
-
 end

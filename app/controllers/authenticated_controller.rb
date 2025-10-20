@@ -10,4 +10,7 @@ class AuthenticatedController < ApplicationController
 
   # ページネーションを使用
   include PaginationConcern
+
+  # リソースの取得
+  include ResourceFinderConcern
 end

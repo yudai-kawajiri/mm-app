@@ -1,6 +1,7 @@
 class UnitsController < AuthenticatedController
 
-  before_action :set_unit, only: [:edit, :update, :destroy]
+  find_resource :unit, only: [:edit, :update, :destroy]
+
   def index
     # ページネーションと検索を適用
     @units = apply_pagination(
@@ -64,10 +65,6 @@ class UnitsController < AuthenticatedController
 
   def unit_params
     params.require(:unit).permit(:name, :category)
-  end
-
-  def set_unit
-    @unit = current_user.units.find(params[:id])
   end
 
   # 検索パラメーター専用のストロングパラメーターを定義
