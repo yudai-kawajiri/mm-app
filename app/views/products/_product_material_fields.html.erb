@@ -6,6 +6,9 @@
                     data: { nested_form_item_target: 'destroy' } %>
   <%= f.hidden_field :id %>
 
+  <%# unit_id の値をサーバーに送信するための隠しフィールド %>
+  <%= f.hidden_field :unit_id, data: { 'product-material-target': 'unitIdInput' } %>
+
   <%# カテゴリIDの取得とリストの絞り込みロジックを追加 %>
   <% current_category_id = f.object.material&.category_id %>
 
@@ -16,7 +19,7 @@
   <div class="col-md-4">
     <%= f.collection_select(:material_id, materials, :id, :name,
       { include_blank: t('helpers.prompt.select') },
-      { class: 'form-select', required: true,
+      { class: 'form-select', required: false,
         data: {
           action: 'change->product-material#updateUnit',
           'product-material-target': 'materialSelect'

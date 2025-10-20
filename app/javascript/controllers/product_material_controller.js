@@ -3,7 +3,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "materialSelect", "unitDisplay", "quantityInput", "unitWeightDisplay" ]
+  static targets = [ "materialSelect", "unitDisplay", "quantityInput", "unitWeightDisplay", "unitIdInput" ]
 
   // ドロップダウンが変更されたときに実行されるアクション
   updateUnit(event) {
@@ -12,6 +12,8 @@ export default class extends Controller {
     if (!materialId) {
       this.unitDisplayTarget.textContent = "未設定";
       this.unitWeightDisplayTarget.textContent = "未設定"; // 追加
+
+      this.unitIdInputTarget.value = "";
       return;
     }
 
@@ -25,6 +27,8 @@ export default class extends Controller {
         return response.json();
       })
       .then(data => {
+
+        this.unitIdInputTarget.value = data.unit_id || "";
         // data.unit_name を単位表示ターゲットに設定
         this.unitDisplayTarget.textContent = data.unit_name || "未設定";
 
