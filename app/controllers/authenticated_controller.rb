@@ -13,4 +13,7 @@ class AuthenticatedController < ApplicationController
 
   # リソースの取得
   include ResourceFinderConcern
+
+  # CRUDアクションの共通化
+  include CrudResponderConcern
 end

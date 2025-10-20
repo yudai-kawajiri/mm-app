@@ -19,18 +19,7 @@ class CategoriesController < AuthenticatedController
 
   def create
     @category = current_user.categories.build(category_params)
-
-    if @category.save
-      # I18nキーは 'flash_messages' で統一されており、nameも正しく渡されています
-      redirect_to categories_path, notice: t('flash_messages.create.success',
-                                              resource: Category.model_name.human,
-                                              name: @category.name)
-    else
-      flash.now[:alert] = t('flash_messages.create.failure',
-                            resource: Category.model_name.human)
-      # ステータスコード 422 を明示的に指定
-    render :new, status: :unprocessable_entity
-    end
+    respond_to_save(@category, success_path: categories_url)
   end
 
   def edit
@@ -38,27 +27,12 @@ class CategoriesController < AuthenticatedController
   end
 
   def update
-    if @category.update(category_params)
-      redirect_to categories_path, notice: t('flash_messages.update.success',
-                                              resource: Category.model_name.human,
-                                              name: @category.name)
-    else
-      flash.now[:alert] = t('flash_messages.update.failure',
-                            resource: Category.model_name.human)
-      # 失敗時: ステータスコード 422 を明示的に指定
-      render :edit, status: :unprocessable_entity
-    end
+    @category.assign_attributes(category_params)
+    respond_to_save(@category, success_path: categories_url)
   end
 
   def destroy
-    if @category.destroy
-      redirect_to categories_url, notice: t('flash_messages.destroy.success',
-                                          resource: Category.model_name.human,
-                                          name: @category.name)
-    else
-      flash[:alert] = @category.errors.full_messages.to_sentence
-      redirect_to categories_url
-    end
+    respond_to_destroy(@category, success_path: categories_url)
   end
 
 

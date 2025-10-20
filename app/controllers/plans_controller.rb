@@ -19,14 +19,7 @@ class PlansController < AuthenticatedController
 
   def create
     @plan =  current_user.plans.build(plan_params)
-    if @plan.save
-      flash[:notice] = t("flash_messages.create.success", resource: Plan.model_name.human, name: @plan.name)
-      redirect_to @plan
-    else
-      flash.now[:alert] = t("flash_messages.create.failure", resource: Plan.model_name.human)
-      set_plan_categories
-      render :new, status: :unprocessable_entity
-    end
+    respond_to_save(@plan, success_path: @plan)
   end
 
   def show; end
@@ -37,20 +30,12 @@ class PlansController < AuthenticatedController
   end
 
   def update
-    if @plan.update(plan_params)
-      flash[:notice] = t("flash_messages.update.success", resource: Plan.model_name.human, name: @plan.name)
-      redirect_to plan_path(@plan)
-    else
-      flash.now[:alert] = t("flash_messages.update.failure", resource: Plan.model_name.human)
-      @plan.product_plans.build unless @plan.product_plans.any?
-      render :edit, status: :unprocessable_entity
-    end
+    @plan.assign_attributes(plan_params)
+    respond_to_save(@plan, success_path: @plan)
   end
 
   def destroy
-    @plan.destroy
-    flash[:notice] = t("flash_messages.destroy.success", resource: Plan.model_name.human, name: @plan.name)
-    redirect_to plans_url, status: :see_other
+    respond_to_destroy(@plan, success_path: plans_url)
   end
 
   private

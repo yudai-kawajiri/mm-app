@@ -20,17 +20,7 @@ class MaterialsController <  AuthenticatedController
   def create
     # 'build'でインスタンスにデータを属性として割り当ててから安全に保存
     @material = current_user.materials.build(material_params)
-
-    if @material.save
-      # 'モデル名を参照する'
-      flash[:notice] = t('flash_messages.create.success', resource: Material.model_name.human, name: @material.name)
-      redirect_to @material
-    else
-      # 'render'で再表示
-      flash.now[:alert] = t('flash_messages.create.failure', resource: Material.model_name.human)
-      # 'ステータスコード422'
-      render :new ,status: :unprocessable_entity
-    end
+    respond_to_save(@material, success_path: @material)
   end
 
   def edit
@@ -38,27 +28,12 @@ class MaterialsController <  AuthenticatedController
   end
 
   def update
-    if @material.update(material_params)
-      # railsオブジェクトを渡してパスに変換(idがあれば使用可能)
-      flash[:notice] = t('flash_messages.update.success', resource: Material.model_name.human, name: @material.name)
-      redirect_to @material
-    else
-      flash.now[:alert] = t('flash_messages.update.failure', resource: Material.model_name.human)
-      render :edit, status: :unprocessable_entity
-    end
+    @material.assign_attributes(material_params)
+    respond_to_save(@material, success_path: @material)
   end
 
   def destroy
-    if @material.destroy
-      flash[:notice] = t('flash_messages.destroy.success', resource: Material.model_name.human, name: @material.name)
-      # 削除された新しいページを出すのでmaterials_urlで記載
-      redirect_to materials_url, status: :see_other
-    else
-      # 削除に失敗した場合の処理を追加
-      flash[:alert] = @material.errors.full_messages.to_sentence
-      # 一覧画面に戻す
-      redirect_to materials_url, status: :unprocessable_entity # 422ステータスでリダイレクト
-    end
+    respond_to_destroy(@material, success_path: materials_url)
   end
 
   private

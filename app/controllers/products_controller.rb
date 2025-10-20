@@ -18,14 +18,7 @@ class ProductsController < AuthenticatedController
   def create
     # ストロングパラメータのデータを使い作成
     @product = current_user.products.build(product_params)
-    # 編集画面に遷移（商品原材料登録へ）
-    if @product.save
-      flash[:notice] = t('flash_messages.create.success', resource: Product.model_name.human, name: @product.name)
-      redirect_to @product
-    else
-      flash.now[:alert] = t('flash_messages.create.failure', resource: Product.model_name.human)
-      render :new, status: :unprocessable_entity
-    end
+    respond_to_save(@product, success_path: @product)
   end
 
   def show
@@ -33,34 +26,16 @@ class ProductsController < AuthenticatedController
     @product_materials = @product.product_materials.includes(:material, :unit).order(:id)
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
-    if @product.update(product_params)
-      flash[:notice] = t('flash_messages.update.success', resource: Product.model_name.human, name: @product.name)
-      redirect_to @product
-    else
-      flash.now[:alert] = t('flash_messages.update.failure', resource: Product.model_name.human)
-      render :edit, status: :unprocessable_entity
-    end
+    @product.assign_attributes(product_params)
+    respond_to_save(@product, success_path: @product)
   end
 
   def destroy
-    # flash_messagesの書き方変更(後で共通化するか選択)
-    # 削除前に名前を保持
-    product_name = @product.name
-    # リソース名（"商品"）を取得
-    resource_name = Product.model_name.human
-
-  if @product.destroy
-    flash[:notice] = t('flash_messages.destroy.success', resource: resource_name, name: product_name)
-    redirect_to products_url, status: :see_other
-  else
-    flash[:alert] = t('flash_messages.destroy.failure', resource: resource_name, name: product_name)
-    redirect_to products_url, status: :unprocessable_entity
+    respond_to_destroy(@product, success_path: products_url)
   end
-end
 
 # ユーザーが編集画面を保存する前に、ブラウザ側からJavaScriptを使って画像を即座に削除する
   def purge_image
