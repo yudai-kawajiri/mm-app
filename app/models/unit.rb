@@ -19,6 +19,12 @@ class Unit < ApplicationRecord
   validates :name, presence: true
   validates :category, presence: true
 
+  validates :name,
+            uniqueness: {
+              scope: :category,
+              message: "は、同じ単位分類では既に登録されています" # 未
+            }
+
   # 基本単位と発注単位(basic を production に修正)
   enum :category, { production: 0, ordering: 1 }
 
