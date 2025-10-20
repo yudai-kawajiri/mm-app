@@ -33,6 +33,8 @@ export default class extends Controller {
       this.fetchProductDetails(productId).then(data => {
         this.priceValue = data.price || 0;
 
+        this.element.dataset.planProductPriceValue = this.priceValue;
+
         this.element.dataset.planProductCategoryId = data.category_id;
 
         this.updatePriceDisplay(this.priceValue);
