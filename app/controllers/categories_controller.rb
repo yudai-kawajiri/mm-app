@@ -1,17 +1,12 @@
 class CategoriesController < AuthenticatedController
-  # ページネーションを使用
-  include PaginationConcern
-  # privateメソッドの set_category を、edit, update, destroy アクションの前に実行する
-  before_action :set_category, only: [:edit, :update, :destroy]
+
+  find_resource :category, only: [:edit, :update, :destroy]
 
   def index
     # モジュールにソート責任を移譲
     @categories = apply_pagination(
       current_user.categories
-                              # モデル層に検索を指示し、結果をフィルタリング
-                              .search_by_name(search_params[:q])
-                              # カテゴリ種別による絞り込みをモジュールから
-                              .filter_by_category_type(search_params[:category_type])
+                              .search_and_filter(search_params)
     )
 
     # 検索結果のフィードバック表示のため、検索結果をビューに渡す
@@ -24,18 +19,7 @@ class CategoriesController < AuthenticatedController
 
   def create
     @category = current_user.categories.build(category_params)
-
-    if @category.save
-      # I18nキーは 'flash_messages' で統一されており、nameも正しく渡されています
-      redirect_to categories_path, notice: t('flash_messages.create.success',
-                                              resource: Category.model_name.human,
-                                              name: @category.name)
-    else
-      flash.now[:alert] = t('flash_messages.create.failure',
-                            resource: Category.model_name.human)
-      # ステータスコード 422 を明示的に指定
-    render :new, status: :unprocessable_entity
-    end
+    respond_to_save(@category, success_path: categories_url)
   end
 
   def edit
@@ -43,37 +27,16 @@ class CategoriesController < AuthenticatedController
   end
 
   def update
-    if @category.update(category_params)
-      redirect_to categories_path, notice: t('flash_messages.update.success',
-                                              resource: Category.model_name.human,
-                                              name: @category.name)
-    else
-      flash.now[:alert] = t('flash_messages.update.failure',
-                            resource: Category.model_name.human)
-      # 失敗時: ステータスコード 422 を明示的に指定
-      render :edit, status: :unprocessable_entity
-    end
+    @category.assign_attributes(category_params)
+    respond_to_save(@category, success_path: categories_url)
   end
 
   def destroy
-    if @category.destroy
-      redirect_to categories_url, notice: t('flash_messages.destroy.success',
-                                          resource: Category.model_name.human,
-                                          name: @category.name)
-    else
-      flash[:alert] = @category.errors.full_messages.to_sentence
-      redirect_to categories_url
-    end
+    respond_to_destroy(@category, success_path: categories_url)
   end
 
 
   private
-
-  # 重複していた @category の取得処理をまとめる
-  def set_category
-    # 編集・更新・削除対象のレコードを、current_userのカテゴリーの中から探す
-    @category = current_user.categories.find(params[:id])
-  end
 
   def category_params
     # name と category_type を受付

@@ -7,7 +7,7 @@
 <div class="mb-3">
   <%= f.label :category_id, class: 'form-label' %>
   <%# Categoryを category_type: 'plan' に限定 %>
-  <%= f.collection_select :category_id, @plan_categories, :id, :name,
+  <%= f.collection_select :category_id, @search_categories, :id, :name,
     ({ include_blank: t('helpers.prompt.select') }),
     ({
       class: 'form-select',

@@ -18,7 +18,6 @@
     <%= f.collection_select(:product_id, products, :id, :name,
         { include_blank: t('helpers.prompt.select') },
         { class: 'form-select',
-          required: true,
           data: {
             action: 'change->plan-product#updateProduct',
             'plan-product-target': 'productSelect'
