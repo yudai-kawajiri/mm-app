@@ -1,10 +1,14 @@
 class PlansController < AuthenticatedController
 
+  # define_search_params を使って許可するキーを定義
+  define_search_params :q, :category_id
+
   before_action :set_plan_categories, only: [:index, :new, :edit, :create, :update]
   before_action :set_plan, only: [:show, :edit, :update, :destroy]
+  # ネストフォーム用データ準備
+  before_action :set_product_categories, only: [:new, :edit, :create, :update]
 
   def index
-    Rails.logger.debug "--- Search Params: #{search_params.inspect} ---"
     # 未　全員閲覧できるようにするためcurrent_userはなし。他もどうするか考え中
     plans = Plan.all.includes(:category, :user)
               .order(created_at: :desc)
@@ -57,14 +61,19 @@ class PlansController < AuthenticatedController
     )
   end
 
-  def search_params
-    get_and_normalize_search_params(:q, :category_id)
-  end
-
   # 未 メソッド内でn+1対応
   def set_plan
     @plan = Plan.includes(product_plans: :product).find(params[:id])
     # 計画に含まれる商品を取得
     @plan_products = @plan.product_plans
+  end
+
+  def set_plan_categories
+    # 計画カテゴリ ('plan') に絞り込む
+    @search_categories = current_user.categories.where(category_type: 'plan').order(:name)
+  end
+
+  def set_product_categories
+    @product_categories = current_user.categories.where(category_type: 'product').order(:name)
   end
 end

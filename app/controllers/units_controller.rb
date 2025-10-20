@@ -1,5 +1,8 @@
 class UnitsController < AuthenticatedController
 
+  # define_search_params を使って許可するキーを定義
+  define_search_params :q, :category
+
   find_resource :unit, only: [:edit, :update, :destroy]
 
   def index
@@ -37,10 +40,5 @@ class UnitsController < AuthenticatedController
 
   def unit_params
     params.require(:unit).permit(:name, :category)
-  end
-
-  # 検索パラメーター専用のストロングパラメーターを定義
-  def search_params
-    get_and_normalize_search_params(:q, :category)
   end
 end
