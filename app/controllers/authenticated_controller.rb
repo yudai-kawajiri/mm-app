@@ -16,4 +16,7 @@ class AuthenticatedController < ApplicationController
 
   # CRUDアクションの共通化
   include CrudResponderConcern
+
+  # 検索パラメータの共通化
+  include SearchableController
 end
