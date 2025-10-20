@@ -82,13 +82,4 @@ class PlansController < AuthenticatedController
     # 計画に含まれる商品を取得
     @plan_products = @plan.product_plans
   end
-
-  # カテゴリー取得メソッド
-  def set_plan_categories
-    # 計画カテゴリーは検索とフォームの両方で使うため、@search_categories に統一
-    @search_categories = fetch_categories_by_type(:plan)
-
-    # 商品カテゴリーはネストフォームで使用するため、@product_categories を設定
-    @product_categories = fetch_categories_by_type(:product)
-  end
 end
