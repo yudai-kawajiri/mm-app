@@ -19,6 +19,26 @@ Rails.application.routes.draw do
     get '/users', to: redirect('/')
   end
 
+  # APIルーティングの追加
+  # /api/v1/ のネームスペースでAPIを分離
+  namespace :api do
+    namespace :v1 do
+      # Product API: GET /api/v1/products/:id/details_for_plan
+      resources :products, only: [] do
+        member do
+          get :details_for_plan
+        end
+      end
+
+      # Material API: GET /api/v1/materials/:id/product_unit_data
+      resources :materials, only: [] do
+        member do
+          get :product_unit_data
+        end
+      end
+    end
+  end
+
   # showアクションのみを除外
   resources :categories, except: [:show]
 
@@ -26,22 +46,14 @@ Rails.application.routes.draw do
   resources :units, except: [:show]
 
   # Materialのルーティング
-  resources :materials do
-  # カスタムルートを追加
-    member do
-      get :product_unit_data # GET /materials/:id/product_unit_data に対応
-    end
-  end
-  
+  resources :materials
+
   # Productのルーティング
   resources :products do
     # 特定の商品の画像のみを削除するためのカスタムルート
     # （/products/:id/purge_image というDELETEリクエストに対応）
     member do
       delete 'purge_image', to: 'products#purge_image', as: :purge_image
-
-      # 製造計画の非同期計算に必要な情報を取得するAPI
-      get :details_for_plan
     end
     # ネストされたリソースを定義
     #（/products/:product_id/product_materials/show などに対応）

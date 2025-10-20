@@ -74,25 +74,6 @@ end
     end
   end
 
-  # 製造計画に必要な商品詳細（価格とカテゴリID）を返すAPIアクション
-  def details_for_plan
-    # set_product はこのアクションでは使用できないため、params[:id]で直接検索します
-    # 未 ActiveRecord::RecordNotFound が発生する可能性があるため、例外処理を追加
-
-    begin
-      product = Product.find(params[:id])
-
-      # 価格とカテゴリIDをJSONで返す
-      render json: {
-        price: product.price,
-        category_id: product.category_id
-      }
-    rescue ActiveRecord::RecordNotFound
-      # 商品IDが見つからない場合は 404 ステータスを返す
-      render json: { error: "Product not found" }, status: :not_found
-    end
-  end
-
   private
 
   def product_params
