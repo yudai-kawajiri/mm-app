@@ -7,4 +7,7 @@ class AuthenticatedController < ApplicationController
 
   # 検索フィルタリングロジックを組み込む
   include SearchAndFilterConcern
+
+  # ページネーションを使用
+  include PaginationConcern
 end

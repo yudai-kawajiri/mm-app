@@ -1,5 +1,4 @@
 class PlansController < AuthenticatedController
-  include PaginationConcern
 
   before_action :set_plan_categories, only: [:index, :new, :edit, :create, :update]
   before_action :set_plan, only: [:show, :edit, :update, :destroy]

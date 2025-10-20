@@ -1,6 +1,5 @@
 class MaterialsController <  AuthenticatedController
-  # ページネーションを使用
-  include PaginationConcern
+
   before_action :set_material, only: [:show, :edit, :update, :destroy]
   # フォーム用カテゴリー取得
   before_action :set_form_categories, only: [:index, :new, :create, :edit, :update]

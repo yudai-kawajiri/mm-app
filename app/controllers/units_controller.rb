@@ -1,5 +1,5 @@
 class UnitsController < AuthenticatedController
-  include PaginationConcern
+
   before_action :set_unit, only: [:edit, :update, :destroy]
   def index
     # ページネーションと検索を適用

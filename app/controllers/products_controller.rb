@@ -1,5 +1,5 @@
 class ProductsController < AuthenticatedController
-  include PaginationConcern
+
   before_action :set_product, only: [:show, :edit, :update, :destroy, :purge_image]
   # フォーム用の商品カテゴリーを設定
   before_action :set_product_categories, only: [:index, :new, :edit, :update]

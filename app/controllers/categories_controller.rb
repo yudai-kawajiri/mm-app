@@ -1,8 +1,7 @@
 class CategoriesController < AuthenticatedController
-  # ページネーションを使用
-  include PaginationConcern
-  # privateメソッドの set_category を、edit, update, destroy アクションの前に実行する
-  before_action :set_category, only: [:edit, :update, :destroy]
+
+ before_action :set_plan_categories, only: [:index, :new, :edit, :create, :update]
+ before_action :set_plan, only: [:show, :edit, :update, :destroy]
 
   def index
     # モジュールにソート責任を移譲
