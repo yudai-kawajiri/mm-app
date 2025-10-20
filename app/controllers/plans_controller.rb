@@ -1,11 +1,11 @@
 class PlansController < AuthenticatedController
   include PaginationConcern
+
+  before_action :set_plan_categories, only: [:index, :new, :edit, :create, :update]
+  before_action :set_plan, only: [:show, :edit, :update, :destroy]
+
   # 未
   before_action :authenticate_user!, except: [:index]
-  before_action :set_form_categories, only: [:new, :edit, :create, :update]
-  before_action :set_search_categories, only: [:index]
-
-  before_action :set_plan, only: [:show, :edit, :update, :destroy]
 
   def index
     Rails.logger.debug "--- Search Params: #{search_params.inspect} ---"
@@ -46,7 +46,6 @@ class PlansController < AuthenticatedController
       redirect_to plan_path(@plan)
     else
       flash.now[:alert] = t("flash_messages.update.failure", resource: Plan.model_name.human)
-      set_plan_categories
       @plan.product_plans.build unless @plan.product_plans.any?
       render :edit, status: :unprocessable_entity
     end
@@ -77,26 +76,6 @@ class PlansController < AuthenticatedController
     )
   end
 
-  # フォーム用カテゴリーを設定
-  def set_form_categories
-    # フォームで利用する商品計画カテゴリーのみを設定
-    @plan_categories = fetch_categories_by_type(:plan)
-    # 未 商品カテゴリーは show/edit のネストフォームで使用
-    @product_categories = fetch_categories_by_type(:product)
-  end
-
-  # 一覧画面の検索用カテゴリーを設定
-  def set_search_categories
-    @search_categories = fetch_categories_by_type(:plan)
-  end
-
-  def set_plan_categories
-    # タブ表示用のカテゴリ
-    @product_categories = Category.where(category_type: 'product').order(:name)
-    # 必要なデータをコントローラーで取得する
-    @plan_categories = Category.where(category_type: 'plan').order(:name)
-  end
-
   def search_params
     get_and_normalize_search_params(:q, :category_id)
   end
@@ -106,5 +85,14 @@ class PlansController < AuthenticatedController
     @plan = Plan.includes(product_plans: :product).find(params[:id])
     # 計画に含まれる商品を取得
     @plan_products = @plan.product_plans
+  end
+
+  # カテゴリー取得メソッド
+  def set_plan_categories
+    # 計画カテゴリーは検索とフォームの両方で使うため、@search_categories に統一
+    @search_categories = fetch_categories_by_type(:plan)
+
+    # 商品カテゴリーはネストフォームで使用するため、@product_categories を設定
+    @product_categories = fetch_categories_by_type(:product)
   end
 end

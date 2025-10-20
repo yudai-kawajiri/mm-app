@@ -2,9 +2,7 @@ class ProductsController < AuthenticatedController
   include PaginationConcern
   before_action :set_product, only: [:show, :edit, :update, :destroy, :purge_image]
   # フォーム用の商品カテゴリーを設定
-  before_action :set_form_categories, only: [:new, :edit, :update]
-  # 一覧画面の検索カテゴリーを設定
-  before_action :set_search_categories, only: [:index]
+  before_action :set_product_categories, only: [:index, :new, :edit, :update]
   before_action :set_material_categories, only: [:new, :create, :show, :edit, :update]
 
   def index
@@ -119,8 +117,8 @@ end
   end
 
   # フォーム用のカテゴリーを設定
-  def set_form_categories
-    @product_categories = fetch_categories_by_type(:product)
+  def set_product_categories
+    @search_categories = fetch_categories_by_type(:product)
   end
 
   def set_product
@@ -129,11 +127,6 @@ end
 
   def search_params
     get_and_normalize_search_params(:q, :category_id)
-  end
-
-  # 検索フォーム用のカテゴリーを設定
-  def set_search_categories
-    @search_categories = fetch_categories_by_type(:product)
   end
 
   def set_material_categories

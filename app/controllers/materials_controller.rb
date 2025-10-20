@@ -3,9 +3,7 @@ class MaterialsController <  AuthenticatedController
   include PaginationConcern
   before_action :set_material, only: [:show, :edit, :update, :destroy]
   # フォーム用カテゴリー取得
-  before_action :set_form_categories, only: [:new, :create, :edit, :update]
-  # 一覧画面用の検索カテゴリー取得
-  before_action :set_search_categories, only: [:index]
+  before_action :set_form_categories, only: [:index, :new, :create, :edit, :update]
 
   def index
     @materials = apply_pagination(current_user.materials
@@ -115,11 +113,6 @@ class MaterialsController <  AuthenticatedController
 
   # フォーム用のカテゴリーを設定
   def set_form_categories
-    @material_categories = fetch_categories_by_type(:material)
-  end
-
-  # 検索フォーム用（一覧画面用）のカテゴリーを設定
-  def set_search_categories
     @search_categories = fetch_categories_by_type(:material)
   end
 end
