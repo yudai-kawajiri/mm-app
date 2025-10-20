@@ -35,4 +35,18 @@ class Unit < ApplicationRecord
     I18n.t("activerecord.enums.unit.category.#{category}")
   end
 
+  # 検索ロジックの統合メソッド
+  # 検索パラメーター全体を受け取り、複数のフィルタリングを一括で適用する
+  def self.search_and_filter(params)
+    results = all
+
+    # NameSearchable モジュールに定義されたスコープを利用
+    results = results.search_by_name(params[:q]) if params[:q].present?
+
+    # Unitモデルに定義された filter_by_category スコープを利用
+    results = results.filter_by_category(params[:category]) if params[:category].present?
+
+    results
+  end
+
 end

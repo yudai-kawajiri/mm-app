@@ -12,6 +12,19 @@ class Category < ApplicationRecord
   # カテゴリ分類が空欄でないことを要求
   validates :category_type, presence: true
 
+  # 検索パラメーター全体を受け取り、複数のフィルタリングを一括で適用する
+  def self.search_and_filter(params)
+    results = all
+
+    # NameSearchable モジュールに定義されたスコープを利用
+    results = results.search_by_name(params[:q]) if params[:q].present?
+
+    # NameSearchable モジュール（または Category モデル自身）に定義されたスコープを利用
+    results = results.filter_by_category_type(params[:category_type]) if params[:category_type].present?
+
+    results
+  end
+
   # selfでメソッドを呼び出しているインスタンスのcategory_typeを翻訳
   # 未　なくても本来動く？
   def category_type_i18n

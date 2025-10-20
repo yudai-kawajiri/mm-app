@@ -8,10 +8,7 @@ class CategoriesController < AuthenticatedController
     # モジュールにソート責任を移譲
     @categories = apply_pagination(
       current_user.categories
-                              # モデル層に検索を指示し、結果をフィルタリング
-                              .search_by_name(search_params[:q])
-                              # カテゴリ種別による絞り込みをモジュールから
-                              .filter_by_category_type(search_params[:category_type])
+                              .search_and_filter(search_params)
     )
 
     # 検索結果のフィードバック表示のため、検索結果をビューに渡す

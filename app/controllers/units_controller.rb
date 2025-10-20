@@ -5,10 +5,7 @@ class UnitsController < AuthenticatedController
     # ページネーションと検索を適用
     @units = apply_pagination(
       current_user.units
-        # 単位名で検索
-        .search_by_name(search_params[:q])
-        # categoryで絞り込み
-        .filter_by_category(search_params[:category])
+        .search_and_filter(search_params)
     )
 
     # 検索結果のフィードバック表示のため、検索クエリをビューに渡す

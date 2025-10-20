@@ -18,6 +18,17 @@ class Plan < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :category_id, presence: true
 
+  #  検索ロジックの統合メソッド
+  # 検索パラメーター全体を受け取り、複数のフィルタリングを一括で適用する
+  def self.search_and_filter(params)
+    results = all
+
+    results = results.search_by_name(params[:q]) if params[:q].present?
+    results = results.filter_by_category_id(params[:category_id]) if params[:category_id].present?
+
+    results
+  end
+
   private
 
   def category_name_for_display

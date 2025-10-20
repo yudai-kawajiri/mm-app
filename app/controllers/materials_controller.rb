@@ -9,8 +9,7 @@ class MaterialsController <  AuthenticatedController
 
   def index
     @materials = apply_pagination(current_user.materials
-                              .search_by_name(search_params[:q])
-                              .filter_by_category_id(search_params[:category_id])
+                              .search_and_filter(search_params)
     )
 
   end

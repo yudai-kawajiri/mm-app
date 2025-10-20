@@ -8,11 +8,11 @@ class PlansController < AuthenticatedController
   before_action :set_plan, only: [:show, :edit, :update, :destroy]
 
   def index
+    Rails.logger.debug "--- Search Params: #{search_params.inspect} ---"
     # 未　全員閲覧できるようにするためcurrent_userはなし。他もどうするか考え中
     plans = Plan.all.includes(:category, :user)
               .order(created_at: :desc)
-              .search_by_name(search_params[:q])
-              .filter_by_category_id(search_params[:category_id])
+              plans = plans.search_and_filter(search_params)
     @plans = apply_pagination(plans)
   end
 
@@ -25,7 +25,7 @@ class PlansController < AuthenticatedController
     @plan =  current_user.plans.build(plan_params)
     if @plan.save
       flash[:notice] = t("flash_messages.create.success", resource: Plan.model_name.human, name: @plan.name)
-      redirect_to plans_path
+      redirect_to @plan
     else
       flash.now[:alert] = t("flash_messages.create.failure", resource: Plan.model_name.human)
       set_plan_categories

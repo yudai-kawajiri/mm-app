@@ -30,6 +30,18 @@ class Material < ApplicationRecord
             presence: true,
             numericality: { greater_than: 0 }
 
+  # 検索ロジックの統合メソッド
+  # 検索パラメーター全体を受け取り、複数のフィルタリングを一括で適用する
+  def self.search_and_filter(params)
+    results = all
+
+    # NameSearchable モジュールに定義されたスコープを利用
+    results = results.search_by_name(params[:q]) if params[:q].present?
+    results = results.filter_by_category_id(params[:category_id]) if params[:category_id].present?
+
+    results
+  end
+
   # Categoryの名前を表示
   # 未 本当にいるのか？
   def category_name_for_display

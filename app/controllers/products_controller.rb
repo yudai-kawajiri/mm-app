@@ -9,8 +9,7 @@ class ProductsController < AuthenticatedController
 
   def index
     @products =  apply_pagination(current_user.products
-                              .search_by_name(search_params[:q])
-                              .filter_by_category_id(search_params[:category_id])
+                                    .search_and_filter(search_params)
     )
   end
 
