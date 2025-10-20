@@ -1,5 +1,8 @@
 class ProductsController < AuthenticatedController
 
+  # define_search_params を使って許可するキーを定義
+  define_search_params :q, :category_id
+
   find_resource :product, only: [:show, :edit, :update, :destroy, :purge_image]
   before_action :set_product_categories, only: [:index, :new, :edit, :update]
   before_action :set_material_categories, only: [:new, :create, :show, :edit, :update]
@@ -71,7 +74,13 @@ class ProductsController < AuthenticatedController
   )
   end
 
-  def search_params
-    get_and_normalize_search_params(:q, :category_id)
+  # 検索フォームと商品カテゴリ用
+  def set_product_categories
+    @search_categories = current_user.categories.where(category_type: 'product').order(:name)
+  end
+
+  # ネストフォーム用
+  def set_material_categories
+    @material_categories = current_user.categories.where(category_type: 'material').order(:name)
   end
 end

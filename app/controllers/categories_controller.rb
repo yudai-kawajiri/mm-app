@@ -1,5 +1,8 @@
 class CategoriesController < AuthenticatedController
 
+  # define_search_params を使って許可するキーを定義
+  define_search_params :q, :category_type
+
   find_resource :category, only: [:edit, :update, :destroy]
 
   def index
@@ -41,10 +44,5 @@ class CategoriesController < AuthenticatedController
   def category_params
     # name と category_type を受付
     params.require(:category).permit(:name, :category_type)
-  end
-
-  # 検索パラメーター専用のストロングパラメーターを定義し、セキュリティを確保
-  def search_params
-    get_and_normalize_search_params(:q, :category_type)
   end
 end
