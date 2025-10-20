@@ -78,7 +78,7 @@ export default class extends Controller {
 
   // APIを介して商品詳細を取得する非同期関数
   async fetchProductDetails(productId) {
-    const response = await fetch(`/products/${productId}/details_for_plan`);
+    const response = await fetch(`/api/v1/products/${productId}/details_for_plan`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }

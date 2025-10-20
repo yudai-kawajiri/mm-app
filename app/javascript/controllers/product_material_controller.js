@@ -18,7 +18,7 @@ export default class extends Controller {
     }
 
     // 単位名、数量、重量を取得するための AJAX リクエストを実行
-    fetch(`/materials/${materialId}/product_unit_data`)
+    fetch(`/api/v1/materials/${materialId}/product_unit_data`)
       .then(response => {
         if (!response.ok) {
           // 404/500エラーはここでキャッチ
