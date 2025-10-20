@@ -42,8 +42,10 @@ module CrudResponderConcern
 
       redirect_to success_path, status: :see_other
     else
+      # status: :unprocessable_entity (422) を削除し、status: :see_other (303) に変更
       flash[:alert] = resource.errors.full_messages.to_sentence
-      redirect_to destroy_failure_path, status: :unprocessable_entity
+      # 422を避けて303でリダイレクトすることで、Turbo環境でのFlash表示を保証する
+      redirect_to destroy_failure_path, status: :see_other
     end
   end
 end

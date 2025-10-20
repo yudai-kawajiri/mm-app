@@ -11,6 +11,7 @@ class Material < ApplicationRecord
   belongs_to :unit_for_order, class_name: 'Unit'
 
   # 多対多
+  has_many :product_materials
   has_many :products, through: :product_materials
 
   # 各バリデーションを設定
@@ -29,6 +30,8 @@ class Material < ApplicationRecord
   validates :unit_weight_for_order,
             presence: true,
             numericality: { greater_than: 0 }
+
+  before_destroy :check_for_associated_products
 
   # 検索ロジックの統合メソッド
   # 検索パラメーター全体を受け取り、複数のフィルタリングを一括で適用する
@@ -60,5 +63,13 @@ class Material < ApplicationRecord
   # 未 本当にいるのか？
   def unit_for_order_name
     unit_for_order.present? ? unit_for_order.name : ''
+  end
+
+  # 関連する Product が存在する場合、Material の削除をブロック
+  def check_for_associated_products
+    if products.exists?
+      errors.add(:base, "この原材料は商品に使われているため削除できません。")
+      throw :abort
+    end
   end
 end
