@@ -8,7 +8,7 @@ class CategoriesController < AuthenticatedController
   def index
     # モジュールにソート責任を移譲
     @categories = apply_pagination(
-      current_user.categories
+      Category.all
                               .search_and_filter(search_params)
     )
 

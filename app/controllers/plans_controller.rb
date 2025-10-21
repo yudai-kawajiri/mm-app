@@ -9,12 +9,12 @@ class PlansController < AuthenticatedController
   before_action :set_product_categories, only: [:new, :edit, :create, :update]
 
   def index
-    # 未　全員閲覧できるようにするためcurrent_userはなし。他もどうするか考え中
-    plans = Plan.all.includes(:category, :user)
-              .order(created_at: :desc)
-              plans = plans.search_and_filter(search_params)
-    @plans = apply_pagination(plans)
-  end
+    @plans = apply_pagination(
+    Plan.all.includes(:category, :user) # N+1対策
+        .order(created_at: :desc)
+        .search_and_filter(search_params)
+  )
+end
 
   def new
     @plan = Plan.new
@@ -70,10 +70,10 @@ class PlansController < AuthenticatedController
 
   def set_plan_categories
     # 計画カテゴリ ('plan') に絞り込む
-    @search_categories = current_user.categories.where(category_type: 'plan').order(:name)
+    @search_categories =Category.where(category_type: 'plan').order(:name)
   end
 
   def set_product_categories
-    @product_categories = current_user.categories.where(category_type: 'product').order(:name)
+    @product_categories = Category.where(category_type: 'product').order(:name)
   end
 end

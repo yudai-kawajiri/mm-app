@@ -4,13 +4,12 @@ module ResourceFinderConcern
   module ClassMethods
     def find_resource(resource_name, options = {})
       resource_sym = resource_name.to_sym
-      plural_resource_sym = resource_sym.to_s.pluralize.to_sym
       callback_method_name = "set_#{resource_sym}"
 
       define_method callback_method_name do
         begin
-          collection = current_user.public_send(plural_resource_sym)
-          instance_variable_set("@#{resource_sym}", collection.find(params[:id]))
+          model_class = resource_sym.to_s.classify.constantize
+          instance_variable_set("@#{resource_sym}", model_class.find(params[:id]))
         rescue ActiveRecord::RecordNotFound
           # ユーザーに紐づかないリソースへのアクセスを捕捉
           flash[:alert] = t('flash_messages.not_authorized')
