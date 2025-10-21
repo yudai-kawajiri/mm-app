@@ -11,7 +11,7 @@
 
     <%# 1. 詳細画面のアクション (編集 / 削除) のグループ化 %>
     <% if is_show_page && resource.present? %>
-      <div class="d-flex me-2"> <%# 👈 編集/削除ボタンを一つのグループにまとめる %>
+      <div class="d-flex me-2">
         <%= render 'shared/actions/edit_link', url: url_for([:edit, resource]), custom_class: 'me-2 flex-grow-0 w-auto' %>
         <%= render 'shared/actions/delete_link', url: resource, resource_name: resource.class.model_name.human, custom_class: 'me-2 flex-grow-0 w-auto' %>
       </div>
@@ -20,6 +20,11 @@
     <%# 2. 戻るボタン の配置 %>
     <% if resource.present? %>
       <% resource_list_path = send(resource.class.model_name.route_key + '_path') %>
-      <%= render 'shared/actions/back_link', url: resource_list_path, custom_class: 'flex-grow-0 w-auto' %> <%# 👈 ここは me-2 不要 %>
+      <%= render 'shared/actions/back_link', url: resource_list_path, custom_class: 'flex-grow-0 w-auto' %>
     <% end %>
+
+    <%# 3. 一覧画面のアクション (新規作成) の配置 %>
+      <% if is_index_page && new_path.present? %>
+        <%= render 'shared/actions/new_link', url: new_path %>
+      <% end %>
 </div>

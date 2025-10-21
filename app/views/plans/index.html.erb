@@ -1,15 +1,18 @@
-<% content_for(:title, t('plans.index.title')) %>
-<h1><%= t('plans.index.title') %></h1>
+<%# 1. ヘッダー %>
+<%= render 'shared/header_with_actions', title: t('plans.index.title') do %>
 
-<%# 未 ページネーションをアクションビューに移動 %>
-  <%= paginate @plans, theme: 'bootstrap-5' %>
+<%# 2. アクションパーシャル %>
+  <%= render 'shared/actions/resource_header_actions',
+      is_index_page: true,
+      new_path: new_plan_path
+  %>
+<% end %>
 
-
+<%# 3. リソースリスト %>
 <%= render('shared/resource_list',
     # I18nのキーではなく、直接タイトルを指定
     # 未 商品カテゴリーのものだけ出す
     resources: @plans,
-    new_path: new_plan_path,
     resource_class: Plan,
     search_target: :category_id,
     search_categories: @search_categories,
