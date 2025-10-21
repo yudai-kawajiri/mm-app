@@ -4,8 +4,6 @@ class Plan < ApplicationRecord
   # belongs_to :user
   include UserAssociatable
   # 関連付け
-
-  # 未 userとの関連
   belongs_to :category
   has_many :product_plans, dependent: :destroy
 
@@ -49,11 +47,6 @@ class Plan < ApplicationRecord
   def reject_product_plans(attributes)
     attributes['product_id'].blank? && attributes['production_count'].blank?
   end
-
-  # 名前での部分一致検索
-  scope :search_by_name, ->(query) {
-    where("name LIKE ?", "%#{query}%") if query.present?
-  }
 
   # カテゴリIDでの絞り込み
   scope :filter_by_category_id, ->(category_id) {
