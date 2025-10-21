@@ -28,16 +28,10 @@ class Product < ApplicationRecord
 
   # バリデーション
   validates :name, presence: true
+  validates :name, uniqueness: { scope: :category_id }
   validates :price, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :item_number, presence: true, length: { maximum: 4 }, uniqueness: { scope: :user_id }
+  validates :item_number, presence: true, length: { maximum: 4 }, uniqueness: { scope: :category_id }
   validates :status, presence: true
-
-  # 金額表示用のヘルパーメソッド
-  # 呼び出し元: product.price_with_currency
-  def price_with_currency
-    # number_to_currency ヘルパーはビューまたはヘルパーで呼び出すのが正しいが、
-    price # ビュー側で number_to_currency を使用するのが最もDRY
-  end
 
   private
 

@@ -1,5 +1,5 @@
 class Plan < ApplicationRecord
-   # 名前検索スコープを組み込み
+  # 名前検索スコープを組み込み
   include NameSearchable
   # belongs_to :user
   include UserAssociatable
@@ -17,8 +17,7 @@ class Plan < ApplicationRecord
   enum :status, { draft: 0, completed: 1 }
 
   # バリデーション
-  validates :name, presence: true, uniqueness: true
-  validates :category_id, presence: true
+  validates :name, presence: true, uniqueness: { scope: :category_id }
 
   private
 

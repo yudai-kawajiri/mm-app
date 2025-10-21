@@ -14,6 +14,6 @@ class Category < ApplicationRecord
 
 
   # バリデーション
-  validates :name, presence: true, uniqueness: { scope: :user_id }
+  validates :name, presence: true, uniqueness: { scope: :category_type }
   validates :category_type, presence: true
 end
