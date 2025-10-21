@@ -6,9 +6,10 @@ class MaterialsController <  AuthenticatedController
   find_resource :material, only: [:show, :edit, :update, :destroy]
 
   def index
-    @search_categories = current_user.categories.where(category_type: 'material').order(:name)
-    @materials = apply_pagination(current_user.materials
-                              .search_and_filter(search_params)
+    @search_categories = Category.where(category_type: 'material').order(:name)
+    @materials = apply_pagination(
+      Material.all
+              .search_and_filter(search_params)
     )
   end
 

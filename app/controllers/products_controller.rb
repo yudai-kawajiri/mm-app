@@ -8,7 +8,7 @@ class ProductsController < AuthenticatedController
   before_action :set_material_categories, only: [:new, :create, :show, :edit, :update]
 
   def index
-    @products =  apply_pagination(current_user.products
+    @products =  apply_pagination(Product.all
                                     .search_and_filter(search_params)
     )
   end

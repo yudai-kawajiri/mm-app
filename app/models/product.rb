@@ -1,19 +1,19 @@
 class Product < ApplicationRecord
   # 名前検索スコープを組み込み
   include NameSearchable
+  include UserAssociatable
 
   # 0: 下書き 1: 販売中  2: 販売中止
   enum :status, { draft: 0, selling: 1, discontinued: 2 }
 
   # アソシエーション
-  belongs_to :user
   belongs_to :category
 
   has_many :product_materials, dependent: :destroy
   has_many :materials, through: :product_materials
+  has_many :product_plans
 
   # ネストされたフォームから product_materials を受け入れる設定
-  # allow_destroy: true で、削除フラグによるレコード削除を許可
   accepts_nested_attributes_for :product_materials, allow_destroy: true
 
   #消えていたActive Storageを再追記
@@ -30,6 +30,8 @@ class Product < ApplicationRecord
   validates :price, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :item_number, presence: true, length: { maximum: 4 }, uniqueness: { scope: :user_id }
   validates :status, presence: true
+
+  before_destroy :check_for_associated_product_plans
 
   # 検索ロジックのメソッド
   # 検索パラメーター全体を受け取り、複数のフィルタリングを一括で適用する
@@ -75,5 +77,13 @@ class Product < ApplicationRecord
   def remove_image_checked?
     # remove_imageがnilではない、かつ "0"（チェックオフの値）ではない場合にtrue
     remove_image.present? && remove_image != '0'
+  end
+
+  # 関連する ProductPlan が存在する場合、Productの削除をブロック
+  def check_for_associated_product_plans
+    if product_plans.exists?
+      errors.add(:base, "この商品は計画（プラン）に使われているため削除できません。")
+      throw :abort
+    end
   end
 end

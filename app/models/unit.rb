@@ -1,24 +1,21 @@
 class Unit < ApplicationRecord
   # 名前検索スコープを組み込み
   include NameSearchable
-  # Userとの関連付けを追加
-  belongs_to :user
+  # belongs_to :user
+  include UserAssociatable
 
   # この単位を参照している原材料がある場合、エラーメッセージをUnitオブジェクトに追加する
   has_many :materials_as_product_unit,
             class_name: 'Material',
-            foreign_key: 'unit_for_product_id',
-            dependent: :restrict_with_error
+            foreign_key: 'unit_for_product_id'
 
   has_many :materials_as_order_unit,
             class_name: 'Material',
-            foreign_key: 'unit_for_order_id',
-            dependent: :restrict_with_error
+            foreign_key: 'unit_for_order_id'
 
   # falseを追加したので、バリデーションも追加
   validates :name, presence: true
   validates :category, presence: true
-
   validates :name,
             uniqueness: {
               scope: :category,
@@ -27,6 +24,8 @@ class Unit < ApplicationRecord
 
   # 基本単位と発注単位(basic を production に修正)
   enum :category, { production: 0, ordering: 1 }
+
+  before_destroy :check_for_associated_materials
 
   # categoryで絞り込むためのスコープ
   scope :filter_by_category, ->(category) do
@@ -55,4 +54,12 @@ class Unit < ApplicationRecord
     results
   end
 
+  # 関連リソースが存在する場合、削除をブロックする
+  def check_for_associated_materials
+    # 製品単位として使われているかチェック
+    if materials_as_product_unit.exists?
+      errors.add(:base, "この単位は製品の単位として原材料に使われているため削除できません。")
+      throw :abort
+    end
+  end
 end
