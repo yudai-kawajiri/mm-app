@@ -19,4 +19,12 @@ class AuthenticatedController < ApplicationController
 
   # 検索パラメータの共通化
   include SearchableController
+
+  # 検索クエリをビューに渡すための共通処理
+  def set_search_term_for_view
+    # search_params メソッドが定義されているか、かつ :q パラメータが存在するか確認
+    if defined?(search_params) && search_params[:q].present?
+      @search_term = search_params[:q]
+    end
+  end
 end

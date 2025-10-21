@@ -9,6 +9,8 @@ class MaterialsController <  AuthenticatedController
     @materials = apply_pagination(
       Material.all.search_and_filter(search_params)
     )
+    # 検索結果のフィードバック表示のため、共通メソッドで @search_term を設定
+    set_search_term_for_view
   end
 
   def show; end
