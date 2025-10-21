@@ -19,6 +19,7 @@ class Material < ApplicationRecord
   # 各バリデーションを設定
   validates :category_id, presence: true
   validates :name, presence: true
+  validates :name, uniqueness: { scope: :category_id }
 
   # 関連オブジェクトではなく外部キーIDに対するバリデーションに変更
   validates :unit_for_product_id, presence: true

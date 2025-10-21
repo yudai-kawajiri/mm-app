@@ -6,20 +6,16 @@ class MaterialsController <  AuthenticatedController
   find_resource :material, only: [:show, :edit, :update, :destroy]
 
   def index
-    @search_categories = Category.where(category_type: 'material').order(:name)
     @materials = apply_pagination(
-      Material.all
-              .search_and_filter(search_params)
+      Material.all.search_and_filter(search_params)
     )
   end
 
-  def show
-    # before_actionで完結
-  end
+  def show; end
 
   def new
     # フォームに渡すための、新しい空の Material インスタンスを準備
-    @material = Material.new
+    @material = current_user.materials.build
   end
 
   def create
@@ -28,9 +24,7 @@ class MaterialsController <  AuthenticatedController
     respond_to_save(@material, success_path: @material)
   end
 
-  def edit
-    # before_actionで完結
-  end
+  def edit; end
 
   def update
     @material.assign_attributes(material_params)
@@ -56,6 +50,7 @@ class MaterialsController <  AuthenticatedController
 
   # カテゴリリストを準備
   def set_material_categories
-    @search_categories = current_user.categories.where(category_type: 'material').order(:name)
+    @search_categories = Category.where(category_type: 'material').order(:name)
+    @material_categories = @search_categories
   end
 end
