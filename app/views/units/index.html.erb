@@ -8,7 +8,9 @@
     search_target: :category,
     columns: [
       { header: :name, data: :name },
-      { header: :category, data: :category_i18n }
+      { header: :category,
+        data: Proc.new { |unit| translate_enum_value(unit, :category) }
+      }
     ]
 %>
 

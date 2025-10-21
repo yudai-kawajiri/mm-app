@@ -4,8 +4,6 @@ class Plan < ApplicationRecord
   # belongs_to :user
   include UserAssociatable
   # 関連付け
-
-  # 未 userとの関連
   belongs_to :category
   has_many :product_plans, dependent: :destroy
 
@@ -22,38 +20,12 @@ class Plan < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :category_id, presence: true
 
-  #  検索ロジックの統合メソッド
-  # 検索パラメーター全体を受け取り、複数のフィルタリングを一括で適用する
-  def self.search_and_filter(params)
-    results = all
-
-    results = results.search_by_name(params[:q]) if params[:q].present?
-    results = results.filter_by_category_id(params[:category_id]) if params[:category_id].present?
-
-    results
-  end
-
   private
-
-  def category_name_for_display
-    self.category.name
-  end
-
-  def translated_status
-    # enum で定義されたステータスの値 (draft, completedなど) に対応する、
-    # I18nファイルに定義された日本語名を取得します。
-    I18n.t("activerecord.enums.plan.status.#{self.status}")
-  end
 
   # product_id と production_count の両方が空の場合にレコードを無視する
   def reject_product_plans(attributes)
     attributes['product_id'].blank? && attributes['production_count'].blank?
   end
-
-  # 名前での部分一致検索
-  scope :search_by_name, ->(query) {
-    where("name LIKE ?", "%#{query}%") if query.present?
-  }
 
   # カテゴリIDでの絞り込み
   scope :filter_by_category_id, ->(category_id) {
