@@ -10,10 +10,16 @@
 
     columns: [
       { header: :name, data: :name },
-      { header: :category, data: :category_name_for_display },
-      { header: :unit_for_product, data: :unit_for_product_name },
+      { header: :category,
+        data: Proc.new { |material| material.category&.name },
+      },
+      { header: :unit_for_product,
+        data: Proc.new { |material| material.unit_for_product&.name }
+      },
       { header: :unit_weight_for_product, data: :unit_weight_for_product },
-      { header: :unit_for_order, data: :unit_for_order_name },
+      { header: :unit_for_order,
+        data: Proc.new { |material| material.unit_for_order&.name }
+      },
       { header: :unit_weight_for_order, data: :unit_weight_for_order }
     ]
   %>

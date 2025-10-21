@@ -52,7 +52,11 @@
             <% elsif col[:data] == :price %>
               <%= number_to_currency(resource.price) %>
 
-            <%# 3. 通常のカラム %>
+            <%# 3. Procの場合の処理 %>
+            <% elsif col[:data].respond_to?(:call) %>
+              <%= col[:data].call(resource) %>
+
+            <%# 4. 通常のカラム %>
             <% else %>
               <%= resource.send(col[:data]) %>
             <% end %>
