@@ -7,7 +7,7 @@ class Product < ApplicationRecord
   enum :status, { draft: 0, selling: 1, discontinued: 2 }
 
   # アソシエーション
-  belongs_to :category
+  belongs_to :category, optional: false
 
   has_many :product_materials, dependent: :destroy
   has_many :materials, through: :product_materials
