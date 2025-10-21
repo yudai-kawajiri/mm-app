@@ -33,26 +33,7 @@
         <%# データ描画 %>
         <% columns.each do |col| %>
           <td>
-            <%# 1. 画像カラムの場合の専用処理 　未: 画像なしサムネイル%>
-            <% if col[:data] == :image %>
-              <% if resource.image.attached? %>
-                <%= image_tag resource.image.variant(resize_to_limit: [50, 50]), class: "img-thumbnail"%>
-              <% else %>
-                -
-              <% end %>
-
-            <%# 2. 金額表示カラムの専用処理 %>
-            <% elsif col[:data] == :price %>
-              <%= number_to_currency(resource.price) %>
-
-            <%# 3. Procの場合の処理 %>
-            <% elsif col[:data].respond_to?(:call) %>
-              <%= col[:data].call(resource) %>
-
-            <%# 4. 通常のカラム %>
-            <% else %>
-              <%= resource.send(col[:data]) %>
-            <% end %>
+            <%= render_resource_data(resource, col) %>
           </td>
         <% end %>
 
