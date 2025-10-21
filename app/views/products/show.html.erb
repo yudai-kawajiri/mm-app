@@ -1,21 +1,24 @@
-<%# ページタイトルの設定 %>
 <% product_title = t('products.show.title', name: @product.name) %>
 <%= content_for(:title, product_title) %>
 
-<%# ページ見出し %>
-<h1><%= t('.title', name: @product.name) %></h1>
+<%# 1.ヘッダー %>
+<%= render 'shared/header_with_actions', title: product_title do %>
 
-<%# 左カラム %>
+  <%# 2. アクションパーシャル %>
+  <%= render 'shared/actions/resource_header_actions',
+      is_show_page: true,
+      resource: @product
+  %>
+<% end %>
+
 <%= content_for :content_left do %>
   <%= render 'product_details', product: @product %>
 <% end %>
 
-<%# 右カラム %>
 <%= content_for :content_right do %>
   <%= render 'product_material_details', product: @product %>
 <% end %>
 
-<%# カラムラッパーを呼び出し、必要なローカル変数を渡す %>
 <%= render partial: 'shared/resource_two_column_details', locals: {
   resource: @product,
   content_left_title:t('forms.titles.basic_info', model: t('activerecord.models.product')),

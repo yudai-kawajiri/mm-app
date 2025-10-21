@@ -1,11 +1,20 @@
-<%= paginate @units, theme: 'bootstrap-5' %>
-<h1><%= t('units.index.title') %></h1>
+<%= content_for(:title, t('units.index.title')) %>
+<%# 1.ヘッダー（タイトルとアクションボタン）%>
+<%= render 'shared/header_with_actions', title: t('units.index.title') do %>
+  <%# 2. アクションパーシャル %>
+  <%= render 'shared/actions/resource_header_actions',
+      is_index_page: true,
+      new_path: new_unit_path
+  %>
+<% end %>
+
+<%# 3. リソースリスト %>
 <%= render 'shared/resource_list',
     resources: @units,
-    new_path: new_unit_path,
     resource_class: Unit,
     show_action_link: false,
     search_target: :category,
+
     columns: [
       { header: :name, data: :name },
       { header: :category,

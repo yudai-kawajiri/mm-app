@@ -1,8 +1,17 @@
-<%= paginate @categories, theme: 'bootstrap-5' %>
-<h1><%= t('categories.index.title') %></h1>
+<%= content_for(:title, t('categories.index.title')) %>
+<%# 1. ヘッダー（タイトルとアクションボタン） %>
+<%= render 'shared/header_with_actions', title: t('categories.index.title') do %>
+
+  <%# 2. アクションパーシャル %>
+  <%= render 'shared/actions/resource_header_actions',
+      is_index_page: true,
+      new_path: new_category_path
+  %>
+<% end %>
+
+<%# 3. リソースリスト %>
 <%= render 'shared/resource_list',
     resources: @categories,
-    new_path: new_category_path,
     resource_class: Category,
     show_action_link: false,
     search_target: :category_type,
@@ -14,6 +23,5 @@
       }
     ]
 %>
-
 
 <%= paginate @categories, theme: 'bootstrap-5' %>

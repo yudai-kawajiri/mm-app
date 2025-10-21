@@ -1,33 +1,24 @@
 <%# 左側ナビゲーションエリアの土台 %>
-  <div class="col-md-3 bg-light border-end p-4">
-    <h2><%= t('dashboard.menu.title') %></h2>
-    <div class="list-group">
+<div class="col-md-3 bg-light border-end p-4">
+  <h2><%= t('dashboard.menu.title') %></h2>
+  <div class="list-group">
 
-      <%# ダッシュボード %>
-      <%= link_to t('dashboard.menu.dashboard'), authenticated_root_path, class: "list-group-item list-group-item-action active" %>
+    <%# ヘルパーからメニュー項目を取得し、動的にリンクを描画 %>
+    <% sidebar_menu_items.each do |item| %>
+      <%= link_to item[:name], item[:path],
+          class: sidebar_link_class(item[:path]) %>
+    <% end %>
 
-      <%# カテゴリー管理 %>
-      <%= link_to t('dashboard.menu.category_management'), categories_path, class: "list-group-item list-group-item-action" %>
+    <hr>
 
-      <%# 単位管理 %>
-      <%= link_to t('dashboard.menu.unit_management'), units_path, class: "list-group-item list-group-item-action" %>
+    <%# アカウント設定 %>
+    <%= link_to t('dashboard.menu.account_settings'), edit_user_registration_path,
+        class: sidebar_link_class(edit_user_registration_path) %>
 
-      <%# 原材料管理 %>
-      <%= link_to t('dashboard.menu.material_management'), materials_path, class: "list-group-item list-group-item-action" %>
+    <%# ログアウト %>
+    <%= button_to destroy_user_session_path, method: :delete, class: "list-group-item list-group-item-action text-danger mt-2" do %>
+      <%= t('devise.sessions.sign_out') %>
+    <% end %>
 
-      <%# 商品管理 %>
-      <%= link_to t('dashboard.menu.product_management'), products_path, class: "list-group-item list-group-item-action" %>
-
-      <%# 商品計画管理 %>
-      <%= link_to t('dashboard.menu.plan_management'), plans_path, class: "list-group-item list-group-item-action" %>
-
-      <hr>
-      <%# アカウント設定 %>
-      <%= link_to t('dashboard.menu.account_settings'), edit_user_registration_path, class: "list-group-item list-group-item-action" %>
-
-      <%# ログアウト %>
-      <%= button_to destroy_user_session_path, method: :delete, class: "list-group-item list-group-item-action text-danger mt-2" do %>
-        <%= t('devise.sessions.sign_out') %>
-      <% end %>
-    </div>
   </div>
+</div>

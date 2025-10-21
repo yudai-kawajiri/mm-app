@@ -1,19 +1,28 @@
-<%= paginate @products, theme: 'bootstrap-5' %>
-<h1><%= t('products.index.title') %></h1>
+<%= content_for(:title, t('products.index.title')) %>
+<%# 1. ヘッダー %>
+<%= render 'shared/header_with_actions', title: t('products.index.title') do %>
+
+<%# 2. アクションパーシャル %>
+  <%= render 'shared/actions/resource_header_actions',
+      is_index_page: true,
+      new_path: new_product_path
+  %>
+<% end %>
+
+<%# 3. リソースリスト %>
 <%= render('shared/resource_list',
     resources: @products,
-    new_path: new_product_path,
     resource_class: Product,
     search_target: :category_id,
     search_categories: @search_categories,
 
     columns: [
       { header: :image, data: :image },
+      { header: :name, data: :name },
       { header: :category_id,
         data: Proc.new { |plan| plan.category&.name }
       },
       { header: :item_number, data: :item_number },
-      { header: :name, data: :name },
       { header: :price, data: :price },
       { header: :status,
         data: Proc.new { |plan| translate_enum_value(plan, :status) }

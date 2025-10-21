@@ -234,8 +234,8 @@ ja:
         current_password: "現在のパスワード"
 
       category:
-        name: "名称"
-        category_type: "カテゴリー種別"
+        name: "カテゴリー名"
+        category_type: "カテゴリー"
 
       unit:
         name: "単位名"
