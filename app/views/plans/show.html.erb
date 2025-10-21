@@ -1,15 +1,26 @@
 <% plan_title = t('plans.show.title', name: @plan.name) %>
 <%= content_for(:title, plan_title) %>
-<h1><%= plan_title %></h1>
-<%# 左カラムの内容定義: yield :content_left に内容を渡す %>
+
+<%# 1. ヘッダー %>
+<%= render 'shared/header_with_actions', title: plan_title do %>
+
+  <%# アクションパーシャル %>
+  <%= render 'shared/actions/resource_header_actions',
+      is_show_page: true,
+      resource: @plan
+  %>
+<% end %>
+
+<%# 左カラム %>
 <%= content_for :content_left do %>
   <%= render 'plan_details', resource: @plan %>
 <% end %>
-<%# 右カラムの内容定義: yield :content_right に内容を渡す %>
+
+<%# 右カラム %>
 <%= content_for :content_right do %>
   <%= render 'plan_products_details', resource: @plan %>
 <% end %>
-<%# 共通の二段組みレイアウトを呼び出し、タイトルなどのローカル変数を渡す %>
+
 <%= render partial: 'shared/resource_two_column_details', locals: {
   resource: @plan,
   content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.plan')),
