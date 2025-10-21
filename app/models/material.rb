@@ -7,10 +7,10 @@ class Material < ApplicationRecord
   belongs_to :category
 
   # unit_for_product_id カラムを参照し、Unitモデルであることを明示
-  belongs_to :unit_for_product, class_name: 'Unit'
+  belongs_to :unit_for_product, class_name: 'Unit', optional: false
 
   # unit_for_order_id カラムを参照し、Unitモデルであることを明示
-  belongs_to :unit_for_order, class_name: 'Unit'
+  belongs_to :unit_for_order, class_name: 'Unit', optional: false
 
   # 多対多
   has_many :product_materials, dependent: :destroy
