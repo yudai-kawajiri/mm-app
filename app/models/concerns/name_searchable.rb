@@ -29,4 +29,23 @@ module NameSearchable
       where(category_type: category_type) if category_type.present?
     end
   end
+
+  # モデルクラスメソッドとして定義
+  module ClassMethods
+    def search_and_filter(params)
+      # 全てのレコードを取得
+      results = all
+
+      # 検索キーワードがある場合のみ適用
+      results = results.search_by_name(params[:q]) if params[:q].present?
+
+      # category_id フィルタを適用
+      results = results.filter_by_category_id(params[:category_id]) if params[:category_id].present?
+
+      # 共通の category_type フィルタを適用
+      results = results.filter_by_category_type(params[:category_type]) if params[:category_type].present?
+
+      results
+    end
+  end
 end

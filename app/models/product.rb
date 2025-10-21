@@ -32,22 +32,6 @@ class Product < ApplicationRecord
   validates :item_number, presence: true, length: { maximum: 4 }, uniqueness: { scope: :user_id }
   validates :status, presence: true
 
-
-
-  # 検索ロジックのメソッド
-  # 検索パラメーター全体を受け取り、複数のフィルタリングを一括で適用する
-  def self.search_and_filter(params)
-    results = all
-
-    # 検索キーワードがある場合のみ適用 (NameSearchable モジュールを利用)
-    results = results.search_by_name(params[:q]) if params[:q].present?
-
-    # カテゴリIDの絞り込みがある場合のみ適用
-    results = results.filter_by_category_id(params[:category_id]) if params[:category_id].present?
-
-    results
-  end
-
   # Categoryの名前を表示するための安全なメソッド
   def category_name_for_display
     # category (belongs_to) が存在すれば、その name 属性を返す
