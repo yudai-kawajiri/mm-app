@@ -4,7 +4,7 @@ class Plan < ApplicationRecord
   # belongs_to :user
   include UserAssociatable
   # 関連付け
-  belongs_to :category
+  belongs_to :category, optional: false
   has_many :product_plans, dependent: :destroy
 
   # ネストフォームの設定: ProductPlanの追加・更新・削除を許可
