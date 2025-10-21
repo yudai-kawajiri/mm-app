@@ -14,7 +14,7 @@
     <div class="mb-4">
       <%= f.label :category_id, class: "form-label h5" %>
       <%= f.collection_select :category_id,
-                              current_user.categories,
+                              @material_categories,
                               :id,
                               :name,
                               { prompt: t('search.placeholders.select_category') },

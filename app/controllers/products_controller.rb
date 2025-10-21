@@ -8,8 +8,8 @@ class ProductsController < AuthenticatedController
   before_action :set_material_categories, only: [:new, :create, :show, :edit, :update]
 
   def index
-    @products =  apply_pagination(Product.all
-                                    .search_and_filter(search_params)
+    @products =  apply_pagination(
+      Product.all.search_and_filter(search_params)
     )
   end
 
@@ -77,6 +77,7 @@ class ProductsController < AuthenticatedController
   # 検索フォームと商品カテゴリ用
   def set_product_categories
     @search_categories = current_user.categories.where(category_type: 'product').order(:name)
+    @product_categories = @search_categories
   end
 
   # ネストフォーム用

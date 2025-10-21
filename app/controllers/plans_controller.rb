@@ -10,14 +10,14 @@ class PlansController < AuthenticatedController
 
   def index
     @plans = apply_pagination(
-    Plan.all.includes(:category, :user) # N+1対策
+      Plan.all.includes(:category, :user)
         .order(created_at: :desc)
         .search_and_filter(search_params)
-  )
-end
+    )
+  end
 
   def new
-    @plan = Plan.new
+    @plan = current_user.plans.build
     @plan.status = nil
   end
 
@@ -69,11 +69,11 @@ end
   end
 
   def set_plan_categories
-    # 計画カテゴリ ('plan') に絞り込む
-    @search_categories =Category.where(category_type: 'plan').order(:name)
+    @search_categories = current_user.categories.where(category_type: 'plan').order(:name)
+    @plan_categories = @search_categories
   end
 
   def set_product_categories
-    @product_categories = Category.where(category_type: 'product').order(:name)
+    @product_categories = current_user.categories.where(category_type: 'product').order(:name)
   end
 end
