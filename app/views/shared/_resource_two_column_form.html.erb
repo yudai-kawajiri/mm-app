@@ -11,13 +11,6 @@
       <%# 左カラムの内容描画 %>
       <%= render basic_fields, f: f %>
 
-      <%# f と f.object (リソース) を渡すことで、_form_action_links.html.erb が動作 %>
-      <%= render 'shared/actions/form_action_links',
-                f: f,
-                resource: f.object,
-                resource_name: resource_name # 戻るリンクのパス生成のために渡す
-      %>
-
     </div>
   </div>
 

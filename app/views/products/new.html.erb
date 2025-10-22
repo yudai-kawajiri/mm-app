@@ -1,6 +1,13 @@
 <% content_for(:page_title, t('products.new.title')) %>
 
-<h2><%= t('.title') %></h2> <%# ページ内のH2見出しを表示 %>
+<%= render 'shared/header_with_actions', title: t('.title') do %>
+<%= render 'shared/actions/resource_header_actions',
+      resource: @product,
+      is_form_page: true,
+      is_index_page: false,
+      is_show_page: false
+%>
+<% end %>
 
 <%# form_with のブロックを定義。画像を扱うため multipart: true を設定 %>
 <%= form_with model: @product, local: true, html: { multipart: true } do |f| %>
@@ -11,4 +18,8 @@
               detail_fields: 'products/product_materials_fields',
               resource_name: 'products'
   %>
+  <div style="display:none;">
+    <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
+    <%= f.submit submit_text, id: "hidden-submit-#{dom_id(f.object)}" %>
+  </div>
 <% end %>
