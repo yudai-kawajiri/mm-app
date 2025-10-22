@@ -1,26 +1,30 @@
 <%# 共通エラーメッセージの表示 %>
 <%= render 'shared/error_messages', resource: f.object %>
 
-<div class="row">
+<div class="container-fluid px-4" style="margin-top: 30px;">
+  <div class="row d-flex align-items-stretch" style="min-height: calc(100vh - 200px);">
 
-  <%# 左カラム: 基本情報と送信ボタン %>
-  <div class="col-md-6">
-    <div class="card p-4">
-      <h3><%= t('forms.titles.basic_info')%></h3>
+    <% left_column_width = detail_fields.present? ? 'col-md-6' : 'col-md-12' %>
 
-      <%# 左カラムの内容描画 %>
-      <%= render basic_fields, f: f %>
-
+    <%# 左カラム: 基本情報 %>
+    <div class="<%= left_column_width %> mb-3 mb-md-0 d-flex">
+      <div class="card p-4 w-100 d-flex flex-column">
+        <div class="flex-grow-1">
+          <%= render basic_fields, f: f %>
+        </div>
+      </div>
     </div>
+
+    <%# 右カラム: 詳細情報 %>
+    <% if detail_fields.present? %>
+      <div class="col-md-6 d-flex">
+        <div class="card p-4 w-100 d-flex flex-column">
+          <div class="flex-grow-1">
+            <%= render detail_fields, f: f %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
   </div>
-
-  <%# 右カラム: 詳細リスト（ネストフォーム）と集計 %>
-  <div class="col-md-6">
-    <div class="card p-4">
-
-      <%# 右カラムの内容描画 %>
-      <%= render detail_fields, f: f %>
-    </div>
-  </div>
-
 </div>
