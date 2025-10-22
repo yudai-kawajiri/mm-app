@@ -1,9 +1,28 @@
-<%# 共通ラッパーを使用してフォームを表示 %>
-<%= render 'shared/form_wrapper',
-    title: t('.title', unit_name: @unit.name),
-    resource: @unit,
-    back_path: units_path do |f| %>
+<% content_for(:title, t('units.edit.title', name: @unit.name)) %>
 
-  <%# 単位の入力項目パーシャルを呼び出す %>
-  <%= render 'unit_fields', f: f %>
+<%# 1. 共通ヘッダーとアクションボタンを呼び出す %>
+<%= render 'shared/header_with_actions', title: t('.title', name: @unit.name) do %>
+  <%= render 'shared/actions/resource_header_actions',
+    resource: @unit,
+    is_form_page: true,
+    is_index_page: false,
+    is_show_page: false
+  %>
+<% end %>
+
+<%# 2. フォームの中身を全て新しい共通レイアウトに置き換え %>
+<%= form_with model: @unit, local: true do |f| %>
+
+  <%= render 'shared/resource_two_column_form',
+    f: f,
+    basic_fields: 'units/unit_fields',
+    detail_fields: nil,
+    resource_name: 'units'
+  %>
+
+  <%# 3. ヘッダーボタンからフォームを送信するための隠しボタンを配置 %>
+  <div style="display:none;">
+    <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
+    <%= f.submit submit_text, id: "hidden-submit-#{dom_id(f.object)}" %>
+  </div>
 <% end %>
