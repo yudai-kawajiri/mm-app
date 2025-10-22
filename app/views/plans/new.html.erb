@@ -1,6 +1,5 @@
 <% content_for(:page_title, t('plans.new.title')) %>
 
-<%# 1. 共通ヘッダーとアクションボタンを呼び出す %>
 <%= render 'shared/header_with_actions', title: t('.title') do %>
   <%= render 'shared/actions/resource_header_actions',
       resource: @plan,
@@ -10,18 +9,15 @@
   %>
 <% end %>
 
-<%# 2. フォームの中身を全て共通パーシャルに置き換え %>
 <%= form_with model: @plan, local: true do |f| %>
 
-  <%# 共通の二分割レイアウトを呼び出す %>
   <%= render 'shared/resource_two_column_form',
               f: f,
               basic_fields: 'plans/plan_fields',
               detail_fields: 'plans/plan_products_fields',
-              resource_name: 'plans' # 戻るリンクの動的生成のためにリソース名を渡す
+              resource_name: 'plans'
   %>
 
-  <%# 2. ヘッダーボタンからフォームを送信するための隠しボタンを配置  %>
   <div style="display:none;">
     <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
     <%= f.submit submit_text, id: "hidden-submit-#{dom_id(f.object)}" %>

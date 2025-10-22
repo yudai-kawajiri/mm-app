@@ -1,24 +1,23 @@
 <div class="row">
-  <%# 左カラム (col-md-6): 単位名 (name) %>
+  <%# 左カラム %>
   <div class="col-md-6">
     <div class="mb-4">
-      <%= f.label :name, '単位名', class: "form-label h5" %>
+      <%= f.label :name, class: "form-label h5" %>
       <%= f.text_field :name, class: "form-control form-control-lg" %>
     </div>
   </div>
 
-  <%# 右カラム (col-md-6): 単位カテゴリ (category) %>
-  <div class="col-md-6">
-    <div class="mb-4">
-      <%= f.label :category, '単位分類', class: "form-label h5" %>
+  <%# 右カラム %>
+<div class="col-md-6">
+  <div class="mb-4">
+    <%= f.label :category, class: "form-label h5" %>
 
-      <%= f.select :category,
-        [
-          ['製造単位 ', :production],
-          ['発注単位 ', :ordering]
-        ],
-        { prompt: "分類を選択してください" },
-        { class: "form-select form-select-lg" } %>
-    </div>
+    <%= f.select :category,
+      Unit.categories.keys.map { |k|
+        [I18n.t("activerecord.enums.unit.category.#{k}"), k]
+      },
+      { prompt: t('helpers.select.prompt') },
+      { class: "form-select form-select-lg" }
+    %>
   </div>
 </div>

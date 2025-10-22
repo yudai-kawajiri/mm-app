@@ -9,9 +9,8 @@
 %>
 <% end %>
 
-<%# form_with のブロックを定義。画像を扱うため multipart: true を設定 %>
 <%= form_with model: @product, local: true, html: { multipart: true } do |f| %>
-  <%# 共通の二分割レイアウト (①) を呼び出し、パーシャルを渡す %>
+
   <%= render 'shared/resource_two_column_form',
               f: f,
               basic_fields: 'products/product_fields',
