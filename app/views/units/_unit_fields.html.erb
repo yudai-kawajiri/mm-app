@@ -16,8 +16,7 @@
       Unit.categories.keys.map { |k|
         [I18n.t("activerecord.enums.unit.category.#{k}"), k]
       },
-      { prompt: t('helpers.select.prompt') },
-      { class: "form-select form-select-lg" }
-    %>
+      { include_blank: t('helpers.prompt.select'), selected: nil },
+      { class: "form-select form-select-lg" } %>
   </div>
 </div>
