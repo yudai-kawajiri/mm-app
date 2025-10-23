@@ -1,20 +1,20 @@
 <%= content_for(:title, t('materials.index.title')) %>
-<%# 1. ヘッダー %>
-<%= render 'shared/header_with_actions', title: t('materials.index.title') do %>
 
-<%# 2. アクションパーシャル %>
-  <%= render 'shared/actions/resource_header_actions',
-      is_index_page: true,
-      new_path: new_material_path
-  %>
-<% end %>
+<% title = t('materials.index.title') %>
 
-<%# 3. リソースリスト %>
+<%= render 'shared/header_with_actions',
+    title: title,
+    resource: nil,
+    is_index_page: true,
+    is_form_page: false,
+    is_show_page: false,
+    new_path: new_material_path
+%>
+
 <%= render 'shared/resource_list',
     resources: @materials,
     resource_class: Material,
     search_target: :category_id,
-
     search_categories: @search_categories,
 
     columns: [
@@ -31,7 +31,7 @@
       },
       { header: :unit_weight_for_order, data: :unit_weight_for_order }
     ]
-  %>
+%>
 
 <%# ページネーションはラッパーの外側で呼び出す %>
 <%= paginate @materials, theme: 'bootstrap-5' %>

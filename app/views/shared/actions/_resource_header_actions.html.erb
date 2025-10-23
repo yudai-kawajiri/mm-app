@@ -1,4 +1,4 @@
-<%# 必須引数: resource, new_path, is_show_page, is_index_page %>
+<%# 必須引数: resource, is_show_page, is_index_page, is_form_page %>
 <% resource = local_assigns[:resource] %>
 <% new_path = local_assigns.fetch(:new_path, nil) %>
 
@@ -10,36 +10,35 @@
 <%# 画面上部の右側にアクションを配置するコンテナ %>
 <div class="actions-container d-flex flex-grow-0">
 
-    <%# 1. 詳細画面のアクション (編集 / 削除) のグループ化 %>
-    <% if is_show_page && resource.present? %>
-      <div class="d-flex me-2">
-        <%= render 'shared/actions/edit_link', url: url_for([:edit, resource]), custom_class: 'me-2 flex-grow-0 w-auto' %>
-        <%= render 'shared/actions/delete_link', url: resource, resource_name: resource.class.model_name.human, custom_class: 'me-2 flex-grow-0 w-auto' %>
-      </div>
-    <% end %>
-
-    <%# 2. フォーム画面のアクション (戻る / 登録・更新) のグループ化  %>
-<% if is_form_page && resource.present? %>
-<%# フォームIDを dom_id で生成 %>
-<% form_id = dom_id(resource) %>
-<%# 戻るボタン %>
-<% resource_list_path = send(resource.class.model_name.route_key + '_path') %>
-<%= render 'shared/actions/back_link', url: resource_list_path, custom_class: 'me-2 flex-grow-0 w-auto' %>
-<%# 登録/更新ボタン%>
-<% submit_text = resource.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
-<%= link_to(submit_text, '#',
-    class: "btn btn-primary",
-    # 隠された f.submit ボタンIDをターゲットに設定し、クリックさせる
-    onclick: "document.getElementById('hidden-submit-#{dom_id(resource)}').click(); return false;") %>
-<% end %>
-    <%# 3. 戻るボタン(詳細画面用) %>
-    <% if is_show_page && resource.present? %>
+  <%# 1. 詳細画面のアクション (戻る / 編集 / 削除) のグループ化 %>
+  <% if is_show_page && resource.present? %>
+    <div class="d-flex me-2">
+      <%# 戻るボタンを先頭に配置 %>
       <% resource_list_path = send(resource.class.model_name.route_key + '_path') %>
-      <%= render 'shared/actions/back_link', url: resource_list_path, custom_class: 'flex-grow-0 w-auto' %>
-    <% end %>
+      <%= render 'shared/actions/back_link', url: resource_list_path, custom_class: 'me-2 flex-grow-0 w-auto' %>
 
-    <%# 4. 一覧画面のアクション (新規作成) の配置 %>
-      <% if is_index_page && new_path.present? %>
-        <%= render 'shared/actions/new_link', url: new_path %>
-      <% end %>
+      <%= render 'shared/actions/edit_link', url: url_for([:edit, resource]), custom_class: 'me-2 flex-grow-0 w-auto' %>
+      <%= render 'shared/actions/delete_link', url: resource, resource_name: resource.class.model_name.human, custom_class: 'flex-grow-0 w-auto' %>
+    </div>
+  <% end %>
+
+  <%# 2. フォーム画面のアクション (戻る / 登録・更新) のグループ化  %>
+  <% if is_form_page && resource.present? %>
+    <%# フォームIDを dom_id で生成 %>
+    <% form_id = dom_id(resource) %>
+    <%# 戻るボタン %>
+    <% resource_list_path = send(resource.class.model_name.route_key + '_path') %>
+    <%= render 'shared/actions/back_link', url: resource_list_path, custom_class: 'me-2 flex-grow-0 w-auto' %>
+    <%# 登録/更新ボタン %>
+    <% submit_text = resource.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
+    <%= link_to(submit_text, '#', {
+      class: "btn btn-primary",
+      onclick: "document.getElementById('hidden-submit-#{dom_id(resource)}').click(); return false;"
+    }) %>
+  <% end %>
+
+  <%# 3. 一覧画面のアクション (新規作成) の配置 %>
+  <% if is_index_page && new_path.present? %>
+    <%= render 'shared/actions/new_link', url: new_path %>
+  <% end %>
 </div>

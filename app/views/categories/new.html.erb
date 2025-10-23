@@ -1,13 +1,13 @@
 <% content_for(:title, t('categories.new.title')) %>
+<% title = t('.title') %>
 
-<%= render 'shared/header_with_actions', title: t('.title') do %>
-  <%= render 'shared/actions/resource_header_actions',
-      resource: @category,
-      is_form_page: true,
-      is_index_page: false,
-      is_show_page: false
-  %>
-<% end %>
+<%= render 'shared/header_with_actions',
+    title: title,
+    resource: @category,   
+    is_form_page: true,
+    is_index_page: false,
+    is_show_page: false
+%>
 
 <%= form_with model: @category, local: true do |f| %>
 

@@ -1,26 +1,22 @@
 <% product_title = t('products.show.title', name: @product.name) %>
 <%= content_for(:title, product_title) %>
 
-<%# 1.ヘッダー %>
-<%= render 'shared/header_with_actions', title: product_title do %>
+<%= render 'shared/header_with_actions',
+    title: product_title,
+    resource: @product,
+    is_show_page: true,
+    is_form_page: false,
+    is_index_page: false
+%>
 
-  <%# 2. アクションパーシャル %>
-  <%= render 'shared/actions/resource_header_actions',
-      is_show_page: true,
-      resource: @product
-  %>
+<%# 左カラム %>
+<% content_for :content_left do %>
+  <%= render 'product_details', product: @product %>
 <% end %>
 
-<%= content_for :content_left do %>
-  <%= render 'product_details', product: @product %>
+<%# 右カラム %>
+<% content_for :content_right do %>
+  <%= render 'product_material_details', product: @product %>
 <% end %>
 
-<%= content_for :content_right do %>
-  <%= render 'product_material_details', product: @product %>
-<% end %>
-
-<%= render partial: 'shared/resource_two_column_details', locals: {
-  resource: @product,
-  content_left_title:t('forms.titles.basic_info', model: t('activerecord.models.product')),
-  content_right_title: t('forms.titles.product_material'),
-} %>
+<%= render(partial: 'shared/resource_layout_wrapper', locals: { resource: @product, content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.product')), content_right_title: t('forms.titles.product_material') }) %>

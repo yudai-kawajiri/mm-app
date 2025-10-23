@@ -1,23 +1,19 @@
-<% material_class = @material.class %>
-<% resource = @material %>
-<% material_name = @material.name %>
-
-<% title = t('materials.show.title', material_name: material_name) %>
+<% title = t('materials.show.title', name: @material.name) %>
 
 <%# ページタイトル %>
-<%= content_for :page_title, title %>
+<%= content_for :title, title %>
 
-<%# ヘッダータイトル %>
-<%= render 'shared/header_with_actions', title: title do %>
+<%= render 'shared/header_with_actions',
+    title: title,
+    resource: @material,
+    is_show_page: true,
+    is_form_page: false,
+    is_index_page: false
+%>
 
-  <%# アクションパーシャル %>
-  <%= render 'shared/actions/resource_header_actions',
-      is_show_page: true,
-      resource: @material
-  %>
+<%# 左カラム%>
+<%= content_for :content_left do %>
+  <%= render 'material_details', material: @material %>
 <% end %>
 
-
-<div class="card p-4 mb-4 shadow-sm">
-  <%= render 'material_details', material: @material %>
-</div>
+<%= render(partial: 'shared/resource_layout_wrapper', locals: { content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.material')), content_right_title: nil }) %>

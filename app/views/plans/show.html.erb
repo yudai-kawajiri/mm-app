@@ -1,15 +1,13 @@
 <% plan_title = t('plans.show.title', name: @plan.name) %>
 <%= content_for(:title, plan_title) %>
 
-<%# 1. ヘッダー %>
-<%= render 'shared/header_with_actions', title: plan_title do %>
-
-  <%# アクションパーシャル %>
-  <%= render 'shared/actions/resource_header_actions',
-      is_show_page: true,
-      resource: @plan
-  %>
-<% end %>
+<%= render 'shared/header_with_actions',
+    title: plan_title,
+    resource: @plan,
+    is_show_page: true,
+    is_form_page: false,
+    is_index_page: false
+%>
 
 <%# 左カラム %>
 <%= content_for :content_left do %>
@@ -21,8 +19,4 @@
   <%= render 'plan_products_details', resource: @plan %>
 <% end %>
 
-<%= render partial: 'shared/resource_two_column_details', locals: {
-  resource: @plan,
-  content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.plan')),
-  content_right_title: t('forms.titles.plan_product'),
-} %>
+<%= render(partial: 'shared/resource_layout_wrapper', locals: { content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.plan')), content_right_title: t('forms.titles.plan_product') }) %>

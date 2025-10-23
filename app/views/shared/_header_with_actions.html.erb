@@ -1,11 +1,16 @@
-<%# 必須引数: title %>
-<%# アクションボタンはyieldで受け取る %>
-
+<%# 必須引数: title, resource, is_form_page, is_show_page, is_index_page %>
+<% new_path = local_assigns.fetch(:new_path, nil) %>
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1 class="mb-0"><%= title %></h1>
 
-  <%# 呼び出し元で定義されたアクションボタン群を描画 %>
+  <%# アクションボタン群を、渡された引数で内部から呼び出す %>
   <div class="ms-auto">
-    <%= yield %>
+    <%= render 'shared/actions/resource_header_actions',
+        resource: resource,
+        is_form_page: is_form_page,
+        is_show_page: is_show_page,
+        is_index_page: is_index_page,
+        new_path: new_path 
+    %>
   </div>
 </div>
