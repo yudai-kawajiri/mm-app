@@ -3,32 +3,13 @@
     data-plan-product-tabs-category-id-value="<%= @plan.category_id %>"
     data-action="plan-product:calculated->plan-products#recalculate">
 
-    <%#  総合計表示 %>
-    <div class="col-12 text-end">
-      <span class="fw-bold me-2"><%= t('plans.total_price_label') %>:</span>
-      <span class="fw-bold text-end text-danger" data-plan-products-target="totalPrice">
-        <%= number_to_currency(0, unit: t('number.currency.format.unit')) %>
-      </span>
-    </div>
-
   <%# タブナビゲーション %>
-  <nav>
-    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-      <% @product_categories.each_with_index do |category, index| %>
-        <button class="nav-link <%= index == 0 ? 'active' : '' %>"
-                id="nav-<%= category.id %>-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#nav-<%= category.id %>"
-                type="button"
-                role="tab"
-                aria-controls="nav-<%= category.id %>"
-                aria-selected="<%= index == 0 ? 'true' : 'false' %>"
-                data-category-name="<%= category.name %>">
-          <%= category.name %>
-        </button>
-      <% end %>
-    </div>
-  </nav>
+ <%= render 'shared/category_tabs_nav',
+      product_categories: @product_categories,
+      # フォームが編集可能であることを示すフラグを渡します
+      is_editable_form: true,
+      # 初期選択タブのIDを渡します（Stimulusコントローラーで使用）
+      is_active_category_id: @plan.category_id %>
 
   <%#  タブコンテンツ (div.tab-content)  %>
   <div class="tab-content pt-3" id="nav-tabContent">
@@ -39,6 +20,16 @@
           aria-labelledby="nav-<%= category.id %>-tab"
           data-plan-product-tabs-target="category"
           data-category-id="<%= category.id %>">
+
+        <%# カテゴリ合計の表示エリア %>
+        <div class="d-flex justify-content-end mt-3 fw-bold">
+            <span class="me-2"><%= category.name %> <%= t('plans.category_total_label') %>:</span>
+            <span data-plan-products-target="categoryTotal"
+                  data-category-id="<%= category.id %>"
+                  class="text-end text-success">
+                <%= number_to_currency(0, unit: t('number.currency.format.unit')) %>
+            </span>
+        </div>
 
         <%# ヘッダー行%>
         <div class="row fw-bold mb-2 pb-1 border-bottom">
@@ -59,17 +50,6 @@
               <%= render 'plan_product_fields', f: plan_product_f %>
             <% end %>
           <% end %>
-        </div>
-
-
-        <%# カテゴリ合計の表示エリア %>
-        <div class="d-flex justify-content-end mt-3 fw-bold">
-            <span class="me-2"><%= category.name %> <%= t('plans.category_total_label') %>:</span>
-            <span data-plan-products-target="categoryTotal"
-                  data-category-id="<%= category.id %>"
-                  class="text-end text-success">
-                <%= number_to_currency(0, unit: t('number.currency.format.unit')) %>
-            </span>
         </div>
 
         <%# 商品追加ボタン %>
