@@ -56,14 +56,14 @@
     <div class="col-md-6">
     <h6 class="text-muted" style="font-size: 1.1em;"><%= Product.human_attribute_name(:image) %></h6>
 
-    <div class="p-3 border rounded" style="min-height: 150px;">
-        <% if product.image.attached? %>
-            <%= image_tag product.image, class: 'img-fluid', style: 'width: 100%; height: auto;' %>
-        <% else %>
-            <p class="text-center text-muted d-flex justify-content-center pt-3" style="font-size: 1.1em;">
-            <%= t('helpers.no_setting') %>
-            </p>
-        <% end %>
+    <div class="p-3 border rounded d-flex align-items-center justify-content-center" style="min-height: 210px;">
+      <% if product.image.attached? %>
+        <%= image_tag product.image, class: 'img-fluid', style: 'width: 100%; height: auto;' %>
+      <% else %>
+        <span class="text-muted" style="font-size: 1.1em;">
+        <%= t('helpers.no_setting') %>
+        </span>
+      <% end %>
     </div>
-    </div>
+  </div>
 </div>
