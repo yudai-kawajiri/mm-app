@@ -36,18 +36,18 @@ ja:
   categories:
     new:
       title: "カテゴリー登録"
-    edit:
-      title: "カテゴリー編集"
     index:
       title: "カテゴリー一覧"
+    edit:
+      title: "%{name} - カテゴリー編集"
 
   units:
     new:
       title: "単位登録"
-    edit:
-      title: "単位編集"
     index:
       title: "単位一覧"
+    edit:
+      title: "%{name} - 単位編集"
 
   materials:
     new:
@@ -55,9 +55,9 @@ ja:
     index:
       title: "原材料一覧"
     show:
-      title: "%{material_name} - 詳細 "
+      title: "%{name} - 原材料詳細 "
     edit:
-      title: "%{material_name} - 編集 "
+      title: "%{name} - 原材料編集 "
 
   products:
     new:
@@ -65,9 +65,9 @@ ja:
     index:
       title: "商品一覧"
     show:
-      title: "%{name} - 詳細 "
+      title: "%{name} - 商品詳細 "
     edit:
-      title: "%{name} - 編集"
+      title: "%{name} - 商品編集"
 
     product_material_fields:
       material_name_prompt: "原材料名"
@@ -81,6 +81,10 @@ ja:
       title: "製造計画登録"
     index:
       title: "製造計画一覧"
+    show:
+      title: "%{name} - 製造計画詳細"
+    edit:
+      title: "%{name} - 製造計画編集"
     category_total_label: "合計"
     total_price_label: "総合計"
     plan_product_subtotal: "小計"

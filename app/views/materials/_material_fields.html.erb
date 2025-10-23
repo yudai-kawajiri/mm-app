@@ -17,7 +17,7 @@
                               @material_categories,
                               :id,
                               :name,
-                              { prompt: t('search.placeholders.select_category') },
+                              { prompt: t('helpers.prompt.select') },
                               { class: "form-select form-select-lg" } %>
     </div>
   </div>
@@ -32,7 +32,7 @@
           current_user.units.where(category: :production),
           :id,
           :name,
-          { prompt: Material.human_attribute_name(:unit_for_product).split('単').first + "単位を選択" },
+          { prompt: t('helpers.prompt.select') },
           { class: "form-select form-select-lg" } %>
     </div>
   </div>
@@ -55,7 +55,7 @@
           current_user.units.where(category: :ordering),
           :id,
           :name,
-          { prompt: Material.human_attribute_name(:unit_for_order).split('単').first + "単位を選択" },
+          { prompt: t('helpers.prompt.select') },
           { class: "form-select form-select-lg" } %>
     </div>
   </div>

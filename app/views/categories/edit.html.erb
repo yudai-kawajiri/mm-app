@@ -1,12 +1,28 @@
-<%# パーシャルでインスタンス変数をcategoryで扱える %>
-<%= render 'shared/form_wrapper',
-    # 1. タイトル設定: materials と完全に同じ I18n パターン
-    title: t('.title', category_name: @category.name),
-    # 2. リソース: materials と同じく @category を渡す
-    resource: @category,
-    # 3. 戻り先: カテゴリには詳細がないため、一覧画面 categories_path に固定
-    back_path: categories_path do |f| %>
+<% content_for(:title, t('categories.edit.title', name: @category.name)) %>
 
-  <%# Category固有のフォーム項目を挿入 %>
-  <%= render 'category_fields', f: f %>
+<%# 1. 共通ヘッダーとアクションボタンを呼び出す %>
+<%= render 'shared/header_with_actions', title: t('.title', name: @category.name) do %>
+  <%= render 'shared/actions/resource_header_actions',
+    resource: @category,
+    is_form_page: true,
+    is_index_page: false,
+    is_show_page: false
+  %>
+<% end %>
+
+<%# 2. フォームの中身を全て新しい共通レイアウトに置き換え %>
+<%= form_with model: @category, local: true do |f| %>
+
+  <%= render 'shared/resource_two_column_form',
+    f: f,
+    basic_fields: 'categories/category_fields',
+    detail_fields: nil,
+    resource_name: 'categories'
+  %>
+
+  <%# 3. ヘッダーボタンからフォームを送信するための隠しボタンを配置 %>
+  <div style="display:none;">
+    <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
+    <%= f.submit submit_text, id: "hidden-submit-#{dom_id(f.object)}" %>
+  </div>
 <% end %>

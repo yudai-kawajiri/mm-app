@@ -61,13 +61,6 @@
               <%= render 'plan_product_fields', f: plan_product_f %>
             <% end %>
           <% end %>
-
-          <%# 初期レコードのビルド  %>
-          <% if @plan.new_record? && index == 0 %>
-            <%= f.fields_for :product_plans, f.object.product_plans.build(product: Product.new(category_id: category.id)), child_index: "initial_record" do |plan_product_f| %>
-              <%= render 'plan_product_fields', f: plan_product_f %>
-            <% end %>
-          <% end %>
         </div>
 
 

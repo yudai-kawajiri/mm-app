@@ -1,81 +1,93 @@
 <%# 1. 製品名 %>
-<div class="mb-4">
+<div class="mb-3">
   <%= f.label :name, class: "form-label h5" %>
   <%= f.text_field :name, class: "form-control form-control-lg" %>
 </div>
 
 <%# 2. 品目番号 %>
-<div class="mb-4">
+<div class="mb-3">
   <%= f.label :item_number, class: "form-label h5" %>
   <%= f.text_field :item_number, class: "form-control form-control-lg" %>
 </div>
 
 <%# 3. 売価 %>
-<div class="mb-4">
+<div class="mb-3">
   <%= f.label :price, class: "form-label h5" %>
   <div class="input-group input-group-lg">
     <span class="input-group-text"><%= t('number.currency.format.unit') %></span>
     <%= f.number_field :price, class: "form-control", step: 1, min: 0 %>
-
   </div>
 </div>
 
 <%# 4. カテゴリ %>
-<div class="mb-4">
+<div class="mb-3">
   <%= f.label :category_id, class: "form-label h5" %>
   <%= f.collection_select :category_id, @product_categories,
-                          :id,
-                          :name,
-                          { prompt: t('helpers.prompt.select') },
-                          { class: "form-select form-select-lg" } %>
+    :id,
+    :name,
+    { prompt: t('helpers.prompt.select') },
+    { class: "form-select form-select-lg" } %>
 </div>
 
 <%# 5. ステータス %>
-<div class="mb-4">
+<div class="mb-3">
   <%= f.label :status, class: "form-label h5" %>
   <%= f.select :status, Product.statuses.keys.map { |status| [t("activerecord.enums.product.status.#{status}"), status] },
-      { prompt: t('helpers.prompt.select') },
-      { class: "form-select form-select-lg" } %>
+    { prompt: t('helpers.prompt.select') },
+    { class: "form-select form-select-lg" } %>
 </div>
 
-<%# 6. 説明 %>
-<div class="mb-4">
-  <%= f.label :description, class: "form-label h5" %>
-  <%= f.text_area :description, rows: 5, class: "form-control form-control-lg" %>
-</div>
+<%# 2. 下部の左右分割エリア (説明と画像) 💥ここから左右に分割💥 %>
+<div class="row mt-3"> <%# 💥 mt-4 や mt-3 だったものを mt-2 に変更 💥 %>
 
-  <%# [右カラム] 画像の表示・アップロード・削除機能 %>
-    <div class="mb-3">
-      <%= f.label :image, class: "form-label" %>
-
-      <%# 既存の画像表示エリアとプレビュー %>
-      <div class="text-center">
-        <%# image_tagは一行記述で構文安定化済み %>
-        <%= image_tag(f.object.image.attached? ? f.object.image : '', id: 'image-preview', style: "max-width: 200px; height: auto; #{f.object.image.attached? ? 'display: block;' : 'display: none;'}", class: "img-thumbnail mb-2", data: { existing_image: f.object.image.attached?.to_s }) %>
-      </div>
-
-      <%# ボタン表示 %>
-      <div class="text-center mb-2 mt-1">
-        <%# 1. 既存画像削除ボタン (初期表示: 既存画像がある場合のみ) %>
-        <% if f.object.image.attached? %>
-          <div id="current-image-container-<%= f.object.id %>">
-            <%# link_toは一行記述で構文安定化済み %>
-            <%= link_to t('helpers.link.delete_image'), "#", data: { product_id: f.object.id, url: purge_image_product_path(f.object) }, class: "btn btn-sm btn-danger", id: "delete-button-#{f.object.id}" %>
-          </div>
-        <% end %>
-
-        <%# 2. 新規画像選択時のキャンセルボタン (初期表示: 非表示) %>
-        <div id="new-image-action" style="display: none;">
-          <button type="button" id="cancel-new-image-button" class="btn btn-sm btn-outline-danger">
-            <%= t('helpers.link.cancel_new_image') %>
-          </button>
+    <%# 左カラム (col-md-6): 説明 %>
+    <div class="col-md-6">
+        <div class="mb-3"> <%# 💥 mb-4 だったものを mb-2 に変更 💥 %>
+            <%= f.label :description, class: "form-label h5" %>
+            <%= f.text_area :description, rows: 4, class: "form-control form-control-lg" %>
         </div>
-      </div>
-
-      <div class="mt-3">
-        <%= f.file_field :image, id: 'product-image-input', class: "form-control" %>
-        <small class="text-muted">
-          <%= f.object.image.attached? ? t('products.image_help.change') : t('products.image_help.select') %>
-        </small>
-      </div>
     </div>
+
+    <%# 右カラム (col-md-6): 画像 %>
+    <div class="col-md-6">
+        <%# ... (画像エリアの内容) ... %>
+        <%# 画像アップロード機能は複雑なので、専用のパーシャルに切り出しておくと管理しやすいです
+        <%# 例: <%= render 'products/image_upload_fields', f: f %>
+
+        <%# 切り出さずにそのまま記述する場合は、元のコードを div.col-md-6 の中に移動させます %>
+        <div class="mb-3">
+            <%= f.label :image, class: "form-label" %>
+
+            <%# 既存の画像表示エリアとプレビュー %>
+            <div class="text-center mb-1" style="overflow: hidden;">
+              <%= image_tag(f.object.image.attached? ? f.object.image : '', id: 'image-preview',
+                style: "max-width: 100%; height: auto; #{f.object.image.attached? ? 'display: block;' : 'display: none;'}",
+                class: "img-thumbnail mb-2 mx-auto", data: { existing_image: f.object.image.attached?.to_s }) %><%# 💥 styleの 200px を 100% に変更 💥 %>
+            </div>
+
+            <%# ボタン表示 %>
+            <div class="text-center mb-2 mt-1">
+                <%# 1. 既存画像削除ボタン %>
+                <% if f.object.image.attached? %>
+                    <div id="current-image-container-<%= f.object.id %>">
+                        <%= link_to t('helpers.link.delete_image'), "#", data: { product_id: f.object.id, url: purge_image_product_path(f.object) }, class: "btn btn-sm btn-danger", id: "delete-button-#{f.object.id}" %>
+                    </div>
+                <% end %>
+
+                <%# 2. 新規画像選択時のキャンセルボタン %>
+                <div id="new-image-action" style="display: none;">
+                    <button type="button" id="cancel-new-image-button" class="btn btn-sm btn-outline-danger">
+                        <%= t('helpers.link.cancel_new_image') %>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <%= f.file_field :image, id: 'product-image-input', class: "form-control" %>
+                <small class="text-muted">
+                  <%= f.object.image.attached? ? t('products.image_help.change') : t('products.image_help.select') %>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

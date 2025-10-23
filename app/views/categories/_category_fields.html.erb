@@ -19,8 +19,9 @@
           Category.category_types.keys.map { |k|
             [I18n.t("activerecord.enums.category.category_type.#{k}"), k]
           },
-          { prompt: t('search.placeholders.select_type') },
-          class: "form-select form-select-lg" %>
+          { include_blank: t('helpers.prompt.select'), selected: nil },
+          { class: "form-select form-select-lg" } %>
+      </div>
     </div>
   </div>
 </div>

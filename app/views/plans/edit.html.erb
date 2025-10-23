@@ -1,11 +1,28 @@
-<% content_for(:page_title, t('plans.edit.title')) %>
-<h1><%= t('.title') %>: <%= @plan.name %></h1>
+<% content_for(:title, t('plans.edit.title', name: @plan.name)) %>
 
-<%= form_with model: @plan, local: true do |f| %>
-  <%= render 'shared/resource_two_column_form',
-              f: f,
-              basic_fields: 'plans/plan_fields',
-              detail_fields: 'plans/plan_products_fields',
-              resource_name: 'plans'
+<%# 1. 共通ヘッダーとアクションボタンを呼び出す %>
+<%= render 'shared/header_with_actions', title: t('.title', name: @plan.name) do %>
+  <%= render 'shared/actions/resource_header_actions',
+    resource: @plan,
+    is_form_page: true,
+    is_index_page: false,
+    is_show_page: false
   %>
+<% end %>
+
+<%# 2. フォームの中身を全て新しい共通レイアウトに置き換え %>
+<%= form_with model: @plan, local: true do |f| %>
+
+  <%= render 'shared/resource_two_column_form',
+    f: f,
+    basic_fields: 'plans/plan_fields',
+    detail_fields: 'plans/plan_products_fields',
+    resource_name: 'plans'
+  %>
+
+  <%# 3. ヘッダーボタンからフォームを送信するための隠しボタンを配置 %>
+  <div style="display:none;">
+    <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
+    <%= f.submit submit_text, id: "hidden-submit-#{dom_id(f.object)}" %>
+  </div>
 <% end %>

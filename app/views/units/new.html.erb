@@ -1,9 +1,25 @@
-<%# 共通ラッパーを使用してフォームを表示 %>
-<%= render 'shared/form_wrapper',
-    title: t('.title'),
-    resource: @unit,
-    back_path: units_path do |f| %>
+<% content_for(:title, t('units.new.title')) %>
 
-  <%# 単位の入力項目パーシャルを呼び出す %>
-  <%= render 'unit_fields', f: f %>
+<%= render 'shared/header_with_actions', title: t('.title') do %>
+  <%= render 'shared/actions/resource_header_actions',
+      resource: @unit,
+      is_form_page: true,
+      is_index_page: false,
+      is_show_page: false
+  %>
+<% end %>
+
+<%= form_with model: @unit, local: true do |f| %>
+
+  <%= render 'shared/resource_two_column_form',
+    f: f,
+    basic_fields: 'units/unit_fields',
+    detail_fields: nil,
+    resource_name: 'units'
+  %>
+
+  <div style="display:none;">
+    <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
+    <%= f.submit submit_text, id: "hidden-submit-#{dom_id(f.object)}" %>
+  </div>
 <% end %>
