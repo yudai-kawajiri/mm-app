@@ -1,0 +1,38 @@
+<% product_categories = local_assigns[:product_categories] %>
+<% is_active_category_id = local_assigns[:is_active_category_id] || 'all' %>
+
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+
+    <%# ALLタブの追加  %>
+    <button class="nav-link <%= is_active_category_id == 'all' ? 'active' : '' %>"
+      id="nav-all-tab"
+      data-bs-toggle="tab"
+      data-bs-target="#nav-all"
+      type="button"
+      role="tab"
+      aria-controls="nav-all"
+      aria-selected="<%= is_active_category_id == 'all' ? 'true' : 'false' %>"
+      data-category-id="all"
+      data-action="click->plan-product-tabs#selectTab">
+      <%= t('common.all') %>
+    </button>
+
+    <%# カテゴリタブのレンダリング %>
+    <% product_categories.each do |category| %>
+      <% category_id_str = category.id.to_s %>
+      <button class="nav-link <%= category_id_str == is_active_category_id.to_s ? 'active' : '' %>"
+        id="nav-<%= category.id %>-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#nav-<%= category.id %>"
+        type="button"
+        role="tab"
+        aria-controls="nav-<%= category.id %>"
+        aria-selected="<%= category_id_str == is_active_category_id.to_s ? 'true' : 'false' %>"
+        data-category-id="<%= category.id %>"
+        data-action="click->plan-product-tabs#selectTab">
+        <%= category.name %>
+      </button>
+    <% end %>
+  </div>
+</nav>
