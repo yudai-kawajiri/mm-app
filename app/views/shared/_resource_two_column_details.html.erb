@@ -18,7 +18,6 @@
       <%# フォームの基準に合わせ、p-4 に変更 (元の p-3 より少し大きく) %>
       <div class="card p-4 w-100 d-flex flex-column shadow-sm">
 
-        <%# 🚨 修正点 3: h3 タグに見出しを統一し、適切なマージン mb-3 を適用 🚨 %>
         <%# 元の <div class="card-title h5"> を置き換え %>
         <% if content_left_title.present? %>
           <h3 class="mb-3"><%= content_left_title %></h3>
@@ -35,7 +34,6 @@
       <div class="col-md-6 d-flex">
         <div class="card p-4 w-100 d-flex flex-column shadow-sm">
 
-          <%# 🚨 修正点 3: h3 タグに見出しを統一し、適切なマージン mb-3 を適用 🚨 %>
           <% if content_right_title.present? %>
             <h3 class="mb-3"><%= content_right_title %></h3>
           <% end %>
