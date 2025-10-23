@@ -1,16 +1,14 @@
 <% content_for(:title, t('products.edit.title', name: @product.name)) %>
+<% title = t('.title', name: @product.name) %>
 
-<%# 1. 共通ヘッダーとアクションボタンを呼び出す %>
-<%= render 'shared/header_with_actions', title: t('.title', name: @product.name) do %>
-  <%= render 'shared/actions/resource_header_actions',
+<%= render 'shared/header_with_actions',
+    title: title,
     resource: @product,
     is_form_page: true,
     is_index_page: false,
     is_show_page: false
-  %>
-<% end %>
+%>
 
-<%# 2. フォームの中身を全て新しい共通レイアウトに置き換え %>
 <%= form_with model: @product, local: true do |f| %>
 
   <%= render 'shared/resource_two_column_form',
@@ -20,7 +18,6 @@
     resource_name: 'products'
   %>
 
-  <%# 3. ヘッダーボタンからフォームを送信するための隠しボタンを配置 %>
   <div style="display:none;">
     <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
     <%= f.submit submit_text, id: "hidden-submit-#{dom_id(f.object)}" %>

@@ -1,21 +1,21 @@
 <% content_for(:title, t('plans.new.title')) %>
+<% title = t('.title') %>
 
-<%= render 'shared/header_with_actions', title: t('.title') do %>
-  <%= render 'shared/actions/resource_header_actions',
-      resource: @plan,
-      is_form_page: true,
-      is_index_page: false,
-      is_show_page: false
-  %>
-<% end %>
+<%= render 'shared/header_with_actions',
+    title: title,
+    resource: @plan,
+    is_form_page: true,
+    is_index_page: false,
+    is_show_page: false
+%>
 
 <%= form_with model: @plan, local: true do |f| %>
 
   <%= render 'shared/resource_two_column_form',
-              f: f,
-              basic_fields: 'plans/plan_fields',
-              detail_fields: 'plans/plan_products_fields',
-              resource_name: 'plans'
+    f: f,
+    basic_fields: 'plans/plan_fields',
+    detail_fields: 'plans/plan_products_fields',
+    resource_name: 'plans'
   %>
 
   <div style="display:none;">

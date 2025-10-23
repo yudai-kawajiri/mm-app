@@ -1,15 +1,17 @@
 <%= content_for(:title, t('categories.index.title')) %>
-<%# 1. ヘッダー（タイトルとアクションボタン） %>
-<%= render 'shared/header_with_actions', title: t('categories.index.title') do %>
+<% title = t('categories.index.title') %>
 
-  <%# 2. アクションパーシャル %>
-  <%= render 'shared/actions/resource_header_actions',
-      is_index_page: true,
-      new_path: new_category_path
-  %>
-<% end %>
+<%# 🚨 修正: ヘッダー呼び出しでコメントを分離 🚨 %>
+<%= render 'shared/header_with_actions',
+    title: title,
+    resource: nil,
+    is_index_page: true,
+    is_form_page: false,
+    is_show_page: false,
+    new_path: new_category_path
+%>
 
-<%# 3. リソースリスト %>
+<%# 3. リソースリスト (この部分は修正不要) %>
 <%= render 'shared/resource_list',
     resources: @categories,
     resource_class: Category,
@@ -23,5 +25,4 @@
       }
     ]
 %>
-
 <%= paginate @categories, theme: 'bootstrap-5' %>

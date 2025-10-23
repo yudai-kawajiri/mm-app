@@ -1,14 +1,16 @@
 <%= content_for(:title, t('units.index.title')) %>
-<%# 1.ヘッダー（タイトルとアクションボタン）%>
-<%= render 'shared/header_with_actions', title: t('units.index.title') do %>
-  <%# 2. アクションパーシャル %>
-  <%= render 'shared/actions/resource_header_actions',
-      is_index_page: true,
-      new_path: new_unit_path
-  %>
-<% end %>
 
-<%# 3. リソースリスト %>
+<% title = t('units.index.title') %>
+
+<%= render 'shared/header_with_actions',
+    title: title,
+    resource: nil,
+    is_index_page: true,
+    is_form_page: false,
+    is_show_page: false,
+    new_path: new_unit_path
+%>
+
 <%= render 'shared/resource_list',
     resources: @units,
     resource_class: Unit,

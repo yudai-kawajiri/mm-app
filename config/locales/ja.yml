@@ -271,7 +271,7 @@ ja:
         name: "計画名"
         category_id: "カテゴリー"
         status: "ステータス"
-        description: "備考"
+        description: "説明"
 
     enums:
       category:

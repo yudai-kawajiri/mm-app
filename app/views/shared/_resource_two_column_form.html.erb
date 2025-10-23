@@ -1,30 +1,16 @@
-<%# 共通エラーメッセージの表示 %>
+<% f = local_assigns[:f] %>
+<% basic_fields = local_assigns[:basic_fields] %>
+<% detail_fields = local_assigns[:detail_fields] %>
+<% resource_name = local_assigns[:resource_name] %>
+<% custom_right_title = local_assigns[:custom_right_title] %>
+
 <%= render 'shared/error_messages', resource: f.object %>
 
-<div class="container-fluid px-4" style="margin-top: 30px;">
-  <div class="row d-flex align-items-stretch" style="min-height: calc(100vh - 200px);">
+<%= render 'shared/resource_layout_wrapper',
+  f: f,
+  basic_fields: basic_fields,
+  detail_fields: detail_fields,
 
-    <% left_column_width = detail_fields.present? ? 'col-md-6' : 'col-md-12' %>
-
-    <%# 左カラム: 基本情報 %>
-    <div class="<%= left_column_width %> mb-3 mb-md-0 d-flex">
-      <div class="card p-4 w-100 d-flex flex-column">
-        <div class="flex-grow-1">
-          <%= render basic_fields, f: f %>
-        </div>
-      </div>
-    </div>
-
-    <%# 右カラム: 詳細情報 %>
-    <% if detail_fields.present? %>
-      <div class="col-md-6 d-flex">
-        <div class="card p-4 w-100 d-flex flex-column">
-          <div class="flex-grow-1">
-            <%= render detail_fields, f: f %>
-          </div>
-        </div>
-      </div>
-    <% end %>
-
-  </div>
-</div>
+  content_left_title: t('forms.titles.basic_info'),
+  content_right_title: detail_fields.present? ? (custom_right_title.presence || t("#{resource_name}.form.detail_info", default: '詳細情報')) : nil
+%>

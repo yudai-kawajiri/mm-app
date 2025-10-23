@@ -1,27 +1,49 @@
+<%# app/views/shared/_resource_two_column_details.html.erb (フォームのレイアウトに合わせた修正版) %>
+
 <% resource = local_assigns[:resource] %>
 <% content_left_title = local_assigns[:content_left_title] %>
 <% content_right_title = local_assigns[:content_right_title] %>
 
-<%# 2カラムコンテンツの枠組み %>
-<div class="row">
+<%# 🚨 修正点 1: 全体ラッパーを追加 (フォームの基準に合わせる) 🚨 %>
+<div class="container-fluid px-4" style="margin-top: 30px;">
+  <div class="row d-flex align-items-stretch" style="min-height: calc(100vh - 200px);">
 
-  <%# 左カラムの枠 %>
-  <div class="col-md-6 mb-4">
-    <div class="card shadow-sm h-100 p-3">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-          <div class="card-title h5 mb-0" style="font-size: 1.5em;"><%= content_left_title %></div>
-      </div>
-      <%= yield :content_left %>
-    </div>
-  </div>
+    <%# 🚨 修正点 2: 右コンテンツの有無を判定し、左カラム幅を動的に設定 🚨 %>
+    <%# :content_right が yield されているかで判断 %>
+    <% has_right_content = content_for?(:content_right) %>
+    <% left_column_width = has_right_content ? 'col-md-6' : 'col-md-12' %>
 
-  <%# 右カラムの枠 %>
-  <div class="col-md-6 mb-4">
-    <div class="card shadow-sm h-100 p-3">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-          <div class="card-title h5 mb-0" style="font-size: 1.5em;"><%= content_right_title %></div>
+    <%# 左カラムの枠 %>
+    <div class="<%= left_column_width %> mb-3 mb-md-0 d-flex"> <%# フォームの mb-3 mb-md-0 に合わせる %>
+      <%# フォームの基準に合わせ、p-4 に変更 (元の p-3 より少し大きく) %>
+      <div class="card p-4 w-100 d-flex flex-column shadow-sm">
+
+        <%# 元の <div class="card-title h5"> を置き換え %>
+        <% if content_left_title.present? %>
+          <h3 class="mb-3"><%= content_left_title %></h3>
+        <% end %>
+
+        <div class="flex-grow-1">
+          <%= yield :content_left %>
+        </div>
       </div>
-      <%= yield :content_right %>
     </div>
+
+    <%# 右カラムの枠 %>
+    <% if has_right_content %>
+      <div class="col-md-6 d-flex">
+        <div class="card p-4 w-100 d-flex flex-column shadow-sm">
+
+          <% if content_right_title.present? %>
+            <h3 class="mb-3"><%= content_right_title %></h3>
+          <% end %>
+
+          <div class="flex-grow-1">
+            <%= yield :content_right %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
   </div>
 </div>
