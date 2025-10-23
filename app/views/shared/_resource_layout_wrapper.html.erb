@@ -1,0 +1,61 @@
+<%# フォーム用のローカル変数 %>
+<% f = local_assigns[:f] %>
+<% basic_fields = local_assigns[:basic_fields] %>
+<% detail_fields = local_assigns[:detail_fields] %>
+
+<%# 詳細用のローカル変数 (タイトル) %>
+<% content_left_title = local_assigns[:content_left_title] %>
+<% content_right_title = local_assigns[:content_right_title] %>
+
+<%# 1. 右コンテンツの有無を判定し、左カラム幅を動的に設定 %>
+<% has_right_content = detail_fields.present? || content_for?(:content_right) %>
+<% left_column_width = has_right_content ? 'col-md-6' : 'col-md-12' %>
+
+<%# 2. 全体ラッパー %>
+<div class="container-fluid px-4" style="margin-top: 30px;">
+  <div class="row d-flex align-items-stretch" style="min-height: calc(100vh - 200px);">
+
+    <%# 左カラムの枠  %>
+    <div class="<%= left_column_width %> mb-3 mb-md-0 d-flex">
+      <div class="card p-4 w-100 d-flex flex-column shadow-sm">
+
+        <%# 3. タイトル %>
+        <% if content_left_title.present? %>
+          <h3 class="mb-3"><%= content_left_title %></h3>
+        <% end %>
+
+        <div class="flex-grow-1">
+          <%# 4. コンテンツ %>
+          <% if basic_fields.present? %>
+            <%= render basic_fields, f: f %>
+          <% else %>
+            <%= yield :content_left %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <%# 右カラムの枠 %>
+    <% if has_right_content %>
+      <div class="col-md-6 d-flex">
+        <div class="card p-4 w-100 d-flex flex-column shadow-sm">
+
+          <%# 3. タイトル %>
+          <% if content_right_title.present? %>
+            <h3 class="mb-3"><%= content_right_title %></h3>
+          <% end %>
+
+          <div class="flex-grow-1">
+            <%# 4. コンテンツ %>
+            <% if detail_fields.present? %>
+              <%= render detail_fields, f: f %>
+            <% else %>
+              <%= yield :content_right %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</div>
