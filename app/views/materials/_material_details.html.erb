@@ -50,7 +50,7 @@
         <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_weight_for_product) %></label>
         <%# 🚨 padding-top を pt-2 に変更 %>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.unit_weight_for_product ? number_with_precision(material.unit_weight_for_product, precision: 3) : no_setting %>
+          <%= material.unit_weight_for_product ? number_with_precision(material.unit_weight_for_product, precision: 1) : no_setting %>
         </div>
       </div>
     </div>
@@ -75,7 +75,7 @@
         <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_weight_for_order) %></label>
         <%# 🚨 padding-top を pt-2 に変更 %>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.unit_weight_for_order ? number_with_precision(material.unit_weight_for_order, precision: 3) : no_setting %>
+          <%= material.unit_weight_for_order ? number_with_precision(material.unit_weight_for_order, precision: 1) : no_setting %>
         </div>
       </div>
     </div>

@@ -38,7 +38,7 @@ module ApplicationHelper
       end
     elsif data == :price
       # 2. 金額表示カラムの処理
-      number_to_currency(resource.price)
+      number_to_currency(resource.price, precision: 0)
     elsif data.respond_to?(:call)
       # 3. Procの場合の処理
       data.call(resource)
