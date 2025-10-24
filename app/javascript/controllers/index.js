@@ -1,7 +1,9 @@
-// Import and register all your controllers from the importmap via controllers/**/*_controller
-import { application } from "./application"
 // import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
 // eagerLoadControllersFrom("controllers", application)
+
+import { Application } from "@hotwired/stimulus"
+
+const application = Application.start()
 
 // 原材料を追加」ボタンを制御する、親のコントローラー
 import NestedFormController from "./nested_form_controller"

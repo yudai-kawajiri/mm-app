@@ -1,92 +1,150 @@
-// 商品行の計算と API アクセス機能
-
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["subtotal", "quantity", "destroy", "priceDisplay"];
-
-  // 内部プロパティで価格を管理
-  priceValue = 0;
+  static targets = ["productSelect", "quantity", "priceDisplay", "subtotal"]
+  static values = {
+    price: Number,
+    categoryId: Number
+  }
 
   connect() {
-    this.priceValue = parseFloat(this.element.dataset.planProductPriceValue) || 0;
+    console.log('🔌 Plan product controller connected!');
+    this.calculate(); // 初期計算
+  }
+
+  // 商品変更時の処理
+  updateProduct(event) {
+    const productId = event.target.value;
+    console.log('📦 Product selected:', productId);
+
+    if (!productId) {
+      this.resetProduct();
+      return;
+    }
+
+    // 商品情報を取得
+    this.fetchProductInfo(productId);
+  }
+
+  // 商品情報取得
+  async fetchProductInfo(productId) {
+  try {
+    const response = await fetch(`/api/v1/products/${productId}/details_for_plan`);
+
+    // HTTPステータスコードが成功でない場合のエラー処理を追加
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const product = await response.json();
+
+    console.log('Product info:', product);
+
+    // 価格とカテゴリーIDを更新
+    this.priceValue = product.price || 0;
+    this.categoryIdValue = product.category_id || 0;
+
+    // 価格表示を更新
+    this.updatePriceDisplay();
+
+    // 計算実行
+    this.calculate();
+
+  } catch (error) {
+    console.error('❌ Product fetch error:', error);
+    this.resetProduct();
+  }
+}
+
+  // 🔧 価格表示更新
+  updatePriceDisplay() {
+    if (this.hasPriceDisplayTarget) {
+      const formattedPrice = new Intl.NumberFormat('ja-JP', {
+        style: 'currency',
+        currency: 'JPY',
+        minimumFractionDigits: 0
+      }).format(this.priceValue);
+
+      this.priceDisplayTarget.textContent = formattedPrice;
+      console.log('💰 Price updated:', formattedPrice);
+    }
+  }
+
+  // 🔧 商品リセット
+  resetProduct() {
+    this.priceValue = 0;
+    this.categoryIdValue = 0;
+    this.updatePriceDisplay();
     this.calculate();
   }
 
-  // 1. 数量変更時の計算ロジック
+  // 🔧 計算処理
   calculate() {
-    const price = this.priceValue;
-    const quantity = parseFloat(this.quantityTarget.value) || 0;
+    console.log('🧮 Calculate triggered!');
+
+    const quantity = this.getQuantity();
+    const price = this.priceValue || 0;
     const subtotal = quantity * price;
 
-    this.subtotalTarget.textContent = this.formatCurrency(subtotal);
-    this.updatePriceDisplay(price);
+    console.log(`💵 Calculation: ${quantity} × ${price} = ${subtotal}`);
 
-    this.dispatch('calculated', { prefix: 'plan-product' });
+    // 小計表示更新
+    this.updateSubtotal(subtotal);
+
+    // 親に通知
+    this.notifyParent();
   }
 
-  // 2. 商品選択時の処理 (API呼び出し)
-  updateProduct(event) {
-    const productId = event.target.value;
+  // 🔧 数量取得
+  getQuantity() {
+    if (!this.hasQuantityTarget) {
+      console.warn('⚠️ Quantity target not found!');
+      return 0;
+    }
+    const value = this.quantityTarget.value;
+    console.log('📊 Quantity value:', value);
+    return value ? parseFloat(value) || 0 : 0;
+  }
 
-    if (productId) {
-      this.fetchProductDetails(productId).then(data => {
-        this.priceValue = data.price || 0;
+  // 🔧 小計表示更新
+  updateSubtotal(subtotal) {
+    if (this.hasSubtotalTarget) {
+      const formattedSubtotal = new Intl.NumberFormat('ja-JP', {
+        style: 'currency',
+        currency: 'JPY',
+        minimumFractionDigits: 0
+      }).format(subtotal);
 
-        this.element.dataset.planProductPriceValue = this.priceValue;
-
-        this.element.dataset.planProductCategoryId = data.category_id;
-
-        this.updatePriceDisplay(this.priceValue);
-
-        if (data.unit_weight && (this.quantityTarget.value === "" || parseFloat(this.quantityTarget.value) === 0)) {
-            this.quantityTarget.value = data.unit_weight;
-        }
-
-        this.dispatch("plan-product:category-updated", { detail: { categoryId: data.category_id } });
-        this.calculate();
-      }).catch(error => {
-        console.error("Failed to fetch product details:", error);
-        this.priceValue = 0;
-        this.updatePriceDisplay(0);
-        this.calculate();
-      });
-    } else {
-      this.priceValue = 0;
-      this.updatePriceDisplay(0);
-      this.dispatch("plan-product:category-updated", { detail: { categoryId: null } });
-      this.calculate();
+      this.subtotalTarget.textContent = formattedSubtotal;
+      console.log('📊 Subtotal updated:', formattedSubtotal);
     }
   }
 
-  // 3. 論理削除（_destroy）に対応した削除アクション
-  remove(event) {
-    // 1. _destroy 隠しフィールドの値を '1' に設定（Railsに削除を伝える）
-    this.destroyTarget.value = '1';
-
-    // 2. 行全体を非表示
-    this.element.style.display = 'none';
-
-    // 3. 親コントローラーに再計算を要求
-    this.dispatch('calculated', { prefix: 'plan-product', bubbles: true });
+  // 🔧 親への通知（計算時）
+  notifyParent() {
+    console.log('📊 Notifying parent of calculation!');
+    this.dispatch('calculated', {
+      prefix: 'plan-product',
+      bubbles: true
+    });
   }
 
-  // 売価表示を更新するヘルパーメソッド
-  updatePriceDisplay(price) {
-    this.priceDisplayTarget.textContent = this.formatCurrency(price);
+  // 🔧 削除通知
+  notifyDeletion(event) {
+    console.log('🗑️ Deletion triggered!');
+    this.dispatch('recalculate', {
+      prefix: 'plan-product',
+      bubbles: true
+    });
   }
 
-  // APIを介して商品詳細を取得する非同期関数
-  async fetchProductDetails(productId) {
-    const response = await fetch(`/api/v1/products/${productId}/details_for_plan`);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  }
-
-  // 通貨整形ヘルパー
-  formatCurrency(amount) {
-    return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY', minimumFractionDigits: 0 }).format(amount);
+  // 🔧 現在の値を取得（親コントローラー用）
+  getCurrentValues() {
+    return {
+      quantity: this.getQuantity(),
+      price: this.priceValue || 0,
+      subtotal: this.getQuantity() * (this.priceValue || 0),
+      categoryId: this.categoryIdValue || 0
+    };
   }
 }

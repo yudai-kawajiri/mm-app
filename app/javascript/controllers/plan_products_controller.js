@@ -1,76 +1,93 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  // totalContainer は削除
-  static targets = ["totalPrice", "categoryTotal"]
+  static targets = ["grandTotal", "categoryTotal"]
 
   connect() {
+    console.log('🔌 Plan products controller connected!');
     this.updateTotals(); // 接続時に初期計算
   }
 
-  // 子コントローラーからのイベントを捕捉するアクション
+  // 子コントローラーからのイベントをキャッチして合計を更新
   recalculate(event) {
-    // 常に全体の行をスキャンして合計を更新
+    // calculatedとrecalculateイベントの両方をこのメソッドで処理
+    console.log(`🔄 Recalculate triggered by event: ${event.type}`);
     this.updateTotals();
   }
 
-  // 総合計とカテゴリ合計を統合
+  // 新しい行追加時
+  afterAdd(event) {
+    console.log('New row added!');
+    // 新しい行が完全に描画された後に計算を実行
+    setTimeout(() => {
+      this.updateTotals();
+    }, 100);
+  }
+
+  // 統合された合計計算
   updateTotals() {
+    console.log('Updating totals via Child Controllers');
+
     let grandTotal = 0;
     let categoryTotals = {};
 
-    // フォーム内の全ての商品行を一度だけスキャン
+    // フォーム内の全ての商品行をスキャン
     const productRows = this.element.querySelectorAll('[data-controller~="plan-product"]');
+    const application = this.application; // Stimulusアプリケーションのインスタンスを取得
 
     productRows.forEach(row => {
-      // 1. テンプレート行（NEW_RECORD）を除外
+      // テンプレート行（NEW_RECORD）を除外
       if (row.id && row.id.includes('NEW_RECORD')) return;
 
-      // 2. 削除フラグと値の取
-      const destroyInput = row.querySelector('[data-plan-product-target="destroy"]');
+      // 削除フラグをチェック
+      const destroyInput = row.querySelector('[data-nested-form-item-target="destroy"]');
       const isDestroyed = destroyInput ? destroyInput.value === '1' : false;
+      if (isDestroyed) return;
 
-      // 削除されていない行のみを対象とする
-      if (!isDestroyed) {
-        const priceValue = row.dataset.planProductPriceValue;
-        // 数量と価格の取得
-        const price = (priceValue && priceValue !== '') ? parseFloat(priceValue) || 0 : 0;
-        const categoryId = row.dataset.planProductCategoryId;
+      // 子コントローラーのインスタンスから直接値を取得
+      const childController = application.getControllerForElementAndIdentifier(row, 'plan-product');
 
-        // 数量のフォーム入力値を取得
-        const quantityInput = row.querySelector('[data-plan-product-target="quantity"]');
-        const quantityValue = quantityInput ? quantityInput.value : null;
-        const quantity = (quantityValue && quantityValue !== '') ? parseFloat(quantityValue) || 0 : 0;
+      if (childController && typeof childController.getCurrentValues === 'function') {
+        const values = childController.getCurrentValues();
 
-        const subtotal = quantity * price;
+        const subtotal = values.subtotal;
+        const categoryId = values.categoryId;
 
-        // 3. 総合計に加算
+        console.log(`Row subtotal via controller: ${values.quantity} × ${values.price} = ${subtotal} (category: ${categoryId})`);
+
+        // 総合計に加算
         grandTotal += subtotal;
 
-        // 4. カテゴリ合計に加算
-        if (categoryId) {
+        // カテゴリ合計に加算
+        if (categoryId && subtotal > 0) {
           if (!categoryTotals.hasOwnProperty(categoryId)) {
             categoryTotals[categoryId] = 0;
           }
           categoryTotals[categoryId] += subtotal;
         }
+      } else {
+        console.warn('Child controller or getCurrentValues method not found on row:', row);
       }
     });
 
-    // 5. 表示の更新
+    console.log('Grand total:', grandTotal);
+    console.log('Category totals:', categoryTotals);
+
+    // 表示更新
     this.updateDisplay(grandTotal, categoryTotals);
   }
 
-  // 新しい行がフォームに追加されたときに、すぐに合計を再計算 (nested-formとの連携)
-  afterAdd(event) {
-    this.updateTotals(); // 統合されたメソッドを呼び出す
-  }
-
-  // 表示更新ヘルパー
+  //  表示更新ヘルパー
   updateDisplay(grandTotal, categoryTotals) {
+    console.log('Updating display');
+
     // 総合計の更新
-    if (this.totalPriceTarget) {
-      this.totalPriceTarget.textContent = this.formatCurrency(grandTotal);
+    // target名に合わせて grandTotalTarget を使用
+    if (this.hasGrandTotalTarget) {
+      this.grandTotalTarget.textContent = this.formatCurrency(grandTotal);
+      console.log('Updated grand total display:', grandTotal);
+    } else {
+      console.warn('Grand total target not found! (Check HTML target name)');
     }
 
     // カテゴリ別合計の更新
@@ -78,11 +95,16 @@ export default class extends Controller {
       const categoryId = target.dataset.categoryId;
       const total = categoryTotals[categoryId] || 0;
       target.textContent = this.formatCurrency(total);
+      console.log(`Updated category ${categoryId} total:`, total);
     });
   }
 
-  // 通貨整形ヘルパー
+  // 通貨フォーマット
   formatCurrency(amount) {
-    return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY', minimumFractionDigits: 0 }).format(amount);
+    return new Intl.NumberFormat('ja-JP', {
+      style: 'currency',
+      currency: 'JPY',
+      minimumFractionDigits: 0
+    }).format(amount);
   }
 }
