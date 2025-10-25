@@ -111,7 +111,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_21_083323) do
     t.string "name", null: false
     t.integer "price", null: false
     t.string "item_number", null: false
-    t.integer "status", default: 0, null: false
+    t.integer "status"
     t.bigint "user_id", null: false
     t.bigint "category_id", null: false
     t.datetime "created_at", null: false

@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["productSelect", "quantity", "priceDisplay", "subtotal"]
+  static targets = ["productSelect", "productionCount", "priceDisplay", "subtotal"]
   static values = {
     price: Number,
     categoryId: Number
@@ -15,7 +15,7 @@ export default class extends Controller {
   // 商品変更時の処理
   updateProduct(event) {
     const productId = event.target.value;
-    console.log('📦 Product selected:', productId);
+    console.log(' Product selected:', productId);
 
     if (!productId) {
       this.resetProduct();
@@ -51,12 +51,12 @@ export default class extends Controller {
     this.calculate();
 
   } catch (error) {
-    console.error('❌ Product fetch error:', error);
+    console.error('Product fetch error:', error);
     this.resetProduct();
   }
 }
 
-  // 🔧 価格表示更新
+  // 価格表示更新
   updatePriceDisplay() {
     if (this.hasPriceDisplayTarget) {
       const formattedPrice = new Intl.NumberFormat('ja-JP', {
@@ -66,11 +66,11 @@ export default class extends Controller {
       }).format(this.priceValue);
 
       this.priceDisplayTarget.textContent = formattedPrice;
-      console.log('💰 Price updated:', formattedPrice);
+      console.log('Price updated:', formattedPrice);
     }
   }
 
-  // 🔧 商品リセット
+  // 商品リセット
   resetProduct() {
     this.priceValue = 0;
     this.categoryIdValue = 0;
@@ -78,15 +78,15 @@ export default class extends Controller {
     this.calculate();
   }
 
-  // 🔧 計算処理
+  // 計算処理
   calculate() {
-    console.log('🧮 Calculate triggered!');
+    console.log('Calculate triggered!');
 
     const quantity = this.getQuantity();
     const price = this.priceValue || 0;
     const subtotal = quantity * price;
 
-    console.log(`💵 Calculation: ${quantity} × ${price} = ${subtotal}`);
+    console.log(`Calculation: ${quantity} × ${price} = ${subtotal}`);
 
     // 小計表示更新
     this.updateSubtotal(subtotal);
@@ -95,18 +95,18 @@ export default class extends Controller {
     this.notifyParent();
   }
 
-  // 🔧 数量取得
+  //  数量取得
   getQuantity() {
-    if (!this.hasQuantityTarget) {
-      console.warn('⚠️ Quantity target not found!');
+    if (!this.hasProductionCountTarget) {
+      console.warn(' productionCount target not found!');
       return 0;
     }
-    const value = this.quantityTarget.value;
-    console.log('📊 Quantity value:', value);
+    const value = this.productionCountTarget.value;
+    console.log('Quantity value:', value);
     return value ? parseFloat(value) || 0 : 0;
   }
 
-  // 🔧 小計表示更新
+  //  小計表示更新
   updateSubtotal(subtotal) {
     if (this.hasSubtotalTarget) {
       const formattedSubtotal = new Intl.NumberFormat('ja-JP', {
@@ -116,34 +116,35 @@ export default class extends Controller {
       }).format(subtotal);
 
       this.subtotalTarget.textContent = formattedSubtotal;
-      console.log('📊 Subtotal updated:', formattedSubtotal);
+      console.log('Subtotal updated:', formattedSubtotal);
     }
   }
 
-  // 🔧 親への通知（計算時）
+  // 親への通知（計算時）
   notifyParent() {
-    console.log('📊 Notifying parent of calculation!');
+    console.log('Notifying parent of calculation!');
     this.dispatch('calculated', {
       prefix: 'plan-product',
       bubbles: true
     });
   }
 
-  // 🔧 削除通知
+  //  削除通知
   notifyDeletion(event) {
-    console.log('🗑️ Deletion triggered!');
+    console.log('Deletion triggered!');
     this.dispatch('recalculate', {
       prefix: 'plan-product',
       bubbles: true
     });
   }
 
-  // 🔧 現在の値を取得（親コントローラー用）
+  //  現在の値を取得（親コントローラー用）
   getCurrentValues() {
+    const quantity = this.getQuantity();
     return {
-      quantity: this.getQuantity(),
+      quantity:quantity,
       price: this.priceValue || 0,
-      subtotal: this.getQuantity() * (this.priceValue || 0),
+      subtotal: quantity * (this.priceValue || 0),
       categoryId: this.categoryIdValue || 0
     };
   }
