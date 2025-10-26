@@ -1,0 +1,52 @@
+<%# /home/user/workspace/mm-app/app/views/shared/_plan_products_category_tab_content.html.erb %>
+<%# 受け取るローカル変数: category_id, category_name, plan_products, product_categories %>
+
+<%# plan_products 変数のローカル変数化 %>
+<% plan_product = local_assigns[:plan_product] %>
+
+<%# 💡 フィルタリングロジック: 現在のタブIDに基づいて商品一覧をフィルタリング %>
+<% current_products = category_id.to_i == 0 ? plan_products.products.reject(&:marked_for_destruction?) : plan_products.products.select { |p| p.category_id == category_id && !p.marked_for_destruction? } %>
+
+<div class="mb-3">
+    <%# 1. ヘッダー行 (商品計画用) %>
+    <div class="row fw-bold mb-2 pb-1 border-bottom">
+      <div class="col-md-4"><%= t('activerecord.attributes.product.name') %></div>
+      <div class="col-md-2"><%= t('activerecord.attributes.plan_products.target_quantity') %></div>
+      <div class="col-md-2 text-end"><%= t('activerecord.attributes.product.cost') %></div>
+      <div class="col-md-2 text-end"><%= t('common.subtotal') %></div>
+      <div class="col-md-2"></div>
+    </div>
+
+    <%# 2. 既存の商品行をレンダリング %>
+    <div data-nested-form-target="links">
+      <% current_products.each do |product| %>
+        <%# ネストフォームの属性を plan_products[products_attributes] に設定 %>
+        <%= fields_for "plan_products[products_attributes][]", product do |f| %>
+          <%= render 'shared/plan_products_item_form', f: f %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%# 3. 商品を追加ボタン %>
+    <div class="mt-3">
+      <%# リソース名を :products に設定 %>
+      <%= link_to_add_association t('plans.add_product_to_category', name: category_name),
+            :products,
+            data: {
+              target: 'nested-form.add_item',
+              'nested-form-target': 'add',
+              'nested-form-wrapper-selector': '.row',
+              'category-id': category_id # 新規追加時にカテゴリIDを渡す
+            },
+            class: 'btn btn-outline-secondary btn-sm' %>
+    </div>
+
+</div>
+
+<%# 4. ネストフォームのテンプレート (<template> タグ) %>
+<template data-nested-form-target="template" data-category-id="<%= category_id %>">
+  <%# ネストフォームの属性を plan_products[products_attributes][new_records] に設定 %>
+  <%= fields_for "plan_products[products_attributes][new_records]", Product.new, child_index: 'NEW_RECORD' do |f| %>
+    <%= render 'shared/plan_products_item_form', f: f %>
+  <% end %>
+</template>

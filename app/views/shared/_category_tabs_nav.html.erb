@@ -1,38 +1,42 @@
+<%# /shared/_category_tabs_nav.html.erb %>
+
 <% product_categories = local_assigns[:product_categories] %>
 <% is_active_category_id = local_assigns[:is_active_category_id] || 'all' %>
+<% plan_plan_products = local_assigns[:plan_plan_products] || [] %>
 
-<nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+<%# 💡 [修正] nav タグを削除し、div に tabNav ターゲットを設定 %>
+<div class="nav nav-tabs" id="nav-tab" role="tablist" data-category-tab-manager-target="tabNav">
 
-    <%# ALLタブの追加  %>
-    <button class="nav-link <%= is_active_category_id == 'all' ? 'active' : '' %>"
-      id="nav-all-tab"
-      data-bs-toggle="tab"
-      data-bs-target="#nav-all"
-      type="button"
-      role="tab"
-      aria-controls="nav-all"
-      aria-selected="<%= is_active_category_id == 'all' ? 'true' : 'false' %>"
-      data-category-id="all"
-      data-action="click->plan-product-tabs#selectTab">
-      <%= t('common.all') %>
-    </button>
+    <%# ALLタブの追加  %>
+    <button class="nav-link <%= is_active_category_id.to_s == '0' || is_active_category_id.to_s == 'all' ? 'active' : '' %>"
+      id="nav-0-tab"
+      data-bs-toggle="tab"
+      data-bs-target="#nav-0"
+      type="button"
+      role="tab"
+      aria-controls="nav-0"
+      aria-selected="<%= is_active_category_id.to_s == '0' || is_active_category_id.to_s == 'all' ? 'true' : 'false' %>"
+      data-category-id="0"
+      data-action="click->plan-product-tabs#selectTab">
+      <%= t('common.all') %>
+    </button>
 
-    <%# カテゴリタブのレンダリング %>
-    <% product_categories.each do |category| %>
-      <% category_id_str = category.id.to_s %>
-      <button class="nav-link <%= category_id_str == is_active_category_id.to_s ? 'active' : '' %>"
-        id="nav-<%= category.id %>-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#nav-<%= category.id %>"
-        type="button"
-        role="tab"
-        aria-controls="nav-<%= category.id %>"
-        aria-selected="<%= category_id_str == is_active_category_id.to_s ? 'true' : 'false' %>"
-        data-category-id="<%= category.id %>"
-        data-action="click->plan-product-tabs#selectTab">
-        <%= category.name %>
-      </button>
-    <% end %>
-  </div>
-</nav>
+    <%# 💡 カテゴリタブのレンダリング %>
+    <% displayed_category_ids = plan_plan_products.map { |pp| pp.product&.category_id }.compact.uniq %>
+    <% product_categories.select { |c| displayed_category_ids.include?(c.id) }.each do |category| %>
+      <% category_id_str = category.id.to_s %>
+      <button class="nav-link <%= category_id_str == is_active_category_id.to_s ? 'active' : '' %>"
+        id="nav-<%= category.id %>-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#nav-<%= category.id %>"
+        type="button"
+        role="tab"
+        aria-controls="nav-<%= category.id %>"
+        aria-selected="<%= category_id_str == is_active_category_id.to_s ? 'true' : 'false' %>"
+        data-category-id="<%= category.id %>"
+        data-action="click->plan-product-tabs#selectTab">
+        <%= category.name %>
+      </button>
+    <% end %>
+</div>
+<%# 👆 これで閉じタグは一つだけになり、構造崩壊の原因が解消されます。 %>

@@ -32,7 +32,7 @@ class PlansController < AuthenticatedController
 
   def edit
     # 未 コントローラの仕事？ビューの仕事？
-    @plan.product_plans.build unless @plan.product_plans.any?
+    @plan.plan_products.build unless @plan.plan_products.any?
   end
 
   def update
@@ -54,7 +54,7 @@ class PlansController < AuthenticatedController
       :description,
       :status,
       # ネストしたリソースで使用
-      product_plans_attributes: [
+      plan_products_attributes: [
         :id,
         :_destroy,
         :product_id,
@@ -65,9 +65,9 @@ class PlansController < AuthenticatedController
 
   # 未 メソッド内でn+1対応
   def set_plan
-    @plan = Plan.includes(product_plans: :product).find(params[:id])
+    @plan = Plan.includes(plan_products: :product).find(params[:id])
     # 計画に含まれる商品を取得
-    @plan_products = @plan.product_plans
+    @plan_products = @plan.plan_products
   end
 
   def set_plan_categories

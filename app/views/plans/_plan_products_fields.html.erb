@@ -1,149 +1,187 @@
-<div data-controller="plan-products nested-form plan-product-tabs"
-    data-plan-products-target="totalContainer"
-    data-plan-product-tabs-category-id-value="<%= @plan.category_id || 0 %>"
-    data-action="plan-product:calculated->plan-products#recalculate plan-product:recalculate->plan-products#recalculate">
+<%= form_with(model: @plan, local: true) do |f| %>
 
-  <div class="d-flex justify-content-end mb-3">
-    <span class="fw-bold">
-      <%= t('plans.total_price_label') %>:
-      <span data-plan-products-target="grandTotal">
-        <%= number_to_currency(
-                (@plan.grand_total_for_view rescue 0),
-                unit: t('number.currency.format.unit'),
-                precision: 0
-              ) %>
-      </span>
-    </span>
-  </div>
+  <div data-controller="plan-product nested-form category-tab-manager"
+       data-plan-product-target="totalContainer"
+       data-action="plan-product:calculated->plan-product#recalculate">
 
-  <%# タブナビゲーション %>
-  <%= render 'shared/category_tabs_nav',
-      product_categories: @product_categories,
-      is_editable_form: true,
-      is_active_category_id: @plan.category_id %>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="d-flex justify-content-start align-items-center">
+        <%= select_tag("category_selector",
+            options_from_collection_for_select(@product_categories, :id, :name),
+            {
+              prompt: 'カテゴリを選択',
+              class: 'form-select me-2',
+              style: 'width: 250px;',
+              data: {
+                'category-tab-manager-target': 'categorySelector',
+                'action': 'change->category-tab-manager#toggleButton'
+              }
+            }) %>
 
-  <%#  タブコンテンツ  %>
-  <div class="tab-content pt-3" id="nav-tabContent">
+        <button type="button"
+                class="btn btn-primary"
+                data-action="category-tab-manager#showSelectedTab"
+                data-category-tab-manager-target="showButton"
+                disabled>
+          カテゴリタブを追加
+        </button>
+      </div>
 
-
-<%# 1. ALLタブのコンテンツ  %>
-
-<div class="tab-pane fade"
-     id="nav-0"
-     role="tabpanel"
-     aria-labelledby="nav-0-tab"
-     data-plan-product-tabs-target="category"
-     data-category-id="0">
-
-  <%# ヘッダー行  %>
-  <div class="row fw-bold mb-2 pb-1 border-bottom">
-    <div class="col-md-4"><%= t('activerecord.attributes.product.name') %></div>
-    <div class="col-md-2 text-start"><%= t('activerecord.attributes.product_plan.production_count') %></div>
-    <div class="col-md-2 text-end"><%= t('activerecord.attributes.product.price') %></div>
-    <div class="col-md-2 text-end"><%= t('plans.plan_product_subtotal') %></div>
-    <div class="col-md-2 text-end"><%= t('common.action') %></div>
-  </div>
-
-  <%# ALLタブ用 %>
-  <div data-nested-form-target="target" data-category-id="0">
-
-    <% @product_categories.each do |category| %>
-      <% products_in_category = @plan.product_plans.select { |pp| pp.product.present? && pp.product.category_id == category.id } %>
-
-      <% if products_in_category.present? || true %>
-        <h5 class="mt-3 mb-1 ps-2 fw-bold text-secondary">
-          <%= category.name %>
-        </h5>
-      <% end %>
-
-      <%# 該当カテゴリーの商品行をレンダリング %>
-      <% products_in_category.each do |plan_product| %>
-        <%= f.fields_for :product_plans, plan_product, child_index: plan_product.object_id do |plan_product_f| %>
-          <%= render 'plan_product_fields', f: plan_product_f %>
-        <% end %>
-      <% end %>
-    <% end %>
-
-  </div>
-
-  <%# カテゴリ合計のリスト %>
-  <div class="mt-5 pt-3 border-top border-3">
-    <% @product_categories.each do |c| %>
-      <div class="d-flex justify-content-end fw-bold mb-1">
-        <span class="me-2"><%= c.name %> <%= t('plans.category_total_label') %>:</span>
-        <span data-plan-products-target="categoryTotal"
-              data-category-id="<%= c.id %>"
-              class="text-end text-success">
-          <%= number_to_currency(0, unit: t('number.currency.format.unit')) %>
+      <span class="fw-bold fs-5">
+        総合計:
+        <span data-plan-product-target="grandTotal" class="text-primary">
+          ¥0
         </span>
+      </span>
+    </div>
+
+    <!-- タブナビゲーション -->
+  <div class="nav nav-tabs" role="tablist" data-category-tab-manager-target="tabNav">
+    <!-- ALLタブ（削除不可） -->
+    <button class="nav-link active"
+            id="nav-0-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#nav-0"
+            type="button"
+            role="tab"
+            aria-controls="nav-0"
+            aria-selected="true"
+            data-category-id="0">
+      全て
+    </button>
+
+    <!-- 既存カテゴリタブ（×ボタン付き） -->
+    <% displayed_category_ids = @plan.plan_products.map { |pp| pp.product&.category_id }.compact.uniq %>
+    <% @product_categories.select { |c| displayed_category_ids.include?(c.id) }.each do |category| %>
+      <button class="nav-link position-relative"
+              id="nav-<%= category.id %>-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#nav-<%= category.id %>"
+              type="button"
+              role="tab"
+              aria-controls="nav-<%= category.id %>"
+              aria-selected="false"
+              data-category-id="<%= category.id %>"
+              style="padding-right: 2.5rem;">
+        <%= category.name %>
+        <span class="position-absolute top-50 end-0 translate-middle-y pe-2"
+              style="cursor: pointer; font-weight: bold; color: #dc3545;"
+              data-action="click->category-tab-manager#removeTab"
+              data-category-id="<%= category.id %>">
+          ×
+        </span>
+      </button>
+    <% end %>
+  </div>
+
+  <!-- タブコンテンツ -->
+  <div class="tab-content pt-3" data-category-tab-manager-target="contentContainer">
+    <!-- ALLタブコンテンツ -->
+    <div class="tab-pane fade show active"
+         id="nav-0"
+         role="tabpanel"
+         aria-labelledby="nav-0-tab"
+         data-category-id="0">
+      <%= render 'shared/category_tab_content',
+          category_id: 0,
+          category_name: 'すべて',
+          plan: @plan,
+          product_categories: @product_categories,
+          f: f %>
+    </div>
+
+    <!-- 既存カテゴリタブコンテンツ -->
+    <% @product_categories.select { |c| displayed_category_ids.include?(c.id) }.each do |category| %>
+      <div class="tab-pane fade"
+           id="nav-<%= category.id %>"
+           role="tabpanel"
+           aria-labelledby="nav-<%= category.id %>-tab"
+           data-category-id="<%= category.id %>">
+        <%= render 'shared/category_tab_content',
+            category_id: category.id,
+            category_name: category.name,
+            plan: @plan,
+            product_categories: @product_categories,
+            f: f %>
       </div>
     <% end %>
   </div>
-  </div>
 
-    <%# 2. カテゴリーごとのコンテンツ %>
-    <% @product_categories.each do |category| %>
-      <div class="tab-pane fade"
-        id="nav-<%= category.id %>"
-        role="tabpanel"
-        aria-labelledby="nav-<%= category.id %>-tab"
-        data-plan-product-tabs-target="category"
-        data-category-id="<%= category.id %>">
+  <!-- テンプレート: タブボタン -->
+  <template data-category-tab-manager-target="categoryTemplate">
+    <button class="nav-link position-relative"
+            id="nav-CATEGORY_ID_PLACEHOLDER-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#nav-CATEGORY_ID_PLACEHOLDER"
+            type="button"
+            role="tab"
+            aria-controls="nav-CATEGORY_ID_PLACEHOLDER"
+            aria-selected="false"
+            data-category-id="CATEGORY_ID_PLACEHOLDER"
+            style="padding-right: 2.5rem;">
+      CATEGORY_NAME_PLACEHOLDER
+      <span class="position-absolute top-50 end-0 translate-middle-y pe-2"
+            style="cursor: pointer; font-weight: bold; color: #dc3545;"
+            data-action="click->category-tab-manager#removeTab"
+            data-category-id="CATEGORY_ID_PLACEHOLDER">
+        ×
+      </span>
+    </button>
+  </template>
 
-        <%# ヘッダー行%>
-        <div class="row fw-bold mb-2 pb-1 border-bottom">
-          <div class="col-md-4"><%= t('activerecord.attributes.product.name') %></div>
-          <div class="col-md-2 text-start"><%= t('helpers.forms.quantity_placeholder') %></div>
-          <div class="col-md-2 text-end"><%= t('activerecord.attributes.product.price') %></div>
-          <div class="col-md-2 text-end"><%= t('plans.plan_product_subtotal') %></div>
-          <div class="col-md-2 text-end"><%= t('common.action') %></div>
-        </div>
+  <!-- テンプレート: タブコンテンツ -->
+  <template data-category-tab-manager-target="categoryPaneTemplate">
+    <div class="tab-pane fade"
+         id="nav-CATEGORY_ID_PLACEHOLDER"
+         role="tabpanel"
+         aria-labelledby="nav-CATEGORY_ID_PLACEHOLDER-tab"
+         data-category-id="CATEGORY_ID_PLACEHOLDER">
 
-        <%#  カテゴリー内のフォーム %>
-        <div data-nested-form-target="target" data-category-id="<%= category.id %>">
-          <%# 既存レコード %>
-          <% @plan.product_plans.select { |pp| pp.product.present? && pp.product.category_id == category.id }.each do |plan_product| %>
-            <%= f.fields_for :product_plans, plan_product, child_index: plan_product.object_id do |plan_product_f| %>
-              <%= render 'plan_product_fields', f: plan_product_f %>
-            <% end %>
-          <% end %>
-        </div>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th style="width: 35%;">商品名</th>
+              <th style="width: 15%;">数量</th>
+              <th style="width: 20%;" class="text-end">売価</th>
+              <th style="width: 20%;" class="text-end">小計</th>
+              <th style="width: 10%;" class="text-end">アクション</th>
+            </tr>
+          </thead>
+          <tbody data-nested-form-target="target" data-category-id="CATEGORY_ID_PLACEHOLDER">
+            <!-- 商品行がここに追加される -->
+          </tbody>
+        </table>
 
-        <%# 商品追加ボタン %>
-        <div class="d-grid mt-3">
-          <button type="button" class="btn btn-sm btn-outline-success"
-                      data-action="nested-form#add"
-                      data-association="product_plans"
-                      data-category-id="<%= category.id %>"
-                      data-template-id="plan_product_fields_template_<%= category.id %>">
-          <%= t('helpers.link.add_item', resource: category.name) %>
+        <div class="mt-3">
+          <button type="button"
+                  class="btn btn-outline-success w-100"
+                  data-category-id="CATEGORY_ID_PLACEHOLDER"
+                  data-template-id="plan_product_fields_template_CATEGORY_ID_PLACEHOLDER"
+                  data-action="click->nested-form#add">
+            商品を追加
           </button>
         </div>
 
-        <%# カテゴリ合計の表示エリア %>
-        <div class="d-flex justify-content-end mt-3 mb-4 fw-bold">
-            <span class="me-2"><%= category.name %> <%= t('plans.category_total_label') %>:</span>
-            <span data-plan-products-target="categoryTotal"
-                  data-category-id="<%= category.id %>"
-                  class="text-end text-success">
-                <%= number_to_currency(0, unit: t('number.currency.format.unit')) %>
-            </span>
+        <!-- カテゴリ合計 -->
+        <div class="text-end mt-3 fw-bold">
+          カテゴリ合計:
+          <span data-plan-product-target="categoryTotal" data-category-id="CATEGORY_ID_PLACEHOLDER">¥0</span>
         </div>
-
       </div>
-    <% end %>
-  </div>
+    </div>
+  </template>
 
-<%# テンプレート %>
-  <% @product_categories.each do |category| %>
-    <% new_product_plan = ProductPlan.new(product: Product.new(category_id: category.id)) %>
+  <!-- 商品行テンプレート（各カテゴリ用） -->
+  <% @product_categories.each do |category| %>
+    <template id="plan_product_fields_template_<%= category.id %>" data-nested-form-target="template">
+      <%= f.fields_for :plan_products,
+          @plan.plan_products.build(product: Product.new(category_id: category.id)),
+          child_index: 'NEW_RECORD' do |product_f| %>
+        <%= render 'plan_product_fields', f: product_f, category_id: category.id %>
+      <% end %>
+    </template>
+  <% end %>
 
-    <%# 2. fields_for の呼び出しを 1 行にまとめる %>
-    <%= f.fields_for :product_plans, new_product_plan, child_index: 'NEW_RECORD' do |plan_product_f| %>
-      <template data-nested-form-target="template"
-                id="plan_product_fields_template_<%= category.id %>">
-        <%= render 'plan_product_fields', f: plan_product_f %>
-      </template>
-    <% end %>
-  <% end %>
 </div>
+<% end %>

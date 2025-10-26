@@ -1,61 +1,68 @@
-<div class="row align-items-center mb-2 p-2 border-bottom"
-     data-controller="plan-product nested-form-item"
-     data-plan-product-price-value="<%= f.object.product&.price.to_f || 0.0 %>"
-     data-plan-product-category-id="<%= f.object.product&.category_id || 0 %>">
+<%
+  # ユニークなrow_idを生成（既存レコードはid、新規はtimestamp）
+  row_unique_id = f.object.persisted? ? "row_#{f.object.id}" : "row_#{Time.now.to_i}_#{rand(1000)}"
+%>
 
-  <%# 削除フラグ %>
+<tr data-controller="plan-product nested-form-item"
+    data-plan-product-price-value="<%= f.object.product&.price.to_f || 0.0 %>"
+    data-plan-product-category-id-value="<%= f.object.product&.category_id || local_assigns[:category_id] || 0 %>"
+    data-row-unique-id="<%= row_unique_id %>"
+    data-category-id="<%= local_assigns[:category_id] || f.object.product&.category_id || 0 %>">
+
   <%= f.hidden_field :_destroy,
       value: f.object.marked_for_destruction? ? 1 : 0,
       data: { 'nested-form-item-target': 'destroy' } %>
   <%= f.hidden_field :id %>
 
-  <%# 1. 商品選択ドロップダウン %>
-  <div class="col-md-4">
-    <%= f.label :product_id, class: 'form-label visually-hidden' %>
-    <% current_category_id = f.object.product&.category_id %>
+  <!-- 商品選択 (35%) -->
+  <td style="width: 35%;">
+    <% current_category_id = f.object.product&.category_id || local_assigns[:category_id] %>
     <% products = current_category_id ? Product.where(category_id: current_category_id) : Product.all %>
     <%= f.collection_select(:product_id, products, :id, :name,
-        { include_blank: t('helpers.prompt.select') },
-        { class: 'form-select',
+        { include_blank: '選択してください' },
+        { class: 'form-select form-select-sm',
           data: {
-            action: 'change->plan-product#updateProduct',
-            'plan-product-target': 'productSelect'
+            action: 'change->plan-product#updateProduct change->plan-product#syncProductToOtherTabs',
+            'plan-product-target': 'productSelect',
+            'row-unique-id': row_unique_id
           }
         }) %>
-  </div>
+  </td>
 
-  <%# 2. 数量入力 %>
-  <div class="col-md-2">
+  <!-- 数量 (15%) -->
+  <td style="width: 15%;">
     <%= f.number_field :production_count,
-        class: 'form-control',
+        class: 'form-control form-control-sm',
         min: 0,
-        placeholder: t('helpers.forms.quantity_placeholder'),
+        placeholder: '数量',
         data: {
           'plan-product-target': 'productionCount',
-          action: 'input->plan-product#calculate'
+          action: 'input->plan-product#calculate input->plan-product#syncQuantityToOtherTabs',
+          'row-unique-id': row_unique_id
         } %>
-  </div>
+  </td>
 
-  <%# 3. 商品売価 %>
-  <div class="col-md-2 text-end">
-    <span data-plan-product-target="priceDisplay" class="form-control-plaintext">
-      <%= number_to_currency(f.object.product&.price.to_f || 0, unit: t('number.currency.format.unit'), precision: 0) %>
+  <!-- 売価 (20%) -->
+  <td style="width: 20%;" class="text-end">
+    <span data-plan-product-target="priceDisplay" class="d-inline-block pt-1">
+      <%= number_to_currency(f.object.product&.price.to_f || 0, unit: '¥', precision: 0) %>
     </span>
-  </div>
+  </td>
 
-  <%# 4. 小計表示 %>
-  <div class="col-md-2 text-end fw-bold">
-    <div data-plan-product-target="subtotal">
-      <%= number_to_currency((f.object.subtotal_calculated_for_view rescue 0), unit: t('number.currency.format.unit')) %>
-    </div>
-  </div>
+  <!-- 小計 (20%) -->
+  <td style="width: 20%;" class="text-end fw-bold">
+    <span data-plan-product-target="subtotal">
+      <%= number_to_currency((f.object.subtotal_calculated_for_view rescue 0), unit: '¥', precision: 0) %>
+    </span>
+  </td>
 
-  <%# 5. 削除ボタン %>
-  <div class="col-md-2 text-end">
+  <!-- 削除ボタン (10%) -->
+  <td style="width: 10%;" class="text-end">
     <button type="button"
         class="btn btn-danger btn-sm"
-        data-action="click->nested-form-item#remove">
-      <%= t('helpers.link.destroy') %>
+        data-action="click->nested-form-item#remove"
+        data-row-unique-id="<%= row_unique_id %>">
+      削除
     </button>
-  </div>
-</div>
+  </td>
+</tr>
