@@ -14,7 +14,7 @@ export default class extends Controller {
 
     // ALLタブ (categoryId = 0) では追加不可
     if (categoryId === '0') {
-      console.warn('⚠️ Cannot add products in ALL tab');
+      console.warn('⚠️ Cannot add items in ALL tab');
       return;
     }
 
@@ -32,19 +32,23 @@ export default class extends Controller {
       return;
     }
 
-    // ユニークなrow_idを生成
-    const uniqueRowId = `row_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    // ユニークなIDを生成
+    const uniqueId = `new_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
     // テンプレートを複製
     let content = template.innerHTML;
     const newId = new Date().getTime();
     content = content.replace(/NEW_RECORD/g, newId);
 
-    // ユニークIDを設定（既存のrow_XXXを置換）
-    content = content.replace(/data-row-unique-id="row_[^"]*"/g, `data-row-unique-id="${uniqueRowId}"`);
+    // ユニークIDを設定（両方の属性名に対応）
+    // 製造計画管理用: data-row-unique-id
+    content = content.replace(/data-row-unique-id="[^"]*"/g, `data-row-unique-id="${uniqueId}"`);
+    // 商品管理用: data-unique-id
+    content = content.replace(/data-unique-id="new_[^"]*"/g, `data-unique-id="${uniqueId}"`);
 
     // カテゴリタブに追加
     categoryContainer.insertAdjacentHTML('beforeend', content);
+    console.log(`✅ Added to category ${categoryId} tab`);
 
     // ALLタブにも同じ内容を追加
     const allContainer = this.findTargetContainer('0');
@@ -53,12 +57,15 @@ export default class extends Controller {
       console.log('✅ Also added to ALL tab');
     }
 
-    // 合計を再計算
-    setTimeout(() => {
-      this.dispatch('recalculate', { prefix: 'plan-product', bubbles: true });
-    }, 100);
+    // 合計を再計算（製造計画管理の場合のみ）
+    const hasCalculation = document.querySelector('[data-plan-product-target]');
+    if (hasCalculation) {
+      setTimeout(() => {
+        this.dispatch('recalculate', { prefix: 'plan-product', bubbles: true });
+      }, 100);
+    }
 
-    console.log(`✅ New field added with unique ID: ${uniqueRowId}`);
+    console.log(`✅ New field added with unique ID: ${uniqueId}`);
   }
 
   // カテゴリIDに対応するターゲットコンテナを検索
