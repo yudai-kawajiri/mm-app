@@ -1,6 +1,11 @@
 import "@hotwired/turbo-rails"
-import "./controllers"
-// import "./controllers/index"
+// import "./controllers"
+// import "jquery"
+// import "jquery_ujs"
+// import "cocoon"
+// (JQuery, UJS, Cocoonを使用している場合は残す)
+
+import "./controllers/index"
 
 document.addEventListener('turbo:load', () => {
  // プレビュー/キャンセルに必要な要素をすべて取得
