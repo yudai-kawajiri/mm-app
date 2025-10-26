@@ -273,7 +273,7 @@ ja:
         status: "ステータス"
         description: "説明"
 
-      product_plan:
+      plan_product:
         production_count: "数量"
 
     enums:
