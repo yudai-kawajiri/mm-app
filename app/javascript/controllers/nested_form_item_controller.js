@@ -1,21 +1,36 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  // destroy: _destroy hiddenフィールド
-  static targets = [ "destroy" ]
+  static targets = ["destroy"]
 
   remove(event) {
-    event.preventDefault()
+    event.preventDefault();
 
-    // 既存レコード（_destroy targetがある）の場合
-    if (this.destroyTarget) {
-      // _destroy フィールドを '1' に設定して非表示
-      this.destroyTarget.value = '1'
-      this.element.style.display = 'none'
-    }else {
-      // 新規レコードの場合
-      // DOMから要素を完全に削除
-      this.element.remove()
-    }
+    const button = event.currentTarget;
+    const uniqueRowId = button.dataset.rowUniqueId;
+
+    console.log(`🗑️ Removing row with unique ID: ${uniqueRowId}`);
+
+    // 同じユニークIDを持つ全ての行を検索（ALLタブと各カテゴリタブ）
+    const allMatchingRows = document.querySelectorAll(`[data-row-unique-id="${uniqueRowId}"]`);
+
+    allMatchingRows.forEach(row => {
+      // _destroyフィールドを設定
+      const destroyInput = row.querySelector('[data-nested-form-item-target="destroy"]');
+      if (destroyInput) {
+        destroyInput.value = '1';
+      }
+
+      // 行を非表示
+      row.style.display = 'none';
+      console.log(`✅ Hidden row in tab:`, row.closest('.tab-pane')?.id);
+    });
+
+    // 合計を再計算
+    setTimeout(() => {
+      this.dispatch('recalculate', { prefix: 'plan-product', bubbles: true });
+    }, 100);
+
+    console.log(`✅ All matching rows removed (${allMatchingRows.length} rows)`);
   }
 }
