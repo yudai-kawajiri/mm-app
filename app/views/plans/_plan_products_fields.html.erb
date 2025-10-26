@@ -1,6 +1,4 @@
-<%= form_with(model: @plan, local: true) do |f| %>
-
-  <div data-controller="plan-product nested-form category-tab-manager"
+<div data-controller="plan-product nested-form category-tab-manager"
        data-plan-product-target="totalContainer"
        data-action="plan-product:calculated->plan-product#recalculate">
 
@@ -184,4 +182,3 @@
   <% end %>
 
 </div>
-<% end %>

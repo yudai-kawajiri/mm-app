@@ -1,44 +1,72 @@
-<%# 必須引数: resource, is_show_page, is_index_page, is_form_page %>
-<% resource = local_assigns[:resource] %>
-<% new_path = local_assigns.fetch(:new_path, nil) %>
+<% if is_form_page %>
+  <!-- ========================================
+       フォーム画面（新規作成・編集）
+       ======================================== -->
 
-<%# オプション引数: is_show_page, is_index_page, is_form_page %>
-<% is_show_page = local_assigns.fetch(:is_show_page, false) %>
-<% is_index_page = local_assigns.fetch(:is_index_page, false) %>
-<% is_form_page = local_assigns.fetch(:is_form_page, false) %>
+  <!-- 戻るボタン -->
+  <%= render 'shared/actions/back_link',
+             url: :back,
+             custom_class: 'me-2' %>
 
-<%# 画面上部の右側にアクションを配置するコンテナ %>
-<div class="actions-container d-flex flex-grow-0">
-
-  <%# 1. 詳細画面のアクション (戻る / 編集 / 削除) のグループ化 %>
-  <% if is_show_page && resource.present? %>
-    <div class="d-flex me-2">
-      <%# 戻るボタンを先頭に配置 %>
-      <% resource_list_path = send(resource.class.model_name.route_key + '_path') %>
-      <%= render 'shared/actions/back_link', url: resource_list_path, custom_class: 'me-2 flex-grow-0 w-auto' %>
-
-      <%= render 'shared/actions/edit_link', url: url_for([:edit, resource]), custom_class: 'me-2 flex-grow-0 w-auto' %>
-      <%= render 'shared/actions/delete_link', url: resource, resource_name: resource.class.model_name.human, custom_class: 'flex-grow-0 w-auto' %>
-    </div>
+  <!-- 登録/更新ボタン -->
+  <% if params[:action] == 'new' || params[:action] == 'create' %>
+    <%= button_tag type: 'button',
+                   class: 'btn btn-sm btn-primary',
+                   id: 'header_register_button' do %>
+      <i class="bi bi-check-circle me-1"></i>
+      <%= t('helpers.submit.create') %>
+    <% end %>
+  <% elsif params[:action] == 'edit' || params[:action] == 'update' %>
+    <%= button_tag type: 'button',
+                   class: 'btn btn-sm btn-primary',
+                   id: 'header_register_button' do %>
+      <i class="bi bi-check-circle me-1"></i>
+      <%= t('helpers.submit.update') %>
+    <% end %>
   <% end %>
 
-  <%# 2. フォーム画面のアクション (戻る / 登録・更新) のグループ化  %>
-  <% if is_form_page && resource.present? %>
-    <%# フォームIDを dom_id で生成 %>
-    <% form_id = dom_id(resource) %>
-    <%# 戻るボタン %>
-    <% resource_list_path = send(resource.class.model_name.route_key + '_path') %>
-    <%= render 'shared/actions/back_link', url: resource_list_path, custom_class: 'me-2 flex-grow-0 w-auto' %>
-    <%# 登録/更新ボタン %>
-    <% submit_text = resource.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
-    <%= link_to(submit_text, '#', {
-      class: "btn btn-primary",
-      onclick: "document.getElementById('hidden-submit-#{dom_id(resource)}').click(); return false;"
-    }) %>
-  <% end %>
+   <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const headerBtn = document.getElementById('header_register_button');
+    if (headerBtn) {
+      headerBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('🔄 Header button clicked');
+        console.log('Current action:', '<%= params[:action] %>');
 
-  <%# 3. 一覧画面のアクション (新規作成) の配置 %>
-  <% if is_index_page && new_path.present? %>
-    <%= render 'shared/actions/new_link', url: new_path %>
-  <% end %>
-</div>
+        // まずフォームを探す
+        const planForm = document.getElementById('plan_form');
+        console.log('Form found:', planForm);
+
+        if (planForm) {
+          // submitボタンを探す（複数の方法で試す）
+          let submitBtn = document.getElementById('plan_submit_button');
+
+          if (!submitBtn) {
+            // IDで見つからなければフォーム内の全submitボタンを探す
+            submitBtn = planForm.querySelector('input[type=submit]');
+            console.log('Submit button found in form:', submitBtn);
+          }
+
+          if (submitBtn) {
+            console.log('✅ Clicking submit button:', submitBtn.id || 'no-id');
+            submitBtn.click();
+          } else {
+            // submitボタンがなければ直接フォームをsubmit
+            console.log('⚠️ No submit button, using form.requestSubmit()');
+            try {
+              planForm.requestSubmit();
+            } catch (error) {
+              console.error('requestSubmit failed, using form.submit():', error);
+              planForm.submit();
+            }
+          }
+        } else {
+          console.error('❌ Form not found');
+        }
+      });
+    } else {
+      console.warn('⚠️ Header register button not found');
+    }
+  });
+  </script>
