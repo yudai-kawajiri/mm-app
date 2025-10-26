@@ -25,48 +25,124 @@
     <% end %>
   <% end %>
 
-   <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  <script>
+  // Turbo対応: DOMContentLoadedとturbo:loadの両方に対応
+  function initializeHeaderButton() {
     const headerBtn = document.getElementById('header_register_button');
-    if (headerBtn) {
-      headerBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        console.log('🔄 Header button clicked');
-        console.log('Current action:', '<%= params[:action] %>');
 
-        // まずフォームを探す
-        const planForm = document.getElementById('plan_form');
-        console.log('Form found:', planForm);
-
-        if (planForm) {
-          // submitボタンを探す（複数の方法で試す）
-          let submitBtn = document.getElementById('plan_submit_button');
-
-          if (!submitBtn) {
-            // IDで見つからなければフォーム内の全submitボタンを探す
-            submitBtn = planForm.querySelector('input[type=submit]');
-            console.log('Submit button found in form:', submitBtn);
-          }
-
-          if (submitBtn) {
-            console.log('✅ Clicking submit button:', submitBtn.id || 'no-id');
-            submitBtn.click();
-          } else {
-            // submitボタンがなければ直接フォームをsubmit
-            console.log('⚠️ No submit button, using form.requestSubmit()');
-            try {
-              planForm.requestSubmit();
-            } catch (error) {
-              console.error('requestSubmit failed, using form.submit():', error);
-              planForm.submit();
-            }
-          }
-        } else {
-          console.error('❌ Form not found');
-        }
-      });
-    } else {
+    if (!headerBtn) {
       console.warn('⚠️ Header register button not found');
+      return;
     }
-  });
+
+    // 既存のイベントリスナーを削除（重複登録防止）
+    const newHeaderBtn = headerBtn.cloneNode(true);
+    headerBtn.parentNode.replaceChild(newHeaderBtn, headerBtn);
+
+    newHeaderBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('🔄 Header button clicked');
+      console.log('Current action:', '<%= params[:action] %>');
+
+      // 複数のフォームIDを試す
+      const form = document.getElementById('plan_form') ||
+                   document.getElementById('product_form') ||
+                   document.querySelector('form');
+
+      console.log('Form found:', form);
+
+      if (form) {
+        // submitボタンを探す（複数のIDを試す）
+        let submitBtn = document.getElementById('plan_submit_button') ||
+                       document.getElementById('product_submit_button') ||
+                       form.querySelector('input[type=submit]');
+
+        console.log('Submit button found:', submitBtn);
+
+        if (submitBtn) {
+          console.log('✅ Clicking submit button');
+          submitBtn.click();
+        } else {
+          console.log('⚠️ No submit button, using form.requestSubmit()');
+          try {
+            if (typeof form.requestSubmit === 'function') {
+              form.requestSubmit();
+            } else {
+              console.log('⚠️ requestSubmit not supported, using form.submit()');
+              form.submit();
+            }
+          } catch (error) {
+            console.error('requestSubmit failed, using form.submit():', error);
+            form.submit();
+          }
+        }
+      } else {
+        console.error('❌ Form not found');
+      }
+    });
+
+    console.log('✅ Header button initialized');
+  }
+
+  // DOMContentLoaded（Turbo無効時）
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeHeaderButton);
+  } else {
+    initializeHeaderButton();
+  }
+
+  // turbo:load（Turbo有効時のページ遷移）
+  document.addEventListener('turbo:load', initializeHeaderButton);
   </script>
+
+<% elsif is_show_page %>
+  <!-- ========================================
+       詳細画面
+       ======================================== -->
+
+  <!-- 戻るボタン（一覧に戻る） -->
+  <%
+    # リソースから一覧画面のパスを動的に生成
+    index_path = polymorphic_path(resource.class)
+  %>
+  <%= render 'shared/actions/back_link',
+             url: index_path,
+             custom_class: 'me-2' %>
+
+  <!-- 編集ボタン -->
+  <%= render 'shared/actions/edit_link',
+             url: edit_polymorphic_path(resource),
+             custom_class: 'me-2' %>
+
+  <!-- 削除ボタン -->
+  <%= render 'shared/actions/delete_link',
+             url: polymorphic_path(resource),
+             resource_name: resource.class.model_name.human %>
+
+<% elsif is_index_page %>
+  <!-- ========================================
+       一覧画面
+       ======================================== -->
+
+  <!-- 新規作成ボタン -->
+  <% if new_path.present? %>
+    <%= render 'shared/actions/new_link',
+               url: new_path,
+               custom_class: 'btn-sm' %>
+  <% else %>
+    <!-- new_pathが渡されていない場合のフォールバック -->
+    <%
+      # resourceからパスを推測
+      if defined?(resource) && resource
+        resource_name = resource.class.model_name.singular_route_key.to_sym
+        fallback_new_path = polymorphic_path([:new, resource_name])
+      else
+        fallback_new_path = '#'
+      end
+    %>
+    <%= render 'shared/actions/new_link',
+               url: fallback_new_path,
+               custom_class: 'btn-sm' %>
+  <% end %>
+
+<% end %>
