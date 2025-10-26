@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_21_083323) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_25_043931) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -70,6 +70,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_21_083323) do
     t.index ["user_id"], name: "index_materials_on_user_id"
   end
 
+  create_table "plan_products", force: :cascade do |t|
+    t.bigint "plan_id", null: false
+    t.bigint "product_id", null: false
+    t.integer "production_count", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plan_id", "product_id"], name: "index_plan_products_on_plan_id_and_product_id", unique: true
+    t.index ["plan_id"], name: "index_plan_products_on_plan_id"
+    t.index ["product_id"], name: "index_plan_products_on_product_id"
+  end
+
   create_table "plans", force: :cascade do |t|
     t.bigint "category_id", null: false
     t.bigint "user_id", null: false
@@ -94,17 +105,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_21_083323) do
     t.index ["product_id", "material_id"], name: "index_product_materials_on_product_id_and_material_id", unique: true
     t.index ["product_id"], name: "index_product_materials_on_product_id"
     t.index ["unit_id"], name: "index_product_materials_on_unit_id"
-  end
-
-  create_table "product_plans", force: :cascade do |t|
-    t.bigint "plan_id", null: false
-    t.bigint "product_id", null: false
-    t.integer "production_count", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["plan_id", "product_id"], name: "index_product_plans_on_plan_id_and_product_id", unique: true
-    t.index ["plan_id"], name: "index_product_plans_on_plan_id"
-    t.index ["product_id"], name: "index_product_plans_on_product_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -153,13 +153,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_21_083323) do
   add_foreign_key "materials", "units", column: "unit_for_order_id"
   add_foreign_key "materials", "units", column: "unit_for_product_id"
   add_foreign_key "materials", "users"
+  add_foreign_key "plan_products", "plans"
+  add_foreign_key "plan_products", "products"
   add_foreign_key "plans", "categories"
   add_foreign_key "plans", "users"
   add_foreign_key "product_materials", "materials"
   add_foreign_key "product_materials", "products"
   add_foreign_key "product_materials", "units"
-  add_foreign_key "product_plans", "plans"
-  add_foreign_key "product_plans", "products"
   add_foreign_key "products", "categories"
   add_foreign_key "products", "users"
   add_foreign_key "units", "users"

@@ -9,17 +9,17 @@
     is_show_page: false
 %>
 
-<%= form_with model: @product, local: true do |f| %>
+<%= form_with model: @product, html: { multipart: true, id: 'product_form' }, data: { controller: 'form-submit' } do |f| %>
 
   <%= render 'shared/resource_two_column_form',
     f: f,
     basic_fields: 'products/product_fields',
     detail_fields: 'products/product_materials_fields',
-    resource_name: 'products'
+    resource_name: 'products',
+    custom_right_title: t('forms.titles.product_material')
   %>
 
-  <div style="display:none;">
-    <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
-    <%= f.submit submit_text, id: "hidden-submit-#{dom_id(f.object)}" %>
-  </div>
+  <!-- Hidden submit button for header action -->
+  <%= f.submit t('helpers.submit.update'), id: 'product_submit_button', style: 'display: none;' %>
+
 <% end %>

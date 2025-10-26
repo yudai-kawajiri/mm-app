@@ -9,7 +9,7 @@
     is_show_page: false
 %>
 
-<%= form_with model: @plan, local: true do |f| %>
+<%= form_with model: @plan, html: { id: 'plan_form' }, data: { controller: 'form-submit' } do |f| %>
 
   <%= render 'shared/resource_two_column_form',
     f: f,
@@ -18,8 +18,8 @@
     resource_name: 'plans'
   %>
 
-  <div style="display:none;">
-    <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
-    <%= f.submit submit_text, id: "hidden-submit-#{dom_id(f.object)}" %>
-  </div>
+  <!-- Hidden submit button -->
+  <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
+  <%= f.submit submit_text, id: 'plan_submit_button', style: 'display: none;' %>
+
 <% end %>

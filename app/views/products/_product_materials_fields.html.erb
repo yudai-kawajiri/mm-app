@@ -1,81 +1,170 @@
-<div data-controller="nested-form">
-  <%# タブナビゲーションの追加 %>
-  <nav>
-    <div class="nav nav-tabs" id="material-nav-tab" role="tablist">
-      <% @material_categories.each_with_index do |category, index| %>
-        <button class="nav-link <%= index == 0 ? 'active' : '' %>"
-                id="material-nav-<%= category.id %>-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#material-nav-<%= category.id %>"
-                type="button"
-                role="tab"
-                aria-controls="material-nav-<%= category.id %>"
-                aria-selected="<%= index == 0 ? 'true' : 'false' %>">
-          <%= category.name %>
-        </button>
-      <% end %>
+<div data-controller="product-material nested-form category-tab-manager"
+     data-product-material-target="totalContainer">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-start align-items-center">
+      <%= select_tag("category_selector",
+          options_from_collection_for_select(@material_categories, :id, :name),
+          {
+            prompt: 'カテゴリを選択',
+            class: 'form-select me-2',
+            style: 'width: 250px;',
+            data: {
+              'category-tab-manager-target': 'categorySelector',
+              'action': 'change->category-tab-manager#toggleButton'
+            }
+          }) %>
+
+      <button type="button"
+              class="btn btn-primary"
+              data-action="category-tab-manager#showSelectedTab"
+              data-category-tab-manager-target="showButton"
+              disabled>
+        カテゴリタブを追加
+      </button>
     </div>
-  </nav>
+  </div>
 
-  <%# タブコンテンツの追加 %>
-  <div class="tab-content pt-3" id="material-nav-tabContent">
-    <% @material_categories.each_with_index do |category, index| %>
-      <div class="tab-pane fade <%= index == 0 ? 'show active' : '' %>"
-            id="material-nav-<%= category.id %>"
-            role="tabpanel"
-            aria-labelledby="material-nav-<%= category.id %>-tab">
+  <!-- タブナビゲーション -->
+  <div class="nav nav-tabs" role="tablist" data-category-tab-manager-target="tabNav">
+    <!-- ALLタブ（削除不可） -->
+    <button class="nav-link active"
+            id="nav-0-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#nav-0"
+            type="button"
+            role="tab"
+            aria-controls="nav-0"
+            aria-selected="true"
+            data-category-id="0">
+      全て
+    </button>
 
-        <%#フォームヘッダー %>
-        <div class="row fw-bold mb-2 pb-1 border-bottom">
-          <div class="col-md-4"><%= t('activerecord.attributes.material.name') %></div>
-          <div class="col-md-2 text-center"><%= t('helpers.forms.quantity_placeholder') %></div>
-          <div class="col-md-2"><%= t('activerecord.attributes.material.unit_weight_for_product') %></div>
-          <div class="col-md-2"><%= t('activerecord.attributes.material.unit_for_product') %></div>
-          <div class="col-md-2 text-end"><%= t('common.action') %></div>
-        </div>
+    <!-- 既存カテゴリタブ（×ボタン付き） -->
+    <% displayed_category_ids = @product.product_materials.map { |pm| pm.material&.category_id }.compact.uniq %>
+    <% @material_categories.select { |c| displayed_category_ids.include?(c.id) }.each do |category| %>
+      <button class="nav-link position-relative"
+              id="nav-<%= category.id %>-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#nav-<%= category.id %>"
+              type="button"
+              role="tab"
+              aria-controls="nav-<%= category.id %>"
+              aria-selected="false"
+              data-category-id="<%= category.id %>"
+              style="padding-right: 2.5rem;">
+        <%= category.name %>
+        <span class="position-absolute top-50 end-0 translate-middle-y pe-2"
+              style="cursor: pointer; font-weight: bold; color: #dc3545;"
+              data-action="click->category-tab-manager#removeTab"
+              data-category-id="<%= category.id %>">
+          ×
+        </span>
+      </button>
+    <% end %>
+  </div>
 
-        <%# フォーム行の挿入ターゲット %>
-        <div data-nested-form-target="target" data-category-id="<%= category.id %>">
+  <!-- タブコンテンツ -->
+  <div class="tab-content pt-3" data-category-tab-manager-target="contentContainer">
+    <!-- ALLタブコンテンツ -->
+    <div class="tab-pane fade show active"
+         id="nav-0"
+         role="tabpanel"
+         aria-labelledby="nav-0-tab"
+         data-category-id="0">
+      <%= render 'shared/material_category_tab_content',
+          category_id: 0,
+          category_name: 'すべて',
+          product: @product,
+          material_categories: @material_categories,
+          f: f %>
+    </div>
 
-          <%# タブで絞り込む %>
-          <% f.object.product_materials.select { |pm| pm.material.present? && pm.material.category_id == category.id }.each do |product_material| %>
-            <%= f.fields_for :product_materials, product_material, child_index: product_material.object_id do |material_f| %>
-              <%= render 'product_material_fields', f: material_f %>
-            <% end %>
-          <% end %>
-
-          <%# カテゴリIDを埋め込む %>
-          <% if f.object.new_record? && index == 0 %>
-            <%= f.fields_for :product_materials, f.object.product_materials.build(material: Material.new(category_id: category.id)), child_index: "initial_record" do |material_f| %>
-              <%= render 'product_material_fields', f: material_f %>
-            <% end %>
-          <% end %>
-        </div>
-
-        <%# 新規追加ボタン %>
-        <div class="d-grid mt-3">
-          <button type="button" class="btn btn-sm btn-outline-success"
-                      data-action="nested-form#add"
-                      data-association="product_materials"
-                      data-template-id="material_fields_template_<%= category.id %>"
-                      data-category-id="<%= category.id %>">
-            <%= t('helpers.link.add_item', resource: category.name) %>
-          </button>
-        </div>
+    <!-- 既存カテゴリタブコンテンツ -->
+    <% @material_categories.select { |c| displayed_category_ids.include?(c.id) }.each do |category| %>
+      <div class="tab-pane fade"
+           id="nav-<%= category.id %>"
+           role="tabpanel"
+           aria-labelledby="nav-<%= category.id %>-tab"
+           data-category-id="<%= category.id %>">
+        <%= render 'shared/material_category_tab_content',
+            category_id: category.id,
+            category_name: category.name,
+            product: @product,
+            material_categories: @material_categories,
+            f: f %>
       </div>
     <% end %>
   </div>
 
-  <%# テンプレート定義  %>
+  <!-- テンプレート: タブボタン -->
+  <template data-category-tab-manager-target="categoryTemplate">
+    <button class="nav-link position-relative"
+            id="nav-CATEGORY_ID_PLACEHOLDER-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#nav-CATEGORY_ID_PLACEHOLDER"
+            type="button"
+            role="tab"
+            aria-controls="nav-CATEGORY_ID_PLACEHOLDER"
+            aria-selected="false"
+            data-category-id="CATEGORY_ID_PLACEHOLDER"
+            style="padding-right: 2.5rem;">
+      CATEGORY_NAME_PLACEHOLDER
+      <span class="position-absolute top-50 end-0 translate-middle-y pe-2"
+            style="cursor: pointer; font-weight: bold; color: #dc3545;"
+            data-action="click->category-tab-manager#removeTab"
+            data-category-id="CATEGORY_ID_PLACEHOLDER">
+        ×
+      </span>
+    </button>
+  </template>
+
+  <!-- テンプレート: タブコンテンツ -->
+  <template data-category-tab-manager-target="categoryPaneTemplate">
+    <div class="tab-pane fade"
+         id="nav-CATEGORY_ID_PLACEHOLDER"
+         role="tabpanel"
+         aria-labelledby="nav-CATEGORY_ID_PLACEHOLDER-tab"
+         data-category-id="CATEGORY_ID_PLACEHOLDER">
+
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th style="width: 35%;">原材料名</th>
+              <th style="width: 15%;">数量</th>
+              <th style="width: 20%;">商品単位重量</th>
+              <th style="width: 20%;">単位</th>
+              <th style="width: 10%;" class="text-end">アクション</th>
+            </tr>
+          </thead>
+          <tbody data-nested-form-target="target" data-category-id="CATEGORY_ID_PLACEHOLDER">
+            <!-- 原材料行がここに追加される -->
+          </tbody>
+        </table>
+
+        <div class="mt-3">
+          <button type="button"
+                  class="btn btn-outline-success w-100"
+                  data-category-id="CATEGORY_ID_PLACEHOLDER"
+                  data-template-id="product_material_fields_template_CATEGORY_ID_PLACEHOLDER"
+                  data-action="click->nested-form#add">
+            原材料を追加
+          </button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- 原材料行テンプレート（各カテゴリ用） -->
   <% @material_categories.each do |category| %>
-    <%= f.fields_for :product_materials,
-                      f.object.product_materials.build(material: Material.new(category_id: category.id)),
-                      child_index: 'NEW_RECORD' do |material_f| %>
-      <template data-nested-form-target="template"
-                id="material_fields_template_<%= category.id %>">
-        <%= render 'product_material_fields', f: material_f %>
-      </template>
-    <% end %>
+    <template id="product_material_fields_template_<%= category.id %>" data-nested-form-target="template">
+      <%= f.fields_for :product_materials,
+          @product.product_materials.build(material: Material.new(category_id: category.id)),
+          child_index: 'NEW_RECORD' do |material_f| %>
+        <%= render 'product_material_fields', f: material_f, category_id: category.id %>
+      <% end %>
+    </template>
   <% end %>
 
 </div>

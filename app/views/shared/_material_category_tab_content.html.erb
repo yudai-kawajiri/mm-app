@@ -1,0 +1,57 @@
+<%#
+  共通パーシャル: 原材料タブコンテンツ
+  使用箇所: 商品管理（Product）の新規作成・編集
+%>
+
+<%
+  category_id ||= local_assigns[:category_id]
+  category_name ||= local_assigns[:category_name]
+  product ||= local_assigns[:product]
+  material_categories ||= local_assigns[:material_categories]
+  f ||= local_assigns[:f]
+%>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th style="width: 35%;">原材料名</th>
+        <th style="width: 15%;">数量</th>
+        <th style="width: 20%;">商品単位重量</th>
+        <th style="width: 20%;">単位</th>
+        <th style="width: 10%;" class="text-end">アクション</th>
+      </tr>
+    </thead>
+    <tbody data-nested-form-target="target" data-category-id="<%= category_id %>">
+      <% if category_id == 0 %>
+        <%# ALLタブ: 全ての原材料を表示 %>
+        <% product.product_materials.each do |product_material| %>
+          <% next if product_material.marked_for_destruction? %>
+          <%= f.fields_for :product_materials, product_material do |material_f| %>
+            <%= render 'product_material_fields', f: material_f, category_id: product_material.material&.category_id || 0 %>
+          <% end %>
+        <% end %>
+      <% else %>
+        <%# 各カテゴリタブ: 該当カテゴリの原材料のみ表示 %>
+        <% product.product_materials.select { |pm| pm.material&.category_id == category_id }.each do |product_material| %>
+          <% next if product_material.marked_for_destruction? %>
+          <%= f.fields_for :product_materials, product_material do |material_f| %>
+            <%= render 'product_material_fields', f: material_f, category_id: category_id %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% unless category_id == 0 %>
+    <div class="mt-3">
+      <button type="button"
+              class="btn btn-outline-success w-100"
+              data-category-id="<%= category_id %>"
+              data-template-id="product_material_fields_template_<%= category_id %>"
+              data-action="click->nested-form#add">
+        原材料を追加
+      </button>
+    </div>
+  <% end %>
+</div>

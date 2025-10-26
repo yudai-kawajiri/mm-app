@@ -1,0 +1,63 @@
+<%# /home/user/workspace/mm-app/app/views/shared/_plan_products_item_form.html.erb %>
+
+<div class="row align-items-center mb-2 p-2 border-bottom"
+     data-controller="product-plan-item nested-form-item"
+     data-product-plan-item-cost-value="<%= f.object.cost.to_f || 0.0 %>"
+     data-product-plan-item-category-id-value="<%= f.object.category_id || 0 %>"
+     data-product-plan-item-row-id-value="<%= f.object.object_id %>"
+     data-action="product-plan:value-changed@window->product-plan-item#receiveValue click->product-plan-item#recalculate">
+
+  <%# 削除フラグ %>
+  <%= f.hidden_field :_destroy,
+      value: f.object.marked_for_destruction? ? 1 : 0,
+      data: { 'nested-form-item-target': 'destroy' } %>
+  <%= f.hidden_field :id %>
+
+  <%# 1. 商品選択ドロップダウン %>
+  <div class="col-md-4">
+    <%= f.label :product_category_id, class: 'form-label visually-hidden' %>
+    <%= f.collection_select(:id, Product.all, :id, :name,
+      { include_blank: t('helpers.prompt.select') },
+      { class: 'form-select',
+        data: {
+          action: 'change->product-plan-item#updateProduct change->product-plan-item#calculate',
+          'product-plan-item-target': 'productSelect'
+        }
+      }) %>
+  </div>
+
+  <%# 2. 目標数量入力 %>
+  <div class="col-md-2">
+    <%= f.number_field :target_quantity,
+      class: 'form-control',
+      min: 0,
+      placeholder: t('helpers.forms.quantity_placeholder'),
+      data: {
+        'product-plan-item-target': 'targetQuantity',
+        action: 'input->product-plan-item#calculate'
+      } %>
+  </div>
+
+  <%# 3. 商品原価表示 %>
+  <div class="col-md-2 text-end">
+    <span data-product-plan-item-target="costDisplay" class="form-control-plaintext">
+      <%= number_to_currency(f.object.cost.to_f || 0, unit: t('number.currency.format.unit'), precision: 0) %>
+    </span>
+  </div>
+
+  <%# 4. 小計表示 (原価×数量) %>
+  <div class="col-md-2 text-end fw-bold">
+    <div data-product-plan-item-target="subtotal">
+      <%= number_to_currency(f.object.subtotal_calculated_for_view rescue 0, unit: t('number.currency.format.unit')) %>
+    </div>
+  </div>
+
+  <%# 5. 削除ボタン %>
+  <div class="col-md-2 text-end">
+    <button type="button"
+        class="btn btn-danger btn-sm"
+        data-action="click->nested-form-item#remove click->product-plan-item#recalculate">
+      <%= t('helpers.link.destroy') %>
+    </button>
+  </div>
+</div>

@@ -273,6 +273,9 @@ ja:
         status: "ステータス"
         description: "説明"
 
+      plan_product:
+        production_count: "数量"
+
     enums:
       category:
         category_type:
