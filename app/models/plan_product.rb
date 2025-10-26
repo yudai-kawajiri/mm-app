@@ -1,4 +1,4 @@
-class ProductPlan < ApplicationRecord
+class PlanProduct < ApplicationRecord
   belongs_to :plan, optional: false
   belongs_to :product, optional: false
 

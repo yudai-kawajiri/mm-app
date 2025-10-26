@@ -11,8 +11,8 @@ class Product < ApplicationRecord
 
   has_many :product_materials, dependent: :destroy
   has_many :materials, through: :product_materials
-  has_many :product_plans, dependent: :destroy
-  has_many :plans, through: :product_plans, dependent: :restrict_with_error
+  has_many :plan_products, dependent: :destroy
+  has_many :plans, through: :plan_products, dependent: :restrict_with_error
 
   # ネストされたフォームから product_materials を受け入れる設定
   accepts_nested_attributes_for :product_materials, allow_destroy: true
