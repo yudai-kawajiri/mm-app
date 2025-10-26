@@ -1,63 +1,70 @@
-<div class="row align-items-center mb-2 p-2 border-bottom nested-fields"
-    data-controller="nested-form-item product-material">
+<%
+  # ユニークIDの生成
+  # 既存レコード: existing_{id}
+  # 新規レコード: new_{object_id}（Rubyのオブジェクト識別子、同じオブジェクトなら常に同じ値）
+  unique_id = f.object.persisted? ? "existing_#{f.object.id}" : "new_#{f.object.object_id}"
+  category_id ||= local_assigns[:category_id] || f.object.material&.category_id || 0
+%>
 
-  <%# 隠しフィールド: 削除マークとID %>
+<tr class="nested-fields"
+    data-controller="nested-form-item product-material"
+    data-unique-id="<%= unique_id %>"
+    data-category-id="<%= category_id %>">
+
   <%= f.hidden_field :_destroy, value: f.object.marked_for_destruction? ? 1 : 0,
-                    data: { nested_form_item_target: 'destroy' } %>
+                    data: { 'nested-form-item-target': 'destroy' } %>
   <%= f.hidden_field :id %>
-
-  <%# unit_id の値をサーバーに送信するための隠しフィールド %>
   <%= f.hidden_field :unit_id, data: { 'product-material-target': 'unitIdInput' } %>
 
-  <%# カテゴリIDの取得とリストの絞り込みロジックを追加 %>
-  <% current_category_id = f.object.material&.category_id %>
+  <% materials = Material.where(category_id: category_id).order(:name) %>
 
-  <%# current_category_id を使ってリストを絞り込む %>
-  <% materials = current_category_id ? Material.where(category_id: current_category_id).order(:name) : Material.all %>
-
-  <%# 1. 原材料選択ドロップダウン %>
-  <div class="col-md-4">
+  <!-- 1. 原材料選択 -->
+  <td>
     <%= f.collection_select(:material_id, materials, :id, :name,
       { include_blank: t('helpers.prompt.select') },
-      { class: 'form-select', required: false,
+      { class: 'form-select',
         data: {
-          action: 'change->product-material#updateUnit',
-          'product-material-target': 'materialSelect'
+          action: 'change->product-material#updateUnit change->product-material#syncMaterialToOtherTabs',
+          'product-material-target': 'materialSelect',
+          'unique-id': unique_id
         }
       }) %>
-  </div>
+  </td>
 
-  <%# 2. 数量入力 %>
-  <div class="col-md-2">
+  <!-- 2. 数量 -->
+  <td>
     <%= f.number_field :quantity,
       class: 'form-control',
       min: 0,
       placeholder: t('helpers.forms.quantity_placeholder'),
       data: {
-        'product-material-target': 'quantityInput'
+        'product-material-target': 'quantityInput',
+        action: 'input->product-material#syncQuantityToOtherTabs',
+        'unique-id': unique_id
       } %>
-  </div>
+  </td>
 
-  <%# 3. 商品単位重量 %>
-  <div class="col-md-2 text-start">
+  <!-- 3. 商品単位重量 -->
+  <td>
     <span data-product-material-target="unitWeightDisplay" class="form-control-plaintext">
       <%= f.object.material&.unit_weight_for_product || t('helpers.no_setting') %>
     </span>
-  </div>
+  </td>
 
-  <%# 4. 単位表 %>
-  <div class="col-md-2 text-start fw-bold">
-    <span data-product-material-target="unitDisplay">
+  <!-- 4. 単位 -->
+  <td>
+    <span data-product-material-target="unitDisplay" class="fw-bold">
       <%= f.object.material&.unit_for_product&.name || t('helpers.no_setting') %>
     </span>
-  </div>
+  </td>
 
-  <%# 5. 削除ボタン %>
-  <div class="col-md-2 text-end">
+  <!-- 5. 削除ボタン -->
+  <td class="text-end">
     <button type="button"
             class="btn btn-sm btn-outline-danger"
-            data-action="click->nested-form-item#remove">
+            data-action="click->nested-form-item#remove"
+            data-unique-id="<%= unique_id %>">
       <%= t('helpers.link.destroy') %>
     </button>
-  </div>
-</div>
+  </td>
+</tr>
