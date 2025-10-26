@@ -9,7 +9,7 @@
     is_show_page: false
 %>
 
-<%= form_with model: @plan, local: true, html: { id: 'plan_form' } do |f| %>
+<%= form_with model: @plan, html: { id: 'plan_form' }, data: { controller: 'form-submit' } do |f| %>
 
   <%= render 'shared/resource_two_column_form',
     f: f,
