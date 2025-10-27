@@ -11,6 +11,7 @@
     new_path: new_material_path
 %>
 
+<%# リソース一覧（検索、フィルター、テーブル） %>
 <%= render 'shared/components/resource_list',
     resources: @materials,
     resource_class: Material,
@@ -33,5 +34,5 @@
     ]
 %>
 
-<%# ページネーションはラッパーの外側で呼び出す %>
+<%# ページネーション %>
 <%= paginate @materials, theme: 'bootstrap-5' %>
