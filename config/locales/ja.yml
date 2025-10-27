@@ -76,6 +76,18 @@ ja:
       delete_button: "削除"
       no_materials_set: "原材料はまだ設定されていません"
 
+    # 新規追加: カテゴリタブ関連
+    category_selector:
+      prompt: "カテゴリを選択"
+      add_button: "カテゴリタブを追加"
+    tab_all: "全て"
+    table_headers:
+      material_name: "原材料名"
+      quantity: "数量"
+      unit_weight: "商品単位重量"
+      unit: "単位"
+    add_material_button: "原材料を追加"
+
   plans:
     new:
       title: "製造計画登録"
@@ -85,14 +97,26 @@ ja:
       title: "%{name} - 製造計画詳細"
     edit:
       title: "%{name} - 製造計画編集"
-    category_total_label: "合計"
+    category_total_label: "カテゴリ合計"
     total_price_label: "総合計"
     plan_product_subtotal: "小計"
+
+    # 新規追加: カテゴリタブ関連
+    category_selector:
+      prompt: "カテゴリを選択"
+      add_button: "カテゴリタブを追加"
+    tab_all: "全て"
+    table_headers:
+      product_name: "商品名"
+      quantity: "数量"
+      price: "売価"
+      subtotal: "小計"
+    add_product_button: "商品を追加"
 
   common:
     search: "検索"
     clear: "クリア"
-    action: "アクション" # helpersから移動
+    action: "アクション"
 
   forms:
     titles:
@@ -106,11 +130,9 @@ ja:
       select_category: "カテゴリーを選択"
       enter_name: "名前を入力"
 
-  # ヘルパーメソッドで使用されるテキストをまとめる
   helpers:
     no_setting: "未設定"
     prompt:
-      # 未 階層変更
       select: "選択してください"
       category_select: "カテゴリを選択してください"
     submit:
@@ -155,7 +177,6 @@ ja:
       invalid: "が正しくありません"
       not_found: "が見つかりません"
       restrict_dependent_destroy:
-        # has_many の関連付けの場合
         has_many: "%{record}で使用しているため、この%{model}を削除できません"
 
   devise:

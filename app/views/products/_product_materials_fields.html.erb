@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-start align-items-center">
       <%= select_tag("category_selector",
           options_from_collection_for_select(@material_categories, :id, :name),
-          prompt: 'カテゴリを選択',
+          prompt: t('products.category_selector.prompt'),
           class: 'form-select me-2',
           style: 'width: 250px;',
           data: {
@@ -18,7 +18,7 @@
               data-action="click->tabs--category-tabs#showSelectedTab"
               data-tabs--category-tabs-target="showButton"
               disabled>
-        カテゴリタブを追加
+        <%= t('products.category_selector.add_button') %>
       </button>
     </div>
   </div>
@@ -35,7 +35,7 @@
             aria-controls="nav-0"
             aria-selected="true"
             data-category-id="0">
-      全て
+      <%= t('products.tab_all') %>
     </button>
 
     <!-- 既存カテゴリタブ（×ボタン付き） -->
@@ -78,14 +78,14 @@
           item_partial: 'product_material_fields',
           table_headers: %{
             <tr>
-              <th style="width: 35%;">原材料名</th>
-              <th style="width: 15%;">数量</th>
-              <th style="width: 20%;">商品単位重量</th>
-              <th style="width: 20%;">単位</th>
-              <th style="width: 10%;" class="text-end">アクション</th>
+              <th style="width: 35%;">#{t('products.table_headers.material_name')}</th>
+              <th style="width: 15%;">#{t('products.table_headers.quantity')}</th>
+              <th style="width: 20%;">#{t('products.table_headers.unit_weight')}</th>
+              <th style="width: 20%;">#{t('products.table_headers.unit')}</th>
+              <th style="width: 10%;" class="text-end">#{t('common.action')}</th>
             </tr>
           },
-          add_button_text: '原材料を追加' %>
+          add_button_text: t('products.add_material_button') %>
     </div>
 
     <!-- 既存カテゴリタブコンテンツ -->
@@ -103,14 +103,14 @@
             item_partial: 'product_material_fields',
             table_headers: %{
               <tr>
-                <th style="width: 35%;">原材料名</th>
-                <th style="width: 15%;">数量</th>
-                <th style="width: 20%;">商品単位重量</th>
-                <th style="width: 20%;">単位</th>
-                <th style="width: 10%;" class="text-end">アクション</th>
+                <th style="width: 35%;">#{t('products.table_headers.material_name')}</th>
+                <th style="width: 15%;">#{t('products.table_headers.quantity')}</th>
+                <th style="width: 20%;">#{t('products.table_headers.unit_weight')}</th>
+                <th style="width: 20%;">#{t('products.table_headers.unit')}</th>
+                <th style="width: 10%;" class="text-end">#{t('common.action')}</th>
               </tr>
             },
-            add_button_text: '原材料を追加' %>
+            add_button_text: t('products.add_material_button') %>
       </div>
     <% end %>
   </div>
@@ -149,11 +149,11 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th style="width: 35%;">原材料名</th>
-              <th style="width: 15%;">数量</th>
-              <th style="width: 20%;">商品単位重量</th>
-              <th style="width: 20%;">単位</th>
-              <th style="width: 10%;" class="text-end">アクション</th>
+              <th style="width: 35%;"><%= t('products.table_headers.material_name') %></th>
+              <th style="width: 15%;"><%= t('products.table_headers.quantity') %></th>
+              <th style="width: 20%;"><%= t('products.table_headers.unit_weight') %></th>
+              <th style="width: 20%;"><%= t('products.table_headers.unit') %></th>
+              <th style="width: 10%;" class="text-end"><%= t('common.action') %></th>
             </tr>
           </thead>
           <tbody data-form--nested-form-target="target" data-category-id="CATEGORY_ID_PLACEHOLDER">
@@ -167,7 +167,7 @@
                   data-category-id="CATEGORY_ID_PLACEHOLDER"
                   data-template-id="product_material_fields_template_CATEGORY_ID_PLACEHOLDER"
                   data-action="click->form--nested-form#add">
-            原材料を追加
+            <%= t('products.add_material_button') %>
           </button>
         </div>
       </div>
