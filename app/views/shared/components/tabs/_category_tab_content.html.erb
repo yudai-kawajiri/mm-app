@@ -1,48 +1,68 @@
-<% plan = local_assigns[:plan] %>
-<% f = local_assigns[:f] %>
-<% category_id = local_assigns[:category_id].to_i %>
-<% category_name = local_assigns[:category_name] %>
+<%# app/views/shared/components/tabs/_category_tab_content.html.erb %>
+<%#
+  汎用カテゴリタブコンテンツ - ネストフォーム統合版
+  
+  使用箇所:
+  - 製造計画の商品選択タブ
+  - 商品の原材料選択タブ
+  
+  必須locals:
+  - category_id: カテゴリID（0=全て表示）
+  - items: 表示するアイテムのコレクション
+  - form_builder: フォームビルダー (f)
+  - association_name: :plan_products または :product_materials
+  - item_partial: 行パーシャル名 ('plan_product_fields' または 'product_material_fields')
+  - table_headers: テーブルヘッダーのHTML（ブロックまたは文字列）
+  - add_button_text: 追加ボタンのテキスト
+  
+  オプションlocals:
+  - show_category_total: カテゴリ合計を表示するか（デフォルト: false）
+  - total_target: 合計表示のdata-target属性
+%>
 
-<% current_plan_products = category_id == 0 ?
-    plan.plan_products.reject(&:marked_for_destruction?) :
-    plan.plan_products.select { |pp| pp.product&.category_id == category_id && !pp.marked_for_destruction? } %>
+<%
+  category_id = local_assigns[:category_id].to_i
+  items = local_assigns[:items]
+  form_builder = local_assigns[:form_builder] || local_assigns[:f]
+  association_name = local_assigns[:association_name]
+  item_partial = local_assigns[:item_partial]
+  table_headers = local_assigns[:table_headers]
+  add_button_text = local_assigns[:add_button_text]
+  show_category_total = local_assigns.fetch(:show_category_total, false)
+  total_target = local_assigns[:total_target]
+%>
 
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
-      <tr>
-        <th style="width: 35%;">商品名</th>
-        <th style="width: 15%;">数量</th>
-        <th style="width: 20%;" class="text-end">売価</th>
-        <th style="width: 20%;" class="text-end">小計</th>
-        <th style="width: 10%;" class="text-end">アクション</th>
-      </tr>
+      <%= table_headers.html_safe %>
     </thead>
     <tbody data-form--nested-form-target="target" data-category-id="<%= category_id %>">
-      <% current_plan_products.each do |plan_product| %>
-        <%= f.fields_for :plan_products, plan_product do |ff| %>
-          <%= render 'plan_product_fields', f: ff, category_id: category_id %>
+      <% items.each do |item| %>
+        <%= form_builder.fields_for association_name, item do |ff| %>
+          <%= render item_partial, f: ff, category_id: category_id %>
         <% end %>
       <% end %>
     </tbody>
   </table>
 
-  <!-- ALLタブでは商品追加ボタンを非表示 -->
+  <%# category_id が 0（ALLタブ）でない場合のみ追加ボタンとカテゴリ合計を表示 %>
   <% if category_id != 0 %>
     <div class="mt-3">
       <button type="button"
               class="btn btn-outline-success w-100"
               data-category-id="<%= category_id %>"
-              data-template-id="plan_product_fields_template_<%= category_id %>"
+              data-template-id="<%= item_partial.gsub('_fields', '') %>_fields_template_<%= category_id %>"
               data-action="click->form--nested-form#add">
-        商品を追加
+        <%= add_button_text %>
       </button>
     </div>
 
-    <!-- カテゴリ合計 -->
-    <div class="text-end mt-3 fw-bold">
-      カテゴリ合計:
-      <span data-plan-product-target="categoryTotal" data-category-id="<%= category_id %>">¥0</span>
-    </div>
+    <% if show_category_total && total_target.present? %>
+      <div class="text-end mt-3 fw-bold">
+        カテゴリ合計:
+        <span data-<%= total_target %>="categoryTotal" data-category-id="<%= category_id %>">¥0</span>
+      </div>
+    <% end %>
   <% end %>
 </div>
