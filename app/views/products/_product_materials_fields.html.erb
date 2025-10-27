@@ -1,26 +1,24 @@
 <div data-controller="resources--product-material--material form--nested-form tabs--category-tabs"
-     data-resources--product-material--material-target="totalContainer">
+     data-resources--product-material--material-target="totalContainer">
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="d-flex justify-content-start align-items-center">
       <%= select_tag("category_selector",
           options_from_collection_for_select(@material_categories, :id, :name),
-          # 💡 ここでオプションを直接記述し、構文エラーを回避
           prompt: 'カテゴリを選択',
           class: 'form-select me-2',
           style: 'width: 250px;',
           data: {
-            # 💡 コントローラ名を修正
             'tabs--category-tabs-target': 'categorySelector',
             'action': 'change->tabs--category-tabs#toggleButton'
           }
       ) %>
-      <button type="button"
-              class="btn btn-primary"
-              data-action="click->tabs--category-tabs#showSelectedTab"
-              data-tabs--category-tabs-target="showButton"
-              disabled>
-        カテゴリタブを追加
+      <button type="button"
+              class="btn btn-primary"
+              data-action="click->tabs--category-tabs#showSelectedTab"
+              data-tabs--category-tabs-target="showButton"
+              disabled>
+        カテゴリタブを追加
       </button>
     </div>
   </div>
@@ -72,12 +70,22 @@
          role="tabpanel"
          aria-labelledby="nav-0-tab"
          data-category-id="0">
-      <%= render 'shared/components/tabs/material_category_tab_content',
+      <%= render 'shared/components/tabs/category_tab_content',
           category_id: 0,
-          category_name: 'すべて',
-          product: @product,
-          material_categories: @material_categories,
-          f: f %>
+          items: @product.product_materials.reject(&:marked_for_destruction?),
+          form_builder: f,
+          association_name: :product_materials,
+          item_partial: 'product_material_fields',
+          table_headers: %{
+            <tr>
+              <th style="width: 35%;">原材料名</th>
+              <th style="width: 15%;">数量</th>
+              <th style="width: 20%;">商品単位重量</th>
+              <th style="width: 20%;">単位</th>
+              <th style="width: 10%;" class="text-end">アクション</th>
+            </tr>
+          },
+          add_button_text: '原材料を追加' %>
     </div>
 
     <!-- 既存カテゴリタブコンテンツ -->
@@ -87,12 +95,22 @@
            role="tabpanel"
            aria-labelledby="nav-<%= category.id %>-tab"
            data-category-id="<%= category.id %>">
-        <%= render 'shared/components/tabs/material_category_tab_content',
+        <%= render 'shared/components/tabs/category_tab_content',
             category_id: category.id,
-            category_name: category.name,
-            product: @product,
-            material_categories: @material_categories,
-            f: f %>
+            items: @product.product_materials.select { |pm| pm.material&.category_id == category.id && !pm.marked_for_destruction? },
+            form_builder: f,
+            association_name: :product_materials,
+            item_partial: 'product_material_fields',
+            table_headers: %{
+              <tr>
+                <th style="width: 35%;">原材料名</th>
+                <th style="width: 15%;">数量</th>
+                <th style="width: 20%;">商品単位重量</th>
+                <th style="width: 20%;">単位</th>
+                <th style="width: 10%;" class="text-end">アクション</th>
+              </tr>
+            },
+            add_button_text: '原材料を追加' %>
       </div>
     <% end %>
   </div>
