@@ -38,7 +38,7 @@ ja:
       title: "カテゴリー登録"
     index:
       title: "カテゴリー一覧"
-    show:                                   
+    show:
       title: "%{name} - カテゴリー詳細"
     edit:
       title: "%{name} - カテゴリー編集"
