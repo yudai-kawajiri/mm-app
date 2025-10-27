@@ -1,6 +1,6 @@
-<%= render 'shared/forms/resource_form',
-    resource: @category,
-    title: t('categories.edit.title', name: @category.name),
-    basic_fields: 'categories/category_fields',
-    resource_name: 'categories'
-%>
+<% content_for :title, t('categories.edit.title', name: @category.name) %>
+
+<%= render 'shared/resource_form',
+           resource: @category,
+           form_title: t('categories.edit.title', name: @category.name),
+           submit_label: t('common.update') %>

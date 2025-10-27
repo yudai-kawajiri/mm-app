@@ -1,9 +1,15 @@
-<%= render 'shared/forms/resource_form',
-    resource: @plan,
-    title: t('plans.edit.title', name: @plan.name),
-    basic_fields: 'plans/plan_fields',
-    detail_fields: 'plans/plan_products_fields',
-    resource_name: 'plans',
-    form_html: { id: 'plan_form' },
-    form_data: { controller: 'form-submit' }
-%>
+<% content_for(:title, t('plans.edit.title', name: @plan.name)) %>
+
+<%# Card デザインでラップ %>
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h2 class="mb-0"><%= t('plans.edit.title', name: @plan.name) %></h2>
+    </div>
+
+    <div class="card-body">
+      <%# フォームを呼び出し %>
+      <%= render 'form', plan: @plan %>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
-<%= render 'shared/forms/resource_form',
-    resource: @unit,
-    title: t('units.new.title'),
-    basic_fields: 'units/unit_fields',
-    resource_name: 'units'
-%>
+<% content_for :title, t('units.new.title') %>
+
+<%= render 'shared/resource_form',
+           resource: @unit,
+           form_title: t('units.new.title'),
+           submit_label: t('helpers.submit.create') %>
