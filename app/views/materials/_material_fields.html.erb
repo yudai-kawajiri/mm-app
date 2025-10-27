@@ -1,82 +1,62 @@
-<%# f: form builder をローカル変数として受け取る %>
-
 <div class="row">
   <%# 左カラム: 原材料名 %>
   <div class="col-md-6">
-    <div class="mb-4">
-      <%= f.label :name, class: "form-label h5" %>
-      <%= f.text_field :name, class: "form-control form-control-lg" %>
-    </div>
+    <%= form_group_lg(f, :name) %>
   </div>
 
   <%# 右カラム: カテゴリー %>
   <div class="col-md-6">
-    <div class="mb-4">
-      <%= f.label :category_id, class: "form-label h5" %>
-      <%= f.collection_select :category_id,
-                              @material_categories,
-                              :id,
-                              :name,
-                              { prompt: t('helpers.prompt.select') },
-                              { class: "form-select form-select-lg" } %>
-    </div>
+    <%= form_group_lg(f, :category_id,
+        field_type: :collection_select,
+        collection: @material_categories
+    ) %>
   </div>
 </div>
 
 <div class="row">
   <%# 左カラム: 商品単位 %>
   <div class="col-md-6">
-    <div class="mb-4">
-      <%= f.label :unit_for_product_id, Material.human_attribute_name(:unit_for_product), class: "form-label h5" %>
-      <%= f.collection_select :unit_for_product_id,
-          current_user.units.where(category: :production),
-          :id,
-          :name,
-          { prompt: t('helpers.prompt.select') },
-          { class: "form-select form-select-lg" } %>
-    </div>
+    <%= form_group_lg(f, :unit_for_product_id,
+        field_type: :collection_select,
+        collection: current_user.units.where(category: :production),
+        label: Material.human_attribute_name(:unit_for_product)
+    ) %>
   </div>
 
   <%# 右カラム: 商品単位あたりの重量 %>
   <div class="col-md-6">
-    <div class="mb-4">
-      <%= f.label :unit_weight_for_product, class: "form-label h5" %>
-      <%= f.number_field :unit_weight_for_product, step: :any, class: "form-control form-control-lg" %>
-    </div>
+    <%= form_group_lg(f, :unit_weight_for_product,
+        field_type: :number_field,
+        step: :any
+    ) %>
   </div>
 </div>
 
 <div class="row">
   <%# 左カラム: 発注単位 %>
   <div class="col-md-6">
-    <div class="mb-4">
-      <%= f.label :unit_for_order_id, Material.human_attribute_name(:unit_for_order), class: "form-label h5" %>
-      <%= f.collection_select :unit_for_order_id,
-          current_user.units.where(category: :ordering),
-          :id,
-          :name,
-          { prompt: t('helpers.prompt.select') },
-          { class: "form-select form-select-lg" } %>
-    </div>
+    <%= form_group_lg(f, :unit_for_order_id,
+        field_type: :collection_select,
+        collection: current_user.units.where(category: :ordering),
+        label: Material.human_attribute_name(:unit_for_order)
+    ) %>
   </div>
 
   <%# 右カラム: 発注単位あたりの重量 %>
   <div class="col-md-6">
-    <div class="mb-4">
-      <%= f.label :unit_weight_for_order, class: "form-label h5" %>
-      <%= f.number_field :unit_weight_for_order, step: :any, class: "form-control form-control-lg" %>
-    </div>
+    <%= form_group_lg(f, :unit_weight_for_order,
+        field_type: :number_field,
+        step: :any
+    ) %>
   </div>
+</div>
 
-  <div class="row">
+<div class="row">
   <%# 説明（Description） - 1行全体を使用 %>
   <div class="col-md-12">
-    <div class="mb-4">
-      <%# 項目名 %>
-      <%= f.label :description, class: "form-label h5" %>
-
-      <%# f.text_area %>
-      <%= f.text_area :description, rows: 5, class: "form-control form-control-lg" %>
-    </div>
+    <%= form_group_lg(f, :description,
+        field_type: :text_area,
+        rows: 5
+    ) %>
   </div>
 </div>

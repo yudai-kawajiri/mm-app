@@ -1,27 +1,15 @@
 <div class="row">
-  <%# 左カラム : カテゴリー名 %>
+  <%# 左カラム: カテゴリー名 %>
   <div class="col-md-6">
-    <div class="mb-4">
-      <%# ラベルに h5 クラス、入力欄に form-control-lg クラスを追加 %>
-      <%= f.label :name, class: "form-label h5" %>
-      <%= f.text_field :name, class: "form-control form-control-lg" %>
-    </div>
+    <%= form_group_lg(f, :name) %>
   </div>
 
   <%# 右カラム: カテゴリータイプ %>
   <div class="col-md-6">
-    <div class="mb-4">
-      <%# ラベルに h5 クラス、プルダウンに form-select-lg クラスを追加 %>
-      <%= f.label :category_type, class: "form-label h5" %>
-
-      <%# カテゴリ種別をメソッドで翻訳 (元のコードをそのまま利用) %>
-      <%= f.select :category_type,
-          Category.category_types.keys.map { |k|
-            [I18n.t("activerecord.enums.category.category_type.#{k}"), k]
-          },
-          { include_blank: t('helpers.prompt.select'), selected: nil },
-          { class: "form-select form-select-lg" } %>
-      </div>
-    </div>
+    <%= form_group_lg(f, :category_type, 
+        field_type: :select,
+        choices: Category.category_types.keys.map { |k| [I18n.t("activerecord.enums.category.category_type.#{k}"), k] },
+        select_options: { include_blank: t('helpers.prompt.select'), selected: nil }
+    ) %>
   </div>
 </div>
