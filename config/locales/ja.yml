@@ -261,10 +261,12 @@ ja:
       category:
         name: "カテゴリー名"
         category_type: "カテゴリー"
+        description: '説明'
 
       unit:
         name: "単位名"
         category: "カテゴリー"
+        description: '説明'
         materials_as_product_unit: "原材料（商品単位）"
         materials_as_order_unit: "原材料（発注単位）"
 
