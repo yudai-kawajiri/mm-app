@@ -1,0 +1,38 @@
+<%# 統一されたリソースフォームテンプレート %>
+<%# New/Edit ページで共通して使用 %>
+<%#
+  必須パラメータ:
+  - resource: フォーム対象のモデルインスタンス
+  - form_title: ページタイトル
+  - submit_label: 送信ボタンのラベル
+%>
+
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <%# ヘッダー %>
+    <div class="card-header bg-primary text-white">
+      <h2 class="mb-0">
+        <%= form_title %>
+      </h2>
+    </div>
+
+    <%# フォーム本体 %>
+    <div class="card-body">
+      <%# 既存のエラーメッセージコンポーネントを再利用 %>
+      <%= render 'shared/forms/error_messages', resource: resource %>
+
+      <%= form_with(model: resource, local: true, class: "needs-validation") do |f| %>
+        <%# 各リソースのフィールドパーシャルを呼び出し %>
+        <%= render "#{resource.model_name.plural}/#{resource.model_name.singular}_fields", f: f %>
+
+        <%# アクションボタン %>
+        <div class="form-group text-center mt-4">
+          <%= f.submit submit_label, class: "btn btn-primary btn-lg px-5 me-2" %>
+          <%= render 'shared/actions/back_link',
+                     url: polymorphic_path(resource.class),
+                     custom_class: 'btn-lg px-5' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
