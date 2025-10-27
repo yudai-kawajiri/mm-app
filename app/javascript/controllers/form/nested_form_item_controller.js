@@ -1,55 +1,67 @@
+// app/javascript/controllers/form/nested_form_item_controller.js
 import { Controller } from "@hotwired/stimulus"
+import Logger from "utils/logger"
 
+/**
+ * ネストフォームの子コントローラー
+ * 各行の削除ボタンを制御
+ */
 export default class extends Controller {
   static targets = ["destroy"]
 
+  /**
+   * 行を削除（論理削除）
+   * @param {Event} event - クリックイベント
+   */
   remove(event) {
-    event.preventDefault();
+    event.preventDefault()
 
-    const button = event.currentTarget;
+    const row = this.element
+    const uniqueId = row.dataset.uniqueId || row.dataset.rowUniqueId
 
-    // 両方の属性名に対応（製造計画管理: data-row-unique-id, 商品管理: data-unique-id）
-    const uniqueId = button.dataset.rowUniqueId || button.dataset.uniqueId;
+    Logger.log(`🗑️ Removing row: ${uniqueId}`)
 
-    if (!uniqueId) {
-      console.error(' No unique ID found on button');
-      return;
+    // _destroy フラグを立てる
+    if (this.hasDestroyTarget) {
+      this.destroyTarget.value = "1"
     }
 
-    console.log(` Removing row with unique ID: ${uniqueId}`);
+    // この行を非表示
+    row.style.display = "none"
 
-    // 同じユニークIDを持つ全ての行を検索（ALLタブと各カテゴリタブ）
-    // 両方の属性名で検索
-    const allMatchingRows = document.querySelectorAll(
-      `[data-row-unique-id="${uniqueId}"], tr[data-unique-id="${uniqueId}"]`
-    );
-
-    if (allMatchingRows.length === 0) {
-      console.warn(` No rows found with unique ID: ${uniqueId}`);
-      return;
+    // 同じunique-idを持つ他のタブの行も削除
+    if (uniqueId) {
+      this.removeFromOtherTabs(uniqueId)
     }
-
-    allMatchingRows.forEach(row => {
-      // _destroyフィールドを設定
-      const destroyInput = row.querySelector('[data-nested-form-item-target="destroy"]');
-      if (destroyInput) {
-        destroyInput.value = '1';
-        console.log(`Set _destroy=1 for row in tab:`, row.closest('.tab-pane')?.id);
-      }
-
-      // 行を非表示
-      row.style.display = 'none';
-      console.log(` Hidden row in tab:`, row.closest('.tab-pane')?.id);
-    });
 
     // 合計を再計算（製造計画管理の場合のみ）
-    const hasCalculation = document.querySelector('[data-plan-product-target]');
+    const hasCalculation = document.querySelector('[data-resources--plan-product--totals-target]')
     if (hasCalculation) {
       setTimeout(() => {
-        this.dispatch('recalculate', { prefix: 'plan-product', bubbles: true });
-      }, 100);
+        this.dispatch('recalculate', { prefix: 'resources--plan-product--totals', bubbles: true })
+      }, 100)
     }
 
-    console.log(`All matching rows removed (${allMatchingRows.length} rows)`);
+    Logger.log(`✅ Row removed: ${uniqueId}`)
+  }
+
+  /**
+   * 他のタブから同じ行を削除
+   * @param {string} uniqueId - ユニークID
+   */
+  removeFromOtherTabs(uniqueId) {
+    const selector = `tr[data-unique-id="${uniqueId}"], tr[data-row-unique-id="${uniqueId}"]`
+    const allMatchingRows = document.querySelectorAll(selector)
+
+    allMatchingRows.forEach(row => {
+      if (row !== this.element) {
+        const destroyInput = row.querySelector('[data-form--nested-form-item-target="destroy"]')
+        if (destroyInput) {
+          destroyInput.value = "1"
+        }
+        row.style.display = "none"
+        Logger.log(`  ↳ Also removed from other tab`)
+      }
+    })
   }
 }

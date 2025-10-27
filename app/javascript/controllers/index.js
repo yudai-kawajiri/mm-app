@@ -1,70 +1,33 @@
 // app/javascript/controllers/index.js
-// 移行期間用: 新旧両方のコントローラーを登録
 
-import { Application } from "@hotwired/stimulus"
+import { application } from "controllers/application"
 
-const application = Application.start()
+// 💡 修正: ファイルパスの先頭に 'controllers/' を追加し、
+//       importmapにマッピングされた名前でインポートする
+//       （これにより、index.jsがimportmapを介してファイルをロードします）
 
-application.debug = true
+// Form Controllers
+import FormNestedFormController from "controllers/form/nested_form_controller" // 修正
+import FormNestedFormItemController from "controllers/form/nested_form_item_controller" // 修正
+import FormSubmitController from "controllers/form/submit_controller" // 修正
 
-if (application.debug) {
-  window.Stimulus = application
-  console.log('Stimulus debug mode enabled')
-}
+// Tabs Controllers
+import TabsCategoryTabsController from "controllers/tabs/category_tabs_controller" // 修正
 
-// 【旧版】既存のコントローラー（ビューファイルが参照中）
-import NestedFormControllerOld from "./form/nested_form_controller"
-application.register("nested-form", NestedFormControllerOld)
+// Resources - Plan Product Controllers
+import ResourcesPlanProductRowController from "controllers/resources/plan-product/row_controller" // 修正
+import ResourcesPlanProductTotalsController from "controllers/resources/plan-product/totals_controller" // 修正
+import ResourcesPlanProductSyncController from "controllers/resources/plan-product/sync_controller" // 修正
 
-import NestedFormItemControllerOld from "./form/nested_form_item_controller"
-application.register("nested-form-item", NestedFormItemControllerOld)
+// Resources - Product Material Controllers
+import ResourcesProductMaterialMaterialController from "controllers/resources/product-material/material_controller" // 修正
 
-import PlanProductController from "./plan_product_controller"
-application.register("plan-product", PlanProductController)
-
-import ProductMaterialController from "./product_material_controller"
-application.register("product-material", ProductMaterialController)
-
-import CategoryTabManagerController from "./category_tab_manager_controller"
-application.register("category-tab-manager", CategoryTabManagerController)
-
-import PlanProductTabsController from "./plan_product_tabs_controller"
-application.register("plan-product-tabs", PlanProductTabsController)
-
-console.log('旧版コントローラーを登録しました')
-
-// 【新版】リファクタリング後のコントローラー
-
-// フォーム関連
-import SubmitController from "./form/submit_controller"
-application.register("form--submit", SubmitController)
-
-// タブ関連（統合版）
-import CategoryTabsController from "./tabs/category_tabs_controller"
-application.register("tabs--category-tabs", CategoryTabsController)
-
-// Plan Product 関連（分割版）
-import PlanProductRowController from "./resources/plan-product/row_controller"
-application.register("resources--plan-product--row", PlanProductRowController)
-
-import PlanProductTotalsController from "./resources/plan-product/totals_controller"
-application.register("resources--plan-product--totals", PlanProductTotalsController)
-
-import PlanProductSyncController from "./resources/plan-product/sync_controller"
-application.register("resources--plan-product--sync", PlanProductSyncController)
-
-// Product Material 関連（新版）
-import ProductMaterialControllerNew from "./resources/product-material/material_controller"
-application.register("resources--product-material--material", ProductMaterialControllerNew)
-
-console.log('✅ 新版コントローラーを登録しました')
-
-// デバッグ情報
-
-if (application.debug) {
-  const controllers = application.controllers.map(c => c.identifier).sort()
-  console.log('📋 登録済みコントローラー:', controllers)
-  console.log(`🔢 合計: ${controllers.length} 個`)
-}
-
-export { application }
+// 手動登録
+application.register("form--nested-form", FormNestedFormController)
+application.register("form--nested-form-item", FormNestedFormItemController)
+application.register("form--submit", FormSubmitController)
+application.register("tabs--category-tabs", TabsCategoryTabsController)
+application.register("resources--plan-product--row", ResourcesPlanProductRowController)
+application.register("resources--plan-product--totals", ResourcesPlanProductTotalsController)
+application.register("resources--plan-product--sync", ResourcesPlanProductSyncController)
+application.register("resources--product-material--material", ResourcesProductMaterialMaterialController)

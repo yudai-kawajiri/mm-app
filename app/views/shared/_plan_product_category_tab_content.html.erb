@@ -18,7 +18,7 @@
     </div>
 
     <%# 2. 既存の商品行をレンダリング %>
-    <div data-nested-form-target="links">
+    <div data-form--nested-form-target="links">
       <% current_products.each do |product| %>
         <%# ネストフォームの属性を plan_products[products_attributes] に設定 %>
         <%= fields_for "plan_products[products_attributes][]", product do |f| %>
@@ -44,7 +44,7 @@
 </div>
 
 <%# 4. ネストフォームのテンプレート (<template> タグ) %>
-<template data-nested-form-target="template" data-category-id="<%= category_id %>">
+<template data-form--nested-form-target="template" data-category-id="<%= category_id %>">
   <%# ネストフォームの属性を plan_products[products_attributes][new_records] に設定 %>
   <%= fields_for "plan_products[products_attributes][new_records]", Product.new, child_index: 'NEW_RECORD' do |f| %>
     <%= render 'shared/plan_products_item_form', f: f %>
