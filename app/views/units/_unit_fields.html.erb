@@ -1,15 +1,22 @@
 <div class="row">
-  <%# 左カラム: 単位名 %>
   <div class="col-md-6">
     <%= form_group_lg(f, :name) %>
   </div>
-
-  <%# 右カラム: カテゴリ %>
   <div class="col-md-6">
     <%= form_group_lg(f, :category,
         field_type: :select,
         choices: Unit.categories.keys.map { |k| [I18n.t("activerecord.enums.unit.category.#{k}"), k] },
         select_options: { include_blank: t('helpers.prompt.select'), selected: nil }
     ) %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="mb-3">
+      <%= f.label :description, Unit.human_attribute_name(:description), class: 'form-label' %>
+      <%= f.text_area :description, rows: 3, class: 'form-control' %>
+      <small class="form-text text-muted"></small>
+    </div>
   </div>
 </div>

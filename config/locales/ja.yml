@@ -38,6 +38,8 @@ ja:
       title: "カテゴリー登録"
     index:
       title: "カテゴリー一覧"
+    show:                                   
+      title: "%{name} - カテゴリー詳細"
     edit:
       title: "%{name} - カテゴリー編集"
 
@@ -46,6 +48,8 @@ ja:
       title: "単位登録"
     index:
       title: "単位一覧"
+    show:
+      title: "%{name} - 単位詳細"
     edit:
       title: "%{name} - 単位編集"
 
@@ -261,10 +265,12 @@ ja:
       category:
         name: "カテゴリー名"
         category_type: "カテゴリー"
+        description: '説明'
 
       unit:
         name: "単位名"
         category: "カテゴリー"
+        description: '説明'
         materials_as_product_unit: "原材料（商品単位）"
         materials_as_order_unit: "原材料（発注単位）"
 

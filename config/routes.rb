@@ -39,11 +39,11 @@ Rails.application.routes.draw do
     end
   end
 
-  # showアクションのみを除外
-  resources :categories, except: [:show]
+  # showアクションを含む全アクション
+  resources :categories
 
-  # showアクションのみを除外
-  resources :units, except: [:show]
+  # showアクションを含む全アクション
+  resources :units
 
   # Materialのルーティング
   resources :materials

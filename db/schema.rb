@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_25_043931) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_27_072205) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -48,6 +48,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_25_043931) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
     t.index ["name", "category_type"], name: "index_categories_on_name_and_category_type", unique: true
     t.index ["user_id"], name: "index_categories_on_user_id"
   end
@@ -111,7 +112,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_25_043931) do
     t.string "name", null: false
     t.integer "price", null: false
     t.string "item_number", null: false
-    t.integer "status", default: 0, null: false
+    t.integer "status"
     t.bigint "user_id", null: false
     t.bigint "category_id", null: false
     t.datetime "created_at", null: false
@@ -129,6 +130,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_25_043931) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
     t.index ["name", "category"], name: "index_units_on_name_and_category", unique: true
     t.index ["user_id"], name: "index_units_on_user_id"
   end

@@ -3,7 +3,7 @@ class CategoriesController < AuthenticatedController
   # define_search_params を使って許可するキーを定義
   define_search_params :q, :category_type
 
-  find_resource :category, only: [:edit, :update, :destroy]
+  find_resource :category, only: [:show, :edit, :update, :destroy]
 
   def index
     # モジュールにソート責任を移譲
@@ -24,6 +24,9 @@ class CategoriesController < AuthenticatedController
     respond_to_save(@category, success_path: categories_url)
   end
 
+  def show; end
+
+
   def edit
     # @category の取得は before_action :set_category に移動
   end
@@ -42,6 +45,6 @@ class CategoriesController < AuthenticatedController
 
   def category_params
     # name と category_type を受付
-    params.require(:category).permit(:name, :category_type)
+    params.require(:category).permit(:name, :category_type, :description)
   end
 end
