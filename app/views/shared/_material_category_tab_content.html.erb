@@ -22,7 +22,7 @@
         <th style="width: 10%;" class="text-end">アクション</th>
       </tr>
     </thead>
-    <tbody data-nested-form-target="target" data-category-id="<%= category_id %>">
+    <tbody data-form--nested-form-target="target" data-category-id="<%= category_id %>">
       <% if category_id == 0 %>
         <%# ALLタブ: 全ての原材料を表示 %>
         <% product.product_materials.each do |product_material| %>
@@ -49,7 +49,7 @@
               class="btn btn-outline-success w-100"
               data-category-id="<%= category_id %>"
               data-template-id="product_material_fields_template_<%= category_id %>"
-              data-action="click->nested-form#add">
+              data-action="click->form--nested-form#add">
         原材料を追加
       </button>
     </div>

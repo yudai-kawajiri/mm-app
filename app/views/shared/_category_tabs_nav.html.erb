@@ -5,7 +5,7 @@
 <% plan_plan_products = local_assigns[:plan_plan_products] || [] %>
 
 <%# 💡 [修正] nav タグを削除し、div に tabNav ターゲットを設定 %>
-<div class="nav nav-tabs" id="nav-tab" role="tablist" data-category-tab-manager-target="tabNav">
+<div class="nav nav-tabs" id="nav-tab" role="tablist" data-tabs--category-tabs-target="tabNav">
 
     <%# ALLタブの追加  %>
     <button class="nav-link <%= is_active_category_id.to_s == '0' || is_active_category_id.to_s == 'all' ? 'active' : '' %>"

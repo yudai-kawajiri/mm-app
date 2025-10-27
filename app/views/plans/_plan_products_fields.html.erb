@@ -1,40 +1,39 @@
-<div data-controller="plan-product nested-form category-tab-manager"
-       data-plan-product-target="totalContainer"
-       data-action="plan-product:calculated->plan-product#recalculate">
+<div data-controller="resources--plan-product--totals tabs--category-tabs form--nested-form"
+     data-resources--plan-product--totals-target="totalContainer"
+     data-action="resources--plan-product--row:calculated->resources--plan-product--totals#recalculate">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <div class="d-flex justify-content-start align-items-center">
-        <%= select_tag("category_selector",
-            options_from_collection_for_select(@product_categories, :id, :name),
-            {
-              prompt: 'カテゴリを選択',
-              class: 'form-select me-2',
-              style: 'width: 250px;',
-              data: {
-                'category-tab-manager-target': 'categorySelector',
-                'action': 'change->category-tab-manager#toggleButton'
-              }
-            }) %>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-start align-items-center">
+      <%= select_tag("category_selector",
+          options_from_collection_for_select(@product_categories, :id, :name),
+          {
+            prompt: 'カテゴリを選択',
+            class: 'form-select me-2',
+            style: 'width: 250px;',
+            data: {
+              # 修正: targetとaction名を更新
+              'tabs--category-tabs-target': 'categorySelector',
+              'action': 'change->tabs--category-tabs#toggleButton'
+            }
+          }) %>
 
-        <button type="button"
-                class="btn btn-primary"
-                data-action="category-tab-manager#showSelectedTab"
-                data-category-tab-manager-target="showButton"
-                disabled>
-          カテゴリタブを追加
-        </button>
-      </div>
-
-      <span class="fw-bold fs-5">
-        総合計:
-        <span data-plan-product-target="grandTotal" class="text-primary">
-          ¥0
-        </span>
-      </span>
+      <button type="button"
+              class="btn btn-primary"
+              data-action="click->tabs--category-tabs#showSelectedTab"
+              data-tabs--category-tabs-target="showButton"
+              disabled>
+        カテゴリタブを追加
+      </button>
     </div>
 
+    <span class="fw-bold fs-5">
+      総合計:
+      <span data-resources--plan-product--totals-target="grandTotal" class="text-primary">¥0
+      </span>
+  </div>
+
     <!-- タブナビゲーション -->
-  <div class="nav nav-tabs" role="tablist" data-category-tab-manager-target="tabNav">
+  <div class="nav nav-tabs" role="tablist" data-tabs--category-tabs-target="tabNav">
     <!-- ALLタブ（削除不可） -->
     <button class="nav-link active"
             id="nav-0-tab"
@@ -64,7 +63,7 @@
         <%= category.name %>
         <span class="position-absolute top-50 end-0 translate-middle-y pe-2"
               style="cursor: pointer; font-weight: bold; color: #dc3545;"
-              data-action="click->category-tab-manager#removeTab"
+              data-action="click->tabs--category-tabs#removeTab"
               data-category-id="<%= category.id %>">
           ×
         </span>
@@ -73,7 +72,7 @@
   </div>
 
   <!-- タブコンテンツ -->
-  <div class="tab-content pt-3" data-category-tab-manager-target="contentContainer">
+  <div class="tab-content pt-3" data-tabs--category-tabs-target="contentContainer">
     <!-- ALLタブコンテンツ -->
     <div class="tab-pane fade show active"
          id="nav-0"
@@ -106,7 +105,7 @@
   </div>
 
   <!-- テンプレート: タブボタン -->
-  <template data-category-tab-manager-target="categoryTemplate">
+  <template data-tabs--category-tabs-target="categoryTemplate">
     <button class="nav-link position-relative"
             id="nav-CATEGORY_ID_PLACEHOLDER-tab"
             data-bs-toggle="tab"
@@ -120,7 +119,7 @@
       CATEGORY_NAME_PLACEHOLDER
       <span class="position-absolute top-50 end-0 translate-middle-y pe-2"
             style="cursor: pointer; font-weight: bold; color: #dc3545;"
-            data-action="click->category-tab-manager#removeTab"
+            data-action="click->tabs--category-tabs#removeTab"
             data-category-id="CATEGORY_ID_PLACEHOLDER">
         ×
       </span>
@@ -128,7 +127,7 @@
   </template>
 
   <!-- テンプレート: タブコンテンツ -->
-  <template data-category-tab-manager-target="categoryPaneTemplate">
+  <template data-tabs--category-tabs-target="categoryPaneTemplate">
     <div class="tab-pane fade"
          id="nav-CATEGORY_ID_PLACEHOLDER"
          role="tabpanel"
@@ -146,7 +145,7 @@
               <th style="width: 10%;" class="text-end">アクション</th>
             </tr>
           </thead>
-          <tbody data-nested-form-target="target" data-category-id="CATEGORY_ID_PLACEHOLDER">
+          <tbody data-form--nested-form-target="target" data-category-id="CATEGORY_ID_PLACEHOLDER">
             <!-- 商品行がここに追加される -->
           </tbody>
         </table>
@@ -156,7 +155,7 @@
                   class="btn btn-outline-success w-100"
                   data-category-id="CATEGORY_ID_PLACEHOLDER"
                   data-template-id="plan_product_fields_template_CATEGORY_ID_PLACEHOLDER"
-                  data-action="click->nested-form#add">
+                  data-action="click->form--nested-form#add">
             商品を追加
           </button>
         </div>
@@ -164,7 +163,7 @@
         <!-- カテゴリ合計 -->
         <div class="text-end mt-3 fw-bold">
           カテゴリ合計:
-          <span data-plan-product-target="categoryTotal" data-category-id="CATEGORY_ID_PLACEHOLDER">¥0</span>
+          <span data-resources--plan-product--totals-target="categoryTotal" data-category-id="CATEGORY_ID_PLACEHOLDER">¥0</span>
         </div>
       </div>
     </div>
@@ -172,7 +171,7 @@
 
   <!-- 商品行テンプレート（各カテゴリ用） -->
   <% @product_categories.each do |category| %>
-    <template id="plan_product_fields_template_<%= category.id %>" data-nested-form-target="template">
+    <template id="plan_product_fields_template_<%= category.id %>" data-form--nested-form-target="template">
       <%= f.fields_for :plan_products,
           @plan.plan_products.build(product: Product.new(category_id: category.id)),
           child_index: 'NEW_RECORD' do |product_f| %>
