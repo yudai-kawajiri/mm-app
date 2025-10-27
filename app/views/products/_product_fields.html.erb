@@ -1,3 +1,6 @@
+<%# 商品基本情報フィールド %>
+<%# form_with の中で呼び出される %>
+
 <%# 1. 製品名 %>
 <div class="mb-3">
   <%= f.label :name, class: "form-label h5" %>
@@ -37,66 +40,68 @@
     { class: "form-select form-select-lg" } %>
 </div>
 
-<%# 2. 下部の左右分割エリア (説明と画像)%>
+<%# 6. 説明と画像の2カラム %>
 <div class="row mt-3">
-
-    <%# 左カラム  説明 %>
-    <div class="col-md-6">
-        <div class="mb-3">
-            <%= f.label :description, class: "form-label h5" %>
-            <%= f.text_area :description, rows: 4, class: "form-control form-control-lg" %>
-        </div>
+  <%# 左カラム: 説明 %>
+  <div class="col-md-6">
+    <div class="mb-3">
+      <%= f.label :description, class: "form-label h5" %>
+      <%= f.text_area :description, rows: 4, class: "form-control form-control-lg" %>
     </div>
+  </div>
 
-    <%# 右カラム: 画像 %>
-    <div class="col-md-6">
-        <div class="mb-3">
-            <%= f.label :image, class: "form-label" %>
+  <%# 右カラム: 画像 %>
+  <div class="col-md-6">
+    <div class="mb-3">
+      <%= f.label :image, class: "form-label" %>
 
-            <%# 既存の画像表示エリアとプレビュー %>
-            <div class="text-center mb-1" style="overflow: hidden;">
-              <% if f.object.persisted? && f.object.image.attached? %>
-                <%# 保存済みで画像が存在する場合のみ表示 %>
-                <%= image_tag f.object.image, id: 'image-preview',
-                  style: "max-width: 100%; height: auto; display: block;",
-                  class: "img-thumbnail mb-2 mx-auto",
-                  data: { existing_image: 'true' } %>
-              <% else %>
-                <%# 新規作成時またはバリデーションエラー時は空のimgタグ（プレビュー用） %>
-                <%= image_tag '', id: 'image-preview',
-                  style: "max-width: 100%; height: auto; display: none;",
-                  class: "img-thumbnail mb-2 mx-auto",
-                  data: { existing_image: 'false' } %>
-              <% end %>
-            </div>
+      <%# 既存の画像表示エリアとプレビュー %>
+      <div class="text-center mb-1" style="overflow: hidden;">
+        <% if f.object.persisted? && f.object.image.attached? %>
+          <%# 保存済みで画像が存在する場合のみ表示 %>
+          <%= image_tag f.object.image, id: 'image-preview',
+            style: "max-width: 100%; height: auto; display: block;",
+            class: "img-thumbnail mb-2 mx-auto",
+            data: { existing_image: 'true' } %>
+        <% else %>
+          <%# 新規作成時またはバリデーションエラー時は空のimgタグ（プレビュー用） %>
+          <%= image_tag '', id: 'image-preview',
+            style: "max-width: 100%; height: auto; display: none;",
+            class: "img-thumbnail mb-2 mx-auto",
+            data: { existing_image: 'false' } %>
+        <% end %>
+      </div>
 
-            <%# ボタン表示 %>
-            <div class="text-center mb-2 mt-1">
-                <%# 1. 既存画像削除ボタン（保存済みレコードのみ） %>
-                <% if f.object.persisted? && f.object.image.attached? %>
-                    <div id="current-image-container-<%= f.object.id %>">
-                        <%= link_to t('helpers.link.delete_image'), "#", data: { product_id: f.object.id, url: purge_image_product_path(f.object) }, class: "btn btn-sm btn-danger", id: "delete-button-#{f.object.id}" %>
-                    </div>
-                <% end %>
+      <%# ボタン表示 %>
+      <div class="text-center mb-2 mt-1">
+        <%# 1. 既存画像削除ボタン（保存済みレコードのみ） %>
+        <% if f.object.persisted? && f.object.image.attached? %>
+          <div id="current-image-container-<%= f.object.id %>">
+            <%= link_to t('helpers.link.delete_image'), "#",
+              data: { product_id: f.object.id, url: purge_image_product_path(f.object) },
+              class: "btn btn-sm btn-danger",
+              id: "delete-button-#{f.object.id}" %>
+          </div>
+        <% end %>
 
-                <%# 2. 新規画像選択時のキャンセルボタン %>
-                <div id="new-image-action" style="display: none;">
-                    <button type="button" id="cancel-new-image-button" class="btn btn-sm btn-outline-danger">
-                        <%= t('helpers.link.cancel_new_image') %>
-                    </button>
-                </div>
-            </div>
-
-            <div class="mt-3">
-                <%= f.file_field :image, id: 'product-image-input', class: "form-control" %>
-                <small class="text-muted">
-                  <% if f.object.persisted? && f.object.image.attached? %>
-                    <%= t('products.image_help.change') %>
-                  <% else %>
-                    <%= t('products.image_help.select') %>
-                  <% end %>
-                </small>
-            </div>
+        <%# 2. 新規画像選択時のキャンセルボタン %>
+        <div id="new-image-action" style="display: none;">
+          <button type="button" id="cancel-new-image-button" class="btn btn-sm btn-outline-danger">
+            <%= t('helpers.link.cancel_new_image') %>
+          </button>
         </div>
+      </div>
+
+      <div class="mt-3">
+        <%= f.file_field :image, id: 'product-image-input', class: "form-control" %>
+        <small class="text-muted">
+          <% if f.object.persisted? && f.object.image.attached? %>
+            <%= t('products.image_help.change') %>
+          <% else %>
+            <%= t('products.image_help.select') %>
+          <% end %>
+        </small>
+      </div>
     </div>
+  </div>
 </div>
