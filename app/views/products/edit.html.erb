@@ -1,7 +1,7 @@
 <% content_for(:title, t('products.edit.title', name: @product.name)) %>
 <% title = t('.title', name: @product.name) %>
 
-<%= render 'shared/header_with_actions',
+<%= render 'shared/layouts/header_with_actions',
     title: title,
     resource: @product,
     is_form_page: true,

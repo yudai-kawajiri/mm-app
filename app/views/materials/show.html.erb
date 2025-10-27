@@ -3,7 +3,7 @@
 <%# ページタイトル %>
 <%= content_for :title, title %>
 
-<%= render 'shared/header_with_actions',
+<%= render 'shared/layouts/header_with_actions',
     title: title,
     resource: @material,
     is_show_page: true,
@@ -16,4 +16,4 @@
   <%= render 'material_details', material: @material %>
 <% end %>
 
-<%= render(partial: 'shared/resource_layout_wrapper', locals: { content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.material')), content_right_title: nil }) %>
+<%= render(partial: 'shared/layouts/resource_layout_wrapper', locals: { content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.material')), content_right_title: nil }) %>

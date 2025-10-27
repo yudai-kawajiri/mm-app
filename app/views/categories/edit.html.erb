@@ -1,7 +1,7 @@
 <% content_for(:title, t('categories.edit.title', name: @category.name)) %>
 <% title = t('.title', name: @category.name) %>
 
-<%= render 'shared/header_with_actions',
+<%= render 'shared/layouts/header_with_actions',
     title: title,
     resource: @category,
     is_form_page: true,
