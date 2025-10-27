@@ -1,3 +1,4 @@
+<%# 2カラムレイアウトラッパー %>
 <%# フォーム用のローカル変数 %>
 <% f = local_assigns[:f] %>
 <% basic_fields = local_assigns[:basic_fields] %>
@@ -12,50 +13,36 @@
 <% left_column_width = has_right_content ? 'col-md-6' : 'col-md-12' %>
 
 <%# 2. 全体ラッパー %>
-<div class="container-fluid px-4" style="margin-top: 30px;">
-  <div class="row d-flex align-items-stretch" style="min-height: calc(100vh - 200px);">
-
-    <%# 左カラムの枠  %>
-    <div class="<%= left_column_width %> mb-3 mb-md-0 d-flex">
-      <div class="card p-4 w-100 d-flex flex-column shadow-sm">
-
-        <%# 3. タイトル %>
-        <% if content_left_title.present? %>
-          <h3 class="mb-3"><%= content_left_title %></h3>
-        <% end %>
-
-        <div class="flex-grow-1">
-          <%# 4. コンテンツ %>
-          <% if basic_fields.present? %>
-            <%= render basic_fields, f: f %>
-          <% else %>
-            <%= yield :content_left %>
-          <% end %>
-        </div>
-      </div>
-    </div>
-
-    <%# 右カラムの枠 %>
-    <% if has_right_content %>
-      <div class="col-md-6 d-flex">
-        <div class="card p-4 w-100 d-flex flex-column shadow-sm">
-
-          <%# 3. タイトル %>
-          <% if content_right_title.present? %>
-            <h3 class="mb-3"><%= content_right_title %></h3>
-          <% end %>
-
-          <div class="flex-grow-1">
-            <%# 4. コンテンツ %>
-            <% if detail_fields.present? %>
-              <%= render detail_fields, f: f %>
-            <% else %>
-              <%= yield :content_right %>
-            <% end %>
-          </div>
-        </div>
-      </div>
+<div class="row">
+  <%# 左カラムの枠  %>
+  <div class="<%= left_column_width %> mb-3 mb-md-0">
+    <%# 3. タイトル %>
+    <% if content_left_title.present? %>
+      <h4 class="mb-3"><%= content_left_title %></h4>
     <% end %>
 
+    <%# 4. コンテンツ %>
+    <% if basic_fields.present? %>
+      <%= render basic_fields, f: f %>
+    <% else %>
+      <%= yield :content_left %>
+    <% end %>
   </div>
+
+  <%# 右カラムの枠 %>
+  <% if has_right_content %>
+    <div class="col-md-6">
+      <%# 3. タイトル %>
+      <% if content_right_title.present? %>
+        <h4 class="mb-3"><%= content_right_title %></h4>
+      <% end %>
+
+      <%# 4. コンテンツ %>
+      <% if detail_fields.present? %>
+        <%= render detail_fields, f: f %>
+      <% else %>
+        <%= yield :content_right %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

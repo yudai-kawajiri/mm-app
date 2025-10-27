@@ -1,0 +1,11 @@
+<%# 製造計画フォーム（新規・編集共通） %>
+<%= form_with model: plan, html: { id: 'plan_form' }, data: { controller: 'form-submit' } do |f| %>
+  <%# 既存の優れた2カラムフォームコンポーネントを使用 %>
+  <%= render 'shared/forms/resource_two_column_form', f: f, basic_fields: 'plans/plan_fields', detail_fields: 'plans/plan_products_fields', resource_name: 'plans', custom_right_title: t('forms.titles.plan_product') %>
+
+  <%# 送信ボタン %>
+  <div class="form-group text-center mt-4">
+    <%= f.submit class: 'btn btn-primary btn-lg px-5 me-2' %>
+    <%= render 'shared/actions/back_link', url: plans_path, custom_class: 'btn-lg px-5' %>
+  </div>
+<% end %>

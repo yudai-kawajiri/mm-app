@@ -1,6 +1,6 @@
-<%= render 'shared/forms/resource_form',
-    resource: @category,
-    title: t('categories.new.title'),
-    basic_fields: 'categories/category_fields',
-    resource_name: 'categories'
-%>
+<% content_for :title, t('categories.new.title') %>
+
+<%= render 'shared/resource_form',
+           resource: @category,
+           form_title: t('categories.new.title'),
+           submit_label: t('helpers.submit.create') %>

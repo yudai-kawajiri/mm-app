@@ -1,10 +1,13 @@
-<%= render 'shared/forms/resource_form',
-    resource: @product,
-    title: t('products.new.title'),
-    basic_fields: 'products/product_fields',
-    detail_fields: 'products/product_materials_fields',
-    resource_name: 'products',
-    custom_right_title: t('forms.titles.product_material'),
-    form_html: { multipart: true, id: 'product_form' },
-    form_data: { controller: 'form-submit' }
-%>
+<% content_for(:title, t('products.new.title')) %>
+
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h2 class="mb-0"><%= t('products.new.title') %></h2>
+    </div>
+
+    <div class="card-body">
+      <%= render 'form', product: @product %>
+    </div>
+  </div>
+</div>

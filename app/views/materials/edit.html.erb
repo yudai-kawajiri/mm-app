@@ -1,6 +1,6 @@
-<%= render 'shared/forms/resource_form',
-    resource: @material,
-    title: t('materials.edit.title', name: @material.name),
-    basic_fields: 'materials/material_fields',
-    resource_name: 'materials'
-%>
+<% content_for :title, t('materials.edit.title', name: @material.name) %>
+
+<%= render 'shared/resource_form',
+           resource: @material,
+           form_title: t('materials.edit.title', name: @material.name),
+           submit_label: t('common.update') %>

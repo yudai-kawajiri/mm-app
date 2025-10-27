@@ -1,16 +1,13 @@
-<% f = local_assigns[:f] %>
-<% basic_fields = local_assigns[:basic_fields] %>
-<% detail_fields = local_assigns[:detail_fields] %>
-<% resource_name = local_assigns[:resource_name] %>
 <% custom_right_title = local_assigns[:custom_right_title] %>
 
+<%# エラーメッセージ表示 %>
 <%= render 'shared/forms/error_messages', resource: f.object %>
 
+<%# レイアウトラッパーを呼び出し %>
 <%= render 'shared/layouts/resource_layout_wrapper',
   f: f,
   basic_fields: basic_fields,
   detail_fields: detail_fields,
-
   content_left_title: t('forms.titles.basic_info'),
-  content_right_title: detail_fields.present? ? (custom_right_title.presence || t("#{resource_name}.form.detail_info", default: '詳細情報')) : nil
+  content_right_title: detail_fields.present? ? (custom_right_title.presence || t("#{resource_name}.form.detail_info")) : nil
 %>
