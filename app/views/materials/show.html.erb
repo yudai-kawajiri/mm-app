@@ -1,19 +1,6 @@
-<% title = t('materials.show.title', name: @material.name) %>
-
-<%# ページタイトル %>
-<%= content_for :title, title %>
-
-<%= render 'shared/layouts/header_with_actions',
-    title: title,
+<%= render 'shared/details/resource_show',
     resource: @material,
-    is_show_page: true,
-    is_form_page: false,
-    is_index_page: false
-%>
-
-<%# 左カラム%>
-<%= content_for :content_left do %>
-  <%= render 'material_details', material: @material %>
-<% end %>
-
-<%= render(partial: 'shared/layouts/resource_layout_wrapper', locals: { content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.material')), content_right_title: nil }) %>
+    title: t('materials.show.title', name: @material.name),
+    content_left_partial: 'materials/material_details',
+    content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.material')),
+    partial_locals: { material: @material } %>

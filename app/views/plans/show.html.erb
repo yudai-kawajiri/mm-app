@@ -1,22 +1,7 @@
-<% plan_title = t('plans.show.title', name: @plan.name) %>
-<%= content_for(:title, plan_title) %>
-
-<%= render 'shared/layouts/header_with_actions',
-    title: plan_title,
+<%= render 'shared/details/resource_show',
     resource: @plan,
-    is_show_page: true,
-    is_form_page: false,
-    is_index_page: false
-%>
-
-<%# 左カラム %>
-<%= content_for :content_left do %>
-  <%= render 'plan_details', resource: @plan %>
-<% end %>
-
-<%# 右カラム %>
-<%= content_for :content_right do %>
-  <%= render 'plan_products_details', resource: @plan %>
-<% end %>
-
-<%= render(partial: 'shared/layouts/resource_layout_wrapper', locals: { content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.plan')), content_right_title: t('forms.titles.plan_product') }) %>
+    title: t('plans.show.title', name: @plan.name),
+    content_left_partial: 'plans/plan_details',
+    content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.plan')),
+    content_right_partial: 'plans/plan_products_details',
+    content_right_title: t('forms.titles.plan_product') %>
