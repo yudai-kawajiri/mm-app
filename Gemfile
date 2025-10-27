@@ -52,7 +52,7 @@ gem "propshaft"
 gem "puma", ">= 5.0"
 
 # Railsのバージョン指定
-gem "rails", "~> 8.0.3"
+gem "rails", "~> 8.1.0"
 
 # Active Storageの画像変換機能（variants）を使用する場合に必要
 gem "image_processing", "~> 1.2"
