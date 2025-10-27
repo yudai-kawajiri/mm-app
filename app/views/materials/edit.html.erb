@@ -1,25 +1,6 @@
-<% content_for(:title, t('materials.edit.title', name: @material.name)) %>
-<% title = t('.title', name: @material.name) %>
-
-<%= render 'shared/layouts/header_with_actions',
-    title: title,
+<%= render 'shared/forms/resource_form',
     resource: @material,
-    is_form_page: true,
-    is_index_page: false,
-    is_show_page: false
-%>
-
-<%= form_with model: @material, local: true do |f| %>
-
-  <%= render 'shared/forms/resource_two_column_form',
-    f: f,
+    title: t('materials.edit.title', name: @material.name),
     basic_fields: 'materials/material_fields',
-    detail_fields: nil,
     resource_name: 'materials'
-  %>
-
-  <div style="display:none;">
-    <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
-    <%= f.submit submit_text, id: "hidden-submit-#{dom_id(f.object)}" %>
-  </div>
-<% end %>
+%>

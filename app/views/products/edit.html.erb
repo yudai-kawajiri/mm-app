@@ -1,25 +1,10 @@
-<% content_for(:title, t('products.edit.title', name: @product.name)) %>
-<% title = t('.title', name: @product.name) %>
-
-<%= render 'shared/layouts/header_with_actions',
-    title: title,
+<%= render 'shared/forms/resource_form',
     resource: @product,
-    is_form_page: true,
-    is_index_page: false,
-    is_show_page: false
-%>
-
-<%= form_with model: @product, html: { multipart: true, id: 'product_form' }, data: { controller: 'form-submit' } do |f| %>
-
-  <%= render 'shared/forms/resource_two_column_form',
-    f: f,
+    title: t('products.edit.title', name: @product.name),
     basic_fields: 'products/product_fields',
     detail_fields: 'products/product_materials_fields',
     resource_name: 'products',
-    custom_right_title: t('forms.titles.product_material')
-  %>
-
-  <!-- Hidden submit button for header action -->
-  <%= f.submit t('helpers.submit.update'), id: 'product_submit_button', style: 'display: none;' %>
-
-<% end %>
+    custom_right_title: t('forms.titles.product_material'),
+    form_html: { multipart: true, id: 'product_form' },
+    form_data: { controller: 'form-submit' }
+%>

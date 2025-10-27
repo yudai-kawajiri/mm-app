@@ -1,25 +1,6 @@
-<% content_for(:title, t('categories.new.title')) %>
-<% title = t('.title') %>
-
-<%= render 'shared/layouts/header_with_actions',
-    title: title,
+<%= render 'shared/forms/resource_form',
     resource: @category,
-    is_form_page: true,
-    is_index_page: false,
-    is_show_page: false
-%>
-
-<%= form_with model: @category, local: true do |f| %>
-
-  <%= render 'shared/forms/resource_two_column_form',
-    f: f,
+    title: t('categories.new.title'),
     basic_fields: 'categories/category_fields',
-    detail_fields: nil,
     resource_name: 'categories'
-  %>
-
-  <div style="display:none;">
-    <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
-    <%= f.submit submit_text, id: "hidden-submit-#{dom_id(f.object)}" %>
-  </div>
-<% end %>
+%>
