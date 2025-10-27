@@ -11,7 +11,7 @@
     new_path: new_category_path
 %>
 
-<%# 3. リソースリスト (この部分は修正不要) %>
+<%# リソース一覧（検索、フィルター、テーブル） %>
 <%= render 'shared/components/resource_list',
     resources: @categories,
     resource_class: Category,
@@ -24,4 +24,5 @@
       }
     ]
 %>
+<%# ページネーション %>
 <%= paginate @categories, theme: 'bootstrap-5' %>

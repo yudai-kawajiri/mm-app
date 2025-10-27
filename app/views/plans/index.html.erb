@@ -2,6 +2,7 @@
 
 <% title = t('plans.index.title') %>
 
+<%# ヘッダー（タイトル、新規作成ボタン） %>
 <%= render 'shared/layouts/header_with_actions',
     title: title,
     resource: nil,
@@ -11,6 +12,7 @@
     new_path: new_plan_path
 %>
 
+<%# リソース一覧（検索、フィルター、テーブル） %>
 <%= render('shared/components/resource_list',
     resources: @plans,
     resource_class: Plan,
@@ -28,6 +30,5 @@
     ]
 ) %>
 
-<div class="d-flex justify-content-center mt-4">
-  <%= paginate @plans, theme: 'bootstrap-5' %>
-</div>
+<%# ページネーション %>
+<%= paginate @plans, theme: 'bootstrap-5' %>

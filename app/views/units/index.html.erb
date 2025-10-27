@@ -11,6 +11,7 @@
     new_path: new_unit_path
 %>
 
+<%# リソース一覧（検索、フィルター、テーブル） %>
 <%= render 'shared/components/resource_list',
     resources: @units,
     resource_class: Unit,
@@ -24,5 +25,5 @@
     ]
 %>
 
-<%# ページネーションはラッパーの外側で呼び出す %>
+<%# ページネーション %>
 <%= paginate @units, theme: 'bootstrap-5' %>

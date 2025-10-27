@@ -8,10 +8,10 @@ class ProductsController < AuthenticatedController
   before_action :set_material_categories, only: [:new, :create, :show, :edit, :update]
 
   def index
-    @products =  apply_pagination(
-      Product.all.search_and_filter(search_params)
+    @products = apply_pagination(
+      Product.includes(:category)
+        .search_and_filter(search_params)
     )
-    # 検索結果のフィードバック表示のため、共通メソッドで @search_term を設定
     set_search_term_for_view
   end
 
