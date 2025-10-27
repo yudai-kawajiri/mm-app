@@ -4,7 +4,7 @@
 <% resource_name = local_assigns[:resource_name] %>
 <% custom_right_title = local_assigns[:custom_right_title] %>
 
-<%= render 'shared/error_messages', resource: f.object %>
+<%= render 'shared/forms/error_messages', resource: f.object %>
 
 <%= render 'shared/layouts/resource_layout_wrapper',
   f: f,

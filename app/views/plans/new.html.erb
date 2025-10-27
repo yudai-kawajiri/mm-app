@@ -11,7 +11,7 @@
 
 <%= form_with model: @plan, html: { id: 'plan_form' }, data: { controller: 'form-submit' } do |f| %>
 
-  <%= render 'shared/resource_two_column_form',
+  <%= render 'shared/forms/resource_two_column_form',
     f: f,
     basic_fields: 'plans/plan_fields',
     detail_fields: 'plans/plan_products_fields',
