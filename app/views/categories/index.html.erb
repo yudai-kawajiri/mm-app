@@ -2,7 +2,7 @@
 <% title = t('categories.index.title') %>
 
 <%# 🚨 修正: ヘッダー呼び出しでコメントを分離 🚨 %>
-<%= render 'shared/header_with_actions',
+<%= render 'shared/layouts/header_with_actions',
     title: title,
     resource: nil,
     is_index_page: true,
@@ -12,7 +12,7 @@
 %>
 
 <%# 3. リソースリスト (この部分は修正不要) %>
-<%= render 'shared/resource_list',
+<%= render 'shared/components/resource_list',
     resources: @categories,
     resource_class: Category,
     show_action_link: false,

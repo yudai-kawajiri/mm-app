@@ -1,7 +1,7 @@
 <% product_title = t('products.show.title', name: @product.name) %>
 <%= content_for(:title, product_title) %>
 
-<%= render 'shared/header_with_actions',
+<%= render 'shared/layouts/header_with_actions',
     title: product_title,
     resource: @product,
     is_show_page: true,
@@ -19,4 +19,4 @@
   <%= render 'product_material_details', product: @product %>
 <% end %>
 
-<%= render(partial: 'shared/resource_layout_wrapper', locals: { resource: @product, content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.product')), content_right_title: t('forms.titles.product_material') }) %>
+<%= render(partial: 'shared/layouts/resource_layout_wrapper', locals: { resource: @product, content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.product')), content_right_title: t('forms.titles.product_material') }) %>

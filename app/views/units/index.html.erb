@@ -2,7 +2,7 @@
 
 <% title = t('units.index.title') %>
 
-<%= render 'shared/header_with_actions',
+<%= render 'shared/layouts/header_with_actions',
     title: title,
     resource: nil,
     is_index_page: true,
@@ -11,7 +11,7 @@
     new_path: new_unit_path
 %>
 
-<%= render 'shared/resource_list',
+<%= render 'shared/components/resource_list',
     resources: @units,
     resource_class: Unit,
     show_action_link: false,

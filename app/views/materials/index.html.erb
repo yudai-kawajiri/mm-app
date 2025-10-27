@@ -2,7 +2,7 @@
 
 <% title = t('materials.index.title') %>
 
-<%= render 'shared/header_with_actions',
+<%= render 'shared/layouts/header_with_actions',
     title: title,
     resource: nil,
     is_index_page: true,
@@ -11,7 +11,7 @@
     new_path: new_material_path
 %>
 
-<%= render 'shared/resource_list',
+<%= render 'shared/components/resource_list',
     resources: @materials,
     resource_class: Material,
     search_target: :category_id,

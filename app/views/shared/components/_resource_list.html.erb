@@ -7,7 +7,7 @@
 
 <%# 2.検索フォーム %>
 <% if search_target.present? %>
-  <%= render 'shared/search_form',
+  <%= render 'shared/forms/search_form',
       # resource_class (Product) からルーティングパス (products_path) を動的に生成
       form_path: send(resource_class.model_name.route_key + '_path'),
       search_target: search_target,

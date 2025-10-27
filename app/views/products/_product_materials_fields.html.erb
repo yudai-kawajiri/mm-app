@@ -72,7 +72,7 @@
          role="tabpanel"
          aria-labelledby="nav-0-tab"
          data-category-id="0">
-      <%= render 'shared/material_category_tab_content',
+      <%= render 'shared/components/tabs/material_category_tab_content',
           category_id: 0,
           category_name: 'すべて',
           product: @product,
@@ -87,7 +87,7 @@
            role="tabpanel"
            aria-labelledby="nav-<%= category.id %>-tab"
            data-category-id="<%= category.id %>">
-        <%= render 'shared/material_category_tab_content',
+        <%= render 'shared/components/tabs/material_category_tab_content',
             category_id: category.id,
             category_name: category.name,
             product: @product,
