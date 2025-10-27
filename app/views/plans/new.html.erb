@@ -1,25 +1,9 @@
-<% content_for(:title, t('plans.new.title')) %>
-<% title = t('.title') %>
-
-<%= render 'shared/layouts/header_with_actions',
-    title: title,
+<%= render 'shared/forms/resource_form',
     resource: @plan,
-    is_form_page: true,
-    is_index_page: false,
-    is_show_page: false
-%>
-
-<%= form_with model: @plan, html: { id: 'plan_form' }, data: { controller: 'form-submit' } do |f| %>
-
-  <%= render 'shared/forms/resource_two_column_form',
-    f: f,
+    title: t('plans.new.title'),
     basic_fields: 'plans/plan_fields',
     detail_fields: 'plans/plan_products_fields',
-    resource_name: 'plans'
-  %>
-
-  <!-- Hidden submit button -->
-  <% submit_text = f.object.persisted? ? t('helpers.submit.update') : t('helpers.submit.create') %>
-  <%= f.submit submit_text, id: 'plan_submit_button', style: 'display: none;' %>
-
-<% end %>
+    resource_name: 'plans',
+    form_html: { id: 'plan_form' },
+    form_data: { controller: 'form-submit' }
+%>
