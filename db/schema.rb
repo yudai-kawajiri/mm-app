@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_27_072205) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_28_073033) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -71,6 +71,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_27_072205) do
     t.index ["user_id"], name: "index_materials_on_user_id"
   end
 
+  create_table "monthly_budgets", force: :cascade do |t|
+    t.date "budget_month", null: false, comment: "予算対象月（月初日を保存）"
+    t.datetime "created_at", null: false
+    t.text "note", comment: "備考"
+    t.decimal "target_amount", precision: 12, scale: 2, null: false, comment: "目標金額"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "budget_month"], name: "index_monthly_budgets_on_user_id_and_budget_month", unique: true
+    t.index ["user_id"], name: "index_monthly_budgets_on_user_id"
+  end
+
   create_table "plan_products", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "plan_id", null: false
@@ -80,6 +91,19 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_27_072205) do
     t.index ["plan_id", "product_id"], name: "index_plan_products_on_plan_id_and_product_id", unique: true
     t.index ["plan_id"], name: "index_plan_products_on_plan_id"
     t.index ["product_id"], name: "index_plan_products_on_product_id"
+  end
+
+  create_table "plan_schedules", force: :cascade do |t|
+    t.decimal "actual_revenue", precision: 12, scale: 2, comment: "実績売上"
+    t.datetime "created_at", null: false
+    t.text "note", comment: "備考"
+    t.bigint "plan_id", null: false
+    t.date "scheduled_date", null: false, comment: "スケジュール実施日"
+    t.integer "status", default: 0, null: false, comment: "ステータス"
+    t.datetime "updated_at", null: false
+    t.index ["plan_id", "scheduled_date"], name: "index_plan_schedules_on_plan_id_and_scheduled_date", unique: true
+    t.index ["plan_id"], name: "index_plan_schedules_on_plan_id"
+    t.index ["scheduled_date"], name: "index_plan_schedules_on_scheduled_date"
   end
 
   create_table "plans", force: :cascade do |t|
@@ -115,7 +139,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_27_072205) do
     t.string "item_number", null: false
     t.string "name", null: false
     t.integer "price", null: false
-    t.integer "status", default: 0, null: false
+    t.integer "status"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["category_id"], name: "index_products_on_category_id"
@@ -155,8 +179,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_27_072205) do
   add_foreign_key "materials", "units", column: "unit_for_order_id"
   add_foreign_key "materials", "units", column: "unit_for_product_id"
   add_foreign_key "materials", "users"
+  add_foreign_key "monthly_budgets", "users"
   add_foreign_key "plan_products", "plans"
   add_foreign_key "plan_products", "products"
+  add_foreign_key "plan_schedules", "plans"
   add_foreign_key "plans", "categories"
   add_foreign_key "plans", "users"
   add_foreign_key "product_materials", "materials"
