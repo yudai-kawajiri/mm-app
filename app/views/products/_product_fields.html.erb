@@ -1,21 +1,12 @@
-<%# 商品基本情報フィールド %>
-<%# form_with の中で呼び出される %>
-
 <%# 1. 製品名 %>
-<div class="mb-3">
-  <%= f.label :name, class: "form-label h5" %>
-  <%= f.text_field :name, class: "form-control form-control-lg" %>
-</div>
+<%= form_group_lg(f, :name) %>
 
 <%# 2. 品目番号 %>
-<div class="mb-3">
-  <%= f.label :item_number, class: "form-label h5" %>
-  <%= f.text_field :item_number, class: "form-control form-control-lg" %>
-</div>
+<%= form_group_lg(f, :item_number) %>
 
 <%# 3. 売価 %>
-<div class="mb-3">
-  <%= f.label :price, class: "form-label h5" %>
+<div class="mb-4">
+  <%= form_label_lg(f, :price) %>
   <div class="input-group input-group-lg">
     <span class="input-group-text"><%= t('number.currency.format.unit') %></span>
     <%= f.number_field :price, class: "form-control", step: 1, min: 0 %>
@@ -23,31 +14,27 @@
 </div>
 
 <%# 4. カテゴリ %>
-<div class="mb-3">
-  <%= f.label :category_id, class: "form-label h5" %>
-  <%= f.collection_select :category_id, @product_categories,
-    :id,
-    :name,
-    { prompt: t('helpers.prompt.select') },
-    { class: "form-select form-select-lg" } %>
-</div>
+<%= form_group_lg(f, :category_id,
+                  field_type: :collection_select,
+                  collection: @product_categories,
+                  value_method: :id,
+                  text_method: :name) %>
 
 <%# 5. ステータス %>
-<div class="mb-3">
-  <%= f.label :status, class: "form-label h5" %>
-  <%= f.select :status, Product.statuses.keys.map { |status| [t("activerecord.enums.product.status.#{status}"), status] },
-    { prompt: t('helpers.prompt.select') },
-    { class: "form-select form-select-lg" } %>
-</div>
+<%= form_group_lg(f, :status,
+                  field_type: :select,
+                  choices: Product.statuses.keys.map { |status| [t("activerecord.enums.product.status.#{status}"), status] }) %>
 
 <%# 6. 説明と画像の2カラム %>
 <div class="row mt-3">
   <%# 左カラム: 説明 %>
   <div class="col-md-6">
-    <div class="mb-3">
-      <%= f.label :description, class: "form-label h5" %>
-      <%= f.text_area :description, rows: 4, class: "form-control form-control-lg" %>
-    </div>
+    <%# 🆕 Branch 8: 文字数カウンター追加 %>
+    <%= form_group_lg(f, :description,
+                      field_type: :text_area,
+                      character_counter: true,
+                      max_length: 1000,
+                      wrapper_class: 'mb-3') %>
   </div>
 
   <%# 右カラム: 画像 %>
