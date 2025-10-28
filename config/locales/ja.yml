@@ -72,6 +72,9 @@ ja:
       title: "%{name} - 商品詳細 "
     edit:
       title: "%{name} - 商品編集"
+    image_help:
+      select: "JPG、PNG、GIF形式の画像を選択してください"
+      change: "画像を変更する場合は新しいファイルを選択してください"
 
     product_material_fields:
       material_name_prompt: "原材料名"
@@ -80,7 +83,6 @@ ja:
       delete_button: "削除"
       no_materials_set: "原材料はまだ設定されていません"
 
-    # 新規追加: カテゴリタブ関連
     category_selector:
       prompt: "カテゴリを選択"
       add_button: "カテゴリタブを追加"
@@ -105,7 +107,6 @@ ja:
     total_price_label: "総合計"
     plan_product_subtotal: "小計"
 
-    # 新規追加: カテゴリタブ関連
     category_selector:
       prompt: "カテゴリを選択"
       add_button: "カテゴリタブを追加"
@@ -173,6 +174,9 @@ ja:
       required: "を入力してください"
       not_a_number: "は数値で入力してください"
       greater_than: "%{count} より大きい値を入力してください"
+      too_long:
+        one: "は%{count}文字以内で入力してください"
+        other: "は%{count}文字以内で入力してください"
       too_short:
         one: "%{count} 文字以上で入力してください"
         other: "%{count} 文字以上で入力してください"
@@ -245,6 +249,21 @@ ja:
           attributes:
             email:
               not_found: "メールアドレスが見つかりません"
+        product:
+          attributes:
+            item_number:
+              too_long: "は4文字以内で入力してください"
+            name:
+              blank: "を入力してください"
+              taken: "は既に使用されています"
+            category_id:
+              blank: "を選択してください"
+            price:
+              blank: "を入力してください"
+              not_a_number: "は数値で入力してください"
+              greater_than: "は0より大きい値を入力してください"
+            status:
+              blank: "を選択してください"
 
     models:
       user: "アカウント"
