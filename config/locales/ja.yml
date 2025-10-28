@@ -30,6 +30,7 @@ ja:
       material_management: "原材料管理"
       product_management: "商品管理"
       plan_management: "商品計画管理"
+      numerical_management: "数値管理"
       account_settings: "アカウント設定"
     welcome_message: "ようこそ！ %{name} さんのダッシュボード"
 

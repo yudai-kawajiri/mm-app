@@ -1,5 +1,4 @@
 class DashboardsController < AuthenticatedController
 
-  def index
-  end
+  def index; end
 end

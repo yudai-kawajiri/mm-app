@@ -19,6 +19,16 @@ Rails.application.routes.draw do
     get '/users', to: redirect('/')
   end
 
+  # 数値管理
+  resources :numerical_managements, only: [:index] do
+    collection do
+      patch :update_budget     # 予算更新
+    end
+    member do
+      patch :update_actual     # 実績入力
+    end
+  end
+
   # APIルーティングの追加
   # /api/v1/ のネームスペースでAPIを分離
   namespace :api do
