@@ -145,6 +145,9 @@ ja:
       edit: "編集"
       update: "更新"
 
+    character_counter:
+      hint: "最大%{max}文字"
+
     confirm:
       destroy: "本当にこの%{resource}を削除してもよろしいですか？"
 
