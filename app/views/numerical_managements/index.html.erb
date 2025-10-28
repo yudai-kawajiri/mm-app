@@ -1,7 +1,16 @@
 <div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-graph-up me-2"></i>数値管理</h2>
-    <%= link_to "ダッシュボードに戻る", authenticated_root_path, class: "btn btn-outline-secondary" %>
+
+    <!-- カレンダービューへの切り替えボタン -->
+    <div>
+      <%= link_to calendar_numerical_managements_path(year: @year, month: @month), class: "btn btn-outline-primary me-2" do %>
+        <i class="bi bi-calendar3"></i> カレンダー表示
+      <% end %>
+      <%= link_to authenticated_root_path, class: "btn btn-outline-secondary" do %>
+        <i class="bi bi-house"></i> ダッシュボードに戻る
+      <% end %>
+    </div>
   </div>
 
   <%# 年月選択 %>
@@ -37,10 +46,10 @@
     <div class="card-body">
       <%= form_with model: @monthly_budget,
           url: update_budget_numerical_managements_path,
-          method: :patch,
+          method: :post,
+          local: true,
           class: "row g-3" do |f| %>
-        <%= f.hidden_field :year, value: @year %>
-        <%= f.hidden_field :month, value: @month %>
+        <%= f.hidden_field :budget_month, value: @current_date %>
 
         <div class="col-md-6">
           <label class="form-label">目標金額</label>
@@ -54,115 +63,109 @@
           </div>
         </div>
 
-        <div class="col-md-6">
-          <label class="form-label">備考</label>
-          <%= f.text_field :note, class: "form-control", placeholder: "備考（任意）" %>
-        </div>
-
-        <div class="col-12">
-          <%= f.submit "予算を保存", class: "btn btn-primary" %>
+        <div class="col-md-6 d-flex align-items-end">
+          <%= f.submit @monthly_budget.persisted? ? "予算を更新" : "予算を設定", class: "btn btn-primary" %>
         </div>
       <% end %>
     </div>
   </div>
 
-  <%# 統計情報 %>
-  <% if @monthly_budget.persisted? %>
-    <div class="row mb-4">
-      <div class="col-md-3">
-        <div class="card text-center">
-          <div class="card-body">
-            <h6 class="text-muted mb-2">目標金額</h6>
-            <h3 class="mb-0">¥<%= number_with_delimiter(@monthly_budget.target_amount.to_i) %></h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card text-center">
-          <div class="card-body">
-            <h6 class="text-muted mb-2">計画高</h6>
-            <h3 class="mb-0">¥<%= number_with_delimiter(@stats[:total_planned].to_i) %></h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card text-center">
-          <div class="card-body">
-            <h6 class="text-muted mb-2">累計実績</h6>
-            <h3 class="mb-0">¥<%= number_with_delimiter(@stats[:total_actual].to_i) %></h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card text-center <%= @stats[:achievement_rate] >= 100 ? 'bg-success text-white' : '' %>">
-          <div class="card-body">
-            <h6 class="<%= @stats[:achievement_rate] >= 100 ? 'text-white' : 'text-muted' %> mb-2">予測達成率</h6>
-            <h3 class="mb-0"><%= @stats[:achievement_rate] %>%</h3>
-          </div>
+  <%# 統計カード %>
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card text-bg-primary">
+        <div class="card-body">
+          <h6 class="card-title">目標予算</h6>
+          <h3 class="mb-0">
+            <%= @budget ? number_to_currency(@budget.target_amount, unit: "¥", precision: 0) : "未設定" %>
+          </h3>
         </div>
       </div>
     </div>
-  <% end %>
+    <div class="col-md-3">
+      <div class="card text-bg-info">
+        <div class="card-body">
+          <h6 class="card-title">計画売上</h6>
+          <h3 class="mb-0">
+            <%= number_to_currency(@plan_schedules.sum { |ps| ps.expected_revenue }, unit: "¥", precision: 0) %>
+          </h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-bg-success">
+        <div class="card-body">
+          <h6 class="card-title">実績売上</h6>
+          <h3 class="mb-0">
+            <%= number_to_currency(@plan_schedules.sum { |ps| ps.actual_revenue || 0 }, unit: "¥", precision: 0) %>
+          </h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card <%= @budget && @budget.achievement_rate >= 100 ? 'text-bg-success' : 'text-bg-warning' %>">
+        <div class="card-body">
+          <h6 class="card-title">達成率</h6>
+          <h3 class="mb-0">
+            <%= @budget ? "#{@budget.achievement_rate.round(1)}%" : "N/A" %>
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <%# 日別一覧 %>
+  <%# 日別テーブル %>
   <div class="card">
-    <div class="card-header bg-light">
-      <h5 class="mb-0">日別計画・実績</h5>
+    <div class="card-header">
+      <h5 class="mb-0">日別明細</h5>
     </div>
-    <div class="card-body">
+    <div class="card-body p-0">
       <div class="table-responsive">
-        <table class="table table-bordered table-hover">
+        <table class="table table-hover mb-0">
           <thead class="table-light">
             <tr>
               <th>日付</th>
               <th>計画名</th>
+              <th>カテゴリ</th>
               <th class="text-end">予定売上</th>
               <th class="text-end">実績売上</th>
               <th class="text-end">差異</th>
+              <th>ステータス</th>
               <th>操作</th>
             </tr>
           </thead>
           <tbody>
             <% @daily_summary.each do |day| %>
-              <% if day[:has_schedules] %>
+              <% if day[:schedules].any? %>
                 <% day[:schedules].each_with_index do |schedule, index| %>
-                  <tr class="<%= 'table-success' if schedule.has_actual? %>">
+                  <tr>
                     <% if index == 0 %>
-                      <td rowspan="<%= day[:schedules].count %>" class="align-middle">
-                        <%= day[:date].strftime('%m/%d') %>
-                        <small class="d-block text-muted"><%= %w[日 月 火 水 木 金 土][day[:date].wday] %></small>
+                      <td rowspan="<%= day[:schedules].count %>">
+                        <%= l(day[:date], format: :short) %>
+                        <br>
+                        <small class="text-muted"><%= %w[日 月 火 水 木 金 土][day[:date].wday] %></small>
                       </td>
                     <% end %>
                     <td><%= schedule.plan.name %></td>
-                    <td class="text-end">¥<%= number_with_delimiter(schedule.expected_revenue.to_i) %></td>
-                    <td class="text-end">
-                      <% if schedule.has_actual? %>
-                        ¥<%= number_with_delimiter(schedule.actual_revenue.to_i) %>
-                      <% else %>
-                        <span class="text-muted">-</span>
-                      <% end %>
+                    <td><%= schedule.plan.category&.name %></td>
+                    <td class="text-end"><%= number_to_currency(schedule.expected_revenue, unit: "¥", precision: 0) %></td>
+                    <td class="text-end"><%= number_to_currency(schedule.actual_revenue || 0, unit: "¥", precision: 0) %></td>
+                    <td class="text-end <%= schedule.variance >= 0 ? 'text-success' : 'text-danger' %>">
+                      <%= number_to_currency(schedule.variance, unit: "¥", precision: 0) %>
                     </td>
-                    <td class="text-end">
-                      <% if schedule.has_actual? %>
-                        <% variance = schedule.revenue_variance %>
-                        <span class="<%= variance >= 0 ? 'text-success' : 'text-danger' %>">
-                          <%= variance >= 0 ? '+' : '' %>¥<%= number_with_delimiter(variance.to_i) %>
-                        </span>
+                    <td>
+                      <% if schedule.actual_revenue.present? %>
+                        <span class="badge bg-success">完了</span>
                       <% else %>
-                        <span class="text-muted">-</span>
+                        <span class="badge bg-secondary">未実施</span>
                       <% end %>
                     </td>
                     <td>
-                      <% if day[:is_past] || day[:is_today] %>
-                        <%= link_to "実績入力", "#",
-                            class: "btn btn-sm btn-outline-primary",
-                            data: {
-                              bs_toggle: "modal",
-                              bs_target: "#actualModal#{schedule.id}"
-                            } %>
-                      <% else %>
-                        <span class="text-muted">-</span>
-                      <% end %>
+                      <button type="button" class="btn btn-sm btn-outline-primary"
+                              data-bs-toggle="modal"
+                              data-bs-target="#actualModal<%= schedule.id %>">
+                        実績入力
+                      </button>
                     </td>
                   </tr>
                 <% end %>
@@ -171,60 +174,47 @@
           </tbody>
         </table>
       </div>
-
-      <% if @daily_summary.none? { |day| day[:has_schedules] } %>
-        <div class="alert alert-info text-center">
-          この月にはまだ計画がスケジュールされていません。<br>
-          <%= link_to "製造計画を作成", plans_path, class: "btn btn-primary mt-2" %>
-        </div>
-      <% end %>
     </div>
   </div>
 </div>
 
-<%# 実績入力モーダル %>
-<% @plan_schedules.each do |schedule| %>
-  <div class="modal fade" id="actualModal<%= schedule.id %>" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <%= form_with model: schedule,
-            url: update_actual_numerical_management_path(schedule),
-            method: :patch do |f| %>
-          <div class="modal-header">
-            <h5 class="modal-title">実績入力：<%= schedule.plan.name %></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label">日付</label>
-              <p class="form-control-plaintext"><%= schedule.scheduled_date.strftime('%Y年%m月%d日') %></p>
+<%# 実績入力モーダル（各スケジュールごとに生成） %>
+<% @daily_summary.each do |day| %>
+  <% day[:schedules].each do |schedule| %>
+    <div class="modal fade" id="actualModal<%= schedule.id %>" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <%= form_with model: schedule,
+              url: update_actual_numerical_management_path(schedule),
+              method: :patch,
+              local: true do |f| %>
+            <div class="modal-header">
+              <h5 class="modal-title">実績入力</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="mb-3">
-              <label class="form-label">予定売上</label>
-              <p class="form-control-plaintext">¥<%= number_with_delimiter(schedule.expected_revenue.to_i) %></p>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">実績売上 <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <span class="input-group-text">¥</span>
-                <%= f.number_field :actual_revenue,
-                    class: "form-control",
-                    min: 0,
-                    value: schedule.actual_revenue,
-                    required: true %>
+            <div class="modal-body">
+              <div class="mb-3">
+                <strong>計画名:</strong> <%= schedule.plan.name %>
+              </div>
+              <div class="mb-3">
+                <strong>予定売上:</strong> <%= number_to_currency(schedule.expected_revenue, unit: "¥", precision: 0) %>
+              </div>
+              <div class="mb-3">
+                <%= f.label :actual_revenue, "実績売上", class: "form-label" %>
+                <%= f.number_field :actual_revenue, class: "form-control", min: 0, step: 1000 %>
+              </div>
+              <div class="mb-3">
+                <%= f.label :note, "メモ", class: "form-label" %>
+                <%= f.text_area :note, class: "form-control", rows: 3 %>
               </div>
             </div>
-            <div class="mb-3">
-              <label class="form-label">備考</label>
-              <%= f.text_area :note, class: "form-control", rows: 3 %>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+              <%= f.submit "保存", class: "btn btn-primary" %>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-            <%= f.submit "保存", class: "btn btn-primary" %>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
       </div>
     </div>
-  </div>
+  <% end %>
 <% end %>
