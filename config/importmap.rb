@@ -25,10 +25,13 @@ pin "controllers/resources/plan-product/sync_controller", to: "controllers/resou
 # Controllers - Product Material（手動 pin）
 pin "controllers/resources/product-material/material_controller", to: "controllers/resources/product-material/material_controller.js"
 
-# 🆕 Branch 8: UI Enhancement Controllers（手動 pin）
+# Branch 8: UI Enhancement Controllers（手動 pin）
 pin "controllers/flash_controller", to: "controllers/flash_controller.js"
 pin "controllers/character_counter_controller", to: "controllers/character_counter_controller.js"
 pin "controllers/form_validation_controller", to: "controllers/form_validation_controller.js"
+
+# 予算管理カレンダー Controller
+pin "controllers/calendar_controller", to: "controllers/calendar_controller.js"
 
 # Utils（手動 pin）
 pin "utils/logger", to: "utils/logger.js", preload: true
