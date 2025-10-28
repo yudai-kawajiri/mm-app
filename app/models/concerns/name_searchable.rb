@@ -2,8 +2,6 @@ module NameSearchable
   extend ActiveSupport::Concern
 
   included do
-    # デフォルトで名前の昇順に並べる
-    default_scope { order(name: :asc) }
 
     scope :search_by_name, ->(query) do
       if query.present?

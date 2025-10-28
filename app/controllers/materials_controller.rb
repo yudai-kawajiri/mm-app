@@ -2,13 +2,12 @@ class MaterialsController <  AuthenticatedController
 
   # define_search_params を使って許可するキーを定義
   define_search_params :q, :category_id
-  before_action :set_material_categories, only: [:index, :new, :edit, :create, :update]
+  before_action -> { load_categories_for('material', as: :material) }, only: [:index, :new, :edit, :create, :update]
   find_resource :material, only: [:show, :edit, :update, :destroy]
 
   def index
     @materials = apply_pagination(
-    Material.includes(:category, :unit_for_product, :unit_for_order)
-      .search_and_filter(search_params)
+    Material.for_index.search_and_filter(search_params)
     )
     set_search_term_for_view
   end
@@ -50,9 +49,4 @@ class MaterialsController <  AuthenticatedController
   )
   end
 
-  # カテゴリリストを準備
-  def set_material_categories
-    @search_categories = Category.where(category_type: 'material').order(:name)
-    @material_categories = @search_categories
-  end
 end

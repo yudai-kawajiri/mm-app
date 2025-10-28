@@ -23,6 +23,9 @@ class Unit < ApplicationRecord
               scope: :category
             }
 
+  # 名前順
+  scope :for_index, -> { order(name: :asc) }
+
   # 基本単位と発注単位(basic を production に修正)
   enum :category, { production: 0, ordering: 1 }
 

@@ -28,4 +28,7 @@ class Material < ApplicationRecord
   validates :unit_weight_for_order,
             presence: true,
             numericality: { greater_than: 0 }
+
+  # インデックス表示用のスコープ (N+1問題対策と並び替え)
+  scope :for_index, -> { includes(:category, :unit_for_product, :unit_for_order).order(created_at: :desc) }
 end
