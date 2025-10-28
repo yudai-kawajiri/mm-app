@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_28_073033) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_28_230944) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -51,6 +51,20 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_28_073033) do
     t.bigint "user_id", null: false
     t.index ["name", "category_type"], name: "index_categories_on_name_and_category_type", unique: true
     t.index ["user_id"], name: "index_categories_on_user_id"
+  end
+
+  create_table "daily_targets", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "monthly_budget_id", null: false
+    t.text "note"
+    t.decimal "target_amount", precision: 12, scale: 2, null: false
+    t.date "target_date", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["monthly_budget_id", "target_date"], name: "index_daily_targets_on_budget_and_date", unique: true
+    t.index ["monthly_budget_id"], name: "index_daily_targets_on_monthly_budget_id"
+    t.index ["target_date"], name: "index_daily_targets_on_target_date"
+    t.index ["user_id"], name: "index_daily_targets_on_user_id"
   end
 
   create_table "materials", force: :cascade do |t|
@@ -175,6 +189,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_28_073033) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "categories", "users"
+  add_foreign_key "daily_targets", "monthly_budgets"
+  add_foreign_key "daily_targets", "users"
   add_foreign_key "materials", "categories"
   add_foreign_key "materials", "units", column: "unit_for_order_id"
   add_foreign_key "materials", "units", column: "unit_for_product_id"
