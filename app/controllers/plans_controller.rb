@@ -3,10 +3,10 @@ class PlansController < AuthenticatedController
   # define_search_params を使って許可するキーを定義
   define_search_params :q, :category_id
 
-  before_action :set_plan_categories, only: [:index, :new, :edit, :create, :update]
-  before_action :set_plan, only: [:show, :edit, :update, :destroy]
-  # ネストフォーム用データ準備
-  before_action :set_product_categories, only: [:new, :edit, :create, :update]
+  find_resource :plan, only: [:show, :edit, :update, :destroy]
+  before_action -> { load_categories_for('plan', as: :plan) }, only: [:index, :new, :edit, :create, :update]
+  before_action -> { load_categories_for('product', as: :product) }, only: [:new, :edit, :create, :update]
+  before_action :load_plan_products, only: [:show]
 
   def index
     @plans = apply_pagination(
@@ -63,19 +63,9 @@ class PlansController < AuthenticatedController
     )
   end
 
-  # 未 メソッド内でn+1対応
-  def set_plan
-    @plan = Plan.includes(plan_products: :product).find(params[:id])
-    # 計画に含まれる商品を取得
-    @plan_products = @plan.plan_products
+  # N+1対策: plan_productsを事前ロード
+  def load_plan_products
+    @plan_products = @plan.plan_products.includes(:product)
   end
 
-  def set_plan_categories
-    @search_categories = current_user.categories.where(category_type: 'plan').order(:name)
-    @plan_categories = @search_categories
-  end
-
-  def set_product_categories
-    @product_categories = current_user.categories.where(category_type: 'product').order(:name)
-  end
 end

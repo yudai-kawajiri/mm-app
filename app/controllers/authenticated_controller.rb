@@ -1,30 +1,34 @@
 class AuthenticatedController < ApplicationController
-  # 認証必須のチェックを移植して
   before_action :authenticate_user!
 
-  # カテゴリー取得共通ロジックを組み込む
   include CategoryFetchable
-
-  # 検索フィルタリングロジックを組み込む
   include SearchAndFilterConcern
-
-  # ページネーションを使用
   include PaginationConcern
-
-  # リソースの取得
   include ResourceFinderConcern
-
-  # CRUDアクションの共通化
   include CrudResponderConcern
-
-  # 検索パラメータの共通化
   include SearchableController
 
-  # 検索クエリをビューに渡すための共通処理
   def set_search_term_for_view
-    # search_params メソッドが定義されているか、かつ :q パラメータが存在するか確認
     if defined?(search_params) && search_params[:q].present?
       @search_term = search_params[:q]
     end
+  end
+
+  def load_categories_for(category_type, as: nil, scope: :current_user)
+    categories = if scope == :current_user
+                   current_user.categories.where(category_type: category_type)
+                 else
+                   Category.where(category_type: category_type)
+                 end
+    categories = categories.order(:name)
+
+    prefix = as || category_type
+    variable_name = "@#{prefix}_categories"
+
+    instance_variable_set(variable_name, categories)
+
+    @search_categories = categories if as == :search || as.nil?
+
+    categories
   end
 end

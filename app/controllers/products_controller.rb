@@ -4,8 +4,8 @@ class ProductsController < AuthenticatedController
   define_search_params :q, :category_id
 
   find_resource :product, only: [:show, :edit, :update, :destroy, :purge_image]
-  before_action :set_product_categories, only: [:index, :new, :create, :edit, :update]
-  before_action :set_material_categories, only: [:new, :create, :show, :edit, :update]
+  before_action -> { load_categories_for('product', as: :product) }, only: [:index, :new, :create, :edit, :update]
+  before_action -> { load_categories_for('material', as: :material) }, only: [:new, :create, :show, :edit, :update]
 
   def index
     @products = apply_pagination(
@@ -75,15 +75,5 @@ class ProductsController < AuthenticatedController
     ]
   )
   end
-
-  # 検索フォームと商品カテゴリ用
-  def set_product_categories
-    @search_categories = current_user.categories.where(category_type: 'product').order(:name)
-    @product_categories = @search_categories
-  end
-
-  # ネストフォーム用
-  def set_material_categories
-    @material_categories = current_user.categories.where(category_type: 'material').order(:name)
-  end
+  
 end
