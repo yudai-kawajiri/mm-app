@@ -1,6 +1,8 @@
 class MonthlyBudget < ApplicationRecord
   # 関連付け
   belongs_to :user
+  # 日別目標との関連
+  has_many :daily_targets, dependent: :destroy
 
   # バリデーション
   # 対象月
@@ -13,6 +15,14 @@ class MonthlyBudget < ApplicationRecord
   scope :for_month, ->(year, month) { where(budget_month: Date.new(year, month, 1)) }
   # 予算対象月の降順で取得
   scope :recent, -> { order(budget_month: :desc) }
+  # 指定された年の予算を取得
+  scope :for_year, ->(year) {
+    start_date = Date.new(year, 1, 1)
+    end_date = Date.new(year, 12, 31)
+    where(budget_month: start_date..end_date)
+  }
+  # 月順でソート
+  scope :ordered_by_month, -> { order(budget_month: :desc) }
 
   # コールバック
   # バリデーション前に budget_month を月の初日（1日）に正規化する
@@ -78,7 +88,24 @@ class MonthlyBudget < ApplicationRecord
     total_forecast_revenue - target_amount
   end
 
-  # プライベートメソッド
+  # ★【追加】日別目標管理メソッド
+
+  # 日別目標を自動生成（均等配分）
+  def generate_daily_targets!
+    return if daily_targets.exists?
+
+    days_in_month = budget_month.end_of_month.day
+    daily_amount = (target_amount / days_in_month).round(2)
+
+    days_in_month.times do |i|
+      date = budget_month + i.days
+      daily_targets.create!(
+        user: user,
+        target_date: date,
+        target_amount: daily_amount
+      )
+    end
+  end
 
   private
 
