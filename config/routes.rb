@@ -28,6 +28,17 @@ Rails.application.routes.draw do
       patch :update_actual     # 実績入力
     end
   end
+  # 数値管理
+  resources :numerical_managements, only: [:index] do
+    collection do
+      get :calendar  # カレンダービュー
+      post :update_budget
+      post :assign_plan_to_date  # 計画を日付に配置
+    end
+    member do
+      patch :update_actual
+    end
+  end
 
   # APIルーティングの追加
   # /api/v1/ のネームスペースでAPIを分離
