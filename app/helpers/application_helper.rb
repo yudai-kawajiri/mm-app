@@ -13,7 +13,8 @@ module ApplicationHelper
       { name: t('dashboard.menu.unit_management'), path: units_path },
       { name: t('dashboard.menu.material_management'), path: materials_path },
       { name: t('dashboard.menu.product_management'), path: products_path },
-      { name: t('dashboard.menu.plan_management'), path: plans_path }
+      { name: t('dashboard.menu.plan_management'), path: plans_path },
+      { name: t('dashboard.menu.numerical_management'), path: numerical_managements_path }
     ]
   end
 
