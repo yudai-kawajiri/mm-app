@@ -11,12 +11,8 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="col-12">
-    <div class="mb-3">
-      <%= f.label :description, Unit.human_attribute_name(:description), class: 'form-label' %>
-      <%= f.text_area :description, rows: 3, class: 'form-control' %>
-      <small class="form-text text-muted"></small>
-    </div>
-  </div>
-</div>
+<%# 🆕 Branch 8: form_group_lg に統一し、文字数カウンターを追加 %>
+<%= form_group_lg(f, :description,
+                  field_type: :text_area,
+                  character_counter: true,
+                  max_length: 1000) %>
