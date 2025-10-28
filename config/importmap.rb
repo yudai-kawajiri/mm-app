@@ -6,7 +6,7 @@ pin "@hotwired/stimulus", to: "stimulus.min.js", preload: true
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js", preload: true
 
 # Controllers - コアファイル（手動 pin）
-pin "controllers/index", to: "controllers/index.js", preload: true # ← 新しく追加/修正 (ピン名をファイルパスに合わせる)
+pin "controllers/index", to: "controllers/index.js", preload: true
 pin "controllers/application", to: "controllers/application.js", preload: true
 
 # Controllers - Form（手動 pin）
@@ -24,6 +24,11 @@ pin "controllers/resources/plan-product/sync_controller", to: "controllers/resou
 
 # Controllers - Product Material（手動 pin）
 pin "controllers/resources/product-material/material_controller", to: "controllers/resources/product-material/material_controller.js"
+
+# 🆕 Branch 8: UI Enhancement Controllers（手動 pin）
+pin "controllers/flash_controller", to: "controllers/flash_controller.js"
+pin "controllers/character_counter_controller", to: "controllers/character_counter_controller.js"
+pin "controllers/form_validation_controller", to: "controllers/form_validation_controller.js"
 
 # Utils（手動 pin）
 pin "utils/logger", to: "utils/logger.js", preload: true

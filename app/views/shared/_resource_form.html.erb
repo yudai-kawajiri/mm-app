@@ -21,13 +21,26 @@
       <%# 既存のエラーメッセージコンポーネントを再利用 %>
       <%= render 'shared/forms/error_messages', resource: resource %>
 
-      <%= form_with(model: resource, local: true, class: "needs-validation") do |f| %>
+      <%# 🆕 Branch 8: form-validation コントローラーと二重送信防止を追加 %>
+      <%= form_with(
+            model: resource,
+            local: true,
+            class: "needs-validation",
+            data: {
+              controller: "form-validation form--submit",
+              action: "submit->form-validation#validate submit->form--submit#disableSubmit",
+              form__submit_target: "form"
+            }
+          ) do |f| %>
         <%# 各リソースのフィールドパーシャルを呼び出し %>
         <%= render "#{resource.model_name.plural}/#{resource.model_name.singular}_fields", f: f %>
 
         <%# アクションボタン %>
         <div class="form-group text-center mt-4">
-          <%= f.submit submit_label, class: "btn btn-primary btn-lg px-5 me-2" %>
+          <%# 🆕 Branch 8: 二重送信防止のターゲットを追加 %>
+          <%= f.submit submit_label,
+                       class: "btn btn-primary btn-lg px-5 me-2",
+                       data: { form__submit_target: "submit" } %>
           <%= render 'shared/actions/back_link',
                      url: polymorphic_path(resource.class),
                      custom_class: 'btn-lg px-5' %>

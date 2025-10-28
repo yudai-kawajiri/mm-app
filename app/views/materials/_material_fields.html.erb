@@ -52,11 +52,13 @@
 </div>
 
 <div class="row">
-  <%# 説明（Description） - 1行全体を使用 %>
+  <%# 説明（Description） - 1行全体を使用 + 🆕 文字数カウンター %>
   <div class="col-md-12">
     <%= form_group_lg(f, :description,
         field_type: :text_area,
-        rows: 5
+        rows: 5,
+        character_counter: true,
+        max_length: 1000
     ) %>
   </div>
 </div>

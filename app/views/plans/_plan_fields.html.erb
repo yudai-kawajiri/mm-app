@@ -1,31 +1,54 @@
-<%# 未 ブラウザでの警告は共通化予定 %>
-<div class="mb-3">
-  <%= f.label :name, class: 'form-label' %>
-  <%= f.text_field :name, class: 'form-control', required: true %>
-</div>
+<%# 基本情報  %>
+<div class="card mb-3">
+  <div class="card-header bg-light">
+    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>基本情報</h5>
+  </div>
+  <div class="card-body">
+    <div class="row g-3">
+      <%# 左カラム %>
+      <div class="col-md-6">
+        <%# 1. 製造計画名 %>
+        <%= form_group_lg(f, :name) %>
 
-<div class="mb-3">
-  <%= f.label :category_id, class: 'form-label' %>
-  <%# Categoryを category_type: 'plan' に限定 %>
-  <%= f.collection_select :category_id, @search_categories, :id, :name,
-    ({ include_blank: t('helpers.prompt.select') }),
-    ({
-      class: 'form-select',
-      required: true
-    }) %>
-</div>
+        <%# 2. 説明 %>
+        <div class="mb-3">
+          <%= form_label_lg(f, :description) %>
+          <%= f.text_area :description,
+              class: "form-control",
+              rows: 4,
+              maxlength: 1000,
+              data: {
+                controller: "character-counter",
+                character_counter_max_value: 1000,
+                character_counter_warning_value: 20,
+                character_counter_danger_value: 10
+              } %>
+          <div class="form-text d-flex justify-content-between align-items-center mt-1">
+            <span><%= t('helpers.character_counter.hint', max: 1000) %></span>
+            <span data-character-counter-target="counter" class="badge bg-secondary"></span>
+          </div>
+          <% if f.object.errors[:description].any? %>
+            <div class="invalid-feedback d-block">
+              <%= f.object.errors[:description].first %>
+            </div>
+          <% end %>
+        </div>
+      </div>
 
-<div class="mb-3">
-  <%= f.label :status, class: 'form-label' %>
+      <%# 右カラム %>
+      <div class="col-md-6">
+        <%# 3. カテゴリ %>
+        <%= form_group_lg(f, :category_id,
+                          field_type: :collection_select,
+                          collection: @categories,
+                          value_method: :id,
+                          text_method: :name) %>
 
-  <%= f.select :status,
-            Plan.statuses.keys.map { |k| [t("activerecord.enums.plan.status.#{k}"), k] },
-            { include_blank: t('helpers.prompt.select') },
-            { class: 'form-select',
-              required: true, } %>
-</div>
-
-<div class="mb-3">
-  <%= f.label :description, class: 'form-label' %>
-  <%= f.text_area :description, class: 'form-control', rows: 4 %>
+        <%# 4. ステータス %>
+        <%= form_group_lg(f, :status,
+                          field_type: :select,
+                          choices: Plan.statuses.keys.map { |status| [t("activerecord.enums.plan.status.#{status}"), status] }) %>
+      </div>
+    </div>
+  </div>
 </div>
