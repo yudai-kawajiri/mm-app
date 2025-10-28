@@ -4,13 +4,18 @@ class User < ApplicationRecord
   has_many :materials, dependent: :destroy
   has_many :products, dependent: :destroy
   has_many :plans, dependent: :destroy
-  
+  has_many :monthly_budgets, dependent: :destroy
+
   # Deviseの認証モジュールを設定
   devise :database_authenticatable, :registerable,
         :recoverable, :rememberable, :validatable
 
   # 名前（name）は登録時のみ必要
   validates :name, presence: true
-
   validates :name, length: { maximum: 50 }
+
+  # 指定月の予算を取得
+  def budget_for_month(year, month)
+    monthly_budgets.for_month(year, month).first
+  end
 end
