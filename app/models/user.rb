@@ -15,7 +15,8 @@ class User < ApplicationRecord
   validates :name, length: { maximum: 50 }
 
   # 指定月の予算を取得
-  def budget_for_month(year, month)
-    monthly_budgets.for_month(year, month).first
+  def budget_for_month(date)
+    date = date.beginning_of_month if date.is_a?(Date) || date.is_a?(Time)
+    monthly_budgets.where(budget_month: date).first
   end
 end
