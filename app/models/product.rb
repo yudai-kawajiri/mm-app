@@ -7,7 +7,7 @@ class Product < ApplicationRecord
   enum :status, { draft: 0, selling: 1, discontinued: 2 }
 
   # アソシエーション
-  belongs_to :category, optional: false
+  belongs_to :category
 
   has_many :product_materials, dependent: :destroy
   has_many :materials, through: :product_materials
@@ -31,6 +31,9 @@ class Product < ApplicationRecord
   validates :name, uniqueness: { scope: :category_id }
   validates :price, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :item_number, presence: true, length: { maximum: 4 }, uniqueness: { scope: :category_id }
+  # 🆕 Branch 8: category_id と status のバリデーションを追加
+  validates :category_id, presence: true
+  validates :status, presence: true
 
   private
 

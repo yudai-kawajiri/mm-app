@@ -15,6 +15,9 @@ class Plan < ApplicationRecord
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_id }
+  # 🆕 Branch 8: category_id と status のバリデーションを追加
+  validates :category_id, presence: true
+  validates :status, presence: true
 
   private
 
