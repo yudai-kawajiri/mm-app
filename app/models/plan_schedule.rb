@@ -47,10 +47,13 @@ class PlanSchedule < ApplicationRecord
   end
 
   # 売上差異（実績 - 予定）を計算
+  # 修正: nilを返さず、実績がない場合は 0 - expected_revenue を返す
   def revenue_variance
-    return nil unless has_actual?
-    actual_revenue - expected_revenue
+    (actual_revenue || 0) - expected_revenue
   end
+
+  # variance エイリアス（ビューで使用）
+  alias_method :variance, :revenue_variance
 
   # 達成率（実績 / 予定 * 100）を計算
   def achievement_rate

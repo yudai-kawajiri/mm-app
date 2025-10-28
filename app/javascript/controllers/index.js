@@ -2,10 +2,6 @@
 
 import { application } from "controllers/application"
 
-// 💡 修正: ファイルパスの先頭に 'controllers/' を追加し、
-//       importmapにマッピングされた名前でインポートする
-//       （これにより、index.jsがimportmapを介してファイルをロードします）
-
 // Form Controllers
 import FormNestedFormController from "controllers/form/nested_form_controller"
 import FormNestedFormItemController from "controllers/form/nested_form_item_controller"
@@ -22,10 +18,13 @@ import ResourcesPlanProductSyncController from "controllers/resources/plan-produ
 // Resources - Product Material Controllers
 import ResourcesProductMaterialMaterialController from "controllers/resources/product-material/material_controller"
 
-// 🆕 Branch 8: UI Enhancement Controllers
+// UI Enhancement Controllers
 import FlashController from "controllers/flash_controller"
 import CharacterCounterController from "controllers/character_counter_controller"
 import FormValidationController from "controllers/form_validation_controller"
+
+// 予算管理カレンダーController
+import CalendarController from "controllers/calendar_controller"
 
 // 手動登録
 application.register("form--nested-form", FormNestedFormController)
@@ -36,8 +35,9 @@ application.register("resources--plan-product--row", ResourcesPlanProductRowCont
 application.register("resources--plan-product--totals", ResourcesPlanProductTotalsController)
 application.register("resources--plan-product--sync", ResourcesPlanProductSyncController)
 application.register("resources--product-material--material", ResourcesProductMaterialMaterialController)
-
-// 🆕 Branch 8: 新しいコントローラーを登録
 application.register("flash", FlashController)
 application.register("character-counter", CharacterCounterController)
 application.register("form-validation", FormValidationController)
+
+// 予算管理カレンダーController登録
+application.register("calendar", CalendarController)
