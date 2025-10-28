@@ -3,7 +3,7 @@
     resource: リソースインスタンス
     title: ページタイトル
     content_left_partial: 左カラムのパーシャル名（例: 'materials/material_details'）
-    content_left_title: 左カラムのタイトル
+    content_left_title: 左カラムのタイトル（nilの場合は枠なしで表示）
 
   オプションパラメータ:
     content_right_partial: 右カラムのパーシャル名
@@ -17,28 +17,61 @@
 
 <%= content_for(:title, title) %>
 
-<%= render 'shared/layouts/header_with_actions',
-    title: title,
-    resource: resource,
-    is_show_page: true,
-    is_form_page: false,
-    is_index_page: false
-%>
+<%# new/edit と同じ青いカードデザイン %>
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <%# 青いヘッダー %>
+    <div class="card-header bg-primary text-white">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0"><%= title %></h2>
 
-<%# 左カラム %>
-<%= content_for :content_left do %>
-  <%= render content_left_partial, partial_locals.merge(resource: resource) %>
-<% end %>
+        <%# 右側にアクションボタン（横並び） %>
+        <div class="d-flex gap-2">
+          <%= link_to '戻る', polymorphic_path(resource.class), class: 'btn btn-light btn-sm' %>
+          <%= link_to '編集', [:edit, resource], class: 'btn btn-light btn-sm' %>
+          <%= button_to '削除', resource, method: :delete,
+              data: { turbo_confirm: "本当に削除しますか？" },
+              class: 'btn btn-danger btn-sm' %>
+        </div>
+      </div>
+    </div>
 
-<%# 右カラム（存在する場合） %>
-<% if content_right_partial.present? %>
-  <%= content_for :content_right do %>
-    <%= render content_right_partial, partial_locals.merge(resource: resource) %>
-  <% end %>
-<% end %>
+    <%# カードボディ（new/editと同じ2カラムレイアウト） %>
+    <div class="card-body">
+      <div class="row">
+        <%# 左カラム: 基本情報 %>
+        <% left_column_width = content_right_partial.present? ? 'col-md-6' : 'col-md-12' %>
+        <div class="<%= left_column_width %> mb-3 mb-md-0">
+          <% if content_left_title.present? %>
+            <%# タイトルがある場合: new/editと同じカードスタイル %>
+            <div class="card mb-3">
+              <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i><%= content_left_title %></h5>
+              </div>
+              <div class="card-body">
+                <%= render content_left_partial, partial_locals.merge(resource: resource) %>
+              </div>
+            </div>
+          <% else %>
+            <%# タイトルがない場合: 枠なしで直接表示 %>
+            <%= render content_left_partial, partial_locals.merge(resource: resource) %>
+          <% end %>
+        </div>
 
-<%= render partial: 'shared/layouts/resource_layout_wrapper',
-           locals: {
-             content_left_title: content_left_title,
-             content_right_title: content_right_title
-           } %>
+        <%# 右カラム: 詳細情報（存在する場合） %>
+        <% if content_right_partial.present? %>
+          <div class="col-md-6">
+            <div class="card mb-3">
+              <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i><%= content_right_title %></h5>
+              </div>
+              <div class="card-body">
+                <%= render content_right_partial, partial_locals.merge(resource: resource) %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-<%# 基本情報  %>
+<%# 基本情報 %>
 <div class="card mb-3">
   <div class="card-header bg-light">
     <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>基本情報</h5>
@@ -10,7 +10,26 @@
         <%# 1. 製造計画名 %>
         <%= form_group_lg(f, :name) %>
 
-        <%# 2. 説明 %>
+        <%# 2. カテゴリ (左下に移動) %>
+        <%= form_group_lg(f, :category_id,
+                          field_type: :collection_select,
+                          collection: @search_categories,
+                          value_method: :id,
+                          text_method: :name) %>
+      </div>
+
+      <%# 右カラム %>
+      <div class="col-md-6">
+        <%# 3. ステータス %>
+        <%= form_group_lg(f, :status,
+                          field_type: :select,
+                          choices: Plan.statuses.keys.map { |status| [t("activerecord.enums.plan.status.#{status}"), status] }) %>
+      </div>
+    </div>
+
+    <%# 説明欄（下に配置） %>
+    <div class="row mt-3">
+      <div class="col-md-12">
         <div class="mb-3">
           <%= form_label_lg(f, :description) %>
           <%= f.text_area :description,
@@ -33,21 +52,6 @@
             </div>
           <% end %>
         </div>
-      </div>
-
-      <%# 右カラム %>
-      <div class="col-md-6">
-        <%# 3. カテゴリ %>
-        <%= form_group_lg(f, :category_id,
-                          field_type: :collection_select,
-                          collection: @categories,
-                          value_method: :id,
-                          text_method: :name) %>
-
-        <%# 4. ステータス %>
-        <%= form_group_lg(f, :status,
-                          field_type: :select,
-                          choices: Plan.statuses.keys.map { |status| [t("activerecord.enums.plan.status.#{status}"), status] }) %>
       </div>
     </div>
   </div>

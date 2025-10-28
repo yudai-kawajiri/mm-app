@@ -8,12 +8,9 @@
       <%# 左カラム %>
       <div class="col-md-6">
         <%# 1. 商品名 %>
-        <%= form_group_lg(f, :name) %>
+        <%= form_group_lg(f, :name, wrapper_class: 'mb-3') %>
 
-        <%# 2. 品番 %>
-        <%= form_group_lg(f, :item_number) %>
-
-        <%# 3. 売価 %>
+        <%# 2. 売価 %>
         <div class="mb-3">
           <%= form_label_lg(f, :price) %>
           <div class="input-group input-group-lg">
@@ -22,7 +19,83 @@
           </div>
         </div>
 
-        <%# 4. 説明 %>
+        <%# 3. ステータス %>
+        <%= form_group_lg(f, :status,
+                          field_type: :select,
+                          wrapper_class: 'mb-3',
+                          choices: Product.statuses.keys.map { |status| [t("activerecord.enums.product.status.#{status}"), status] }) %>
+      </div>
+
+      <%# 右カラム %>
+      <div class="col-md-6">
+        <%# 4. カテゴリ %>
+        <%= form_group_lg(f, :category_id,
+                          field_type: :collection_select,
+                          wrapper_class: 'mb-3',
+                          collection: @product_categories,
+                          value_method: :id,
+                          text_method: :name) %>
+
+        <%# 5. 品番 %>
+        <%= form_group_lg(f, :item_number, wrapper_class: 'mb-3') %>
+
+        <%# 6. 画像（120px） %>
+        <div class="mb-3">
+          <%= form_label_lg(f, :image) %>
+          <%= f.file_field :image,
+              id: 'product-image-input',
+              class: "form-control",
+              accept: "image/*" %>
+          <small class="text-muted d-block mt-1">
+            <% if f.object.persisted? && f.object.image.attached? %>
+              <%= t('products.image_help.change', default: '画像を変更する場合は選択してください') %>
+            <% else %>
+              <%= t('products.image_help.select', default: '画像ファイルを選択してください') %>
+            <% end %>
+          </small>
+          <% if f.object.errors[:image].any? %>
+            <div class="invalid-feedback d-block">
+              <%= f.object.errors[:image].first %>
+            </div>
+          <% end %>
+
+          <%# 画像プレビュー（高さ120px） %>
+          <div class="text-center mt-2 p-2 border rounded bg-light"
+               style="height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <%= image_tag(
+                  f.object.persisted? && f.object.image.attached? ? f.object.image : '',
+                  id: 'image-preview',
+                  style: f.object.persisted? && f.object.image.attached? ?
+                    "max-width: 100%; max-height: 110px; width: auto; height: auto; object-fit: contain;" :
+                    "max-width: 100%; max-height: 110px; width: auto; height: auto; object-fit: contain; display: none;"
+                ) %>
+            <label for="product-image-input" id="preview-label" style="<%= f.object.persisted? && f.object.image.attached? ? 'display: none;' : '' %> cursor: pointer;">
+              <span class="text-muted" style="font-size: 0.9em;">画像未選択</span>
+            </label>
+          </div>
+
+          <%# 削除ボタンとキャンセルボタン %>
+          <div class="text-center mt-2">
+            <% if f.object.persisted? && f.object.image.attached? %>
+              <div id="current-image-container">
+                <%= link_to t('helpers.link.delete_image', default: '画像を削除'), "#",
+                  data: { product_id: f.object.id, url: purge_image_product_path(f.object) },
+                  class: "btn btn-sm btn-danger",
+                  id: "delete-button" %>
+              </div>
+            <% end %>
+
+            <button type="button" id="cancel-new-image-button" class="btn btn-sm btn-outline-danger" style="display: none;">
+              <%= t('helpers.link.cancel_new_image', default: '選択を解除') %>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# 説明欄（全幅・下に配置） %>
+    <div class="row mt-3">
+      <div class="col-md-12">
         <div class="mb-3">
           <%= form_label_lg(f, :description) %>
           <%= f.text_area :description,
@@ -36,7 +109,7 @@
                 character_counter_danger_value: 10
               } %>
           <div class="form-text d-flex justify-content-between align-items-center mt-1">
-            <span><%= t('helpers.character_counter.hint', max: 1000) %></span>
+            <span><%= t('helpers.character_counter.hint', max: 1000, default: '最大1000文字') %></span>
             <span data-character-counter-target="counter" class="badge bg-secondary"></span>
           </div>
           <% if f.object.errors[:description].any? %>
@@ -44,79 +117,6 @@
               <%= f.object.errors[:description].first %>
             </div>
           <% end %>
-        </div>
-      </div>
-
-      <%# 右カラム %>
-      <div class="col-md-6">
-        <%# 5. カテゴリ %>
-        <%= form_group_lg(f, :category_id,
-                          field_type: :collection_select,
-                          collection: @product_categories,
-                          value_method: :id,
-                          text_method: :name) %>
-
-        <%# 6. ステータス %>
-        <%= form_group_lg(f, :status,
-                          field_type: :select,
-                          choices: Product.statuses.keys.map { |status| [t("activerecord.enums.product.status.#{status}"), status] }) %>
-
-        <%# 7. 画像 %>
-        <div class="mb-3">
-          <%= form_label_lg(f, :image) %>
-          <%= f.file_field :image,
-              id: 'product-image-input',
-              class: "form-control",
-              accept: "image/*",
-              data: {
-                controller: "image-preview",
-                action: "change->image-preview#preview"
-              } %>
-          <small class="text-muted d-block mt-1">
-            <% if f.object.persisted? && f.object.image.attached? %>
-              <%= t('products.image_help.change') %>
-            <% else %>
-              <%= t('products.image_help.select') %>
-            <% end %>
-          </small>
-          <% if f.object.errors[:image].any? %>
-            <div class="invalid-feedback d-block">
-              <%= f.object.errors[:image].first %>
-            </div>
-          <% end %>
-
-          <%# 画像プレビュー %>
-          <div class="text-center mt-2" data-image-preview-target="container">
-            <% if f.object.persisted? && f.object.image.attached? %>
-              <div class="mb-2">
-                <%= image_tag f.object.image,
-                    id: 'image-preview',
-                    style: "max-width: 100%; max-height: 200px; height: auto;",
-                    class: "img-thumbnail",
-                    data: { existing_image: 'true' } %>
-              </div>
-
-              <%# 既存画像の削除ボタン %>
-              <div id="current-image-container-<%= f.object.id %>">
-                <%= link_to t('helpers.link.delete_image'), "#",
-                  data: { product_id: f.object.id, url: purge_image_product_path(f.object) },
-                  class: "btn btn-sm btn-danger",
-                  id: "delete-button-#{f.object.id}" %>
-              </div>
-            <% else %>
-              <%= image_tag '',
-                  id: 'image-preview',
-                  style: "max-width: 100%; max-height: 200px; height: auto; display: none;",
-                  class: "img-thumbnail",
-                  data: { existing_image: 'false' } %>
-            <% end %>
-
-            <div id="new-image-action" style="display: none;">
-              <button type="button" id="cancel-new-image-button" class="btn btn-sm btn-outline-danger">
-                <%= t('helpers.link.cancel_new_image') %>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
