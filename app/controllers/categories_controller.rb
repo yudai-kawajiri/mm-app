@@ -8,7 +8,7 @@ class CategoriesController < AuthenticatedController
   def index
     # モジュールにソート責任を移譲
     @categories = apply_pagination(
-      Category.all.search_and_filter(search_params)
+      Category.for_index.search_and_filter(search_params)
     )
 
     # 検索結果のフィードバック表示のため、共通メソッドで @search_term を設定

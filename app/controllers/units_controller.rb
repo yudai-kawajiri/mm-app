@@ -8,10 +8,8 @@ class UnitsController < AuthenticatedController
   def index
     # ページネーションと検索を適用
     @units = apply_pagination(
-      Unit.all
-        .search_and_filter(search_params)
+      Unit.for_index.search_and_filter(search_params)
     )
-    # 検索結果のフィードバック表示のため、共通メソッドで @search_term を設定
     set_search_term_for_view
   end
 

@@ -31,9 +31,11 @@ class Product < ApplicationRecord
   validates :name, uniqueness: { scope: :category_id }
   validates :price, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :item_number, presence: true, length: { maximum: 4 }, uniqueness: { scope: :category_id }
-  # 🆕 Branch 8: category_id と status のバリデーションを追加
   validates :category_id, presence: true
   validates :status, presence: true
+
+  # インデックス表示用のスコープ (N+1問題対策と並び替え)
+  scope :for_index, -> { includes(:category).order(created_at: :desc) }
 
   private
 

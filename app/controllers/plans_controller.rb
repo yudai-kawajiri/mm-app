@@ -10,11 +10,8 @@ class PlansController < AuthenticatedController
 
   def index
     @plans = apply_pagination(
-      Plan.all.includes(:category, :user)
-        .order(created_at: :desc)
-        .search_and_filter(search_params)
+    Plan.for_index.search_and_filter(search_params)
     )
-    # 検索結果のフィードバック表示のため、共通メソッドで @search_term を設定
     set_search_term_for_view
   end
 

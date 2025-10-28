@@ -16,4 +16,7 @@ class Category < ApplicationRecord
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_type }
   validates :category_type, presence: true
+
+  # 名前順
+  scope :for_index, -> { order(name: :asc) }
 end

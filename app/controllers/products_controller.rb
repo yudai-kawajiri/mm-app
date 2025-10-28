@@ -9,8 +9,7 @@ class ProductsController < AuthenticatedController
 
   def index
     @products = apply_pagination(
-      Product.includes(:category)
-        .search_and_filter(search_params)
+      Product.for_index.search_and_filter(search_params)
     )
     set_search_term_for_view
   end
@@ -75,5 +74,5 @@ class ProductsController < AuthenticatedController
     ]
   )
   end
-  
+
 end

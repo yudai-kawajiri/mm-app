@@ -7,8 +7,7 @@ class MaterialsController <  AuthenticatedController
 
   def index
     @materials = apply_pagination(
-    Material.includes(:category, :unit_for_product, :unit_for_order)
-      .search_and_filter(search_params)
+    Material.for_index.search_and_filter(search_params)
     )
     set_search_term_for_view
   end
