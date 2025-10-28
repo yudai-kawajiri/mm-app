@@ -1,6 +1,10 @@
 ja:
   application_name: "寿司管理システム"
 
+  date:
+    formats:
+      short: "%m/%d"
+
   time:
     formats:
       default: "%Y/%m/%d %H:%M:%S"
