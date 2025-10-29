@@ -54,18 +54,29 @@ class CalendarDataService
   end
 
   def build_day_data(date)
-    target = daily_target(date)
-    actual = daily_actual(date)
-    plan = daily_plan(date)
+  daily_target_record = @budget.daily_targets.find_by(target_date: date)
+  target = daily_target_record&.target_amount || 0
+
+  # 実績のあるPlanScheduleを取得（最初の1件のみ）
+  plan_schedule_with_actual = @budget.plan_schedules
+                                      .where(scheduled_date: date)
+                                      .where.not(actual_revenue: nil)
+                                      .first
+
+  actual = daily_actual(date)
+  plan = daily_plan(date)
 
   {
     date: date,
+    daily_target_id: daily_target_record&.id,
+    plan_schedule_id: plan_schedule_with_actual&.id,
     target: target,
     actual: actual,
     plan: plan,
     is_today: date == Date.today
   }
   end
+
 
   def daily_target(date)
     daily_target_record = @budget.daily_targets.find_by(target_date: date)
