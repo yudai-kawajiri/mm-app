@@ -7,7 +7,7 @@
       <!-- 月選択フォーム -->
       <form method="get" class="d-flex align-items-center gap-2">
         <label class="text-muted mb-0">対象月:</label>
-        <input type="month" name="target_month" value="2025-10" class="form-control form-control-sm" style="width: 150px;">
+        <input type="month" name="target_month" value="<%= @target_date.strftime('%Y-%m') %>" class="form-control form-control-sm" style="width: 150px;">
         <button type="submit" class="btn btn-primary btn-sm">表示</button>
       </form>
 
