@@ -7,14 +7,16 @@
       <!-- 月選択フォーム -->
       <form method="get" class="d-flex align-items-center gap-2">
         <label class="text-muted mb-0">対象月:</label>
-        <input type="month" name="target_month" value="<%= @target_date.strftime('%Y-%m') %>" class="form-control form-control-sm" style="width: 150px;">
+        <input type="month" name="month" value="<%= @selected_date.strftime('%Y-%m') %>" class="form-control form-control-sm" style="width: 150px;">
         <button type="submit" class="btn btn-primary btn-sm">表示</button>
       </form>
 
       <!-- 予算設定ボタン -->
-      <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#budgetModal">
-        予算設定
-      </button>
+      <div class="mb-3">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#budgetSettingModal">
+          <i class="bi bi-gear"></i> 月間予算を設定
+        </button>
+      </div>
     </div>
   </div>
 
@@ -199,47 +201,43 @@
   </div>
 </div>
 
-<!-- 予算設定モーダル（ページ最下部に追加） -->
-<div class="modal fade" id="budgetModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
+<!-- 予算設定モーダル -->
+<div class="modal fade" id="budgetSettingModal" tabindex="-1" aria-labelledby="budgetSettingModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">予算設定</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <h5 class="modal-title" id="budgetSettingModalLabel">月間予算設定</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <form>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label">対象月</label>
-              <input type="month" class="form-control" value="2025-10">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">月間予算（円）</label>
-              <input type="number" class="form-control" placeholder="5000000" step="1000">
-            </div>
+
+      <%= form_with model: @budget || MonthlyBudget.new, url: monthly_budgets_path, method: :post, local: true do |f| %>
+        <div class="modal-body">
+          <div class="mb-3">
+            <%= f.label :budget_month, "対象月", class: "form-label" %>
+            <%= f.month_field :budget_month, class: "form-control", value: @selected_date.strftime('%Y-%m'), required: true %>
           </div>
 
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" id="autoGenerate" checked>
-            <label class="form-check-label" for="autoGenerate">
-              日別目標を自動生成する（均等配分）
-            </label>
+          <div class="mb-3">
+            <%= f.label :monthly_budget, "月間予算（円）", class: "form-label" %>
+            <%= f.number_field :monthly_budget, class: "form-control", min: 0, step: 1, required: true, placeholder: "例: 1600000" %>
           </div>
 
-          <hr>
+          <div class="mb-3 form-check">
+            <%= f.check_box :generate_daily_targets, class: "form-check-input", checked: true, id: "generateDailyTargets" %>
+            <%= f.label :generate_daily_targets, "日別目標を自動生成する", class: "form-check-label", for: "generateDailyTargets" %>
+            <small class="form-text text-muted d-block">月間予算を日数で均等配分します</small>
+          </div>
 
-          <h6 class="mb-3">製造計画カレンダー</h6>
-          <p class="text-muted small">※ 製造計画の登録・編集は後で実装します</p>
-          <button type="button" class="btn btn-outline-secondary btn-sm" disabled>
-            製造計画カレンダーを開く（未実装）
-          </button>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-        <button type="button" class="btn btn-primary">予算を設定</button>
-      </div>
+          <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i> 日別目標を個別に調整する場合は、製造計画カレンダーから編集できます（今後実装予定）
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+          <%= f.submit "保存", class: "btn btn-primary" %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

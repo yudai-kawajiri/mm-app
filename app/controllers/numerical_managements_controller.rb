@@ -1,27 +1,35 @@
-# app/controllers/numerical_managements_controller.rb
 class NumericalManagementsController < ApplicationController
-  before_action :authenticate_user!
-
   def index
-    # パラメータから年月を取得、なければ当月
-    if params[:target_month].present?
-      @target_date = Date.parse(params[:target_month] + "-01")
-    else
-      @target_date = Date.today.beginning_of_month
+    # 月選択パラメータの取得（monthまたはtarget_monthに対応）
+    month_param = params[:month] || params[:target_month] || Date.today.strftime('%Y-%m')
+    @selected_date = Date.parse("#{month_param}-01")
+
+    # MonthlyBudgetを取得
+    @budget = MonthlyBudget.find_by(budget_month: @selected_date.beginning_of_month)
+
+    unless @budget
+      # 予算が未設定の場合の処理
+      @forecast_data = {
+        target_amount: 0,
+        actual_amount: 0,
+        planned_amount: 0,
+        forecast_amount: 0,
+        remaining_days: 0,
+        achievement_rate: 0,
+        required_additional: 0,
+        daily_required: 0,
+        forecast_diff: 0
+      }
+      @daily_data = []
+      return
     end
 
-    # 月次予算を取得（なければ初期化）
-    @monthly_budget = MonthlyBudget.find_or_initialize_by(
-      user: current_user,
-      budget_month: @target_date
-    )
-
     # 予測データを取得
-    forecast_service = NumericalForecastService.new(current_user, @target_date.year, @target_date.month)
+    forecast_service = NumericalForecastService.new(current_user, @selected_date.year, @selected_date.month)
     @forecast_data = forecast_service.calculate
 
     # 日別データを取得
-    daily_service = DailyDataService.new(current_user, @target_date.year, @target_date.month)
-    @daily_data = daily_service.call
+    daily_service = DailyDataService.new(current_user, @selected_date.year, @selected_date.month)
+    @daily_data = daily_service.call  # ← calculate から call に変更
   end
 end
