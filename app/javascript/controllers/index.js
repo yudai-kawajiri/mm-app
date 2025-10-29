@@ -1,5 +1,3 @@
-// app/javascript/controllers/index.js
-
 import { application } from "controllers/application"
 
 // Form Controllers
@@ -26,6 +24,9 @@ import FormValidationController from "controllers/form_validation_controller"
 // 予算管理カレンダーController
 import CalendarController from "controllers/calendar_controller"
 
+// 計画割り当てController ← 追加
+import PlanAssignmentController from "controllers/plan_assignment_controller"
+
 // 手動登録
 application.register("form--nested-form", FormNestedFormController)
 application.register("form--nested-form-item", FormNestedFormItemController)
@@ -41,3 +42,6 @@ application.register("form-validation", FormValidationController)
 
 // 予算管理カレンダーController登録
 application.register("calendar", CalendarController)
+
+// 計画割り当てController登録 ← 追加
+application.register("plan-assignment", PlanAssignmentController)
