@@ -17,7 +17,11 @@ class NumericalManagementsController < ApplicationController
     )
 
     # 予測データを取得
-    service = NumericalForecastService.new(current_user, @target_date.year, @target_date.month)
-    @forecast_data = service.calculate
+    forecast_service = NumericalForecastService.new(current_user, @target_date.year, @target_date.month)
+    @forecast_data = forecast_service.calculate
+
+    # 日別データを取得
+    daily_service = DailyDataService.new(current_user, @target_date.year, @target_date.month)
+    @daily_data = daily_service.call
   end
 end

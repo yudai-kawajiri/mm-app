@@ -159,73 +159,42 @@
 </div>
 
   <!-- 日別明細テーブル（列幅調整） -->
-  <div class="card">
-    <div class="card-header">
-      <h5 class="mb-0">日別明細</h5>
-    </div>
-    <div class="card-body p-0">
-      <div style="max-height: 400px; overflow-y: auto;">
-        <table class="table table-sm table-hover mb-0">
-          <thead class="table-light sticky-top">
+<div class="card">
+  <div class="card-header">
+    <h5 class="mb-0">日別明細</h5>
+  </div>
+  <div class="card-body p-0">
+    <div style="max-height: 400px; overflow-y: auto;">
+      <table class="table table-sm table-hover mb-0">
+        <thead class="table-light sticky-top">
+          <tr>
+            <th style="width: 80px;">日付</th>
+            <th class="text-end">目標</th>
+            <th class="text-end">実績</th>
+            <th class="text-end">計画</th>
+            <th class="text-end">予測</th>
+            <th class="text-end">差異</th>
+            <th class="text-end">達成率</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @daily_data.each do |day| %>
             <tr>
-              <th style="width: 80px;">日付</th>
-              <th class="text-end">目標</th>
-              <th class="text-end">実績</th>
-              <th class="text-end">計画</th>
-              <th class="text-end">予測</th>
-              <th class="text-end">差異</th>
-              <th class="text-end">達成率</th>
+              <td style="width: 80px;"><%= day[:date].strftime('%-m/%-d') %></td>
+              <td class="text-end"><%= number_to_currency((day[:target] || 0), unit: "¥", precision: 0) %></td>
+              <td class="text-end"><%= number_to_currency((day[:actual] || 0), unit: "¥", precision: 0) %></td>
+              <td class="text-end"><%= number_to_currency((day[:plan] || 0), unit: "¥", precision: 0) %></td>
+              <td class="text-end"><%= number_to_currency((day[:forecast] || 0), unit: "¥", precision: 0) %></td>
+              <td class="text-end <%= (day[:diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
+                <%= number_to_currency((day[:diff] || 0), unit: "¥", precision: 0) %>
+              </td>
+              <td class="text-end">
+                <%= number_to_percentage((day[:achievement_rate] || 0), precision: 1) %>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="width: 80px;">10/1</td>
-              <td class="text-end">¥161,290</td>
-              <td class="text-end">¥120,000</td>
-              <td class="text-end">¥0</td>
-              <td class="text-end">¥120,000</td>
-              <td class="text-end text-danger">-¥41,290</td>
-              <td class="text-end">74.4%</td>
-            </tr>
-            <tr>
-              <td style="width: 80px;">10/2</td>
-              <td class="text-end">¥161,290</td>
-              <td class="text-end">¥150,000</td>
-              <td class="text-end">¥0</td>
-              <td class="text-end">¥150,000</td>
-              <td class="text-end text-danger">-¥11,290</td>
-              <td class="text-end">93.0%</td>
-            </tr>
-            <tr>
-              <td style="width: 80px;">10/3</td>
-              <td class="text-end">¥161,290</td>
-              <td class="text-end">¥180,000</td>
-              <td class="text-end">¥0</td>
-              <td class="text-end">¥180,000</td>
-              <td class="text-end text-success">+¥18,710</td>
-              <td class="text-end">111.6%</td>
-            </tr>
-            <tr>
-              <td style="width: 80px;">10/16</td>
-              <td class="text-end">¥161,290</td>
-              <td class="text-end">¥0</td>
-              <td class="text-end">¥100,000</td>
-              <td class="text-end">¥100,000</td>
-              <td class="text-end text-danger">-¥61,290</td>
-              <td class="text-end">62.0%</td>
-            </tr>
-            <tr>
-              <td style="width: 80px;">10/17</td>
-              <td class="text-end">¥161,290</td>
-              <td class="text-end">¥0</td>
-              <td class="text-end">¥120,000</td>
-              <td class="text-end">¥120,000</td>
-              <td class="text-end text-danger">-¥41,290</td>
-              <td class="text-end">74.4%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
