@@ -34,6 +34,12 @@ class Plan < ApplicationRecord
     end
   end
 
+  # ドロップダウン用の表示名（計画名と合計金額）
+  def name_with_total
+    total = expected_revenue
+    "#{name}（¥#{total.to_s(:delimited)}）"
+  end
+
   # 指定日にスケジュールを追加
   def add_schedule(date, note: nil)
     plan_schedules.create(scheduled_date: date, note: note)
