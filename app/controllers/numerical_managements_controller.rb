@@ -33,11 +33,13 @@ class NumericalManagementsController < ApplicationController
       @budget = MonthlyBudget.find_by(
       user: current_user,
       budget_month: @selected_date.beginning_of_month
-      )
+    )
 
-      # カレンダー表示用のデータを準備（次のコミットで実装）
-      @calendar_data = []
+      # カレンダーデータを取得
+      calendar_service = CalendarDataService.new(current_user, @selected_date.year, @selected_date.month)
+      @calendar_data = calendar_service.call
     end
+
 
     # 予測データを取得
     forecast_service = NumericalForecastService.new(current_user, @selected_date.year, @selected_date.month)
