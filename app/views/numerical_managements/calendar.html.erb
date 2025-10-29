@@ -16,34 +16,83 @@
     </div>
   </div>
 
+  <!-- 予算未設定の警告 -->
+  <% unless @budget %>
+    <div class="alert alert-warning" role="alert">
+      <i class="bi bi-exclamation-triangle"></i> この月の予算が設定されていません。
+      <%= link_to "予算を設定する", numerical_managements_path(month: @selected_date.strftime('%Y-%m')), class: "alert-link" %>
+    </div>
+  <% end %>
+
   <!-- カレンダーグリッド -->
   <div class="card">
     <div class="card-body">
-      <table class="table table-bordered">
-        <thead>
+      <table class="table table-bordered text-center">
+        <thead class="table-light">
           <tr>
-            <th>日</th>
-            <th>月</th>
-            <th>火</th>
-            <th>水</th>
-            <th>木</th>
-            <th>金</th>
-            <th>土</th>
+            <th style="width: 14.28%;">日</th>
+            <th style="width: 14.28%;">月</th>
+            <th style="width: 14.28%;">火</th>
+            <th style="width: 14.28%;">水</th>
+            <th style="width: 14.28%;">木</th>
+            <th style="width: 14.28%;">金</th>
+            <th style="width: 14.28%;">土</th>
           </tr>
         </thead>
         <tbody>
-          <!-- カレンダーの日付セルをここに追加（次のコミットで実装） -->
-          <tr>
-            <td>1</td>
-            <td>2</td>
-            <td>3</td>
-            <td>4</td>
-            <td>5</td>
-            <td>6</td>
-            <td>7</td>
-          </tr>
+          <% @calendar_data.each do |week| %>
+            <tr>
+              <% week.each do |day| %>
+                <% if day.nil? %>
+                  <!-- 空白セル -->
+                  <td class="bg-light"></td>
+                <% else %>
+                  <!-- 日付セル -->
+                  <td class="p-2 <%= 'table-info' if day[:is_today] %>" style="height: 120px; vertical-align: top;">
+                    <div class="d-flex flex-column h-100">
+                      <!-- 日付 -->
+                      <div class="fw-bold mb-2 <%= 'text-danger' if day[:date].sunday? %> <%= 'text-primary' if day[:date].saturday? %>">
+                        <%= day[:date].day %>
+                      </div>
+
+                      <!-- 目標 -->
+                      <div class="small text-muted">
+                        目標: <%= number_to_currency(day[:target], unit: "¥", precision: 0) %>
+                      </div>
+
+                      <!-- 実績 -->
+                      <div class="small <%= day[:actual] > 0 ? 'text-success fw-bold' : 'text-muted' %>">
+                        実績: <%= number_to_currency(day[:actual], unit: "¥", precision: 0) %>
+                      </div>
+
+                      <!-- 計画 -->
+                      <div class="small text-info">
+                        計画: <%= number_to_currency(day[:plan], unit: "¥", precision: 0) %>
+                      </div>
+                    </div>
+                  </td>
+                <% end %>
+              <% end %>
+            </tr>
+          <% end %>
         </tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- 凡例 -->
+  <div class="mt-3">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title">凡例</h6>
+        <div class="d-flex gap-4">
+          <div><span class="badge bg-info">■</span> 今日</div>
+          <div><span class="text-danger">●</span> 日曜日</div>
+          <div><span class="text-primary">●</span> 土曜日</div>
+          <div><span class="text-success fw-bold">実績</span> 実績入力済み</div>
+          <div><span class="text-info">計画</span> 製造計画あり</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
