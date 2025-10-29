@@ -4,21 +4,24 @@
     <h1 class="h3 mb-0">数値管理ダッシュボード</h1>
 
     <div class="d-flex align-items-center gap-3">
-      <!-- 月選択フォーム -->
-      <form method="get" class="d-flex align-items-center gap-2">
-        <label class="text-muted mb-0">対象月:</label>
-        <input type="month" name="month" value="<%= @selected_date.strftime('%Y-%m') %>" class="form-control form-control-sm" style="width: 150px;">
-        <button type="submit" class="btn btn-primary btn-sm">表示</button>
-      </form>
+  <!-- 月選択フォーム -->
+  <form method="get" class="d-flex align-items-center gap-2">
+    <label class="text-muted mb-0">対象月:</label>
+    <input type="month" name="month" value="<%= @selected_date.strftime('%Y-%m') %>" class="form-control form-control-sm" style="width: 150px;">
+    <button type="submit" class="btn btn-primary btn-sm">表示</button>
+  </form>
 
-      <!-- 予算設定ボタン -->
-      <div class="mb-3">
-        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#budgetSettingModal">
-          <i class="bi bi-gear"></i> 月間予算を設定
-        </button>
-      </div>
-    </div>
+  <!-- カレンダービューへのリンク（追加） -->
+  <%= link_to "カレンダー表示", calendar_numerical_managements_path(month: @selected_date.strftime('%Y-%m')), class: "btn btn-outline-primary btn-sm" %>
+
+  <!-- 予算設定ボタン -->
+  <div>
+    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#budgetSettingModal">
+      <i class="bi bi-gear"></i> 月間予算を設定
+    </button>
   </div>
+</div>
+</div>
 
 <!-- サマリーカード -->
 <div class="row g-3 mb-4">
