@@ -7,18 +7,26 @@ module Api
       # GET /api/v1/plans/:id/revenue
       # 計画IDから期待売上を取得
       def revenue
-        plan = Plan.find_by(id: params[:id])
+        Rails.logger.info "=== API Debug: Plan ID #{params[:id]} ==="
 
-        if plan
-          render json: {
-            revenue: plan.expected_revenue,
-            formatted_revenue: "¥#{plan.expected_revenue.to_s(:delimited)}"
-          }
-        else
-          render json: { error: '計画が見つかりません' }, status: :not_found
-        end
+        plan = Plan.find(params[:id])
+
+        Rails.logger.info "=== Plan found: #{plan.name} ==="
+        revenue = plan.expected_revenue
+        Rails.logger.info "=== Revenue calculated: #{revenue} ==="
+
+        render json: {
+          revenue: revenue,
+          formatted_revenue: "¥#{ActionController::Base.helpers.number_with_delimiter(revenue)}"
+        }
+
+      rescue ActiveRecord::RecordNotFound
+        Rails.logger.error "=== Plan not found: ID #{params[:id]} ==="
+        render json: { error: '計画が見つかりません' }, status: :not_found
       rescue StandardError => e
-        render json: { error: e.message }, status: :internal_server_error
+        Rails.logger.error "=== API Error: #{e.class} - #{e.message} ==="
+        Rails.logger.error "Backtrace:\n#{e.backtrace.join("\n")}"
+        render json: { error: 'サーバーエラーが発生しました' }, status: :internal_server_error
       end
     end
   end
