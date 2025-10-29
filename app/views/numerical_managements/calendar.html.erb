@@ -241,4 +241,55 @@ function setEditModalData(button) {
   }
   dateHiddenInput.value = date;
 }
+
+function setActualModalData(button) {
+  // ボタンから data-* 属性を取得
+  const date = button.getAttribute('data-date');
+  const dateDisplay = button.getAttribute('data-date-display');
+  const planScheduleId = button.getAttribute('data-plan-schedule-id');
+  const actualRevenue = button.getAttribute('data-actual-revenue');
+
+  // モーダル内の要素を取得
+  const modal = document.getElementById('editActualRevenueModal');
+  const form = modal.querySelector('form');
+  const dateSpan = modal.querySelector('#editActualDate');
+  const revenueInput = modal.querySelector('#editActualRevenue');
+  const submitButton = form.querySelector('input[type="submit"]');
+
+  // フォームのactionとmethodを設定
+  if (planScheduleId && planScheduleId !== '') {
+    // 既存データの更新
+    form.action = `/plan_schedules/${planScheduleId}`;
+    let methodInput = form.querySelector('input[name="_method"]');
+    if (methodInput) {
+      methodInput.value = 'patch';
+    }
+    if (submitButton) submitButton.value = '更新';
+  } else {
+    // 新規作成
+    form.action = '/plan_schedules';
+    let methodInput = form.querySelector('input[name="_method"]');
+    if (methodInput) {
+      methodInput.value = 'post';
+    }
+    if (submitButton) submitButton.value = '保存';
+  }
+
+  // 日付表示を設定
+  dateSpan.value = dateDisplay;
+
+  // 実績売上を設定
+  revenueInput.value = actualRevenue || '';
+
+  // 隠しフィールドに日付を設定
+  let dateHiddenInput = form.querySelector('input[name="plan_schedule[scheduled_date]"]');
+  if (!dateHiddenInput) {
+    dateHiddenInput = document.createElement('input');
+    dateHiddenInput.type = 'hidden';
+    dateHiddenInput.name = 'plan_schedule[scheduled_date]';
+    form.appendChild(dateHiddenInput);
+  }
+  dateHiddenInput.value = date;
+}
+
 </script>
