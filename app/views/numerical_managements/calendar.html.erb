@@ -56,20 +56,38 @@
                           <%= day[:date].day %>
                         </div>
                         <% if @budget %>
-                          <button type="button"
-                                  class="btn btn-sm btn-outline-secondary"
-                                  style="padding: 0 4px; font-size: 0.7rem;"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#editDailyTargetModal"
-                                  data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
-                                  data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
-                                  data-target-id="<%= day[:daily_target_id] %>"
-                                  data-target-amount="<%= day[:target] %>"
-                                  onclick="setEditModalData(this)">
-                            <i class="bi bi-pencil"></i>
-                          </button>
+                          <div class="d-flex gap-1">
+                            <!-- 目標編集ボタン -->
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    style="padding: 0 4px; font-size: 0.7rem;"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editDailyTargetModal"
+                                    data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
+                                    data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
+                                    data-target-id="<%= day[:daily_target_id] %>"
+                                    data-target-amount="<%= day[:target] %>"
+                                    onclick="setEditModalData(this)">
+                              <i class="bi bi-pencil"></i>
+                            </button>
+
+                            <!-- 実績入力ボタン -->
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-success"
+                                    style="padding: 0 4px; font-size: 0.7rem;"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editActualRevenueModal"
+                                    data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
+                                    data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
+                                    data-plan-schedule-id="<%= day[:plan_schedule_id] %>"
+                                    data-actual-revenue="<%= day[:actual] %>"
+                                    onclick="setActualModalData(this)">
+                              <i class="bi bi-currency-yen"></i>
+                            </button>
+                          </div>
                         <% end %>
                       </div>
+
 
                       <!-- 目標 -->
                       <div class="small text-muted">
