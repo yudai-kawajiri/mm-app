@@ -176,7 +176,9 @@
       </div>
 
       <%= form_with model: PlanSchedule.new, url: "#", method: :post, local: true, id: "editActualRevenueForm" do |f| %>
+        <%= hidden_field_tag :month, @selected_date.strftime('%Y-%m') %>
         <div class="modal-body">
+
           <div class="mb-3">
             <label class="form-label">対象日</label>
             <input type="text" class="form-control" id="editActualDate" readonly>
