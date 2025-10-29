@@ -18,14 +18,6 @@ class NumericalManagementsController < ApplicationController
 
     # 予測データを取得
     service = NumericalForecastService.new(current_user, @target_date.year, @target_date.month)
-    forecast_result = service.calculate
-
-    # ビューで使いやすい形式に変換
-    @forecast_data = {
-      target_total: forecast_result[:target_amount] || 0,
-      actual_total: forecast_result[:actual_amount] || 0,
-      plan_total: forecast_result[:planned_amount] || 0,
-      forecast_total: (forecast_result[:actual_amount] || 0) + (forecast_result[:planned_amount] || 0)
-    }
+    @forecast_data = service.calculate
   end
 end
