@@ -19,7 +19,7 @@
    <!-- 月間サマリー -->
   <div class="card mb-3">
     <div class="card-body">
-      <h5 class="card-title">📊 月間サマリー</h5>
+      <h5 class="card-title"> 月間サマリー</h5>
       <div class="row">
         <%
           monthly_target = @calendar_data.flatten.compact.sum { |day| day[:target] || 0 }
