@@ -45,7 +45,7 @@ Rails.application.routes.draw do
 
   # 日別目標の編集
   resources :daily_targets, only: [:update]
-
+  resources :plan_schedules, only: [:create, :update] 
 
   # APIルーティングの追加
   # /api/v1/ のネームスペースでAPIを分離
