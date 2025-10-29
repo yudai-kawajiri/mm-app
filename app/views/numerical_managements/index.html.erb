@@ -1,176 +1,208 @@
+<!-- app/views/numerical_managements/index.html.erb -->
 <div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-graph-up me-2"></i>数値管理</h2>
+    <h1 class="h3 mb-0">数値管理ダッシュボード</h1>
 
-    <!-- カレンダービューへの切り替えボタン -->
-    <div>
-      <%= link_to calendar_numerical_managements_path(year: @year, month: @month), class: "btn btn-outline-primary me-2" do %>
-        <i class="bi bi-calendar3"></i> カレンダー表示
-      <% end %>
-      <%= link_to authenticated_root_path, class: "btn btn-outline-secondary" do %>
-        <i class="bi bi-house"></i> ダッシュボードに戻る
-      <% end %>
+    <div class="d-flex align-items-center gap-3">
+      <!-- 月選択フォーム -->
+      <form method="get" class="d-flex align-items-center gap-2">
+        <label class="text-muted mb-0">対象月:</label>
+        <input type="month" name="target_month" value="2025-10" class="form-control form-control-sm" style="width: 150px;">
+        <button type="submit" class="btn btn-primary btn-sm">表示</button>
+      </form>
+
+      <!-- 予算設定ボタン -->
+      <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#budgetModal">
+        予算設定
+      </button>
     </div>
   </div>
 
-  <%# 年月選択 %>
-  <div class="card mb-4">
-    <div class="card-body">
-      <%= form_with url: numerical_managements_path, method: :get, class: "row g-3 align-items-end" do |f| %>
-        <div class="col-auto">
-          <label class="form-label">年</label>
-          <%= f.select :year,
-              (Date.current.year - 2..Date.current.year + 1).to_a,
-              { selected: @year },
-              class: "form-select" %>
-        </div>
-        <div class="col-auto">
-          <label class="form-label">月</label>
-          <%= f.select :month,
-              (1..12).to_a,
-              { selected: @month },
-              class: "form-select" %>
-        </div>
-        <div class="col-auto">
-          <%= f.submit "表示", class: "btn btn-primary" %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-
-  <%# 予算設定 %>
-  <div class="card mb-4">
-    <div class="card-header bg-primary text-white">
-      <h5 class="mb-0"><%= @year %>年<%= @month %>月の予算</h5>
-    </div>
-    <div class="card-body">
-      <%= form_with model: @monthly_budget,
-          url: update_budget_numerical_managements_path,
-          method: :post,
-          local: true,
-          class: "row g-3" do |f| %>
-        <%= f.hidden_field :budget_month, value: @current_date %>
-
-        <div class="col-md-6">
-          <label class="form-label">目標金額</label>
-          <div class="input-group">
-            <span class="input-group-text">¥</span>
-            <%= f.number_field :target_amount,
-                class: "form-control",
-                min: 0,
-                step: 1000,
-                placeholder: "例: 1520000" %>
-          </div>
-        </div>
-
-        <div class="col-md-6 d-flex align-items-end">
-          <%= f.submit @monthly_budget.persisted? ? "予算を更新" : "予算を設定", class: "btn btn-primary" %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-
-  <%# 統計カード %>
-  <div class="row mb-4">
+  <!-- サマリーカード -->
+  <div class="row g-3 mb-4">
     <div class="col-md-3">
-      <div class="card text-bg-primary">
-        <div class="card-body">
-          <h6 class="card-title">目標予算</h6>
-          <h3 class="mb-0">
-            <%= @budget ? number_to_currency(@budget.target_amount, unit: "¥", precision: 0) : "未設定" %>
-          </h3>
+      <div class="card border-primary">
+        <div class="card-body p-3">
+          <h6 class="card-title text-primary mb-2">月間予算</h6>
+          <p class="h4 mb-0">¥5,000,000</p>
         </div>
       </div>
     </div>
     <div class="col-md-3">
-      <div class="card text-bg-info">
-        <div class="card-body">
-          <h6 class="card-title">計画売上</h6>
-          <h3 class="mb-0">
-            <%= number_to_currency(@plan_schedules.sum { |ps| ps.expected_revenue }, unit: "¥", precision: 0) %>
-          </h3>
+      <div class="card border-success">
+        <div class="card-body p-3">
+          <h6 class="card-title text-success mb-2">実績売上</h6>
+          <p class="h4 mb-0">¥2,500,000</p>
         </div>
       </div>
     </div>
     <div class="col-md-3">
-      <div class="card text-bg-success">
-        <div class="card-body">
-          <h6 class="card-title">実績売上</h6>
-          <h3 class="mb-0">
-            <%= number_to_currency(@plan_schedules.sum { |ps| ps.actual_revenue || 0 }, unit: "¥", precision: 0) %>
-          </h3>
+      <div class="card border-info">
+        <div class="card-body p-3">
+          <h6 class="card-title text-info mb-2">計画売上</h6>
+          <p class="h4 mb-0">¥1,800,000</p>
         </div>
       </div>
     </div>
     <div class="col-md-3">
-      <div class="card <%= @budget && @budget.achievement_rate >= 100 ? 'text-bg-success' : 'text-bg-warning' %>">
-        <div class="card-body">
-          <h6 class="card-title">達成率</h6>
-          <h3 class="mb-0">
-            <%= @budget ? "#{@budget.achievement_rate.round(1)}%" : "N/A" %>
-          </h3>
+      <div class="card border-warning">
+        <div class="card-body p-3">
+          <h6 class="card-title text-warning mb-2">予測売上</h6>
+          <p class="h4 mb-0">¥4,300,000</p>
         </div>
       </div>
     </div>
   </div>
 
-  <%# 日別テーブル %>
+  <!-- 月末予測 3グループ横並び -->
+  <div class="row g-3 mb-4">
+    <!-- グループ1: 月末予測 -->
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">月末予測</h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-sm mb-0">
+            <tbody>
+              <tr>
+                <td class="border-0">予測売上</td>
+                <td class="border-0 text-end fw-bold">¥4,300,000</td>
+              </tr>
+              <tr>
+                <td>予算達成率</td>
+                <td class="text-end fw-bold">86.0%</td>
+              </tr>
+              <tr>
+                <td>予測予算差</td>
+                <td class="text-end fw-bold text-danger">-¥700,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- グループ2: ギャップ分析 -->
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0">ギャップ分析</h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-sm mb-0">
+            <tbody>
+              <tr>
+                <td class="border-0">残り営業日数</td>
+                <td class="border-0 text-end fw-bold">15日</td>
+              </tr>
+              <tr>
+                <td>必要追加売上</td>
+                <td class="text-end fw-bold">¥700,000</td>
+              </tr>
+              <tr>
+                <td>1日あたり必要額</td>
+                <td class="text-end fw-bold">¥46,667</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- グループ3: アクションプラン -->
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">アクションプラン</h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-sm mb-0">
+            <tbody>
+              <tr>
+                <td class="border-0">推奨日次目標</td>
+                <td class="border-0 text-end fw-bold">¥46,667</td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <div class="alert alert-success mb-0 p-2 small">
+                    残り15日の計画に<br>
+                    1日あたり<strong>¥46,667</strong>追加してください
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 日別明細テーブル（列幅調整） -->
   <div class="card">
     <div class="card-header">
       <h5 class="mb-0">日別明細</h5>
     </div>
     <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead class="table-light">
+      <div style="max-height: 400px; overflow-y: auto;">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-light sticky-top">
             <tr>
-              <th>日付</th>
-              <th>計画名</th>
-              <th>カテゴリ</th>
-              <th class="text-end">予定売上</th>
-              <th class="text-end">実績売上</th>
+              <th style="width: 80px;">日付</th>
+              <th class="text-end">目標</th>
+              <th class="text-end">実績</th>
+              <th class="text-end">計画</th>
+              <th class="text-end">予測</th>
               <th class="text-end">差異</th>
-              <th>ステータス</th>
-              <th>操作</th>
+              <th class="text-end">達成率</th>
             </tr>
           </thead>
           <tbody>
-            <% @daily_summary.each do |day| %>
-              <% if day[:schedules].any? %>
-                <% day[:schedules].each_with_index do |schedule, index| %>
-                  <tr>
-                    <% if index == 0 %>
-                      <td rowspan="<%= day[:schedules].count %>">
-                        <%= l(day[:date], format: :short) %>
-                        <br>
-                        <small class="text-muted"><%= %w[日 月 火 水 木 金 土][day[:date].wday] %></small>
-                      </td>
-                    <% end %>
-                    <td><%= schedule.plan.name %></td>
-                    <td><%= schedule.plan.category&.name %></td>
-                    <td class="text-end"><%= number_to_currency(schedule.expected_revenue, unit: "¥", precision: 0) %></td>
-                    <td class="text-end"><%= number_to_currency(schedule.actual_revenue || 0, unit: "¥", precision: 0) %></td>
-                    <td class="text-end <%= schedule.variance >= 0 ? 'text-success' : 'text-danger' %>">
-                      <%= number_to_currency(schedule.variance, unit: "¥", precision: 0) %>
-                    </td>
-                    <td>
-                      <% if schedule.actual_revenue.present? %>
-                        <span class="badge bg-success">完了</span>
-                      <% else %>
-                        <span class="badge bg-secondary">未実施</span>
-                      <% end %>
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-sm btn-outline-primary"
-                              data-bs-toggle="modal"
-                              data-bs-target="#actualModal<%= schedule.id %>">
-                        実績入力
-                      </button>
-                    </td>
-                  </tr>
-                <% end %>
-              <% end %>
-            <% end %>
+            <tr>
+              <td style="width: 80px;">10/1</td>
+              <td class="text-end">¥161,290</td>
+              <td class="text-end">¥120,000</td>
+              <td class="text-end">¥0</td>
+              <td class="text-end">¥120,000</td>
+              <td class="text-end text-danger">-¥41,290</td>
+              <td class="text-end">74.4%</td>
+            </tr>
+            <tr>
+              <td style="width: 80px;">10/2</td>
+              <td class="text-end">¥161,290</td>
+              <td class="text-end">¥150,000</td>
+              <td class="text-end">¥0</td>
+              <td class="text-end">¥150,000</td>
+              <td class="text-end text-danger">-¥11,290</td>
+              <td class="text-end">93.0%</td>
+            </tr>
+            <tr>
+              <td style="width: 80px;">10/3</td>
+              <td class="text-end">¥161,290</td>
+              <td class="text-end">¥180,000</td>
+              <td class="text-end">¥0</td>
+              <td class="text-end">¥180,000</td>
+              <td class="text-end text-success">+¥18,710</td>
+              <td class="text-end">111.6%</td>
+            </tr>
+            <tr>
+              <td style="width: 80px;">10/16</td>
+              <td class="text-end">¥161,290</td>
+              <td class="text-end">¥0</td>
+              <td class="text-end">¥100,000</td>
+              <td class="text-end">¥100,000</td>
+              <td class="text-end text-danger">-¥61,290</td>
+              <td class="text-end">62.0%</td>
+            </tr>
+            <tr>
+              <td style="width: 80px;">10/17</td>
+              <td class="text-end">¥161,290</td>
+              <td class="text-end">¥0</td>
+              <td class="text-end">¥120,000</td>
+              <td class="text-end">¥120,000</td>
+              <td class="text-end text-danger">-¥41,290</td>
+              <td class="text-end">74.4%</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -178,43 +210,47 @@
   </div>
 </div>
 
-<%# 実績入力モーダル（各スケジュールごとに生成） %>
-<% @daily_summary.each do |day| %>
-  <% day[:schedules].each do |schedule| %>
-    <div class="modal fade" id="actualModal<%= schedule.id %>" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <%= form_with model: schedule,
-              url: update_actual_numerical_management_path(schedule),
-              method: :patch,
-              local: true do |f| %>
-            <div class="modal-header">
-              <h5 class="modal-title">実績入力</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<!-- 予算設定モーダル（ページ最下部に追加） -->
+<div class="modal fade" id="budgetModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">予算設定</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">対象月</label>
+              <input type="month" class="form-control" value="2025-10">
             </div>
-            <div class="modal-body">
-              <div class="mb-3">
-                <strong>計画名:</strong> <%= schedule.plan.name %>
-              </div>
-              <div class="mb-3">
-                <strong>予定売上:</strong> <%= number_to_currency(schedule.expected_revenue, unit: "¥", precision: 0) %>
-              </div>
-              <div class="mb-3">
-                <%= f.label :actual_revenue, "実績売上", class: "form-label" %>
-                <%= f.number_field :actual_revenue, class: "form-control", min: 0, step: 1000 %>
-              </div>
-              <div class="mb-3">
-                <%= f.label :note, "メモ", class: "form-label" %>
-                <%= f.text_area :note, class: "form-control", rows: 3 %>
-              </div>
+            <div class="col-md-6">
+              <label class="form-label">月間予算（円）</label>
+              <input type="number" class="form-control" placeholder="5000000" step="1000">
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-              <%= f.submit "保存", class: "btn btn-primary" %>
-            </div>
-          <% end %>
-        </div>
+          </div>
+
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="autoGenerate" checked>
+            <label class="form-check-label" for="autoGenerate">
+              日別目標を自動生成する（均等配分）
+            </label>
+          </div>
+
+          <hr>
+
+          <h6 class="mb-3">製造計画カレンダー</h6>
+          <p class="text-muted small">※ 製造計画の登録・編集は後で実装します</p>
+          <button type="button" class="btn btn-outline-secondary btn-sm" disabled>
+            製造計画カレンダーを開く（未実装）
+          </button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-primary">予算を設定</button>
       </div>
     </div>
-  <% end %>
-<% end %>
+  </div>
+</div>
