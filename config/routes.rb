@@ -45,7 +45,7 @@ Rails.application.routes.draw do
 
   # 日別目標の編集
   resources :daily_targets, only: [:update]
-  resources :plan_schedules, only: [:create, :update] 
+  resources :plan_schedules, only: [:create, :update]
 
   # APIルーティングの追加
   # /api/v1/ のネームスペースでAPIを分離
@@ -62,6 +62,13 @@ Rails.application.routes.draw do
       resources :materials, only: [] do
         member do
           get :product_unit_data
+        end
+      end
+
+      # Plan API: GET /api/v1/plans/:id/revenue
+      resources :plans, only: [] do
+        member do
+          get :revenue
         end
       end
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_28_230944) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_29_074407) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -112,12 +112,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_28_230944) do
     t.datetime "created_at", null: false
     t.text "note", comment: "備考"
     t.bigint "plan_id", null: false
+    t.integer "planned_revenue"
     t.date "scheduled_date", null: false, comment: "スケジュール実施日"
     t.integer "status", default: 0, null: false, comment: "ステータス"
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["plan_id", "scheduled_date"], name: "index_plan_schedules_on_plan_id_and_scheduled_date", unique: true
     t.index ["plan_id"], name: "index_plan_schedules_on_plan_id"
     t.index ["scheduled_date"], name: "index_plan_schedules_on_scheduled_date"
+    t.index ["user_id"], name: "index_plan_schedules_on_user_id"
   end
 
   create_table "plans", force: :cascade do |t|
@@ -199,6 +202,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_28_230944) do
   add_foreign_key "plan_products", "plans"
   add_foreign_key "plan_products", "products"
   add_foreign_key "plan_schedules", "plans"
+  add_foreign_key "plan_schedules", "users"
   add_foreign_key "plans", "categories"
   add_foreign_key "plans", "users"
   add_foreign_key "product_materials", "materials"

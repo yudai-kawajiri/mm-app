@@ -33,6 +33,9 @@ pin "controllers/form_validation_controller", to: "controllers/form_validation_c
 # 予算管理カレンダー Controller
 pin "controllers/calendar_controller", to: "controllers/calendar_controller.js"
 
+# 計画割り当て Controller ← 追加
+pin "controllers/plan_assignment_controller", to: "controllers/plan_assignment_controller.js"
+
 # Utils（手動 pin）
 pin "utils/logger", to: "utils/logger.js", preload: true
 pin "utils/currency_formatter", to: "utils/currency_formatter.js", preload: true

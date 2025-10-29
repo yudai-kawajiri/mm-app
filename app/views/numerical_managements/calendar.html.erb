@@ -71,6 +71,19 @@
                               <i class="bi bi-pencil"></i>
                             </button>
 
+                            <!-- 計画追加ボタン -->
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-info"
+                                    style="padding: 0 4px; font-size: 0.7rem;"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#assignPlanModal"
+                                    data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
+                                    data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
+                                    onclick="setDateForPlanModal(this, event)">
+                              <i class="bi bi-calendar-plus"></i>
+                            </button>
+
+
                             <!-- 実績入力ボタン -->
                             <button type="button"
                                     class="btn btn-sm btn-outline-success"
@@ -87,7 +100,6 @@
                           </div>
                         <% end %>
                       </div>
-
 
                       <!-- 目標 -->
                       <div class="small text-muted">
@@ -126,6 +138,7 @@
           <div><span class="text-success fw-bold">実績</span> 実績入力済み</div>
           <div><span class="text-info">計画</span> 製造計画あり</div>
           <div><i class="bi bi-pencil"></i> 目標編集</div>
+          <div><i class="bi bi-calendar-plus text-info"></i> 計画追加</div>
           <div><i class="bi bi-currency-yen text-success"></i> 実績入力</div>
         </div>
       </div>
@@ -180,7 +193,6 @@
       <%= form_with model: PlanSchedule.new, url: "#", method: :post, local: true, id: "editActualRevenueForm" do |f| %>
         <%= hidden_field_tag :month, @selected_date.strftime('%Y-%m') %>
         <div class="modal-body">
-
           <div class="mb-3">
             <label class="form-label">対象日</label>
             <input type="text" class="form-control" id="editActualDate" readonly>
@@ -205,37 +217,155 @@
   </div>
 </div>
 
+<!-- 計画追加モーダル -->
+<div class="modal fade" id="assignPlanModal" tabindex="-1" aria-labelledby="assignPlanModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <%= form_with model: PlanSchedule.new, url: plan_schedules_path, method: :post, local: true, data: { controller: "plan-assignment" } do |f| %>
+        <div class="modal-header">
+          <h5 class="modal-title" id="assignPlanModalLabel">計画を追加</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 日付フィールド（非表示） -->
+          <%= f.hidden_field :scheduled_date, id: "plan_scheduled_date" %>
 
-<!-- 日別目標編集モーダル用JavaScript -->
+          <!-- 計画選択ドロップダウン -->
+          <div class="mb-3">
+            <%= f.label :plan_id, "計画を選択", class: "form-label" %>
+            <%= f.collection_select :plan_id,
+                  Plan.all,
+                  :id,
+                  :name_with_total,
+                  { prompt: "計画を選択してください" },
+                  {
+                    class: "form-select",
+                    required: true,
+                    data: {
+                      plan_assignment_target: "planSelect",
+                      action: "change->plan-assignment#updateRevenue"
+                    }
+                  }
+            %>
+          </div>
+
+          <!-- 計画高（自動入力、読み取り専用） -->
+          <div class="mb-3">
+            <%= f.label :planned_revenue, "計画高（円）", class: "form-label" %>
+            <%= f.number_field :planned_revenue,
+                  class: "form-control bg-light",
+                  readonly: true,
+                  data: { plan_assignment_target: "revenueField" }
+            %>
+            <div class="form-text">計画を選択すると自動的に入力されます</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+          <%= f.submit "保存", class: "btn btn-primary", data: { disable_with: "保存中..." } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript -->
 <script>
+// 計画追加ボタンクリック時に日付を設定
+function setDateForPlanModal(button, event) {
+  console.log("=== setDateForPlanModal called ===");
+
+  const date = button.getAttribute('data-date');
+  console.log("Date from button:", date);
+
+  // 少し待ってからモーダルのフィールドを設定
+  setTimeout(function() {
+    const modal = document.getElementById('assignPlanModal');
+    const dateHiddenInput = modal.querySelector('#plan_scheduled_date');
+
+    if (dateHiddenInput) {
+      dateHiddenInput.value = date;
+      console.log("Date field set to:", dateHiddenInput.value);
+    } else {
+      console.error("Date hidden field not found!");
+    }
+
+    // 計画選択とrevenueをクリア
+    const planSelect = modal.querySelector('select[name="plan_schedule[plan_id]"]');
+    if (planSelect) {
+      planSelect.value = '';
+    }
+
+    const revenueField = modal.querySelector('input[name="plan_schedule[planned_revenue]"]');
+    if (revenueField) {
+      revenueField.value = '';
+    }
+  }, 100);
+}
+
+// DOMContentLoaded: フォームバリデーション
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("=== Calendar JavaScript Loaded ===");
+
+  const assignPlanModal = document.getElementById('assignPlanModal');
+  if (assignPlanModal) {
+    const form = assignPlanModal.querySelector('form');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        const dateField = form.querySelector('#plan_scheduled_date');
+        const planSelect = form.querySelector('select[name="plan_schedule[plan_id]"]');
+        const revenueField = form.querySelector('input[name="plan_schedule[planned_revenue]"]');
+
+        console.log("=== Form Submit Validation ===");
+        console.log("Date:", dateField?.value);
+        console.log("Plan ID:", planSelect?.value);
+        console.log("Revenue:", revenueField?.value);
+
+        if (!dateField?.value) {
+          e.preventDefault();
+          alert('日付が設定されていません。ページをリロードして再度お試しください。');
+          return false;
+        }
+
+        if (!planSelect?.value) {
+          e.preventDefault();
+          alert('計画を選択してください');
+          return false;
+        }
+
+        if (!revenueField?.value) {
+          e.preventDefault();
+          alert('計画を選択して売上を設定してください');
+          return false;
+        }
+
+        console.log("=== Form validation passed, submitting... ===");
+      });
+    }
+  }
+});
+
+// 日別目標編集モーダルの設定
 function setEditModalData(button) {
-  // ボタンから data-* 属性を取得
   const date = button.getAttribute('data-date');
   const dateDisplay = button.getAttribute('data-date-display');
   const targetId = button.getAttribute('data-target-id');
   const targetAmount = button.getAttribute('data-target-amount');
 
-  // モーダル内の要素を取得
   const modal = document.getElementById('editDailyTargetModal');
   const form = modal.querySelector('form');
   const dateSpan = modal.querySelector('#editTargetDate');
   const amountInput = modal.querySelector('#editTargetAmount');
 
-  // フォームのactionを設定（targetIdがある場合のみ）
   if (targetId && targetId !== '') {
     form.action = `/daily_targets/${targetId}`;
   } else {
-    // 新規作成の場合は後で実装
     form.action = '#';
   }
 
-  // 日付表示を設定
-  dateSpan.textContent = dateDisplay;
-
-  // 目標金額を設定
+  dateSpan.value = dateDisplay;
   amountInput.value = targetAmount || '';
 
-  // 隠しフィールドに日付を設定（今後の新規作成用）
   let dateHiddenInput = form.querySelector('input[name="daily_target[target_date]"]');
   if (!dateHiddenInput) {
     dateHiddenInput = document.createElement('input');
@@ -246,23 +376,20 @@ function setEditModalData(button) {
   dateHiddenInput.value = date;
 }
 
+// 実績入力モーダルの設定
 function setActualModalData(button) {
-  // ボタンから data-* 属性を取得
   const date = button.getAttribute('data-date');
   const dateDisplay = button.getAttribute('data-date-display');
   const planScheduleId = button.getAttribute('data-plan-schedule-id');
   const actualRevenue = button.getAttribute('data-actual-revenue');
 
-  // モーダル内の要素を取得
   const modal = document.getElementById('editActualRevenueModal');
   const form = modal.querySelector('form');
   const dateSpan = modal.querySelector('#editActualDate');
   const revenueInput = modal.querySelector('#editActualRevenue');
   const submitButton = form.querySelector('input[type="submit"]');
 
-  // フォームのactionとmethodを設定
   if (planScheduleId && planScheduleId !== '') {
-    // 既存データの更新
     form.action = `/plan_schedules/${planScheduleId}`;
     let methodInput = form.querySelector('input[name="_method"]');
     if (methodInput) {
@@ -270,7 +397,6 @@ function setActualModalData(button) {
     }
     if (submitButton) submitButton.value = '更新';
   } else {
-    // 新規作成
     form.action = '/plan_schedules';
     let methodInput = form.querySelector('input[name="_method"]');
     if (methodInput) {
@@ -279,13 +405,9 @@ function setActualModalData(button) {
     if (submitButton) submitButton.value = '保存';
   }
 
-  // 日付表示を設定
   dateSpan.value = dateDisplay;
-
-  // 実績売上を設定
   revenueInput.value = actualRevenue || '';
 
-  // 隠しフィールドに日付を設定
   let dateHiddenInput = form.querySelector('input[name="plan_schedule[scheduled_date]"]');
   if (!dateHiddenInput) {
     dateHiddenInput = document.createElement('input');
@@ -295,5 +417,4 @@ function setActualModalData(button) {
   }
   dateHiddenInput.value = date;
 }
-
 </script>

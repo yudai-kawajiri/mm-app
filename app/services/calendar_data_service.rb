@@ -91,7 +91,9 @@ class CalendarDataService
   end
 
   def daily_plan(date)
-    # 現時点では0を返す
-    0
+    @budget.plan_schedules
+          .where(scheduled_date: date)
+          .where.not(planned_revenue: nil)
+          .sum(:planned_revenue)
   end
 end
