@@ -55,8 +55,12 @@ class CalendarDataService
 
 
   def build_day_data(date)
-    daily_target = @daily_targets.find { |dt| dt.target_date == date }
-    plan_schedules = @plan_schedules.select { |ps| ps.scheduled_date == date }
+    # @daily_targetsがnilの場合は空配列として扱う
+    daily_targets = @daily_targets || []
+    plan_schedules_list = @plan_schedules || []
+
+    daily_target = daily_targets.find { |dt| dt.target_date == date }
+    plan_schedules = plan_schedules_list.select { |ps| ps.scheduled_date == date }
 
     target_amount = daily_target&.target_amount || 0
     actual_revenue = plan_schedules.sum(&:actual_revenue)
@@ -80,6 +84,7 @@ class CalendarDataService
       achievement_rate: achievement_rate
     }
   end
+
 
 
   def daily_target(date)
