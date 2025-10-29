@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_28_230944) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_29_061654) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -112,6 +112,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_28_230944) do
     t.datetime "created_at", null: false
     t.text "note", comment: "備考"
     t.bigint "plan_id", null: false
+    t.integer "planned_revenue"
     t.date "scheduled_date", null: false, comment: "スケジュール実施日"
     t.integer "status", default: 0, null: false, comment: "ステータス"
     t.datetime "updated_at", null: false
@@ -153,7 +154,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_28_230944) do
     t.string "item_number", null: false
     t.string "name", null: false
     t.integer "price", null: false
-    t.integer "status", default: 0, null: false
+    t.integer "status"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["category_id"], name: "index_products_on_category_id"
