@@ -1,5 +1,4 @@
-# 日別データ集計サービス
-# 日付ごとの予算、計画、実績、差額を計算
+# app/services/daily_data_service.rb
 class DailyDataService
   attr_reader :user, :year, :month
 
@@ -10,100 +9,64 @@ class DailyDataService
     @budget = find_budget
   end
 
-  # 日別データを生成
-  def generate
+  # 日別データの配列を返す
+  def call
     return [] unless @budget
 
+    # 月の全日付を取得
     start_date = Date.new(@year, @month, 1)
     end_date = start_date.end_of_month
-    
-    daily_data = []
-    cumulative_target = 0
-    cumulative_actual = 0
 
-    (start_date..end_date).each do |date|
-      # 日別目標
-      target = daily_target_for(date)
-      
-      # 日別計画
-      planned = planned_amount_for(date)
-      
-      # 日別実績
-      actual = actual_amount_for(date)
-      
-      # 累計計算
-      cumulative_target += target
-      cumulative_actual += actual
-      
-      # 差額計算
-      daily_difference = actual - target
-      cumulative_difference = cumulative_actual - cumulative_target
-      
-      # 達成率
-      rate = cumulative_target.zero? ? 0 : ((cumulative_actual / cumulative_target) * 100).round(2)
-
-      daily_data << {
-        date: date,
-        day_of_week: I18n.t("date.abbr_day_names")[date.wday],
-        target: target,
-        planned: planned,
-        actual: actual,
-        daily_difference: daily_difference,
-        cumulative_actual: cumulative_actual,
-        cumulative_difference: cumulative_difference,
-        achievement_rate: rate
-      }
+    (start_date..end_date).map do |date|
+      calculate_daily_data(date)
     end
-
-    daily_data
   end
 
   private
 
   def find_budget
     budget_month = Date.new(@year, @month, 1)
-    MonthlyBudget.find_by(user: @user, budget_month: budget_month)
-  end
-
-  # 日別目標金額
-  def daily_target_for(date)
-    return 0 unless @budget
-    
-    # daily_targetsテーブルから取得
-    daily_target = DailyTarget.find_by(
-      monthly_budget_id: @budget.id,
-      target_date: date
+    MonthlyBudget.find_by(
+      user: @user,
+      budget_month: budget_month
     )
-    
-    if daily_target
-      daily_target.target_amount
-    else
-      # なければ均等配分
-      days_in_month = Date.new(@year, @month, -1).day
-      (@budget.target_amount / days_in_month).round(2)
-    end
   end
 
-  # 日別計画売上
-  def planned_amount_for(date)
-    schedules = PlanSchedule.joins(:plan)
-                            .where(plans: { user_id: @user.id })
-                            .where(scheduled_date: date)
-                            .includes(plan: { plan_products: :product })
+  def calculate_daily_data(date)
+    target = daily_target(date)
+    actual = daily_actual(date)
+    plan = daily_plan(date)
+    forecast = actual > 0 ? actual : plan
+    diff = forecast - target
+    achievement_rate = target > 0 ? (forecast / target * 100).round(1) : 0
 
-    schedules.sum do |schedule|
-      schedule.plan.plan_products.sum do |pp|
-        pp.product.price * pp.production_count
-      end
-    end
+    {
+      date: date,
+      target: target,
+      actual: actual,
+      plan: plan,
+      forecast: forecast,
+      diff: diff,
+      achievement_rate: achievement_rate
+    }
   end
 
-  # 日別実績売上
-  def actual_amount_for(date)
-    PlanSchedule.joins(:plan)
-                .where(plans: { user_id: @user.id })
-                .where(scheduled_date: date)
-                .where(status: :completed)
-                .sum(:actual_revenue) || 0
+  def daily_target(date)
+    daily_target_record = @budget.daily_targets.find_by(target_date: date)
+    daily_target_record&.target_amount || 0
+  end
+
+  def daily_actual(date)
+    # PlanScheduleから実績売上を取得
+    @budget.plan_schedules
+           .where(scheduled_date: date)
+           .where.not(actual_revenue: nil)
+           .sum(:actual_revenue)
+  end
+
+  def daily_plan(date)
+    # PlanScheduleから計画売上を取得（実績未入力のもの）
+    # 現時点では0を返す（expected_revenueカラムがないため）
+    0
   end
 end
