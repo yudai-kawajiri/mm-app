@@ -60,10 +60,9 @@ class CalendarDataService
 
     target_amount = daily_target&.target_amount || 0
     actual_revenue = plan_schedules.sum(&:actual_revenue)
-    planned_revenue = plan_schedules.sum(&:planned_revenue)
 
     # 達成率計算（ゼロ除算対策）
-    achievement_rate = if target_amount > 0 && actual_revenue > 0
+    achievement_rate = if target_amount > 0
                         ((actual_revenue.to_f / target_amount) * 100).round(1)
                       else
                         nil
@@ -71,14 +70,17 @@ class CalendarDataService
 
     {
       date: date,
-      target_amount: target_amount,
+      target: target_amount,
       daily_target_id: daily_target&.id,
-      actual_revenue: actual_revenue,
-      planned_revenue: planned_revenue,
+      actual: actual_revenue,
+      plan: plan_schedules.sum(&:planned_revenue),
       plan_schedules: plan_schedules,
+      plan_schedule_id: plan_schedules.first&.id,
+      is_today: date == Date.today,
       achievement_rate: achievement_rate
     }
   end
+
 
   def daily_target(date)
     daily_target_record = @budget.daily_targets.find_by(target_date: date)
