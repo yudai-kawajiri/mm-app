@@ -29,6 +29,6 @@ class PlanSchedulesController < ApplicationController
   private
 
   def plan_schedule_params
-    params.require(:plan_schedule).permit(:scheduled_date, :actual_revenue)
+    params.require(:plan_schedule).permit(:scheduled_date, :planned_revenue, :actual_revenue)
   end
 end
