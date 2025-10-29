@@ -40,6 +40,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # 月間予算
+  resources :monthly_budgets, only: [:create, :update]  # ← この行を追加
+
   # APIルーティングの追加
   # /api/v1/ のネームスペースでAPIを分離
   namespace :api do
