@@ -111,6 +111,26 @@
                         実績: <%= number_to_currency(day[:actual], unit: "¥", precision: 0) %>
                       </div>
 
+                      <!-- 達成率表示 -->
+                      <% if day_data[:achievement_rate].present? %>
+                        <div class="mt-1">
+                          <%
+                            # 達成率に応じた色分け
+                            badge_class = if day_data[:achievement_rate] >= 100
+                                            'bg-success'
+                                          elsif day_data[:achievement_rate] >= 80
+                                            'bg-warning text-dark'
+                                          else
+                                            'bg-danger'
+                                          end
+                          %>
+                          <span class="badge <%= badge_class %> small">
+                            達成率: <%= day_data[:achievement_rate] %>%
+                          </span>
+                        </div>
+                      <% end %>
+
+
                       <!-- 計画 -->
                       <div class="small text-info">
                         計画: <%= number_to_currency(day[:plan], unit: "¥", precision: 0) %>
