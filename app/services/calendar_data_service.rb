@@ -53,28 +53,32 @@ class CalendarDataService
     )
   end
 
+
   def build_day_data(date)
-  daily_target_record = @budget.daily_targets.find_by(target_date: date)
-  target = daily_target_record&.target_amount || 0
+    daily_target = @daily_targets.find { |dt| dt.target_date == date }
+    plan_schedules = @plan_schedules.select { |ps| ps.scheduled_date == date }
 
-  # 実績のあるPlanScheduleを取得（最初の1件のみ）
-  plan_schedule_with_actual = @budget.plan_schedules
-                                      .where(scheduled_date: date)
-                                      .where.not(actual_revenue: nil)
-                                      .first
+    target_amount = daily_target&.target_amount || 0
+    actual_revenue = plan_schedules.sum(&:actual_revenue)
 
-  actual = daily_actual(date)
-  plan = daily_plan(date)
+    # 達成率計算（ゼロ除算対策）
+    achievement_rate = if target_amount > 0
+                        ((actual_revenue.to_f / target_amount) * 100).round(1)
+                      else
+                        nil
+                      end
 
-  {
-    date: date,
-    daily_target_id: daily_target_record&.id,
-    plan_schedule_id: plan_schedule_with_actual&.id,
-    target: target,
-    actual: actual,
-    plan: plan,
-    is_today: date == Date.today
-  }
+    {
+      date: date,
+      target: target_amount,
+      daily_target_id: daily_target&.id,
+      actual: actual_revenue,
+      plan: plan_schedules.sum(&:planned_revenue),
+      plan_schedules: plan_schedules,
+      plan_schedule_id: plan_schedules.first&.id,
+      is_today: date == Date.today,
+      achievement_rate: achievement_rate
+    }
   end
 
 
@@ -96,4 +100,5 @@ class CalendarDataService
           .where.not(planned_revenue: nil)
           .sum(:planned_revenue)
   end
+
 end

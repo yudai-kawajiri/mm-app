@@ -16,6 +16,70 @@
     </div>
   </div>
 
+   <!-- 月間サマリー -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title"> 月間サマリー</h5>
+      <div class="row">
+        <%
+          monthly_target = @calendar_data.flatten.compact.sum { |day| day[:target] || 0 }
+          monthly_actual = @calendar_data.flatten.compact.sum { |day| day[:actual] || 0 }
+          monthly_achievement = if monthly_target > 0
+                                  ((monthly_actual.to_f / monthly_target) * 100).round(1)
+                                else
+                                  0
+                                end
+
+          summary_badge_class = if monthly_achievement >= 100
+                                  'bg-success'
+                                elsif monthly_achievement >= 80
+                                  'bg-warning text-dark'
+                                else
+                                  'bg-danger'
+                                end
+        %>
+
+        <div class="col-md-3">
+          <div class="text-muted small">月間目標</div>
+          <div class="h5">¥<%= number_with_delimiter(monthly_target) %></div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="text-muted small">月間実績</div>
+          <div class="h5">¥<%= number_with_delimiter(monthly_actual) %></div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="text-muted small">差額</div>
+          <div class="h5 <%= monthly_actual >= monthly_target ? 'text-success' : 'text-danger' %>">
+            ¥<%= number_with_delimiter(monthly_actual - monthly_target) %>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="text-muted small">月間達成率</div>
+          <div class="h5">
+            <span class="badge <%= summary_badge_class %>">
+              <%= monthly_achievement %>%
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- プログレスバー -->
+      <div class="progress mt-3" style="height: 25px;">
+        <div class="progress-bar <%= summary_badge_class %>"
+             role="progressbar"
+             style="width: <%= [monthly_achievement, 100].min %>%;"
+             aria-valuenow="<%= monthly_achievement %>"
+             aria-valuemin="0"
+             aria-valuemax="100">
+          <%= monthly_achievement %>%
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 予算未設定の警告 -->
   <% unless @budget %>
     <div class="alert alert-warning" role="alert">
@@ -110,6 +174,25 @@
                       <div class="small <%= day[:actual] > 0 ? 'text-success fw-bold' : 'text-muted' %>">
                         実績: <%= number_to_currency(day[:actual], unit: "¥", precision: 0) %>
                       </div>
+
+                      <!-- 達成率表示 -->
+                      <% if day[:achievement_rate].present? %>
+                        <div class="mt-1">
+                          <%
+                            # 達成率に応じた色分け
+                            badge_class = if day[:achievement_rate] >= 100
+                                            'bg-success'
+                                          elsif day[:achievement_rate] >= 80
+                                            'bg-warning text-dark'
+                                          else
+                                            'bg-danger'
+                                          end
+                          %>
+                          <span class="badge <%= badge_class %> small">
+                            達成率: <%= day[:achievement_rate] %>%
+                          </span>
+                        </div>
+                      <% end %>
 
                       <!-- 計画 -->
                       <div class="small text-info">
