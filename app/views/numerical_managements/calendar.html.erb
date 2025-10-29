@@ -148,3 +148,43 @@
   </div>
 </div>
 
+<!-- 日別目標編集モーダル用JavaScript -->
+<script>
+function setEditModalData(button) {
+  // ボタンから data-* 属性を取得
+  const date = button.getAttribute('data-date');
+  const dateDisplay = button.getAttribute('data-date-display');
+  const targetId = button.getAttribute('data-target-id');
+  const targetAmount = button.getAttribute('data-target-amount');
+
+  // モーダル内の要素を取得
+  const modal = document.getElementById('editDailyTargetModal');
+  const form = modal.querySelector('form');
+  const dateSpan = modal.querySelector('#editTargetDate');
+  const amountInput = modal.querySelector('#editTargetAmount');
+
+  // フォームのactionを設定（targetIdがある場合のみ）
+  if (targetId && targetId !== '') {
+    form.action = `/daily_targets/${targetId}`;
+  } else {
+    // 新規作成の場合は後で実装
+    form.action = '#';
+  }
+
+  // 日付表示を設定
+  dateSpan.textContent = dateDisplay;
+
+  // 目標金額を設定
+  amountInput.value = targetAmount || '';
+
+  // 隠しフィールドに日付を設定（今後の新規作成用）
+  let dateHiddenInput = form.querySelector('input[name="daily_target[target_date]"]');
+  if (!dateHiddenInput) {
+    dateHiddenInput = document.createElement('input');
+    dateHiddenInput.type = 'hidden';
+    dateHiddenInput.name = 'daily_target[target_date]';
+    form.appendChild(dateHiddenInput);
+  }
+  dateHiddenInput.value = date;
+}
+</script>
