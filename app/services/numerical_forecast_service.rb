@@ -1,5 +1,4 @@
-# 数値予測サービス
-# 月末の売上予測、必要調整額、アクションプランを計算
+# app/services/numerical_forecast_service.rb
 class NumericalForecastService
   attr_reader :user, :year, :month, :budget
 
@@ -7,7 +6,7 @@ class NumericalForecastService
     @user = user
     @year = year.to_i
     @month = month.to_i
-    @budget = find_or_create_budget
+    @budget = find_budget
     @today = Date.current
   end
 
@@ -23,19 +22,17 @@ class NumericalForecastService
 
   private
 
-  # 予算を取得または作成
-  def find_or_create_budget
+  # 予算を取得（なければnil）
+  def find_budget
     budget_month = Date.new(@year, @month, 1)
-    MonthlyBudget.find_or_create_by!(
+    MonthlyBudget.find_by(
       user: @user,
       budget_month: budget_month
-    ) do |b|
-      b.target_amount = 0
-    end
+    )
   end
 
   # 目標金額
   def target_amount
-    @budget.target_amount
+    @budget&.target_amount || 0
   end
 end

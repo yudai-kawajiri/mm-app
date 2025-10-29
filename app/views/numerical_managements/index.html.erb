@@ -19,40 +19,40 @@
   </div>
 
   <!-- サマリーカード -->
-  <div class="row g-3 mb-4">
-    <div class="col-md-3">
-      <div class="card border-primary">
-        <div class="card-body p-3">
-          <h6 class="card-title text-primary mb-2">月間予算</h6>
-          <p class="h4 mb-0">¥5,000,000</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card border-success">
-        <div class="card-body p-3">
-          <h6 class="card-title text-success mb-2">実績売上</h6>
-          <p class="h4 mb-0">¥2,500,000</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card border-info">
-        <div class="card-body p-3">
-          <h6 class="card-title text-info mb-2">計画売上</h6>
-          <p class="h4 mb-0">¥1,800,000</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card border-warning">
-        <div class="card-body p-3">
-          <h6 class="card-title text-warning mb-2">予測売上</h6>
-          <p class="h4 mb-0">¥4,300,000</p>
-        </div>
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card border-primary">
+      <div class="card-body p-3">
+        <h6 class="card-title text-primary mb-2">月間予算</h6>
+        <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:target_total] || 0), unit: "¥", precision: 0) %></p>
       </div>
     </div>
   </div>
+  <div class="col-md-3">
+    <div class="card border-success">
+      <div class="card-body p-3">
+        <h6 class="card-title text-success mb-2">実績売上</h6>
+        <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:actual_total] || 0), unit: "¥", precision: 0) %></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-info">
+      <div class="card-body p-3">
+        <h6 class="card-title text-info mb-2">計画売上</h6>
+        <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:plan_total] || 0), unit: "¥", precision: 0) %></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-warning">
+      <div class="card-body p-3">
+        <h6 class="card-title text-warning mb-2">予測売上</h6>
+        <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:forecast_total] || 0), unit: "¥", precision: 0) %></p>
+      </div>
+    </div>
+  </div>
+</div>
 
   <!-- 月末予測 3グループ横並び -->
   <div class="row g-3 mb-4">
