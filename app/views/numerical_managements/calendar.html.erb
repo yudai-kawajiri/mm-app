@@ -1,249 +1,49 @@
-<div class="container-fluid py-4" data-controller="calendar">
-  <!-- ヘッダー: タイトルと年月選択 -->
+<!-- app/views/numerical_managements/calendar.html.erb -->
+<div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">
-      <i class="bi bi-calendar3"></i>
-      予算管理カレンダー
-    </h1>
+    <h1 class="h3 mb-0">製造計画カレンダー</h1>
 
-    <!-- ビュー切り替え -->
-    <div class="btn-group" role="group">
-      <%= link_to numerical_managements_path(year: @current_date.year, month: @current_date.month),
-                  class: "btn btn-outline-primary" do %>
-        <i class="bi bi-table"></i> テーブル表示
-      <% end %>
-      <%= link_to calendar_numerical_managements_path(year: @current_date.year, month: @current_date.month),
-                  class: "btn btn-primary active" do %>
-        <i class="bi bi-calendar3"></i> カレンダー表示
-      <% end %>
-    </div>
-  </div>
+    <div class="d-flex align-items-center gap-3">
+      <!-- 月選択フォーム -->
+      <form method="get" class="d-flex align-items-center gap-2">
+        <label class="text-muted mb-0">対象月:</label>
+        <input type="month" name="month" value="<%= @selected_date.strftime('%Y-%m') %>" class="form-control form-control-sm" style="width: 150px;">
+        <button type="submit" class="btn btn-primary btn-sm">表示</button>
+      </form>
 
-  <!-- 年月選択フォーム -->
-  <div class="card mb-4">
-    <div class="card-body">
-      <%= form_with url: calendar_numerical_managements_path, method: :get, local: true, class: "row g-3 align-items-center" do |f| %>
-        <div class="col-auto">
-          <label class="form-label mb-0">表示期間</label>
-        </div>
-        <div class="col-auto">
-          <%= f.select :year,
-              options_for_select((Date.current.year - 2..Date.current.year + 1).to_a, @current_date.year),
-              {},
-              { class: "form-select" } %>
-        </div>
-        <div class="col-auto">
-          <span class="mx-2">年</span>
-        </div>
-        <div class="col-auto">
-          <%= f.select :month,
-              options_for_select((1..12).to_a, @current_date.month),
-              {},
-              { class: "form-select" } %>
-        </div>
-        <div class="col-auto">
-          <span class="mx-2">月</span>
-        </div>
-        <div class="col-auto">
-          <%= f.submit '表示', class: "btn btn-primary" %>
-        </div>
-
-        <!-- 月移動ボタン -->
-        <div class="col-auto ms-auto">
-          <%= link_to calendar_numerical_managements_path(year: @current_date.prev_month.year, month: @current_date.prev_month.month),
-                      class: "btn btn-outline-secondary" do %>
-            <i class="bi bi-chevron-left"></i> 前月
-          <% end %>
-          <%= link_to calendar_numerical_managements_path(year: Date.current.year, month: Date.current.month),
-                      class: "btn btn-outline-primary mx-2" do %>
-            今月
-          <% end %>
-          <%= link_to calendar_numerical_managements_path(year: @current_date.next_month.year, month: @current_date.next_month.month),
-                      class: "btn btn-outline-secondary" do %>
-            翌月 <i class="bi bi-chevron-right"></i>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-
-  <!-- 予算サマリーカード -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card text-bg-primary">
-        <div class="card-body">
-          <h6 class="card-title">目標予算</h6>
-          <h3 class="mb-0">
-            <%= @budget ? number_to_currency(@budget.target_amount, unit: "¥", precision: 0) : "未設定" %>
-          </h3>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card text-bg-info">
-        <div class="card-body">
-          <h6 class="card-title">計画売上</h6>
-          <h3 class="mb-0">
-            <%= number_to_currency(@plan_schedules.sum { |ps| ps.expected_revenue }, unit: "¥", precision: 0) %>
-          </h3>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card text-bg-success">
-        <div class="card-body">
-          <h6 class="card-title">実績売上</h6>
-          <h3 class="mb-0">
-            <%= number_to_currency(@plan_schedules.sum { |ps| ps.actual_revenue || 0 }, unit: "¥", precision: 0) %>
-          </h3>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card <%= @budget && @budget.achievement_rate >= 100 ? 'text-bg-success' : 'text-bg-warning' %>">
-        <div class="card-body">
-          <h6 class="card-title">達成率</h6>
-          <h3 class="mb-0">
-            <%= @budget ? "#{@budget.achievement_rate.round(1)}%" : "N/A" %>
-          </h3>
-        </div>
-      </div>
+      <!-- ダッシュボードに戻るボタン -->
+      <%= link_to "ダッシュボードに戻る", numerical_managements_path(month: @selected_date.strftime('%Y-%m')), class: "btn btn-outline-secondary btn-sm" %>
     </div>
   </div>
 
   <!-- カレンダーグリッド -->
-  <div class="row">
-    <!-- 左側: カレンダー本体 -->
-    <div class="col-lg-9">
-      <div class="card">
-        <div class="card-body p-0">
-          <!-- 曜日ヘッダー -->
-          <div class="calendar-header d-flex border-bottom">
-            <% %w[日 月 火 水 木 金 土].each_with_index do |day, index| %>
-              <div class="calendar-day-header flex-fill text-center py-2 <%= 'text-danger' if index == 0 %> <%= 'text-primary' if index == 6 %>">
-                <strong><%= day %></strong>
-              </div>
-            <% end %>
-          </div>
-
-          <!-- カレンダーグリッド -->
-          <div class="calendar-grid">
-            <% @calendar_weeks.each do |week| %>
-              <div class="calendar-week d-flex">
-                <% week.each do |day| %>
-                  <div class="calendar-day flex-fill border p-2
-                              <%= 'bg-light' unless day[:in_current_month] %>
-                              <%= 'border-primary border-2' if day[:date] == Date.current %>"
-                       data-calendar-target="day"
-                       data-date="<%= day[:date].iso8601 %>"
-                       data-action="click->calendar#selectDay drop->calendar#handleDrop dragover->calendar#allowDrop">
-
-                    <!-- 日付ヘッダー -->
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="badge <%= day[:date] == Date.current ? 'bg-primary' : 'bg-secondary' %>">
-                        <%= day[:date].day %>
-                      </span>
-                      <% if day[:schedules].any? %>
-                        <small class="text-muted">
-                          <%= day[:schedules].count %>件
-                        </small>
-                      <% end %>
-                    </div>
-
-                    <!-- 計画リスト -->
-                    <div class="schedules-list">
-                      <% day[:schedules].each do |schedule| %>
-                        <div class="schedule-item mb-1 p-1 rounded bg-info bg-opacity-25 border border-info"
-                             data-schedule-id="<%= schedule.id %>">
-                          <small class="d-block text-truncate">
-                            <%= schedule.plan.name %>
-                          </small>
-                          <small class="text-muted">
-                            <%= number_to_currency(schedule.expected_revenue, unit: "¥", precision: 0) %>
-                          </small>
-                        </div>
-                      <% end %>
-                    </div>
-
-                    <!-- ドロップゾーン表示 -->
-                    <div class="drop-zone d-none" data-calendar-target="dropZone">
-                      <div class="text-center text-muted py-3">
-                        <i class="bi bi-plus-circle"></i>
-                        ドロップして配置
-                      </div>
-                    </div>
-                  </div>
-                <% end %>
-              </div>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 右側: 利用可能な計画リスト -->
-    <div class="col-lg-3">
-      <div class="card sticky-top" style="top: 20px;">
-        <div class="card-header">
-          <h6 class="mb-0">
-            <i class="bi bi-list-check"></i>
-            利用可能な計画
-          </h6>
-        </div>
-        <div class="card-body p-2" style="max-height: 600px; overflow-y: auto;">
-          <% if @available_plans.any? %>
-            <% @available_plans.each do |plan| %>
-              <div class="plan-item card mb-2 cursor-move"
-                   draggable="true"
-                   data-plan-id="<%= plan.id %>"
-                   data-action="dragstart->calendar#handleDragStart dragend->calendar#handleDragEnd">
-                <div class="card-body p-2">
-                  <h6 class="card-title mb-1 small">
-                    <%= plan.name %>
-                  </h6>
-                  <p class="card-text mb-1">
-                    <span class="badge bg-secondary"><%= plan.category&.name %></span>
-                  </p>
-                  <p class="card-text mb-0">
-                    <small class="text-muted">
-                      予定: <%= number_to_currency(plan.expected_revenue, unit: "¥", precision: 0) %>
-                    </small>
-                  </p>
-                </div>
-              </div>
-            <% end %>
-          <% else %>
-            <div class="text-center text-muted py-4">
-              <i class="bi bi-inbox"></i>
-              <p class="mb-0">利用可能な計画がありません</p>
-            </div>
-          <% end %>
-        </div>
-      </div>
+  <div class="card">
+    <div class="card-body">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>日</th>
+            <th>月</th>
+            <th>火</th>
+            <th>水</th>
+            <th>木</th>
+            <th>金</th>
+            <th>土</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- カレンダーの日付セルをここに追加（次のコミットで実装） -->
+          <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+            <td>5</td>
+            <td>6</td>
+            <td>7</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
-
-<style>
-  .calendar-day {
-    min-height: 120px;
-    position: relative;
-  }
-
-  .cursor-move {
-    cursor: move;
-  }
-
-  .calendar-day.drag-over {
-    background-color: #e3f2fd !important;
-  }
-
-  .schedule-item {
-    font-size: 0.85rem;
-    cursor: pointer;
-  }
-
-  .schedule-item:hover {
-    opacity: 0.8;
-  }
-</style>
