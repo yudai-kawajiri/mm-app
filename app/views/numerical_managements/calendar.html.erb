@@ -50,9 +50,25 @@
                   <!-- 日付セル -->
                   <td class="p-2 <%= 'table-info' if day[:is_today] %>" style="height: 120px; vertical-align: top;">
                     <div class="d-flex flex-column h-100">
-                      <!-- 日付 -->
-                      <div class="fw-bold mb-2 <%= 'text-danger' if day[:date].sunday? %> <%= 'text-primary' if day[:date].saturday? %>">
-                        <%= day[:date].day %>
+                      <!-- 日付と編集ボタン -->
+                      <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="fw-bold <%= 'text-danger' if day[:date].sunday? %> <%= 'text-primary' if day[:date].saturday? %>">
+                          <%= day[:date].day %>
+                        </div>
+                        <% if @budget %>
+                          <button type="button"
+                                  class="btn btn-sm btn-outline-secondary"
+                                  style="padding: 0 4px; font-size: 0.7rem;"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#editDailyTargetModal"
+                                  data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
+                                  data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
+                                  data-target-id="<%= day[:daily_target_id] %>"
+                                  data-target-amount="<%= day[:target] %>"
+                                  onclick="setEditModalData(this)">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                        <% end %>
                       </div>
 
                       <!-- 目標 -->
