@@ -58,13 +58,13 @@ class CalendarDataService
     actual = daily_actual(date)
     plan = daily_plan(date)
 
-    {
-      date: date,
-      target: target,
-      actual: actual,
-      plan: plan,
-      is_today: date == Date.today
-    }
+  {
+    date: date,
+    target: target,
+    actual: actual,
+    plan: plan,
+    is_today: date == Date.today
+  }
   end
 
   def daily_target(date)
