@@ -24,6 +24,21 @@ class NumericalManagementsController < ApplicationController
       return
     end
 
+    def calendar
+      # 月選択パラメータの取得
+      month_param = params[:month] || Date.today.strftime('%Y-%m')
+      @selected_date = Date.parse("#{month_param}-01")
+
+      # MonthlyBudgetを取得
+      @budget = MonthlyBudget.find_by(
+      user: current_user,
+      budget_month: @selected_date.beginning_of_month
+      )
+
+      # カレンダー表示用のデータを準備（次のコミットで実装）
+      @calendar_data = []
+    end
+
     # 予測データを取得
     forecast_service = NumericalForecastService.new(current_user, @selected_date.year, @selected_date.month)
     @forecast_data = forecast_service.calculate
