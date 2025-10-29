@@ -27,17 +27,21 @@ class Plan < ApplicationRecord
     where(category_id: category_id) if category_id.present?
   }
 
-  # 予定売上を計算（商品の売価 × 生産数量の合計）
   def expected_revenue
-    plan_products.includes(:product).sum do |pp|
-      pp.product.price * pp.production_count
-    end
+  plan_products.includes(:product).sum do |pp|
+    # productがnilでも安全に0を返す
+    price = pp.product&.price.to_i
+    # production_countがnilの場合は0として扱う
+    count = pp.production_count.to_i
+    price * count
   end
+end
 
   # ドロップダウン用の表示名（計画名と合計金額）
   def name_with_total
     total = expected_revenue
-    "#{name}（¥#{total.to_s(:delimited)}）"
+    formatted_total = ActionController::Base.helpers.number_with_delimiter(total)
+    "#{name}（¥#{formatted_total}）"
   end
 
   # 指定日にスケジュールを追加

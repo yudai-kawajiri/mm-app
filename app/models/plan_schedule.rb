@@ -1,6 +1,7 @@
 class PlanSchedule < ApplicationRecord
   # 関連付け (Association)
   belongs_to :plan
+  belongs_to :user
 
   # バリデーション (Validation)
   # 実施日は必須入力
