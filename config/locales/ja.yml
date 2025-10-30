@@ -347,5 +347,7 @@ ja:
           discontinued: "販売中止"
       plan:
         status:
-          draft: "編集中"
+          draft: "下書き"
+          active: "アクティブ"
           completed: "完了"
+          cancelled: "キャンセル"
