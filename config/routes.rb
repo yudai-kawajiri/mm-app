@@ -99,6 +99,7 @@ Rails.application.routes.draw do
   resources :plans do
     member do
       patch :update_status
+      post :copy
     end
   end
 
