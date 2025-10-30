@@ -56,19 +56,19 @@
           %>
 
           <div class="col-md-3">
-            <div class="text-muted small">月間目標</div>
-            <div class="h5">¥<%= number_with_delimiter(monthly_target) %></div>
+            <div class="text-muted small">月間予算</div>
+            <div class="h5">¥<%= number_with_delimiter(monthly_target.to_i) %></div>
           </div>
 
           <div class="col-md-3">
             <div class="text-muted small">月間実績</div>
-            <div class="h5">¥<%= number_with_delimiter(monthly_actual) %></div>
+            <div class="h5">¥<%= number_with_delimiter(monthly_actual.to_i) %></div>
           </div>
 
           <div class="col-md-3">
-            <div class="text-muted small">差額</div>
+            <div class="text-muted small">予算差</div>
             <div class="h5 <%= monthly_actual >= monthly_target ? 'text-success' : 'text-danger' %>">
-              ¥<%= number_with_delimiter(monthly_actual - monthly_target) %>
+                ¥<%= number_with_delimiter((monthly_actual - monthly_target).to_i) %>
             </div>
           </div>
 
@@ -88,9 +88,52 @@
     <% unless @budget %>
       <div class="alert alert-warning" role="alert">
         <i class="bi bi-exclamation-triangle"></i> この月の予算が設定されていません。
-        <%= link_to "予算を設定する", numerical_managements_path(month: @selected_date.strftime('%Y-%m')), class: "alert-link" %>
+        <a href="#" class="alert-link" data-bs-toggle="modal" data-bs-target="#editBudgetModal">予算を設定する</a>
       </div>
     <% end %>
+
+    <!-- 月間予算入力モーダル -->
+    <div class="modal fade" id="editBudgetModal" tabindex="-1" aria-labelledby="editBudgetModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editBudgetModalLabel">月間予算設定</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <%= form_with url: update_budget_numerical_managements_path, method: :post, local: true do |f| %>
+            <%= hidden_field_tag :year, @selected_date.year %>
+            <%= hidden_field_tag :month, @selected_date.month %>
+
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">対象月</label>
+                <input type="month" class="form-control" value="<%= @selected_date.strftime('%Y-%m') %>" readonly>
+              </div>
+
+              <div class="mb-3">
+                <%= label_tag 'monthly_budget[target_amount]', "月間予算（円）", class: "form-label" %>
+                <%= number_field_tag 'monthly_budget[target_amount]', @budget&.target_amount, class: "form-control", min: 0, step: 1, required: true, placeholder: "例: 1600000" %>
+              </div>
+
+              <div class="mb-3">
+                <%= label_tag 'monthly_budget[note]', "備考", class: "form-label" %>
+                <%= text_area_tag 'monthly_budget[note]', @budget&.note, class: "form-control", rows: 3, placeholder: "任意" %>
+              </div>
+
+              <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle"></i> 日別目標は自動的に月間予算から均等配分されます。個別調整はカレンダーから可能です。
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+              <%= f.submit @budget ? "更新" : "作成", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
 
     <!-- カレンダーグリッド -->
     <div class="card">
@@ -139,6 +182,7 @@
                                 <i class="bi bi-pencil"></i>
                               </button>
 
+
                               <!-- 計画追加ボタン -->
                               <button type="button"
                                       class="btn btn-sm btn-outline-info"
@@ -151,19 +195,21 @@
                                 <i class="bi bi-calendar-plus"></i>
                               </button>
 
-                              <!-- 実績入力ボタン -->
-                              <button type="button"
-                                      class="btn btn-sm btn-outline-success"
-                                      style="padding: 0 4px; font-size: 0.7rem;"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#editActualRevenueModal"
-                                      data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
-                                      data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
-                                      data-plan-schedule-id="<%= day[:plan_schedule_id] %>"
-                                      data-actual-revenue="<%= day[:actual] %>"
-                                      onclick="setActualModalData(this)">
-                                <i class="bi bi-currency-yen"></i>
-                              </button>
+                              <!-- 実績入力ボタン（計画がある場合のみ表示） -->
+                              <% if day[:plan_schedules].present? %>
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-success"
+                                        style="padding: 0 4px; font-size: 0.7rem;"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editActualRevenueModal"
+                                        data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
+                                        data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
+                                        data-plan-schedule-id="<%= day[:plan_schedule_id] %>"
+                                        data-actual-revenue="<%= day[:actual] %>"
+                                        onclick="setActualModalData(this)">
+                                  <i class="bi bi-currency-yen"></i>
+                                </button>
+                              <% end %>
                             </div>
                           <% end %>
                         </div>
@@ -200,6 +246,7 @@
                         <div class="small text-info">
                           計画: <%= number_to_currency(day[:plan], unit: "¥", precision: 0) %>
                         </div>
+
                       </div>
                     </td>
                   <% end %>
@@ -245,9 +292,12 @@
       <%= form_with model: DailyTarget.new,
                     url: "#",
                     method: :patch,
-                    local: false,
-                    id: "editDailyTargetForm",
-                    data: { turbo_frame: "calendar_content" } do |f| %>
+                    local: true,
+                    id: "editDailyTargetForm" do |f| %>
+
+        <!-- ★★★ 修正: hidden fieldを最初から含める ★★★ -->
+        <%= f.hidden_field :target_date, id: "editTargetDateHidden" %>
+
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label">対象日</label>
@@ -285,10 +335,12 @@
       <%= form_with model: PlanSchedule.new,
                     url: "#",
                     method: :post,
-                    local: false,
-                    id: "editActualRevenueForm",
-                    data: { turbo_frame: "calendar_content" } do |f| %>
-        <%= hidden_field_tag :month, @selected_date.strftime('%Y-%m') %>
+                    local: true,
+                    id: "editActualRevenueForm" do |f| %>
+
+        <!-- ★★★ 修正: hidden fieldを最初から含める ★★★ -->
+        <%= f.hidden_field :scheduled_date, id: "editActualDateHidden" %>
+
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label">対象日</label>
@@ -321,11 +373,7 @@
       <%= form_with model: PlanSchedule.new,
                     url: plan_schedules_path,
                     method: :post,
-                    local: false,
-                    data: {
-                      controller: "plan-assignment",
-                      turbo_frame: "calendar_content"
-                    } do |f| %>
+                    local: true do |f| %>
         <div class="modal-header">
           <h5 class="modal-title" id="assignPlanModalLabel">計画を追加</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -384,34 +432,21 @@
 <!-- JavaScript -->
 <script>
 // カテゴリ選択時に計画セレクトボックスを更新
-document.addEventListener('DOMContentLoaded', function() {
-  initializePlanSelection();
-});
-
-document.addEventListener('turbo:load', function() {
-  initializePlanSelection();
-});
-
+// ★★★ Turbo対応: DOMContentLoadedとturbo:load両方で実行 ★★★
 function initializePlanSelection() {
   const categorySelect = document.getElementById('category_select');
   const planSelect = document.getElementById('plan_select');
 
-  if (!categorySelect || !planSelect) {
-    console.log('Required elements not found');
-    return;
-  }
+  if (!categorySelect || !planSelect) return;
 
   // カテゴリごとの計画データを準備
   const plansByCategory = <%= raw @plans_by_category.transform_values { |plans|
     plans.map { |p| { id: p.id, name: p.name, status: p.status_i18n, revenue: p.expected_revenue } }
   }.to_json %>;
 
-  console.log('Plans by category:', plansByCategory);
-
   // カテゴリ選択時のイベントリスナー
   categorySelect.addEventListener('change', function() {
     const selectedCategory = this.value;
-    console.log('Selected category:', selectedCategory);
 
     // 計画セレクトボックスをクリア
     planSelect.innerHTML = '<option value="">-- 計画を選択 --</option>';
@@ -428,7 +463,6 @@ function initializePlanSelection() {
 
       // 計画セレクトボックスを有効化
       planSelect.disabled = false;
-      console.log('Plan select enabled with', plansByCategory[selectedCategory].length, 'plans');
     } else {
       // カテゴリが選択されていない場合は無効化
       planSelect.disabled = true;
@@ -442,7 +476,7 @@ function initializePlanSelection() {
     }
   });
 
-  // 計画選択時に計画高を自動入力
+  // 計画選択時に売上を自動入力
   planSelect.addEventListener('change', function() {
     const selectedOption = this.options[this.selectedIndex];
     const revenue = selectedOption.dataset.revenue;
@@ -450,7 +484,17 @@ function initializePlanSelection() {
 
     if (revenueField && revenue) {
       revenueField.value = revenue;
-      console.log('Revenue set to:', revenue);
+    }
+  });
+
+  // 計画選択時に売上を自動入力
+  planSelect.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const revenue = selectedOption.dataset.revenue;
+    const revenueField = document.querySelector('input[name="plan_schedule[planned_revenue]"]');
+
+    if (revenueField && revenue) {
+      revenueField.value = revenue;
     }
   });
 
@@ -469,6 +513,10 @@ function initializePlanSelection() {
     });
   }
 }
+
+// DOMContentLoadedとturbo:load両方で初期化
+document.addEventListener('DOMContentLoaded', initializePlanSelection);
+document.addEventListener('turbo:load', initializePlanSelection);
 
 // Turbo送信成功後にモーダルを閉じる
 document.addEventListener('turbo:submit-end', function(event) {
@@ -543,7 +591,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// 日別目標編集モーダルの設定
+// ★★★ 修正: 日別目標編集モーダルの設定 ★★★
 function setEditModalData(button) {
   const date = button.getAttribute('data-date');
   const dateDisplay = button.getAttribute('data-date-display');
@@ -553,6 +601,7 @@ function setEditModalData(button) {
   const modal = document.getElementById('editDailyTargetModal');
   const form = modal.querySelector('form');
   const dateSpan = modal.querySelector('#editTargetDate');
+  const dateHiddenInput = modal.querySelector('#editTargetDateHidden');
   const amountInput = modal.querySelector('#editTargetAmount');
 
   if (targetId && targetId !== '' && targetId !== 'null') {
@@ -581,21 +630,17 @@ function setEditModalData(button) {
     }
   }
 
+  // 表示用日付と値を設定
   dateSpan.value = dateDisplay;
   amountInput.value = targetAmount || '';
 
-  // target_dateフィールドを設定
-  let dateHiddenInput = form.querySelector('input[name="daily_target[target_date]"]');
-  if (!dateHiddenInput) {
-    dateHiddenInput = document.createElement('input');
-    dateHiddenInput.type = 'hidden';
-    dateHiddenInput.name = 'daily_target[target_date]';
-    form.appendChild(dateHiddenInput);
+  // hidden fieldに日付を設定
+  if (dateHiddenInput) {
+    dateHiddenInput.value = date;
   }
-  dateHiddenInput.value = date;
 }
 
-// 実績入力モーダルの設定
+// ★★★ 修正: 実績入力モーダルの設定 ★★★
 function setActualModalData(button) {
   const date = button.getAttribute('data-date');
   const dateDisplay = button.getAttribute('data-date-display');
@@ -605,10 +650,11 @@ function setActualModalData(button) {
   const modal = document.getElementById('editActualRevenueModal');
   const form = modal.querySelector('form');
   const dateSpan = modal.querySelector('#editActualDate');
+  const dateHiddenInput = modal.querySelector('#editActualDateHidden');
   const revenueInput = modal.querySelector('#editActualRevenue');
   const submitButton = form.querySelector('input[type="submit"]');
 
-  if (planScheduleId && planScheduleId !== '') {
+  if (planScheduleId && planScheduleId !== '' && planScheduleId !== 'null') {
     form.action = `/plan_schedules/${planScheduleId}`;
     let methodInput = form.querySelector('input[name="_method"]');
     if (!methodInput) {
@@ -628,17 +674,23 @@ function setActualModalData(button) {
     if (submitButton) submitButton.value = '保存';
   }
 
+  // 表示用日付と値を設定
   dateSpan.value = dateDisplay;
   revenueInput.value = actualRevenue || '';
 
-  let dateHiddenInput = form.querySelector('input[name="plan_schedule[scheduled_date]"]');
-  if (!dateHiddenInput) {
-    dateHiddenInput = document.createElement('input');
-    dateHiddenInput.type = 'hidden';
-    dateHiddenInput.name = 'plan_schedule[scheduled_date]';
-    form.appendChild(dateHiddenInput);
+  // hidden fieldに日付を設定
+  if (dateHiddenInput) {
+    dateHiddenInput.value = date;
   }
-  dateHiddenInput.value = date;
 }
-</script>
 
+// ページ読み込み時に初期化
+document.addEventListener('DOMContentLoaded', function() {
+  initializePlanSelection();
+});
+
+// Turboでページ遷移したときも初期化
+document.addEventListener('turbo:load', function() {
+  initializePlanSelection();
+});
+</script>
