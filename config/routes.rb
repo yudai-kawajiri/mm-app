@@ -96,5 +96,10 @@ Rails.application.routes.draw do
   end
 
   # Planのルーティング
-  resources :plans
+  resources :plans do
+    member do
+      patch :update_status
+    end
+  end
+
 end
