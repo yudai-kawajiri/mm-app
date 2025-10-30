@@ -41,7 +41,39 @@ class PlansController < AuthenticatedController
     respond_to_destroy(@plan, success_path: plans_url)
   end
 
+  # ステータス更新アクション
+  def update_status
+    @plan = Plan.find(params[:id])
+    new_status = params[:status]
+
+    if Plan.statuses.keys.include?(new_status)
+      @plan.update(status: new_status)
+      status_text = t("activerecord.enums.plan.status.#{new_status}")
+      redirect_to plans_path, notice: "計画「#{@plan.name}」のステータスを「#{status_text}」に変更しました。"
+    else
+      redirect_to plans_path, alert: '無効なステータスです。'
+    end
+  end
+
   private
+
+  def plan_params
+    params.require(:plan).permit(
+      :category_id,
+      :user_id,
+      :name,
+      :description,
+      :status,
+      # ネストしたリソースで使用
+      plan_products_attributes: [
+        :id,
+        :_destroy,
+        :product_id,
+        :production_count
+      ]
+    )
+  end
+
 
   def plan_params
     params.require(:plan).permit(
