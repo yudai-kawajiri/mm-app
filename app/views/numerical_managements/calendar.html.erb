@@ -104,6 +104,7 @@
           <%= form_with url: update_budget_numerical_managements_path, method: :post, local: true do |f| %>
             <%= hidden_field_tag :year, @selected_date.year %>
             <%= hidden_field_tag :month, @selected_date.month %>
+            <%= hidden_field_tag :return_to, 'calendar' %>
 
             <div class="modal-body">
               <div class="mb-3">
