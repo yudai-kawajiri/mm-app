@@ -11,16 +11,27 @@
     <button type="submit" class="btn btn-primary btn-sm">表示</button>
   </form>
 
-  <!-- カレンダービューへのリンク（追加） -->
+  <!-- カレンダービューへのリンク -->
   <%= link_to "カレンダー表示", calendar_numerical_managements_path(month: @selected_date.strftime('%Y-%m')), class: "btn btn-outline-primary btn-sm" %>
 
   <!-- 予算設定ボタン -->
-  <div>
+  <div class="d-flex gap-2">
     <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#budgetSettingModal">
       <i class="bi bi-gear"></i> 月間予算を設定
     </button>
+
+    <!-- ★★★ 追加: 予算削除ボタン ★★★ -->
+    <% if @budget %>
+      <%= button_to destroy_budget_numerical_managements_path(month: @selected_date.strftime('%Y-%m')),
+                    method: :delete,
+                    data: {
+                      turbo_confirm: "本当に削除しますか？\n\nこの月の予算と日別目標が全て削除されます。\nこの操作は取り消せません。"
+                    },
+                    class: "btn btn-outline-danger btn-sm" do %>
+        <i class="bi bi-trash"></i> 予算を削除
+      <% end %>
+    <% end %>
   </div>
-</div>
 </div>
 
 <!-- サマリーカード -->

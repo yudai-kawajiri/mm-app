@@ -71,7 +71,6 @@ class NumericalManagementsController < ApplicationController
       budget_month: budget_month
     )
 
-    # ★★★ 修正: assign_attributes + save パターンに変更 ★★★
     @budget.assign_attributes(budget_params)
 
     if @budget.save
@@ -83,6 +82,39 @@ class NumericalManagementsController < ApplicationController
     else
       redirect_to numerical_managements_path(month: budget_month.strftime('%Y-%m')),
                   alert: "予算の更新に失敗しました: #{@budget.errors.full_messages.join(', ')}"
+    end
+  end
+
+
+  # 月間予算削除機能
+  def destroy_budget
+    month_param = params[:month] || Date.today.strftime('%Y-%m')
+    budget_month = Date.parse("#{month_param}-01").beginning_of_month
+
+    @budget = MonthlyBudget.find_by(
+      user: current_user,
+      budget_month: budget_month
+    )
+
+    if @budget.nil?
+      redirect_to numerical_managements_path(month: month_param),
+                  alert: '予算が見つかりませんでした。'
+      return
+    end
+
+    # 権限チェック（念のため）
+    unless @budget.user_id == current_user.id
+      redirect_to numerical_managements_path(month: month_param),
+                  alert: '権限がありません。'
+      return
+    end
+
+    if @budget.destroy
+      redirect_to numerical_managements_path(month: month_param),
+                  notice: '予算を削除しました。日別目標も同時に削除されました。'
+    else
+      redirect_to numerical_managements_path(month: month_param),
+                  alert: "予算の削除に失敗しました: #{@budget.errors.full_messages.join(', ')}"
     end
   end
 
