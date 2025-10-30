@@ -313,27 +313,32 @@
           <!-- 日付フィールド（非表示） -->
           <%= f.hidden_field :scheduled_date, id: "plan_scheduled_date" %>
 
+          <!-- ❶ カテゴリ選択（新規追加） -->
+          <div class="mb-3">
+            <label class="form-label">カテゴリ</label>
+            <select class="form-select" id="category_select">
+              <option value="">-- カテゴリを選択 --</option>
+              <% @plans_by_category.keys.sort.each do |category_name| %>
+                <option value="<%= category_name %>"><%= category_name %></option>
+              <% end %>
+            </select>
+            <div class="form-text">まずカテゴリを選択してください</div>
+          </div>
+
+          <!-- ❷ 計画選択（修正版） -->
           <div class="mb-3">
             <%= f.label :plan_id, "計画を選択", class: "form-label" %>
             <select name="plan_schedule[plan_id]"
                     class="form-select"
+                    id="plan_select"
+                    disabled
                     required
                     data-plan-assignment-target="planSelect"
                     data-action="change->plan-assignment#updateRevenue">
-              <option value="">計画を選択してください</option>
-              <% @plans_by_category.each do |category_name, plans| %>
-                <optgroup label="<%= category_name %>">
-                  <% plans.each do |plan| %>
-                    <option value="<%= plan.id %>" data-revenue="<%= plan.expected_revenue %>">
-                      <%= plan.name %> (<%= plan.status_i18n %>) - ¥<%= number_with_delimiter(plan.expected_revenue) %>
-                    </option>
-                  <% end %>
-                </optgroup>
-              <% end %>
+              <option value="">-- まずカテゴリを選択してください --</option>
             </select>
-            <div class="form-text">カテゴリごとにグループ化されています</div>
+            <div class="form-text">カテゴリを選択すると計画が表示されます</div>
           </div>
-
 
           <!-- 計画高（自動入力、読み取り専用） -->
           <div class="mb-3">
@@ -357,6 +362,67 @@
 
 <!-- JavaScript -->
 <script>
+
+// カテゴリ選択時に計画セレクトボックスを更新
+document.addEventListener('DOMContentLoaded', function() {
+  const categorySelect = document.getElementById('category_select');
+  const planSelect = document.getElementById('plan_select');
+
+  if (!categorySelect || !planSelect) return;
+
+  // カテゴリごとの計画データを準備
+  const plansByCategory = <%= raw @plans_by_category.transform_values { |plans|
+    plans.map { |p| { id: p.id, name: p.name, status: p.status_i18n, revenue: p.expected_revenue } }
+  }.to_json %>;
+
+  // カテゴリ選択時のイベントリスナー
+  categorySelect.addEventListener('change', function() {
+    const selectedCategory = this.value;
+
+    // 計画セレクトボックスをクリア
+    planSelect.innerHTML = '<option value="">-- 計画を選択 --</option>';
+
+    if (selectedCategory && plansByCategory[selectedCategory]) {
+      // 選択されたカテゴリの計画を追加
+      plansByCategory[selectedCategory].forEach(function(plan) {
+        const option = document.createElement('option');
+        option.value = plan.id;
+        option.textContent = `${plan.name} (${plan.status}) - ¥${plan.revenue.toLocaleString()}`;
+        option.dataset.revenue = plan.revenue;
+        planSelect.appendChild(option);
+      });
+
+      // 計画セレクトボックスを有効化
+      planSelect.disabled = false;
+    } else {
+      // カテゴリが選択されていない場合は無効化
+      planSelect.disabled = true;
+      planSelect.innerHTML = '<option value="">-- まずカテゴリを選択してください --</option>';
+    }
+
+    // 計画高フィールドをクリア
+    const revenueField = document.querySelector('input[name="plan_schedule[planned_revenue]"]');
+    if (revenueField) {
+      revenueField.value = '';
+    }
+  });
+
+  // モーダルが閉じられた時にリセット
+  const assignPlanModal = document.getElementById('assignPlanModal');
+  if (assignPlanModal) {
+    assignPlanModal.addEventListener('hidden.bs.modal', function() {
+      categorySelect.value = '';
+      planSelect.innerHTML = '<option value="">-- まずカテゴリを選択してください --</option>';
+      planSelect.disabled = true;
+
+      const revenueField = document.querySelector('input[name="plan_schedule[planned_revenue]"]');
+      if (revenueField) {
+        revenueField.value = '';
+      }
+    });
+  }
+});
+
 // 計画追加ボタンクリック時に日付を設定
 function setDateForPlanModal(button, event) {
   console.log("=== setDateForPlanModal called ===");
