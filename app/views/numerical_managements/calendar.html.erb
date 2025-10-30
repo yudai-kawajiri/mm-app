@@ -1,698 +1,241 @@
-<!-- app/views/numerical_managements/calendar.html.erb -->
 <% content_for :title, t('numerical_managements.calendar.title') %>
+
+<%# app/views/numerical_managements/calendar.html.erb %>
 <div class="container-fluid py-4">
+  <%# ヘッダー部分 %>
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">製造計画カレンダー</h1>
+    <h1 class="h3 mb-0"><%= t('numerical_managements.calendar.title') %></h1>
 
     <div class="d-flex align-items-center gap-3">
-      <!-- 月選択フォーム -->
+      <%# 月選択フォーム %>
       <form method="get" class="d-flex align-items-center gap-2">
-        <label class="text-muted mb-0">対象月:</label>
+        <label class="text-muted mb-0"><%= t('numerical_managements.calendar.target_month') %>:</label>
         <input type="month" name="month" value="<%= @selected_date.strftime('%Y-%m') %>" class="form-control form-control-sm" style="width: 150px;">
-        <button type="submit" class="btn btn-primary btn-sm">表示</button>
+        <button type="submit" class="btn btn-primary btn-sm"><%= t('numerical_managements.calendar.display') %></button>
       </form>
 
-      <!-- ダッシュボードに戻るボタン -->
-      <%= link_to "ダッシュボードに戻る", numerical_managements_path(month: @selected_date.strftime('%Y-%m')), class: "btn btn-outline-secondary btn-sm" %>
+      <%# ダッシュボードに戻るボタン %>
+      <%= link_to t('numerical_managements.calendar.back_to_dashboard'),
+                  numerical_managements_path(month: @selected_date.strftime('%Y-%m')),
+                  class: "btn btn-outline-secondary btn-sm" %>
     </div>
   </div>
 
-  <!-- ★★★ Turbo Frame開始 ★★★ -->
+  <%# Turbo Frame %>
   <%= turbo_frame_tag "calendar_content" do %>
-    <!-- フラッシュメッセージ表示エリア -->
-    <% if flash[:notice] %>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <%= flash[:notice] %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <% end %>
-    <% if flash[:alert] %>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <%= flash[:alert] %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <% end %>
+    <%# 月間サマリー %>
+    <%= render 'monthly_summary', calendar_data: @calendar_data %>
 
-    <!-- 月間サマリー -->
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">月間サマリー</h5>
-        <div class="row">
-          <%
-            monthly_target = @calendar_data.flatten.compact.sum { |day| day[:target] || 0 }
-            monthly_actual = @calendar_data.flatten.compact.sum { |day| day[:actual] || 0 }
-            monthly_achievement = if monthly_target > 0
-                                    ((monthly_actual.to_f / monthly_target) * 100).round(1)
-                                  else
-                                    0
-                                  end
-
-            summary_badge_class = if monthly_achievement >= 100
-                                    'bg-success'
-                                  elsif monthly_achievement >= 80
-                                    'bg-warning text-dark'
-                                  else
-                                    'bg-danger'
-                                  end
-          %>
-
-          <div class="col-md-3">
-            <div class="text-muted small">月間予算</div>
-            <div class="h5">¥<%= number_with_delimiter(monthly_target.to_i) %></div>
-          </div>
-
-          <div class="col-md-3">
-            <div class="text-muted small">月間実績</div>
-            <div class="h5">¥<%= number_with_delimiter(monthly_actual.to_i) %></div>
-          </div>
-
-          <div class="col-md-3">
-            <div class="text-muted small">予算差</div>
-            <div class="h5 <%= monthly_actual >= monthly_target ? 'text-success' : 'text-danger' %>">
-                ¥<%= number_with_delimiter((monthly_actual - monthly_target).to_i) %>
-            </div>
-          </div>
-
-          <div class="col-md-3">
-            <div class="text-muted small">月間達成率</div>
-            <div class="h5">
-              <span class="badge <%= summary_badge_class %>">
-                <%= monthly_achievement %>%
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 予算未設定の警告 -->
+    <%# 予算未設定の警告 %>
     <% unless @budget %>
       <div class="alert alert-warning" role="alert">
-        <i class="bi bi-exclamation-triangle"></i> この月の予算が設定されていません。
-        <a href="#" class="alert-link" data-bs-toggle="modal" data-bs-target="#editBudgetModal">予算を設定する</a>
+        <i class="bi bi-exclamation-triangle"></i> <%= t('numerical_managements.calendar.no_budget_warning') %>
+        <a href="#" class="alert-link" data-bs-toggle="modal" data-bs-target="#editBudgetModal">
+          <%= t('numerical_managements.calendar.set_budget_link') %>
+        </a>
       </div>
     <% end %>
 
-    <!-- 月間予算入力モーダル -->
-    <div class="modal fade" id="editBudgetModal" tabindex="-1" aria-labelledby="editBudgetModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editBudgetModalLabel">月間予算設定</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-
-          <%= form_with url: update_budget_numerical_managements_path, method: :post, local: true do |f| %>
-            <%= hidden_field_tag :year, @selected_date.year %>
-            <%= hidden_field_tag :month, @selected_date.month %>
-            <%= hidden_field_tag :return_to, 'calendar' %>
-
-            <div class="modal-body">
-              <div class="mb-3">
-                <label class="form-label">対象月</label>
-                <input type="month" class="form-control" value="<%= @selected_date.strftime('%Y-%m') %>" readonly>
-              </div>
-
-              <div class="mb-3">
-                <%= label_tag 'monthly_budget[target_amount]', "月間予算（円）", class: "form-label" %>
-                <%= number_field_tag 'monthly_budget[target_amount]', @budget&.target_amount, class: "form-control", min: 0, step: 1, required: true, placeholder: "例: 1600000" %>
-              </div>
-
-              <div class="mb-3">
-                <%= label_tag 'monthly_budget[note]', "備考", class: "form-label" %>
-                <%= text_area_tag 'monthly_budget[note]', @budget&.note, class: "form-control", rows: 3, placeholder: "任意" %>
-              </div>
-
-              <div class="alert alert-info" role="alert">
-                <i class="bi bi-info-circle"></i> 日別目標は自動的に月間予算から均等配分されます。個別調整はカレンダーから可能です。
-              </div>
-            </div>
-
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-              <%= f.submit @budget ? "更新" : "作成", class: "btn btn-primary" %>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
-
-    <!-- カレンダーグリッド -->
-    <div class="card">
-      <div class="card-body">
-        <table class="table table-bordered text-center">
-          <thead class="table-light">
-            <tr>
-              <th style="width: 14.28%;">日</th>
-              <th style="width: 14.28%;">月</th>
-              <th style="width: 14.28%;">火</th>
-              <th style="width: 14.28%;">水</th>
-              <th style="width: 14.28%;">木</th>
-              <th style="width: 14.28%;">金</th>
-              <th style="width: 14.28%;">土</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @calendar_data.each do |week| %>
-              <tr>
-                <% week.each do |day| %>
-                  <% if day.nil? %>
-                    <!-- 空白セル -->
-                    <td class="bg-light"></td>
-                  <% else %>
-                    <!-- 日付セル -->
-                    <td class="p-2 <%= 'table-info' if day[:is_today] %>" style="height: 120px; vertical-align: top;">
-                      <div class="d-flex flex-column h-100">
-                        <!-- 日付と編集ボタン -->
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                          <div class="fw-bold <%= 'text-danger' if day[:date].sunday? %> <%= 'text-primary' if day[:date].saturday? %>">
-                            <%= day[:date].day %>
-                          </div>
-                          <% if @budget %>
-                            <div class="d-flex gap-1">
-                              <!-- 目標編集ボタン -->
-                              <button type="button"
-                                      class="btn btn-sm btn-outline-secondary"
-                                      style="padding: 0 4px; font-size: 0.7rem;"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#editDailyTargetModal"
-                                      data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
-                                      data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
-                                      data-target-id="<%= day[:daily_target_id] %>"
-                                      data-target-amount="<%= day[:target].to_i %>"
-                                      onclick="setEditModalData(this)">
-                                <i class="bi bi-pencil"></i>
-                              </button>
-
-
-                              <!-- 計画追加ボタン -->
-                              <button type="button"
-                                      class="btn btn-sm btn-outline-info"
-                                      style="padding: 0 4px; font-size: 0.7rem;"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#assignPlanModal"
-                                      data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
-                                      data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
-                                      onclick="setDateForPlanModal(this, event)">
-                                <i class="bi bi-calendar-plus"></i>
-                              </button>
-
-                              <!-- 実績入力ボタン（計画がある場合のみ表示） -->
-                              <% if day[:plan_schedules].present? %>
-                                <button type="button"
-                                        class="btn btn-sm btn-outline-success"
-                                        style="padding: 0 4px; font-size: 0.7rem;"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editActualRevenueModal"
-                                        data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
-                                        data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
-                                        data-plan-schedule-id="<%= day[:plan_schedule_id] %>"
-                                        data-actual-revenue="<%= day[:actual] %>"
-                                        onclick="setActualModalData(this)">
-                                  <i class="bi bi-currency-yen"></i>
-                                </button>
-                              <% end %>
-                            </div>
-                          <% end %>
-                        </div>
-
-                        <!-- 目標 -->
-                        <div class="small text-muted">
-                          目標: <%= number_to_currency(day[:target], unit: "¥", precision: 0) %>
-                        </div>
-
-                        <!-- 実績 -->
-                        <div class="small <%= day[:actual] > 0 ? 'text-success fw-bold' : 'text-muted' %>">
-                          実績: <%= number_to_currency(day[:actual], unit: "¥", precision: 0) %>
-                        </div>
-
-                        <!-- 達成率表示 -->
-                        <% if day[:achievement_rate].present? %>
-                          <div class="mt-1">
-                            <%
-                              badge_class = if day[:achievement_rate] >= 100
-                                              'bg-success'
-                                            elsif day[:achievement_rate] >= 80
-                                              'bg-warning text-dark'
-                                            else
-                                              'bg-danger'
-                                            end
-                            %>
-                            <span class="badge <%= badge_class %> small">
-                              達成率: <%= day[:achievement_rate] %>%
-                            </span>
-                          </div>
-                        <% end %>
-
-                        <!-- 計画 -->
-                        <div class="small text-info">
-                          計画: <%= number_to_currency(day[:plan], unit: "¥", precision: 0) %>
-                        </div>
-
-                      </div>
-                    </td>
-                  <% end %>
-                <% end %>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <%# カレンダーグリッド %>
+    <%= render 'calendar_grid', calendar_data: @calendar_data, budget: @budget %>
   <% end %>
-  <!-- ★★★ Turbo Frame終了 ★★★ -->
 
-  <!-- 凡例 -->
-  <div class="mt-3">
-    <div class="card">
-      <div class="card-body">
-        <h6 class="card-title">凡例</h6>
-        <div class="d-flex gap-4">
-          <div><span class="badge bg-info">■</span> 今日</div>
-          <div><span class="text-danger">●</span> 日曜日</div>
-          <div><span class="text-primary">●</span> 土曜日</div>
-          <div><span class="text-success fw-bold">実績</span> 実績入力済み</div>
-          <div><span class="text-info">計画</span> 製造計画あり</div>
-          <div><i class="bi bi-pencil"></i> 目標編集</div>
-          <div><i class="bi bi-calendar-plus text-info"></i> 計画追加</div>
-          <div><i class="bi bi-currency-yen text-success"></i> 実績入力</div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <%# 凡例 %>
+  <%= render 'calendar_legend' %>
 </div>
 
-<!-- 日別目標編集モーダル -->
-<div class="modal fade" id="editDailyTargetModal" tabindex="-1" aria-labelledby="editDailyTargetModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editDailyTargetModalLabel">日別目標編集</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-
-      <%= form_with model: DailyTarget.new,
-                    url: "#",
-                    method: :patch,
-                    local: true,
-                    id: "editDailyTargetForm" do |f| %>
-
-        <!-- ★★★ 修正: hidden fieldを最初から含める ★★★ -->
-        <%= f.hidden_field :target_date, id: "editTargetDateHidden" %>
-
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">対象日</label>
-            <input type="text" class="form-control" id="editTargetDate" readonly>
-          </div>
-
-          <div class="mb-3">
-            <%= f.label :target_amount, "日別目標（円）", class: "form-label" %>
-            <%= f.number_field :target_amount, class: "form-control", min: 0, step: 1, required: true, placeholder: "例: 51613", id: "editTargetAmount" %>
-          </div>
-
-          <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle"></i> この日の目標金額を変更します。月間予算の合計には影響しません。
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-          <%= f.submit "更新", class: "btn btn-primary" %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-</div>
-
-<!-- 実績入力モーダル -->
-<div class="modal fade" id="editActualRevenueModal" tabindex="-1" aria-labelledby="editActualRevenueModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editActualRevenueModalLabel">実績入力</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-
-      <%= form_with model: PlanSchedule.new,
-                    url: "#",
-                    method: :post,
-                    local: true,
-                    id: "editActualRevenueForm" do |f| %>
-
-        <!-- ★★★ 修正: hidden fieldを最初から含める ★★★ -->
-        <%= f.hidden_field :scheduled_date, id: "editActualDateHidden" %>
-
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">対象日</label>
-            <input type="text" class="form-control" id="editActualDate" readonly>
-          </div>
-
-          <div class="mb-3">
-            <%= f.label :actual_revenue, "実績売上（円）", class: "form-label" %>
-            <%= f.number_field :actual_revenue, class: "form-control", min: 0, step: 1, required: true, placeholder: "例: 45000", id: "editActualRevenue" %>
-          </div>
-
-          <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle"></i> この日の実績売上を入力します。カレンダーに反映されます。
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-          <%= f.submit "保存", class: "btn btn-primary" %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-</div>
-
-<!-- 計画追加モーダル -->
-<div class="modal fade" id="assignPlanModal" tabindex="-1" aria-labelledby="assignPlanModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <%= form_with model: PlanSchedule.new,
-                    url: plan_schedules_path,
-                    method: :post,
-                    local: true do |f| %>
-        <div class="modal-header">
-          <h5 class="modal-title" id="assignPlanModalLabel">計画を追加</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- 日付フィールド（非表示） -->
-          <%= f.hidden_field :scheduled_date, id: "plan_scheduled_date" %>
-
-          <!-- ❶ カテゴリ選択 -->
-          <div class="mb-3">
-            <label class="form-label">カテゴリ</label>
-            <select class="form-select" id="category_select">
-              <option value="">-- カテゴリを選択 --</option>
-              <% @plans_by_category.keys.sort.each do |category_name| %>
-                <option value="<%= category_name %>"><%= category_name %></option>
-              <% end %>
-            </select>
-            <div class="form-text">まずカテゴリを選択してください</div>
-          </div>
-
-          <!-- ❷ 計画選択 -->
-          <div class="mb-3">
-            <%= f.label :plan_id, "計画を選択", class: "form-label" %>
-            <select name="plan_schedule[plan_id]"
-                    class="form-select"
-                    id="plan_select"
-                    disabled
-                    required
-                    data-plan-assignment-target="planSelect"
-                    data-action="change->plan-assignment#updateRevenue">
-              <option value="">-- まずカテゴリを選択してください --</option>
-            </select>
-            <div class="form-text">カテゴリを選択すると計画が表示されます</div>
-          </div>
-
-          <!-- 計画高 -->
-          <div class="mb-3">
-            <%= f.label :planned_revenue, "計画高（円）", class: "form-label" %>
-            <%= f.number_field :planned_revenue,
-                  class: "form-control bg-light",
-                  readonly: true,
-                  data: { plan_assignment_target: "revenueField" }
-            %>
-            <div class="form-text">計画を選択すると自動的に入力されます</div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-          <%= f.submit "保存", class: "btn btn-primary", data: { disable_with: "保存中..." } %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-</div>
-
-<!-- JavaScript -->
+<%# 計画データをJavaScriptに渡す %>
 <script>
-// カテゴリ選択時に計画セレクトボックスを更新
-// ★★★ Turbo対応: DOMContentLoadedとturbo:load両方で実行 ★★★
+  window.plansByCategory = <%= raw (@plans_by_category || {}).transform_values { |plans| plans.map { |p| { id: p.id, name: p.name, plan_revenue: p.expected_revenue.to_i } } }.to_json %>;
+  console.log('plansByCategory 初期化:', window.plansByCategory);
+</script>
+
+<%# モーダル群 %>
+<%= render 'monthly_budget_modal', selected_date: @selected_date, budget: @budget %>
+<%= render 'daily_target_modal' %>
+<%= render 'actual_revenue_modal' %>
+<%= render 'assign_plan_modal', plans_by_category: @plans_by_category %>
+
+<%# JavaScript %>
+<script>
+// ★★★ 日別目標編集モーダル ★★★
+function setEditModalData(button) {
+  const date = button.dataset.date;
+  const dateDisplay = button.dataset.dateDisplay;
+  const targetId = button.dataset.targetId;
+  const targetAmount = button.dataset.targetAmount;
+
+  // 表示用フィールド
+  document.getElementById('editTargetDate').value = dateDisplay;
+
+  // hidden field（フォーム送信用）
+  document.getElementById('editTargetDateHidden').value = date;
+
+  // 目標金額（整数に変換）
+  document.getElementById('editTargetAmount').value = Math.floor(parseFloat(targetAmount) || 0);
+
+  // フォームのaction URLを設定
+  const form = document.getElementById('editDailyTargetForm');
+  if (targetId) {
+    // 既存レコードを更新
+    form.action = `/numerical_managements/daily_targets/${targetId}`;
+    form.querySelector('input[name="_method"]')?.remove();
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'patch';
+    form.appendChild(methodInput);
+  } else {
+    // 新規作成
+    form.action = '/numerical_managements/daily_targets';
+    form.querySelector('input[name="_method"]')?.remove();
+  }
+}
+
+// ★★★ 実績入力モーダル ★★★
+function setActualModalData(button) {
+  const date = button.dataset.date;
+  const dateDisplay = button.dataset.dateDisplay;
+  const planScheduleId = button.dataset.planScheduleId;
+  const actualRevenue = button.dataset.actualRevenue || 0;
+
+  // 表示用フィールド
+  document.getElementById('editActualDate').value = dateDisplay;
+
+  // hidden field（フォーム送信用）
+  document.getElementById('editActualDateHidden').value = date;
+
+  // 実績金額（整数に変換）
+  document.getElementById('editActualRevenue').value = Math.floor(parseFloat(actualRevenue) || 0);
+
+  // フォームのaction URLを設定
+  const form = document.getElementById('editActualRevenueForm');
+  if (planScheduleId) {
+    // 既存レコードを更新
+    form.action = `/numerical_managements/plan_schedules/${planScheduleId}/actual_revenue`;
+    form.querySelector('input[name="_method"]')?.remove();
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'patch';
+    form.appendChild(methodInput);
+  }
+}
+
+// ★★★ 計画追加モーダル（Bootstrapイベントを使用） ★★★
+function initializePlanModal() {
+  const assignPlanModal = document.getElementById('assignPlanModal');
+  if (!assignPlanModal) {
+    console.error('assignPlanModal not found!');
+    return;
+  }
+
+  // モーダルが開く時のイベントリスナー
+  assignPlanModal.addEventListener('show.bs.modal', function(event) {
+    const button = event.relatedTarget; // モーダルをトリガーしたボタン
+    if (!button) return;
+
+    const date = button.dataset.date;
+    const dateDisplay = button.dataset.dateDisplay;
+
+    // 表示用フィールド
+    const dateField = document.getElementById('assignPlanDate');
+    if (dateField) dateField.value = dateDisplay;
+
+    // hidden field（フォーム送信用）
+    const dateHiddenField = document.getElementById('assignPlanDateHidden');
+    if (dateHiddenField) dateHiddenField.value = date;
+
+    // カテゴリと計画選択をリセット
+    const categorySelect = document.getElementById('assignPlanCategory');
+    if (categorySelect) categorySelect.selectedIndex = 0;
+
+    const planSelect = document.getElementById('assignPlanSelect');
+    if (planSelect) {
+      planSelect.innerHTML = '<option value="">計画を選択</option>';
+      planSelect.disabled = true;
+    }
+
+    // 計画高をリセット
+    const amountInput = document.getElementById('assignPlanAmount');
+    if (amountInput) amountInput.value = '';
+  });
+}
+
+// ★★★ カテゴリ選択時に計画を絞り込む ★★★
 function initializePlanSelection() {
-  const categorySelect = document.getElementById('category_select');
-  const planSelect = document.getElementById('plan_select');
+  console.log('initializePlanSelection called');
+  console.log('window.plansByCategory:', window.plansByCategory);
 
-  if (!categorySelect || !planSelect) return;
+  const categorySelect = document.getElementById('assignPlanCategory');
+  const planSelect = document.getElementById('assignPlanSelect');
+  const amountInput = document.getElementById('assignPlanAmount');
 
-  // カテゴリごとの計画データを準備
-  const plansByCategory = <%= raw @plans_by_category.transform_values { |plans|
-    plans.map { |p| { id: p.id, name: p.name, status: p.status_i18n, revenue: p.expected_revenue } }
-  }.to_json %>;
+  console.log('categorySelect:', categorySelect);
+  console.log('planSelect:', planSelect);
+  console.log('amountInput:', amountInput);
 
-  // カテゴリ選択時のイベントリスナー
+  if (!categorySelect || !planSelect || !amountInput) {
+    console.error('Required elements not found!');
+    return;
+  }
+
   categorySelect.addEventListener('change', function() {
     const selectedCategory = this.value;
+    console.log('カテゴリ選択:', selectedCategory);
 
-    // 計画セレクトボックスをクリア
-    planSelect.innerHTML = '<option value="">-- 計画を選択 --</option>';
+    // 計画選択をリセット
+    planSelect.innerHTML = '<option value="">計画を選択</option>';
+    planSelect.disabled = true;
+    amountInput.value = '';
 
-    if (selectedCategory && plansByCategory[selectedCategory]) {
-      // 選択されたカテゴリの計画を追加
-      plansByCategory[selectedCategory].forEach(function(plan) {
-        const option = document.createElement('option');
-        option.value = plan.id;
-        option.textContent = `${plan.name} (${plan.status}) - ¥${plan.revenue.toLocaleString()}`;
-        option.dataset.revenue = plan.revenue;
-        planSelect.appendChild(option);
-      });
+    if (!selectedCategory) return;
 
-      // 計画セレクトボックスを有効化
-      planSelect.disabled = false;
-    } else {
-      // カテゴリが選択されていない場合は無効化
-      planSelect.disabled = true;
-      planSelect.innerHTML = '<option value="">-- まずカテゴリを選択してください --</option>';
+    // 選択されたカテゴリの計画を取得
+    const plans = window.plansByCategory[selectedCategory] || [];
+    console.log('該当する計画:', plans);
+
+    if (plans.length === 0) {
+      planSelect.innerHTML = '<option value="">該当する計画がありません</option>';
+      return;
     }
 
-    // 計画高フィールドをクリア
-    const revenueField = document.querySelector('input[name="plan_schedule[planned_revenue]"]');
-    if (revenueField) {
-      revenueField.value = '';
-    }
-  });
-
-  // 計画選択時に売上を自動入力
-  planSelect.addEventListener('change', function() {
-    const selectedOption = this.options[this.selectedIndex];
-    const revenue = selectedOption.dataset.revenue;
-    const revenueField = document.querySelector('input[name="plan_schedule[planned_revenue]"]');
-
-    if (revenueField && revenue) {
-      revenueField.value = revenue;
-    }
-  });
-
-  // 計画選択時に売上を自動入力
-  planSelect.addEventListener('change', function() {
-    const selectedOption = this.options[this.selectedIndex];
-    const revenue = selectedOption.dataset.revenue;
-    const revenueField = document.querySelector('input[name="plan_schedule[planned_revenue]"]');
-
-    if (revenueField && revenue) {
-      revenueField.value = revenue;
-    }
-  });
-
-  // モーダルが閉じられた時にリセット
-  const assignPlanModal = document.getElementById('assignPlanModal');
-  if (assignPlanModal) {
-    assignPlanModal.addEventListener('hidden.bs.modal', function() {
-      categorySelect.value = '';
-      planSelect.innerHTML = '<option value="">-- まずカテゴリを選択してください --</option>';
-      planSelect.disabled = true;
-
-      const revenueField = document.querySelector('input[name="plan_schedule[planned_revenue]"]');
-      if (revenueField) {
-        revenueField.value = '';
-      }
+    // 計画の選択肢を追加
+    plans.forEach(plan => {
+      const option = document.createElement('option');
+      option.value = plan.id;
+      option.textContent = plan.name;
+      option.dataset.amount = plan.plan_revenue;
+      planSelect.appendChild(option);
     });
-  }
-}
 
-// DOMContentLoadedとturbo:load両方で初期化
-document.addEventListener('DOMContentLoaded', initializePlanSelection);
-document.addEventListener('turbo:load', initializePlanSelection);
+    planSelect.disabled = false;
+  });
 
-// Turbo送信成功後にモーダルを閉じる
-document.addEventListener('turbo:submit-end', function(event) {
-  const form = event.target;
-  if (event.detail.success) {
-    // モーダルを閉じる
-    const modal = form.closest('.modal');
-    if (modal) {
-      const bsModal = bootstrap.Modal.getInstance(modal);
-      if (bsModal) {
-        bsModal.hide();
-      }
+  // 計画選択時に計画高を自動入力
+  planSelect.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    console.log('計画選択:', selectedOption);
+    if (selectedOption && selectedOption.dataset.amount) {
+      amountInput.value = selectedOption.dataset.amount;
+      console.log('計画高設定:', selectedOption.dataset.amount);
+    } else {
+      amountInput.value = '';
     }
-  }
-});
-
-// 計画追加ボタンクリック時に日付を設定
-function setDateForPlanModal(button, event) {
-  const date = button.getAttribute('data-date');
-
-  setTimeout(function() {
-    const modal = document.getElementById('assignPlanModal');
-    const dateHiddenInput = modal.querySelector('#plan_scheduled_date');
-
-    if (dateHiddenInput) {
-      dateHiddenInput.value = date;
-    }
-
-    // 計画選択とrevenueをクリア
-    const planSelect = modal.querySelector('select[name="plan_schedule[plan_id]"]');
-    if (planSelect) {
-      planSelect.value = '';
-    }
-
-    const revenueField = modal.querySelector('input[name="plan_schedule[planned_revenue]"]');
-    if (revenueField) {
-      revenueField.value = '';
-    }
-  }, 100);
-}
-
-// フォームバリデーション
-document.addEventListener('DOMContentLoaded', function() {
-  const assignPlanModal = document.getElementById('assignPlanModal');
-  if (assignPlanModal) {
-    const form = assignPlanModal.querySelector('form');
-    if (form) {
-      form.addEventListener('submit', function(e) {
-        const dateField = form.querySelector('#plan_scheduled_date');
-        const planSelect = form.querySelector('select[name="plan_schedule[plan_id]"]');
-        const revenueField = form.querySelector('input[name="plan_schedule[planned_revenue]"]');
-
-        if (!dateField?.value) {
-          e.preventDefault();
-          alert('日付が設定されていません。ページをリロードして再度お試しください。');
-          return false;
-        }
-
-        if (!planSelect?.value) {
-          e.preventDefault();
-          alert('計画を選択してください');
-          return false;
-        }
-
-        if (!revenueField?.value) {
-          e.preventDefault();
-          alert('計画を選択して売上を設定してください');
-          return false;
-        }
-      });
-    }
-  }
-});
-
-// ★★★ 修正: 日別目標編集モーダルの設定 ★★★
-function setEditModalData(button) {
-  const date = button.getAttribute('data-date');
-  const dateDisplay = button.getAttribute('data-date-display');
-  const targetId = button.getAttribute('data-target-id');
-  const targetAmount = button.getAttribute('data-target-amount');
-
-  const modal = document.getElementById('editDailyTargetModal');
-  const form = modal.querySelector('form');
-  const dateSpan = modal.querySelector('#editTargetDate');
-  const dateHiddenInput = modal.querySelector('#editTargetDateHidden');
-  const amountInput = modal.querySelector('#editTargetAmount');
-
-  if (targetId && targetId !== '' && targetId !== 'null') {
-    // 既存レコードの更新
-    form.action = `/daily_targets/${targetId}`;
-    form.method = 'post';
-
-    // _methodフィールドを確認・追加
-    let methodInput = form.querySelector('input[name="_method"]');
-    if (!methodInput) {
-      methodInput = document.createElement('input');
-      methodInput.type = 'hidden';
-      methodInput.name = '_method';
-      form.appendChild(methodInput);
-    }
-    methodInput.value = 'patch';
-  } else {
-    // 新規作成（POSTリクエスト）
-    form.action = '/daily_targets';
-    form.method = 'post';
-
-    // _methodフィールドを削除（POSTなので不要）
-    let methodInput = form.querySelector('input[name="_method"]');
-    if (methodInput) {
-      methodInput.remove();
-    }
-  }
-
-  // 表示用日付と値を設定
-  dateSpan.value = dateDisplay;
-  amountInput.value = targetAmount || '';
-
-  // hidden fieldに日付を設定
-  if (dateHiddenInput) {
-    dateHiddenInput.value = date;
-  }
-}
-
-// ★★★ 修正: 実績入力モーダルの設定 ★★★
-function setActualModalData(button) {
-  const date = button.getAttribute('data-date');
-  const dateDisplay = button.getAttribute('data-date-display');
-  const planScheduleId = button.getAttribute('data-plan-schedule-id');
-  const actualRevenue = button.getAttribute('data-actual-revenue');
-
-  const modal = document.getElementById('editActualRevenueModal');
-  const form = modal.querySelector('form');
-  const dateSpan = modal.querySelector('#editActualDate');
-  const dateHiddenInput = modal.querySelector('#editActualDateHidden');
-  const revenueInput = modal.querySelector('#editActualRevenue');
-  const submitButton = form.querySelector('input[type="submit"]');
-
-  if (planScheduleId && planScheduleId !== '' && planScheduleId !== 'null') {
-    form.action = `/plan_schedules/${planScheduleId}`;
-    let methodInput = form.querySelector('input[name="_method"]');
-    if (!methodInput) {
-      methodInput = document.createElement('input');
-      methodInput.type = 'hidden';
-      methodInput.name = '_method';
-      form.appendChild(methodInput);
-    }
-    methodInput.value = 'patch';
-    if (submitButton) submitButton.value = '更新';
-  } else {
-    form.action = '/plan_schedules';
-    let methodInput = form.querySelector('input[name="_method"]');
-    if (methodInput) {
-      methodInput.remove();
-    }
-    if (submitButton) submitButton.value = '保存';
-  }
-
-  // 表示用日付と値を設定
-  dateSpan.value = dateDisplay;
-  revenueInput.value = actualRevenue || '';
-
-  // hidden fieldに日付を設定
-  if (dateHiddenInput) {
-    dateHiddenInput.value = date;
-  }
+  });
 }
 
 // ページ読み込み時に初期化
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOMContentLoaded: plansByCategory =', window.plansByCategory);
   initializePlanSelection();
+  initializePlanModal(); // モーダルのイベントリスナーを設定
 });
 
 // Turboでページ遷移したときも初期化
 document.addEventListener('turbo:load', function() {
+  console.log('turbo:load: plansByCategory =', window.plansByCategory);
   initializePlanSelection();
+  initializePlanModal(); // モーダルのイベントリスナーを設定
 });
 </script>
