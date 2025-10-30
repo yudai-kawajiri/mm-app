@@ -385,19 +385,33 @@
 <script>
 // カテゴリ選択時に計画セレクトボックスを更新
 document.addEventListener('DOMContentLoaded', function() {
+  initializePlanSelection();
+});
+
+document.addEventListener('turbo:load', function() {
+  initializePlanSelection();
+});
+
+function initializePlanSelection() {
   const categorySelect = document.getElementById('category_select');
   const planSelect = document.getElementById('plan_select');
 
-  if (!categorySelect || !planSelect) return;
+  if (!categorySelect || !planSelect) {
+    console.log('Required elements not found');
+    return;
+  }
 
   // カテゴリごとの計画データを準備
   const plansByCategory = <%= raw @plans_by_category.transform_values { |plans|
     plans.map { |p| { id: p.id, name: p.name, status: p.status_i18n, revenue: p.expected_revenue } }
   }.to_json %>;
 
+  console.log('Plans by category:', plansByCategory);
+
   // カテゴリ選択時のイベントリスナー
   categorySelect.addEventListener('change', function() {
     const selectedCategory = this.value;
+    console.log('Selected category:', selectedCategory);
 
     // 計画セレクトボックスをクリア
     planSelect.innerHTML = '<option value="">-- 計画を選択 --</option>';
@@ -414,6 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // 計画セレクトボックスを有効化
       planSelect.disabled = false;
+      console.log('Plan select enabled with', plansByCategory[selectedCategory].length, 'plans');
     } else {
       // カテゴリが選択されていない場合は無効化
       planSelect.disabled = true;
@@ -424,6 +439,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const revenueField = document.querySelector('input[name="plan_schedule[planned_revenue]"]');
     if (revenueField) {
       revenueField.value = '';
+    }
+  });
+
+  // 計画選択時に計画高を自動入力
+  planSelect.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const revenue = selectedOption.dataset.revenue;
+    const revenueField = document.querySelector('input[name="plan_schedule[planned_revenue]"]');
+
+    if (revenueField && revenue) {
+      revenueField.value = revenue;
+      console.log('Revenue set to:', revenue);
     }
   });
 
@@ -441,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-});
+}
 
 // Turbo送信成功後にモーダルを閉じる
 document.addEventListener('turbo:submit-end', function(event) {
@@ -614,3 +641,4 @@ function setActualModalData(button) {
   dateHiddenInput.value = date;
 }
 </script>
+
