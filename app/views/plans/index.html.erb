@@ -25,8 +25,9 @@
         data: Proc.new { |plan| plan.category&.name }
       },
       { header: :status,
-        data: Proc.new { |plan| translate_enum_value(plan, :status) }
+        data: Proc.new { |plan| render_plan_status_with_action(plan) }
       }
+
     ]
 ) %>
 
