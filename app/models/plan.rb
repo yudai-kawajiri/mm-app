@@ -12,12 +12,22 @@ class Plan < ApplicationRecord
   has_many :plan_schedules, dependent: :destroy
 
   # status カラムに enum を定義
-  enum :status, { draft: 0, completed: 1 }
+  enum :status, {
+  draft: 0,      # 下書き
+  active: 1,     # アクティブ（使用中）
+  completed: 2,  # 完了
+  cancelled: 3   # キャンセル
+}
+
+  # ステータス関連のスコープ
+  scope :active_plans, -> { where(status: :active) }
+  scope :available_for_schedule, -> { where(status: [:draft, :active]) }
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_id }
   validates :category_id, presence: true
   validates :status, presence: true
+
 
   # インデックス表示用のスコープ (N+1問題対策と並び替え)
   scope :for_index, -> { includes(:category, :user).order(created_at: :desc) }
