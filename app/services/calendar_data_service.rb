@@ -6,7 +6,7 @@ class CalendarDataService
     @year = year.to_i
     @month = month.to_i
     @budget = find_budget
-    load_data_for_month  # ← この行を追加
+    load_data_for_month
   end
 
   # カレンダー表示用のデータを返す
@@ -78,31 +78,12 @@ class CalendarDataService
       target: target_amount,
       daily_target_id: daily_target&.id,
       actual: actual_revenue,
-      plan: planned_revenue,  # ← 変数名を変更
+      plan: planned_revenue,
       plan_schedules: plan_schedules,
       plan_schedule_id: plan_schedules.first&.id,
       is_today: date == Date.today,
       achievement_rate: achievement_rate
     }
-  end
-
-  def daily_target(date)
-    daily_target_record = @budget.daily_targets.find_by(target_date: date)
-    daily_target_record&.target_amount || 0
-  end
-
-  def daily_actual(date)
-    @budget.plan_schedules
-           .where(scheduled_date: date)
-           .where.not(actual_revenue: nil)
-           .sum(:actual_revenue)
-  end
-
-  def daily_plan(date)
-    @budget.plan_schedules
-          .where(scheduled_date: date)
-          .where.not(planned_revenue: nil)
-          .sum(:planned_revenue)
   end
 
   def load_data_for_month
@@ -116,10 +97,10 @@ class CalendarDataService
                             .where(target_date: start_date..end_date)
                             .to_a
 
-    # ★ 計画スケジュールを事前ロード（ユーザーの全計画）
+    # 計画スケジュールを事前ロード（ユーザーの全計画、カテゴリも含む）
     @plan_schedules = @user.plan_schedules
                           .where(scheduled_date: start_date..end_date)
-                          .includes(:plan)
+                          .includes(plan: :category)
                           .to_a
   end
 end
