@@ -18,6 +18,8 @@
     resource_class: Plan,
     search_target: :category_id,
     search_categories: @search_categories,
+    show_copy: true,
+    copy_url_method: :copy_plan_path,
 
     columns: [
       { header: :name, data: :name },
@@ -27,7 +29,6 @@
       { header: :status,
         data: Proc.new { |plan| render_plan_status_with_action(plan) }
       }
-
     ]
 ) %>
 

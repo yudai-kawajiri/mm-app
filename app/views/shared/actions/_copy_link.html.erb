@@ -1,0 +1,13 @@
+<%# app/views/shared/actions/_copy_link.html.erb %>
+<%# 必須引数: url %>
+<%# オプション引数: custom_class, confirm_message %>
+<% custom_class = local_assigns.fetch(:custom_class, '') %>
+<% confirm_message = local_assigns.fetch(:confirm_message, 'この項目をコピーしますか？') %>
+
+<%= button_to url,
+    method: :post,
+    class: "btn btn-sm btn-secondary #{custom_class}",
+    data: { confirm: confirm_message },
+    title: 'コピー' do %>
+  <i class="bi bi-files"></i> コピー
+<% end %>

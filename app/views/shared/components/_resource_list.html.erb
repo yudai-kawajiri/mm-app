@@ -1,14 +1,14 @@
 <%# 必須引数: title, resources, columns, resource_class :search_target, :resource_class %>
 <%# オプション引数: new_path %>
-<%# 未 他もページタイトルを削除 %>
 <% search_target = local_assigns[:search_target] %>
 <% resource_class = local_assigns[:resource_class] %>
 <% search_categories = local_assigns[:search_categories] %>
+<% show_copy = local_assigns.fetch(:show_copy, false) %>
+<% copy_url_method = local_assigns[:copy_url_method] %>
 
 <%# 2.検索フォーム %>
 <% if search_target.present? %>
   <%= render 'shared/forms/search_form',
-      # resource_class (Product) からルーティングパス (products_path) を動的に生成
       form_path: send(resource_class.model_name.route_key + '_path'),
       search_target: search_target,
       search_categories: search_categories %>
@@ -18,31 +18,30 @@
 <table class="table mt-4">
   <thead class="table-light">
     <tr>
-      <%# ヘッダー行 %>
       <% columns.each do |col| %>
-        <%# ヘッダーは 'header' キーを参照 %>
         <th><%= resource_class.human_attribute_name(col[:header]) %></th>
       <% end %>
       <th><%= t('common.action') %></th>
     </tr>
   </thead>
   <tbody>
-    <%# データ行 %>
     <% resources.each do |resource| %>
       <tr>
-        <%# データ描画 %>
         <% columns.each do |col| %>
           <td>
             <%= render_resource_data(resource, col) %>
           </td>
         <% end %>
 
-        <%# アクションカラム %>
+        <%# アクションカラム %>
         <td>
           <%= render 'shared/actions/resource_action_links',
               resource: resource,
               resource_name: resource.class.model_name.human,
-              show_link: defined?(show_action_link) ? show_action_link : true
+              show_link: defined?(show_action_link) ? show_action_link : true,
+              show_copy: show_copy,
+              copy_url: show_copy && copy_url_method.present? ?
+              send(copy_url_method, resource) : nil
           %>
         </td>
       </tr>
