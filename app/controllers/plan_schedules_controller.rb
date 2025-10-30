@@ -13,18 +13,19 @@ class PlanSchedulesController < ApplicationController
 
     if @plan_schedule.save
       Rails.logger.info "=== PlanSchedule Saved Successfully ==="
-      redirect_to calendar_numerical_managements_path(month: @plan_schedule.scheduled_date.strftime('%Y-%m')),
+      # dateパラメータに変更（monthではなく）
+      redirect_to calendar_numerical_managements_path(date: @plan_schedule.scheduled_date),
                   notice: '計画を登録しました'
     else
       Rails.logger.error "=== PlanSchedule Save Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
       # scheduled_dateがnilの場合のフォールバック
-      fallback_month = params[:plan_schedule][:scheduled_date].present? ?
-                       params[:plan_schedule][:scheduled_date].to_date.strftime('%Y-%m') :
-                       Date.current.strftime('%Y-%m')
+      fallback_date = params[:plan_schedule][:scheduled_date].present? ?
+                      params[:plan_schedule][:scheduled_date].to_date :
+                      Date.current
 
-      redirect_to calendar_numerical_managements_path(month: fallback_month),
+      redirect_to calendar_numerical_managements_path(date: fallback_date),
                   alert: "計画の登録に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
     end
   end
@@ -33,21 +34,22 @@ class PlanSchedulesController < ApplicationController
     @plan_schedule = PlanSchedule.find(params[:id])
 
     if @plan_schedule.update(plan_schedule_params)
-      redirect_to calendar_numerical_managements_path(month: @plan_schedule.scheduled_date.strftime('%Y-%m')),
-                  notice: '計画を更新しました'
+      # dateパラメータに変更（monthではなく）
+      redirect_to calendar_numerical_managements_path(date: @plan_schedule.scheduled_date),
+                  notice: '実績を更新しました'
     else
-      fallback_month = params[:plan_schedule][:scheduled_date].present? ?
-                       params[:plan_schedule][:scheduled_date].to_date.strftime('%Y-%m') :
-                       Date.current.strftime('%Y-%m')
+      fallback_date = params[:plan_schedule][:scheduled_date].present? ?
+                      params[:plan_schedule][:scheduled_date].to_date :
+                      Date.current
 
-      redirect_to calendar_numerical_managements_path(month: fallback_month),
-                  alert: "計画の更新に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
+      redirect_to calendar_numerical_managements_path(date: fallback_date),
+                  alert: "実績の更新に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
     end
   end
 
   private
 
   def plan_schedule_params
-    params.require(:plan_schedule).permit(:scheduled_date, :plan_id, :planned_revenue, :actual_revenue)
+    params.require(:plan_schedule).permit(:scheduled_date, :plan_id, :planned_revenue, :actual_revenue, :note)
   end
 end
