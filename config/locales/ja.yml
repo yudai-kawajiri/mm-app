@@ -4,6 +4,56 @@ ja:
   date:
     formats:
       short: "%m/%d"
+      default: "%Y/%m/%d"
+      long: "%Y年%m月%d日(%a)"
+    abbr_day_names:
+      - 日
+      - 月
+      - 火
+      - 水
+      - 木
+      - 金
+      - 土
+    abbr_month_names:
+      -
+      - 1月
+      - 2月
+      - 3月
+      - 4月
+      - 5月
+      - 6月
+      - 7月
+      - 8月
+      - 9月
+      - 10月
+      - 11月
+      - 12月
+    day_names:
+      - 日曜日
+      - 月曜日
+      - 火曜日
+      - 水曜日
+      - 木曜日
+      - 金曜日
+      - 土曜日
+    month_names:
+      -
+      - 1月
+      - 2月
+      - 3月
+      - 4月
+      - 5月
+      - 6月
+      - 7月
+      - 8月
+      - 9月
+      - 10月
+      - 11月
+      - 12月
+    order:
+      - :year
+      - :month
+      - :day
 
   time:
     formats:
@@ -80,14 +130,12 @@ ja:
     image_help:
       select: "JPG、PNG、GIF形式の画像を選択してください"
       change: "画像を変更する場合は新しいファイルを選択してください"
-
     product_material_fields:
       material_name_prompt: "原材料名"
       quantity_placeholder: "分量"
       unit_prompt: "単位"
       delete_button: "削除"
       no_materials_set: "原材料はまだ設定されていません"
-
     category_selector:
       prompt: "カテゴリを選択"
       add_button: "カテゴリタブを追加"
@@ -111,7 +159,6 @@ ja:
     category_total_label: "カテゴリ合計"
     total_price_label: "総合計"
     plan_product_subtotal: "小計"
-
     category_selector:
       prompt: "カテゴリを選択"
       add_button: "カテゴリタブを追加"
@@ -122,6 +169,98 @@ ja:
       price: "売価"
       subtotal: "小計"
     add_product_button: "商品を追加"
+
+  numerical_managements:
+    index:
+      title: "数値管理"
+      monthly_budget: "月間予算"
+      actual_revenue: "実績売上"
+      planned_revenue: "計画売上"
+      forecast_revenue: "予測売上"
+      month_end_forecast: "月末予測"
+      achievement_rate: "達成率"
+      forecast_diff: "予算差"
+      gap_analysis: "ギャップ分析"
+      remaining_days: "残り日数"
+      required_additional: "必要追加額"
+      daily_required: "1日あたり必要額"
+      action_plan: "アクションプラン"
+      recommended_daily_target: "推奨日別目標"
+      daily_details: "日別明細"
+      date: "日付"
+      target: "目標"
+      actual: "実績"
+      plan: "計画"
+      forecast: "予測"
+      diff: "差額"
+      set_budget: "予算設定"
+      delete_budget: "予算削除"
+      target_month: "対象月"
+      display: "表示"
+      calendar_view: "カレンダー表示"
+      days_suffix: "日"
+      alert_remaining: "残り%{days}日で目標を達成するには、"
+      alert_daily: "1日あたり%{amount}の追加が必要です"
+      alert_add: "追加で%{amount}の売上が必要です"
+      alert_on_track: "現在のペースで達成可能です！"
+    calendar:
+      title: "製造計画カレンダー"
+      monthly_summary: "月間サマリー"
+      monthly_budget: "月間予算"
+      monthly_actual: "月間実績"
+      budget_diff: "予算差"
+      monthly_achievement_rate: "月間達成率"
+      back_to_dashboard: "数値管理に戻る"
+      target_month: "対象月"
+      display: "表示"
+      legend: "凡例"
+      today: "今日"
+      sunday: "日曜日"
+      saturday: "土曜日"
+      actual_entered: "実績入力済み"
+      plan_exists: "製造計画あり"
+      edit_target: "目標編集"
+      add_plan: "計画追加"
+      enter_actual: "実績入力"
+      no_budget_warning: "予算が設定されていません。"
+      set_budget_link: "予算を設定する"
+      target_label: "目標"
+      actual_label: "実績"
+      plan_label: "計画"
+      achievement_rate_label: "達成率"
+    modals:
+      budget_setting: "予算設定"
+      daily_target_edit: "日別目標編集"
+      actual_revenue_entry: "実績入力"
+      add_plan: "計画追加"
+      target_month: "対象月"
+      target_date: "対象日"
+      monthly_budget_yen: "月間予算（円）"
+      daily_target_yen: "日別目標（円）"
+      actual_revenue_yen: "実績売上（円）"
+      planned_revenue_yen: "計画高（円）"
+      note: "備考"
+      optional: "（任意）"
+      cancel: "キャンセル"
+      create: "作成"
+      update: "更新"
+      save: "保存"
+      category: "カテゴリ"
+      select_category: "カテゴリを選択"
+      select_plan_prompt: "計画を選択"
+      select_category_first: "まずカテゴリを選択してください"
+      plan_select: "計画選択"
+      category_help: "製造する製品のカテゴリを選択してください。"
+      plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます。"
+      revenue_help: "必要に応じて計画高を調整できます。"
+      budget_info: "月間の売上目標を設定します。日別目標は自動で分配されます。"
+      daily_target_info: "この日の目標金額を変更します。月間予算の合計には影響しません。"
+      actual_revenue_info: "この日の実績売上を入力してください。"
+      delete_confirm: "本当に削除しますか？"
+    placeholders:
+      budget_example: "例: 1600000"
+      daily_target_example: "例: 51613"
+      actual_revenue_example: "例: 50000"
 
   common:
     search: "検索"
@@ -149,13 +288,10 @@ ja:
       create: "登録"
       edit: "編集"
       update: "更新"
-
     character_counter:
       hint: "最大%{max}文字"
-
     confirm:
       destroy: "本当にこの%{resource}を削除してもよろしいですか？"
-
     link:
       back: "戻る"
       edit: "編集"
@@ -167,10 +303,8 @@ ja:
       add_item: "+ %{resource}を追加"
       delete_image: "画像削除"
       cancel_new_image: "選択をキャンセル"
-
     forms:
       quantity_placeholder: "数量"
-
     label:
       user:
         remember_me: "ログイン情報を記憶する"
@@ -204,15 +338,12 @@ ja:
       signed_out: "ログアウトしました"
       sign_in: "ログイン"
       sign_out: "ログアウト"
-
     confirmations:
       confirmed: "アカウントを認証しました"
-
     failure:
       unauthenticated: "アカウント登録もしくはログインが必要です"
       invalid: "メールアドレスまたはパスワードが違います"
       not_found_in_database: "メールアドレスまたはパスワードが違います"
-
     registrations:
       new:
         title: "新規登録"
@@ -224,13 +355,11 @@ ja:
       user:
         updated: "アカウント情報が正常に更新されました"
         destroyed: "アカウントを削除しました"
-
     shared:
       minimum_password_length: "(%{count}文字以上)"
       links:
         sign_up: "新規登録"
         forgot_your_password: "パスワードを忘れた方"
-
     passwords:
       send_instructions: "パスワード再設定のメールを送信しました"
       updated: "パスワードを変更しました"
@@ -240,7 +369,6 @@ ja:
       edit:
         title: "パスワード変更"
         submit: "パスワード変更"
-
     mailer:
       reset_password_instructions:
         subject: "【寿司管理システム】パスワード再設定のご案内"
@@ -272,7 +400,6 @@ ja:
               greater_than: "は0より大きい値を入力してください"
             status:
               blank: "を選択してください"
-
     models:
       user: "アカウント"
       category: "カテゴリー"
@@ -280,7 +407,6 @@ ja:
       material: "原材料"
       product: "商品"
       plan: "製造計画"
-
     attributes:
       user:
         email: "メールアドレス"
@@ -288,19 +414,16 @@ ja:
         name: "名前"
         password_confirmation: "パスワード（確認）"
         current_password: "現在のパスワード"
-
       category:
         name: "カテゴリー名"
         category_type: "カテゴリー"
         description: '説明'
-
       unit:
         name: "単位名"
         category: "カテゴリー"
         description: '説明'
         materials_as_product_unit: "原材料（商品単位）"
         materials_as_order_unit: "原材料（発注単位）"
-
       material:
         name: "原材料名"
         unit_for_product: "商品単位"
@@ -310,7 +433,6 @@ ja:
         category_id: "カテゴリー"
         category: "カテゴリー"
         description: "説明"
-
       product:
         name: "商品名"
         item_number: "品番"
@@ -320,16 +442,13 @@ ja:
         image: "画像"
         status: "ステータス"
         description: "説明"
-
       plan:
         name: "計画名"
         category_id: "カテゴリー"
         status: "ステータス"
         description: "説明"
-
       plan_product:
         production_count: "数量"
-
     enums:
       category:
         category_type:

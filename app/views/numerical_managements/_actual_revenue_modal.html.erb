@@ -1,0 +1,41 @@
+<!-- 実績入力モーダル -->
+<div class="modal fade" id="editActualRevenueModal" tabindex="-1" aria-labelledby="editActualRevenueModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editActualRevenueModalLabel"><%= t('numerical_managements.modals.actual_revenue_entry') %></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <%= form_with model: PlanSchedule.new,
+                    url: "#",
+                    method: :post,
+                    local: true,
+                    id: "editActualRevenueForm" do |f| %>
+
+        <%= f.hidden_field :scheduled_date, id: "editActualDateHidden" %>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label"><%= t('numerical_managements.modals.target_date') %></label>
+            <input type="text" class="form-control" id="editActualDate" readonly>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :actual_revenue, t('numerical_managements.modals.actual_revenue_yen'), class: "form-label" %>
+            <%= f.number_field :actual_revenue, class: "form-control", min: 0, step: 1, required: true, placeholder: t('numerical_managements.placeholders.actual_revenue_example'), id: "editActualRevenue" %>
+          </div>
+
+          <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.actual_revenue_info') %>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('numerical_managements.modals.cancel') %></button>
+          <%= f.submit t('numerical_managements.modals.save'), class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

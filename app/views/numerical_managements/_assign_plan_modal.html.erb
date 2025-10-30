@@ -1,0 +1,64 @@
+<!-- 計画追加モーダル -->
+<div class="modal fade" id="assignPlanModal" tabindex="-1" aria-labelledby="assignPlanModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <%= form_with model: PlanSchedule.new,
+                    url: plan_schedules_path,
+                    method: :post,
+                    local: true do |f| %>
+        <div class="modal-header">
+          <h5 class="modal-title" id="assignPlanModalLabel"><%= t('numerical_managements.modals.add_plan') %></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <%= f.hidden_field :scheduled_date, id: "assignPlanDateHidden" %>
+
+          <!-- 対象日 -->
+          <div class="mb-3">
+            <label class="form-label"><%= t('numerical_managements.modals.target_date') %></label>
+            <input type="text" class="form-control" id="assignPlanDate" readonly>
+          </div>
+
+          <!-- カテゴリ選択 -->
+          <div class="mb-3">
+            <label class="form-label"><%= t('numerical_managements.modals.category') %></label>
+            <select class="form-select" id="assignPlanCategory">
+              <option value=""><%= t('numerical_managements.modals.select_category') %></option>
+              <% plans_by_category.keys.sort.each do |category_name| %>
+                <option value="<%= category_name %>"><%= category_name %></option>
+              <% end %>
+            </select>
+            <div class="form-text"><%= t('numerical_managements.modals.category_help') %></div>
+          </div>
+
+          <!-- 計画選択 -->
+          <div class="mb-3">
+            <%= f.label :plan_id, t('numerical_managements.modals.plan_select'), class: "form-label" %>
+            <select name="plan_schedule[plan_id]"
+                    class="form-select"
+                    id="assignPlanSelect"
+                    disabled
+                    required>
+              <option value=""><%= t('numerical_managements.modals.select_category_first') %></option>
+            </select>
+            <div class="form-text"><%= t('numerical_managements.modals.plan_help') %></div>
+          </div>
+
+          <!-- 計画高 -->
+          <div class="mb-3">
+            <%= f.label :planned_revenue, t('numerical_managements.modals.planned_revenue_yen'), class: "form-label" %>
+            <%= f.number_field :planned_revenue,
+                  class: "form-control bg-light",
+                  readonly: true,
+                  id: "assignPlanAmount" %>
+            <div class="form-text"><%= t('numerical_managements.modals.revenue_help') %></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('numerical_managements.modals.cancel') %></button>
+          <%= f.submit t('numerical_managements.modals.save'), class: "btn btn-primary", data: { disable_with: "保存中..." } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

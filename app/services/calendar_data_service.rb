@@ -54,7 +54,7 @@ class CalendarDataService
   end
 
   def build_day_data(date)
-    # @daily_targetsがnilの場合は空配列として扱う
+    # @daily_targetsとplan_schedulesから該当日のデータを抽出
     daily_targets = @daily_targets || []
     plan_schedules_list = @plan_schedules || []
 
@@ -62,7 +62,6 @@ class CalendarDataService
     plan_schedules = plan_schedules_list.select { |ps| ps.scheduled_date == date }
 
     target_amount = daily_target&.target_amount || 0
-
     actual_revenue = plan_schedules.sum { |ps| ps.actual_revenue || 0 }
     planned_revenue = plan_schedules.sum { |ps| ps.planned_revenue || 0 }
 
@@ -75,16 +74,17 @@ class CalendarDataService
 
     {
       date: date,
-      target: target_amount,
+      target: target_amount.to_i,       # ← カンマは1つ
       daily_target_id: daily_target&.id,
-      actual: actual_revenue,
-      plan: planned_revenue,
+      actual: actual_revenue.to_i,
+      plan: planned_revenue.to_i,
       plan_schedules: plan_schedules,
       plan_schedule_id: plan_schedules.first&.id,
       is_today: date == Date.today,
       achievement_rate: achievement_rate
     }
   end
+
 
   def load_data_for_month
     return unless @budget

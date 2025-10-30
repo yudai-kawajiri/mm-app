@@ -1,0 +1,40 @@
+<!-- 日別明細テーブル -->
+<div class="card">
+  <div class="card-header">
+    <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
+  </div>
+  <div class="card-body p-0">
+    <div style="max-height: 400px; overflow-y: auto;">
+      <table class="table table-sm table-hover mb-0">
+        <thead class="table-light sticky-top">
+          <tr>
+            <th style="width: 80px;"><%= t('numerical_managements.index.date') %></th>
+            <th class="text-end"><%= t('numerical_managements.index.target') %></th>
+            <th class="text-end"><%= t('numerical_managements.index.actual') %></th>
+            <th class="text-end"><%= t('numerical_managements.index.plan') %></th>
+            <th class="text-end"><%= t('numerical_managements.index.forecast') %></th>
+            <th class="text-end"><%= t('numerical_managements.index.diff') %></th>
+            <th class="text-end"><%= t('numerical_managements.index.achievement_rate') %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% daily_data.each do |day| %>
+            <tr>
+              <td style="width: 80px;"><%= day[:date].strftime('%-m/%-d') %></td>
+              <td class="text-end"><%= number_to_currency((day[:target] || 0).to_i, unit: "¥", precision: 0) %></td>
+              <td class="text-end"><%= number_to_currency((day[:actual] || 0).to_i, unit: "¥", precision: 0) %></td>
+              <td class="text-end"><%= number_to_currency((day[:plan] || 0).to_i, unit: "¥", precision: 0) %></td>
+              <td class="text-end"><%= number_to_currency((day[:forecast] || 0).to_i, unit: "¥", precision: 0) %></td>
+              <td class="text-end <%= (day[:diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
+                <%= number_to_currency((day[:diff] || 0).to_i, unit: "¥", precision: 0) %>
+              </td>
+              <td class="text-end">
+                <%= number_to_percentage((day[:achievement_rate] || 0), precision: 1) %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

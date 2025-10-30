@@ -1,20 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <%# タイトルタグのロジックを追加 %>
-    <title>
-      <%# 1. ビューから設定されたタイトルを :title キーで取得 %>
-      <% page_title = yield(:title) %>
-
-      <%# 2. タイトルが設定されているか確認し、セパレータを付与して表示 %>
-      <% if page_title.present? %>
-        <%= "#{page_title} | #{t('application_name')}" %>
-      <%# 3. タイトルがない場合は、アプリ名のみを表示 %>
-      <% else %>
-        <%= t('application_name') %>
-      <% end %>
-    </title>
-    <%# 確認ダイアログ %>
+    <title><%= content_for?(:title) ? "#{yield(:title)} | #{t('application_name')}" : t('application_name') %></title>
     <%= csp_meta_tag %>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>

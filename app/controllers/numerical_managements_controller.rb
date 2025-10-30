@@ -71,20 +71,30 @@ class NumericalManagementsController < ApplicationController
       budget_month: budget_month
     )
 
-    @budget.assign_attributes(budget_params)
+    if @budget.update(budget_params)
+      # 日別目標を再生成（予算変更時は日別目標も更新）
+      @budget.daily_targets.destroy_all
+      @budget.generate_daily_targets!
 
-    if @budget.save
-      # 日別目標を自動生成（まだない場合）
-      @budget.generate_daily_targets! unless @budget.daily_targets.exists?
+      # リダイレクト先を判定
+      redirect_path = if params[:return_to] == 'calendar'
+                        calendar_numerical_managements_path(month: "#{@year}-#{@month.to_s.rjust(2, '0')}")
+                      else
+                        numerical_managements_path(month: "#{@year}-#{@month.to_s.rjust(2, '0')}")
+                      end
 
-      redirect_to numerical_managements_path(month: budget_month.strftime('%Y-%m')),
-                  notice: '予算を更新しました。'
+      redirect_to redirect_path, notice: '予算を更新しました。'
     else
-      redirect_to numerical_managements_path(month: budget_month.strftime('%Y-%m')),
-                  alert: "予算の更新に失敗しました: #{@budget.errors.full_messages.join(', ')}"
+      # 失敗時も同様に判定
+      redirect_path = if params[:return_to] == 'calendar'
+                        calendar_numerical_managements_path(month: "#{@year}-#{@month.to_s.rjust(2, '0')}")
+                      else
+                        numerical_managements_path(month: "#{@year}-#{@month.to_s.rjust(2, '0')}")
+                      end
+
+      redirect_to redirect_path, alert: '予算の更新に失敗しました。'
     end
   end
-
 
   # 月間予算削除機能
   def destroy_budget

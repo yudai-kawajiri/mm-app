@@ -1,0 +1,103 @@
+<!-- 月末予測 3グループ横並び -->
+<div class="row g-3 mb-4">
+  <!-- グループ1: 月末予測 -->
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><%= t('numerical_managements.index.month_end_forecast') %></h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-sm mb-0">
+          <tbody>
+            <tr>
+              <td class="border-0"><%= t('numerical_managements.index.forecast_revenue') %></td>
+              <td class="border-0 text-end fw-bold">
+                <%= number_to_currency((forecast_data[:forecast_amount] || 0).to_i, unit: "¥", precision: 0) %>
+              </td>
+            </tr>
+            <tr>
+              <td><%= t('numerical_managements.index.achievement_rate') %></td>
+              <td class="text-end fw-bold">
+                <%= number_to_percentage((forecast_data[:achievement_rate] || 0), precision: 1) %>
+              </td>
+            </tr>
+            <tr>
+              <td><%= t('numerical_managements.index.forecast_diff') %></td>
+              <td class="text-end fw-bold <%= (forecast_data[:forecast_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
+                <%= number_to_currency((forecast_data[:forecast_diff] || 0).to_i, unit: "¥", precision: 0) %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- グループ2: ギャップ分析 -->
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><%= t('numerical_managements.index.gap_analysis') %></h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-sm mb-0">
+          <tbody>
+            <tr>
+              <td class="border-0"><%= t('numerical_managements.index.remaining_days') %></td>
+              <td class="border-0 text-end fw-bold">
+                <%= (forecast_data[:remaining_days] || 0) %><%= t('numerical_managements.index.days_suffix') %>
+              </td>
+            </tr>
+            <tr>
+              <td><%= t('numerical_managements.index.required_additional') %></td>
+              <td class="text-end fw-bold">
+                <%= number_to_currency((forecast_data[:required_additional] || 0).to_i, unit: "¥", precision: 0) %>
+              </td>
+            </tr>
+            <tr>
+              <td><%= t('numerical_managements.index.daily_required') %></td>
+              <td class="text-end fw-bold">
+                <%= number_to_currency((forecast_data[:daily_required] || 0).to_i, unit: "¥", precision: 0) %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- グループ3: アクションプラン -->
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><%= t('numerical_managements.index.action_plan') %></h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-sm mb-0">
+          <tbody>
+            <tr>
+              <td class="border-0"><%= t('numerical_managements.index.recommended_daily_target') %></td>
+              <td class="border-0 text-end fw-bold">
+                <%= number_to_currency((forecast_data[:daily_required] || 0).to_i, unit: "¥", precision: 0) %>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <% if (forecast_data[:remaining_days] || 0) > 0 && (forecast_data[:daily_required] || 0) > 0 %>
+                  <div class="alert alert-success mb-0 p-2 small">
+                    <%= t('numerical_managements.index.alert_remaining', days: forecast_data[:remaining_days]) %><br>
+                    <%= t('numerical_managements.index.alert_daily') %><strong><%= number_to_currency(forecast_data[:daily_required].to_i, unit: "¥", precision: 0) %></strong><%= t('numerical_managements.index.alert_add') %>
+                  </div>
+                <% else %>
+                  <div class="alert alert-info mb-0 p-2 small">
+                    <%= t('numerical_managements.index.alert_on_track') %>
+                  </div>
+                <% end %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
