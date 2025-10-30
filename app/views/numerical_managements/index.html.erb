@@ -1,34 +1,34 @@
-<!-- app/views/numerical_managements/index.html.erb -->
+<% content_for :title, t('numerical_managements.index.title') %>
+
 <div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">数値管理ダッシュボード</h1>
+    <h1 class="h3 mb-0"><%= t('numerical_managements.index.title') %></h1>
 
     <div class="d-flex align-items-center gap-3">
       <!-- 月選択フォーム -->
       <form method="get" class="d-flex align-items-center gap-2">
-        <label class="text-muted mb-0">対象月:</label>
+        <label class="text-muted mb-0"><%= t('numerical_managements.index.target_month') %></label>
         <input type="month" name="month" value="<%= @selected_date.strftime('%Y-%m') %>" class="form-control form-control-sm" style="width: 150px;">
-        <button type="submit" class="btn btn-primary btn-sm">表示</button>
+        <button type="submit" class="btn btn-primary btn-sm"><%= t('numerical_managements.index.display') %></button>
       </form>
 
       <!-- カレンダービューへのリンク -->
-      <%= link_to "カレンダー表示", calendar_numerical_managements_path(month: @selected_date.strftime('%Y-%m')), class: "btn btn-outline-primary btn-sm" %>
+      <%= link_to t('numerical_managements.index.calendar_view'), calendar_numerical_managements_path(month: @selected_date.strftime('%Y-%m')), class: "btn btn-outline-primary btn-sm" %>
 
       <!-- 予算設定ボタン -->
       <div class="d-flex gap-2">
         <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#budgetSettingModal">
-          <i class="bi bi-gear"></i> 月間予算を設定
+          <i class="bi bi-gear"></i> <%= t('numerical_managements.index.set_budget') %>
         </button>
 
-        <!--  追加: 予算削除ボタン -->
         <% if @budget %>
           <%= button_to destroy_budget_numerical_managements_path(month: @selected_date.strftime('%Y-%m')),
                         method: :delete,
                         data: {
-                          turbo_confirm: "本当に削除しますか？\n\nこの月の予算と日別目標が全て削除されます。\nこの操作は取り消せません。"
+                          turbo_confirm: t('numerical_managements.modals.delete_confirm')
                         },
                         class: "btn btn-outline-danger btn-sm" do %>
-            <i class="bi bi-trash"></i> 予算を削除
+            <i class="bi bi-trash"></i> <%= t('numerical_managements.index.delete_budget') %>
           <% end %>
         <% end %>
       </div>
@@ -40,32 +40,32 @@
     <div class="col-md-3">
       <div class="card border-primary">
         <div class="card-body p-3">
-          <h6 class="card-title text-primary mb-2">月間予算</h6>
-          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:target_amount] || 0), unit: "¥", precision: 0) %></p>
+          <h6 class="card-title text-primary mb-2"><%= t('numerical_managements.index.monthly_budget') %></h6>
+          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:target_amount] || 0).to_i, unit: "¥", precision: 0) %></p>
         </div>
       </div>
     </div>
     <div class="col-md-3">
       <div class="card border-success">
         <div class="card-body p-3">
-          <h6 class="card-title text-success mb-2">実績売上</h6>
-          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:actual_amount] || 0), unit: "¥", precision: 0) %></p>
+          <h6 class="card-title text-success mb-2"><%= t('numerical_managements.index.actual_revenue') %></h6>
+          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:actual_amount] || 0).to_i, unit: "¥", precision: 0) %></p>
         </div>
       </div>
     </div>
     <div class="col-md-3">
       <div class="card border-info">
         <div class="card-body p-3">
-          <h6 class="card-title text-info mb-2">計画売上</h6>
-          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:planned_amount] || 0), unit: "¥", precision: 0) %></p>
+          <h6 class="card-title text-info mb-2"><%= t('numerical_managements.index.planned_revenue') %></h6>
+          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:planned_amount] || 0).to_i, unit: "¥", precision: 0) %></p>
         </div>
       </div>
     </div>
     <div class="col-md-3">
       <div class="card border-warning">
         <div class="card-body p-3">
-          <h6 class="card-title text-warning mb-2">予測売上</h6>
-          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:forecast_amount] || 0), unit: "¥", precision: 0) %></p>
+          <h6 class="card-title text-warning mb-2"><%= t('numerical_managements.index.forecast_revenue') %></h6>
+          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:forecast_amount] || 0).to_i, unit: "¥", precision: 0) %></p>
         </div>
       </div>
     </div>
@@ -77,27 +77,27 @@
     <div class="col-md-4">
       <div class="card h-100">
         <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">月末予測</h5>
+          <h5 class="mb-0"><%= t('numerical_managements.index.month_end_forecast') %></h5>
         </div>
         <div class="card-body">
           <table class="table table-sm mb-0">
             <tbody>
               <tr>
-                <td class="border-0">予測売上</td>
+                <td class="border-0"><%= t('numerical_managements.index.forecast_revenue') %></td>
                 <td class="border-0 text-end fw-bold">
-                  <%= number_to_currency((@forecast_data[:forecast_amount] || 0), unit: "¥", precision: 0) %>
+                  <%= number_to_currency((@forecast_data[:forecast_amount] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
               </tr>
               <tr>
-                <td>予算達成率</td>
+                <td><%= t('numerical_managements.index.achievement_rate') %></td>
                 <td class="text-end fw-bold">
                   <%= number_to_percentage((@forecast_data[:achievement_rate] || 0), precision: 1) %>
                 </td>
               </tr>
               <tr>
-                <td>予測予算差</td>
+                <td><%= t('numerical_managements.index.forecast_diff') %></td>
                 <td class="text-end fw-bold <%= (@forecast_data[:forecast_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
-                  <%= number_to_currency((@forecast_data[:forecast_diff] || 0), unit: "¥", precision: 0) %>
+                  <%= number_to_currency((@forecast_data[:forecast_diff] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
               </tr>
             </tbody>
@@ -110,27 +110,27 @@
     <div class="col-md-4">
       <div class="card h-100">
         <div class="card-header bg-warning text-dark">
-          <h5 class="mb-0">ギャップ分析</h5>
+          <h5 class="mb-0"><%= t('numerical_managements.index.gap_analysis') %></h5>
         </div>
         <div class="card-body">
           <table class="table table-sm mb-0">
             <tbody>
               <tr>
-                <td class="border-0">残り営業日数</td>
+                <td class="border-0"><%= t('numerical_managements.index.remaining_days') %></td>
                 <td class="border-0 text-end fw-bold">
-                  <%= (@forecast_data[:remaining_days] || 0) %>日
+                  <%= (@forecast_data[:remaining_days] || 0) %><%= t('numerical_managements.index.days_suffix') %>
                 </td>
               </tr>
               <tr>
-                <td>必要追加売上</td>
+                <td><%= t('numerical_managements.index.required_additional') %></td>
                 <td class="text-end fw-bold">
-                  <%= number_to_currency((@forecast_data[:required_additional] || 0), unit: "¥", precision: 0) %>
+                  <%= number_to_currency((@forecast_data[:required_additional] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
               </tr>
               <tr>
-                <td>1日あたり必要額</td>
+                <td><%= t('numerical_managements.index.daily_required') %></td>
                 <td class="text-end fw-bold">
-                  <%= number_to_currency((@forecast_data[:daily_required] || 0), unit: "¥", precision: 0) %>
+                  <%= number_to_currency((@forecast_data[:daily_required] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
               </tr>
             </tbody>
@@ -143,27 +143,27 @@
     <div class="col-md-4">
       <div class="card h-100">
         <div class="card-header bg-success text-white">
-          <h5 class="mb-0">アクションプラン</h5>
+          <h5 class="mb-0"><%= t('numerical_managements.index.action_plan') %></h5>
         </div>
         <div class="card-body">
           <table class="table table-sm mb-0">
             <tbody>
               <tr>
-                <td class="border-0">推奨日次目標</td>
+                <td class="border-0"><%= t('numerical_managements.index.recommended_daily_target') %></td>
                 <td class="border-0 text-end fw-bold">
-                  <%= number_to_currency((@forecast_data[:daily_required] || 0), unit: "¥", precision: 0) %>
+                  <%= number_to_currency((@forecast_data[:daily_required] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
               </tr>
               <tr>
                 <td colspan="2">
                   <% if (@forecast_data[:remaining_days] || 0) > 0 && (@forecast_data[:daily_required] || 0) > 0 %>
                     <div class="alert alert-success mb-0 p-2 small">
-                      残り<%= @forecast_data[:remaining_days] %>日の計画に<br>
-                      1日あたり<strong><%= number_to_currency(@forecast_data[:daily_required], unit: "¥", precision: 0) %></strong>追加してください
+                      <%= t('numerical_managements.index.alert_remaining', days: @forecast_data[:remaining_days]) %><br>
+                      <%= t('numerical_managements.index.alert_daily') %><strong><%= number_to_currency(@forecast_data[:daily_required].to_i, unit: "¥", precision: 0) %></strong><%= t('numerical_managements.index.alert_add') %>
                     </div>
                   <% else %>
                     <div class="alert alert-info mb-0 p-2 small">
-                      現在の計画で予算達成見込みです
+                      <%= t('numerical_managements.index.alert_on_track') %>
                     </div>
                   <% end %>
                 </td>
@@ -175,35 +175,35 @@
     </div>
   </div>
 
-  <!-- 日別明細テーブル（列幅調整） -->
+  <!-- 日別明細テーブル -->
   <div class="card">
     <div class="card-header">
-      <h5 class="mb-0">日別明細</h5>
+      <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
     </div>
     <div class="card-body p-0">
       <div style="max-height: 400px; overflow-y: auto;">
         <table class="table table-sm table-hover mb-0">
           <thead class="table-light sticky-top">
             <tr>
-              <th style="width: 80px;">日付</th>
-              <th class="text-end">目標</th>
-              <th class="text-end">実績</th>
-              <th class="text-end">計画</th>
-              <th class="text-end">予測</th>
-              <th class="text-end">差異</th>
-              <th class="text-end">達成率</th>
+              <th style="width: 80px;"><%= t('numerical_managements.index.date') %></th>
+              <th class="text-end"><%= t('numerical_managements.index.target') %></th>
+              <th class="text-end"><%= t('numerical_managements.index.actual') %></th>
+              <th class="text-end"><%= t('numerical_managements.index.plan') %></th>
+              <th class="text-end"><%= t('numerical_managements.index.forecast') %></th>
+              <th class="text-end"><%= t('numerical_managements.index.diff') %></th>
+              <th class="text-end"><%= t('numerical_managements.index.achievement_rate') %></th>
             </tr>
           </thead>
           <tbody>
             <% @daily_data.each do |day| %>
               <tr>
                 <td style="width: 80px;"><%= day[:date].strftime('%-m/%-d') %></td>
-                <td class="text-end"><%= number_to_currency((day[:target] || 0), unit: "¥", precision: 0) %></td>
-                <td class="text-end"><%= number_to_currency((day[:actual] || 0), unit: "¥", precision: 0) %></td>
-                <td class="text-end"><%= number_to_currency((day[:plan] || 0), unit: "¥", precision: 0) %></td>
-                <td class="text-end"><%= number_to_currency((day[:forecast] || 0), unit: "¥", precision: 0) %></td>
+                <td class="text-end"><%= number_to_currency((day[:target] || 0).to_i, unit: "¥", precision: 0) %></td>
+                <td class="text-end"><%= number_to_currency((day[:actual] || 0).to_i, unit: "¥", precision: 0) %></td>
+                <td class="text-end"><%= number_to_currency((day[:plan] || 0).to_i, unit: "¥", precision: 0) %></td>
+                <td class="text-end"><%= number_to_currency((day[:forecast] || 0).to_i, unit: "¥", precision: 0) %></td>
                 <td class="text-end <%= (day[:diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
-                  <%= number_to_currency((day[:diff] || 0), unit: "¥", precision: 0) %>
+                  <%= number_to_currency((day[:diff] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
                 <td class="text-end">
                   <%= number_to_percentage((day[:achievement_rate] || 0), precision: 1) %>
@@ -222,7 +222,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="budgetSettingModalLabel">月間予算設定</h5>
+        <h5 class="modal-title" id="budgetSettingModalLabel"><%= t('numerical_managements.modals.budget_setting') %></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
@@ -232,28 +232,28 @@
 
         <div class="modal-body">
           <div class="mb-3">
-            <label class="form-label">対象月</label>
+            <label class="form-label"><%= t('numerical_managements.modals.target_month') %></label>
             <input type="month" class="form-control" value="<%= @selected_date.strftime('%Y-%m') %>" readonly>
           </div>
 
           <div class="mb-3">
-            <%= label_tag 'monthly_budget[target_amount]', "月間予算（円）", class: "form-label" %>
-            <%= number_field_tag 'monthly_budget[target_amount]', @budget&.target_amount, class: "form-control", min: 0, step: 1, required: true, placeholder: "例: 1600000" %>
+            <%= label_tag 'monthly_budget[target_amount]', t('numerical_managements.modals.monthly_budget_yen'), class: "form-label" %>
+            <%= number_field_tag 'monthly_budget[target_amount]', @budget&.target_amount&.to_i, class: "form-control", min: 0, step: 1, required: true, placeholder: t('numerical_managements.placeholders.budget_example') %>
           </div>
 
           <div class="mb-3">
-            <%= label_tag 'monthly_budget[note]', "備考", class: "form-label" %>
-            <%= text_area_tag 'monthly_budget[note]', @budget&.note, class: "form-control", rows: 3, placeholder: "任意" %>
+            <%= label_tag 'monthly_budget[note]', t('numerical_managements.modals.note'), class: "form-label" %>
+            <%= text_area_tag 'monthly_budget[note]', @budget&.note, class: "form-control", rows: 3, placeholder: t('numerical_managements.modals.optional') %>
           </div>
 
           <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle"></i> 日別目標は自動的に月間予算から均等配分されます。個別調整は製造計画カレンダーから可能です。
+            <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.budget_info') %>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-          <%= f.submit @budget ? "更新" : "作成", class: "btn btn-primary" %>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('numerical_managements.modals.cancel') %></button>
+          <%= f.submit @budget ? t('numerical_managements.modals.update') : t('numerical_managements.modals.create'), class: "btn btn-primary" %>
         </div>
       <% end %>
     </div>
