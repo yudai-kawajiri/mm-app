@@ -89,6 +89,7 @@ Rails.application.routes.draw do
     # （/products/:id/purge_image というDELETEリクエストに対応）
     member do
       delete 'purge_image', to: 'products#purge_image', as: :purge_image
+      post :copy
     end
     # ネストされたリソースを定義
     #（/products/:product_id/product_materials/show などに対応）
