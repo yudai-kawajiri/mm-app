@@ -29,10 +29,11 @@ module PlansHelper
         menu_items = Plan.statuses.keys.map do |status_key|
           status_label = t("activerecord.enums.plan.status.#{status_key}")
           content_tag(:li) do
-            link_to status_label,
+            button_to status_label,
               update_status_plan_path(plan, status: status_key),
               method: :patch,
-              class: 'dropdown-item'
+              class: 'dropdown-item border-0 bg-transparent text-start w-100 p-2',
+              form: { style: 'display: inline; margin: 0;' }
           end
         end.join.html_safe
 
