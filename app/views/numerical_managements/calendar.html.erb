@@ -178,7 +178,7 @@
                                       data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
                                       data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
                                       data-target-id="<%= day[:daily_target_id] %>"
-                                      data-target-amount="<%= day[:target] %>"
+                                      data-target-amount="<%= day[:target].to_i %>"
                                       onclick="setEditModalData(this)">
                                 <i class="bi bi-pencil"></i>
                               </button>
