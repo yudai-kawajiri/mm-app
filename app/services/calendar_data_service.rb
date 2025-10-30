@@ -1,4 +1,3 @@
-# app/services/calendar_data_service.rb
 class CalendarDataService
   attr_reader :user, :year, :month
 
@@ -7,6 +6,7 @@ class CalendarDataService
     @year = year.to_i
     @month = month.to_i
     @budget = find_budget
+    load_data_for_month  # ← この行を追加
   end
 
   # カレンダー表示用のデータを返す
@@ -53,7 +53,6 @@ class CalendarDataService
     )
   end
 
-
   def build_day_data(date)
     # @daily_targetsがnilの場合は空配列として扱う
     daily_targets = @daily_targets || []
@@ -63,7 +62,9 @@ class CalendarDataService
     plan_schedules = plan_schedules_list.select { |ps| ps.scheduled_date == date }
 
     target_amount = daily_target&.target_amount || 0
-    actual_revenue = plan_schedules.sum(&:actual_revenue)
+
+    actual_revenue = plan_schedules.sum { |ps| ps.actual_revenue || 0 }
+    planned_revenue = plan_schedules.sum { |ps| ps.planned_revenue || 0 }
 
     # 達成率計算（ゼロ除算対策）
     achievement_rate = if target_amount > 0
@@ -77,15 +78,13 @@ class CalendarDataService
       target: target_amount,
       daily_target_id: daily_target&.id,
       actual: actual_revenue,
-      plan: plan_schedules.sum(&:planned_revenue),
+      plan: planned_revenue,  # ← 変数名を変更
       plan_schedules: plan_schedules,
       plan_schedule_id: plan_schedules.first&.id,
       is_today: date == Date.today,
       achievement_rate: achievement_rate
     }
   end
-
-
 
   def daily_target(date)
     daily_target_record = @budget.daily_targets.find_by(target_date: date)
@@ -106,4 +105,21 @@ class CalendarDataService
           .sum(:planned_revenue)
   end
 
+  def load_data_for_month
+    return unless @budget
+
+    start_date = Date.new(@year, @month, 1)
+    end_date = start_date.end_of_month
+
+    # 日別目標を事前ロード
+    @daily_targets = @budget.daily_targets
+                            .where(target_date: start_date..end_date)
+                            .to_a
+
+    # ★ 計画スケジュールを事前ロード（ユーザーの全計画）
+    @plan_schedules = @user.plan_schedules
+                          .where(scheduled_date: start_date..end_date)
+                          .includes(:plan)
+                          .to_a
+  end
 end

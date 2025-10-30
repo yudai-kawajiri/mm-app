@@ -44,7 +44,7 @@ Rails.application.routes.draw do
   resources :monthly_budgets, only: [:create, :update]  # ← この行を追加
 
   # 日別目標の編集
-  resources :daily_targets, only: [:update]
+  resources :daily_targets, only: [:create, :update]
   resources :plan_schedules, only: [:create, :update]
 
   # APIルーティングの追加

@@ -1,11 +1,16 @@
 class NumericalManagementsController < ApplicationController
+  before_action :authenticate_user!
+
   def index
     # 月選択パラメータの取得（monthまたはtarget_monthに対応）
     month_param = params[:month] || params[:target_month] || Date.today.strftime('%Y-%m')
     @selected_date = Date.parse("#{month_param}-01")
 
     # MonthlyBudgetを取得
-    @budget = MonthlyBudget.find_by(budget_month: @selected_date.beginning_of_month)
+    @budget = MonthlyBudget.find_by(
+      user: current_user,
+      budget_month: @selected_date.beginning_of_month
+    )
 
     unless @budget
       # 予算が未設定の場合の処理
@@ -47,5 +52,40 @@ class NumericalManagementsController < ApplicationController
     # カレンダーデータを取得
     calendar_service = CalendarDataService.new(current_user, @selected_date.year, @selected_date.month)
     @calendar_data = calendar_service.call
+
+    # 計画選択用データ（カテゴリでグループ化）
+    @plans_by_category = Plan.available_for_schedule
+                             .where(user: current_user)
+                             .includes(:category)
+                             .order('categories.name ASC, plans.created_at DESC')
+                             .group_by { |plan| plan.category&.name || '未分類' }
+  end
+
+  def update_budget
+    @year = params[:year].to_i
+    @month = params[:month].to_i
+    budget_month = Date.new(@year, @month, 1)
+
+    @budget = MonthlyBudget.find_or_initialize_by(
+      user: current_user,
+      budget_month: budget_month
+    )
+
+    if @budget.update(budget_params)
+      # 日別目標を自動生成（まだない場合）
+      @budget.generate_daily_targets! unless @budget.daily_targets.exists?
+
+      redirect_to numerical_managements_path(year: @year, month: @month),
+                  notice: '予算を更新しました。'
+    else
+      redirect_to numerical_managements_path(year: @year, month: @month),
+                  alert: '予算の更新に失敗しました。'
+    end
+  end
+
+  private
+
+  def budget_params
+    params.require(:monthly_budget).permit(:target_amount, :note)
   end
 end
