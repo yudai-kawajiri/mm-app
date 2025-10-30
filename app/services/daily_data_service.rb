@@ -7,6 +7,7 @@ class DailyDataService
     @year = year.to_i
     @month = month.to_i
     @budget = find_budget
+    load_data_for_month  # ← 追加
   end
 
   # 日別データの配列を返す
@@ -32,6 +33,25 @@ class DailyDataService
     )
   end
 
+  # ★★★ 追加: データ事前ロード ★★★
+  def load_data_for_month
+    return unless @budget
+
+    start_date = Date.new(@year, @month, 1)
+    end_date = start_date.end_of_month
+
+    # 日別目標を事前ロード
+    @daily_targets = @budget.daily_targets
+                            .where(target_date: start_date..end_date)
+                            .to_a
+
+    # 計画スケジュールを事前ロード（ユーザーの全計画）
+    @plan_schedules = @user.plan_schedules
+                           .where(scheduled_date: start_date..end_date)
+                           .includes(:plan)
+                           .to_a
+  end
+
   def calculate_daily_data(date)
     target = daily_target(date)
     actual = daily_actual(date)
@@ -51,22 +71,24 @@ class DailyDataService
     }
   end
 
+  # ★★★ 修正: メモリ上検索に変更 ★★★
   def daily_target(date)
-    daily_target_record = @budget.daily_targets.find_by(target_date: date)
-    daily_target_record&.target_amount || 0
+    daily_targets = @daily_targets || []
+    daily_target = daily_targets.find { |dt| dt.target_date == date }
+    daily_target&.target_amount || 0
   end
 
+  # ★★★ 修正: メモリ上検索 + nil安全処理 ★★★
   def daily_actual(date)
-    # PlanScheduleから実績売上を取得
-    @budget.plan_schedules
-           .where(scheduled_date: date)
-           .where.not(actual_revenue: nil)
-           .sum(:actual_revenue)
+    plan_schedules_list = @plan_schedules || []
+    plan_schedules = plan_schedules_list.select { |ps| ps.scheduled_date == date }
+    plan_schedules.sum { |ps| ps.actual_revenue || 0 }
   end
 
+  # 修正: メモリ上検索 + nil安全処理
   def daily_plan(date)
-    # PlanScheduleから計画売上を取得（実績未入力のもの）
-    # 現時点では0を返す（expected_revenueカラムがないため）
-    0
+    plan_schedules_list = @plan_schedules || []
+    plan_schedules = plan_schedules_list.select { |ps| ps.scheduled_date == date }
+    plan_schedules.sum { |ps| ps.planned_revenue || 0 }
   end
 end
