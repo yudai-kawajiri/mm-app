@@ -56,19 +56,19 @@
           %>
 
           <div class="col-md-3">
-            <div class="text-muted small">月間目標</div>
-            <div class="h5">¥<%= number_with_delimiter(monthly_target) %></div>
+            <div class="text-muted small">月間予算</div>
+            <div class="h5">¥<%= number_with_delimiter(monthly_target.to_i) %></div>
           </div>
 
           <div class="col-md-3">
             <div class="text-muted small">月間実績</div>
-            <div class="h5">¥<%= number_with_delimiter(monthly_actual) %></div>
+            <div class="h5">¥<%= number_with_delimiter(monthly_actual.to_i) %></div>
           </div>
 
           <div class="col-md-3">
-            <div class="text-muted small">差額</div>
+            <div class="text-muted small">予算差</div>
             <div class="h5 <%= monthly_actual >= monthly_target ? 'text-success' : 'text-danger' %>">
-              ¥<%= number_with_delimiter(monthly_actual - monthly_target) %>
+                ¥<%= number_with_delimiter((monthly_actual - monthly_target).to_i) %>
             </div>
           </div>
 
