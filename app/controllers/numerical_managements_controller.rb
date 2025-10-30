@@ -72,8 +72,9 @@ class NumericalManagementsController < ApplicationController
     )
 
     if @budget.update(budget_params)
-      # 日別目標を自動生成（まだない場合）
-      @budget.generate_daily_targets! unless @budget.daily_targets.exists?
+      # 日別目標を再生成（予算変更時は日別目標も更新）
+      @budget.daily_targets.destroy_all
+      @budget.generate_daily_targets!
 
       # リダイレクト先を判定
       redirect_path = if params[:return_to] == 'calendar'
