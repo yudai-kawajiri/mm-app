@@ -213,32 +213,35 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <%= form_with model: @budget || MonthlyBudget.new, url: monthly_budgets_path, method: :post, local: true do |f| %>
+
+      <%= form_with url: update_budget_numerical_managements_path, method: :post, local: true do |f| %>
+        <%= hidden_field_tag :year, @selected_date.year %>
+        <%= hidden_field_tag :month, @selected_date.month %>
+
         <div class="modal-body">
           <div class="mb-3">
-            <%= f.label :budget_month, "対象月", class: "form-label" %>
-            <%= f.month_field :budget_month, class: "form-control", value: @selected_date.strftime('%Y-%m'), required: true %>
+            <label class="form-label">対象月</label>
+            <input type="month" class="form-control" value="<%= @selected_date.strftime('%Y-%m') %>" readonly>
           </div>
 
           <div class="mb-3">
-            <%= f.label :target_amount, "月間予算（円）", class: "form-label" %>
-            <%= f.number_field :target_amount, class: "form-control", min: 0, step: 1, required: true, placeholder: "例: 1600000" %>
+            <%= label_tag 'monthly_budget[target_amount]', "月間予算（円）", class: "form-label" %>
+            <%= number_field_tag 'monthly_budget[target_amount]', @budget&.target_amount, class: "form-control", min: 0, step: 1, required: true, placeholder: "例: 1600000" %>
           </div>
 
-          <div class="mb-3 form-check">
-            <%= f.check_box :generate_daily_targets, class: "form-check-input", checked: true, id: "generateDailyTargets" %>
-            <%= f.label :generate_daily_targets, "日別目標を自動生成する", class: "form-check-label", for: "generateDailyTargets" %>
-            <small class="form-text text-muted d-block">月間予算を日数で均等配分します</small>
+          <div class="mb-3">
+            <%= label_tag 'monthly_budget[note]', "備考", class: "form-label" %>
+            <%= text_area_tag 'monthly_budget[note]', @budget&.note, class: "form-control", rows: 3, placeholder: "任意" %>
           </div>
 
           <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle"></i> 日別目標を個別に調整する場合は、製造計画カレンダーから編集できます（今後実装予定）
+            <i class="bi bi-info-circle"></i> 日別目標は自動的に月間予算から均等配分されます。個別調整は製造計画カレンダーから可能です。
           </div>
         </div>
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-          <%= f.submit "保存", class: "btn btn-primary" %>
+          <%= f.submit @budget ? "更新" : "作成", class: "btn btn-primary" %>
         </div>
       <% end %>
     </div>

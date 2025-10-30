@@ -71,15 +71,18 @@ class NumericalManagementsController < ApplicationController
       budget_month: budget_month
     )
 
-    if @budget.update(budget_params)
+    # ★★★ 修正: assign_attributes + save パターンに変更 ★★★
+    @budget.assign_attributes(budget_params)
+
+    if @budget.save
       # 日別目標を自動生成（まだない場合）
       @budget.generate_daily_targets! unless @budget.daily_targets.exists?
 
-      redirect_to numerical_managements_path(year: @year, month: @month),
+      redirect_to numerical_managements_path(month: budget_month.strftime('%Y-%m')),
                   notice: '予算を更新しました。'
     else
-      redirect_to numerical_managements_path(year: @year, month: @month),
-                  alert: '予算の更新に失敗しました。'
+      redirect_to numerical_managements_path(month: budget_month.strftime('%Y-%m')),
+                  alert: "予算の更新に失敗しました: #{@budget.errors.full_messages.join(', ')}"
     end
   end
 
