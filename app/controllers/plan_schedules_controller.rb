@@ -2,47 +2,83 @@ class PlanSchedulesController < ApplicationController
   before_action :authenticate_user!
 
   def create
-    @plan_schedule = PlanSchedule.new(plan_schedule_params)
-    @plan_schedule.user_id = current_user.id
-    @plan_schedule.status = :scheduled
+    scheduled_date_str = params[:plan_schedule][:scheduled_date]
+    plan_id = params[:plan_schedule][:plan_id]
+    planned_revenue = params[:plan_schedule][:planned_revenue]
 
-    Rails.logger.info "=== Creating PlanSchedule ==="
-    Rails.logger.info "Params: #{plan_schedule_params.inspect}"
+    # パラメータチェック
+    unless scheduled_date_str.present? && plan_id.present?
+      redirect_to calendar_numerical_managements_path,
+                  alert: '必要な情報が不足しています。'
+      return
+    end
+
+    begin
+      scheduled_date = Date.parse(scheduled_date_str)
+    rescue ArgumentError, TypeError
+      redirect_to calendar_numerical_managements_path,
+                  alert: '無効な日付形式です。'
+      return
+    end
+
+    # 1日1計画のみ（同じ日の計画は上書き）
+    @plan_schedule = PlanSchedule.find_or_initialize_by(
+      user: current_user,
+      scheduled_date: scheduled_date
+    )
+
+    @plan_schedule.plan_id = plan_id
+    @plan_schedule.planned_revenue = planned_revenue
+    @plan_schedule.status = :scheduled unless @plan_schedule.persisted?
+
+    Rails.logger.info "=== Creating/Updating PlanSchedule ==="
     Rails.logger.info "User ID: #{current_user.id}"
-    Rails.logger.info "Scheduled Date: #{@plan_schedule.scheduled_date.inspect}"
+    Rails.logger.info "Scheduled Date: #{scheduled_date}"
+    Rails.logger.info "Plan ID: #{plan_id}"
+    Rails.logger.info "Planned Revenue: #{planned_revenue}"
+    Rails.logger.info "Is new record: #{@plan_schedule.new_record?}"
 
     if @plan_schedule.save
+      message = @plan_schedule.previously_new_record? ? '登録' : '更新'
       Rails.logger.info "=== PlanSchedule Saved Successfully ==="
-      # dateパラメータに変更（monthではなく）
-      redirect_to calendar_numerical_managements_path(date: @plan_schedule.scheduled_date),
-                  notice: '計画を登録しました'
+
+      redirect_to calendar_numerical_managements_path(month: scheduled_date.strftime('%Y-%m')),
+                  notice: "計画を#{message}しました"
     else
       Rails.logger.error "=== PlanSchedule Save Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
-      # scheduled_dateがnilの場合のフォールバック
-      fallback_date = params[:plan_schedule][:scheduled_date].present? ?
-                      params[:plan_schedule][:scheduled_date].to_date :
-                      Date.current
-
-      redirect_to calendar_numerical_managements_path(date: fallback_date),
-                  alert: "計画の登録に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
+      redirect_to calendar_numerical_managements_path(month: scheduled_date.strftime('%Y-%m')),
+                  alert: "計画の#{@plan_schedule.new_record? ? '登録' : '更新'}に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
     end
   end
+
 
   def update
     @plan_schedule = PlanSchedule.find(params[:id])
 
+    # 権限チェック
+    unless @plan_schedule.user_id == current_user.id
+      redirect_to calendar_numerical_managements_path,
+                  alert: '権限がありません。'
+      return
+    end
+
+    Rails.logger.info "=== Updating PlanSchedule ID: #{@plan_schedule.id} ==="
+    Rails.logger.info "Params: #{plan_schedule_params.inspect}"
+
     if @plan_schedule.update(plan_schedule_params)
-      # dateパラメータに変更（monthではなく）
-      redirect_to calendar_numerical_managements_path(date: @plan_schedule.scheduled_date),
+      Rails.logger.info "=== PlanSchedule Updated Successfully ==="
+
+      redirect_to calendar_numerical_managements_path(month: @plan_schedule.scheduled_date.strftime('%Y-%m')),
                   notice: '実績を更新しました'
     else
-      fallback_date = params[:plan_schedule][:scheduled_date].present? ?
-                      params[:plan_schedule][:scheduled_date].to_date :
-                      Date.current
+      Rails.logger.error "=== PlanSchedule Update Failed ==="
+      Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
-      redirect_to calendar_numerical_managements_path(date: fallback_date),
+      fallback_date = @plan_schedule.scheduled_date || Date.current
+
+      redirect_to calendar_numerical_managements_path(month: fallback_date.strftime('%Y-%m')),
                   alert: "実績の更新に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
     end
   end
