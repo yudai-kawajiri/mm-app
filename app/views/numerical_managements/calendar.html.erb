@@ -317,7 +317,7 @@
           <div class="mb-3">
             <%= f.label :plan_id, "計画を選択", class: "form-label" %>
             <%= f.collection_select :plan_id,
-                  Plan.all,
+                  Plan.available_for_schedule,
                   :id,
                   :name_with_total,
                   { prompt: "計画を選択してください" },
