@@ -57,7 +57,6 @@ class PlansController < AuthenticatedController
   end
 
   def copy
-    # @planは既にfind_resourceで設定済み
     original_plan = @plan
 
     # 同じベース名の計画数をカウント
@@ -68,7 +67,6 @@ class PlansController < AuthenticatedController
     new_plan = original_plan.dup
     new_plan.name = "#{base_name} (コピー#{copy_count})"
     new_plan.status = :draft
-    new_plan.scheduled_date = nil
     new_plan.user_id = current_user.id
 
     ActiveRecord::Base.transaction do
@@ -87,6 +85,7 @@ class PlansController < AuthenticatedController
   rescue ActiveRecord::RecordInvalid => e
     redirect_to plans_path, alert: "計画のコピーに失敗しました: #{e.message}"
   end
+
 
   private
 
