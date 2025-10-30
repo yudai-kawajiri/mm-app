@@ -3,12 +3,12 @@ module PlansHelper
   def render_plan_status_with_action(plan)
     # バッジの色を決定
     status_badge_class = case plan.status
-                          when 'draft' then 'bg-secondary'
-                          when 'active' then 'bg-success'
-                          when 'completed' then 'bg-primary'
-                          when 'cancelled' then 'bg-danger'
-                          else 'bg-secondary'
-                          end
+                         when 'draft' then 'bg-secondary'
+                         when 'active' then 'bg-success'
+                         when 'completed' then 'bg-primary'
+                         when 'cancelled' then 'bg-danger'
+                         else 'bg-secondary'
+                         end
 
     # ステータスの日本語表示
     status_text = t("activerecord.enums.plan.status.#{plan.status}")
