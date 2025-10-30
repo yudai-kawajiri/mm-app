@@ -1,13 +1,13 @@
 <%# 必須引数: resource, resource_name %>
-<%# オプション引数: show_link %>
-<%# 詳細リンクの表示/非表示を切り替えるためのオプション %>
+<%# オプション引数: show_link, show_copy, copy_url %>
 <% show_link = local_assigns.fetch(:show_link, true) %>
+<% show_copy = local_assigns.fetch(:show_copy, false) %>
+<% copy_url = local_assigns[:copy_url] %>
 
 <% return if resource.nil? %>
 
 <div class="d-flex">
   <%# 1. 詳細リンク %>
-  <%# show_linkがtrueの場合にのみ表示 %>
   <% if show_link %>
     <%= render 'shared/actions/show_link',
         url: resource,
@@ -15,13 +15,19 @@
   <% end %>
 
   <%# 2. 編集リンク %>
-  <%# 常に表示 %>
   <%= render 'shared/actions/edit_link',
       url: url_for([:edit, resource]),
       custom_class: 'me-2' %>
 
-  <%# 3. 削除リンク %>
-  <%# 常に表示 %>
+  <%# 3. コピーリンク（オプション） %>
+  <% if show_copy && copy_url.present? %>
+    <%= render 'shared/actions/copy_link',
+        url: copy_url,
+        custom_class: 'me-2',
+        confirm_message: "この#{resource_name}をコピーしますか？" %>
+  <% end %>
+
+  <%# 4. 削除リンク %>
   <%= render 'shared/actions/delete_link',
       url: resource,
       resource_name: resource_name
