@@ -4,213 +4,215 @@
     <h1 class="h3 mb-0">数値管理ダッシュボード</h1>
 
     <div class="d-flex align-items-center gap-3">
-  <!-- 月選択フォーム -->
-  <form method="get" class="d-flex align-items-center gap-2">
-    <label class="text-muted mb-0">対象月:</label>
-    <input type="month" name="month" value="<%= @selected_date.strftime('%Y-%m') %>" class="form-control form-control-sm" style="width: 150px;">
-    <button type="submit" class="btn btn-primary btn-sm">表示</button>
-  </form>
+      <!-- 月選択フォーム -->
+      <form method="get" class="d-flex align-items-center gap-2">
+        <label class="text-muted mb-0">対象月:</label>
+        <input type="month" name="month" value="<%= @selected_date.strftime('%Y-%m') %>" class="form-control form-control-sm" style="width: 150px;">
+        <button type="submit" class="btn btn-primary btn-sm">表示</button>
+      </form>
 
-  <!-- カレンダービューへのリンク -->
-  <%= link_to "カレンダー表示", calendar_numerical_managements_path(month: @selected_date.strftime('%Y-%m')), class: "btn btn-outline-primary btn-sm" %>
+      <!-- カレンダービューへのリンク -->
+      <%= link_to "カレンダー表示", calendar_numerical_managements_path(month: @selected_date.strftime('%Y-%m')), class: "btn btn-outline-primary btn-sm" %>
 
-  <!-- 予算設定ボタン -->
-  <div class="d-flex gap-2">
-    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#budgetSettingModal">
-      <i class="bi bi-gear"></i> 月間予算を設定
-    </button>
+      <!-- 予算設定ボタン -->
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#budgetSettingModal">
+          <i class="bi bi-gear"></i> 月間予算を設定
+        </button>
 
-    <!-- ★★★ 追加: 予算削除ボタン ★★★ -->
-    <% if @budget %>
-      <%= button_to destroy_budget_numerical_managements_path(month: @selected_date.strftime('%Y-%m')),
-                    method: :delete,
-                    data: {
-                      turbo_confirm: "本当に削除しますか？\n\nこの月の予算と日別目標が全て削除されます。\nこの操作は取り消せません。"
-                    },
-                    class: "btn btn-outline-danger btn-sm" do %>
-        <i class="bi bi-trash"></i> 予算を削除
-      <% end %>
-    <% end %>
-  </div>
-</div>
-
-<!-- サマリーカード -->
-<div class="row g-3 mb-4">
-  <div class="col-md-3">
-    <div class="card border-primary">
-      <div class="card-body p-3">
-        <h6 class="card-title text-primary mb-2">月間予算</h6>
-        <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:target_amount] || 0), unit: "¥", precision: 0) %></p>
+        <!--  追加: 予算削除ボタン -->
+        <% if @budget %>
+          <%= button_to destroy_budget_numerical_managements_path(month: @selected_date.strftime('%Y-%m')),
+                        method: :delete,
+                        data: {
+                          turbo_confirm: "本当に削除しますか？\n\nこの月の予算と日別目標が全て削除されます。\nこの操作は取り消せません。"
+                        },
+                        class: "btn btn-outline-danger btn-sm" do %>
+            <i class="bi bi-trash"></i> 予算を削除
+          <% end %>
+        <% end %>
       </div>
     </div>
   </div>
-  <div class="col-md-3">
-    <div class="card border-success">
-      <div class="card-body p-3">
-        <h6 class="card-title text-success mb-2">実績売上</h6>
-        <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:actual_amount] || 0), unit: "¥", precision: 0) %></p>
+
+  <!-- サマリーカード -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card border-primary">
+        <div class="card-body p-3">
+          <h6 class="card-title text-primary mb-2">月間予算</h6>
+          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:target_amount] || 0), unit: "¥", precision: 0) %></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-success">
+        <div class="card-body p-3">
+          <h6 class="card-title text-success mb-2">実績売上</h6>
+          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:actual_amount] || 0), unit: "¥", precision: 0) %></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-info">
+        <div class="card-body p-3">
+          <h6 class="card-title text-info mb-2">計画売上</h6>
+          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:planned_amount] || 0), unit: "¥", precision: 0) %></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-warning">
+        <div class="card-body p-3">
+          <h6 class="card-title text-warning mb-2">予測売上</h6>
+          <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:forecast_amount] || 0), unit: "¥", precision: 0) %></p>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col-md-3">
-    <div class="card border-info">
-      <div class="card-body p-3">
-        <h6 class="card-title text-info mb-2">計画売上</h6>
-        <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:planned_amount] || 0), unit: "¥", precision: 0) %></p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card border-warning">
-      <div class="card-body p-3">
-        <h6 class="card-title text-warning mb-2">予測売上</h6>
-        <p class="h4 mb-0"><%= number_to_currency((@forecast_data[:forecast_amount] || 0), unit: "¥", precision: 0) %></p>
-      </div>
-    </div>
-  </div>
-</div>
 
   <!-- 月末予測 3グループ横並び -->
-<div class="row g-3 mb-4">
-  <!-- グループ1: 月末予測 -->
-  <div class="col-md-4">
-    <div class="card h-100">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">月末予測</h5>
-      </div>
-      <div class="card-body">
-        <table class="table table-sm mb-0">
-          <tbody>
-            <tr>
-              <td class="border-0">予測売上</td>
-              <td class="border-0 text-end fw-bold">
-                <%= number_to_currency((@forecast_data[:forecast_amount] || 0), unit: "¥", precision: 0) %>
-              </td>
-            </tr>
-            <tr>
-              <td>予算達成率</td>
-              <td class="text-end fw-bold">
-                <%= number_to_percentage((@forecast_data[:achievement_rate] || 0), precision: 1) %>
-              </td>
-            </tr>
-            <tr>
-              <td>予測予算差</td>
-              <td class="text-end fw-bold <%= (@forecast_data[:forecast_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
-                <%= number_to_currency((@forecast_data[:forecast_diff] || 0), unit: "¥", precision: 0) %>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+  <div class="row g-3 mb-4">
+    <!-- グループ1: 月末予測 -->
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">月末予測</h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-sm mb-0">
+            <tbody>
+              <tr>
+                <td class="border-0">予測売上</td>
+                <td class="border-0 text-end fw-bold">
+                  <%= number_to_currency((@forecast_data[:forecast_amount] || 0), unit: "¥", precision: 0) %>
+                </td>
+              </tr>
+              <tr>
+                <td>予算達成率</td>
+                <td class="text-end fw-bold">
+                  <%= number_to_percentage((@forecast_data[:achievement_rate] || 0), precision: 1) %>
+                </td>
+              </tr>
+              <tr>
+                <td>予測予算差</td>
+                <td class="text-end fw-bold <%= (@forecast_data[:forecast_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
+                  <%= number_to_currency((@forecast_data[:forecast_diff] || 0), unit: "¥", precision: 0) %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- グループ2: ギャップ分析 -->
-  <div class="col-md-4">
-    <div class="card h-100">
-      <div class="card-header bg-warning text-dark">
-        <h5 class="mb-0">ギャップ分析</h5>
-      </div>
-      <div class="card-body">
-        <table class="table table-sm mb-0">
-          <tbody>
-            <tr>
-              <td class="border-0">残り営業日数</td>
-              <td class="border-0 text-end fw-bold">
-                <%= (@forecast_data[:remaining_days] || 0) %>日
-              </td>
-            </tr>
-            <tr>
-              <td>必要追加売上</td>
-              <td class="text-end fw-bold">
-                <%= number_to_currency((@forecast_data[:required_additional] || 0), unit: "¥", precision: 0) %>
-              </td>
-            </tr>
-            <tr>
-              <td>1日あたり必要額</td>
-              <td class="text-end fw-bold">
-                <%= number_to_currency((@forecast_data[:daily_required] || 0), unit: "¥", precision: 0) %>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- グループ2: ギャップ分析 -->
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0">ギャップ分析</h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-sm mb-0">
+            <tbody>
+              <tr>
+                <td class="border-0">残り営業日数</td>
+                <td class="border-0 text-end fw-bold">
+                  <%= (@forecast_data[:remaining_days] || 0) %>日
+                </td>
+              </tr>
+              <tr>
+                <td>必要追加売上</td>
+                <td class="text-end fw-bold">
+                  <%= number_to_currency((@forecast_data[:required_additional] || 0), unit: "¥", precision: 0) %>
+                </td>
+              </tr>
+              <tr>
+                <td>1日あたり必要額</td>
+                <td class="text-end fw-bold">
+                  <%= number_to_currency((@forecast_data[:daily_required] || 0), unit: "¥", precision: 0) %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- グループ3: アクションプラン -->
-  <div class="col-md-4">
-    <div class="card h-100">
-      <div class="card-header bg-success text-white">
-        <h5 class="mb-0">アクションプラン</h5>
-      </div>
-      <div class="card-body">
-        <table class="table table-sm mb-0">
-          <tbody>
-            <tr>
-              <td class="border-0">推奨日次目標</td>
-              <td class="border-0 text-end fw-bold">
-                <%= number_to_currency((@forecast_data[:daily_required] || 0), unit: "¥", precision: 0) %>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <% if (@forecast_data[:remaining_days] || 0) > 0 && (@forecast_data[:daily_required] || 0) > 0 %>
-                  <div class="alert alert-success mb-0 p-2 small">
-                    残り<%= @forecast_data[:remaining_days] %>日の計画に<br>
-                    1日あたり<strong><%= number_to_currency(@forecast_data[:daily_required], unit: "¥", precision: 0) %></strong>追加してください
-                  </div>
-                <% else %>
-                  <div class="alert alert-info mb-0 p-2 small">
-                    現在の計画で予算達成見込みです
-                  </div>
-                <% end %>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- グループ3: アクションプラン -->
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">アクションプラン</h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-sm mb-0">
+            <tbody>
+              <tr>
+                <td class="border-0">推奨日次目標</td>
+                <td class="border-0 text-end fw-bold">
+                  <%= number_to_currency((@forecast_data[:daily_required] || 0), unit: "¥", precision: 0) %>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <% if (@forecast_data[:remaining_days] || 0) > 0 && (@forecast_data[:daily_required] || 0) > 0 %>
+                    <div class="alert alert-success mb-0 p-2 small">
+                      残り<%= @forecast_data[:remaining_days] %>日の計画に<br>
+                      1日あたり<strong><%= number_to_currency(@forecast_data[:daily_required], unit: "¥", precision: 0) %></strong>追加してください
+                    </div>
+                  <% else %>
+                    <div class="alert alert-info mb-0 p-2 small">
+                      現在の計画で予算達成見込みです
+                    </div>
+                  <% end %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
   <!-- 日別明細テーブル（列幅調整） -->
-<div class="card">
-  <div class="card-header">
-    <h5 class="mb-0">日別明細</h5>
-  </div>
-  <div class="card-body p-0">
-    <div style="max-height: 400px; overflow-y: auto;">
-      <table class="table table-sm table-hover mb-0">
-        <thead class="table-light sticky-top">
-          <tr>
-            <th style="width: 80px;">日付</th>
-            <th class="text-end">目標</th>
-            <th class="text-end">実績</th>
-            <th class="text-end">計画</th>
-            <th class="text-end">予測</th>
-            <th class="text-end">差異</th>
-            <th class="text-end">達成率</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @daily_data.each do |day| %>
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">日別明細</h5>
+    </div>
+    <div class="card-body p-0">
+      <div style="max-height: 400px; overflow-y: auto;">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-light sticky-top">
             <tr>
-              <td style="width: 80px;"><%= day[:date].strftime('%-m/%-d') %></td>
-              <td class="text-end"><%= number_to_currency((day[:target] || 0), unit: "¥", precision: 0) %></td>
-              <td class="text-end"><%= number_to_currency((day[:actual] || 0), unit: "¥", precision: 0) %></td>
-              <td class="text-end"><%= number_to_currency((day[:plan] || 0), unit: "¥", precision: 0) %></td>
-              <td class="text-end"><%= number_to_currency((day[:forecast] || 0), unit: "¥", precision: 0) %></td>
-              <td class="text-end <%= (day[:diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
-                <%= number_to_currency((day[:diff] || 0), unit: "¥", precision: 0) %>
-              </td>
-              <td class="text-end">
-                <%= number_to_percentage((day[:achievement_rate] || 0), precision: 1) %>
-              </td>
+              <th style="width: 80px;">日付</th>
+              <th class="text-end">目標</th>
+              <th class="text-end">実績</th>
+              <th class="text-end">計画</th>
+              <th class="text-end">予測</th>
+              <th class="text-end">差異</th>
+              <th class="text-end">達成率</th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <% @daily_data.each do |day| %>
+              <tr>
+                <td style="width: 80px;"><%= day[:date].strftime('%-m/%-d') %></td>
+                <td class="text-end"><%= number_to_currency((day[:target] || 0), unit: "¥", precision: 0) %></td>
+                <td class="text-end"><%= number_to_currency((day[:actual] || 0), unit: "¥", precision: 0) %></td>
+                <td class="text-end"><%= number_to_currency((day[:plan] || 0), unit: "¥", precision: 0) %></td>
+                <td class="text-end"><%= number_to_currency((day[:forecast] || 0), unit: "¥", precision: 0) %></td>
+                <td class="text-end <%= (day[:diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
+                  <%= number_to_currency((day[:diff] || 0), unit: "¥", precision: 0) %>
+                </td>
+                <td class="text-end">
+                  <%= number_to_percentage((day[:achievement_rate] || 0), precision: 1) %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -223,7 +225,6 @@
         <h5 class="modal-title" id="budgetSettingModalLabel">月間予算設定</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-
 
       <%= form_with url: update_budget_numerical_managements_path, method: :post, local: true do |f| %>
         <%= hidden_field_tag :year, @selected_date.year %>
