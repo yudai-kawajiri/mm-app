@@ -313,24 +313,27 @@
           <!-- 日付フィールド（非表示） -->
           <%= f.hidden_field :scheduled_date, id: "plan_scheduled_date" %>
 
-          <!-- 計画選択ドロップダウン -->
           <div class="mb-3">
             <%= f.label :plan_id, "計画を選択", class: "form-label" %>
-            <%= f.collection_select :plan_id,
-                  Plan.available_for_schedule,
-                  :id,
-                  :name_with_total,
-                  { prompt: "計画を選択してください" },
-                  {
-                    class: "form-select",
-                    required: true,
-                    data: {
-                      plan_assignment_target: "planSelect",
-                      action: "change->plan-assignment#updateRevenue"
-                    }
-                  }
-            %>
+            <select name="plan_schedule[plan_id]"
+                    class="form-select"
+                    required
+                    data-plan-assignment-target="planSelect"
+                    data-action="change->plan-assignment#updateRevenue">
+              <option value="">計画を選択してください</option>
+              <% @plans_by_category.each do |category_name, plans| %>
+                <optgroup label="<%= category_name %>">
+                  <% plans.each do |plan| %>
+                    <option value="<%= plan.id %>" data-revenue="<%= plan.expected_revenue %>">
+                      <%= plan.name %> (<%= plan.status_i18n %>) - ¥<%= number_with_delimiter(plan.expected_revenue) %>
+                    </option>
+                  <% end %>
+                </optgroup>
+              <% end %>
+            </select>
+            <div class="form-text">カテゴリごとにグループ化されています</div>
           </div>
+
 
           <!-- 計画高（自動入力、読み取り専用） -->
           <div class="mb-3">

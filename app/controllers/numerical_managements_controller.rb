@@ -47,5 +47,12 @@ class NumericalManagementsController < ApplicationController
     # カレンダーデータを取得
     calendar_service = CalendarDataService.new(current_user, @selected_date.year, @selected_date.month)
     @calendar_data = calendar_service.call
+
+    # 計画選択用データ（カテゴリでグループ化）
+    @plans_by_category = Plan.available_for_schedule
+                             .where(user: current_user)
+                             .includes(:category)
+                             .order('categories.name ASC, plans.created_at DESC')
+                             .group_by { |plan| plan.category&.name || '未分類' }
   end
 end
