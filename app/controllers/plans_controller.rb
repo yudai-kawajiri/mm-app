@@ -1,9 +1,10 @@
+# app/controllers/plans_controller.rb
 class PlansController < AuthenticatedController
 
   # define_search_params を使って許可するキーを定義
   define_search_params :q, :category_id
 
-  # ★修正: copyとupdate_statusを追加
+  # copyとupdate_statusを追加
   find_resource :plan, only: [:show, :edit, :update, :destroy, :update_status, :copy]
 
   before_action -> { load_categories_for('plan', as: :plan) }, only: [:index, :new, :edit, :create, :update]
@@ -45,7 +46,7 @@ class PlansController < AuthenticatedController
   # ステータス更新アクション
   def update_status
     # @planは既にfind_resourceで設定済み
-    new_status = params[:status]
+    new_status = status_param
 
     if Plan.statuses.keys.include?(new_status)
       @plan.update(status: new_status)
@@ -103,6 +104,11 @@ class PlansController < AuthenticatedController
         :production_count
       ]
     )
+  end
+
+  # ステータス更新用のパラメータ
+  def status_param
+    params.permit(:status)[:status]
   end
 
   # N+1対策: plan_productsを事前ロード
