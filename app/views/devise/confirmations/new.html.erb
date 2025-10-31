@@ -1,16 +1,40 @@
-<h2>Resend confirmation instructions</h2>
+<%# app/views/devise/confirmations/new.html.erb %>
+<%= render "devise/shared/auth_card_frame" do %>
+  <div class="mb-4 text-center">
+    <h3 class="fw-bold text-primary mb-2">
+      <i class="bi bi-envelope-check me-2"></i>確認メール再送信
+    </h3>
+    <p class="text-muted mb-0">アカウント確認のメールを再送信します</p>
+  </div>
 
-<%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
-  </div>
+  <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, class: 'needs-validation', novalidate: true }) do |f| %>
+    <div class="mb-4">
+      <%= f.label :email, class: 'form-label fw-bold' do %>
+        <i class="bi bi-envelope me-1"></i>メールアドレス
+      <% end %>
+      <%= f.email_field :email,
+          autofocus: true,
+          autocomplete: "email",
+          value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email),
+          class: 'form-control form-control-lg',
+          placeholder: 'example@sushi-manage.com',
+          required: true %>
+      <div class="form-text">
+        登録時に使用したメールアドレスを入力してください
+      </div>
+    </div>
 
-  <div class="actions">
-    <%= f.submit "Resend confirmation instructions" %>
-  </div>
+    <div class="d-grid gap-2 mb-3">
+      <%= f.submit "確認メールを再送信", class: 'btn btn-primary btn-lg' %>
+    </div>
+
+    <%# ログイン画面へのリンク %>
+    <div class="text-center">
+      <%= link_to new_session_path(resource_name), class: 'text-decoration-none' do %>
+        <i class="bi bi-arrow-left me-1"></i>ログイン画面に戻る
+      <% end %>
+    </div>
+  <% end %>
 <% end %>
-
-<%= render "devise/shared/links" %>

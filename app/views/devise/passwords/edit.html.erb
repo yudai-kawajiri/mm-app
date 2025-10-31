@@ -1,36 +1,54 @@
 <%# app/views/devise/passwords/edit.html.erb %>
-<% content_for :page_title, t('devise.passwords.edit.title') %>
-<%= render layout: 'devise/shared/auth_card_frame' do %>
+<%= render "devise/shared/auth_card_frame" do %>
+  <div class="mb-4 text-center">
+    <h3 class="fw-bold text-primary mb-2">
+      <i class="bi bi-lock-fill me-2"></i>パスワード変更
+    </h3>
+    <p class="text-muted mb-0">新しいパスワードを設定してください</p>
+  </div>
 
-  <h2 class="text-center mb-4"><%= t("devise.passwords.edit.title") %></h2>
+  <%= render "devise/shared/error_messages", resource: resource %>
 
-  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
-    <%= render "devise/shared/error_messages", resource: resource %>
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: 'needs-validation', novalidate: true }) do |f| %>
     <%= f.hidden_field :reset_password_token %>
 
-    <div class="mb-4">
-      <%= f.label :password, t("activerecord.attributes.user.password"), class: "form-label h5" %>
-      <% if @minimum_password_length %>
-        <small class="text-muted d-block">
-          <%= t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
-        </small>
+    <div class="mb-3">
+      <%= f.label :password, class: 'form-label fw-bold' do %>
+        <i class="bi bi-lock me-1"></i>新しいパスワード
       <% end %>
-      <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "form-control form-control-lg" %>
+      <%= f.password_field :password,
+          autofocus: true,
+          autocomplete: "new-password",
+          class: 'form-control form-control-lg',
+          placeholder: '••••••••',
+          required: true %>
+      <% if @minimum_password_length %>
+        <div class="form-text">
+          <%= t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
+        </div>
+      <% end %>
     </div>
 
     <div class="mb-4">
-      <%= f.label :password_confirmation, t("activerecord.attributes.user.password_confirmation"), class: "form-label h5" %><br />
-      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg" %>
+      <%= f.label :password_confirmation, class: 'form-label fw-bold' do %>
+        <i class="bi bi-lock-fill me-1"></i>新しいパスワード（確認）
+      <% end %>
+      <%= f.password_field :password_confirmation,
+          autocomplete: "new-password",
+          class: 'form-control form-control-lg',
+          placeholder: '••••••••',
+          required: true %>
     </div>
 
-    <div class="d-grid gap-2">
-      <%= f.submit t("devise.passwords.edit.submit"), class: "btn btn-primary btn-lg" %>
+    <div class="d-grid gap-2 mb-3">
+      <%= f.submit "パスワードを変更する", class: 'btn btn-primary btn-lg' %>
     </div>
 
-    <%# ログイン画面に戻るリンク %>
-    <div class="text-center mt-3">
-      <%= link_to t("devise.shared.links.sign_in"), new_session_path(resource_name), class: "text-decoration-none" %>
+    <%# ログイン画面へのリンク %>
+    <div class="text-center">
+      <%= link_to new_session_path(resource_name), class: 'text-decoration-none' do %>
+        <i class="bi bi-arrow-left me-1"></i>ログイン画面に戻る
+      <% end %>
     </div>
   <% end %>
-
 <% end %>
