@@ -8,12 +8,10 @@
       </div>
 
       <%= form_with model: PlanSchedule.new,
-                    url: "#",
-                    method: :post,
+                    url: actual_revenue_plan_schedule_path(0),
+                    method: :patch,
                     local: true,
                     id: "editActualRevenueForm" do |f| %>
-
-        <%= f.hidden_field :scheduled_date, id: "editActualDateHidden" %>
 
         <div class="modal-body">
           <div class="mb-3">

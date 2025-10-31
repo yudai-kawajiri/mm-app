@@ -257,6 +257,26 @@ ja:
       daily_target_info: "この日の目標金額を変更します。月間予算の合計には影響しません。"
       actual_revenue_info: "この日の実績売上を入力してください。"
       delete_confirm: "本当に削除しますか？"
+    messages:
+      budget_updated: "月間予算を更新しました"
+      budget_update_failed: "月間予算の更新に失敗しました"
+      budget_deleted: "月間予算を削除しました"
+      budget_delete_failed: "月間予算の削除に失敗しました"
+      daily_target_updated: "日別目標を更新しました"
+      daily_target_update_failed: "日別目標の更新に失敗しました"
+      daily_target_deleted: "日別目標を削除しました"
+      daily_target_delete_failed: "日別目標の削除に失敗しました"
+      actual_updated: "実績を更新しました"
+      actual_update_failed: "実績の更新に失敗しました"
+      actual_deleted: "実績を削除しました"
+      actual_delete_failed: "実績の削除に失敗しました"
+      plan_assigned: "計画を追加しました"
+      plan_assign_failed: "計画の追加に失敗しました"
+      plan_unassigned: "計画を削除しました"
+      plan_unassign_failed: "計画の削除に失敗しました"
+      plan_not_found: "計画が見つかりません"
+      actual_revenue_updated: "実績売上を更新しました"    # 🆕 追加
+      actual_revenue_update_failed: "実績売上の更新に失敗しました"    # 🆕 追加
     placeholders:
       budget_example: "例: 1600000"
       daily_target_example: "例: 51613"
