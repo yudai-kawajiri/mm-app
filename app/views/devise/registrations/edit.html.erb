@@ -22,7 +22,7 @@
 
             <div class="mb-4">
               <%= f.label :email, class: "form-label h5" %><br />
-              <%= f.email_field :email, autocomplete: "email", class: "form-control form-control-lg" %>
+              <%= f.email_field :email, autocomplete: "email", class: "form-control form-control-lg",  placeholder: t('devise.registrations.edit.email_placeholder') %>
             </div>
 
             <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
