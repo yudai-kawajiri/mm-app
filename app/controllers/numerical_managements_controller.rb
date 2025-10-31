@@ -147,10 +147,18 @@ class NumericalManagementsController < ApplicationController
   private
 
   def set_year_month
-    @year = params[:year]&.to_i || Date.current.year
-    @month = params[:month]&.to_i || Date.current.month
+    # month パラメータが "YYYY-MM" 形式の場合
+    if params[:month]&.include?('-')
+      date_parts = params[:month].split('-')
+      @year = date_parts[0].to_i
+      @month = date_parts[1].to_i
+    else
+      # 個別の year, month パラメータの場合
+      @year = params[:year]&.to_i || Date.current.year
+      @month = params[:month]&.to_i || Date.current.month
+    end
   end
-
+  
   def daily_target_params
     params.require(:daily_target).permit(:target_revenue)
   end
