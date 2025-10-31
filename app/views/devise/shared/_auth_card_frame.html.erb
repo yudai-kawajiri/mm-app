@@ -1,7 +1,7 @@
 <%# app/views/devise/shared/_auth_card_frame.html.erb %>
 <div class="container">
   <div class="row justify-content-center">
-    <%# レスポンシブ対応: col-12 (mobile) → col-sm-10 → col-md-8 → col-lg-6 → col-xl-5 (desktop) %>
+    <%# レスポンシブ対応 %>
     <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
       <div class="card shadow-sm my-5">
         <div class="card-body p-4 p-md-5">
@@ -11,8 +11,8 @@
           <%# フォーム本体を出力 %>
           <%= yield %>
 
-          <%# Devise共通リンク %>
-          <%= render "devise/shared/links" %>
+          <%# Devise共通リンク - 削除しました %>
+          <%# 各ビューで必要なリンクだけを個別に配置します %>
         </div>
       </div>
     </div>
