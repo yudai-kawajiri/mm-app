@@ -74,4 +74,8 @@ Devise.setup do |config|
 
   # Turbo対応のため、リダイレクトのステータスコードを303に設定。（変更不要）
   config.responder.redirect_status = :see_other
+
+  # アカウントロック機能を無効化
+  config.lock_strategy = :none
+  config.unlock_strategy = :none
 end
