@@ -11,14 +11,14 @@
         <%= form_group_lg(f, :name, wrapper_class: 'mb-3') %>
 
         <%# 2. 売価 %>
-        <div class="mb-3">
-          <%= form_label_lg(f, :price) %>
-          <div class="input-group input-group-lg">
-            <span class="input-group-text"><%= t('number.currency.format.unit') %></span>
-            <%= f.number_field :price, class: "form-control", step: 0.01, min: 0 %>
-          </div>
-        </div>
-        <%# 4. カテゴリ %>
+        <%= form_group_lg(f, :price,
+                          wrapper_class: 'mb-3',
+                          field_type: :number_field,
+                          prefix: t('number.currency.format.unit'),
+                          step: 0.01,
+                          min: 0) %>
+
+        <%# 3. カテゴリ %>
         <%= form_group_lg(f, :category_id,
                           field_type: :collection_select,
                           wrapper_class: 'mb-3',
