@@ -1,7 +1,6 @@
 class Unit < ApplicationRecord
   # 名前検索スコープを組み込み
   include NameSearchable
-  # belongs_to :user
   include UserAssociatable
 
   # この単位を参照している原材料がある場合、エラーメッセージをUnitオブジェクトに追加する

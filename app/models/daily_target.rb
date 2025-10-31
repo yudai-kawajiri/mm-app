@@ -15,6 +15,6 @@ class DailyTarget < ApplicationRecord
     where(target_date: start_date..end_date)
   }
 
-  # 日付順で取得
-  scope :ordered_by_date, -> { order(target_date: :asc) }
+  # 日付順で取得（降順）
+  scope :recent, -> { order(target_date: :desc) }
 end

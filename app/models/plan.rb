@@ -1,10 +1,9 @@
 class Plan < ApplicationRecord
   # 名前検索スコープを組み込み
   include NameSearchable
-  # belongs_to :user
   include UserAssociatable
   # 関連付け
-  belongs_to :category, optional: false
+  belongs_to :category
   has_many :plan_products, inverse_of: :plan, dependent: :destroy
   accepts_nested_attributes_for :plan_products,
     { allow_destroy: true,
@@ -30,7 +29,7 @@ class Plan < ApplicationRecord
 
 
   # インデックス表示用のスコープ (N+1問題対策と並び替え)
-  scope :for_index, -> { includes(:category, :user).order(created_at: :desc) }
+  scope :for_index, -> { includes(:category).order(created_at: :desc) }
 
   # カテゴリIDでの絞り込み
   scope :filter_by_category_id, ->(category_id) {
