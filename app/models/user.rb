@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :plans, dependent: :destroy
   has_many :monthly_budgets, dependent: :destroy
   has_many :plan_schedules, dependent: :destroy
+  has_many :daily_targets, dependent: :destroy
 
   # Deviseの認証モジュールを設定
   devise :database_authenticatable, :registerable,
