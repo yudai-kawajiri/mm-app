@@ -29,7 +29,7 @@ class Plan < ApplicationRecord
 
 
   # インデックス表示用のスコープ (N+1問題対策と並び替え)
-  scope :for_index, -> { includes(:category, :user).order(created_at: :desc) }
+  scope :for_index, -> { includes(:category).order(created_at: :desc) }
 
   # カテゴリIDでの絞り込み
   scope :filter_by_category_id, ->(category_id) {

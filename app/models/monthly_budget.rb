@@ -3,7 +3,6 @@ class MonthlyBudget < ApplicationRecord
   belongs_to :user
   # 日別目標との関連
   has_many :daily_targets, dependent: :destroy
-  has_many :plan_schedules, through: :user
 
   # バリデーション
   # 対象月
