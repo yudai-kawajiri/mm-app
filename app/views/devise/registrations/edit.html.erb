@@ -31,7 +31,7 @@
               </div>
             <% end %>
 
-            <%# 🔴 修正①: パスワードフィールドを横並びに（ズレ解消） %>
+            <%# パスワードフィールドを横並びに（ズレ解消） %>
             <div class="row">
               <div class="col-md-6">
                 <div class="mb-4">
@@ -41,24 +41,24 @@
                       <%= t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
                     </small>
                   <% end %>
-                  <%= f.password_field :password, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: "変更しない場合は空欄" %>
-                  <small class="form-text text-muted">空白の場合は変更しません</small>
+                  <%= f.password_field :password, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.registrations.edit.password_placeholder') %>
+                  <small class="form-text text-muted"><%= t('devise.registrations.edit.password_help') %></small>
                 </div>
               </div>
               <div class="col-md-6">
                 <%= f.label :password_confirmation, class: "form-label h5" %>
-                <div style="min-height: 20px;"></div>  <%# 空白スペースを挿入 %>
-                <%= f.password_field :password_confirmation, class: "form-control form-control-lg" %>
+                <div style="min-height: 20px;"></div>
+                <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.registrations.edit.password_placeholder') %>
               </div>
             </div>
 
             <div class="mb-4">
               <%= f.label :current_password, t('activerecord.attributes.user.current_password'), class: "form-label h5" %><br />
               <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control form-control-lg" %>
-              <small class="form-text text-muted">変更を確定するには現在のパスワードが必要です</small>
+              <small class="form-text text-muted"><%= t('devise.registrations.edit.current_password_help') %></small>
             </div>
 
-            <%# 🔴 修正②: ボタンを右寄せに変更（戻るが左、更新が右） %>
+            <%# ボタンを右寄せに変更（戻るが左、更新が右） %>
             <div class="d-flex justify-content-end gap-2">
               <%= link_to t("helpers.link.back"), authenticated_root_path, class: "btn btn-outline-secondary btn-lg" %>
               <%= f.submit t("helpers.submit.update"), class: "btn btn-primary btn-lg" %>
@@ -74,8 +74,8 @@
                   registration_path(resource_name),
                   method: :delete,
                   data: {
-                    confirm: t("devise.registrations.edit.confirm_delete"),
-                    turbo_confirm: t("devise.registrations.edit.confirm_delete")
+                    confirm: t("devise.registrations.edit.cancel_confirm"),
+                    turbo_confirm: t("devise.registrations.edit.cancel_confirm")
                   },
                   class: "btn btn-outline-danger mt-2 mt-md-0" %>
           </div>
