@@ -22,8 +22,6 @@ class MonthlyBudget < ApplicationRecord
     end_date = Date.new(year, 12, 31)
     where(budget_month: start_date..end_date)
   }
-  # 月順でソート
-  scope :ordered_by_month, -> { order(budget_month: :desc) }
 
   # コールバック
   # バリデーション前に budget_month を月の初日（1日）に正規化する
