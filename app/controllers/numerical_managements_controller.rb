@@ -1,136 +1,161 @@
+# app/controllers/numerical_managements_controller.rb
 class NumericalManagementsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_year_month, only: [:index, :calendar]
 
   def index
-    # 月選択パラメータの取得（monthまたはtarget_monthに対応）
-    month_param = params[:month] || params[:target_month] || Date.today.strftime('%Y-%m')
-    @selected_date = Date.parse("#{month_param}-01")
-
-    # MonthlyBudgetを取得
-    @budget = MonthlyBudget.find_by(
-      user: current_user,
-      budget_month: @selected_date.beginning_of_month
+    # ✅ budget_month を使って検索
+    budget_month = Date.new(@year, @month, 1)
+    @monthly_budget = current_user.monthly_budgets.find_or_initialize_by(
+      budget_month: budget_month
     )
 
-    unless @budget
-      # 予算が未設定の場合の処理
-      @forecast_data = {
-        target_amount: 0,
-        actual_amount: 0,
-        planned_amount: 0,
-        forecast_amount: 0,
-        remaining_days: 0,
-        achievement_rate: 0,
-        required_additional: 0,
-        daily_required: 0,
-        forecast_diff: 0
-      }
-      @daily_data = []
-      return
-    end
+    @daily_targets = current_user.daily_targets
+                                 .where(year: @year, month: @month)
+                                 .index_by { |dt| dt.day }
 
-    # 予測データを取得
-    forecast_service = NumericalForecastService.new(current_user, @selected_date.year, @selected_date.month)
-    @forecast_data = forecast_service.calculate
+    @daily_actuals = current_user.daily_actuals
+                                 .where(year: @year, month: @month)
+                                 .index_by { |da| da.day }
 
-    # 日別データを取得
-    daily_service = DailyDataService.new(current_user, @selected_date.year, @selected_date.month)
-    @daily_data = daily_service.call
+    @days_in_month = Date.new(@year, @month, -1).day
+
+    @forecast_service = NumericalForecastService.new(
+      @monthly_budget,
+      @daily_targets,
+      @daily_actuals,
+      @days_in_month
+    )
   end
 
   def calendar
-    # 月選択パラメータの取得
-    month_param = params[:month] || Date.today.strftime('%Y-%m')
-    @selected_date = Date.parse("#{month_param}-01")
-
-    # MonthlyBudgetを取得
-    @budget = MonthlyBudget.find_by(
-      user: current_user,
-      budget_month: @selected_date.beginning_of_month
+    @calendar_service = CalendarDataService.new(
+      current_user,
+      @year,
+      @month
     )
 
-    # カレンダーデータを取得
-    calendar_service = CalendarDataService.new(current_user, @selected_date.year, @selected_date.month)
-    @calendar_data = calendar_service.call
-
-    # 計画選択用データ（カテゴリでグループ化）
-    @plans_by_category = Plan.available_for_schedule
-                             .where(user: current_user)
-                             .includes(:category)
-                             .order('categories.name ASC, plans.created_at DESC')
-                             .group_by { |plan| plan.category&.name || '未分類' }
+    @calendar_data = @calendar_service.build_calendar_data
+    @monthly_budget = @calendar_service.monthly_budget
+    @categories = current_user.categories.order(:name)
   end
 
-  def update_budget
-    @year = params[:year].to_i
-    @month = params[:month].to_i
-    budget_month = Date.new(@year, @month, 1)
-
-    @budget = MonthlyBudget.find_or_initialize_by(
-      user: current_user,
-      budget_month: budget_month
+  def update_daily_target
+    @daily_target = current_user.daily_targets.find_or_initialize_by(
+      year: params[:year],
+      month: params[:month],
+      day: params[:day]
     )
 
-    if @budget.update(budget_params)
-      # 日別目標を再生成（予算変更時は日別目標も更新）
-      @budget.daily_targets.destroy_all
-      @budget.generate_daily_targets!
-
-      # リダイレクト先を判定
-      redirect_path = if params[:return_to] == 'calendar'
-                        calendar_numerical_managements_path(month: "#{@year}-#{@month.to_s.rjust(2, '0')}")
-                      else
-                        numerical_managements_path(month: "#{@year}-#{@month.to_s.rjust(2, '0')}")
-                      end
-
-      redirect_to redirect_path, notice: '予算を更新しました。'
+    if @daily_target.update(daily_target_params)
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  notice: t('numerical_managements.messages.daily_target_updated')
     else
-      # 失敗時も同様に判定
-      redirect_path = if params[:return_to] == 'calendar'
-                        calendar_numerical_managements_path(month: "#{@year}-#{@month.to_s.rjust(2, '0')}")
-                      else
-                        numerical_managements_path(month: "#{@year}-#{@month.to_s.rjust(2, '0')}")
-                      end
-
-      redirect_to redirect_path, alert: '予算の更新に失敗しました。'
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  alert: t('numerical_managements.messages.daily_target_update_failed')
     end
   end
 
-  # 月間予算削除機能
-  def destroy_budget
-    month_param = params[:month] || Date.today.strftime('%Y-%m')
-    budget_month = Date.parse("#{month_param}-01").beginning_of_month
-
-    @budget = MonthlyBudget.find_by(
-      user: current_user,
-      budget_month: budget_month
+  def destroy_daily_target
+    @daily_target = current_user.daily_targets.find_by(
+      year: params[:year],
+      month: params[:month],
+      day: params[:day]
     )
 
-    if @budget.nil?
-      redirect_to numerical_managements_path(month: month_param),
-                  alert: '予算が見つかりませんでした。'
-      return
-    end
-
-    # 権限チェック（念のため）
-    unless @budget.user_id == current_user.id
-      redirect_to numerical_managements_path(month: month_param),
-                  alert: '権限がありません。'
-      return
-    end
-
-    if @budget.destroy
-      redirect_to numerical_managements_path(month: month_param),
-                  notice: '予算を削除しました。日別目標も同時に削除されました。'
+    if @daily_target&.destroy
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  notice: t('numerical_managements.messages.daily_target_deleted')
     else
-      redirect_to numerical_managements_path(month: month_param),
-                  alert: "予算の削除に失敗しました: #{@budget.errors.full_messages.join(', ')}"
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  alert: t('numerical_managements.messages.daily_target_delete_failed')
+    end
+  end
+
+  def update_actual
+    @daily_actual = current_user.daily_actuals.find_or_initialize_by(
+      year: params[:year],
+      month: params[:month],
+      day: params[:day]
+    )
+
+    if @daily_actual.update(actual_params)
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  notice: t('numerical_managements.messages.actual_updated')
+    else
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  alert: t('numerical_managements.messages.actual_update_failed')
+    end
+  end
+
+  def destroy_actual
+    @daily_actual = current_user.daily_actuals.find_by(
+      year: params[:year],
+      month: params[:month],
+      day: params[:day]
+    )
+
+    if @daily_actual&.destroy
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  notice: t('numerical_managements.messages.actual_deleted')
+    else
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  alert: t('numerical_managements.messages.actual_delete_failed')
+    end
+  end
+
+  def assign_plan
+    begin
+      plan = current_user.plans.find(params[:plan_id])
+
+      @plan_schedule = current_user.plan_schedules.new(
+        plan: plan,
+        year: params[:year],
+        month: params[:month],
+        day: params[:day]
+      )
+
+      if @plan_schedule.save
+        redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                    notice: t('numerical_managements.messages.plan_assigned')
+      else
+        redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                    alert: t('numerical_managements.messages.plan_assign_failed')
+      end
+    rescue ActiveRecord::RecordNotFound
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  alert: t('numerical_managements.messages.plan_not_found')
+    end
+  end
+
+  def unassign_plan
+    @plan_schedule = current_user.plan_schedules.find(params[:id])
+
+    if @plan_schedule.destroy
+      redirect_to calendar_numerical_managements_path(
+        year: @plan_schedule.year,
+        month: @plan_schedule.month
+      ), notice: t('numerical_managements.messages.plan_unassigned')
+    else
+      redirect_to calendar_numerical_managements_path(
+        year: @plan_schedule.year,
+        month: @plan_schedule.month
+      ), alert: t('numerical_managements.messages.plan_unassign_failed')
     end
   end
 
   private
 
-  def budget_params
-    params.require(:monthly_budget).permit(:target_amount, :note)
+  def set_year_month
+    @year = params[:year]&.to_i || Date.current.year
+    @month = params[:month]&.to_i || Date.current.month
+  end
+
+  def daily_target_params
+    params.require(:daily_target).permit(:target_revenue)
+  end
+
+  def actual_params
+    params.require(:daily_actual).permit(:actual_revenue)
   end
 end
