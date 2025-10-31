@@ -1,50 +1,58 @@
-# app/controllers/numerical_managements_controller.rb
 class NumericalManagementsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_year_month, only: [:index, :calendar]
 
   def index
-    # ✅ budget_month を使って検索
-    budget_month = Date.new(@year, @month, 1)
+    @selected_date = Date.new(@year, @month, 1)
     @monthly_budget = current_user.monthly_budgets.find_or_initialize_by(
-      budget_month: budget_month
+      budget_month: @selected_date
     )
+
+    start_date = @selected_date
+    end_date = Date.new(@year, @month, -1)
 
     @daily_targets = current_user.daily_targets
-                                 .where(year: @year, month: @month)
-                                 .index_by { |dt| dt.day }
+                                 .where(target_date: start_date..end_date)
+                                 .index_by { |dt| dt.target_date.day }
 
-    @daily_actuals = current_user.daily_actuals
-                                 .where(year: @year, month: @month)
-                                 .index_by { |da| da.day }
-
-    @days_in_month = Date.new(@year, @month, -1).day
+    @days_in_month = end_date.day
 
     @forecast_service = NumericalForecastService.new(
-      @monthly_budget,
-      @daily_targets,
-      @daily_actuals,
-      @days_in_month
+      current_user,
+      @year,
+      @month
     )
+
+    @forecast_data = @forecast_service.calculate
+    @daily_data = build_daily_data(start_date, end_date)
   end
 
   def calendar
+    @selected_date = Date.new(@year, @month, 1)
+
     @calendar_service = CalendarDataService.new(
       current_user,
       @year,
       @month
     )
 
-    @calendar_data = @calendar_service.build_calendar_data
-    @monthly_budget = @calendar_service.monthly_budget
+    @calendar_data = @calendar_service.call
+    @monthly_budget = @calendar_service.budget
+    @budget = @monthly_budget  # ✅ これを追加
     @categories = current_user.categories.order(:name)
+
+    @plans_by_category = current_user.plans
+                                    .includes(:category)
+                                    .where(status: :active)
+                                    .group_by { |plan| plan.category.name }
   end
 
+
   def update_daily_target
+    target_date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+
     @daily_target = current_user.daily_targets.find_or_initialize_by(
-      year: params[:year],
-      month: params[:month],
-      day: params[:day]
+      target_date: target_date
     )
 
     if @daily_target.update(daily_target_params)
@@ -57,10 +65,10 @@ class NumericalManagementsController < ApplicationController
   end
 
   def destroy_daily_target
+    target_date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+
     @daily_target = current_user.daily_targets.find_by(
-      year: params[:year],
-      month: params[:month],
-      day: params[:day]
+      target_date: target_date
     )
 
     if @daily_target&.destroy
@@ -72,47 +80,21 @@ class NumericalManagementsController < ApplicationController
     end
   end
 
-  def update_actual
-    @daily_actual = current_user.daily_actuals.find_or_initialize_by(
-      year: params[:year],
-      month: params[:month],
-      day: params[:day]
-    )
-
-    if @daily_actual.update(actual_params)
-      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                  notice: t('numerical_managements.messages.actual_updated')
-    else
-      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                  alert: t('numerical_managements.messages.actual_update_failed')
-    end
-  end
-
-  def destroy_actual
-    @daily_actual = current_user.daily_actuals.find_by(
-      year: params[:year],
-      month: params[:month],
-      day: params[:day]
-    )
-
-    if @daily_actual&.destroy
-      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                  notice: t('numerical_managements.messages.actual_deleted')
-    else
-      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                  alert: t('numerical_managements.messages.actual_delete_failed')
-    end
-  end
-
   def assign_plan
     begin
       plan = current_user.plans.find(params[:plan_id])
 
+      # scheduled_date を構築
+      scheduled_date = Date.new(
+        params[:year].to_i,
+        params[:month].to_i,
+        params[:day].to_i
+      )
+
       @plan_schedule = current_user.plan_schedules.new(
         plan: plan,
-        year: params[:year],
-        month: params[:month],
-        day: params[:day]
+        scheduled_date: scheduled_date,
+        planned_revenue: plan.expected_revenue  # これを追加
       )
 
       if @plan_schedule.save
@@ -147,23 +129,42 @@ class NumericalManagementsController < ApplicationController
   private
 
   def set_year_month
-    # month パラメータが "YYYY-MM" 形式の場合
     if params[:month]&.include?('-')
       date_parts = params[:month].split('-')
       @year = date_parts[0].to_i
       @month = date_parts[1].to_i
     else
-      # 個別の year, month パラメータの場合
       @year = params[:year]&.to_i || Date.current.year
       @month = params[:month]&.to_i || Date.current.month
     end
   end
-  
-  def daily_target_params
-    params.require(:daily_target).permit(:target_revenue)
+
+  def build_daily_data(start_date, end_date)
+    (start_date..end_date).map do |date|
+      day = date.day
+      daily_target = @daily_targets[day]
+
+      plan_schedules = current_user.plan_schedules
+                                   .where(scheduled_date: date)
+                                   .includes(plan: { plan_products: :product })
+
+      planned_revenue = plan_schedules.sum do |ps|
+        ps.plan.plan_products.sum { |pp| pp.product.price * pp.production_count }
+      end
+
+      actual_revenue = plan_schedules.where.not(actual_revenue: nil).sum(:actual_revenue)
+
+      {
+        date: date,
+        target: daily_target&.target_amount || 0,
+        planned: planned_revenue,
+        actual: actual_revenue,
+        plan_schedules: plan_schedules
+      }
+    end
   end
 
-  def actual_params
-    params.require(:daily_actual).permit(:actual_revenue)
+  def daily_target_params
+    params.require(:daily_target).permit(:target_amount, :note)
   end
 end
