@@ -83,6 +83,30 @@ class PlanSchedulesController < ApplicationController
     end
   end
 
+  # 実績入力専用アクション
+  def actual_revenue
+    @plan_schedule = current_user.plan_schedules.find(params[:id])
+
+    Rails.logger.info "=== Updating Actual Revenue for PlanSchedule ID: #{@plan_schedule.id} ==="
+    Rails.logger.info "Actual Revenue: #{params[:plan_schedule][:actual_revenue]}"
+
+    if @plan_schedule.update(actual_revenue: params[:plan_schedule][:actual_revenue])
+      Rails.logger.info "=== Actual Revenue Updated Successfully ==="
+
+      redirect_to calendar_numerical_managements_path(
+        month: @plan_schedule.scheduled_date.strftime('%Y-%m')
+      ), notice: t('numerical_managements.messages.actual_revenue_updated')
+    else
+      Rails.logger.error "=== Actual Revenue Update Failed ==="
+      Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
+
+      redirect_to calendar_numerical_managements_path(
+        month: @plan_schedule.scheduled_date.strftime('%Y-%m')
+      ), alert: t('numerical_managements.messages.actual_revenue_update_failed')
+    end
+  end
+
+
   private
 
   def plan_schedule_params
