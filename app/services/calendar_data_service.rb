@@ -1,6 +1,5 @@
 class CalendarDataService
-  attr_reader :user, :year, :month
-
+  attr_reader :user, :year, :month, :budget
   def initialize(user, year, month)
     @user = user
     @year = year.to_i
@@ -63,7 +62,16 @@ class CalendarDataService
 
     target_amount = daily_target&.target_amount || 0
     actual_revenue = plan_schedules.sum { |ps| ps.actual_revenue || 0 }
-    planned_revenue = plan_schedules.sum { |ps| ps.planned_revenue || 0 }
+
+    # lanned_revenue が0またはnilの場合は、planから計算
+    planned_revenue = plan_schedules.sum do |ps|
+      if ps.planned_revenue.present? && ps.planned_revenue > 0
+        ps.planned_revenue
+      else
+        # planから計算
+        ps.plan.expected_revenue || 0
+      end
+    end
 
     # 達成率計算（ゼロ除算対策）
     achievement_rate = if target_amount > 0
@@ -74,7 +82,7 @@ class CalendarDataService
 
     {
       date: date,
-      target: target_amount.to_i,       # ← カンマは1つ
+      target: target_amount.to_i,
       daily_target_id: daily_target&.id,
       actual: actual_revenue.to_i,
       plan: planned_revenue.to_i,
@@ -84,6 +92,7 @@ class CalendarDataService
       achievement_rate: achievement_rate
     }
   end
+
 
 
   def load_data_for_month

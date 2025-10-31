@@ -1,92 +1,103 @@
 Rails.application.routes.draw do
-
-  # controllersオプションを追加し、RegistrationsControllerを指定
+  # ====================
+  # 認証（Devise）
+  # ====================
   devise_for :users, controllers: {
-    registrations: 'users/registrations' # usersフォルダ内のregistrations_controllerを使う
+    registrations: 'users/registrations'
   }
 
-  # 認証済みユーザー向けのルート設定
+  # 認証済みユーザー
   authenticated :user do
-    # ルートパス ("/") を DashboardsControllerのindexアクションに設定
     root to: "dashboards#index", as: :authenticated_root
   end
 
-  # 未認証ユーザー向けのルート設定
+  # 未認証ユーザー
   devise_scope :user do
-    # ルートパス ("/") を Deviseのログイン画面（sessions#new）に設定
     root to: "devise/sessions#new"
-
-    # GET /users リクエストをログインページ（/）へリダイレクトしてエラーを防ぐ
     get '/users', to: redirect('/')
   end
 
-  # 数値管理（整理して統合）
+  # ====================
+  # 数値管理（ビュー専用）
+  # ====================
   resources :numerical_managements, only: [:index] do
     collection do
-      get :calendar              # カレンダービュー
-      post :update_budget        # 予算更新・作成
-      delete :destroy_budget     # ← 追加: 予算削除
-      post :assign_plan_to_date  # 計画を日付に配置
-    end
-    member do
-      patch :update_actual       # 実績入力
+      get :calendar  # カレンダービュー
     end
   end
 
-  # 月間予算（削除可能 - numerical_managementsで管理）
-  # resources :monthly_budgets, only: [:create, :update]  # ← コメントアウトまたは削除
+  # ====================
+  # 数値管理リソース（RESTful）
+  # ====================
+  # 月間予算
+  resources :monthly_budgets, only: [:create, :update, :destroy]
 
-  # 日別目標の編集
+  # 日別目標
   resources :daily_targets, only: [:create, :update]
-  resources :plan_schedules, only: [:create, :update]
 
-  # APIルーティングの追加
-  namespace :api do
-    namespace :v1 do
-      resources :products, only: [] do
-        member do
-          get :details_for_plan
-        end
-      end
-
-      resources :materials, only: [] do
-        member do
-          get :product_unit_data
-        end
-      end
-
-      resources :plans, only: [] do
-        member do
-          get :revenue
-        end
-      end
+  # 計画スケジュール
+  resources :plan_schedules, only: [:create, :update, :destroy] do
+    member do
+      patch :actual_revenue  # 実績入力（PATCH /plan_schedules/:id/actual_revenue）
     end
   end
 
-  # showアクションを含む全アクション
+  # ====================
+  # マスタデータ
+  # ====================
+  # カテゴリ
   resources :categories
 
-  # showアクションを含む全アクション
+  # 単位
   resources :units
 
-  # Materialのルーティング
+  # 材料
   resources :materials
 
-  # Productのルーティング
+  # 製品
   resources :products do
     member do
-      delete 'purge_image', to: 'products#purge_image', as: :purge_image
-      post :copy
+      delete :purge_image  # 画像削除
+      post :copy           # 複製
     end
-    resource :product_materials, only: [:show, :edit, :update]
+
+    # 製品-材料の管理（複数形に修正）
+    resources :product_materials, only: [:index, :edit, :update]
   end
 
-  # Planのルーティング
+  # 計画
   resources :plans do
     member do
-      patch :update_status
-      post :copy
+      patch :update_status  # ステータス更新
+      post :copy            # 複製
     end
   end
 
+  # ====================
+  # API（v1）
+  # ====================
+  namespace :api do
+    namespace :v1 do
+      # 製品API
+      resources :products, only: [:index, :show] do
+        member do
+          get :plan_details  # GET /api/v1/products/:id/plan_details
+        end
+      end
+
+      # 材料API
+      resources :materials, only: [:index, :show] do
+        member do
+          get :unit_data  # GET /api/v1/materials/:id/unit_data
+        end
+      end
+
+      # 計画API
+      resources :plans, only: [:index, :show] do
+        member do
+          get :revenue  # GET /api/v1/plans/:id/revenue
+        end
+      end
+    end
+  end
 end

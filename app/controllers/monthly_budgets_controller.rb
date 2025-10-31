@@ -1,52 +1,67 @@
 # app/controllers/monthly_budgets_controller.rb
 class MonthlyBudgetsController < ApplicationController
-  before_action :set_monthly_budget, only: [:update]
+  before_action :authenticate_user!
+  before_action :set_monthly_budget, only: [:update, :destroy]
 
   def create
-    @budget = MonthlyBudget.new(monthly_budget_params)
-    @budget.user = current_user
-    @budget.budget_month = Date.parse("#{params[:monthly_budget][:budget_month]}-01")  # ← -01 を追加
+    # year と month パラメータから budget_month を構築
+    budget_month = Date.new(params[:year].to_i, params[:month].to_i, 1)
 
-    if @budget.save
-      # 日別目標の自動生成
-      if params[:monthly_budget][:generate_daily_targets] == "1"
-        @budget.generate_daily_targets!
-      end
+    @monthly_budget = current_user.monthly_budgets.find_or_initialize_by(
+      budget_month: budget_month
+    )
 
-      redirect_to numerical_managements_path(month: @budget.budget_month.strftime('%Y-%m')),
-                  notice: "月間予算を設定しました。"
+    @monthly_budget.assign_attributes(monthly_budget_params)
+
+    if @monthly_budget.save
+      redirect_to redirect_to_appropriate_page(budget_month),
+                  notice: t('numerical_managements.messages.budget_created')
     else
-      redirect_to numerical_managements_path,
-                  alert: "月間予算の設定に失敗しました: #{@budget.errors.full_messages.join(', ')}"
+      redirect_to redirect_to_appropriate_page(budget_month),
+                  alert: t('numerical_managements.messages.budget_create_failed')
     end
   end
 
   def update
-    @budget.assign_attributes(monthly_budget_params)
-    @budget.budget_month = Date.parse("#{params[:monthly_budget][:budget_month]}-01")  # ← -01 を追加
-
-    if @budget.save
-      # 日別目標の自動生成（既存のものは削除して再生成）
-      if params[:monthly_budget][:generate_daily_targets] == "1"
-        @budget.daily_targets.destroy_all
-        @budget.generate_daily_targets!
-      end
-
-      redirect_to numerical_managements_path(month: @budget.budget_month.strftime('%Y-%m')),
-                  notice: "月間予算を更新しました。"
+    if @monthly_budget.update(monthly_budget_params)
+      redirect_to redirect_to_appropriate_page(@monthly_budget.budget_month),
+                  notice: t('numerical_managements.messages.budget_updated')
     else
-      redirect_to numerical_managements_path,
-                  alert: "月間予算の更新に失敗しました: #{@budget.errors.full_messages.join(', ')}"
+      redirect_to redirect_to_appropriate_page(@monthly_budget.budget_month),
+                  alert: t('numerical_managements.messages.budget_update_failed')
+    end
+  end
+
+  def destroy
+    budget_month = @monthly_budget.budget_month
+
+    if @monthly_budget.destroy
+      redirect_to redirect_to_appropriate_page(budget_month),
+                  notice: t('numerical_managements.messages.budget_deleted')
+    else
+      redirect_to redirect_to_appropriate_page(budget_month),
+                  alert: t('numerical_managements.messages.budget_delete_failed')
     end
   end
 
   private
 
   def set_monthly_budget
-    @budget = MonthlyBudget.find(params[:id])
+    @monthly_budget = current_user.monthly_budgets.find(params[:id])
   end
 
   def monthly_budget_params
-    params.require(:monthly_budget).permit(:target_amount)
+    params.require(:monthly_budget).permit(:target_amount, :note)
+  end
+
+  # リダイレクト先を判定（index画面 or calendar画面）
+  def redirect_to_appropriate_page(budget_month)
+    month_param = budget_month.strftime('%Y-%m')
+
+    if params[:return_to] == 'calendar'
+      calendar_numerical_managements_path(month: month_param)
+    else
+      numerical_managements_path(month: month_param)
+    end
   end
 end

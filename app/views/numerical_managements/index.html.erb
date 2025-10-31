@@ -21,8 +21,8 @@
           <i class="bi bi-gear"></i> <%= t('numerical_managements.index.set_budget') %>
         </button>
 
-        <% if @budget %>
-          <%= button_to destroy_budget_numerical_managements_path(month: @selected_date.strftime('%Y-%m')),
+        <% if @monthly_budget&.persisted? %>
+          <%= button_to monthly_budget_path(@monthly_budget),
                         method: :delete,
                         data: {
                           turbo_confirm: t('numerical_managements.modals.delete_confirm')
