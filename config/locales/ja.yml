@@ -127,6 +127,8 @@ ja:
       title: "%{name} - 商品詳細 "
     edit:
       title: "%{name} - 商品編集"
+    placeholder:
+      item_number: "4桁で入力してください"
     image_help:
       select: "JPG、PNG、GIF形式の画像を選択してください"
       change: "画像を変更する場合は新しいファイルを選択してください"

@@ -9,21 +9,23 @@
       <div class="col-md-6">
         <%# 1. 製造計画名 %>
         <%= form_group_lg(f, :name) %>
+          <%# 2. ステータス %>
+          <%= form_group_lg(f, :status,
+                            field_type: :select,
+                            choices: Plan.statuses.keys.map { |status| [t("activerecord.enums.plan.status.#{status}"), status] },
+                            select_options: { include_blank: t('helpers.prompt.select'), selected: nil }) %>
 
-        <%# 2. カテゴリ (左下に移動) %>
-        <%= form_group_lg(f, :category_id,
-                          field_type: :collection_select,
-                          collection: @search_categories,
-                          value_method: :id,
-                          text_method: :name) %>
       </div>
 
       <%# 右カラム %>
       <div class="col-md-6">
-        <%# 3. ステータス %>
-        <%= form_group_lg(f, :status,
-                          field_type: :select,
-                          choices: Plan.statuses.keys.map { |status| [t("activerecord.enums.plan.status.#{status}"), status] }) %>
+        <%# 3. カテゴリ %>
+          <%= form_group_lg(f, :category_id,
+                          field_type: :collection_select,
+                          wrapper_class: 'mb-3',
+                          collection: @plan_categories,
+                          value_method: :id,
+                          text_method: :name) %>
       </div>
     </div>
 
