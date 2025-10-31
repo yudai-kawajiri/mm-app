@@ -1,7 +1,6 @@
 class Category < ApplicationRecord
   # 名前検索スコープを組み込み
   include NameSearchable
-  # belongs_to :user
   include UserAssociatable
 
   # データベースには 0, 1, 2 が保存されるが、コードでは :material, :product, :plan で扱う

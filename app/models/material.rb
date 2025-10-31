@@ -1,7 +1,6 @@
 class Material < ApplicationRecord
   # 名前検索スコープを組み込み
   include NameSearchable
-  # belongs_to :user
   include UserAssociatable
 
   belongs_to :category, optional: false
