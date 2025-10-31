@@ -26,4 +26,4 @@ class ChangeColumnCategoryTypeToInteger < ActiveRecord::Migration[8.0]
     # ロールバック用
     change_column :categories, :category_type, :string, null: false
     end
-  end
+end

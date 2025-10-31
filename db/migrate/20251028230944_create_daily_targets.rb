@@ -10,7 +10,7 @@ class CreateDailyTargets < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :daily_targets, [:monthly_budget_id, :target_date], unique: true, name: "index_daily_targets_on_budget_and_date"
+    add_index :daily_targets, [ :monthly_budget_id, :target_date ], unique: true, name: "index_daily_targets_on_budget_and_date"
     add_index :daily_targets, :target_date
   end
 end

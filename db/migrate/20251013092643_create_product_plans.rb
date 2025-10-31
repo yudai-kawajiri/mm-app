@@ -10,6 +10,6 @@ class CreateProductPlans < ActiveRecord::Migration[8.0]
     end
 
     # ユニークインデックスを追加
-    add_index :product_plans, [:plan_id, :product_id], unique: true
+    add_index :product_plans, [ :plan_id, :product_id ], unique: true
   end
 end

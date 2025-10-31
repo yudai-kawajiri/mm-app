@@ -11,4 +11,3 @@ class CreateUnits < ActiveRecord::Migration[8.0]
     add_index :units, :name, unique: true
   end
 end
-

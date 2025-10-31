@@ -2,7 +2,6 @@ module NameSearchable
   extend ActiveSupport::Concern
 
   included do
-
     scope :search_by_name, ->(query) do
       if query.present?
         # SQL組込前にインジェクション対策した値を部分一致検索

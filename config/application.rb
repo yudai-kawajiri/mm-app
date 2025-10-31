@@ -14,9 +14,9 @@ module Myapp
     config.active_storage.variant_processor = :mini_magick
 
 
-    #日本語ロケールの設定
+    # 日本語ロケールの設定
     config.i18n.default_locale = :ja
-    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.yml')]
+    config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.yml")]
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.

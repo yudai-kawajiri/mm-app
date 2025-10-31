@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-
   # レイアウトを動的に切り替える設定を移植
   layout :layout_by_resource
 
@@ -27,14 +26,13 @@ class ApplicationController < ActionController::Base
   def layout_by_resource
     # Deviseのコントローラー（ログイン、新規登録など）であり、かつ未認証の場合
     if devise_controller? && !user_signed_in?
-      'application'
+      "application"
     # 認証済みの画面の場合
     elsif user_signed_in?
-      'authenticated_layout'
+      "authenticated_layout"
     # その他（Devise以外のコントローラーなど）の場合
     else
-      'application'
+      "application"
     end
   end
-
 end

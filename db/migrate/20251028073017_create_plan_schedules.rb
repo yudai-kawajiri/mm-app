@@ -11,7 +11,7 @@ class CreatePlanSchedules < ActiveRecord::Migration[8.1]
     end
 
     # 同じ計画を同じ日に複数配置できないようにする
-    add_index :plan_schedules, [:plan_id, :scheduled_date], unique: true
+    add_index :plan_schedules, [ :plan_id, :scheduled_date ], unique: true
 
     # 日付検索の高速化
     add_index :plan_schedules, :scheduled_date

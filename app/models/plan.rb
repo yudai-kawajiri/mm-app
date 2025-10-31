@@ -20,7 +20,7 @@ class Plan < ApplicationRecord
 
   # ステータス関連のスコープ
   scope :active_plans, -> { where(status: :active) }
-  scope :available_for_schedule, -> { where(status: [:draft, :active]) }
+  scope :available_for_schedule, -> { where(status: [ :draft, :active ]) }
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_id }
@@ -87,6 +87,6 @@ end
 
   # product_id と production_count の両方が空の場合にレコードを無視する
   def reject_plan_products(attributes)
-    attributes['product_id'].blank? && attributes['production_count'].blank?
+    attributes["product_id"].blank? && attributes["production_count"].blank?
   end
 end

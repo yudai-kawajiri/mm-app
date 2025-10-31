@@ -1,5 +1,4 @@
 class Api::V1::MaterialsController < AuthenticatedController
-
   # GET /api/v1/materials/:id/product_unit_data
   def product_unit_data
     # current_user にスコープして検索 (セキュリティとデータ分離を確保)
@@ -22,7 +21,7 @@ class Api::V1::MaterialsController < AuthenticatedController
       }
     rescue ActiveRecord::RecordNotFound
       # 検索失敗時
-      render json: { error: 'Material not found or access denied' }, status: :not_found
+      render json: { error: "Material not found or access denied" }, status: :not_found
     end
   end
 end

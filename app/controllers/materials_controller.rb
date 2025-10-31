@@ -1,9 +1,8 @@
 class MaterialsController <  AuthenticatedController
-
   # define_search_params を使って許可するキーを定義
   define_search_params :q, :category_id
-  before_action -> { load_categories_for('material', as: :material) }, only: [:index, :new, :edit, :create, :update]
-  find_resource :material, only: [:show, :edit, :update, :destroy]
+  before_action -> { load_categories_for("material", as: :material) }, only: [ :index, :new, :edit, :create, :update ]
+  find_resource :material, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @materials = apply_pagination(
@@ -48,5 +47,4 @@ class MaterialsController <  AuthenticatedController
     :description
   )
   end
-
 end

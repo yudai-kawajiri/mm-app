@@ -17,9 +17,9 @@ class AuthenticatedController < ApplicationController
   def load_categories_for(category_type, as: nil, scope: :current_user)
     categories = if scope == :current_user
                    current_user.categories.where(category_type: category_type)
-                 else
+    else
                    Category.where(category_type: category_type)
-                 end
+    end
     categories = categories.order(:name)
 
     prefix = as || category_type

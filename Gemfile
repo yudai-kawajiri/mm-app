@@ -31,16 +31,16 @@ gem "jsbundling-rails"
 gem "kamal", require: false
 
 # ページネーション機能を提供するGem [https://github.com/kaminari/kaminari]
-gem 'kaminari', '1.2.2'
+gem "kaminari", "1.2.2"
 
 # ネストフォーム機能を提供するGem
-gem 'cocoon'
+gem "cocoon"
 
 # cocoonはjQueryに依存するため、Rails 7/8環境で必要
-gem 'jquery-rails'
+gem "jquery-rails"
 
 # KaminariのBootstrap5対応ビューテンプレート [https://github.com/bootstrap-ruby/bootstrap_form]
-gem 'bootstrap5-kaminari-views'
+gem "bootstrap5-kaminari-views"
 
 # データベースとしてPostgreSQLを使用するためのGem
 gem "pg", "~> 1.1"
@@ -84,9 +84,8 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # --- 開発環境とテスト環境で必要なGem ---
 group :development, :test do
-
   # 実行を停止し、変数の値を確認するための対話型デバッガ
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem "byebug", platforms: [ :mri, :mingw, :x64_mingw ]
 
   # セキュリティ脆弱性の静的解析ツール [https://brakemanscanner.org/]
   gem "brakeman", require: false

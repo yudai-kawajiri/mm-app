@@ -12,7 +12,7 @@ module ResourceFinderConcern
           instance_variable_set("@#{resource_sym}", model_class.find(params[:id]))
         rescue ActiveRecord::RecordNotFound
           # ユーザーに紐づかないリソースへのアクセスを捕捉
-          flash[:alert] = t('flash_messages.not_authorized')
+          flash[:alert] = t("flash_messages.not_authorized")
           redirect_to root_url
         end
       end

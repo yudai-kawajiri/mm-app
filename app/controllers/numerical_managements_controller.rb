@@ -1,6 +1,6 @@
 class NumericalManagementsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_year_month, only: [:index, :calendar]
+  before_action :set_year_month, only: [ :index, :calendar ]
 
   def index
     @selected_date = Date.new(@year, @month, 1)
@@ -57,10 +57,10 @@ class NumericalManagementsController < ApplicationController
 
     if @daily_target.update(daily_target_params)
       redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                  notice: t('numerical_managements.messages.daily_target_updated')
+                  notice: t("numerical_managements.messages.daily_target_updated")
     else
       redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                  alert: t('numerical_managements.messages.daily_target_update_failed')
+                  alert: t("numerical_managements.messages.daily_target_update_failed")
     end
   end
 
@@ -73,10 +73,10 @@ class NumericalManagementsController < ApplicationController
 
     if @daily_target&.destroy
       redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                  notice: t('numerical_managements.messages.daily_target_deleted')
+                  notice: t("numerical_managements.messages.daily_target_deleted")
     else
       redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                  alert: t('numerical_managements.messages.daily_target_delete_failed')
+                  alert: t("numerical_managements.messages.daily_target_delete_failed")
     end
   end
 
@@ -99,14 +99,14 @@ class NumericalManagementsController < ApplicationController
 
       if @plan_schedule.save
         redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                    notice: t('numerical_managements.messages.plan_assigned')
+                    notice: t("numerical_managements.messages.plan_assigned")
       else
         redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                    alert: t('numerical_managements.messages.plan_assign_failed')
+                    alert: t("numerical_managements.messages.plan_assign_failed")
       end
     rescue ActiveRecord::RecordNotFound
       redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                  alert: t('numerical_managements.messages.plan_not_found')
+                  alert: t("numerical_managements.messages.plan_not_found")
     end
   end
 
@@ -117,20 +117,20 @@ class NumericalManagementsController < ApplicationController
       redirect_to calendar_numerical_managements_path(
         year: @plan_schedule.year,
         month: @plan_schedule.month
-      ), notice: t('numerical_managements.messages.plan_unassigned')
+      ), notice: t("numerical_managements.messages.plan_unassigned")
     else
       redirect_to calendar_numerical_managements_path(
         year: @plan_schedule.year,
         month: @plan_schedule.month
-      ), alert: t('numerical_managements.messages.plan_unassign_failed')
+      ), alert: t("numerical_managements.messages.plan_unassign_failed")
     end
   end
 
   private
 
   def set_year_month
-    if params[:month]&.include?('-')
-      date_parts = params[:month].split('-')
+    if params[:month]&.include?("-")
+      date_parts = params[:month].split("-")
       @year = date_parts[0].to_i
       @month = date_parts[1].to_i
     else

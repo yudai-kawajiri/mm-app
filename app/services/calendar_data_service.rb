@@ -76,9 +76,9 @@ class CalendarDataService
     # 達成率計算（ゼロ除算対策）
     achievement_rate = if target_amount > 0
                         ((actual_revenue.to_f / target_amount) * 100).round(1)
-                      else
+    else
                         nil
-                      end
+    end
 
     {
       date: date,
