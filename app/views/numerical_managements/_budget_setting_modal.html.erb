@@ -7,7 +7,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <%= form_with url: update_budget_numerical_managements_path, method: :post, local: true do |f| %>
+      <%# 新規作成も更新も同じ monthly_budgets_path (POST) で処理 %>
+      <%= form_with url: monthly_budgets_path, method: :post, local: true do |f| %>
         <%= hidden_field_tag :year, selected_date.year %>
         <%= hidden_field_tag :month, selected_date.month %>
 
@@ -34,7 +35,7 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('numerical_managements.modals.cancel') %></button>
-          <%= f.submit budget ? t('numerical_managements.modals.update') : t('numerical_managements.modals.create'), class: "btn btn-primary" %>
+          <%= f.submit budget&.persisted? ? t('numerical_managements.modals.update') : t('numerical_managements.modals.create'), class: "btn btn-primary" %>
         </div>
       <% end %>
     </div>
