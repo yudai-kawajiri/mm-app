@@ -67,7 +67,7 @@ class MonthlyBudget < ApplicationRecord
   # 残りの予定売上を計算（今日以降の予定売上、または今日で実績が未入力の予定売上）
   def remaining_planned_revenue
     today = Date.current
-    plan_schedules.where('scheduled_date > ?', today)
+    plan_schedules.where("scheduled_date > ?", today)
                   .sum { |ps| ps.expected_revenue } +
     plan_schedules.where(scheduled_date: today, actual_revenue: nil)
                   .sum { |ps| ps.expected_revenue }

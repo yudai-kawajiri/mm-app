@@ -17,7 +17,7 @@ class Product < ApplicationRecord
   # ネストされたフォームから product_materials を受け入れる設定
   accepts_nested_attributes_for :product_materials, allow_destroy: true
 
-  #消えていたActive Storageを再追記
+  # 消えていたActive Storageを再追記
   has_one_attached :image
 
   # 画像削除チェックボックス（:remove_image）を受け取るための属性
@@ -47,6 +47,6 @@ class Product < ApplicationRecord
   # 画像削除チェックボックスがオンか確認するメソッド
   def remove_image_checked?
     # remove_imageがnilではない、かつ "0"（チェックオフの値）ではない場合にtrue
-    remove_image.present? && remove_image != '0'
+    remove_image.present? && remove_image != "0"
   end
 end

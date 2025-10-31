@@ -9,6 +9,6 @@ class CreateCategories < ActiveRecord::Migration[8.0]
     end
 
     # ユーザーIDと名前の組み合わせでユニークインデックスを追加
-    add_index :categories, [:user_id, :name], unique: true
+    add_index :categories, [ :user_id, :name ], unique: true
   end
 end

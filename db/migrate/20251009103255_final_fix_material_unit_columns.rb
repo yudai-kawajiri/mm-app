@@ -8,6 +8,5 @@ class FinalFixMaterialUnitColumns < ActiveRecord::Migration[8.0]
 
     # 'unit_for_product_id' に NOT NULL制約を追加
     change_column_null :materials, :unit_for_product_id, false
-
   end
 end

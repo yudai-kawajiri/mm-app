@@ -1,13 +1,12 @@
 class ProductsController < AuthenticatedController
-
   # define_search_params を使って許可するキーを定義
   define_search_params :q, :category_id
 
   # ★修正: copyを追加
-  find_resource :product, only: [:show, :edit, :update, :destroy, :purge_image, :copy]
+  find_resource :product, only: [ :show, :edit, :update, :destroy, :purge_image, :copy ]
 
-  before_action -> { load_categories_for('product', as: :product) }, only: [:index, :new, :create, :edit, :update]
-  before_action -> { load_categories_for('material', as: :material) }, only: [:new, :create, :show, :edit, :update]
+  before_action -> { load_categories_for("product", as: :product) }, only: [ :index, :new, :create, :edit, :update ]
+  before_action -> { load_categories_for("material", as: :material) }, only: [ :new, :create, :show, :edit, :update ]
 
   def index
     @products = apply_pagination(
@@ -118,5 +117,4 @@ class ProductsController < AuthenticatedController
       ]
     )
   end
-
 end

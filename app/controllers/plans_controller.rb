@@ -1,15 +1,14 @@
 # app/controllers/plans_controller.rb
 class PlansController < AuthenticatedController
-
   # define_search_params を使って許可するキーを定義
   define_search_params :q, :category_id
 
   # copyとupdate_statusを追加
-  find_resource :plan, only: [:show, :edit, :update, :destroy, :update_status, :copy]
+  find_resource :plan, only: [ :show, :edit, :update, :destroy, :update_status, :copy ]
 
-  before_action -> { load_categories_for('plan', as: :plan) }, only: [:index, :new, :edit, :create, :update]
-  before_action -> { load_categories_for('product', as: :product) }, only: [:new, :edit, :create, :update]
-  before_action :load_plan_products, only: [:show]
+  before_action -> { load_categories_for("plan", as: :plan) }, only: [ :index, :new, :edit, :create, :update ]
+  before_action -> { load_categories_for("product", as: :product) }, only: [ :new, :edit, :create, :update ]
+  before_action :load_plan_products, only: [ :show ]
 
   def index
     @plans = apply_pagination(
@@ -53,7 +52,7 @@ class PlansController < AuthenticatedController
       status_text = t("activerecord.enums.plan.status.#{new_status}")
       redirect_to plans_path, notice: "計画「#{@plan.name}」のステータスを「#{status_text}」に変更しました。"
     else
-      redirect_to plans_path, alert: '無効なステータスです。'
+      redirect_to plans_path, alert: "無効なステータスです。"
     end
   end
 
@@ -115,5 +114,4 @@ class PlansController < AuthenticatedController
   def load_plan_products
     @plan_products = @plan.plan_products.includes(:product)
   end
-
 end

@@ -1,7 +1,7 @@
 # app/controllers/monthly_budgets_controller.rb
 class MonthlyBudgetsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_monthly_budget, only: [:update, :destroy]
+  before_action :set_monthly_budget, only: [ :update, :destroy ]
 
   def create
     # year と month パラメータから budget_month を構築
@@ -15,20 +15,20 @@ class MonthlyBudgetsController < ApplicationController
 
     if @monthly_budget.save
       redirect_to redirect_to_appropriate_page(budget_month),
-                  notice: t('numerical_managements.messages.budget_created')
+                  notice: t("numerical_managements.messages.budget_created")
     else
       redirect_to redirect_to_appropriate_page(budget_month),
-                  alert: t('numerical_managements.messages.budget_create_failed')
+                  alert: t("numerical_managements.messages.budget_create_failed")
     end
   end
 
   def update
     if @monthly_budget.update(monthly_budget_params)
       redirect_to redirect_to_appropriate_page(@monthly_budget.budget_month),
-                  notice: t('numerical_managements.messages.budget_updated')
+                  notice: t("numerical_managements.messages.budget_updated")
     else
       redirect_to redirect_to_appropriate_page(@monthly_budget.budget_month),
-                  alert: t('numerical_managements.messages.budget_update_failed')
+                  alert: t("numerical_managements.messages.budget_update_failed")
     end
   end
 
@@ -37,10 +37,10 @@ class MonthlyBudgetsController < ApplicationController
 
     if @monthly_budget.destroy
       redirect_to redirect_to_appropriate_page(budget_month),
-                  notice: t('numerical_managements.messages.budget_deleted')
+                  notice: t("numerical_managements.messages.budget_deleted")
     else
       redirect_to redirect_to_appropriate_page(budget_month),
-                  alert: t('numerical_managements.messages.budget_delete_failed')
+                  alert: t("numerical_managements.messages.budget_delete_failed")
     end
   end
 
@@ -56,9 +56,9 @@ class MonthlyBudgetsController < ApplicationController
 
   # リダイレクト先を判定（index画面 or calendar画面）
   def redirect_to_appropriate_page(budget_month)
-    month_param = budget_month.strftime('%Y-%m')
+    month_param = budget_month.strftime("%Y-%m")
 
-    if params[:return_to] == 'calendar'
+    if params[:return_to] == "calendar"
       calendar_numerical_managements_path(month: month_param)
     else
       numerical_managements_path(month: month_param)

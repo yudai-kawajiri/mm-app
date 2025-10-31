@@ -1,58 +1,86 @@
+<%# app/views/devise/registrations/edit.html.erb %>
 <%= content_for :page_title, t('devise.registrations.edit.title') %>
-<h2><%= t(".title") %></h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm my-5">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="bi bi-person-gear me-2"></i>
+            <%= t('devise.registrations.edit.title') %>
+          </h4>
+        </div>
+        <div class="card-body p-4">
+          <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+            <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="field">
-    <%= f.label :name %><br />
-    <%= f.text_field :name, autofocus: true, autocomplete: "name" %>
-  </div>
+            <div class="mb-4">
+              <%= f.label :name, class: "form-label h5" %><br />
+              <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control form-control-lg" %>
+            </div>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+            <div class="mb-4">
+              <%= f.label :email, class: "form-label h5" %><br />
+              <%= f.email_field :email, autocomplete: "email", class: "form-control form-control-lg" %>
+            </div>
 
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>
-      <%= t('devise.registrations.pending_reconfirmation', unconfirmed_email: resource.unconfirmed_email) %>
+            <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+              <div class="alert alert-info">
+                <%= t('devise.registrations.pending_reconfirmation', unconfirmed_email: resource.unconfirmed_email) %>
+              </div>
+            <% end %>
+
+            <%# パスワードフィールドを横並びに（ズレ解消） %>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-4">
+                  <%= f.label :password, class: "form-label h5" %>
+                  <% if @minimum_password_length %>
+                    <small class="text-muted d-block">
+                      <%= t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
+                    </small>
+                  <% end %>
+                  <%= f.password_field :password, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.registrations.edit.password_placeholder') %>
+                  <small class="form-text text-muted"><%= t('devise.registrations.edit.password_help') %></small>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <%= f.label :password_confirmation, class: "form-label h5" %>
+                <div style="min-height: 20px;"></div>
+                <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.registrations.edit.password_placeholder') %>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <%= f.label :current_password, t('activerecord.attributes.user.current_password'), class: "form-label h5" %><br />
+              <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control form-control-lg" %>
+              <small class="form-text text-muted"><%= t('devise.registrations.edit.current_password_help') %></small>
+            </div>
+
+            <%# ボタンを右寄せに変更（戻るが左、更新が右） %>
+            <div class="d-flex justify-content-end gap-2">
+              <%= link_to t("helpers.link.back"), authenticated_root_path, class: "btn btn-outline-secondary btn-lg" %>
+              <%= f.submit t("helpers.submit.update"), class: "btn btn-primary btn-lg" %>
+            </div>
+          <% end %>
+        </div>
+        <div class="card-footer bg-light">
+          <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <small class="text-muted">
+              <%= t('devise.registrations.edit.unhappy') %>
+            </small>
+            <%= button_to t("devise.registrations.edit.cancel_my_account"),
+                  registration_path(resource_name),
+                  method: :delete,
+                  data: {
+                    confirm: t("devise.registrations.edit.cancel_confirm"),
+                    turbo_confirm: t("devise.registrations.edit.cancel_confirm")
+                  },
+                  class: "btn btn-outline-danger mt-2 mt-md-0" %>
+          </div>
+        </div>
+      </div>
     </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-      <small class="text-muted">
-        <%= t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
-      </small>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
   </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :current_password, t('activerecord.attributes.user.current_password') %><br />
-    <%= f.password_field :current_password, autocomplete: "current-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit t("helpers.submit.update") %>
-  </div>
-<% end %>
-  <div class="actions">
-    <%= button_to t("devise.registrations.edit.cancel_my_account"), registration_path(resource_name),
-      method: :delete,
-      data: {
-        confirm: t("devise.registrations.edit.confirm_delete"),
-        turbo_confirm: t("devise.registrations.edit.confirm_delete")
-      },
-      class: "btn btn-outline-danger" %>
-  </div>
-
-<%= link_to t("helpers.link.back"), authenticated_root_path %>
-
+</div>

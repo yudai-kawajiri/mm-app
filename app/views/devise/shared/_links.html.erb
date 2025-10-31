@@ -1,24 +1,26 @@
+<%# app/views/devise/shared/_links.html.erb %>
+<%- if controller_name != 'sessions' %>
+  <%= link_to t("devise.shared.links.sign_in"), new_session_path(resource_name), class: "text-decoration-none" %><br />
+<% end %>
+
+<%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+  <%= link_to t("devise.shared.links.sign_up"), new_registration_path(resource_name), class: "text-decoration-none" %><br />
+<% end %>
+
 <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
-  <%= link_to t("devise.shared.links.forgot_your_password"), new_password_path(resource_name) %><br />
+  <%= link_to t("devise.shared.links.forgot_your_password"), new_password_path(resource_name), class: "text-decoration-none" %><br />
 <% end %>
 
 <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
-  <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
+  <%= link_to t("devise.shared.links.didn_t_receive_confirmation_instructions"), new_confirmation_path(resource_name), class: "text-decoration-none" %><br />
 <% end %>
 
 <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
-  <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
+  <%= link_to t("devise.shared.links.didn_t_receive_unlock_instructions"), new_unlock_path(resource_name), class: "text-decoration-none" %><br />
 <% end %>
 
 <%- if devise_mapping.omniauthable? %>
   <%- resource_class.omniauth_providers.each do |provider| %>
-    <%= button_to "Sign in with #{OmniAuth::Utils.camelize(provider)}", omniauth_authorize_path(resource_name, provider), data: { turbo: false } %><br />
+    <%= button_to t("devise.shared.links.sign_in_with_provider", provider: OmniAuth::Utils.camelize(provider)), omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "btn btn-outline-secondary mt-2" %><br />
   <% end %>
-<% end %>
-
-<%# パスワード画面（passwords）でのみ表示するように条件を変更します %>
-<%# 'registrations'（新規登録）画面はタブがあるため、ここで除外します。 %>
-<%- if controller_name == 'passwords' %>
-  <br>
-  <%= link_to "ログイン画面に戻る", new_session_path(resource_name) %>
 <% end %>

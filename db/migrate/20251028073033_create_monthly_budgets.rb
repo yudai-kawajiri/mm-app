@@ -10,6 +10,6 @@ class CreateMonthlyBudgets < ActiveRecord::Migration[8.1]
     end
 
     # 1ユーザー・1ヶ月に1つの予算のみ許可
-    add_index :monthly_budgets, [:user_id, :budget_month], unique: true
+    add_index :monthly_budgets, [ :user_id, :budget_month ], unique: true
   end
 end

@@ -1,9 +1,8 @@
 class UnitsController < AuthenticatedController
-
   # define_search_params を使って許可するキーを定義
   define_search_params :q, :category
 
-  find_resource :unit, only: [:show, :edit, :update, :destroy]
+  find_resource :unit, only: [ :show, :edit, :update, :destroy ]
 
   def index
     # ページネーションと検索を適用

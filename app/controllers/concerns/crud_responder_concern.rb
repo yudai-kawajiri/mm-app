@@ -36,7 +36,7 @@ module CrudResponderConcern
     resource_display_name = resource.name.presence || "レコード"
 
     if resource.destroy
-      flash[:notice] = t('flash_messages.destroy.success',
+      flash[:notice] = t("flash_messages.destroy.success",
                         resource: resource_name,
                         name: resource_display_name)
 

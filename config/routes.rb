@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   # 認証（Devise）
   # ====================
   devise_for :users, controllers: {
-    registrations: 'users/registrations'
+    registrations: "users/registrations"
   }
 
   # 認証済みユーザー
@@ -14,13 +14,13 @@ Rails.application.routes.draw do
   # 未認証ユーザー
   devise_scope :user do
     root to: "devise/sessions#new"
-    get '/users', to: redirect('/')
+    get "/users", to: redirect("/")
   end
 
   # ====================
   # 数値管理（ビュー専用）
   # ====================
-  resources :numerical_managements, only: [:index] do
+  resources :numerical_managements, only: [ :index ] do
     collection do
       get :calendar  # カレンダービュー
     end
@@ -30,13 +30,13 @@ Rails.application.routes.draw do
   # 数値管理リソース（RESTful）
   # ====================
   # 月間予算
-  resources :monthly_budgets, only: [:create, :update, :destroy]
+  resources :monthly_budgets, only: [ :create, :update, :destroy ]
 
   # 日別目標
-  resources :daily_targets, only: [:create, :update]
+  resources :daily_targets, only: [ :create, :update ]
 
   # 計画スケジュール
-  resources :plan_schedules, only: [:create, :update, :destroy] do
+  resources :plan_schedules, only: [ :create, :update, :destroy ] do
     member do
       patch :actual_revenue  # 実績入力（PATCH /plan_schedules/:id/actual_revenue）
     end
@@ -62,7 +62,7 @@ Rails.application.routes.draw do
     end
 
     # 製品-材料の管理（複数形に修正）
-    resources :product_materials, only: [:index, :edit, :update]
+    resources :product_materials, only: [ :index, :edit, :update ]
   end
 
   # 計画
@@ -79,21 +79,21 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       # 製品API
-      resources :products, only: [:index, :show] do
+      resources :products, only: [ :index, :show ] do
         member do
           get :plan_details  # GET /api/v1/products/:id/plan_details
         end
       end
 
       # 材料API
-      resources :materials, only: [:index, :show] do
+      resources :materials, only: [ :index, :show ] do
         member do
           get :unit_data  # GET /api/v1/materials/:id/unit_data
         end
       end
 
       # 計画API
-      resources :plans, only: [:index, :show] do
+      resources :plans, only: [ :index, :show ] do
         member do
           get :revenue  # GET /api/v1/plans/:id/revenue
         end
