@@ -93,7 +93,15 @@ production:
     # 本番環境で日本語ソートを有効にする
     collation: C.UTF-8
     ctype: C.UTF-8
+  cache:
+    <<: *primary_production
+    database: myapp_production
+    migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
     database: myapp_production
     migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_production
+    database: myapp_production
+    migrations_paths: db/cable_migrate
