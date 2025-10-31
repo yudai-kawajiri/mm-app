@@ -1,23 +1,16 @@
-class PlanSchedulesController < ApplicationController
-  before_action :authenticate_user!
+# app/controllers/plan_schedules_controller.rb
+class PlanSchedulesController < AuthenticatedController
 
   def create
-    scheduled_date_str = params[:plan_schedule][:scheduled_date]
-    plan_id = params[:plan_schedule][:plan_id]
-    planned_revenue = params[:plan_schedule][:planned_revenue]
+    # Strong Parameters で受け取る
+    permitted = plan_schedule_params
+    scheduled_date = parse_scheduled_date(permitted[:scheduled_date])
+    return unless scheduled_date
 
     # パラメータチェック
-    unless scheduled_date_str.present? && plan_id.present?
+    unless permitted[:plan_id].present?
       redirect_to calendar_numerical_managements_path,
                   alert: '必要な情報が不足しています。'
-      return
-    end
-
-    begin
-      scheduled_date = Date.parse(scheduled_date_str)
-    rescue ArgumentError, TypeError
-      redirect_to calendar_numerical_managements_path,
-                  alert: '無効な日付形式です。'
       return
     end
 
@@ -27,59 +20,64 @@ class PlanSchedulesController < ApplicationController
       scheduled_date: scheduled_date
     )
 
-    @plan_schedule.plan_id = plan_id
-    @plan_schedule.planned_revenue = planned_revenue
-    @plan_schedule.status = :scheduled unless @plan_schedule.persisted?
+    # Strong Parameters で受け取った値を設定
+    @plan_schedule.assign_attributes(
+      permitted.except(:scheduled_date).merge(
+        status: @plan_schedule.persisted? ? @plan_schedule.status : :scheduled
+      )
+    )
 
     Rails.logger.info "=== Creating/Updating PlanSchedule ==="
     Rails.logger.info "User ID: #{current_user.id}"
     Rails.logger.info "Scheduled Date: #{scheduled_date}"
-    Rails.logger.info "Plan ID: #{plan_id}"
-    Rails.logger.info "Planned Revenue: #{planned_revenue}"
+    Rails.logger.info "Plan ID: #{permitted[:plan_id]}"
+    Rails.logger.info "Planned Revenue: #{permitted[:planned_revenue]}"
     Rails.logger.info "Is new record: #{@plan_schedule.new_record?}"
 
     if @plan_schedule.save
-      message = @plan_schedule.previously_new_record? ? '登録' : '更新'
+      action = @plan_schedule.previously_new_record? ? '割り当てました' : '更新しました'
       Rails.logger.info "=== PlanSchedule Saved Successfully ==="
 
-      redirect_to calendar_numerical_managements_path(month: scheduled_date.strftime('%Y-%m')),
-                  notice: "計画を#{message}しました"
+      redirect_to calendar_numerical_managements_path(
+        month: scheduled_date.strftime('%Y-%m')
+      ), notice: "#{scheduled_date.strftime('%-m月%-d日')}の計画を#{action}。"
     else
       Rails.logger.error "=== PlanSchedule Save Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
-      redirect_to calendar_numerical_managements_path(month: scheduled_date.strftime('%Y-%m')),
-                  alert: "計画の#{@plan_schedule.new_record? ? '登録' : '更新'}に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
+      redirect_to calendar_numerical_managements_path,
+                  alert: "計画の保存に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
     end
   end
 
-
   def update
-    @plan_schedule = PlanSchedule.find(params[:id])
+    # Strong Parameters で受け取る
+    permitted = plan_schedule_params
+    scheduled_date = parse_scheduled_date(permitted[:scheduled_date])
+    return unless scheduled_date
 
-    # 権限チェック
-    unless @plan_schedule.user_id == current_user.id
-      redirect_to calendar_numerical_managements_path,
-                  alert: '権限がありません。'
-      return
-    end
+    # 既存レコードを取得
+    @plan_schedule = current_user.plan_schedules.find(params[:id])
+
+    # Strong Parameters で受け取った値を設定
+    @plan_schedule.assign_attributes(permitted.except(:scheduled_date))
 
     Rails.logger.info "=== Updating PlanSchedule ID: #{@plan_schedule.id} ==="
-    Rails.logger.info "Params: #{plan_schedule_params.inspect}"
+    Rails.logger.info "Plan ID: #{permitted[:plan_id]}"
+    Rails.logger.info "Planned Revenue: #{permitted[:planned_revenue]}"
 
-    if @plan_schedule.update(plan_schedule_params)
+    if @plan_schedule.save
       Rails.logger.info "=== PlanSchedule Updated Successfully ==="
 
-      redirect_to calendar_numerical_managements_path(month: @plan_schedule.scheduled_date.strftime('%Y-%m')),
-                  notice: '実績を更新しました'
+      redirect_to calendar_numerical_managements_path(
+        month: scheduled_date.strftime('%Y-%m')
+      ), notice: "#{scheduled_date.strftime('%-m月%-d日')}の計画を更新しました。"
     else
       Rails.logger.error "=== PlanSchedule Update Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
-      fallback_date = @plan_schedule.scheduled_date || Date.current
-
-      redirect_to calendar_numerical_managements_path(month: fallback_date.strftime('%Y-%m')),
-                  alert: "実績の更新に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
+      redirect_to calendar_numerical_managements_path,
+                  alert: "計画の更新に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
     end
   end
 
@@ -88,9 +86,10 @@ class PlanSchedulesController < ApplicationController
     @plan_schedule = current_user.plan_schedules.find(params[:id])
 
     Rails.logger.info "=== Updating Actual Revenue for PlanSchedule ID: #{@plan_schedule.id} ==="
-    Rails.logger.info "Actual Revenue: #{params[:plan_schedule][:actual_revenue]}"
+    Rails.logger.info "Actual Revenue: #{plan_schedule_params[:actual_revenue]}"
 
-    if @plan_schedule.update(actual_revenue: params[:plan_schedule][:actual_revenue])
+    # Strong Parameters を使用
+    if @plan_schedule.update(plan_schedule_params.slice(:actual_revenue))
       Rails.logger.info "=== Actual Revenue Updated Successfully ==="
 
       redirect_to calendar_numerical_managements_path(
@@ -109,7 +108,19 @@ class PlanSchedulesController < ApplicationController
 
   private
 
+  # Strong Parameters
   def plan_schedule_params
     params.require(:plan_schedule).permit(:scheduled_date, :plan_id, :planned_revenue, :actual_revenue, :note)
+  end
+
+  # 日付パース（共通化）
+  def parse_scheduled_date(date_string)
+    return nil unless date_string.present?
+
+    Date.parse(date_string)
+  rescue ArgumentError, TypeError
+    redirect_to calendar_numerical_managements_path,
+                alert: '無効な日付形式です。'
+    nil
   end
 end
