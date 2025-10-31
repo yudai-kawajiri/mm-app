@@ -12,7 +12,6 @@ class PlanSchedule < ApplicationRecord
   # 実績売上は0以上の数値のみ許可（nilも許可し、未入力に対応）
   validates :actual_revenue, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
-  # eum
   # スケジュールの現在の状態を定義
   enum :status, { scheduled: 0, completed: 1, cancelled: 2 }
 

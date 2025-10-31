@@ -3,7 +3,7 @@ class Plan < ApplicationRecord
   include NameSearchable
   include UserAssociatable
   # 関連付け
-  belongs_to :category, optional: false
+  belongs_to :category
   has_many :plan_products, inverse_of: :plan, dependent: :destroy
   accepts_nested_attributes_for :plan_products,
     { allow_destroy: true,
