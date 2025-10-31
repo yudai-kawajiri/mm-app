@@ -15,9 +15,9 @@
   },
   "scripts": {
     "build": "echo 'Skipping JS build - using importmap'",
-    "build:css:compile": "sass ./app/assets/stylesheets/application.bootstrap.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",
-    "build:css:prefix": "postcss ./app/assets/builds/application.css --use=autoprefixer --output=./app/assets/builds/application.css",
-    "build:css": "yarn build:css:compile && yarn build:css:prefix",
-    "watch:css": "nodemon --watch ./app/assets/stylesheets/ --ext scss --exec \"yarn build:css\""
+    "build:css:compile": "./node_modules/.bin/sass ./app/assets/stylesheets/application.bootstrap.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",
+    "build:css:prefix": "./node_modules/.bin/postcss ./app/assets/builds/application.css --use=autoprefixer --output=./app/assets/builds/application.css",
+    "build:css": "npm run build:css:compile && npm run build:css:prefix",
+    "watch:css": "nodemon --watch ./app/assets/stylesheets/ --ext scss --exec \"npm run build:css\""
   }
 }
