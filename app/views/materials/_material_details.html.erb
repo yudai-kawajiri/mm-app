@@ -4,7 +4,6 @@
 
 <div class="pt-1">
   <div class="row">
-
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
         <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:name) %></label>
@@ -14,7 +13,6 @@
         </div>
       </div>
     </div>
-
 
     <div class="col-md-6">
       <% if material.category.present? %>
@@ -42,15 +40,15 @@
 
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_weight_for_product) %></label>
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">デフォルト重量（g/単位）</label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.unit_weight_for_product ? number_with_precision(material.unit_weight_for_product, precision: 1) : no_setting %>
+          <%= material.default_unit_weight && material.default_unit_weight > 0 ? number_with_precision(material.default_unit_weight, precision: 1) : no_setting %>
         </div>
       </div>
     </div>
   </div>
+
   <div class="row">
-    <%# 項目5: 発注単位 (左カラム) %>
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
         <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_for_order) %></label>
@@ -60,23 +58,33 @@
       </div>
     </div>
 
-    <%# 項目6: 発注単位あたりの重量 (右カラム) %>
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_weight_for_order) %></label>
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">発注単位の重量（g）</label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
           <%= material.unit_weight_for_order ? number_with_precision(material.unit_weight_for_order, precision: 1) : no_setting %>
         </div>
       </div>
     </div>
   </div>
-</div>
 
+  <div class="row">
+    <div class="col-md-12">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">発注単位あたりの個数</label>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= material.pieces_per_order_unit && material.pieces_per_order_unit > 0 ? "#{material.pieces_per_order_unit}#{material.unit_for_product.name}" : no_setting %>
+        </div>
+        <p class="text-muted text-center small mt-2">※個数ベース（トレイなど）の場合のみ表示</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="mt-4">
   <h6 class="text-muted" style="font-size: 1.1em;"><%= material_class.human_attribute_name(:description) %></h6>
 
-    <div class="p-3 border rounded d-flex align-items-center justify-content-center" style="min-height: 210px;">
-        <%= render 'shared/components/description_content', content: material.description %>
-    </div>
+  <div class="p-3 border rounded d-flex align-items-center justify-content-center" style="min-height: 210px;">
+    <%= render 'shared/components/description_content', content: material.description %>
+  </div>
 </div>
