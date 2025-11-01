@@ -13,9 +13,8 @@ class Plan < ApplicationRecord
   # status カラムに enum を定義
   enum :status, {
   draft: 0,      # 下書き
-  active: 1,     # アクティブ（使用中）
-  completed: 2,  # 完了
-  cancelled: 3   # キャンセル
+  active: 1,     # 実施中
+  completed: 2  # 完了
 }
 
   # ステータス関連のスコープ

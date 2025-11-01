@@ -519,6 +519,5 @@ ja:
       plan:
         status:
           draft: "下書き"
-          active: "アクティブ"
+          active: "実施中"
           completed: "完了"
-          cancelled: "キャンセル"
