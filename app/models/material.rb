@@ -19,15 +19,29 @@ class Material < ApplicationRecord
   validates :name, presence: true
   validates :name, uniqueness: { scope: :category_id }
 
-  # 数値項目は必須かつ0より大きい値のみ許可（エラー回避）
-  validates :unit_weight_for_product,
-            presence: true,
-            numericality: { greater_than: 0 }
-
   validates :unit_weight_for_order,
             presence: true,
             numericality: { greater_than: 0 }
 
+  validates :default_unit_weight,
+            numericality: { greater_than_or_equal_to: 0 },
+            allow_nil: true
+
+  validates :pieces_per_order_unit,
+            numericality: { greater_than: 0, only_integer: true },
+            allow_nil: true
+
   # インデックス表示用のスコープ (N+1問題対策と並び替え)
   scope :for_index, -> { includes(:category, :unit_for_product, :unit_for_order).order(created_at: :desc) }
+
+  # 発注単位の換算タイプを判定
+  def order_conversion_type
+    if pieces_per_order_unit.present? && pieces_per_order_unit > 0
+      :pieces  # 個数ベース（例: 1箱=50枚）
+    elsif unit_weight_for_order > 0
+      :weight  # 重量ベース（例: 1パック=1000g）
+    else
+      :none
+    end
+  end
 end
