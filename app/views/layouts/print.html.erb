@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>印刷 - <%= yield(:title) %></title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= stylesheet_link_tag 'print', media: 'all' %>
+
+  <style>
+    /* 画面表示用のスタイル */
+    @media screen {
+      body {
+        background-color: #f5f5f5;
+        padding: 20px;
+      }
+
+      .print-container {
+        max-width: 210mm;
+        margin: 0 auto;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        padding: 20mm;
+      }
+
+      .no-print {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+    }
+
+    /* 印刷時は余計な要素を非表示 */
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+
+      .print-container {
+        max-width: 100%;
+        padding: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="no-print">
+    <button onclick="window.print()" class="btn btn-primary btn-lg">
+      印刷する
+    </button>
+    <button onclick="window.close()" class="btn btn-secondary btn-lg ml-2">
+      ✕ 閉じる
+    </button>
+  </div>
+
+  <div class="print-container">
+    <%= yield %>
+  </div>
+
+  <%= javascript_include_tag 'application' %>
+</body>
+</html>
