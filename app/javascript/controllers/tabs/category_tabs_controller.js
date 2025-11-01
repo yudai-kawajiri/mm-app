@@ -6,7 +6,7 @@ import Logger from "utils/logger"
  * カテゴリタブ管理コントローラー（統合版）
  * - タブの切り替え
  * - タブの動的追加
- * - タブの削除
+ * - タブの削除（商品管理・製造計画の両方に対応）
  */
 export default class extends Controller {
   static targets = [
@@ -28,45 +28,29 @@ export default class extends Controller {
   // 初期化
   // ============================================================
 
- connect() {
-   Logger.log("✅ Category tabs controller connected")
- }
+  connect() {
+    Logger.log("✅ Category tabs controller connected")
+  }
 
   // ============================================================
   // タブ切り替え
   // ============================================================
 
-  /**
-   * categoryIdValue が変更されたときに自動で実行
-   */
   categoryIdValueChanged() {
     this.updateTabs()
   }
 
-  /**
-   * タブのクリック時に呼ばれる
-   * @param {Event} event - クリックイベント
-   */
   selectTab(event) {
     event.preventDefault()
-
-    // クリックされたタブからカテゴリーIDを取得（ALLタブはID=0）
     const selectedCategoryId = parseInt(event.currentTarget.dataset.categoryId, 10) || 0
-
-    // categoryIdValue を直接更新することで、categoryIdValueChanged() が実行される
     this.categoryIdValue = selectedCategoryId
-
     Logger.log(`🔄 Tab selected: ${selectedCategoryId}`)
   }
 
-  /**
-   * タブとコンテンツの表示・非表示を切り替える
-   */
   updateTabs() {
     const selectedCategoryId = this.categoryIdValue
     Logger.log(`🔄 Updating tabs for category ID: ${selectedCategoryId}`)
 
-    // 全てのタブとカテゴリーコンテンツをリセット
     this.tabTargets.forEach(tab => {
       tab.classList.remove('active')
       tab.setAttribute('aria-selected', 'false')
@@ -76,7 +60,6 @@ export default class extends Controller {
       content.classList.remove('show', 'active')
     })
 
-    // 1. タブの状態更新
     const activeTab = this.tabTargets.find(t => {
       const tabId = parseInt(t.dataset.categoryId, 10) || 0
       return tabId === selectedCategoryId
@@ -87,7 +70,6 @@ export default class extends Controller {
       activeTab.setAttribute('aria-selected', 'true')
     }
 
-    // 2. コンテンツの状態更新
     const activeContent = this.categoryTargets.find(c => {
       const contentId = parseInt(c.dataset.categoryId, 10) || 0
       return contentId === selectedCategoryId
@@ -104,25 +86,16 @@ export default class extends Controller {
   // タブの動的追加
   // ============================================================
 
-  /**
-   * セレクトボックスの変更時にボタンを有効/無効化
-   */
   toggleButton() {
     if (!this.hasCategorySelectorTarget || !this.hasShowButtonTarget) return
-
     const isSelected = this.categorySelectorTarget.value && this.categorySelectorTarget.value !== '0'
     this.showButtonTarget.disabled = !isSelected
   }
 
-  /**
-   * 既存タブのカテゴリをセレクトボックスから無効化
-   */
   disableExistingCategoryOptions() {
     if (!this.hasTabNavTarget || !this.hasCategorySelectorTarget) return
-
     const existingTabs = this.tabNavTarget.querySelectorAll('[data-category-id]')
     const existingCategoryIds = Array.from(existingTabs).map(tab => tab.dataset.categoryId)
-
     Array.from(this.categorySelectorTarget.options).forEach(option => {
       if (option.value && existingCategoryIds.includes(option.value)) {
         option.disabled = true
@@ -130,19 +103,12 @@ export default class extends Controller {
     })
   }
 
-  /**
-   * カテゴリタブの追加
-   */
   showSelectedTab() {
     if (!this.hasCategorySelectorTarget) return
-
     const categoryId = String(this.categorySelectorTarget.value)
-
     if (!categoryId || categoryId === '0') return
 
-    // 既にタブが存在するかチェック
     const existingTab = this.tabNavTarget.querySelector(`[data-category-id="${categoryId}"]`)
-
     if (existingTab) {
       Logger.log(`⚠️ カテゴリ ID ${categoryId} のタブは既に存在します`)
       this.switchToTab(categoryId)
@@ -152,10 +118,8 @@ export default class extends Controller {
     }
 
     const categoryName = this.categorySelectorTarget.options[this.categorySelectorTarget.selectedIndex].text
-
     Logger.log(`🔄 カテゴリ ID ${categoryId} のタブを動的に追加します`)
 
-    // タブボタンとコンテンツを追加
     const tabButton = this.addTabButton(categoryId, categoryName)
     const tabPane = this.addTabPane(categoryId, categoryName)
 
@@ -168,24 +132,15 @@ export default class extends Controller {
     }
   }
 
-  /**
-   * タブボタンを追加
-   * @param {string} categoryId - カテゴリID
-   * @param {string} categoryName - カテゴリ名
-   * @returns {HTMLElement|null} - 追加されたタブボタン
-   */
   addTabButton(categoryId, categoryName) {
     if (!this.hasCategoryTemplateTarget) return null
-
     const templateHtml = this.categoryTemplateTarget.innerHTML
     const replacedHtml = templateHtml
       .replace(/CATEGORY_ID_PLACEHOLDER/g, categoryId)
       .replace(/CATEGORY_NAME_PLACEHOLDER/g, categoryName)
-
     const tempDiv = document.createElement('div')
     tempDiv.innerHTML = replacedHtml.trim()
     const tabButton = tempDiv.firstElementChild
-
     if (tabButton) {
       this.tabNavTarget.appendChild(tabButton)
       return tabButton
@@ -193,24 +148,15 @@ export default class extends Controller {
     return null
   }
 
-  /**
-   * タブコンテンツを追加
-   * @param {string} categoryId - カテゴリID
-   * @param {string} categoryName - カテゴリ名
-   * @returns {HTMLElement|null} - 追加されたタブコンテンツ
-   */
   addTabPane(categoryId, categoryName) {
     if (!this.hasCategoryPaneTemplateTarget) return null
-
     const templateHtml = this.categoryPaneTemplateTarget.innerHTML
     const replacedHtml = templateHtml
       .replace(/CATEGORY_ID_PLACEHOLDER/g, categoryId)
       .replace(/CATEGORY_NAME_PLACEHOLDER/g, categoryName)
-
     const tempDiv = document.createElement('div')
     tempDiv.innerHTML = replacedHtml.trim()
     const tabPane = tempDiv.firstElementChild
-
     if (tabPane) {
       this.contentContainerTarget.appendChild(tabPane)
       return tabPane
@@ -218,14 +164,9 @@ export default class extends Controller {
     return null
   }
 
-  /**
-   * タブを切り替え
-   * @param {string} categoryId - カテゴリID
-   */
   switchToTab(categoryId) {
     if (!this.hasTabNavTarget || !this.hasContentContainerTarget) return
 
-    // 全タブとペインを非アクティブ化
     this.tabNavTarget.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
       tab.classList.remove('active')
       tab.setAttribute('aria-selected', 'false')
@@ -235,7 +176,6 @@ export default class extends Controller {
       pane.classList.remove('show', 'active')
     })
 
-    // 選択されたタブをアクティブ化
     const selectedTab = this.tabNavTarget.querySelector(`[data-category-id="${categoryId}"]`)
     const selectedPane = this.contentContainerTarget.querySelector(`#nav-${categoryId}`)
 
@@ -247,15 +187,12 @@ export default class extends Controller {
   }
 
   // ============================================================
-  // タブの削除
+  // タブの削除（商品管理・製造計画の両方に対応）
   // ============================================================
-  /**
-   * タブを削除
-   * @param {Event} event - クリックイベント
-   */
+
   removeTab(event) {
     event.preventDefault()
-    event.stopPropagation() // タブの切り替えを防ぐ
+    event.stopPropagation()
 
     const categoryId = event.currentTarget.dataset.categoryId
 
@@ -264,69 +201,66 @@ export default class extends Controller {
       return
     }
 
-    if (!confirm(`このカテゴリタブを削除してもよろしいですか？\n※タブ内の原材料データも削除されます`)) {
+    if (!confirm(`このカテゴリタブを削除してもよろしいですか？\n※タブ内のデータも削除されます`)) {
       return
     }
 
     Logger.log(`🗑️ Removing tab for category: ${categoryId}`)
 
-    // 1. カテゴリタブのコンテンツ内の全行に_destroyフラグを設定
+    // 1. カテゴリタブ内の全行の unique_id を収集
     const tabPane = this.contentContainerTarget.querySelector(`#nav-${categoryId}`)
-    if (tabPane) {
-      const destroyInputs = tabPane.querySelectorAll('[data-nested-form-item-target="destroy"]')
-      Logger.log(`Found ${destroyInputs.length} rows in category tab ${categoryId}`)
+    const rowsToDelete = []
 
-      destroyInputs.forEach(input => {
-        input.value = '1'
-        Logger.log(`✅ Set _destroy=1 for: ${input.name}`)
+    if (tabPane) {
+      // data-row-unique-id または data-unique-id を持つ行を検索
+      const rows = tabPane.querySelectorAll('tr[data-row-unique-id], tr[data-unique-id]')
+      Logger.log(`Found ${rows.length} rows in category tab ${categoryId}`)
+
+      rows.forEach(row => {
+        const uniqueId = row.dataset.rowUniqueId || row.dataset.uniqueId
+        if (uniqueId) {
+          rowsToDelete.push(uniqueId)
+
+          // _destroy フラグを設定
+          const destroyInput = row.querySelector('[data-form--nested-form-item-target="destroy"]')
+          if (destroyInput) {
+            destroyInput.value = '1'
+            Logger.log(`✅ Set _destroy=1 for row: ${uniqueId} (${destroyInput.name})`)
+          } else {
+            Logger.warn(`⚠️ Destroy input not found for row: ${uniqueId}`)
+          }
+
+          // 行を非表示
+          row.style.display = 'none'
+        }
       })
     }
 
-    // 2. ALLタブからも該当カテゴリの行を削除（重要！）
+    // 2. ALLタブから同じ unique_id の行を削除
     const allTabPane = this.contentContainerTarget.querySelector('#nav-0')
-    if (allTabPane) {
-      // data-category-id で検索
-      const rowsToRemove = allTabPane.querySelectorAll(`tr[data-category-id="${categoryId}"]`)
-      Logger.log(`Found ${rowsToRemove.length} rows in ALL tab for category ${categoryId}`)
+    if (allTabPane && rowsToDelete.length > 0) {
+      Logger.log(`🔍 Removing ${rowsToDelete.length} rows from ALL tab`)
 
-      rowsToRemove.forEach(row => {
-        const destroyInput = row.querySelector('input[name*="[_destroy]"]')
-        if (destroyInput) {
-          destroyInput.value = '1'
-          Logger.log(`✅ Set _destroy=1 in ALL tab: ${destroyInput.name}`)
-        }
-        row.style.display = 'none'
-      })
+      rowsToDelete.forEach(uniqueId => {
+        // data-row-unique-id と data-unique-id の両方を検索
+        const selectors = [
+          `tr[data-row-unique-id="${uniqueId}"]`,
+          `tr[data-unique-id="${uniqueId}"]`
+        ]
 
-      // もし data-category-id がない場合、material_id から検索
-      if (rowsToRemove.length === 0) {
-        Logger.warn(`⚠️ No rows found with data-category-id="${categoryId}" in ALL tab`)
-        Logger.log(`Trying alternative method: searching by material category...`)
+        selectors.forEach(selector => {
+          const allTabRows = allTabPane.querySelectorAll(selector)
 
-        // カテゴリタブから削除された行のmaterial_idを収集
-        if (tabPane) {
-          const materialSelects = tabPane.querySelectorAll('[data-resources--product-material--material-target="materialSelect"]')
-          const materialIds = Array.from(materialSelects).map(select => select.value).filter(id => id)
-
-          Logger.log(`Material IDs to remove: ${materialIds.join(', ')}`)
-
-          // ALLタブで同じmaterial_idを持つ行を削除
-          materialIds.forEach(materialId => {
-            const rowsWithMaterial = allTabPane.querySelectorAll(`tr`)
-            rowsWithMaterial.forEach(row => {
-              const materialSelect = row.querySelector('[data-resources--product-material--material-target="materialSelect"]')
-              if (materialSelect && materialSelect.value === materialId) {
-                const destroyInput = row.querySelector('input[name*="[_destroy]"]')
-                if (destroyInput) {
-                  destroyInput.value = '1'
-                  Logger.log(`✅ Set _destroy=1 for material ${materialId}: ${destroyInput.name}`)
-                }
-                row.style.display = 'none'
-              }
-            })
+          allTabRows.forEach(row => {
+            const destroyInput = row.querySelector('[data-form--nested-form-item-target="destroy"]')
+            if (destroyInput) {
+              destroyInput.value = '1'
+              Logger.log(`✅ Set _destroy=1 in ALL tab for row: ${uniqueId} (${destroyInput.name})`)
+            }
+            row.style.display = 'none'
           })
-        }
-      }
+        })
+      })
     }
 
     // 3. タブボタンを削除
@@ -352,6 +286,28 @@ export default class extends Controller {
     // 6. ALLタブに切り替え
     this.switchToTab('0')
 
+    // 7. 合計を再計算（製造計画の場合のみ）
+    this.recalculateTotalsIfNeeded()
+
     Logger.log(`✅ カテゴリ ID ${categoryId} のタブを削除しました`)
+  }
+
+  /**
+   * 合計を再計算（製造計画の場合のみ）
+   */
+  recalculateTotalsIfNeeded() {
+    const parentElement = document.querySelector('[data-controller~="resources--plan-product--totals"]')
+    if (parentElement) {
+      const parentController = this.application.getControllerForElementAndIdentifier(
+        parentElement,
+        'resources--plan-product--totals'
+      )
+      if (parentController && typeof parentController.recalculate === 'function') {
+        Logger.log('📊 Recalculating totals after tab removal')
+        setTimeout(() => {
+          parentController.recalculate({ type: 'tab-removed' })
+        }, 100)
+      }
+    }
   }
 }
