@@ -88,20 +88,23 @@ module ApplicationHelper
   end
 
   # フォームグループ（ラベル + フィールド）を一括生成
-  # 🆕 Branch 8: バリデーション、文字数カウンター、エラー表示を追加
+  # バリデーション、文字数カウンター、エラー表示、prefix対応を追加
   def form_group_lg(form, attribute, field_type: :text_field, **options, &block)
     wrapper_class = options.delete(:wrapper_class) || "mb-4"
     label_text = options.delete(:label)
     help_text = options.delete(:help_text)
 
-    # 🆕 文字数カウンターのオプション
+    # prefix オプション（¥記号など）
+    prefix = options.delete(:prefix)
+
+    # 文字数カウンターのオプション
     character_counter = options.delete(:character_counter) || false
     max_length = options.delete(:max_length)
 
-    # 🆕 必須かどうかを判定（モデルのバリデーションから自動判定）
+    #  必須かどうかを判定（モデルのバリデーションから自動判定）
     required = form.object.class.validators_on(attribute).any? { |v| v.is_a?(ActiveModel::Validations::PresenceValidator) }
 
-    # 🆕 エラーがある場合、is-invalid クラスを追加
+    #  エラーがある場合、is-invalid クラスを追加
     if form.object.errors[attribute].any?
       case field_type
       when :select, :collection_select
@@ -111,21 +114,21 @@ module ApplicationHelper
       end
     end
 
-    # 🆕 必須フィールドには required 属性を追加
+    #  必須フィールドには required 属性を追加
     options[:required] = true if required
 
-    # 🆕 バリデーションターゲットの追加
+    #  バリデーションターゲットの追加
     options[:data] ||= {}
     options[:data][:form_validation_target] = "field" if required
 
-    # 🆕 文字数カウンター用の設定
+    # 文字数カウンター用の設定
     if character_counter && max_length
       options[:maxlength] = max_length
       options[:data][:character_counter_target] = "input"
       options[:data][:action] = "input->character-counter#updateCount"
     end
 
-    # 🆕 ラッパーの data 属性
+    #  ラッパーの data 属性
     wrapper_data = {}
     if character_counter && max_length
       wrapper_data[:controller] = "character-counter"
@@ -144,14 +147,21 @@ module ApplicationHelper
         when :text_field
           form_text_field_lg(form, attribute, options)
         when :number_field
-          form_number_field_lg(form, attribute, options)
+          # 🆕 prefix がある場合は input-group で囲む
+          if prefix
+            content_tag(:div, class: "input-group input-group-lg") do
+              concat content_tag(:span, prefix, class: "input-group-text")
+              concat form_number_field_lg(form, attribute, options)
+            end
+          else
+            form_number_field_lg(form, attribute, options)
+          end
         when :text_area
           form_text_area_lg(form, attribute, options)
         when :select
           choices = options.delete(:choices) || []
           select_options = options.delete(:select_options) || {}
           # select の場合は form-control を form-select に変更
-          # 🔧 修正: options[:class] が nil の場合のデフォルト値を設定
           options[:class] = (options[:class] || "form-control form-control-lg").gsub("form-control", "form-select")
           form_select_lg(form, attribute, choices, select_options, options)
         when :collection_select
@@ -160,13 +170,12 @@ module ApplicationHelper
           text_method = options.delete(:text_method) || :name
           select_options = options.delete(:select_options) || { prompt: t("helpers.prompt.select") }
           # collection_select の場合は form-control を form-select に変更
-          # 🔧 修正: options[:class] が nil の場合のデフォルト値を設定
           options[:class] = (options[:class] || "form-control form-control-lg").gsub("form-control", "form-select")
           form_collection_select_lg(form, attribute, collection, value_method, text_method, select_options, options)
         end
       end
 
-      # 🆕 文字数カウンター表示
+      # 文字数カウンター表示
       counter_html = if character_counter && max_length
         content_tag(:div, class: "form-text text-end") do
           concat content_tag(:span, "0", data: { character_counter_target: "count" })
@@ -180,16 +189,16 @@ module ApplicationHelper
         "".html_safe
       end
 
-      # 🆕 ヘルプテキスト
+      #  ヘルプテキスト
       help_html = if help_text
         content_tag(:div, help_text, class: "form-text")
       else
         "".html_safe
       end
 
-      # 🆕 エラーメッセージ
+      #  エラーメッセージ
       error_html = if form.object.errors[attribute].any?
-        content_tag(:div, form.object.errors[attribute].join(", "), class: "invalid-feedback d-block")
+        content_tag(:div, form.object.errors[attribute].first, class: "invalid-feedback d-block")
       else
         "".html_safe
       end

@@ -127,6 +127,8 @@ ja:
       title: "%{name} - 商品詳細 "
     edit:
       title: "%{name} - 商品編集"
+    placeholder:
+      item_number: "4桁で入力してください"
     image_help:
       select: "JPG、PNG、GIF形式の画像を選択してください"
       change: "画像を変更する場合は新しいファイルを選択してください"
@@ -354,13 +356,15 @@ ja:
       new:
         title: "ログイン"
         submit: 'ログイン'
+        email_placeholder: "example@sushi-manage.com"
+        password_placeholder: "パスワードを入力"
       signed_in: "ログインしました"
       signed_out: "ログアウトしました"
       sign_in: "ログイン"
       sign_out: "ログアウト"
     confirmations:
       confirmed: "アカウントを認証しました"
-      new:  # ← ここから追加
+      new:
         title: "確認メール再送信"
         description: "アカウント確認のメールを再送信します"
         email_placeholder: "example@sushi-manage.com"
@@ -375,6 +379,7 @@ ja:
         title: "新規登録"
       edit:
         title: "アカウント編集"
+        email_placeholder: "example@sushi-manage.com"
         unhappy: "アカウントの使用をやめる場合"
         cancel_my_account: "アカウンを削除する"
         cancel_confirm: "本当にアカウントを削除してもよろしいですか？この操作は取り消せません。"
@@ -514,6 +519,5 @@ ja:
       plan:
         status:
           draft: "下書き"
-          active: "アクティブ"
+          active: "実施中"
           completed: "完了"
-          cancelled: "キャンセル"

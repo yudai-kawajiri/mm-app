@@ -11,33 +11,34 @@
         <%= form_group_lg(f, :name, wrapper_class: 'mb-3') %>
 
         <%# 2. 売価 %>
-        <div class="mb-3">
-          <%= form_label_lg(f, :price) %>
-          <div class="input-group input-group-lg">
-            <span class="input-group-text"><%= t('number.currency.format.unit') %></span>
-            <%= f.number_field :price, class: "form-control", step: 0.01, min: 0 %>
-          </div>
-        </div>
-
-        <%# 3. ステータス %>
-        <%= form_group_lg(f, :status,
-                          field_type: :select,
+        <%= form_group_lg(f, :price,
                           wrapper_class: 'mb-3',
-                          choices: Product.statuses.keys.map { |status| [t("activerecord.enums.product.status.#{status}"), status] }) %>
-      </div>
+                          field_type: :number_field,
+                          prefix: t('number.currency.format.unit'),
+                          step: 0.01,
+                          min: 0) %>
 
-      <%# 右カラム %>
-      <div class="col-md-6">
-        <%# 4. カテゴリ %>
+        <%# 3. カテゴリ %>
         <%= form_group_lg(f, :category_id,
                           field_type: :collection_select,
                           wrapper_class: 'mb-3',
                           collection: @product_categories,
                           value_method: :id,
                           text_method: :name) %>
+      </div>
+
+      <%# 右カラム %>
+      <div class="col-md-6">
+        <%# 3. ステータス %>
+        <%= form_group_lg(f, :status,
+                          field_type: :select,
+                          wrapper_class: 'mb-3',
+                          choices: Product.statuses.keys.map { |status| [t("activerecord.enums.product.status.#{status}"), status] },
+                          select_options: { include_blank: t('helpers.prompt.select'), selected: nil })
+                          %>
 
         <%# 5. 品番 %>
-        <%= form_group_lg(f, :item_number, wrapper_class: 'mb-3') %>
+        <%= form_group_lg(f, :item_number, wrapper_class: 'mb-3',   placeholder: t('products.placeholder.item_number'),) %>
 
         <%# 6. 画像（120px） %>
         <div class="mb-3">
