@@ -70,6 +70,7 @@ Rails.application.routes.draw do
     member do
       patch :update_status  # ステータス更新
       post :copy            # 複製
+      get :print            # 印刷用ページ
     end
   end
 
