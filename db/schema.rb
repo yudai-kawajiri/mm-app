@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_29_074407) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_01_131002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -70,12 +70,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_29_074407) do
   create_table "materials", force: :cascade do |t|
     t.bigint "category_id", null: false
     t.datetime "created_at", null: false
+    t.decimal "default_unit_weight", precision: 10, scale: 3, default: "0.0", comment: "デフォルトの1単位あたり重量（g）"
     t.text "description"
     t.string "name", null: false
+    t.integer "pieces_per_order_unit", comment: "1発注単位あたりの個数（トレイなど）"
     t.bigint "unit_for_order_id", null: false
     t.bigint "unit_for_product_id", null: false
     t.decimal "unit_weight_for_order", precision: 10, scale: 3, null: false
-    t.decimal "unit_weight_for_product", precision: 10, scale: 3, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["category_id"], name: "index_materials_on_category_id"
@@ -142,6 +143,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_29_074407) do
     t.bigint "product_id", null: false
     t.decimal "quantity", null: false
     t.bigint "unit_id", null: false
+    t.decimal "unit_weight", precision: 10, scale: 3, default: "0.0", null: false
     t.datetime "updated_at", null: false
     t.index ["material_id"], name: "index_product_materials_on_material_id"
     t.index ["product_id", "material_id"], name: "index_product_materials_on_product_id_and_material_id", unique: true

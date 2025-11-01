@@ -24,20 +24,19 @@ class Api::V1::MaterialsController < AuthenticatedController
       Rails.logger.info "  unit_for_product: #{@material.unit_for_product.inspect}"
       Rails.logger.info "  unit_for_product_id: #{unit_id}"
 
-      # 数量/重量を取得
-      quantity_value = @material.unit_weight_for_product || 0
+      # デフォルト重量を取得
+      default_unit_weight = @material.default_unit_weight || 0
 
       # 小数点を整数化（12.0 → 12）
-      quantity_value = quantity_value.to_i if quantity_value == quantity_value.to_i
+      default_unit_weight = default_unit_weight.to_i if default_unit_weight == default_unit_weight.to_i
 
-      Rails.logger.info "✅ Returning: unit_id=#{unit_id}, unit_name=#{unit_name}, unit_weight=#{quantity_value}"
+      Rails.logger.info "✅ Returning: unit_id=#{unit_id}, unit_name=#{unit_name}, default_unit_weight=#{default_unit_weight}"
 
       # JSON 形式で返す
       render json: {
         unit_id: unit_id,
         unit_name: unit_name,
-        quantity: quantity_value,
-        unit_weight: quantity_value
+        default_unit_weight: default_unit_weight
       }
     rescue ActiveRecord::RecordNotFound => e
       Rails.logger.error "❌ Material not found: #{params[:id]}"

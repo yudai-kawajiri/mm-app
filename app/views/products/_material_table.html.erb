@@ -12,7 +12,7 @@
           <th class="text-end text-muted" style="min-width: 70px;"><%= t('helpers.forms.quantity_placeholder') %></th>
 
           <%# 重量（商品単位） %>
-          <th class="text-end text-muted" style="min-width: 120px;"><%= t('activerecord.attributes.material.unit_weight_for_product')%></th>
+          <th class="text-end text-muted" style="min-width: 120px;"><%= t('activerecord.attributes.product_material.unit_weight') %></th>
 
           <%# 単位 %>
           <th class="text-start text-muted" style="min-width: 60px;"><%= t('activerecord.attributes.material.unit_for_product')%></th>
@@ -26,8 +26,8 @@
             <%# 数量 %>
             <td class="text-end"><%= number_with_precision(pm.quantity, precision: 0) %></td>
 
-            <%# 重量（商品単位 %>
-            <td class="text-end text-muted"><%= number_with_precision(pm.material.unit_weight_for_product, precision: 1) %></td>
+            <%# 重量（商品単位） - product_materials.unit_weightから取得 %>
+            <td class="text-end text-muted"><%= number_with_precision(pm.unit_weight, precision: 1) %></td>
 
             <td class="text-start text-dark"><%= pm.unit.name %></td>
           </tr>

@@ -7,10 +7,10 @@ import Logger from "utils/logger"
  * 原材料選択時に単位情報を取得・表示
  */
 export default class extends Controller {
-  static targets = ["materialSelect", "unitDisplay", "quantityInput", "unitWeightDisplay", "unitIdInput"]
+  static targets = ["materialSelect", "unitDisplay", "quantityInput", "unitWeightInput", "unitIdInput"]
 
   // ============================================================
-  // 初期化（重要！これを追加）
+  // 初期化
   // ============================================================
 
   /**
@@ -21,6 +21,7 @@ export default class extends Controller {
     console.log('  Has materialSelect:', this.hasMaterialSelectTarget)
     console.log('  Has unitDisplay:', this.hasUnitDisplayTarget)
     console.log('  Has unitIdInput:', this.hasUnitIdInputTarget)
+    console.log('  Has unitWeightInput:', this.hasUnitWeightInputTarget)
 
     // 既に原材料が選択されている場合（編集時）、単位情報を取得
     if (this.hasMaterialSelectTarget && this.materialSelectTarget.value) {
@@ -83,7 +84,7 @@ export default class extends Controller {
 
   /**
    * 単位情報を表示
-   * @param {Object} data - { unit_id, unit_name, unit_weight }
+   * @param {Object} data - { unit_id, unit_name, default_unit_weight }
    */
   updateUnitDisplay(data) {
     console.log('📥 Received unit data:', data)
@@ -93,29 +94,28 @@ export default class extends Controller {
       const oldValue = this.unitIdInputTarget.value
       this.unitIdInputTarget.value = data.unit_id || ""
       console.log('✏️ Updated unit_id:', oldValue, '→', data.unit_id)
-      console.log('✅ Hidden field:', this.unitIdInputTarget.name, '=', this.unitIdInputTarget.value)
-    } else {
-      console.error('❌ unitIdInput target not found!')
-      console.log('Available targets:', Object.keys(this))
     }
 
     // unit_name を表示
     if (this.hasUnitDisplayTarget) {
       this.unitDisplayTarget.textContent = data.unit_name || "未設定"
       console.log('✅ Set unit_name:', data.unit_name)
-    } else {
-      console.error('❌ unitDisplay target not found!')
     }
 
-    // unit_weight を表示
-    if (this.hasUnitWeightDisplayTarget) {
-      this.unitWeightDisplayTarget.textContent = data.unit_weight || "未設定"
-      console.log('✅ Set unit_weight:', data.unit_weight)
-    } else {
-      console.error('❌ unitWeightDisplay target not found!')
+    // default_unit_weight を入力フィールドに自動設定（編集時は上書きしない）
+    if (this.hasUnitWeightInputTarget) {
+      const currentValue = this.unitWeightInputTarget.value
+
+      // 値が空欄または0の場合のみデフォルト値を設定
+      if (!currentValue || parseFloat(currentValue) === 0) {
+        this.unitWeightInputTarget.value = data.default_unit_weight || 0
+        console.log('✅ Set default_unit_weight:', data.default_unit_weight)
+      } else {
+        console.log('ℹ️ Keeping existing unit_weight:', currentValue)
+      }
     }
 
-    Logger.log(`✅ Unit updated: ${data.unit_name} (${data.unit_weight})`)
+    Logger.log(`✅ Unit updated: ${data.unit_name}`)
   }
 
   /**
@@ -126,12 +126,12 @@ export default class extends Controller {
       this.unitDisplayTarget.textContent = "未設定"
     }
 
-    if (this.hasUnitWeightDisplayTarget) {
-      this.unitWeightDisplayTarget.textContent = "未設定"
-    }
-
     if (this.hasUnitIdInputTarget) {
       this.unitIdInputTarget.value = ""
+    }
+
+    if (this.hasUnitWeightInputTarget) {
+      this.unitWeightInputTarget.value = ""
     }
 
     console.log('🔄 Unit reset to default')
@@ -143,10 +143,6 @@ export default class extends Controller {
   setError() {
     if (this.hasUnitDisplayTarget) {
       this.unitDisplayTarget.textContent = "エラー"
-    }
-
-    if (this.hasUnitWeightDisplayTarget) {
-      this.unitWeightDisplayTarget.textContent = "エラー"
     }
   }
 
@@ -193,6 +189,26 @@ export default class extends Controller {
       const input = row.querySelector('[data-resources--product-material--material-target="quantityInput"]')
       if (input && input.value !== quantity) {
         input.value = quantity
+      }
+    })
+  }
+
+  /**
+   * 重量を他のタブに同期
+   * @param {Event} event - input イベント
+   */
+  syncUnitWeightToOtherTabs(event) {
+    const uniqueId = event.target.dataset.uniqueId
+    const unitWeight = event.target.value
+
+    Logger.log(`🔄 Syncing unit_weight ${unitWeight} for ${uniqueId}`)
+
+    document.querySelectorAll(`tr[data-unique-id="${uniqueId}"]`).forEach(row => {
+      if (row === this.element) return
+
+      const input = row.querySelector('[data-resources--product-material--material-target="unitWeightInput"]')
+      if (input && input.value !== unitWeight) {
+        input.value = unitWeight
       }
     })
   }

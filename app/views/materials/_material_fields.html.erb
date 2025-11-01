@@ -23,11 +23,12 @@
     ) %>
   </div>
 
-  <%# 右カラム: 商品単位あたりの重量 %>
+  <%# 右カラム: デフォルト重量 %>
   <div class="col-md-6">
-    <%= form_group_lg(f, :unit_weight_for_product,
+    <%= form_group_lg(f, :default_unit_weight,
         field_type: :number_field,
-        step: :any
+        step: :any,
+        label: "デフォルト重量（g/単位）"
     ) %>
   </div>
 </div>
@@ -46,13 +47,26 @@
   <div class="col-md-6">
     <%= form_group_lg(f, :unit_weight_for_order,
         field_type: :number_field,
-        step: :any
+        step: :any,
+        label: "発注単位の重量（g）"
     ) %>
   </div>
 </div>
 
 <div class="row">
-  <%# 説明（Description） - 1行全体を使用 + 🆕 文字数カウンター %>
+  <%# 発注単位あたりの個数（オプション） %>
+  <div class="col-md-12">
+    <%= form_group_lg(f, :pieces_per_order_unit,
+        field_type: :number_field,
+        step: 1,
+        label: "発注単位あたりの個数（例: 1箱=50枚）※個数ベースの場合のみ"
+    ) %>
+    <p class="text-muted small">※重量ベース（まぐろ、いくらなど）の場合は空欄でOK。個数ベース（トレイなど）の場合のみ入力してください。</p>
+  </div>
+</div>
+
+<div class="row">
+  <%# 説明（Description） - 1行全体を使用 + 文字数カウンター %>
   <div class="col-md-12">
     <%= form_group_lg(f, :description,
         field_type: :text_area,

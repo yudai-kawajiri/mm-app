@@ -13,9 +13,9 @@
     materials = Material.where(category_id: category_id).order(:name)
   end
 
-  # 商品単位重量を整数化（12.0 → 12）
-  unit_weight = f.object.material&.unit_weight_for_product
-  unit_weight_display = unit_weight ? (unit_weight.to_i == unit_weight ? unit_weight.to_i : unit_weight) : t('helpers.no_setting')
+  # 商品単位重量を取得（product_materials.unit_weightから）
+  unit_weight = f.object.unit_weight
+  unit_weight_display = unit_weight && unit_weight > 0 ? (unit_weight.to_i == unit_weight ? unit_weight.to_i : unit_weight) : t('helpers.no_setting')
 %>
 
 <tr class="nested-fields"
@@ -43,7 +43,7 @@
       }) %>
   </td>
 
-  <!-- 2. 数量 -->
+    <!-- 2. 数量 -->
   <td>
     <%= f.number_field :quantity,
       class: 'form-control',
@@ -57,11 +57,18 @@
       } %>
   </td>
 
-  <!-- 3. 商品単位重量 -->
+  <!-- 3. 商品単位重量（入力フィールド） -->
   <td>
-    <span data-resources--product-material--material-target="unitWeightDisplay" class="form-control-plaintext">
-      <%= unit_weight_display %>
-    </span>
+    <%= f.number_field :unit_weight,
+      class: 'form-control',
+      min: 0,
+      step: 'any',
+      placeholder: '重量を入力',
+      data: {
+        'resources--product-material--material-target': 'unitWeightInput',
+        action: 'input->resources--product-material--material#syncUnitWeightToOtherTabs',
+        'unique-id': unique_id
+      } %>
   </td>
 
   <!-- 4. 単位 -->

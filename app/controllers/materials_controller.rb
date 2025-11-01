@@ -1,4 +1,4 @@
-class MaterialsController <  AuthenticatedController
+class MaterialsController < AuthenticatedController
   # define_search_params を使って許可するキーを定義
   define_search_params :q, :category_id
   before_action -> { load_categories_for("material", as: :material) }, only: [ :index, :new, :edit, :create, :update ]
@@ -39,12 +39,14 @@ class MaterialsController <  AuthenticatedController
   # ストロングパラメータ設定
   def material_params
     params.require(:material).permit(
-    :name, :unit_for_product_id,
-    :unit_weight_for_product,
-    :unit_for_order_id,
-    :unit_weight_for_order,
-    :category_id,
-    :description
-  )
+      :name,
+      :unit_for_product_id,
+      :default_unit_weight,
+      :unit_for_order_id,
+      :unit_weight_for_order,
+      :pieces_per_order_unit,
+      :category_id,
+      :description
+    )
   end
 end
