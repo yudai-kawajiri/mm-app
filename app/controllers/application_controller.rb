@@ -24,6 +24,9 @@ class ApplicationController < ActionController::Base
 
   # 認証状態に応じてレイアウトを切り替えるメソッド
   def layout_by_resource
+    # ★★★ print アクションの場合は専用レイアウト ★★★
+    return 'print' if action_name == 'print'
+
     # Deviseのコントローラー（ログイン、新規登録など）であり、かつ未認証の場合
     if devise_controller? && !user_signed_in?
       "application"

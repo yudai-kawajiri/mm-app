@@ -10,6 +10,29 @@ export default class extends Controller {
   static targets = ["materialSelect", "unitDisplay", "quantityInput", "unitWeightDisplay", "unitIdInput"]
 
   // ============================================================
+  // 初期化（重要！これを追加）
+  // ============================================================
+
+  /**
+   * コントローラー接続時に実行
+   */
+  connect() {
+    console.log('✅ Material controller connected')
+    console.log('  Has materialSelect:', this.hasMaterialSelectTarget)
+    console.log('  Has unitDisplay:', this.hasUnitDisplayTarget)
+    console.log('  Has unitIdInput:', this.hasUnitIdInputTarget)
+
+    // 既に原材料が選択されている場合（編集時）、単位情報を取得
+    if (this.hasMaterialSelectTarget && this.materialSelectTarget.value) {
+      const materialId = this.materialSelectTarget.value
+      console.log('🔄 Existing material detected:', materialId)
+      this.fetchUnitData(materialId)
+    } else {
+      console.log('ℹ️ No material selected yet')
+    }
+  }
+
+  // ============================================================
   // 原材料選択時の処理
   // ============================================================
 
@@ -19,6 +42,7 @@ export default class extends Controller {
    */
   updateUnit(event) {
     const materialId = event.target.value
+    console.log('🔄 Material changed:', materialId)
 
     if (!materialId) {
       this.resetUnit()
@@ -34,7 +58,14 @@ export default class extends Controller {
    */
   async fetchUnitData(materialId) {
     try {
-      const response = await fetch(`/api/v1/materials/${materialId}/product_unit_data`)
+      console.log('📡 Fetching unit data for material:', materialId)
+
+      const response = await fetch(`/api/v1/materials/${materialId}/product_unit_data`, {
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
 
       if (!response.ok) {
         throw new Error(`AJAX request failed with status: ${response.status}`)
@@ -45,7 +76,8 @@ export default class extends Controller {
       this.updateUnitDisplay(data)
     } catch (error) {
       Logger.error("単位データの取得に失敗しました:", error)
-      this.setError()
+      console.error('❌ Fetch error:', error)
+      this.resetUnit()
     }
   }
 
@@ -54,16 +86,33 @@ export default class extends Controller {
    * @param {Object} data - { unit_id, unit_name, unit_weight }
    */
   updateUnitDisplay(data) {
+    console.log('📥 Received unit data:', data)
+
+    // unit_id を hidden field に設定
     if (this.hasUnitIdInputTarget) {
+      const oldValue = this.unitIdInputTarget.value
       this.unitIdInputTarget.value = data.unit_id || ""
+      console.log('✏️ Updated unit_id:', oldValue, '→', data.unit_id)
+      console.log('✅ Hidden field:', this.unitIdInputTarget.name, '=', this.unitIdInputTarget.value)
+    } else {
+      console.error('❌ unitIdInput target not found!')
+      console.log('Available targets:', Object.keys(this))
     }
 
+    // unit_name を表示
     if (this.hasUnitDisplayTarget) {
       this.unitDisplayTarget.textContent = data.unit_name || "未設定"
+      console.log('✅ Set unit_name:', data.unit_name)
+    } else {
+      console.error('❌ unitDisplay target not found!')
     }
 
+    // unit_weight を表示
     if (this.hasUnitWeightDisplayTarget) {
       this.unitWeightDisplayTarget.textContent = data.unit_weight || "未設定"
+      console.log('✅ Set unit_weight:', data.unit_weight)
+    } else {
+      console.error('❌ unitWeightDisplay target not found!')
     }
 
     Logger.log(`✅ Unit updated: ${data.unit_name} (${data.unit_weight})`)
@@ -84,6 +133,8 @@ export default class extends Controller {
     if (this.hasUnitIdInputTarget) {
       this.unitIdInputTarget.value = ""
     }
+
+    console.log('🔄 Unit reset to default')
   }
 
   /**

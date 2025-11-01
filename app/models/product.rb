@@ -37,7 +37,38 @@ class Product < ApplicationRecord
   # インデックス表示用のスコープ (N+1問題対策と並び替え)
   scope :for_index, -> { includes(:category).order(created_at: :desc) }
 
+  # 空の原材料レコードを除外
+  before_validation :reject_blank_product_materials
+
+  # 重複した原材料を除外
+  before_save :reject_duplicate_product_materials
+
   private
+
+  def reject_blank_product_materials
+    product_materials.each do |pm|
+      # material_id が空の場合は削除マーク
+      pm.mark_for_destruction if pm.material_id.blank?
+    end
+  end
+
+  def reject_duplicate_product_materials
+    # 削除マークされていない原材料を material_id でグループ化
+    grouped = product_materials.reject(&:marked_for_destruction?).group_by(&:material_id)
+
+    grouped.each do |material_id, items|
+      # 1つだけなら問題なし
+      next if items.size <= 1
+
+      # 2つ以上ある場合、最初の1つを残して残りを削除
+      Rails.logger.warn "⚠️ Duplicate product_material detected: material_id=#{material_id}, count=#{items.size}"
+
+      items[1..-1].each do |duplicate|
+        Rails.logger.warn "  → Removing duplicate: id=#{duplicate.id || 'new'}"
+        duplicate.mark_for_destruction
+      end
+    end
+  end
 
   # 実際に画像を削除するメソッド
   def purge_image

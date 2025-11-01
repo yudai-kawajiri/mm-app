@@ -249,7 +249,6 @@ export default class extends Controller {
   // ============================================================
   // タブの削除
   // ============================================================
-
   /**
    * タブを削除
    * @param {Event} event - クリックイベント
@@ -265,44 +264,83 @@ export default class extends Controller {
       return
     }
 
-    if (!confirm(`このカテゴリタブを削除してもよろしいですか？\n※タブ内の商品データも削除されます`)) {
+    if (!confirm(`このカテゴリタブを削除してもよろしいですか？\n※タブ内の原材料データも削除されます`)) {
       return
     }
 
     Logger.log(`🗑️ Removing tab for category: ${categoryId}`)
 
-    // タブボタンを削除
+    // 1. カテゴリタブのコンテンツ内の全行に_destroyフラグを設定
+    const tabPane = this.contentContainerTarget.querySelector(`#nav-${categoryId}`)
+    if (tabPane) {
+      const destroyInputs = tabPane.querySelectorAll('[data-nested-form-item-target="destroy"]')
+      Logger.log(`Found ${destroyInputs.length} rows in category tab ${categoryId}`)
+
+      destroyInputs.forEach(input => {
+        input.value = '1'
+        Logger.log(`✅ Set _destroy=1 for: ${input.name}`)
+      })
+    }
+
+    // 2. ALLタブからも該当カテゴリの行を削除（重要！）
+    const allTabPane = this.contentContainerTarget.querySelector('#nav-0')
+    if (allTabPane) {
+      // data-category-id で検索
+      const rowsToRemove = allTabPane.querySelectorAll(`tr[data-category-id="${categoryId}"]`)
+      Logger.log(`Found ${rowsToRemove.length} rows in ALL tab for category ${categoryId}`)
+
+      rowsToRemove.forEach(row => {
+        const destroyInput = row.querySelector('input[name*="[_destroy]"]')
+        if (destroyInput) {
+          destroyInput.value = '1'
+          Logger.log(`✅ Set _destroy=1 in ALL tab: ${destroyInput.name}`)
+        }
+        row.style.display = 'none'
+      })
+
+      // もし data-category-id がない場合、material_id から検索
+      if (rowsToRemove.length === 0) {
+        Logger.warn(`⚠️ No rows found with data-category-id="${categoryId}" in ALL tab`)
+        Logger.log(`Trying alternative method: searching by material category...`)
+
+        // カテゴリタブから削除された行のmaterial_idを収集
+        if (tabPane) {
+          const materialSelects = tabPane.querySelectorAll('[data-resources--product-material--material-target="materialSelect"]')
+          const materialIds = Array.from(materialSelects).map(select => select.value).filter(id => id)
+
+          Logger.log(`Material IDs to remove: ${materialIds.join(', ')}`)
+
+          // ALLタブで同じmaterial_idを持つ行を削除
+          materialIds.forEach(materialId => {
+            const rowsWithMaterial = allTabPane.querySelectorAll(`tr`)
+            rowsWithMaterial.forEach(row => {
+              const materialSelect = row.querySelector('[data-resources--product-material--material-target="materialSelect"]')
+              if (materialSelect && materialSelect.value === materialId) {
+                const destroyInput = row.querySelector('input[name*="[_destroy]"]')
+                if (destroyInput) {
+                  destroyInput.value = '1'
+                  Logger.log(`✅ Set _destroy=1 for material ${materialId}: ${destroyInput.name}`)
+                }
+                row.style.display = 'none'
+              }
+            })
+          })
+        }
+      }
+    }
+
+    // 3. タブボタンを削除
     const tabButton = this.tabNavTarget.querySelector(`button[data-category-id="${categoryId}"]`)
     if (tabButton) {
       tabButton.remove()
     }
 
-    // タブコンテンツを削除
-    const tabPane = this.contentContainerTarget.querySelector(`#nav-${categoryId}`)
+    // 4. タブコンテンツを削除
     if (tabPane) {
-      // コンテンツ内の全フィールドに_destroyフラグを設定
-      const destroyInputs = tabPane.querySelectorAll('[data-form--nested-form-item-target="destroy"]')
-      destroyInputs.forEach(input => {
-        input.value = '1'
-      })
-
-      // ALLタブからも該当カテゴリの行を削除
-      const allTabPane = this.contentContainerTarget.querySelector('#nav-0')
-      if (allTabPane) {
-        const rowsToRemove = allTabPane.querySelectorAll(`tr[data-category-id="${categoryId}"]`)
-        rowsToRemove.forEach(row => {
-          const destroyInput = row.querySelector('[data-form--nested-form-item-target="destroy"]')
-          if (destroyInput) {
-            destroyInput.value = '1'
-          }
-          row.style.display = 'none'
-        })
-      }
-
       tabPane.remove()
     }
 
-    // セレクトボックスのオプションを再有効化
+    // 5. セレクトボックスのオプションを再有効化
     if (this.hasCategorySelectorTarget) {
       Array.from(this.categorySelectorTarget.options).forEach(option => {
         if (option.value === categoryId) {
@@ -311,13 +349,8 @@ export default class extends Controller {
       })
     }
 
-    // ALLタブに切り替え
+    // 6. ALLタブに切り替え
     this.switchToTab('0')
-
-    // 合計を再計算
-    setTimeout(() => {
-      this.dispatch('recalculate', { prefix: 'resources--plan-product--totals', bubbles: true })
-    }, 100)
 
     Logger.log(`✅ カテゴリ ID ${categoryId} のタブを削除しました`)
   }

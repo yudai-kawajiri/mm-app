@@ -70,6 +70,7 @@ Rails.application.routes.draw do
     member do
       patch :update_status  # ステータス更新
       post :copy            # 複製
+      get :print            # 印刷用ページ
     end
   end
 
@@ -88,7 +89,7 @@ Rails.application.routes.draw do
       # 材料API
       resources :materials, only: [ :index, :show ] do
         member do
-          get :unit_data  # GET /api/v1/materials/:id/unit_data
+          get :product_unit_data  # GET /api/v1/materials/:id/product_unit_data
         end
       end
 

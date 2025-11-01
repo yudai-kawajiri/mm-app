@@ -1,0 +1,284 @@
+/* app/assets/stylesheets/print.css */
+
+/* ===== 印刷全般の設定 ===== */
+@media print {
+  @page {
+    size: A4;
+    margin: 15mm 10mm;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    font-size: 10pt;
+    line-height: 1.3;
+    color: #000;
+  }
+
+  /* ページ区切りの点線を非表示 */
+  .page-break-line {
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+/* ===== 画面表示用のスタイル ===== */
+@media screen {
+  body {
+    background-color: #f5f5f5;
+  }
+
+  .print-container {
+    max-width: 210mm;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 20mm;
+  }
+}
+
+/* ===== ヘッダースタイル ===== */
+.print-header {
+  border-bottom: 2px solid #333;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.print-header h2 {
+  margin: 0;
+  font-size: 14pt;
+  font-weight: bold;
+}
+
+.print-header-info {
+  font-size: 10pt;
+  color: #333;
+  margin-top: 5px;
+}
+
+/* ===== テーブル共通スタイル ===== */
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9pt;
+  margin-bottom: 20px;
+}
+
+.print-table thead tr {
+  background-color: #f0f0f0;
+}
+
+@media print {
+  .print-table thead tr {
+    background-color: #f0f0f0 !important;
+  }
+}
+
+.print-table th {
+  border: 1px solid #666;
+  padding: 6px 8px;
+  text-align: left;
+  font-weight: bold;
+  font-size: 9pt;
+}
+
+.print-table td {
+  border: 1px solid #999;
+  padding: 6px 8px;
+  vertical-align: middle;
+}
+
+/* ===== 商品テーブル（20行/ページ） ===== */
+.products-table tbody tr {
+  page-break-inside: avoid;
+  page-break-after: auto;
+}
+
+/* 20行ごとにページ区切り */
+@media print {
+  .products-table tbody tr:nth-child(20n) {
+    page-break-after: always;
+  }
+}
+
+/* 商品画像 */
+.product-image {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto;
+}
+
+.no-image {
+  width: 45px;
+  height: 45px;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 8pt;
+  color: #666;
+  margin: 0 auto;
+}
+
+/* テキスト配置 */
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* 合計行 */
+.total-row {
+  background-color: #e8e8e8;
+  font-weight: bold;
+  border-top: 2px solid #333 !important;
+}
+
+@media print {
+  .total-row {
+    background-color: #e8e8e8 !important;
+  }
+}
+
+/* ===== 原材料テーブル（25行/ページ） ===== */
+.materials-table tbody tr {
+  page-break-inside: avoid;
+  page-break-after: auto;
+}
+
+/* 25行ごとにページ区切り */
+@media print {
+  .materials-table tbody tr:nth-child(25n) {
+    page-break-after: always;
+  }
+}
+
+/* 発注数量（赤字強調） */
+.order-needed {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+@media print {
+  .order-needed {
+    color: #d32f2f !important;
+  }
+}
+
+/* ===== ページ区切り ===== */
+.page-break {
+  page-break-before: always;
+}
+
+@media screen {
+  .page-break {
+    margin: 30px 0;
+    border-top: 2px dashed #ccc;
+    padding-top: 20px;
+  }
+}
+
+@media print {
+  .page-break {
+    margin: 0;
+    border: none;
+    padding: 0;
+  }
+}
+
+/* ===== フッター ===== */
+.print-footer {
+  margin-top: 30px;
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
+  font-size: 8pt;
+  color: #666;
+  text-align: center;
+}
+
+@media print {
+  .print-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
+/* ===== 列幅の調整 ===== */
+/* 商品テーブル */
+.col-image {
+  width: 60px;
+  text-align: center;
+}
+
+.col-item-number {
+  width: 80px;
+}
+
+.col-product-name {
+  width: auto;
+  min-width: 150px;
+}
+
+.col-quantity {
+  width: 90px;
+  text-align: right;
+}
+
+.col-price {
+  width: 100px;
+  text-align: right;
+}
+
+.col-subtotal {
+  width: 110px;
+  text-align: right;
+}
+
+/* 原材料テーブル */
+.col-material-name {
+  width: auto;
+  min-width: 150px;
+}
+
+.col-usage {
+  width: 120px;
+  text-align: right;
+}
+
+.col-stock {
+  width: 100px;
+  text-align: right;
+}
+
+.col-order {
+  width: 120px;
+  text-align: right;
+}
+
+/* ===== 印刷時の非表示要素 ===== */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* ===== 余白調整 ===== */
+@media print {
+  .print-container {
+    max-width: 100%;
+    padding: 0;
+    box-shadow: none;
+  }
+}
