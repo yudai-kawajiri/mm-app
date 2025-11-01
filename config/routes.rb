@@ -82,7 +82,7 @@ Rails.application.routes.draw do
       # 製品API
       resources :products, only: [ :index, :show ] do
         member do
-          get :plan_details  # GET /api/v1/products/:id/plan_details
+          get :details_for_plan  # GET /api/v1/products/:id/details_for_plan 
         end
       end
 
