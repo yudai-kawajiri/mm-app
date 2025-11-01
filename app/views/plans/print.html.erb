@@ -1,89 +1,172 @@
 <% content_for :title, @plan&.name || '計画' %>
 
-<div style="padding: 20px; font-family: sans-serif;">
-  <!-- ===== 1ページ目: 製造計画書（商品一覧） ===== -->
-  <div style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px;">
-    <h2 style="margin: 0;">① 製造計画書（商品一覧）</h2>
-    <div style="font-size: 11pt; color: #333; margin-top: 5px;">
-      <strong>計画名:</strong> <%= @plan.name %> |
-      <strong>実施日:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || '未設定' %> |
-      <strong>予算:</strong> ¥<%= number_with_delimiter(@budget) %> |
-      <strong>計画高:</strong> ¥<%= number_with_delimiter(@total_cost) %> |
-      <strong>達成率:</strong> <%= @achievement_rate %>%
-    </div>
+<!-- ===== 1ページ目: 製造計画書（商品一覧） ===== -->
+<div class="print-header">
+  <h2>① 製造計画書（商品一覧）</h2>
+  <div class="print-header-info">
+    <strong>計画名:</strong> <%= @plan.name %> |
+    <strong>実施日:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || '未設定' %> |
+    <strong>予算:</strong> ¥<%= number_with_delimiter(@budget) %> |
+    <strong>計画高:</strong> ¥<%= number_with_delimiter(@total_cost) %> |
+    <strong>達成率:</strong> <%= @achievement_rate %>%
   </div>
+</div>
 
-  <!-- 商品テーブル -->
-  <table style="width: 100%; border-collapse: collapse; font-size: 10pt;">
-    <thead>
-      <tr style="background-color: #f0f0f0;">
-        <th style="border: 1px solid #666; padding: 8px;">画像</th>
-        <th style="border: 1px solid #666; padding: 8px;">品番</th>
-        <th style="border: 1px solid #666; padding: 8px;">商品名</th>
-        <th style="border: 1px solid #666; padding: 8px;">製造数</th>
-        <th style="border: 1px solid #666; padding: 8px;">単価</th>
-        <th style="border: 1px solid #666; padding: 8px;">小計</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if @plan_products.present? %>
-        <% @plan_products.each do |plan_product| %>
-          <% product = plan_product.product %>
-          <tr>
-            <!-- 画像 -->
-            <td style="border: 1px solid #999; padding: 8px; text-align: center;">
-              <% if product.image.attached? %>
-                <%= image_tag product.image, style: 'width: 45px; height: 45px; object-fit: cover; border-radius: 4px;' %>
-              <% else %>
-                <div style="width: 45px; height: 45px; background-color: #e0e0e0; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 8pt; color: #666;">
-                  画像なし
-                </div>
-              <% end %>
-            </td>
+<!-- ===== デバッグ情報 ===== -->
+<div style="background-color: #fff3cd; padding: 10px; margin: 10px 0; border: 1px solid #ffc107;">
+  <strong>🔍 デバッグ情報:</strong><br>
+  @plan_products の型: <%= @plan_products.class %><br>
+  @plan_products の件数: <%= @plan_products.size %><br>
+  @plan_products.present?: <%= @plan_products.present? %><br>
+  @plan_products.any?: <%= @plan_products.any? %><br>
 
-            <!-- 品番 -->
-            <td style="border: 1px solid #999; padding: 8px;"><%= product.item_number %></td>
+  <% if @plan_products.any? %>
+    <br><strong>商品一覧:</strong><br>
+    <% @plan_products.each do |pp| %>
+      - <%= pp.product.name %> (製造数: <%= pp.production_count %>)<br>
+    <% end %>
+  <% end %>
+</div>
 
-            <!-- 商品名 -->
-            <td style="border: 1px solid #999; padding: 8px;"><%= product.name %></td>
-
-            <!-- 製造数 -->
-            <td style="border: 1px solid #999; padding: 8px; text-align: right;">
-              <%= number_with_delimiter(plan_product.production_count) %> 個
-            </td>
-
-            <!-- 単価 -->
-            <td style="border: 1px solid #999; padding: 8px; text-align: right;">
-              ¥<%= number_with_delimiter(product.price) %>
-            </td>
-
-            <!-- 小計 -->
-            <td style="border: 1px solid #999; padding: 8px; text-align: right;">
-              ¥<%= number_with_delimiter(product.price * plan_product.production_count) %>
-            </td>
-          </tr>
-        <% end %>
-
-        <!-- 合計行 -->
-        <tr style="background-color: #e8e8e8; font-weight: bold;">
-          <td colspan="3" style="border: 1px solid #999; padding: 8px;">合計</td>
-          <td style="border: 1px solid #999; padding: 8px; text-align: right;">
-            <%= number_with_delimiter(@plan_products.sum(&:production_count)) %> 点
-          </td>
-          <td style="border: 1px solid #999; padding: 8px;"></td>
-          <td style="border: 1px solid #999; padding: 8px; text-align: right;">
-            ¥<%= number_with_delimiter(@total_cost) %>
-          </td>
-        </tr>
-      <% else %>
+<!-- 商品テーブル -->
+<table class="print-table products-table">
+  <thead>
+    <tr>
+      <th class="col-image">画像</th>
+      <th class="col-item-number">品番</th>
+      <th class="col-product-name">商品名</th>
+      <th class="col-quantity">製造数</th>
+      <th class="col-price">単価</th>
+      <th class="col-subtotal">小計</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @plan_products.present? %>
+      <% @plan_products.each do |plan_product| %>
+        <% product = plan_product.product %>
         <tr>
-          <td colspan="6" style="border: 1px solid #999; padding: 20px; text-align: center; color: #999;">
-            商品が登録されていません
+          <!-- 画像 -->
+          <td class="col-image">
+            <% if product.image.attached? %>
+              <%= image_tag product.image, class: 'product-image', alt: product.name %>
+            <% else %>
+              <div class="no-image">画像なし</div>
+            <% end %>
+          </td>
+
+          <!-- 品番 -->
+          <td class="col-item-number"><%= product.item_number %></td>
+
+          <!-- 商品名 -->
+          <td class="col-product-name"><%= product.name %></td>
+
+          <!-- 製造数 -->
+          <td class="col-quantity text-right">
+            <%= number_with_delimiter(plan_product.production_count) %> 個
+          </td>
+
+          <!-- 単価 -->
+          <td class="col-price text-right">
+            ¥<%= number_with_delimiter(product.price) %>
+          </td>
+
+          <!-- 小計 -->
+          <td class="col-subtotal text-right">
+            ¥<%= number_with_delimiter(product.price * plan_product.production_count) %>
           </td>
         </tr>
       <% end %>
-    </tbody>
-  </table>
 
-  <!-- ページ区切り（画面では点線、印刷では次ページ） -->
-  <div style="page-break-before: always; margin
+      <!-- 合計行 -->
+      <tr class="total-row">
+        <td colspan="3">合計</td>
+        <td class="text-right">
+          <%= number_with_delimiter(@plan_products.sum(&:production_count)) %> 点
+        </td>
+        <td></td>
+        <td class="text-right">
+          ¥<%= number_with_delimiter(@total_cost) %>
+        </td>
+      </tr>
+    <% else %>
+      <tr>
+        <td colspan="6" class="text-center" style="padding: 20px; color: #999;">
+          商品が登録されていません
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<!-- ===== ページ区切り ===== -->
+<div class="page-break"></div>
+
+<!-- ===== 2ページ目: 原材料発注書 ===== -->
+<div class="print-header">
+  <h2>② 原材料発注書</h2>
+  <div class="print-header-info">
+    <strong>計画名:</strong> <%= @plan.name %> |
+    <strong>実施日:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || '未設定' %>
+  </div>
+</div>
+
+<!-- 原材料テーブル -->
+<table class="print-table materials-table">
+  <thead>
+    <tr>
+      <th class="col-material-name">原材料名</th>
+      <th class="col-usage">この計画での使用数量</th>
+      <th class="col-stock">現在庫</th>
+      <th class="col-order">発注数量</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @materials_summary.present? %>
+      <% @materials_summary.each do |material_data| %>
+        <% material = material_data[:material] %>
+        <% usage_quantity = material_data[:usage_quantity] %>
+        <% unit = material_data[:unit] %>
+        <%
+          # 現在庫（unit_weight_for_product を使用）
+          current_stock = material.unit_weight_for_product
+          # 発注数量 = 使用数量 - 現在庫（マイナスは0）
+          order_quantity = [usage_quantity - current_stock, 0].max
+        %>
+
+        <tr>
+          <!-- 原材料名 -->
+          <td class="col-material-name"><%= material.name %></td>
+
+          <!-- 使用数量 -->
+          <td class="col-usage text-right">
+            <%= number_with_delimiter(usage_quantity.round(2)) %>
+            <%= unit&.name || '' %>
+          </td>
+
+          <!-- 現在庫 -->
+          <td class="col-stock text-right">
+            <%= number_with_delimiter(current_stock.round(2)) %>
+            <%= material.unit_for_product&.name || '' %>
+          </td>
+
+          <!-- 発注数量（赤字で強調） -->
+          <td class="col-order text-right <%= 'order-needed' if order_quantity > 0 %>">
+            <%= number_with_delimiter(order_quantity.round(2)) %>
+            <%= material.unit_for_order&.name || '' %>
+          </td>
+        </tr>
+      <% end %>
+    <% else %>
+      <tr>
+        <td colspan="4" class="text-center" style="padding: 20px; color: #999;">
+          原材料が登録されていません
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<!-- ===== フッター ===== -->
+<div class="print-footer">
+  印刷日時: <%= Time.current.strftime('%Y年%m月%d日 %H:%M') %> | 計画ID: <%= @plan.id %>
+</div>
