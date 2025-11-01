@@ -86,6 +86,64 @@ class PlansController < AuthenticatedController
     redirect_to plans_path, alert: "計画のコピーに失敗しました: #{e.message}"
   end
 
+  def print
+    # @plan は find_resource で自動設定される
+
+    # 商品情報を取得
+    @plan_products = @plan.plan_products
+                          .includes(product: [:category, :product_materials, { product_materials: [:material, :unit] }])
+                          .order(:id)
+
+    # デバッグ用ログ
+    Rails.logger.info "========== Print Debug =========="
+    Rails.logger.info "Plan ID: #{@plan.id}"
+    Rails.logger.info "Plan Products Count: #{@plan_products.count}"
+
+    # 実施日（最初のスケジュール）
+    @scheduled_date = @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
+
+    # 予算（計画売上の合計）
+    @budget = @plan.plan_schedules.sum(:planned_revenue) || 0
+
+    # 計画高（商品合計金額）
+    @total_cost = @plan_products.sum { |pp| pp.product.price * pp.production_count }
+
+    # 達成率
+    @achievement_rate = @budget > 0 ? (@total_cost.to_f / @budget * 100).round(1) : 0
+
+    # 原材料を集計
+    materials_hash = {}
+
+    @plan_products.each do |plan_product|
+      product = plan_product.product
+      production_count = plan_product.production_count
+
+      product.product_materials.each do |pm|
+        material = pm.material
+        key = material.id
+
+        # この計画での使用数量 = 商品1個あたりの使用量 × 製造数
+        usage_quantity = pm.quantity * production_count
+
+        if materials_hash[key]
+          # 既存の原材料に数量を加算
+          materials_hash[key][:usage_quantity] += usage_quantity
+        else
+          # 新規原材料を追加
+          materials_hash[key] = {
+            material: material,
+            unit: pm.unit,
+            usage_quantity: usage_quantity
+          }
+        end
+      end
+    end
+
+    # 原材料をソート（名前順）
+    @materials_summary = materials_hash.values.sort_by { |m| m[:material].name }
+
+    Rails.logger.info "Materials Summary Count: #{@materials_summary.count}"
+  end
 
   private
 
@@ -114,60 +172,5 @@ class PlansController < AuthenticatedController
   def load_plan_products
     @plan_products = @plan.plan_products.includes(:product)
   end
-
-  def print
-  # @plan は find_resource で自動設定される
-
-  # 商品情報を取得
-  @plan_products = @plan.plan_products
-                        .includes(product: [:category, :product_materials, { product_materials: [:material, :unit] }])
-                        .order(:id)
-
-  # 実施日（最初のスケジュール）
-  @scheduled_date = @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
-
-  # 予算（計画売上の合計）
-  @budget = @plan.plan_schedules.sum(:planned_revenue) || 0
-
-  # 計画高（商品合計金額）
-  @total_cost = @plan_products.sum { |pp| pp.product.price * pp.production_count }
-
-  # 達成率
-  @achievement_rate = @budget > 0 ? (@total_cost.to_f / @budget * 100).round(1) : 0
-
-  # 原材料を集計
-  materials_hash = {}
-
-  @plan_products.each do |plan_product|
-    product = plan_product.product
-    production_count = plan_product.production_count
-
-    product.product_materials.each do |pm|
-      material = pm.material
-      key = material.id
-
-      # この計画での使用数量 = 商品1個あたりの使用量 × 製造数
-      usage_quantity = pm.quantity * production_count
-
-      if materials_hash[key]
-        # 既存の原材料に数量を加算
-        materials_hash[key][:usage_quantity] += usage_quantity
-      else
-        # 新規原材料を追加
-        materials_hash[key] = {
-          material: material,
-          unit: pm.unit,
-          usage_quantity: usage_quantity
-        }
-      end
-    end
-  end
-
-  # 原材料をソート（名前順）
-  @materials_summary = materials_hash.values.sort_by { |m| m[:material].name }
-
-  render layout: 'print'
-end
-
 
 end
