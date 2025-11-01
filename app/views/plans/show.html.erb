@@ -1,3 +1,7 @@
+<%= link_to ' 印刷', print_plan_path(@plan),
+            class: 'btn btn-outline-secondary',
+            target: '_blank' %>
+
 <%= render 'shared/details/resource_show',
     resource: @plan,
     title: t('plans.show.title', name: @plan.name),
