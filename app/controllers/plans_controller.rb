@@ -3,8 +3,8 @@ class PlansController < AuthenticatedController
   # define_search_params を使って許可するキーを定義
   define_search_params :q, :category_id
 
-  # copyとupdate_statusを追加
-  find_resource :plan, only: [ :show, :edit, :update, :destroy, :update_status, :copy ]
+  find_resource :plan, only: [ :show, :edit, :update, :destroy, :update_status, :copy, :print ]
+
 
   before_action -> { load_categories_for("plan", as: :plan) }, only: [ :index, :new, :edit, :create, :update ]
   before_action -> { load_categories_for("product", as: :product) }, only: [ :new, :edit, :create, :update ]
@@ -114,4 +114,60 @@ class PlansController < AuthenticatedController
   def load_plan_products
     @plan_products = @plan.plan_products.includes(:product)
   end
+
+  def print
+  # @plan は find_resource で自動設定される
+
+  # 商品情報を取得
+  @plan_products = @plan.plan_products
+                        .includes(product: [:category, :product_materials, { product_materials: [:material, :unit] }])
+                        .order(:id)
+
+  # 実施日（最初のスケジュール）
+  @scheduled_date = @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
+
+  # 予算（計画売上の合計）
+  @budget = @plan.plan_schedules.sum(:planned_revenue) || 0
+
+  # 計画高（商品合計金額）
+  @total_cost = @plan_products.sum { |pp| pp.product.price * pp.production_count }
+
+  # 達成率
+  @achievement_rate = @budget > 0 ? (@total_cost.to_f / @budget * 100).round(1) : 0
+
+  # 原材料を集計
+  materials_hash = {}
+
+  @plan_products.each do |plan_product|
+    product = plan_product.product
+    production_count = plan_product.production_count
+
+    product.product_materials.each do |pm|
+      material = pm.material
+      key = material.id
+
+      # この計画での使用数量 = 商品1個あたりの使用量 × 製造数
+      usage_quantity = pm.quantity * production_count
+
+      if materials_hash[key]
+        # 既存の原材料に数量を加算
+        materials_hash[key][:usage_quantity] += usage_quantity
+      else
+        # 新規原材料を追加
+        materials_hash[key] = {
+          material: material,
+          unit: pm.unit,
+          usage_quantity: usage_quantity
+        }
+      end
+    end
+  end
+
+  # 原材料をソート（名前順）
+  @materials_summary = materials_hash.values.sort_by { |m| m[:material].name }
+
+  render layout: 'print'
+end
+
+
 end
