@@ -86,7 +86,8 @@ class ProductsController < AuthenticatedController
         new_product.product_materials.create!(
           material_id: product_material.material_id,
           unit_id: product_material.unit_id,
-          quantity: product_material.quantity
+          quantity: product_material.quantity,
+          unit_weight: product_material.unit_weight  # ← 追加
         )
       end
     end
@@ -113,6 +114,7 @@ class ProductsController < AuthenticatedController
         :material_id,
         :unit_id,
         :quantity,
+        :unit_weight, 
         :_destroy
       ]
     )
