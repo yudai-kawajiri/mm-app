@@ -34,6 +34,15 @@ class Material < ApplicationRecord
   # インデックス表示用のスコープ (N+1問題対策と並び替え)
   scope :for_index, -> { includes(:category, :unit_for_product, :unit_for_order).order(created_at: :desc) }
 
+  # 表示順でソート（display_orderが同じ場合はid順）
+  scope :ordered, -> { order(:display_order, :id) }
+  
+    def self.update_display_orders(material_ids)
+      material_ids.each_with_index do |material_id, index|
+        Material.where(id: material_id).update_all(display_order: index + 1)
+      end
+    end
+
   # 発注単位の換算タイプを判定
   def order_conversion_type
     if pieces_per_order_unit.present? && pieces_per_order_unit > 0

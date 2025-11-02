@@ -80,4 +80,14 @@ class Product < ApplicationRecord
     # remove_imageがnilではない、かつ "0"（チェックオフの値）ではない場合にtrue
     remove_image.present? && remove_image != "0"
   end
+
+  # 表示順でソート（display_orderが同じ場合はid順）
+  scope :ordered, -> { order(:display_order, :id) } 
+
+  # 表示順を更新するメソッド
+  def self.update_display_orders(product_ids)
+    product_ids.each_with_index do |product_id, index|
+      Product.where(id: product_id).update_all(display_order: index + 1)
+    end
+  end
 end
