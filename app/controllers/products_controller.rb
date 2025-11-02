@@ -1,8 +1,5 @@
 class ProductsController < AuthenticatedController
-  # define_search_params を使って許可するキーを定義
   define_search_params :q, :category_id
-
-  # ★修正: copyを追加
   find_resource :product, only: [ :show, :edit, :update, :destroy, :purge_image, :copy ]
 
   before_action -> { load_categories_for("product", as: :product) }, only: [ :index, :new, :create, :edit, :update ]
@@ -10,8 +7,9 @@ class ProductsController < AuthenticatedController
 
   def index
     @products = apply_pagination(
-      Product.for_index.search_and_filter(search_params)
+      Product.includes(:category).search_and_filter(search_params).ordered
     )
+    @search_categories = @product_categories  # ← 追加
     set_search_term_for_view
   end
 
@@ -50,27 +48,21 @@ class ProductsController < AuthenticatedController
 
   def copy
     original_product = @product
-
-    # 商品名の連番生成
     base_name = original_product.name
     copy_count = 1
     new_name = "#{base_name} (コピー#{copy_count})"
 
-    # 同じ名前が存在する限り連番を増やす
     while Product.exists?(name: new_name, category_id: original_product.category_id)
       copy_count += 1
       new_name = "#{base_name} (コピー#{copy_count})"
     end
 
-    # 商品をコピー
     new_product = original_product.dup
     new_product.name = new_name
     new_product.user_id = current_user.id
 
-    # 品番を一時的に仮の値にする（後でユーザーが編集）
-    temp_item_number = "C#{copy_count}"[0..3]  # "C1", "C2", "C3"...
+    temp_item_number = "C#{copy_count}"[0..3]
 
-    # 仮の品番も重複チェック
     while Product.exists?(item_number: temp_item_number, category_id: original_product.category_id)
       copy_count += 1
       temp_item_number = "C#{copy_count}"[0..3]
@@ -81,13 +73,12 @@ class ProductsController < AuthenticatedController
     ActiveRecord::Base.transaction do
       new_product.save!
 
-      # 原材料構成もコピー
       original_product.product_materials.each do |product_material|
         new_product.product_materials.create!(
           material_id: product_material.material_id,
           unit_id: product_material.unit_id,
           quantity: product_material.quantity,
-          unit_weight: product_material.unit_weight  # ← 追加
+          unit_weight: product_material.unit_weight
         )
       end
     end
@@ -97,6 +88,14 @@ class ProductsController < AuthenticatedController
     redirect_to products_path, alert: "商品のコピーに失敗しました: #{e.record.errors.full_messages.join(', ')}"
   end
 
+  def reorder
+    product_ids = reorder_params[:product_ids]
+
+    Rails.logger.debug "=== Received product_ids: #{product_ids.inspect}"
+
+    Product.update_display_orders(product_ids)
+    head :ok
+  end
 
   private
 
@@ -114,9 +113,13 @@ class ProductsController < AuthenticatedController
         :material_id,
         :unit_id,
         :quantity,
-        :unit_weight, 
+        :unit_weight,
         :_destroy
       ]
     )
+  end
+
+  def reorder_params
+    params.permit(product_ids: [])
   end
 end
