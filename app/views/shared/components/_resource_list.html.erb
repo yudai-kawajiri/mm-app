@@ -19,14 +19,18 @@
   <thead class="table-light">
     <tr>
       <% columns.each do |col| %>
-        <th><%= resource_class.human_attribute_name(col[:header]) %></th>
+    <th>
+      <% if col[:header].present? %>
+        <%= resource_class.human_attribute_name(col[:header]) %>
       <% end %>
-      <th><%= t('common.action') %></th>
-    </tr>
+    </th>
+  <% end %>
+  <th><%= t('common.action') %></th>
+</tr>
   </thead>
   <tbody>
     <% resources.each do |resource| %>
-      <tr>
+      <tr data-id="<%= resource.id %>">
         <% columns.each do |col| %>
           <td>
             <%= render_resource_data(resource, col) %>
