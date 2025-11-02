@@ -52,16 +52,24 @@ Rails.application.routes.draw do
   resources :units
 
   # 材料
-  resources :materials
+  resources :materials do
+    collection do
+      post :reorder  # 並び替え用
+    end
+  end
 
   # 製品
   resources :products do
+    collection do
+      post :reorder  # 並び替え用
+    end
+
     member do
       delete :purge_image  # 画像削除
       post :copy           # 複製
     end
 
-    # 製品-材料の管理（複数形に修正）
+    # 製品-材料の管理
     resources :product_materials, only: [ :index, :edit, :update ]
   end
 
@@ -82,7 +90,7 @@ Rails.application.routes.draw do
       # 製品API
       resources :products, only: [ :index, :show ] do
         member do
-          get :details_for_plan  # GET /api/v1/products/:id/details_for_plan 
+          get :details_for_plan  # GET /api/v1/products/:id/details_for_plan
         end
       end
 

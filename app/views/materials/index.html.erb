@@ -11,28 +11,41 @@
     new_path: new_material_path
 %>
 
-<%# リソース一覧（検索、フィルター、テーブル） %>
-<%= render 'shared/components/resource_list',
-    resources: @materials,
-    resource_class: Material,
-    search_target: :category_id,
-    search_categories: @search_categories,
+<!--  Stimulus Controller を適用 -->
+<div data-controller="sortable-table"
+      data-sortable-table-reorder-path-value="<%= reorder_materials_path %>"
+      data-sortable-table-param-name-value="material_ids">
 
-    columns: [
-      { header: :name, data: :name },
-      { header: :category,
-        data: Proc.new { |material| material.category&.name },
-      },
-      { header: :unit_for_product,
-        data: Proc.new { |material| material.unit_for_product&.name }
-      },
-      # unit_weight_for_product の列を削除
-      { header: :unit_for_order,
-        data: Proc.new { |material| material.unit_for_order&.name }
-      },
-      { header: :unit_weight_for_order, data: :unit_weight_for_order }
-    ]
-%>
+  <!--  パーシャル化したボタン -->
+  <%= render 'shared/sortable_buttons' %>
 
-<%# ページネーション %>
-<%= paginate @materials, theme: 'bootstrap-5' %>
+  <%# リソース一覧（検索、フィルター、テーブル） %>
+  <%= render 'shared/components/resource_list',
+      resources: @materials,
+      resource_class: Material,
+      search_target: :category_id,
+      search_categories: @material_categories,
+
+      columns: [
+          { header: '',
+          data: Proc.new { |resource|
+            content_tag(:span, '☰', class: 'drag-handle d-none', style: 'cursor: move; font-size: 1.2em; color: #999;')
+          }
+        },
+        { header: :name, data: :name },
+        { header: :category,
+          data: Proc.new { |material| material.category&.name },
+        },
+        { header: :unit_for_product,
+          data: Proc.new { |material| material.unit_for_product&.name }
+        },
+        { header: :unit_for_order,
+          data: Proc.new { |material| material.unit_for_order&.name }
+        },
+        { header: :unit_weight_for_order, data: :unit_weight_for_order }
+      ]
+  %>
+
+  <%# ページネーション %>
+  <%= paginate @materials, theme: 'bootstrap-5' %>
+</div>

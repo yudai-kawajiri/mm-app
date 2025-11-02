@@ -159,7 +159,10 @@ end
         order_group_name: material.order_group_name,
         is_grouped: material.order_group_name.present?
       }
-    end.sort_by { |m| [m[:order_group_name] || m[:material_name], m[:material_name]] }
+    end.sort_by do |m|
+      material = Material.find(m[:material_id])
+      [material.display_order || 999999, m[:material_name]]
+    end
   end
 
   private

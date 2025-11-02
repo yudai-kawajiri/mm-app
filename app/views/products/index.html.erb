@@ -11,28 +11,42 @@
     new_path: new_product_path
 %>
 
-<%# リソース一覧（検索、フィルター、テーブル） %>
-<%= render('shared/components/resource_list',
-    resources: @products,
-    resource_class: Product,
-    search_target: :category_id,
-    search_categories: @search_categories,
-    show_copy: true,  # ← 追加
-    copy_url_method: :copy_product_path,  # ← 追加
+<!--  Stimulus Controller を適用 -->
+<div data-controller="sortable-table"
+      data-sortable-table-reorder-path-value="<%= reorder_products_path %>"
+      data-sortable-table-param-name-value="product_ids">
 
-    columns: [
-      { header: :image, data: :image },
-      { header: :name, data: :name },
-      { header: :category_id,
-        data: Proc.new { |product| product.category&.name }
-      },
-      { header: :item_number, data: :item_number },
-      { header: :price, data: :price },
-      { header: :status,
-        data: Proc.new { |product| translate_enum_value(product, :status) }
-      }
-    ]
-) %>
+  <%= render 'shared/sortable_buttons' %>
 
-<%# ページネーション %>
-<%= paginate @products, theme: 'bootstrap-5' %>
+  <%# リソース一覧（検索、フィルター、テーブル） %>
+  <%= render('shared/components/resource_list',
+      resources: @products,
+      resource_class: Product,
+      search_target: :category_id,
+      search_categories: @product_categories,
+      show_copy: true,
+      copy_url_method: :copy_product_path,
+
+      columns: [
+        { header: '',
+          data: Proc.new { |product|
+            content_tag(:span, '☰', class: 'drag-handle d-none', style: 'cursor: move; font-size: 1.2em; color: #999;')
+          }
+        },
+        { header: :image, data: :image },
+        { header: :name, data: :name },
+        { header: :category_id,
+          data: Proc.new { |product| product.category&.name }
+        },
+        { header: :item_number, data: :item_number },
+        { header: :price, data: :price },
+        { header: :status,
+          data: Proc.new { |product| translate_enum_value(product, :status) }
+        }
+      ],
+      tbody_data: { sortable_table_target: 'tbody' }  # ← tbodyにtarget追加
+  ) %>
+
+  <%# ページネーション %>
+  <%= paginate @products, theme: 'bootstrap-5' %>
+</div>

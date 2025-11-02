@@ -24,8 +24,11 @@ import FormValidationController from "controllers/form_validation_controller"
 // 予算管理カレンダーController
 import CalendarController from "controllers/calendar_controller"
 
-// 計画割り当てController ← 追加
+// 計画割り当てController
 import PlanAssignmentController from "controllers/plan_assignment_controller"
+
+//  Sortable Table Controller（ドラッグ&ドロップ並び替え）
+import SortableTableController from "controllers/sortable_table_controller"
 
 // 手動登録
 application.register("form--nested-form", FormNestedFormController)
@@ -43,5 +46,8 @@ application.register("form-validation", FormValidationController)
 // 予算管理カレンダーController登録
 application.register("calendar", CalendarController)
 
-// 計画割り当てController登録 ← 追加
-application.register("plan-assignment", PlanAssignmentController)
+// 計画割り当てController登録
+application.register("plan_assignment", PlanAssignmentController)
+
+// Sortable Table Controller登録（ドラッグ&ドロップ並び替え）
+application.register("sortable-table", SortableTableController)

@@ -1,25 +1,25 @@
 class MaterialsController < AuthenticatedController
-  # define_search_params を使って許可するキーを定義
   define_search_params :q, :category_id
   before_action -> { load_categories_for("material", as: :material) }, only: [ :index, :new, :edit, :create, :update ]
   find_resource :material, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @materials = apply_pagination(
-    Material.for_index.search_and_filter(search_params)
+      Material.includes(:category, :unit_for_product, :unit_for_order)
+              .search_and_filter(search_params)
+              .ordered
     )
+    @search_categories = @material_categories  # ← 追加
     set_search_term_for_view
   end
 
   def show; end
 
   def new
-    # フォームに渡すための、新しい空の Material インスタンスを準備
     @material = current_user.materials.build
   end
 
   def create
-    # 'build'でインスタンスにデータを属性として割り当ててから安全に保存
     @material = current_user.materials.build(material_params)
     respond_to_save(@material, success_path: @material)
   end
@@ -35,8 +35,17 @@ class MaterialsController < AuthenticatedController
     respond_to_destroy(@material, success_path: materials_url)
   end
 
+  def reorder
+    material_ids = reorder_params[:material_ids]
+
+    Rails.logger.debug "=== Received material_ids: #{material_ids.inspect}"
+
+    Material.update_display_orders(material_ids)
+    head :ok
+  end
+
   private
-  # ストロングパラメータ設定
+
   def material_params
     params.require(:material).permit(
       :name,
@@ -45,9 +54,14 @@ class MaterialsController < AuthenticatedController
       :unit_for_order_id,
       :unit_weight_for_order,
       :pieces_per_order_unit,
-      :order_group_name, 
+      :order_group_name,
       :category_id,
-      :description
+      :description,
+      :display_order
     )
+  end
+
+  def reorder_params
+    params.permit(material_ids: [])
   end
 end

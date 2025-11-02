@@ -33,8 +33,11 @@ pin "controllers/form_validation_controller", to: "controllers/form_validation_c
 # 予算管理カレンダー Controller
 pin "controllers/calendar_controller", to: "controllers/calendar_controller.js"
 
-# 計画割り当て Controller ← 追加
+# 計画割り当て Controller
 pin "controllers/plan_assignment_controller", to: "controllers/plan_assignment_controller.js"
+
+#  Sortable Table Controller（ドラッグ&ドロップ並び替え）
+pin "controllers/sortable_table_controller", to: "controllers/sortable_table_controller.js"
 
 # Utils（手動 pin）
 pin "utils/logger", to: "utils/logger.js", preload: true
@@ -44,3 +47,6 @@ pin "utils/currency_formatter", to: "utils/currency_formatter.js", preload: true
 pin "jquery", to: "jquery.min.js", preload: true
 pin "jquery_ujs", to: "jquery_ujs.js", preload: true
 pin "cocoon", to: "cocoon.js", preload: true
+
+# Sortable.js（ドラッグ&ドロップライブラリ）
+pin "sortablejs", to: "https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/+esm"
