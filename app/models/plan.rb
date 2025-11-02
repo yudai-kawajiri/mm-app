@@ -82,6 +82,29 @@ end
     plan_schedules.sum(:actual_revenue)
   end
 
+  # この計画全体で使う原材料を集計
+  def aggregated_material_requirements
+    requirements = {}
+
+    plan_products.includes(product: { product_materials: [:material, :unit] }).each do |pp|
+      pp.material_requirements.each do |req|
+        material_id = req[:material_id]
+
+        if requirements[material_id]
+          # 既存の原材料に加算
+          requirements[material_id][:total_quantity] += req[:total_quantity]
+          requirements[material_id][:total_weight] += req[:total_weight]
+          requirements[material_id][:required_order_quantity] += req[:required_order_quantity]
+        else
+          # 新しい原材料
+          requirements[material_id] = req.dup
+        end
+      end
+    end
+
+    requirements.values.sort_by { |req| req[:material_name] }
+  end
+
   private
 
   # product_id と production_count の両方が空の場合にレコードを無視する
