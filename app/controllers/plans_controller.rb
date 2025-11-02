@@ -85,97 +85,28 @@ class PlansController < AuthenticatedController
                           .includes(product: [:category, :product_materials, { product_materials: [:material, :unit] }])
                           .order(:id)
 
-    @scheduled_date = @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
-    @budget = @plan.plan_schedules.sum(:planned_revenue) || 0
+    # カレンダーから渡された日付を使用（なければ最初のスケジュール）
+    @scheduled_date = params[:date]&.to_date || @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
+
+    # 該当日付の予算を取得
+    if params[:date].present?
+      @budget = @plan.plan_schedules.where(scheduled_date: @scheduled_date).sum(:planned_revenue) || 0
+    else
+      @budget = @plan.plan_schedules.sum(:planned_revenue) || 0
+    end
+
     @total_cost = @plan_products.sum { |pp| pp.product.price * pp.production_count }
     @achievement_rate = @budget > 0 ? (@total_cost.to_f / @budget * 100).round(1) : 0
     @materials_summary = @plan.aggregated_material_requirements
 
     Rails.logger.info "========== Print Debug =========="
     Rails.logger.info "Plan ID: #{@plan.id}"
+    Rails.logger.info "Scheduled Date: #{@scheduled_date}"
     Rails.logger.info "Plan Products Count: #{@plan_products.count}"
     Rails.logger.info "Materials Summary Count: #{@materials_summary.count}"
   end
 
-  # 単一日付印刷
-  def print_by_date
-    @date = params[:date].to_date
-    @plans = Plan.joins(:plan_schedules)
-                 .where(user_id: current_user.id)
-                 .where(plan_schedules: { scheduled_date: @date })
-                 .includes(plan_products: { product: { product_materials: [:material, :unit] } })
-                 .distinct
-
-    @materials_summary = aggregate_materials_for_plans(@plans)
-    @budget = PlanSchedule.where(plan: @plans, scheduled_date: @date).sum(:planned_revenue) || 0
-    @total_cost = calculate_total_cost(@plans)
-    @achievement_rate = @budget > 0 ? (@total_cost.to_f / @budget * 100).round(1) : 0
-  end
-
-  # 複数日付印刷
-  def print_by_dates
-    @dates = params[:dates].map(&:to_date).sort
-    @start_date = @dates.first
-    @end_date = @dates.last
-
-    @plans = Plan.joins(:plan_schedules)
-                 .where(user_id: current_user.id)
-                 .where(plan_schedules: { scheduled_date: @dates })
-                 .includes(plan_products: { product: { product_materials: [:material, :unit] } })
-                 .distinct
-
-    @plans_by_date = @plans.group_by do |plan|
-      plan.plan_schedules.where(scheduled_date: @dates).first&.scheduled_date
-    end
-
-    @materials_summary = aggregate_materials_for_plans(@plans)
-    @budget = PlanSchedule.where(plan: @plans, scheduled_date: @dates).sum(:planned_revenue) || 0
-    @total_cost = calculate_total_cost(@plans)
-    @achievement_rate = @budget > 0 ? (@total_cost.to_f / @budget * 100).round(1) : 0
-  end
-
   private
-
-  # 複数計画の原材料を集計
-  def aggregate_materials_for_plans(plans)
-    material_totals = Hash.new { |h, k| h[k] = { quantity: 0, name: nil, unit: nil, category: nil } }
-
-    plans.each do |plan|
-      plan.plan_products.each do |plan_product|
-        product = plan_product.product
-        production_count = plan_product.production_count
-
-        product.product_materials.each do |pm|
-          material = pm.material
-          required_quantity = pm.quantity * production_count
-
-          material_totals[material.id][:quantity] += required_quantity
-          material_totals[material.id][:name] ||= material.name
-          material_totals[material.id][:unit] ||= pm.unit&.name
-          material_totals[material.id][:category] ||= material.category&.name
-          material_totals[material.id][:display_order] ||= material.display_order || 999999
-        end
-      end
-    end
-
-    material_totals.map do |material_id, data|
-      {
-        material_id: material_id,
-        material_name: data[:name],
-        category: data[:category],
-        total_quantity: data[:quantity],
-        unit: data[:unit],
-        display_order: data[:display_order]
-      }
-    end.sort_by { |m| [m[:display_order], m[:material_name]] }
-  end
-
-  # 計画高を計算
-  def calculate_total_cost(plans)
-    plans.sum do |plan|
-      plan.plan_products.sum { |pp| pp.product.price * pp.production_count }
-    end
-  end
 
   def plan_params
     params.require(:plan).permit(

@@ -46,7 +46,11 @@
 
           <!-- 製造数 -->
           <td class="col-quantity text-right">
-            <%= number_with_delimiter(plan_product.production_count) %> 個
+            <% if plan_product.production_count % 1 == 0 %>
+              <%= number_with_delimiter(plan_product.production_count.to_i) %> 個
+            <% else %>
+              <%= number_with_delimiter(plan_product.production_count) %> 個
+            <% end %>
           </td>
 
           <!-- 単価 -->
@@ -60,18 +64,6 @@
           </td>
         </tr>
       <% end %>
-
-      <!-- 合計行 -->
-      <tr class="total-row">
-        <td colspan="3">合計</td>
-        <td class="text-right">
-          <%= number_with_delimiter(@plan_products.sum(&:production_count)) %> 点
-        </td>
-        <td></td>
-        <td class="text-right">
-          ¥<%= number_with_delimiter(@total_cost) %>
-        </td>
-      </tr>
     <% else %>
       <tr>
         <td colspan="6" class="text-center" style="padding: 20px; color: #999;">
@@ -85,9 +77,9 @@
 <!-- ===== ページ区切り ===== -->
 <div class="page-break"></div>
 
-<!-- ===== 2ページ目: 原材料発注書 ===== -->
+<!-- ===== 2ページ目: 原材料管理表（発注・使用） ===== -->
 <div class="print-header">
-  <h2>② 原材料発注書</h2>
+  <h2>② 原材料管理表（発注・使用）</h2>
   <div class="print-header-info">
     <strong>計画名:</strong> <%= @plan.name %> |
     <strong>実施日:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || '未設定' %>
@@ -105,7 +97,7 @@
       <th class="col-order">発注数量</th>
     </tr>
   </thead>
-    <tbody>
+  <tbody>
     <% if @materials_summary.present? %>
       <%
         # グループごとに整理
@@ -141,16 +133,28 @@
 
             <!-- 商品での使用数量 -->
             <td class="col-product-usage text-right">
-              <%= number_with_delimiter(total_quantity) %>
+              <% if total_quantity % 1 == 0 %>
+                <%= number_with_delimiter(total_quantity.to_i) %>
+              <% else %>
+                <%= number_with_delimiter(total_quantity) %>
+              <% end %>
               <%= material.unit_for_product&.name || '個' %>
             </td>
 
             <!-- 原材料必要量 -->
             <td class="col-material-amount text-right">
               <% if total_weight > 0 %>
-                <%= number_with_delimiter(total_weight) %>g
+                <% if total_weight % 1 == 0 %>
+                  <%= number_with_delimiter(total_weight.to_i) %>g
+                <% else %>
+                  <%= number_with_delimiter(total_weight) %>g
+                <% end %>
               <% else %>
-                <%= number_with_delimiter(total_quantity) %>
+                <% if total_quantity % 1 == 0 %>
+                  <%= number_with_delimiter(total_quantity.to_i) %>
+                <% else %>
+                  <%= number_with_delimiter(total_quantity) %>
+                <% end %>
                 <%= material.unit_for_product&.name || '個' %>
               <% end %>
             </td>
@@ -163,7 +167,13 @@
             <!-- 発注数量（グループの最初の行のみ表示） -->
             <% if index == 0 %>
               <td class="col-order text-right order-needed" rowspan="<%= materials.size %>">
-                <strong><%= number_with_delimiter(required_order_quantity) %></strong>
+                <strong>
+                  <% if required_order_quantity % 1 == 0 %>
+                    <%= number_with_delimiter(required_order_quantity.to_i) %>
+                  <% else %>
+                    <%= number_with_delimiter(required_order_quantity) %>
+                  <% end %>
+                </strong>
                 <%= order_unit_name %>
               </td>
             <% end %>
@@ -179,8 +189,3 @@
     <% end %>
   </tbody>
 </table>
-
-<!-- ===== フッター ===== -->
-<div class="print-footer">
-  印刷日時: <%= Time.current.strftime('%Y年%m月%d日 %H:%M') %> | 計画ID: <%= @plan.id %>
-</div>

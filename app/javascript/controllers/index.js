@@ -21,9 +21,6 @@ import FlashController from "controllers/flash_controller"
 import CharacterCounterController from "controllers/character_counter_controller"
 import FormValidationController from "controllers/form_validation_controller"
 
-// 予算管理カレンダーController
-import CalendarController from "controllers/calendar_controller"
-
 // 計画割り当てController
 import PlanAssignmentController from "controllers/plan_assignment_controller"
 
@@ -42,9 +39,6 @@ application.register("resources--product-material--material", ResourcesProductMa
 application.register("flash", FlashController)
 application.register("character-counter", CharacterCounterController)
 application.register("form-validation", FormValidationController)
-
-// 予算管理カレンダーController登録
-application.register("calendar", CalendarController)
 
 // 計画割り当てController登録
 application.register("plan_assignment", PlanAssignmentController)
