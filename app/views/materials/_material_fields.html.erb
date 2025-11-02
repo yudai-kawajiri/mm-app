@@ -65,6 +65,21 @@
   </div>
 </div>
 
+<!-- ✅ ここに追加 -->
+<div class="row">
+  <%# 発注グループ名（オプション） %>
+  <div class="col-md-12">
+    <%= form_group_lg(f, :order_group_name,
+        field_type: :text_field,
+        label: "発注グループ名（任意）"
+    ) %>
+    <p class="text-muted small">
+      ※同じ原材料を異なる切り方で使用する場合に設定します。<br>
+      例: 「まぐろ赤身（にぎり）」と「まぐろ赤身（巻物）」の両方に「まぐろ赤身」と入力すると、印刷時は別々に表示され、発注時はまとめて計算されます。
+    </p>
+  </div>
+</div>
+
 <div class="row">
   <%# 説明（Description） - 1行全体を使用 + 文字数カウンター %>
   <div class="col-md-12">
