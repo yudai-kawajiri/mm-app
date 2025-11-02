@@ -5,7 +5,6 @@ class PlansController < AuthenticatedController
 
   find_resource :plan, only: [ :show, :edit, :update, :destroy, :update_status, :copy, :print ]
 
-
   before_action -> { load_categories_for("plan", as: :plan) }, only: [ :index, :new, :edit, :create, :update ]
   before_action -> { load_categories_for("product", as: :product) }, only: [ :new, :edit, :create, :update ]
   before_action :load_plan_products, only: [ :show ]
@@ -44,7 +43,6 @@ class PlansController < AuthenticatedController
 
   # ステータス更新アクション
   def update_status
-    # @planは既にfind_resourceで設定済み
     new_status = status_param
 
     if Plan.statuses.keys.include?(new_status)
@@ -58,12 +56,9 @@ class PlansController < AuthenticatedController
 
   def copy
     original_plan = @plan
-
-    # 同じベース名の計画数をカウント
     base_name = original_plan.name
     copy_count = Plan.where("name LIKE ?", "#{base_name}%").count
 
-    # 計画本体をコピー
     new_plan = original_plan.dup
     new_plan.name = "#{base_name} (コピー#{copy_count})"
     new_plan.status = :draft
@@ -72,7 +67,6 @@ class PlansController < AuthenticatedController
     ActiveRecord::Base.transaction do
       new_plan.save!
 
-      # 商品構成もコピー
       original_plan.plan_products.each do |plan_product|
         new_plan.plan_products.create!(
           product_id: plan_product.product_id,
@@ -87,34 +81,30 @@ class PlansController < AuthenticatedController
   end
 
   def print
-    # @plan は find_resource で自動設定される
-
-    # 商品情報を取得
     @plan_products = @plan.plan_products
                           .includes(product: [:category, :product_materials, { product_materials: [:material, :unit] }])
                           .order(:id)
 
-    # 実施日（最初のスケジュール）
-    @scheduled_date = @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
+    # カレンダーから渡された日付を使用（なければ最初のスケジュール）
+    @scheduled_date = params[:date]&.to_date || @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
 
-    # 予算（計画売上の合計）
-    @budget = @plan.plan_schedules.sum(:planned_revenue) || 0
+    # 該当日付の予算を取得
+    if params[:date].present?
+      @budget = @plan.plan_schedules.where(scheduled_date: @scheduled_date).sum(:planned_revenue) || 0
+    else
+      @budget = @plan.plan_schedules.sum(:planned_revenue) || 0
+    end
 
-    # 計画高（商品合計金額）
     @total_cost = @plan_products.sum { |pp| pp.product.price * pp.production_count }
-
-    # 達成率
     @achievement_rate = @budget > 0 ? (@total_cost.to_f / @budget * 100).round(1) : 0
-
-    # ✅ 新しい集計メソッドを使用
     @materials_summary = @plan.aggregated_material_requirements
 
     Rails.logger.info "========== Print Debug =========="
     Rails.logger.info "Plan ID: #{@plan.id}"
+    Rails.logger.info "Scheduled Date: #{@scheduled_date}"
     Rails.logger.info "Plan Products Count: #{@plan_products.count}"
     Rails.logger.info "Materials Summary Count: #{@materials_summary.count}"
   end
-
 
   private
 
@@ -134,14 +124,11 @@ class PlansController < AuthenticatedController
     )
   end
 
-  # ステータス更新用のパラメータ
   def status_param
     params.permit(:status)[:status]
   end
 
-  # N+1対策: plan_productsを事前ロード
   def load_plan_products
     @plan_products = @plan.plan_products.includes(:product)
   end
-
 end

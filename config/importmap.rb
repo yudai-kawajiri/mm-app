@@ -30,9 +30,6 @@ pin "controllers/flash_controller", to: "controllers/flash_controller.js"
 pin "controllers/character_counter_controller", to: "controllers/character_counter_controller.js"
 pin "controllers/form_validation_controller", to: "controllers/form_validation_controller.js"
 
-# 予算管理カレンダー Controller
-pin "controllers/calendar_controller", to: "controllers/calendar_controller.js"
-
 # 計画割り当て Controller
 pin "controllers/plan_assignment_controller", to: "controllers/plan_assignment_controller.js"
 

@@ -8,7 +8,6 @@
 
   <%= stylesheet_link_tag 'print', media: 'all' %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
-  <%= stylesheet_link_tag 'print', media: 'all' %>
 
   <style>
     /* 画面表示用のスタイル */
@@ -61,6 +60,6 @@
     <%= yield %>
   </div>
 
-  <%= javascript_include_tag 'application' %>
+  <%= javascript_importmap_tags %>
 </body>
 </html>

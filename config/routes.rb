@@ -54,22 +54,22 @@ Rails.application.routes.draw do
   # 材料
   resources :materials do
     collection do
-      post :reorder  # 並び替え用
+      post :reorder
     end
   end
 
   # 製品
   resources :products do
     collection do
-      post :reorder  # 並び替え用
+      post :reorder
     end
-
+    
     member do
       delete :purge_image  # 画像削除
       post :copy           # 複製
     end
 
-    # 製品-材料の管理
+    # 製品-材料の管理（複数形に修正）
     resources :product_materials, only: [ :index, :edit, :update ]
   end
 
