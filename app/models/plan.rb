@@ -84,25 +84,82 @@ end
 
   # この計画全体で使う原材料を集計
   def aggregated_material_requirements
-    requirements = {}
+    materials_hash = {}
 
-    plan_products.includes(product: { product_materials: [:material, :unit] }).each do |pp|
-      pp.material_requirements.each do |req|
-        material_id = req[:material_id]
+    plan_products.includes(product: { product_materials: [:material, :unit] }).each do |plan_product|
+      plan_product.material_requirements.each do |material_data|
+        material_id = material_data[:material_id]
+        material = Material.find(material_id)
+        material_name = material_data[:material_name]
 
-        if requirements[material_id]
+        # キーは material_name（同じ名前なら合算）
+        if materials_hash[material_name]
           # 既存の原材料に加算
-          requirements[material_id][:total_quantity] += req[:total_quantity]
-          requirements[material_id][:total_weight] += req[:total_weight]
-          requirements[material_id][:required_order_quantity] += req[:required_order_quantity]
+          materials_hash[material_name][:total_quantity] += material_data[:total_quantity]
+          materials_hash[material_name][:total_weight] += material_data[:total_weight]
         else
-          # 新しい原材料
-          requirements[material_id] = req.dup
+          # 新規原材料を追加
+          materials_hash[material_name] = {
+            material_id: material_id,
+            material_name: material_name,
+            total_quantity: material_data[:total_quantity],
+            total_weight: material_data[:total_weight],
+            material: material,
+            order_group_name: material.order_group_name
+          }
         end
       end
     end
 
-    requirements.values.sort_by { |req| req[:material_name] }
+    # 発注グループごとに発注量を計算
+    groups_hash = {}
+
+    materials_hash.each do |material_name, data|
+      material = data[:material]
+      group_key = material.order_group_name.present? ? material.order_group_name : material_name
+
+      if groups_hash[group_key]
+        # 既存グループに重量を加算（発注量計算用）
+        groups_hash[group_key][:group_total_weight] += data[:total_weight]
+        groups_hash[group_key][:group_total_quantity] += data[:total_quantity]
+      else
+        # 新規グループ
+        groups_hash[group_key] = {
+          group_total_weight: data[:total_weight],
+          group_total_quantity: data[:total_quantity],
+          order_conversion_type: material.order_conversion_type,
+          unit_weight_for_order: material.unit_weight_for_order,
+          pieces_per_order_unit: material.pieces_per_order_unit
+        }
+      end
+    end
+
+    # 各原材料に発注量を追加
+    materials_hash.map do |material_name, data|
+      material = data[:material]
+      group_key = material.order_group_name.present? ? material.order_group_name : material_name
+      group_data = groups_hash[group_key]
+
+      # グループ全体の発注量を計算
+      required_order_quantity = case group_data[:order_conversion_type]
+      when :pieces
+        (group_data[:group_total_quantity].to_f / group_data[:pieces_per_order_unit]).ceil
+      when :weight
+        (group_data[:group_total_weight].to_f / group_data[:unit_weight_for_order]).ceil
+      else
+        0
+      end
+
+      {
+        material_id: data[:material_id],
+        material_name: material_name,
+        total_quantity: data[:total_quantity],
+        total_weight: data[:total_weight],
+        required_order_quantity: required_order_quantity,
+        order_group_name: material.order_group_name,
+        is_grouped: material.order_group_name.present?
+      }
+    end.sort_by { |m| [m[:order_group_name] || m[:material_name], m[:material_name]] }
   end
 
   private
