@@ -246,25 +246,33 @@
   text-align: right;
 }
 
-/* 原材料テーブル */
+/* ===== 原材料テーブル（新しい5列構成） ===== */
 .col-material-name {
-  width: auto;
-  min-width: 150px;
+  width: 150px;
 }
 
-.col-usage {
+.col-product-usage {
   width: 120px;
   text-align: right;
 }
 
-.col-stock {
-  width: 100px;
+.col-material-amount {
+  width: 120px;
   text-align: right;
 }
 
 .col-order {
-  width: 120px;
+  width: 100px;
   text-align: right;
+}
+
+.col-order-unit {
+  width: 140px;
+  text-align: left;
+}
+
+.text-left {
+  text-align: left;
 }
 
 /* ===== 印刷時の非表示要素 ===== */
@@ -282,3 +290,4 @@
     box-shadow: none;
   }
 }
+

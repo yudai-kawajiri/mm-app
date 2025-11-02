@@ -12,22 +12,6 @@
   </div>
 </div>
 
-<!-- ===== デバッグ情報 ===== -->
-<div style="background-color: #fff3cd; padding: 10px; margin: 10px 0; border: 1px solid #ffc107;">
-  <strong>🔍 デバッグ情報:</strong><br>
-  @plan_products の型: <%= @plan_products.class %><br>
-  @plan_products の件数: <%= @plan_products.size %><br>
-  @plan_products.present?: <%= @plan_products.present? %><br>
-  @plan_products.any?: <%= @plan_products.any? %><br>
-
-  <% if @plan_products.any? %>
-    <br><strong>商品一覧:</strong><br>
-    <% @plan_products.each do |pp| %>
-      - <%= pp.product.name %> (製造数: <%= pp.production_count %>)<br>
-    <% end %>
-  <% end %>
-</div>
-
 <!-- 商品テーブル -->
 <table class="print-table products-table">
   <thead>
@@ -115,50 +99,80 @@
   <thead>
     <tr>
       <th class="col-material-name">原材料名</th>
-      <th class="col-usage">この計画での使用数量</th>
-      <th class="col-stock">現在庫</th>
+      <th class="col-product-usage">商品での使用数量</th>
+      <th class="col-material-amount">原材料必要量</th>
+      <th class="col-order-unit">発注単位</th>
       <th class="col-order">発注数量</th>
     </tr>
   </thead>
-  <tbody>
+    <tbody>
     <% if @materials_summary.present? %>
-      <% @materials_summary.each do |material_data| %>
-        <% material = material_data[:material] %>
-        <% usage_quantity = material_data[:usage_quantity] %>
-        <% unit = material_data[:unit] %>
-        <%
-          # 現在庫（unit_weight_for_product を使用）
-          current_stock = material.unit_weight_for_product
-          # 発注数量 = 使用数量 - 現在庫（マイナスは0）
-          order_quantity = [usage_quantity - current_stock, 0].max
-        %>
+      <%
+        # グループごとに整理
+        grouped = @materials_summary.group_by { |m| m[:order_group_name] || m[:material_name] }
+      %>
 
-        <tr>
-          <!-- 原材料名 -->
-          <td class="col-material-name"><%= material.name %></td>
+      <% grouped.each do |group_name, materials| %>
+        <% materials.each_with_index do |material_data, index| %>
+          <%
+            material = Material.find(material_data[:material_id])
+            material_name = material_data[:material_name]
+            total_quantity = material_data[:total_quantity]
+            total_weight = material_data[:total_weight]
+            required_order_quantity = material_data[:required_order_quantity]
 
-          <!-- 使用数量 -->
-          <td class="col-usage text-right">
-            <%= number_with_delimiter(usage_quantity.round(2)) %>
-            <%= unit&.name || '' %>
-          </td>
+            # 発注単位の情報
+            order_type = material.order_conversion_type
+            if order_type == :pieces
+              order_unit_name = "箱"
+              order_unit_detail = "1箱 = #{material.pieces_per_order_unit}枚"
+            elsif order_type == :weight
+              order_unit_name = material.unit_for_order&.name || "パック"
+              order_unit_detail = "1#{order_unit_name} = #{material.unit_weight_for_order}g"
+            else
+              order_unit_name = ""
+              order_unit_detail = "未設定"
+            end
+          %>
 
-          <!-- 現在庫 -->
-          <td class="col-stock text-right">
-            <%= number_with_delimiter(current_stock.round(2)) %>
-            <%= material.unit_for_product&.name || '' %>
-          </td>
+          <tr>
+            <!-- 原材料名 -->
+            <td class="col-material-name"><%= material_name %></td>
 
-          <!-- 発注数量（赤字で強調） -->
-          <td class="col-order text-right <%= 'order-needed' if order_quantity > 0 %>">
-            <%= number_with_delimiter(order_quantity.round(2)) %>
-            <%= material.unit_for_order&.name || '' %>
-          </td>
-        </tr>
+            <!-- 商品での使用数量 -->
+            <td class="col-product-usage text-right">
+              <%= number_with_delimiter(total_quantity) %>
+              <%= material.unit_for_product&.name || '個' %>
+            </td>
+
+            <!-- 原材料必要量 -->
+            <td class="col-material-amount text-right">
+              <% if total_weight > 0 %>
+                <%= number_with_delimiter(total_weight) %>g
+              <% else %>
+                <%= number_with_delimiter(total_quantity) %>
+                <%= material.unit_for_product&.name || '個' %>
+              <% end %>
+            </td>
+
+            <!-- 発注単位 -->
+            <td class="col-order-unit text-left">
+              <small style="color: #666;"><%= order_unit_detail %></small>
+            </td>
+
+            <!-- 発注数量（グループの最初の行のみ表示） -->
+            <% if index == 0 %>
+              <td class="col-order text-right order-needed" rowspan="<%= materials.size %>">
+                <strong><%= number_with_delimiter(required_order_quantity) %></strong>
+                <%= order_unit_name %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
       <% end %>
     <% else %>
       <tr>
-        <td colspan="4" class="text-center" style="padding: 20px; color: #999;">
+        <td colspan="5" class="text-center" style="padding: 20px; color: #999;">
           原材料が登録されていません
         </td>
       </tr>

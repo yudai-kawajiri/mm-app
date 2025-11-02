@@ -94,11 +94,6 @@ class PlansController < AuthenticatedController
                           .includes(product: [:category, :product_materials, { product_materials: [:material, :unit] }])
                           .order(:id)
 
-    # デバッグ用ログ
-    Rails.logger.info "========== Print Debug =========="
-    Rails.logger.info "Plan ID: #{@plan.id}"
-    Rails.logger.info "Plan Products Count: #{@plan_products.count}"
-
     # 実施日（最初のスケジュール）
     @scheduled_date = @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
 
@@ -111,39 +106,15 @@ class PlansController < AuthenticatedController
     # 達成率
     @achievement_rate = @budget > 0 ? (@total_cost.to_f / @budget * 100).round(1) : 0
 
-    # 原材料を集計
-    materials_hash = {}
+    # ✅ 新しい集計メソッドを使用
+    @materials_summary = @plan.aggregated_material_requirements
 
-    @plan_products.each do |plan_product|
-      product = plan_product.product
-      production_count = plan_product.production_count
-
-      product.product_materials.each do |pm|
-        material = pm.material
-        key = material.id
-
-        # この計画での使用数量 = 商品1個あたりの使用量 × 製造数
-        usage_quantity = pm.quantity * production_count
-
-        if materials_hash[key]
-          # 既存の原材料に数量を加算
-          materials_hash[key][:usage_quantity] += usage_quantity
-        else
-          # 新規原材料を追加
-          materials_hash[key] = {
-            material: material,
-            unit: pm.unit,
-            usage_quantity: usage_quantity
-          }
-        end
-      end
-    end
-
-    # 原材料をソート（名前順）
-    @materials_summary = materials_hash.values.sort_by { |m| m[:material].name }
-
+    Rails.logger.info "========== Print Debug =========="
+    Rails.logger.info "Plan ID: #{@plan.id}"
+    Rails.logger.info "Plan Products Count: #{@plan_products.count}"
     Rails.logger.info "Materials Summary Count: #{@materials_summary.count}"
   end
+
 
   private
 

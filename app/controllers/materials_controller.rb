@@ -45,6 +45,7 @@ class MaterialsController < AuthenticatedController
       :unit_for_order_id,
       :unit_weight_for_order,
       :pieces_per_order_unit,
+      :order_group_name, 
       :category_id,
       :description
     )
