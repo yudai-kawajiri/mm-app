@@ -73,6 +73,44 @@
                               <i class="bi bi-currency-yen"></i>
                             </button>
                           <% end %>
+
+                          <%# 🖨️ 印刷ボタン（計画がある場合のみ表示） %>
+                          <% if day[:plan_schedules].present? %>
+                            <% if day[:plan_schedules].count == 1 %>
+                              <%# 計画が1つの場合：直接印刷 %>
+                              <%= link_to print_plan_path(day[:plan_schedules].first.plan),
+                                          class: "btn btn-sm btn-outline-primary",
+                                          style: "padding: 0 4px; font-size: 0.7rem;",
+                                          target: "_blank",
+                                          data: { turbo: false },
+                                          title: "計画を印刷" do %>
+                                <i class="bi bi-printer"></i>
+                              <% end %>
+                            <% else %>
+                              <%# 計画が複数の場合：ドロップダウン %>
+                              <div class="dropdown d-inline-block">
+                                <button class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                        type="button"
+                                        style="padding: 0 4px; font-size: 0.7rem;"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                  <i class="bi bi-printer"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" style="min-width: 200px;">
+                                  <% day[:plan_schedules].each do |ps| %>
+                                    <li>
+                                      <%= link_to print_plan_path(ps.plan),
+                                                  class: "dropdown-item",
+                                                  target: "_blank",
+                                                  data: { turbo: false } do %>
+                                        <%= ps.plan.name %>
+                                      <% end %>
+                                    </li>
+                                  <% end %>
+                                </ul>
+                              </div>
+                            <% end %>
+                          <% end %>
                         </div>
                       <% end %>
                     </div>
