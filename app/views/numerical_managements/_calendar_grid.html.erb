@@ -74,11 +74,11 @@
                             </button>
                           <% end %>
 
-                          <%# 🖨️ 印刷ボタン（計画がある場合のみ表示） %>
+                          <%#  印刷ボタン（計画がある場合のみ表示） %>
                           <% if day[:plan_schedules].present? %>
                             <% if day[:plan_schedules].count == 1 %>
                               <%# 計画が1つの場合：直接印刷 %>
-                              <%= link_to print_plan_path(day[:plan_schedules].first.plan),
+                              <%= link_to print_plan_path(day[:plan_schedules].first.plan, date: day[:date]),
                                           class: "btn btn-sm btn-outline-primary",
                                           style: "padding: 0 4px; font-size: 0.7rem;",
                                           target: "_blank",
@@ -99,7 +99,7 @@
                                 <ul class="dropdown-menu dropdown-menu-end" style="min-width: 200px;">
                                   <% day[:plan_schedules].each do |ps| %>
                                     <li>
-                                      <%= link_to print_plan_path(ps.plan),
+                                      <%= link_to print_plan_path(ps.plan, date: day[:date]),
                                                   class: "dropdown-item",
                                                   target: "_blank",
                                                   data: { turbo: false } do %>

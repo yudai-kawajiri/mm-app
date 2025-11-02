@@ -52,10 +52,18 @@ Rails.application.routes.draw do
   resources :units
 
   # 材料
-  resources :materials
+  resources :materials do
+    collection do
+      post :reorder
+    end
+  end
 
   # 製品
   resources :products do
+    collection do
+      post :reorder
+    end
+    
     member do
       delete :purge_image  # 画像削除
       post :copy           # 複製
