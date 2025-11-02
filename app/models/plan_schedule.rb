@@ -28,6 +28,37 @@ class PlanSchedule < ApplicationRecord
   # 実施日の降順でスケジュールを取得（新しい日付順）
   scope :recent, -> { order(scheduled_date: :desc) }
 
+  # クラスメソッド (Class Methods)
+
+  # 特定日付の全計画から原材料を集計
+  def self.material_requirements_for_date(user, date)
+    schedules = where(user: user, scheduled_date: date)
+                .includes(plan: { plan_products: { product: { product_materials: [:material, :unit] } } })
+
+    requirements = {}
+
+    schedules.each do |schedule|
+      schedule.plan.aggregated_material_requirements.each do |req|
+        material_id = req[:material_id]
+
+        if requirements[material_id]
+          # 既存の原材料に加算
+          requirements[material_id][:total_quantity] += req[:total_quantity]
+          requirements[material_id][:total_weight] += req[:total_weight]
+          requirements[material_id][:required_order_quantity] += req[:required_order_quantity]
+          requirements[material_id][:plans] ||= []
+          requirements[material_id][:plans] << schedule.plan.name
+        else
+          # 新しい原材料
+          requirements[material_id] = req.dup
+          requirements[material_id][:plans] = [schedule.plan.name]
+        end
+      end
+    end
+
+    requirements.values.sort_by { |req| req[:material_name] }
+  end
+
   # デリゲート (Delegate)
 
   # 関連する Plan モデルの属性を 'plan_' プレフィックスを付けて直接呼び出せるようにする
