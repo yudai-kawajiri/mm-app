@@ -8,7 +8,7 @@ class PlanSchedulesController < AuthenticatedController
 
     # パラメータチェック
     unless permitted[:plan_id].present?
-      redirect_to calendar_numerical_managements_path,
+      redirect_to numerical_managements_path,
                   alert: "必要な情報が不足しています。"
       return
     end
@@ -37,14 +37,14 @@ class PlanSchedulesController < AuthenticatedController
       action = @plan_schedule.previously_new_record? ? "割り当てました" : "更新しました"
       Rails.logger.info "=== PlanSchedule Saved Successfully ==="
 
-      redirect_to calendar_numerical_managements_path(
+      redirect_to numerical_managements_path(
         month: scheduled_date.strftime("%Y-%m")
       ), notice: "#{scheduled_date.strftime('%-m月%-d日')}の計画を#{action}。"
     else
       Rails.logger.error "=== PlanSchedule Save Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
-      redirect_to calendar_numerical_managements_path,
+      redirect_to numerical_managements_path,
                   alert: "計画の保存に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
     end
   end
@@ -68,14 +68,14 @@ class PlanSchedulesController < AuthenticatedController
     if @plan_schedule.save
       Rails.logger.info "=== PlanSchedule Updated Successfully ==="
 
-      redirect_to calendar_numerical_managements_path(
+      redirect_to numerical_managements_path(
         month: scheduled_date.strftime("%Y-%m")
       ), notice: "#{scheduled_date.strftime('%-m月%-d日')}の計画を更新しました。"
     else
       Rails.logger.error "=== PlanSchedule Update Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
-      redirect_to calendar_numerical_managements_path,
+      redirect_to numerical_managements_path,
                   alert: "計画の更新に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
     end
   end
@@ -91,14 +91,14 @@ class PlanSchedulesController < AuthenticatedController
     if @plan_schedule.update(plan_schedule_params.slice(:actual_revenue))
       Rails.logger.info "=== Actual Revenue Updated Successfully ==="
 
-      redirect_to calendar_numerical_managements_path(
+      redirect_to numerical_managements_path(
         month: @plan_schedule.scheduled_date.strftime("%Y-%m")
       ), notice: t("numerical_managements.messages.actual_revenue_updated")
     else
       Rails.logger.error "=== Actual Revenue Update Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
-      redirect_to calendar_numerical_managements_path(
+      redirect_to numerical_managements_path(
         month: @plan_schedule.scheduled_date.strftime("%Y-%m")
       ), alert: t("numerical_managements.messages.actual_revenue_update_failed")
     end
@@ -118,7 +118,7 @@ class PlanSchedulesController < AuthenticatedController
 
     Date.parse(date_string)
   rescue ArgumentError, TypeError
-    redirect_to calendar_numerical_managements_path,
+    redirect_to numerical_managements_path,
                 alert: "無効な日付形式です。"
     nil
   end

@@ -14,20 +14,26 @@ class MonthlyBudgetsController < ApplicationController
     @monthly_budget.assign_attributes(monthly_budget_params)
 
     if @monthly_budget.save
-      redirect_to redirect_to_appropriate_page(budget_month),
+      # 日別目標を自動生成
+      regenerate_daily_targets(@monthly_budget)
+
+      redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                   notice: t("numerical_managements.messages.budget_created")
     else
-      redirect_to redirect_to_appropriate_page(budget_month),
+      redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                   alert: t("numerical_managements.messages.budget_create_failed")
     end
   end
 
   def update
     if @monthly_budget.update(monthly_budget_params)
-      redirect_to redirect_to_appropriate_page(@monthly_budget.budget_month),
+      # 日別目標を再生成
+      regenerate_daily_targets(@monthly_budget)
+
+      redirect_to numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
                   notice: t("numerical_managements.messages.budget_updated")
     else
-      redirect_to redirect_to_appropriate_page(@monthly_budget.budget_month),
+      redirect_to numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
                   alert: t("numerical_managements.messages.budget_update_failed")
     end
   end
@@ -36,10 +42,10 @@ class MonthlyBudgetsController < ApplicationController
     budget_month = @monthly_budget.budget_month
 
     if @monthly_budget.destroy
-      redirect_to redirect_to_appropriate_page(budget_month),
+      redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                   notice: t("numerical_managements.messages.budget_deleted")
     else
-      redirect_to redirect_to_appropriate_page(budget_month),
+      redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                   alert: t("numerical_managements.messages.budget_delete_failed")
     end
   end
@@ -54,14 +60,17 @@ class MonthlyBudgetsController < ApplicationController
     params.require(:monthly_budget).permit(:target_amount, :note)
   end
 
-  # リダイレクト先を判定（index画面 or calendar画面）
-  def redirect_to_appropriate_page(budget_month)
-    month_param = budget_month.strftime("%Y-%m")
+  # 日別目標を再生成
+  def regenerate_daily_targets(monthly_budget)
+    start_date = monthly_budget.budget_month
+    end_date = start_date.end_of_month
 
-    if params[:return_to] == "calendar"
-      calendar_numerical_managements_path(month: month_param)
-    else
-      numerical_managements_path(month: month_param)
-    end
+    # 既存の日別目標を削除
+    current_user.daily_targets
+                .where(target_date: start_date..end_date)
+                .delete_all
+
+    # MonthlyBudget モデルのメソッドを使用して日別目標を生成
+    monthly_budget.generate_daily_targets!
   end
 end
