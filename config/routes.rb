@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   # ====================
   resources :numerical_managements, only: [ :index ] do
     collection do
-      get :calendar  # カレンダービュー
+      post :bulk_update
     end
   end
 
@@ -63,7 +63,7 @@ Rails.application.routes.draw do
     collection do
       post :reorder
     end
-    
+
     member do
       delete :purge_image  # 画像削除
       post :copy           # 複製
