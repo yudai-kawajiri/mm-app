@@ -239,8 +239,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Turboでページ遷移したときも初期化
 document.addEventListener('turbo:load', function() {
-  console.log('turbo:load: plansByCategory =', window.plansByCategory);
-  initializePlanSelection();
-  initializePlanModal(); // モーダルのイベントリスナーを設定
+  // 予算管理カレンダーページでのみ実行
+  const categorySelect = document.getElementById('categorySelect');
+  const planSelect = document.getElementById('planSelect');
+  const amountInput = document.getElementById('amountInput');
+  const assignPlanModal = document.getElementById('assignPlanModal');
+
+  // 必要な要素が全て存在する場合のみ実行
+  if (categorySelect && planSelect && amountInput) {
+    console.log('turbo:load: plansByCategory =', window.plansByCategory);
+    initializePlanSelection();
+  }
+
+  if (assignPlanModal) {
+    initializePlanModal();
+  }
 });
 </script>
