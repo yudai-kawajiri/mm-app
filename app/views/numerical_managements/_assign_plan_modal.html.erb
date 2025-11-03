@@ -1,4 +1,3 @@
-<!-- 計画追加モーダル -->
 <div class="modal fade"
      id="assignPlanModal"
      tabindex="-1"
@@ -17,13 +16,11 @@
         <div class="modal-body">
           <%= f.hidden_field :scheduled_date, id: "assignPlanDateHidden" %>
 
-          <!-- 対象日 -->
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.target_date') %></label>
             <input type="text" class="form-control" id="assignPlanDate" readonly>
           </div>
 
-          <!-- カテゴリ選択 -->
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.category') %></label>
             <select class="form-select"
@@ -39,7 +36,6 @@
             <div class="form-text"><%= t('numerical_managements.modals.category_help') %></div>
           </div>
 
-          <!-- 計画選択 -->
           <div class="mb-3">
             <%= f.label :plan_id, t('numerical_managements.modals.plan_select'), class: "form-label" %>
             <select name="plan_schedule[plan_id]"
@@ -53,7 +49,6 @@
             <div class="form-text"><%= t('numerical_managements.modals.plan_help') %></div>
           </div>
 
-          <!-- 計画高 -->
           <div class="mb-3">
             <%= f.label :planned_revenue, t('numerical_managements.modals.planned_revenue_yen'), class: "form-label" %>
             <%= f.number_field :planned_revenue,
@@ -74,14 +69,76 @@
 </div>
 
 <script>
-  // モーダルリセット
-  document.getElementById('assignPlanModal').addEventListener('show.bs.modal', function() {
-    console.log("モーダル開いた - リセット中")
-    document.getElementById('assignPlanCategory').value = ""
-    const planSelect = document.getElementById('assignPlanSelect')
-    planSelect.innerHTML = '<option value="">計画を選択してください</option>'
-    planSelect.disabled = true
-    document.getElementById('assignPlanAmount').value = ""
+// モーダルデータ設定関数
+function setPlanModalData(button) {
+  const scheduleId = button.dataset.scheduleId;
+  const planId = button.dataset.planId;
+  const categoryName = button.dataset.categoryName;
+  const plannedRevenue = button.dataset.plannedRevenue;
+  const dateDisplay = button.dataset.dateDisplay;
+  const date = button.dataset.date;
+
+  console.log('モーダルデータ設定:', { scheduleId, planId, categoryName, plannedRevenue });
+
+  // 日付設定
+  document.getElementById('assignPlanDate').value = dateDisplay;
+  document.getElementById('assignPlanDateHidden').value = date;
+
+  const form = document.querySelector('#assignPlanModal form');
+  const modalTitle = document.getElementById('assignPlanModalLabel');
+
+  if (scheduleId) {
+    // 編集モード
+    modalTitle.textContent = '計画編集';
+    form.action = `/plan_schedules/${scheduleId}`;
+
+    // PATCHメソッドを設定
+    let methodInput = form.querySelector('input[name="_method"]');
+    if (!methodInput) {
+      methodInput = document.createElement('input');
+      methodInput.type = 'hidden';
+      methodInput.name = '_method';
+      form.appendChild(methodInput);
+    }
+    methodInput.value = 'patch';
+
+    // 既存データを設定
+    if (categoryName) {
+      document.getElementById('assignPlanCategory').value = categoryName;
+      handleCategoryChange(document.getElementById('assignPlanCategory'));
+
+      // カテゴリの計画が読み込まれるのを待ってから計画を選択
+      setTimeout(() => {
+        if (planId) {
+          document.getElementById('assignPlanSelect').value = planId;
+        }
+      }, 100);
+    }
+
+    document.getElementById('assignPlanAmount').value = plannedRevenue || 0;
+  } else {
+    // 新規追加モード
+    modalTitle.textContent = '計画追加';
+    form.action = '/plan_schedules';
+
+    // PATCHメソッドを削除
+    const methodInput = form.querySelector('input[name="_method"]');
+    if (methodInput) {
+      methodInput.remove();
+    }
+
+    // フォームをリセット
+    document.getElementById('assignPlanCategory').value = '';
+    const planSelect = document.getElementById('assignPlanSelect');
+    planSelect.innerHTML = '<option value="">計画を選択してください</option>';
+    planSelect.disabled = true;
+    document.getElementById('assignPlanAmount').value = '';
+  }
+}
+
+  // モーダルが閉じた時のリセット（オプション）
+  document.getElementById('assignPlanModal').addEventListener('hidden.bs.modal', function() {
+    console.log("モーダル閉じた")
   })
 
   // カテゴリ変更
