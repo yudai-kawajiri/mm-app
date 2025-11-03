@@ -1,4 +1,4 @@
-<!-- 日別明細テーブル（一括編集対応版） -->
+<!-- 日別明細テーブル（一括編集対応版・累計表示対応） -->
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
     <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
@@ -37,12 +37,11 @@
           <thead class="table-light sticky-top">
             <tr>
               <th style="width: 80px;">日付</th>
-              <th class="text-end">目標</th>
-              <th class="text-end">実績</th>
-              <th class="text-end">計画</th>
-              <th class="text-end">予測</th>
-              <th class="text-end">差額</th>
-              <th class="text-end">達成率</th>
+              <th class="text-end" style="width: 100px;">予算</th>
+              <th class="text-end" style="width: 100px;">計画高</th>
+              <th class="text-end" style="width: 100px;">実績</th>
+              <th class="text-end" style="width: 80px;">達成率</th>
+              <th class="text-end" style="width: 100px;">差額</th>
               <th class="text-center bulk-edit-hidden" style="width: 180px;">アクション</th>
             </tr>
           </thead>
@@ -51,18 +50,21 @@
               <%
                 daily_target = @daily_targets[day[:date].day]
                 target_id = daily_target&.id
+                is_past = day[:date] < Date.current
               %>
-              <tr>
-                <%# 日付 %>
-                <td style="width: 80px;"><%= day[:date].strftime('%-m/%-d') %></td>
 
-                <%# 目標（編集可能） %>
+              <%# 日別データ行 %>
+              <tr class="<%= 'table-secondary' unless is_past %>">
+                <%# 日付 %>
+                <td style="width: 80px;" rowspan="2" class="align-middle">
+                  <%= day[:date].strftime('%-m/%-d') %>
+                </td>
+
+                <%# 日別予算（編集可能） %>
                 <td class="text-end">
-                  <%# 通常表示 %>
                   <span class="normal-mode-display">
                     <%= number_to_currency((day[:target] || 0).to_i, unit: "¥", precision: 0) %>
                   </span>
-                  <%# 編集モード %>
                   <div class="bulk-edit-input" style="display: none;">
                     <%= number_field_tag "daily_data[#{index}][target_amount]",
                                          day[:target].to_i,
@@ -75,43 +77,43 @@
                   </div>
                 </td>
 
-                <%# 実績（編集可能） %>
+                <%# 日別計画高 %>
                 <td class="text-end">
-                  <%# 通常表示 %>
+                  <%= number_to_currency((day[:planned] || 0).to_i, unit: "¥", precision: 0) %>
+                </td>
+
+                <%# 日別実績（編集可能） %>
+                <td class="text-end">
                   <span class="normal-mode-display">
                     <%= number_to_currency((day[:actual] || 0).to_i, unit: "¥", precision: 0) %>
                   </span>
-                  <%# 編集モード %>
                   <div class="bulk-edit-input" style="display: none;">
                     <% first_schedule = day[:plan_schedules].first %>
                     <%= number_field_tag "daily_data[#{index}][actual_revenue]",
-                                         (first_schedule&.actual_revenue || 0).to_i,
-                                         class: "form-control form-control-sm text-end",
-                                         min: 0,
-                                         step: 1,
-                                         disabled: day[:plan_schedules].empty? %>
+                                          (first_schedule&.actual_revenue || 0).to_i,
+                                          class: "form-control form-control-sm text-end",
+                                          min: 0,
+                                          step: 1,
+                                          disabled: day[:plan_schedules].empty? %>
                     <%= hidden_field_tag "daily_data[#{index}][plan_schedule_id]", first_schedule&.id %>
                   </div>
                 </td>
 
-                <%# 計画（読み取り専用） %>
-                <td class="text-end"><%= number_to_currency((day[:planned] || 0).to_i, unit: "¥", precision: 0) %></td>
+                <%# 日別達成率 %>
+                <td class="text-end">
+                  <% rate = day[:achievement_rate] || 0 %>
+                  <span class="<%= rate >= 100 ? 'text-success' : (rate >= 80 ? 'text-warning' : 'text-danger') %>">
+                    <%= number_to_percentage(rate, precision: 1) %>
+                  </span>
+                </td>
 
-                <%# 予測 %>
-                <td class="text-end"><%= number_to_currency((day[:forecast] || 0).to_i, unit: "¥", precision: 0) %></td>
-
-                <%# 差額 %>
+                <%# 日別差額 %>
                 <td class="text-end <%= (day[:diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
                   <%= number_to_currency((day[:diff] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
 
-                <%# 達成率 %>
-                <td class="text-end">
-                  <%= number_to_percentage((day[:achievement_rate] || 0), precision: 1) %>
-                </td>
-
-                <%# アクションボタン（通常モード時のみ表示） %>
-                <td class="text-center bulk-edit-hidden">
+                <%# アクションボタン %>
+                <td class="text-center bulk-edit-hidden" rowspan="2" class="align-middle">
                   <div class="btn-group btn-group-sm" role="group">
                     <%# 目標編集ボタン %>
                     <button type="button"
@@ -127,9 +129,10 @@
                       <i class="bi bi-pencil"></i>
                     </button>
 
-                    <%# 計画追加ボタン %>
+                    <%# 計画追加/編集ボタン %>
+                    <% first_schedule = day[:plan_schedules].first %>
                     <button type="button"
-                            class="btn btn-outline-info plan-add-btn"
+                            class="btn <%= first_schedule ? 'btn-outline-warning' : 'btn-outline-info' %> plan-add-btn"
                             data-bs-toggle="modal"
                             data-bs-target="#assignPlanModal"
                             data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
@@ -137,11 +140,17 @@
                             data-year="<%= day[:date].year %>"
                             data-month="<%= day[:date].month %>"
                             data-day="<%= day[:date].day %>"
-                            title="計画追加">
-                      <i class="bi bi-calendar-plus"></i>
+                            data-schedule-id="<%= first_schedule&.id %>"
+                            data-plan-id="<%= first_schedule&.plan_id %>"
+                            data-plan-name="<%= first_schedule&.plan&.name %>"
+                            data-category-name="<%= first_schedule&.plan&.category&.name %>"
+                            data-planned-revenue="<%= first_schedule&.planned_revenue || 0 %>"
+                            onclick="setPlanModalData(this)"
+                            title="<%= first_schedule ? '計画編集' : '計画追加' %>">
+                      <i class="bi bi-<%= first_schedule ? 'pencil-square' : 'calendar-plus' %>"></i>
                     </button>
 
-                    <%# 実績入力ボタン（計画がある場合のみ表示） %>
+                    <%# 実績入力ボタン %>
                     <% if day[:plan_schedules].present? %>
                       <% first_schedule = day[:plan_schedules].first %>
                       <button type="button"
@@ -158,7 +167,7 @@
                       </button>
                     <% end %>
 
-                    <%# 印刷ボタン（計画がある場合のみ表示） %>
+                    <%# 印刷ボタン %>
                     <% if day[:plan_schedules].present? %>
                       <% if day[:plan_schedules].count == 1 %>
                         <%= link_to print_plan_path(day[:plan_schedules].first.plan, date: day[:date]),
@@ -195,6 +204,42 @@
                   </div>
                 </td>
               </tr>
+
+              <%# 累計データ行 %>
+              <tr class="table-light <%= 'table-secondary' unless is_past %>">
+                <%# 累計予算 %>
+                <td class="text-end">
+                  <small class="text-muted">累計:</small>
+                  <%= number_to_currency((day[:cumulative_target] || 0).to_i, unit: "¥", precision: 0) %>
+                </td>
+
+                <%# 累計計画高 %>
+                <td class="text-end">
+                  <small class="text-muted">累計:</small>
+                  <%= number_to_currency((day[:cumulative_planned] || 0).to_i, unit: "¥", precision: 0) %>
+                </td>
+
+                <%# 累計実績 %>
+                <td class="text-end">
+                  <small class="text-muted">累計:</small>
+                  <%= number_to_currency((day[:cumulative_actual] || 0).to_i, unit: "¥", precision: 0) %>
+                </td>
+
+                <%# 累計達成率 %>
+                <td class="text-end">
+                  <% cum_rate = day[:cumulative_achievement_rate] || 0 %>
+                  <small class="text-muted">累計:</small>
+                  <span class="<%= cum_rate >= 100 ? 'text-success' : (cum_rate >= 80 ? 'text-warning' : 'text-danger') %>">
+                    <%= number_to_percentage(cum_rate, precision: 1) %>
+                  </span>
+                </td>
+
+                <%# 累計差額 %>
+                <td class="text-end <%= (day[:cumulative_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
+                  <small class="text-muted">累計:</small>
+                  <%= number_to_currency((day[:cumulative_diff] || 0).to_i, unit: "¥", precision: 0) %>
+                </td>
+              </tr>
             <% end %>
           </tbody>
         </table>
@@ -215,16 +260,20 @@
   </div>
 </div>
 
-<script>
-// グローバル変数
-let isEditMode = false;
-const monthlyBudget = <%= @monthly_budget.target_amount || 0 %>;
+<script data-turbo-eval="false">
+// グローバル変数（既に宣言されていない場合のみ宣言）
+if (typeof window.isEditMode === 'undefined') {
+  window.isEditMode = false;
+}
+if (typeof window.monthlyBudget === 'undefined') {
+  window.monthlyBudget = <%= @monthly_budget.target_amount || 0 %>;
+}
 
 // 一括編集モードの切り替え
 function toggleBulkEditMode() {
-  isEditMode = !isEditMode;
+  window.isEditMode = !window.isEditMode;
 
-  if (isEditMode) {
+  if (window.isEditMode) {
     // 編集モードON
     document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-eye"></i> 通常表示';
     document.getElementById('bulkEditSummary').style.display = 'block';
@@ -263,7 +312,7 @@ function calculateDailyTargetSum() {
     sum += parseInt(input.value) || 0;
   });
 
-  const diff = sum - monthlyBudget;
+  const diff = sum - window.monthlyBudget;
 
   // 合計を表示
   document.getElementById('dailyTargetSum').textContent = '¥' + sum.toLocaleString();

@@ -2,9 +2,9 @@ class NumericalManagementsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_year_month, only: [
     :index,
+    :calendar,
     :update_monthly_budget,
-    :destroy_monthly_budget,
-    :bulk_update
+    :destroy_monthly_budget
   ]
 
   def index
@@ -23,9 +23,9 @@ class NumericalManagementsController < ApplicationController
     @days_in_month = end_date.day
 
     @forecast_service = NumericalForecastService.new(
-      current_user,
-      @year,
-      @month
+      user: current_user,
+      year: @year,
+      month: @month
     )
 
     @forecast_data = @forecast_service.calculate
@@ -38,10 +38,63 @@ class NumericalManagementsController < ApplicationController
                                       .group_by { |plan| plan.category&.name || '未分類' }
   end
 
+  def calendar
+    @selected_date = Date.new(@year, @month, 1)
+
+    @calendar_service = CalendarDataService.new(
+      current_user,
+      @year,
+      @month
+    )
+
+    @calendar_data = @calendar_service.call
+    @monthly_budget = @calendar_service.budget
+    @budget = @monthly_budget
+    @categories = current_user.categories.order(:name)
+
+    @plans_by_category = current_user.plans
+                                    .includes(:category)
+                                    .where(status: :active)
+                                    .group_by { |plan| plan.category.name }
+  end
+
+  def update_daily_target
+    target_date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+
+    @daily_target = current_user.daily_targets.find_or_initialize_by(
+      target_date: target_date
+    )
+
+    if @daily_target.update(daily_target_params)
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  notice: t("numerical_managements.messages.daily_target_updated")
+    else
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  alert: t("numerical_managements.messages.daily_target_update_failed")
+    end
+  end
+
+  def destroy_daily_target
+    target_date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+
+    @daily_target = current_user.daily_targets.find_by(
+      target_date: target_date
+    )
+
+    if @daily_target&.destroy
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  notice: t("numerical_managements.messages.daily_target_deleted")
+    else
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+                  alert: t("numerical_managements.messages.daily_target_delete_failed")
+    end
+  end
+
   def assign_plan
     begin
       plan = current_user.plans.find(params[:plan_id])
 
+      # scheduled_date を構築
       scheduled_date = Date.new(
         params[:year].to_i,
         params[:month].to_i,
@@ -55,14 +108,14 @@ class NumericalManagementsController < ApplicationController
       )
 
       if @plan_schedule.save
-        redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+        redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
                     notice: t("numerical_managements.messages.plan_assigned")
       else
-        redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+        redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
                     alert: t("numerical_managements.messages.plan_assign_failed")
       end
     rescue ActiveRecord::RecordNotFound
-      redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
                   alert: t("numerical_managements.messages.plan_not_found")
     end
   end
@@ -70,15 +123,16 @@ class NumericalManagementsController < ApplicationController
   def unassign_plan
     @plan_schedule = current_user.plan_schedules.find(params[:id])
 
-    year = @plan_schedule.scheduled_date.year
-    month = @plan_schedule.scheduled_date.month
-
     if @plan_schedule.destroy
-      redirect_to numerical_managements_path(month: "#{year}-#{month}"),
-                  notice: t("numerical_managements.messages.plan_unassigned")
+      redirect_to calendar_numerical_managements_path(
+        year: @plan_schedule.year,
+        month: @plan_schedule.month
+      ), notice: t("numerical_managements.messages.plan_unassigned")
     else
-      redirect_to numerical_managements_path(month: "#{year}-#{month}"),
-                  alert: t("numerical_managements.messages.plan_unassign_failed")
+      redirect_to calendar_numerical_managements_path(
+        year: @plan_schedule.year,
+        month: @plan_schedule.month
+      ), alert: t("numerical_managements.messages.plan_unassign_failed")
     end
   end
 
@@ -124,51 +178,43 @@ class NumericalManagementsController < ApplicationController
   end
 
   def bulk_update
-    begin
-      ActiveRecord::Base.transaction do
-        daily_data_params = params[:daily_data] || []
+    unless params[:daily_targets].is_a?(Hash)
+      redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+                  alert: 'パラメータが不正です'
+      return
+    end
 
-        daily_data_params.each do |index, data|
-          date = Date.parse(data[:date])
+    success_count = 0
+    error_count = 0
 
-          # 1. 日別目標の更新/作成
-          if data[:target_amount].present?
-            target_amount = data[:target_amount].to_i
+    params[:daily_targets].each do |day, attributes|
+      target_date = Date.new(params[:year].to_i, params[:month].to_i, day.to_i)
 
-            if data[:target_id].present?
-              daily_target = current_user.daily_targets.find(data[:target_id])
-              daily_target.update!(target_amount: target_amount)
-            else
-              current_user.daily_targets.create!(
-                target_date: date,
-                target_amount: target_amount
-              )
-            end
-          end
+      daily_target = current_user.daily_targets.find_or_initialize_by(
+        target_date: target_date
+      )
 
-          # 2. 実績の更新
-          if data[:actual_revenue].present? && data[:plan_schedule_id].present?
-            plan_schedule = current_user.plan_schedules.find(data[:plan_schedule_id])
-            plan_schedule.update!(actual_revenue: data[:actual_revenue].to_i)
-          end
-        end
-
-        month_param = params[:month]
-        redirect_to numerical_managements_path(month: month_param),
-                    notice: '一括更新が完了しました'
+      if daily_target.update(target_amount: attributes[:target_amount])
+        success_count += 1
+      else
+        error_count += 1
       end
-    rescue ActiveRecord::RecordInvalid => e
-      month_param = params[:month]
-      redirect_to numerical_managements_path(month: month_param),
-                  alert: "更新に失敗しました: #{e.record.errors.full_messages.join(', ')}"
-    rescue ActiveRecord::RecordNotFound => e
-      month_param = params[:month]
-      redirect_to numerical_managements_path(month: month_param),
-                  alert: "指定されたレコードが見つかりません"
-    rescue => e
-      month_param = params[:month]
-      redirect_to numerical_managements_path(month: month_param),
-                  alert: "予期しないエラーが発生しました: #{e.message}"
+
+      # 実績の更新
+      if attributes[:plan_schedule_id].present? && attributes[:actual_revenue].present?
+        plan_schedule = current_user.plan_schedules.find_by(id: attributes[:plan_schedule_id])
+        if plan_schedule
+          plan_schedule.update(actual_revenue: attributes[:actual_revenue])
+        end
+      end
+    end
+
+    if error_count.zero?
+      redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+                  notice: "#{success_count}件のデータを更新しました"
+    else
+      redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+                  alert: "#{success_count}件成功、#{error_count}件失敗しました"
     end
   end
 
@@ -186,34 +232,45 @@ class NumericalManagementsController < ApplicationController
   end
 
   def build_daily_data(start_date, end_date)
+    cumulative_target = 0
+    cumulative_actual = 0
+    cumulative_planned = 0
+
     (start_date..end_date).map do |date|
       day = date.day
       daily_target = @daily_targets[day]
 
-      plan_schedules = current_user.plan_schedules
-                                    .where(scheduled_date: date)
-                                    .includes(plan: { plan_products: :product })
-
-      planned_revenue = plan_schedules.sum do |ps|
-        ps.plan.plan_products.sum { |pp| pp.product.price * pp.production_count }
-      end
-
+      plan_schedules = current_user.plan_schedules.where(scheduled_date: date)
+      planned_revenue = plan_schedules.sum(:planned_revenue)
       actual_revenue = plan_schedules.where.not(actual_revenue: nil).sum(:actual_revenue)
 
-      # 達成率と差分を計算
+      # 日別の計算
       target_amount = daily_target&.target_amount || 0
       achievement_rate = target_amount.positive? ? ((actual_revenue.to_f / target_amount) * 100).round(1) : 0.0
       diff = actual_revenue - target_amount
-      forecast = actual_revenue # 簡易予測（実績をそのまま使用）
+
+      # 累計の計算
+      cumulative_target += target_amount
+      cumulative_actual += actual_revenue
+      cumulative_planned += planned_revenue
+      cumulative_achievement_rate = cumulative_target.positive? ? ((cumulative_actual.to_f / cumulative_target) * 100).round(1) : 0.0
+      cumulative_diff = cumulative_actual - cumulative_target
 
       {
         date: date,
+        # 日別データ
         target: target_amount,
-        planned: planned_revenue,
         actual: actual_revenue,
-        forecast: forecast,
-        diff: diff,
         achievement_rate: achievement_rate,
+        diff: diff,
+        # 累計データ
+        cumulative_target: cumulative_target,
+        cumulative_actual: cumulative_actual,
+        cumulative_achievement_rate: cumulative_achievement_rate,
+        cumulative_diff: cumulative_diff,
+        cumulative_planned: cumulative_planned,
+        # その他
+        planned: planned_revenue,
         plan_schedules: plan_schedules
       }
     end
