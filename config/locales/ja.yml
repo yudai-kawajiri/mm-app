@@ -84,6 +84,8 @@ ja:
     create: "作成"
     update: "更新"
     save: "保存"
+    labels:
+      date: "日付"
 
   dashboard:
     menu:
@@ -216,12 +218,6 @@ ja:
       action_plan: "アクションプラン"
       recommended_daily_target: "推奨日別目標"
       daily_details: "日別明細"
-      date: "日付"
-      target: "目標"
-      actual: "実績"
-      plan: "計画"
-      forecast: "予測"
-      diff: "差額"
       set_budget: "予算設定"
       delete_budget: "予算削除"
       target_month: "対象月"
@@ -329,9 +325,9 @@ ja:
 
     # プレースホルダー
     placeholders:
-      budget_example: "例: 1600000"
-      daily_target_example: "例: 51613"
-      actual_revenue_example: "例: 50000"
+      budget_amount: "例: 1600000"
+      daily_target_amount: "例: 51613"
+      actual_revenue_amount: "例: 50000"
 
   forms:
     titles:

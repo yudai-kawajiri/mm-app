@@ -29,7 +29,7 @@
                                  min: 0,
                                  step: 1,
                                  required: true,
-                                 placeholder: t('numerical_managements.placeholders.budget_example') %>
+                                 placeholder: t('numerical_managements.placeholders.budget_amount') %>
             </div>
 
             <div class="mb-3">
@@ -67,7 +67,7 @@
 
             <div class="mb-3">
               <%= label_tag 'monthly_budget[target_amount]', t('numerical_managements.modals.labels.monthly_budget_yen'), class: "form-label" %>
-              <%= number_field_tag 'monthly_budget[target_amount]', nil, class: "form-control", min: 0, step: 1, required: true, placeholder: t('numerical_managements.placeholders.budget_example') %>
+              <%= number_field_tag 'monthly_budget[target_amount]', nil, class: "form-control", min: 0, step: 1, required: true, placeholder: t('numerical_managements.placeholders.budget_amount') %>
             </div>
 
             <div class="mb-3">
