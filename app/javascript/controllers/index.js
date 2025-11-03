@@ -41,7 +41,7 @@ application.register("character-counter", CharacterCounterController)
 application.register("form-validation", FormValidationController)
 
 // 計画割り当てController登録
-application.register("plan_assignment", PlanAssignmentController)
+application.register("plan-assignment", PlanAssignmentController)
 
 // Sortable Table Controller登録（ドラッグ&ドロップ並び替え）
 application.register("sortable-table", SortableTableController)
