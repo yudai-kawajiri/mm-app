@@ -45,8 +45,7 @@ module ApplicationHelper
         name: t("dashboard.menu.numerical_management"),
         path: numerical_managements_path,  # ← 追加
         submenu: [
-          { name: t("dashboard.menu.numerical_dashboard"), path: numerical_managements_path },
-          { name: t("dashboard.menu.numerical_calendar"), path: calendar_numerical_managements_path }
+          { name: t("dashboard.menu.numerical_dashboard"), path: numerical_managements_path }
         ]
       }
     ]
