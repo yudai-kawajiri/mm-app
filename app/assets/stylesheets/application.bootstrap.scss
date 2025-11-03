@@ -1,1 +1,50 @@
 @import "bootstrap/scss/bootstrap";
+
+// サイドバーのホバーエフェクト
+.list-group-item-action {
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #e9ecef;
+    padding-left: 1.5rem;
+    transform: translateX(5px);
+  }
+
+  &.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    font-weight: 600;
+  }
+}
+
+// サブメニューのスタイル
+.list-group-item-action.ps-5 {
+  font-size: 0.9rem;
+  background-color: #f8f9fa;
+  border-left: 3px solid transparent;
+  padding-left: 3rem !important;
+  position: relative;
+
+  &:hover {
+    border-left-color: #0d6efd;
+    background-color: #e9ecef;
+    transform: translateX(5px);
+  }
+
+  &.active {
+    background-color: #0d6efd !important;
+    color: #fff !important;
+    border-left-color: #0d6efd;
+    font-weight: 500;
+  }
+
+  // ← この部分を新しく追加
+  .submenu-indicator {
+    color: #6c757d;
+    margin-right: 0.25rem;
+  }
+
+  &.active .submenu-indicator {
+    color: #fff;
+  }
+}
