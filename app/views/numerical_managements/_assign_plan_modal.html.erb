@@ -1,5 +1,9 @@
 <!-- 計画追加モーダル -->
-<div class="modal fade" id="assignPlanModal" tabindex="-1" aria-labelledby="assignPlanModalLabel" aria-hidden="true">
+<div class="modal fade"
+     id="assignPlanModal"
+     tabindex="-1"
+     aria-labelledby="assignPlanModalLabel"
+     aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <%= form_with model: PlanSchedule.new,
@@ -22,7 +26,9 @@
           <!-- カテゴリ選択 -->
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.category') %></label>
-            <select class="form-select" id="assignPlanCategory">
+            <select class="form-select"
+                    id="assignPlanCategory"
+                    onchange="handleCategoryChange(this)">
               <option value=""><%= t('numerical_managements.modals.select_category') %></option>
               <% plans_by_category.keys.sort.each do |category_name| %>
                 <option value="<%= category_name %>"><%= category_name %></option>
@@ -37,9 +43,10 @@
             <select name="plan_schedule[plan_id]"
                     class="form-select"
                     id="assignPlanSelect"
+                    onchange="handlePlanChange(this)"
                     disabled
                     required>
-              <option value=""><%= t('numerical_managements.modals.select_category_first') %></option>
+              <option value=""><%= t('numerical_managements.modals.select_plan_prompt') %></option>
             </select>
             <div class="form-text"><%= t('numerical_managements.modals.plan_help') %></div>
           </div>
@@ -48,9 +55,10 @@
           <div class="mb-3">
             <%= f.label :planned_revenue, t('numerical_managements.modals.planned_revenue_yen'), class: "form-label" %>
             <%= f.number_field :planned_revenue,
-                  class: "form-control bg-light",
-                  readonly: true,
-                  id: "assignPlanAmount" %>
+              class: "form-control",
+              id: "assignPlanAmount",
+              placeholder: t('numerical_managements.placeholders.actual_revenue_example') %>
+
             <div class="form-text"><%= t('numerical_managements.modals.revenue_help') %></div>
           </div>
         </div>
@@ -62,3 +70,59 @@
     </div>
   </div>
 </div>
+
+<script>
+  // モーダルリセット
+  document.getElementById('assignPlanModal').addEventListener('show.bs.modal', function() {
+    console.log("モーダル開いた - リセット中")
+    document.getElementById('assignPlanCategory').value = ""
+    const planSelect = document.getElementById('assignPlanSelect')
+    planSelect.innerHTML = '<option value="">計画を選択してください</option>'
+    planSelect.disabled = true
+    document.getElementById('assignPlanAmount').value = ""
+  })
+
+  // カテゴリ変更
+  function handleCategoryChange(select) {
+    const category = select.value
+    console.log("カテゴリ選択:", category)
+
+    const planSelect = document.getElementById('assignPlanSelect')
+    planSelect.innerHTML = '<option value="">計画を選択してください</option>'
+
+    if (!category) {
+      planSelect.disabled = true
+      return
+    }
+
+    const plans = window.plansByCategory[category]
+    console.log("計画:", plans)
+
+    if (!plans || plans.length === 0) {
+      console.warn("計画が見つかりません")
+      planSelect.disabled = true
+      return
+    }
+
+    plans.forEach(plan => {
+      const option = document.createElement('option')
+      option.value = plan.id
+      option.textContent = plan.name
+      option.dataset.revenue = plan.expected_revenue || 0
+      planSelect.appendChild(option)
+    })
+
+    planSelect.disabled = false
+    console.log(`${plans.length}件の計画を追加しました`)
+  }
+
+  // 計画変更
+  function handlePlanChange(select) {
+    const selectedOption = select.selectedOptions[0]
+    if (selectedOption && selectedOption.value) {
+      const revenue = selectedOption.dataset.revenue || 0
+      document.getElementById('assignPlanAmount').value = revenue
+      console.log("売上設定:", revenue)
+    }
+  }
+</script>
