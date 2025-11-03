@@ -234,6 +234,7 @@ class NumericalManagementsController < ApplicationController
   def build_daily_data(start_date, end_date)
     cumulative_target = 0
     cumulative_actual = 0
+    cumulative_planned = 0
 
     (start_date..end_date).map do |date|
       day = date.day
@@ -251,6 +252,7 @@ class NumericalManagementsController < ApplicationController
       # 累計の計算
       cumulative_target += target_amount
       cumulative_actual += actual_revenue
+      cumulative_planned += planned_revenue
       cumulative_achievement_rate = cumulative_target.positive? ? ((cumulative_actual.to_f / cumulative_target) * 100).round(1) : 0.0
       cumulative_diff = cumulative_actual - cumulative_target
 
@@ -266,6 +268,7 @@ class NumericalManagementsController < ApplicationController
         cumulative_actual: cumulative_actual,
         cumulative_achievement_rate: cumulative_achievement_rate,
         cumulative_diff: cumulative_diff,
+        cumulative_planned: cumulative_planned,
         # その他
         planned: planned_revenue,
         plan_schedules: plan_schedules
