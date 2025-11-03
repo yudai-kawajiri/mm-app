@@ -12,9 +12,6 @@
         <button type="submit" class="btn btn-primary btn-sm"><%= t('numerical_managements.index.display') %></button>
       </form>
 
-      <!-- カレンダービューへのリンク -->
-      <%= link_to t('numerical_managements.index.calendar_view'), calendar_numerical_managements_path(month: @selected_date.strftime('%Y-%m')), class: "btn btn-outline-primary btn-sm" %>
-
       <!-- 予算設定ボタン -->
       <div class="d-flex gap-2">
         <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#budgetSettingModal">
@@ -24,9 +21,7 @@
         <% if @monthly_budget&.persisted? %>
           <%= button_to monthly_budget_path(@monthly_budget),
                         method: :delete,
-                        data: {
-                          turbo_confirm: t('numerical_managements.modals.delete_confirm')
-                        },
+                        form: { data: { turbo_confirm: t('numerical_managements.modals.delete_confirm') } },
                         class: "btn btn-outline-danger btn-sm" do %>
             <i class="bi bi-trash"></i> <%= t('numerical_managements.index.delete_budget') %>
           <% end %>
@@ -42,4 +37,126 @@
   <%= render 'daily_details_table', daily_data: @daily_data %>
 </div>
 
-<%= render 'budget_setting_modal', selected_date: @selected_date, budget: @budget %>
+<%# 計画データをJavaScriptに渡す %>
+<script>
+  window.plansByCategory = <%= raw (@plans_by_category || {}).transform_values { |plans| plans.map { |p| { id: p.id, name: p.name, expected_revenue: p.expected_revenue.to_i } } }.to_json %>;
+  console.log('plansByCategory 初期化:', window.plansByCategory);
+</script>
+
+<%# モーダル群（カレンダーと同じものを使用） %>
+<%= render 'budget_setting_modal' %>
+<%= render 'daily_target_modal' %>
+<%= render 'actual_revenue_modal' %>
+<%= render 'assign_plan_modal', plans_by_category: @plans_by_category %>
+
+<%# JavaScript - カレンダーと同じ関数 %>
+<script>
+// ★★★ 日別目標編集モーダル ★★★
+function setEditModalData(button) {
+  const date = button.dataset.date;
+  const dateDisplay = button.dataset.dateDisplay;
+  const targetId = button.dataset.targetId;
+  const targetAmount = button.dataset.targetAmount;
+
+  // 表示用フィールド
+  document.getElementById('editTargetDate').value = dateDisplay;
+
+  // hidden field（フォーム送信用）
+  document.getElementById('editTargetDateHidden').value = date;
+
+  // 目標金額（整数に変換）
+  document.getElementById('editTargetAmount').value = Math.floor(parseFloat(targetAmount) || 0);
+
+  // フォームのaction URLを設定
+  const form = document.getElementById('editDailyTargetForm');
+  if (targetId) {
+    // 既存レコードを更新
+    form.action = `/daily_targets/${targetId}`;
+    form.querySelector('input[name="_method"]')?.remove();
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'patch';
+    form.appendChild(methodInput);
+  } else {
+    // 新規作成
+    form.action = '/daily_targets';
+    form.querySelector('input[name="_method"]')?.remove();
+  }
+}
+
+
+// ★★★ 実績入力モーダル ★★★
+function setActualModalData(button) {
+  const dateDisplay = button.dataset.dateDisplay;
+  const planScheduleId = button.dataset.planScheduleId;
+  const actualRevenue = button.dataset.actualRevenue || 0;
+
+  // 表示用フィールド
+  document.getElementById('editActualDate').value = dateDisplay;
+
+  // 実績金額（整数に変換）
+  document.getElementById('editActualRevenue').value = Math.floor(parseFloat(actualRevenue) || 0);
+
+  // フォームのaction URLを設定
+  const form = document.getElementById('editActualRevenueForm');
+  if (planScheduleId) {
+    // 正しいパスに修正
+    form.action = `/plan_schedules/${planScheduleId}/actual_revenue`;
+
+    // 既存の _method を削除
+    const existingMethod = form.querySelector('input[name="_method"]');
+    if (existingMethod) {
+      existingMethod.remove();
+    }
+
+    // PATCH メソッドを設定
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'patch';
+    form.appendChild(methodInput);
+  }
+}
+
+
+// ★★★ 計画追加モーダルの日付設定（Bootstrapイベントを使用） ★★★
+function initializePlanModal() {
+  const assignPlanModal = document.getElementById('assignPlanModal');
+  if (!assignPlanModal) {
+    console.error('assignPlanModal not found!');
+    return;
+  }
+
+  // モーダルが開く時のイベントリスナー
+  assignPlanModal.addEventListener('show.bs.modal', function(event) {
+    const button = event.relatedTarget; // モーダルをトリガーしたボタン
+    if (!button) return;
+
+    const date = button.dataset.date;
+    const dateDisplay = button.dataset.dateDisplay;
+
+    // 表示用フィールド
+    const dateField = document.getElementById('assignPlanDate');
+    if (dateField) dateField.value = dateDisplay;
+
+    // hidden field（フォーム送信用）
+    const dateHiddenField = document.getElementById('assignPlanDateHidden');
+    if (dateHiddenField) dateHiddenField.value = date;
+  });
+}
+
+// ページ読み込み時に初期化
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOMContentLoaded: plansByCategory =', window.plansByCategory);
+  initializePlanModal(); // モーダルのイベントリスナーを設定
+});
+
+// Turboでページ遷移したときも初期化
+document.addEventListener('turbo:load', function() {
+  const assignPlanModal = document.getElementById('assignPlanModal');
+  if (assignPlanModal) {
+    initializePlanModal();
+  }
+});
+</script>
