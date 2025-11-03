@@ -18,17 +18,23 @@
           <div class="modal-body">
             <div class="mb-3">
               <label class="form-label"><%= t('numerical_managements.modals.target_month') %></label>
-              <input type="month" class="form-control" value="<%= @selected_date.strftime('%Y-%m') %>" readonly>
+              <input type="text" class="form-control" value="<%= @selected_date.strftime('%Y年%m月') %>" readonly>
             </div>
 
             <div class="mb-3">
               <%= f.label :target_amount, t('numerical_managements.modals.monthly_budget_yen'), class: "form-label" %>
-              <%= f.number_field :target_amount, class: "form-control", min: 0, step: 1, required: true, placeholder: t('numerical_managements.placeholders.budget_example') %>
+              <%= f.number_field :target_amount,
+                                 value: @monthly_budget.target_amount.to_i,
+                                 class: "form-control",
+                                 min: 0,
+                                 step: 1,
+                                 required: true,
+                                 placeholder: t('numerical_managements.placeholders.budget_example') %>
             </div>
 
             <div class="mb-3">
               <%= f.label :note, t('numerical_managements.modals.note'), class: "form-label" %>
-              <%= f.text_area :note, class: "form-control", rows: 3, placeholder: t('numerical_managements.modals.optional') %>
+              <%= f.text_area :note, class: "form-control", rows: 3 %>
             </div>
 
             <div class="alert alert-info" role="alert">
@@ -56,7 +62,7 @@
           <div class="modal-body">
             <div class="mb-3">
               <label class="form-label"><%= t('numerical_managements.modals.target_month') %></label>
-              <input type="month" class="form-control" value="<%= @selected_date.strftime('%Y-%m') %>" readonly>
+              <input type="text" class="form-control" value="<%= @selected_date.strftime('%Y年%m月') %>" readonly>
             </div>
 
             <div class="mb-3">
@@ -66,7 +72,7 @@
 
             <div class="mb-3">
               <%= label_tag 'monthly_budget[note]', t('numerical_managements.modals.note'), class: "form-label" %>
-              <%= text_area_tag 'monthly_budget[note]', nil, class: "form-control", rows: 3, placeholder: t('numerical_managements.modals.optional') %>
+              <%= text_area_tag 'monthly_budget[note]', nil, class: "form-control", rows: 3 %>
             </div>
 
             <div class="alert alert-info" role="alert">

@@ -92,7 +92,7 @@ ja:
       plan_management: "製造計画管理"
       plan_list: "製造計画一覧"
       new_plan: "製造計画作成"
-      numerical_management: "数値管理"
+      numerical_management: "売上予算管理"
       numerical_dashboard: "予算ダッシュボード"
       account_settings: "アカウント設定"
     welcome_message: "ようこそ！ %{name} さんのダッシュボード"
@@ -191,7 +191,7 @@ ja:
 
   numerical_managements:
     index:
-      title: "数値管理"
+      title: "売上予算管理"
       monthly_budget: "月間予算"
       actual_revenue: "実績売上"
       planned_revenue: "計画売上"
