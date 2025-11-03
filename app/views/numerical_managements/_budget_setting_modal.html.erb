@@ -11,18 +11,18 @@
           <%= hidden_field_tag :return_to, 'index' %>
 
           <div class="modal-header">
-            <h5 class="modal-title" id="budgetSettingModalLabel"><%= t('numerical_managements.modals.budget_setting') %></h5>
+            <h5 class="modal-title" id="budgetSettingModalLabel"><%= t('numerical_managements.modals.budget_setting.title') %></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
 
           <div class="modal-body">
             <div class="mb-3">
-              <label class="form-label"><%= t('numerical_managements.modals.target_month') %></label>
+              <label class="form-label"><%= t('numerical_managements.modals.labels.target_month') %></label>
               <input type="text" class="form-control" value="<%= @selected_date.strftime('%Y年%m月') %>" readonly>
             </div>
 
             <div class="mb-3">
-              <%= f.label :target_amount, t('numerical_managements.modals.monthly_budget_yen'), class: "form-label" %>
+              <%= f.label :target_amount, t('numerical_managements.modals.labels.monthly_budget_yen'), class: "form-label" %>
               <%= f.number_field :target_amount,
                                  value: @monthly_budget.target_amount.to_i,
                                  class: "form-control",
@@ -33,18 +33,18 @@
             </div>
 
             <div class="mb-3">
-              <%= f.label :note, t('numerical_managements.modals.note'), class: "form-label" %>
+              <%= f.label :note, t('numerical_managements.modals.labels.note'), class: "form-label" %>
               <%= f.text_area :note, class: "form-control", rows: 3 %>
             </div>
 
             <div class="alert alert-info" role="alert">
-              <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.budget_info') %>
+              <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.budget_setting.info') %>
             </div>
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('numerical_managements.modals.cancel') %></button>
-            <%= f.submit t('numerical_managements.modals.update'), class: "btn btn-primary" %>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common.cancel') %></button>
+            <%= f.submit t('common.update'), class: "btn btn-primary" %>
           </div>
         <% end %>
       <% else %>
@@ -55,34 +55,34 @@
           <%= hidden_field_tag :return_to, 'index' %>
 
           <div class="modal-header">
-            <h5 class="modal-title" id="budgetSettingModalLabel"><%= t('numerical_managements.modals.budget_setting') %></h5>
+            <h5 class="modal-title" id="budgetSettingModalLabel"><%= t('numerical_managements.modals.budget_setting.title') %></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
 
           <div class="modal-body">
             <div class="mb-3">
-              <label class="form-label"><%= t('numerical_managements.modals.target_month') %></label>
+              <label class="form-label"><%= t('numerical_managements.modals.labels.target_month') %></label>
               <input type="text" class="form-control" value="<%= @selected_date.strftime('%Y年%m月') %>" readonly>
             </div>
 
             <div class="mb-3">
-              <%= label_tag 'monthly_budget[target_amount]', t('numerical_managements.modals.monthly_budget_yen'), class: "form-label" %>
+              <%= label_tag 'monthly_budget[target_amount]', t('numerical_managements.modals.labels.monthly_budget_yen'), class: "form-label" %>
               <%= number_field_tag 'monthly_budget[target_amount]', nil, class: "form-control", min: 0, step: 1, required: true, placeholder: t('numerical_managements.placeholders.budget_example') %>
             </div>
 
             <div class="mb-3">
-              <%= label_tag 'monthly_budget[note]', t('numerical_managements.modals.note'), class: "form-label" %>
+              <%= label_tag 'monthly_budget[note]', t('numerical_managements.modals.labels.note'), class: "form-label" %>
               <%= text_area_tag 'monthly_budget[note]', nil, class: "form-control", rows: 3 %>
             </div>
 
             <div class="alert alert-info" role="alert">
-              <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.budget_info') %>
+              <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.budget_setting.info') %>
             </div>
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('numerical_managements.modals.cancel') %></button>
-            <%= submit_tag t('numerical_managements.modals.create'), class: "btn btn-primary" %>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common.cancel') %></button>
+            <%= submit_tag t('common.create'), class: "btn btn-primary" %>
           </div>
         <% end %>
       <% end %>

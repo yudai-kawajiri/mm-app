@@ -10,58 +10,58 @@
                     method: :post,
                     local: true do |f| %>
         <div class="modal-header">
-          <h5 class="modal-title" id="assignPlanModalLabel"><%= t('numerical_managements.modals.add_plan') %></h5>
+          <h5 class="modal-title" id="assignPlanModalLabel"><%= t('numerical_managements.modals.assign_plan.title') %></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <%= f.hidden_field :scheduled_date, id: "assignPlanDateHidden" %>
 
           <div class="mb-3">
-            <label class="form-label"><%= t('numerical_managements.modals.target_date') %></label>
+            <label class="form-label"><%= t('numerical_managements.modals.labels.target_date') %></label>
             <input type="text" class="form-control" id="assignPlanDate" readonly>
           </div>
 
           <div class="mb-3">
-            <label class="form-label"><%= t('numerical_managements.modals.category') %></label>
+            <label class="form-label"><%= t('numerical_managements.modals.labels.category') %></label>
             <select class="form-select"
                     id="assignPlanCategory"
                     onchange="handleCategoryChange(this)">
-              <option value=""><%= t('numerical_managements.modals.select_category') %></option>
+              <option value=""><%= t('numerical_managements.modals.prompts.select_category') %></option>
               <% if @plans_by_category.present? %>
                 <% @plans_by_category.keys.sort.each do |category_name| %>
                   <option value="<%= category_name %>"><%= category_name %></option>
                 <% end %>
               <% end %>
             </select>
-            <div class="form-text"><%= t('numerical_managements.modals.category_help') %></div>
+            <div class="form-text"><%= t('numerical_managements.modals.assign_plan.category_help') %></div>
           </div>
 
           <div class="mb-3">
-            <%= f.label :plan_id, t('numerical_managements.modals.plan_select'), class: "form-label" %>
+            <%= f.label :plan_id, t('numerical_managements.modals.labels.plan_select'), class: "form-label" %>
             <select name="plan_schedule[plan_id]"
                     class="form-select"
                     id="assignPlanSelect"
                     onchange="handlePlanChange(this)"
                     disabled
                     required>
-              <option value=""><%= t('numerical_managements.modals.select_plan_prompt') %></option>
+              <option value=""><%= t('numerical_managements.modals.prompts.select_plan') %></option>
             </select>
-            <div class="form-text"><%= t('numerical_managements.modals.plan_help') %></div>
+            <div class="form-text"><%= t('numerical_managements.modals.assign_plan.plan_help') %></div>
           </div>
 
           <div class="mb-3">
-            <%= f.label :planned_revenue, t('numerical_managements.modals.planned_revenue_yen'), class: "form-label" %>
+            <%= f.label :planned_revenue, t('numerical_managements.modals.labels.planned_revenue_yen'), class: "form-label" %>
             <%= f.number_field :planned_revenue,
               class: "form-control",
               id: "assignPlanAmount",
               placeholder: t('numerical_managements.placeholders.actual_revenue_example') %>
 
-            <div class="form-text"><%= t('numerical_managements.modals.revenue_help') %></div>
+            <div class="form-text"><%= t('numerical_managements.modals.assign_plan.revenue_help') %></div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('numerical_managements.modals.cancel') %></button>
-          <%= f.submit t('numerical_managements.modals.save'), class: "btn btn-primary", data: { disable_with: "保存中..." } %>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common.cancel') %></button>
+          <%= f.submit t('common.save'), class: "btn btn-primary", data: { disable_with: "保存中..." } %>
         </div>
       <% end %>
     </div>
