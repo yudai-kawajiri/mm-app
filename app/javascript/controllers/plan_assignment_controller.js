@@ -1,44 +1,121 @@
 import { Controller } from "@hotwired/stimulus"
 
-// 計画割り当てモーダルを制御するStimulusコントローラー
 export default class extends Controller {
-  // data-plan-assignment-target で参照する要素を定義
-  static targets = ["planSelect", "revenueField"]
+  static targets = ["category", "plan", "plannedRevenue", "categoryGroup", "planGroup"]
 
-  // 接続時の初期化
   connect() {
-    console.log("Plan assignment controller connected")
+    console.log("=== Stimulus Connect ===")
+    this.loadPlansData()
+
+    // モーダルが開かれるたびにデータを再読み込み
+    this.element.addEventListener('show.bs.modal', () => {
+      console.log("=== Modal Opening (show.bs.modal) ===")
+      this.loadPlansData()
+      this.resetModal()
+    })
   }
 
-  // 計画選択時に呼ばれるメソッド
-  async updateRevenue() {
-    const planId = this.planSelectTarget.value
+  // データ読み込みメソッド（connect と show.bs.modal で共通使用）
+  loadPlansData() {
+    this.plansData = window.plansByCategory || {}
+    console.log("Loaded plansData:", this.plansData)
+    console.log("Available categories:", Object.keys(this.plansData))
+  }
 
-    // 計画が選択されていない場合はクリア
-    if (!planId) {
-      this.revenueFieldTarget.value = ""
+  // モーダルリセット
+  resetModal() {
+    console.log("=== Reset Modal ===")
+
+    // カテゴリと計画の選択をリセット
+    if (this.hasCategoryTarget) {
+      this.categoryTarget.value = ""
+    }
+    if (this.hasPlanTarget) {
+      this.planTarget.innerHTML = '<option value="">計画を選択してください</option>'
+      this.planTarget.disabled = true
+    }
+    if (this.hasPlannedRevenueTarget) {
+      this.plannedRevenueTarget.value = ""
+    }
+
+    // カテゴリグループを表示、計画グループを非表示
+    if (this.hasCategoryGroupTarget) {
+      this.categoryGroupTarget.style.display = "block"
+    }
+    if (this.hasPlanGroupTarget) {
+      this.planGroupTarget.style.display = "none"
+    }
+  }
+
+  // カテゴリ選択時
+  updatePlans(event) {
+    const category = event.target.value
+    console.log("=== Category Selected ===")
+    console.log("Selected category:", category)
+
+    if (!this.hasPlanTarget) {
+      console.warn("Plan target not found")
       return
     }
 
-    try {
-      // APIから計画の売上を取得
-      const response = await fetch(`/api/v1/plans/${planId}/revenue`)
+    // 計画ドロップダウンをクリア
+    this.planTarget.innerHTML = '<option value="">計画を選択してください</option>'
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+    if (!category) {
+      this.planTarget.disabled = true
+      if (this.hasPlanGroupTarget) {
+        this.planGroupTarget.style.display = "none"
       }
+      console.log("No category selected, hiding plan dropdown")
+      return
+    }
 
-      const data = await response.json()
+    // カテゴリに対応する計画を取得
+    const plans = this.plansData[category]
+    console.log(`Plans for category "${category}":`, plans)
 
-      // 取得した売上を金額フィールドに設定
-      this.revenueFieldTarget.value = data.revenue
+    if (!plans || plans.length === 0) {
+      console.warn(`No plans found for category: ${category}`)
+      this.planTarget.disabled = true
+      return
+    }
 
-      console.log(`Plan ${planId} revenue: ${data.formatted_revenue}`)
+    // 計画を追加
+    plans.forEach(plan => {
+      const option = document.createElement("option")
+      option.value = plan.id
+      option.textContent = plan.name
+      option.dataset.revenue = plan.expected_revenue || 0
+      this.planTarget.appendChild(option)
+    })
 
-    } catch (error) {
-      console.error("Failed to fetch plan revenue:", error)
-      alert("計画の売上を取得できませんでした")
-      this.revenueFieldTarget.value = ""
+    this.planTarget.disabled = false
+
+    // 計画グループを表示
+    if (this.hasPlanGroupTarget) {
+      this.planGroupTarget.style.display = "block"
+    }
+
+    console.log(`Added ${plans.length} plans to dropdown`)
+  }
+
+  // 計画選択時
+  updateRevenue(event) {
+    const selectedOption = event.target.selectedOptions[0]
+    console.log("=== Plan Selected ===")
+    console.log("Selected plan option:", selectedOption)
+
+    if (!selectedOption) {
+      console.warn("No plan selected")
+      return
+    }
+
+    const revenue = selectedOption.dataset.revenue || 0
+    console.log("Expected revenue:", revenue)
+
+    if (this.hasPlannedRevenueTarget) {
+      this.plannedRevenueTarget.value = revenue
+      console.log("Updated planned revenue field to:", revenue)
     }
   }
 }

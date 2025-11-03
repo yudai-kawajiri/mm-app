@@ -30,8 +30,10 @@
                     id="assignPlanCategory"
                     onchange="handleCategoryChange(this)">
               <option value=""><%= t('numerical_managements.modals.select_category') %></option>
-              <% plans_by_category.keys.sort.each do |category_name| %>
-                <option value="<%= category_name %>"><%= category_name %></option>
+              <% if @plans_by_category.present? %>
+                <% @plans_by_category.keys.sort.each do |category_name| %>
+                  <option value="<%= category_name %>"><%= category_name %></option>
+                <% end %>
               <% end %>
             </select>
             <div class="form-text"><%= t('numerical_managements.modals.category_help') %></div>
