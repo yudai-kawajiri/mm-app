@@ -46,10 +46,13 @@
     </div>
   </div>
 
-  <%= render 'summary_cards', forecast_data: @forecast_data %>
+  <%# サマリーカード（4つ横並び） %>
+  <%= render 'summary_cards', forecast_data: @forecast_data, monthly_budget: @monthly_budget %>
 
+  <%# 予測カード（3つ横並び） %>
   <%= render 'forecast_cards', forecast_data: @forecast_data %>
 
+  <%# 日別明細テーブル %>
   <%= render 'daily_details_table', daily_data: @daily_data %>
 </div>
 
@@ -65,7 +68,7 @@
 <%= render 'actual_revenue_modal' %>
 <%= render 'assign_plan_modal', plans_by_category: @plans_by_category %>
 
-<%# JavaScript - モーダル関連関数 %>
+<%# JavaScript - モーダル関連関数のみ（一括編集のJSは_daily_details_tableにあるので削除） %>
 <script>
 // ★★★ 日別目標編集モーダル ★★★
 function setEditModalData(button) {
