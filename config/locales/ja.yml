@@ -86,9 +86,18 @@ ja:
     update: "更新"
     updated: "更新"
     save: "保存"
+    saving: "保存中..."
     record: "レコード"
+    change: "変更"
     uncategorized: "未分類"
+    not_set: "未設定"
+    calculation_unavailable: "計算不可"
+    print: "印刷"
+    print_action: "印刷する"
     copy: "コピー"
+    close: "閉じる"
+    reorder_mode: "並び替えモード"
+    save_order: "並び順を保存"
 
   labels:
     date: "日付"
@@ -155,6 +164,16 @@ ja:
       title: "%{name} - 原材料詳細 "
     edit:
       title: "%{name} - 原材料編集 "
+    attributes:
+      default_unit_weight: "デフォルト重量（g/単位）"
+      unit_weight_for_order: "発注単位の重量（g）"
+      pieces_per_order_unit: "発注単位あたりの個数"
+      pieces_per_order_unit_label: "発注単位あたりの個数（例: 1箱=50枚）※個数ベースの場合のみ"
+      order_group_name: "発注グループ名"
+    hints:
+      pieces_per_order_unit_note: "※個数ベース（トレイなど）の場合のみ表示"
+      pieces_per_order_unit: "※重量ベース（まぐろ、いくらなど）の場合は空欄にしてください。個数ベース（トレイなど）の場合のみ入力してください。"
+      order_group_name: "※同じ原材料を異なる切り方で使用する場合に設定します。<br>例: 「まぐろ赤身（にぎり）」と「まぐろ赤身（巻物）」の両方に「まぐろ赤身」と設定すると、印刷時は別々に表示され、発注時はまとめて計算されます。"
 
   # 商品
   products:
@@ -484,10 +503,11 @@ ja:
     unlocks:
       new:
         title: "アカウントロック解除"
-        description: "ロック解除のメールを再送信します"
+        email: "メールアドレス"
         email_placeholder: "example@sushi-manage.com"
-        email_help: "登録時に使用したメールアドレスを入力してください"
+        email_hint: "登録時に使用したメールアドレスを入力してください"
         submit: "ロック解除のメールを送信"
+        back_to_login: "ログイン画面に戻る"
     mailer:
       reset_password_instructions:
         subject: "【寿司管理システム】パスワード再設定のご案内"
@@ -519,6 +539,10 @@ ja:
               greater_than: "は0より大きい値を入力してください"
             status:
               blank: "を選択してください"
+        product_material:
+          attributes:
+            material_id:
+              already_registered: "は既に登録されています"
     models:
       user: "アカウント"
       category: "カテゴリー"
@@ -595,7 +619,7 @@ ja:
       unauthorized: "認証が必要です"
       plan_not_found: "計画が見つかりません"
       plan_schedule_not_found: "計画スケジュールが見つかりません"
-      daily_target_not_found: "日別目標が見つかりません"
+      daily_target_not_found: "日別目標が見つかりません、またはアクセスが拒否されました"
       product_not_found: "商品が見つかりません、またはアクセスが拒否されました"
       material_not_found: "原材料が見つかりません、またはアクセスが拒否されました"
       server_error: "サーバーエラーが発生しました"
