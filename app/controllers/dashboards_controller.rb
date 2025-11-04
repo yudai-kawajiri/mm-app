@@ -15,6 +15,10 @@ class DashboardsController < AuthenticatedController
     @forecast_data = @forecast_service.calculate
     @monthly_budget = @forecast_service.budget
 
+    # 天気予報を取得
+    weather_service = WeatherService.new
+    @weather_forecast = weather_service.fetch_weekly_forecast
+
     # グラフ用データ（選択された月の累計推移）
     start_date = @selected_date.beginning_of_month
     end_date = @selected_date.end_of_month
