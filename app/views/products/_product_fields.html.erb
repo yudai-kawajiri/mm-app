@@ -1,7 +1,7 @@
 <%# 基本情報 - すべてを1つのカードに統合 %>
 <div class="card mb-3">
   <div class="card-header bg-light">
-    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>基本情報</h5>
+    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i><%= t('forms.titles.basic_info') %></h5>
   </div>
   <div class="card-body">
     <div class="row g-3">
@@ -16,7 +16,11 @@
                           field_type: :number_field,
                           prefix: t('number.currency.format.unit'),
                           step: 0.01,
-                          min: 0) %>
+                          min: 0,
+                          data: {
+                            controller: 'number-input',
+                            action: 'input->number-input#handleInput paste->number-input#handlePaste'
+                          }) %>
 
         <%# 3. カテゴリ %>
         <%= form_group_lg(f, :category_id,
@@ -38,7 +42,14 @@
                           %>
 
         <%# 5. 品番 %>
-        <%= form_group_lg(f, :item_number, wrapper_class: 'mb-3',   placeholder: t('products.placeholder.item_number'),) %>
+        <%= form_group_lg(f, :item_number,
+                          wrapper_class: 'mb-3',
+                          placeholder: t('products.placeholder.item_number'),
+                          data: {
+                            controller: 'number-input',
+                            action: 'input->number-input#handleInput paste->number-input#handlePaste'
+                          }) %>
+
 
         <%# 6. 画像（120px） %>
         <div class="mb-3">
@@ -49,9 +60,9 @@
               accept: "image/*" %>
           <small class="text-muted d-block mt-1">
             <% if f.object.persisted? && f.object.image.attached? %>
-              <%= t('products.image_help.change', default: '画像を変更する場合は選択してください') %>
+              <%= t('products.image_help.change') %>
             <% else %>
-              <%= t('products.image_help.select', default: '画像ファイルを選択してください') %>
+              <%= t('products.image_help.select') %>
             <% end %>
           </small>
           <% if f.object.errors[:image].any? %>
@@ -71,7 +82,7 @@
                     "max-width: 100%; max-height: 110px; width: auto; height: auto; object-fit: contain; display: none;"
                 ) %>
             <label for="product-image-input" id="preview-label" style="<%= f.object.persisted? && f.object.image.attached? ? 'display: none;' : '' %> cursor: pointer;">
-              <span class="text-muted" style="font-size: 0.9em;">画像未選択</span>
+              <span class="text-muted" style="font-size: 0.9em;"><%= t('products.image_help.no_image', default: '画像未選択') %></span>
             </label>
           </div>
 
@@ -79,7 +90,7 @@
           <div class="text-center mt-2">
             <% if f.object.persisted? && f.object.image.attached? %>
               <div id="current-image-container">
-                <%= link_to t('helpers.link.delete_image', default: '画像を削除'), "#",
+                <%= link_to t('helpers.link.delete_image'), "#",
                   data: { product_id: f.object.id, url: purge_image_product_path(f.object) },
                   class: "btn btn-sm btn-danger",
                   id: "delete-button" %>
@@ -87,7 +98,7 @@
             <% end %>
 
             <button type="button" id="cancel-new-image-button" class="btn btn-sm btn-outline-danger" style="display: none;">
-              <%= t('helpers.link.cancel_new_image', default: '選択を解除') %>
+              <%= t('helpers.link.cancel_new_image') %>
             </button>
           </div>
         </div>
@@ -110,7 +121,7 @@
                 character_counter_danger_value: 10
               } %>
           <div class="form-text d-flex justify-content-between align-items-center mt-1">
-            <span><%= t('helpers.character_counter.hint', max: 1000, default: '最大1000文字') %></span>
+            <span><%= t('helpers.character_counter.hint', max: 1000) %></span>
             <span data-character-counter-target="counter" class="badge bg-secondary"></span>
           </div>
           <% if f.object.errors[:description].any? %>
