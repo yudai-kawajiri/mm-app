@@ -8,12 +8,13 @@
 
     <div class="mb-4">
       <%= f.label :email, class: "form-label h5" %><br />
-      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control form-control-lg",   placeholder: t('devise.sessions.new.email_placeholder')  %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control form-control-lg", placeholder: t('devise.sessions.new.email_placeholder') %>
     </div>
 
     <div class="mb-4">
       <%= f.label :password, class: "form-label h5" %><br />
-      <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-lg" %>
+      <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
+
     </div>
 
     <% if devise_mapping.rememberable? %>
