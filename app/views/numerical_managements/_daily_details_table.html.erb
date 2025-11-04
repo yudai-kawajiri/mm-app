@@ -30,13 +30,14 @@
 
   <div class="card-body p-0">
     <%= form_with url: bulk_update_numerical_managements_path, method: :post, id: "bulkEditForm", local: true do |f| %>
-      <%= hidden_field_tag :month, @selected_date.strftime('%Y-%m') %>
+      <%= hidden_field_tag :year, @selected_date.year %>
+      <%= hidden_field_tag :month, @selected_date.month %>
 
       <div style="max-height: 500px; overflow-y: auto;">
         <table class="table table-sm table-hover mb-0">
           <thead class="table-light sticky-top">
             <tr>
-              <th style="width: 80px;"><%= t('common.labels.date') %></th>
+              <th style="width: 80px;"><%= t('labels.date') %></th>
               <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.budget') %></th>
               <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.planned') %></th>
               <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.actual') %></th>
@@ -260,14 +261,10 @@
   </div>
 </div>
 
-<script data-turbo-eval="false">
-// グローバル変数（既に宣言されていない場合のみ宣言）
-if (typeof window.isEditMode === 'undefined') {
-  window.isEditMode = false;
-}
-if (typeof window.monthlyBudget === 'undefined') {
-  window.monthlyBudget = <%= @monthly_budget.target_amount || 0 %>;
-}
+<script>
+// グローバル変数の初期化（Turbo対応）
+window.isEditMode = false;
+window.monthlyBudget = <%= @monthly_budget.target_amount || 0 %>;
 
 // 一括編集モードの切り替え
 function toggleBulkEditMode() {
@@ -275,7 +272,7 @@ function toggleBulkEditMode() {
 
   if (window.isEditMode) {
     // 編集モードON
-    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-eye"></i> <%= t('numerical_managements.bulk_edit.toggle_normal_mode') %>';
+    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-eye"></i> <%= j t('numerical_managements.bulk_edit.toggle_normal_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'block';
     document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'block');
@@ -291,7 +288,7 @@ function toggleBulkEditMode() {
     });
   } else {
     // 編集モードOFF
-    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-pencil-square"></i> <%= t('numerical_managements.bulk_edit.toggle_edit_mode') %>';
+    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-pencil-square"></i> <%= j t('numerical_managements.bulk_edit.toggle_edit_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'none';
     document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'inline');
     document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'none');
@@ -320,10 +317,10 @@ function calculateDailyTargetSum() {
   // 差分を表示
   const diffElement = document.getElementById('budgetDiff');
   if (diff > 0) {
-    diffElement.textContent = '+¥' + diff.toLocaleString() + ' <%= t('numerical_managements.bulk_edit.excess') %> ';
+    diffElement.textContent = '+¥' + diff.toLocaleString() + ' <%= j t('numerical_managements.bulk_edit.excess') %>';
     diffElement.className = 'fw-bold text-danger';
   } else if (diff < 0) {
-    diffElement.textContent = '-¥' + Math.abs(diff).toLocaleString() + ' <%= t('numerical_managements.bulk_edit.shortage') %>';
+    diffElement.textContent = '-¥' + Math.abs(diff).toLocaleString() + ' <%= j t('numerical_managements.bulk_edit.shortage') %>';
     diffElement.className = 'fw-bold text-warning';
   } else {
     diffElement.textContent = '¥0';
