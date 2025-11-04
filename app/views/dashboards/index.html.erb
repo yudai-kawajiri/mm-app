@@ -1,9 +1,41 @@
 <%= content_for :page_title, t('dashboard.menu.dashboard') %>
 
-<h1 class="mb-4"><%= t('dashboard.welcome_message', name: current_user.name) %></h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0"><%= t('dashboard.welcome_message', name: current_user.name) %></h1>
+
+  <!-- 月選択フォーム -->
+  <form method="get" class="d-flex align-items-center gap-2">
+    <label class="text-muted mb-0">表示月：</label>
+    <div class="d-flex gap-1">
+      <select name="year" class="form-select form-select-sm" style="width: 90px;">
+        <% (Date.current.year - 2..Date.current.year + 1).each do |year| %>
+          <option value="<%= year %>" <%= 'selected' if year == @selected_date.year %>><%= year %>年</option>
+        <% end %>
+      </select>
+
+      <select name="month" class="form-select form-select-sm" style="width: 80px;">
+        <% (1..12).each do |month| %>
+          <option value="<%= month %>" <%= 'selected' if month == @selected_date.month %>><%= month %>月</option>
+        <% end %>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">表示</button>
+  </form>
+</div>
 
 <!-- KPIカード（売上予算ダッシュボードと同じ） -->
 <%= render 'shared/summary_cards', forecast_data: @forecast_data, monthly_budget: @monthly_budget %>
 
-<!-- 予算推移グラフ - 次のステップで実装 -->
+<!-- 予算推移グラフ -->
+<div class="card mb-4" data-controller="budget-chart" data-chart-data="<%= @chart_data.to_json %>">
+  <div class="card-header">
+    <h5 class="mb-0">
+      <i class="bi bi-graph-up"></i> <%= @selected_date.strftime('%Y年%-m月') %>の累計推移
+    </h5>
+  </div>
+  <div class="card-body">
+    <canvas id="budgetChart" style="max-height: 400px;"></canvas>
+  </div>
+</div>
+
 <!-- 週間天気 - 後で実装 -->
