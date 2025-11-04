@@ -93,6 +93,9 @@ group :development, :test do
   # デバッグに使用するGem [https://guides.rubyonrails.org/debugging_rails_applications.html]
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
+  # OpenWeatherMap APIとの通信に使用
+  gem "httparty"
+
   # Rubyのコーディング規約チェック（RuboCop Rails Omakaseスタイル）
   gem "rubocop-rails-omakase", require: false
 end
