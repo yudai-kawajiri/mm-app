@@ -54,7 +54,11 @@
             <%= f.number_field :planned_revenue,
               class: "form-control",
               id: "assignPlanAmount",
-              placeholder: t('numerical_managements.placeholders.actual_revenue_amount') %>
+              placeholder: t('numerical_managements.placeholders.actual_revenue_amount'),
+              data: {
+                controller: 'number-input',
+                action: 'input->number-input#handleInput paste->number-input#handlePaste'
+              } %>
 
             <div class="form-text"><%= t('numerical_managements.modals.assign_plan.revenue_help') %></div>
           </div>
