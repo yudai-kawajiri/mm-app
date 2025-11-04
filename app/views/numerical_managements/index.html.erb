@@ -47,7 +47,7 @@
   </div>
 
   <%# サマリーカード（4つ横並び） %>
-  <%= render 'summary_cards', forecast_data: @forecast_data, monthly_budget: @monthly_budget %>
+  <%= render 'shared/summary_cards', forecast_data: @forecast_data, monthly_budget: @monthly_budget %>
 
   <%# 予測カード（3つ横並び） %>
   <%= render 'forecast_cards', forecast_data: @forecast_data %>
