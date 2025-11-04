@@ -7,7 +7,7 @@ module CrudResponderConcern
   def respond_to_save(resource, success_path: resource)
     # リソース名と名前を取得
     resource_name = resource.class.model_name.human
-    resource_display_name = resource.name.presence || "レコード"
+    resource_display_name = resource.name.presence || I18n.t('common.record')
 
     if resource.save
       action = resource.previous_changes.key?("id") ? :create : :update
@@ -33,7 +33,7 @@ module CrudResponderConcern
   def respond_to_destroy(resource, success_path:, destroy_failure_path: success_path)
     # ... (変更なし) ...
     resource_name = resource.class.model_name.human
-    resource_display_name = resource.name.presence || "レコード"
+    resource_display_name = resource.name.presence || I18n.t('common.record')
 
     if resource.destroy
       flash[:notice] = t("flash_messages.destroy.success",

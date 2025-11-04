@@ -35,7 +35,7 @@ class NumericalManagementsController < ApplicationController
     @plans_by_category = current_user.plans
                                       .includes(:category)
                                       .where(status: :active)
-                                      .group_by { |plan| plan.category&.name || '未分類' }
+                                      .group_by { |plan| plan.category&.name || I18n.t('common.uncategorized') }
   end
 
   def calendar
@@ -116,7 +116,7 @@ class NumericalManagementsController < ApplicationController
       end
     rescue ActiveRecord::RecordNotFound
       redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
-                  alert: t("numerical_managements.messages.plan_not_found")
+                  alert: t("api.errors.plan_not_found")
     end
   end
 
@@ -180,7 +180,7 @@ class NumericalManagementsController < ApplicationController
   def bulk_update
     unless params[:daily_targets].is_a?(Hash)
       redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
-                  alert: 'パラメータが不正です'
+                  alert: t('api.errors.invalid_parameters')
       return
     end
 
@@ -211,10 +211,10 @@ class NumericalManagementsController < ApplicationController
 
     if error_count.zero?
       redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
-                  notice: "#{success_count}件のデータを更新しました"
+                  notice: t('numerical_managements.messages.bulk_update_success', count: success_count)
     else
       redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
-                  alert: "#{success_count}件成功、#{error_count}件失敗しました"
+                  alert: t('numerical_managements.messages.bulk_update_partial', success: success_count, error: error_count)
     end
   end
 
