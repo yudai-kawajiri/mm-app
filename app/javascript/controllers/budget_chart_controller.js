@@ -52,7 +52,7 @@ export default class extends Controller {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             position: 'top',
