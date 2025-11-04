@@ -19,7 +19,7 @@ module PlansHelper
 
       # ドロップダウン
       dropdown = content_tag(:div, class: "btn-group btn-group-sm ms-2", role: "group") do
-        button = content_tag(:button, "変更",
+        button = content_tag(:button, t('common.change'),
           type: "button",
           class: "btn btn-outline-secondary btn-sm dropdown-toggle",
           data: { bs_toggle: "dropdown" },
