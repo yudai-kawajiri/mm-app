@@ -3,16 +3,16 @@
   <button data-sortable-table-target="toggleBtn"
           data-action="click->sortable-table#toggleReorderMode"
           class="btn btn-secondary">
-    並び替えモード
+    <%= t('common.reorder_mode') %>
   </button>
   <button data-sortable-table-target="saveBtn"
           data-action="click->sortable-table#save"
           class="btn btn-success d-none">
-    並び順を保存
+    <%= t('common.save_order') %>
   </button>
   <button data-sortable-table-target="cancelBtn"
           data-action="click->sortable-table#cancel"
           class="btn btn-outline-secondary d-none">
-    キャンセル
+    <%= t('common.cancel') %>
   </button>
 </div>
