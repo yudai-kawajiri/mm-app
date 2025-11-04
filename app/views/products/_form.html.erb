@@ -1,5 +1,7 @@
 <%# 商品フォーム %>
-<%= form_with model: product, html: { multipart: true, id: 'product_form' }, data: { controller: 'form-submit' } do |f| %>
+<%= form_with model: product,
+              html: { multipart: true, id: 'product_form' },
+              data: { controller: 'form-submit', turbo: false } do |f| %>
   <%= render 'shared/forms/resource_two_column_form',
     f: f,
     basic_fields: 'products/product_fields',

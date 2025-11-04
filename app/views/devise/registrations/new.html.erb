@@ -14,22 +14,17 @@
 
     <div class="mb-4">
       <%= f.label :email, class: "form-label h5" %><br />
-      <%= f.email_field :email, autocomplete: "email", class: "form-control form-control-lg" %>
+      <%= f.email_field :email, autocomplete: "email", class: "form-control form-control-lg", placeholder: t('devise.sessions.new.email_placeholder') %>
     </div>
 
     <div class="mb-4">
       <%= f.label :password, class: "form-label h5" %>
-      <% if @minimum_password_length %>
-        <small class="text-muted d-block">
-          <%= t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
-        </small>
-      <% end %>
-      <%= f.password_field :password, autocomplete: "new-password", class: "form-control form-control-lg" %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
     </div>
 
     <div class="mb-4">
       <%= f.label :password_confirmation, class: "form-label h5" %><br />
-      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
     </div>
 
     <div class="d-grid gap-2">

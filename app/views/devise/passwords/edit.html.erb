@@ -21,13 +21,8 @@
           autofocus: true,
           autocomplete: "new-password",
           class: 'form-control form-control-lg',
-          placeholder: '••••••••',
+          placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length),
           required: true %>
-      <% if @minimum_password_length %>
-        <div class="form-text">
-          <%= t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
-        </div>
-      <% end %>
     </div>
 
     <div class="mb-4">
@@ -37,7 +32,7 @@
       <%= f.password_field :password_confirmation,
           autocomplete: "new-password",
           class: 'form-control form-control-lg',
-          placeholder: '••••••••',
+          placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length),
           required: true %>
     </div>
 

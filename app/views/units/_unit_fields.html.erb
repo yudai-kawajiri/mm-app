@@ -6,7 +6,7 @@
     <%= form_group_lg(f, :category,
         field_type: :select,
         choices: Unit.categories.keys.map { |k| [I18n.t("activerecord.enums.unit.category.#{k}"), k] },
-        select_options: { include_blank: t('helpers.prompt.select'), selected: nil }
+        select_options: { include_blank: t('helpers.prompt.select') }
     ) %>
   </div>
 </div>
