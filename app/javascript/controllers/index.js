@@ -29,7 +29,7 @@ import PlanAssignmentController from "controllers/plan_assignment_controller"
 import SortableTableController from "controllers/sortable_table_controller"
 
 // Budget Chart Controller（予算グラフ表示）
-// import BudgetChartController from "controllers/budget_chart_controller"
+import BudgetChartController from "controllers/budget_chart_controller"
 
 // 手動登録
 application.register("form--nested-form", FormNestedFormController)
@@ -52,4 +52,4 @@ application.register("plan-assignment", PlanAssignmentController)
 application.register("sortable-table", SortableTableController)
 
 // Budget Chart Controller登録（予算グラフ表示）
-// application.register("budget-chart", BudgetChartController)
+application.register("budget-chart", BudgetChartController)

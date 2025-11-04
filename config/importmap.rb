@@ -37,6 +37,9 @@ pin "controllers/plan_assignment_controller", to: "controllers/plan_assignment_c
 #  Sortable Table Controller（ドラッグ&ドロップ並び替え）
 pin "controllers/sortable_table_controller", to: "controllers/sortable_table_controller.js"
 
+# Budget Chart Controller（予算グラフ表示）
+pin "controllers/budget_chart_controller", to: "controllers/budget_chart_controller.js"
+
 # Utils（手動 pin）
 pin "utils/logger", to: "utils/logger.js", preload: true
 pin "utils/currency_formatter", to: "utils/currency_formatter.js", preload: true
@@ -48,3 +51,8 @@ pin "cocoon", to: "cocoon.js", preload: true
 
 # Sortable.js（ドラッグ&ドロップライブラリ）
 pin "sortablejs", to: "https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/+esm"
+
+# Chart.js
+pin "chart.js", to: "https://ga.jspm.io/npm:chart.js@4.5.1/dist/chart.js"
+pin "chart.js/auto", to: "https://ga.jspm.io/npm:chart.js@4.5.1/auto/auto.js"
+pin "@kurkle/color", to: "https://ga.jspm.io/npm:@kurkle/color@0.3.4/dist/color.esm.js"
