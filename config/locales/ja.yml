@@ -469,6 +469,9 @@ ja:
       unauthenticated: "アカウント登録もしくはログインが必要です"
       invalid: "メールアドレスまたはパスワードが違います"
       not_found_in_database: "メールアドレスまたはパスワードが違います"
+      already_authenticated: "既にログインしています"
+      user:
+        already_authenticated: "既にログインしています"
     registrations:
       new:
         title: "新規登録"
