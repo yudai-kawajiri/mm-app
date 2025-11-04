@@ -28,7 +28,7 @@
     <%= form_group_lg(f, :default_unit_weight,
         field_type: :number_field,
         step: :any,
-        label: "デフォルト重量（g/単位）"
+        label: t('materials.attributes.default_unit_weight')
     ) %>
   </div>
 </div>
@@ -48,7 +48,7 @@
     <%= form_group_lg(f, :unit_weight_for_order,
         field_type: :number_field,
         step: :any,
-        label: "発注単位の重量（g）"
+        label: t('materials.attributes.unit_weight_for_order')
     ) %>
   </div>
 </div>
@@ -59,9 +59,9 @@
     <%= form_group_lg(f, :pieces_per_order_unit,
         field_type: :number_field,
         step: 1,
-        label: "発注単位あたりの個数（例: 1箱=50枚）※個数ベースの場合のみ"
+        label: t('materials.attributes.pieces_per_order_unit_label')
     ) %>
-    <p class="text-muted small">※重量ベース（まぐろ、いくらなど）の場合は空欄でOK。個数ベース（トレイなど）の場合のみ入力してください。</p>
+    <p class="text-muted small"><%= t('materials.hints.pieces_per_order_unit') %></p>
   </div>
 </div>
 
@@ -71,12 +71,9 @@
   <div class="col-md-12">
     <%= form_group_lg(f, :order_group_name,
         field_type: :text_field,
-        label: "発注グループ名（任意）"
+        label: t('materials.attributes.order_group_name')
     ) %>
-    <p class="text-muted small">
-      ※同じ原材料を異なる切り方で使用する場合に設定します。<br>
-      例: 「まぐろ赤身（にぎり）」と「まぐろ赤身（巻物）」の両方に「まぐろ赤身」と入力すると、印刷時は別々に表示され、発注時はまとめて計算されます。
-    </p>
+    <p class="text-muted small"><%= t('materials.hints.order_group_name') %></p>
   </div>
 </div>
 
