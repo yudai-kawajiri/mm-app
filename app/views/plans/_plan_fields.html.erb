@@ -13,7 +13,7 @@
           <%= form_group_lg(f, :status,
                             field_type: :select,
                             choices: Plan.statuses.keys.map { |status| [t("activerecord.enums.plan.status.#{status}"), status] },
-                            select_options: { include_blank: t('helpers.prompt.select'), selected: nil }) %>
+                            select_options: { include_blank: t('helpers.prompt.select') }) %>
 
       </div>
 
