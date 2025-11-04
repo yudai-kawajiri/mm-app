@@ -20,6 +20,7 @@ import ResourcesProductMaterialMaterialController from "controllers/resources/pr
 import FlashController from "controllers/flash_controller"
 import CharacterCounterController from "controllers/character_counter_controller"
 import FormValidationController from "controllers/form_validation_controller"
+import NumberInputController from "controllers/number_input_controller"
 
 // 計画割り当てController
 import PlanAssignmentController from "controllers/plan_assignment_controller"
@@ -28,7 +29,7 @@ import PlanAssignmentController from "controllers/plan_assignment_controller"
 import SortableTableController from "controllers/sortable_table_controller"
 
 // Budget Chart Controller（予算グラフ表示）
-import BudgetChartController from "controllers/budget_chart_controller"
+// import BudgetChartController from "controllers/budget_chart_controller"
 
 // 手動登録
 application.register("form--nested-form", FormNestedFormController)
@@ -42,6 +43,7 @@ application.register("resources--product-material--material", ResourcesProductMa
 application.register("flash", FlashController)
 application.register("character-counter", CharacterCounterController)
 application.register("form-validation", FormValidationController)
+application.register("number-input", NumberInputController)
 
 // 計画割り当てController登録
 application.register("plan-assignment", PlanAssignmentController)
@@ -50,4 +52,4 @@ application.register("plan-assignment", PlanAssignmentController)
 application.register("sortable-table", SortableTableController)
 
 // Budget Chart Controller登録（予算グラフ表示）
-application.register("budget-chart", BudgetChartController)
+// application.register("budget-chart", BudgetChartController)
