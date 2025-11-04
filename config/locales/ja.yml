@@ -203,20 +203,28 @@ ja:
 
   numerical_managements:
     index:
-      title: "売上予算管理"
-      monthly_budget: "月間予算"
-      actual_revenue: "実績売上"
-      planned_revenue: "計画売上"
-      forecast_revenue: "予測売上"
+      title: "売上予算ダッシュボード"
+      monthly_budget_card: "月間売上予算"
+      monthly_planned_revenue: "月間計画売上"
+      cumulative_actual: "累計売上実績"
+      budget_achievement: "予算達成率"
+      target_amount_subtitle: "今月の予算額"
+      planned_total_subtitle: "今月の計画合計"
+      actual_until_yesterday: "昨日までの実績"
+      achievement_as_of_yesterday: "昨日時点の達成率"
       month_end_forecast: "月末予測"
+      forecast_revenue: "予測売上"
+      forecast_diff: "予測差"
       achievement_rate: "達成率"
-      forecast_diff: "予算差"
+      required_additional: "必要追加額"
       gap_analysis: "ギャップ分析"
       remaining_days: "残り日数"
-      required_additional: "必要追加額"
+      recommended_daily_target: "推奨日次目標"
       daily_required: "1日あたり必要額"
       action_plan: "アクションプラン"
       recommended_daily_target: "推奨日別目標"
+      alert_action_needed_html: "残り<strong>%{days}日</strong>で<strong>%{amount}</strong>の追加が必要です。<br>1日あたり<strong>%{daily}</strong>を目指しましょう。"
+      alert_on_track: "予算達成に向けて順調です！"
       daily_details: "日別明細"
       set_budget: "予算設定"
       delete_budget: "予算削除"
@@ -226,7 +234,6 @@ ja:
       alert_remaining: "残り%{days}日で目標を達成するには、"
       alert_daily: "1日あたり%{amount}の追加が必要です"
       alert_add: "追加で%{amount}の売上が必要です"
-      alert_on_track: "現在のペースで達成可能です！"
 
     # テーブルヘッダー
     table_headers:
@@ -241,7 +248,7 @@ ja:
       toggle_edit_mode: "一括編集モード"
       toggle_normal_mode: "通常表示"
       monthly_budget_label: "月間予算:"
-      daily_target_sum: "日別目標合計:"
+      daily_target_sum: "日別予算合計:"
       budget_diff_label: "予算差:"
       bulk_save: "一括保存"
       excess: "超過"
@@ -253,7 +260,7 @@ ja:
 
     # アクション
     actions:
-      edit_target: "目標編集"
+      edit_target: "予算編集"
       add_plan: "計画追加"
       edit_plan: "計画編集"
       input_actual: "実績入力"
@@ -266,10 +273,10 @@ ja:
       budget_setting:
         title: "予算設定"
         info: "月間の売上目標を設定します。日別目標は自動で分配されます。"
-      # 日別目標編集モーダル
+      # 日別予算編集モーダル
       daily_target_edit:
-        title: "日別目標編集"
-        info: "この日の目標金額を変更します。月間予算の合計には影響しません。"
+        title: "日別予算編集"
+        info: "この日の予算金額を変更します。月間予算の合計には影響しません。"
       # 実績入力モーダル
       actual_revenue_entry:
         title: "実績入力"
@@ -277,6 +284,7 @@ ja:
       # 計画割当モーダル
       assign_plan:
         title: "計画追加"
+        edit_title: "計画編集"
         category_help: "製造する製品のカテゴリを選択してください。"
         plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます。"
         revenue_help: "必要に応じて計画高を調整できます。"
@@ -285,7 +293,7 @@ ja:
         target_month: "対象月"
         target_date: "対象日"
         monthly_budget_yen: "月間予算（円）"
-        daily_target_yen: "日別目標（円）"
+        daily_target_yen: "日別予算（円）"
         actual_revenue_yen: "実績売上（円）"
         planned_revenue_yen: "計画高（円）"
         note: "備考"
@@ -296,10 +304,18 @@ ja:
       prompts:
         select_category: "カテゴリを選択"
         select_plan: "計画を選択"
+        select_plan_prompt: "計画を選択してください"
         select_category_first: "まずカテゴリを選択してください"
       # モーダル共通確認
       confirm:
         delete: "本当に削除しますか？"
+
+      # モーダル共通アクション
+      actions:
+        cancel: "キャンセル"
+        create: "作成"
+        update: "更新"
+        close: "閉じる"
 
     # メッセージ
     messages:
@@ -325,9 +341,9 @@ ja:
 
     # プレースホルダー
     placeholders:
-      budget_amount: "例: 1600000"
-      daily_target_amount: "例: 51613"
-      actual_revenue_amount: "例: 50000"
+      budget_amount: "例: 1,000,000"
+      daily_target_amount: "例:1,000 "
+      actual_revenue_amount: "例: 10,000"
 
   forms:
     titles:
@@ -466,9 +482,9 @@ ja:
         subject: "【寿司管理システム】パスワード再設定のご案内"
         greeting: "こんにちは %{name} さん！"
         action: "パスワードの変更"
-        instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください"
-        instruction_2: "このメールに心当たりがない場合は、無視して構いません"
-        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを作成するまで変更されません"
+        instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください。"
+        instruction_2: "このメールに心当たりがない場合は、無視して構いません。"
+        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを作成するまで変更されません。"
 
   activerecord:
     errors:

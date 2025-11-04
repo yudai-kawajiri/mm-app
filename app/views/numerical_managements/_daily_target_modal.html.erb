@@ -1,4 +1,4 @@
-<!-- 日別目標編集モーダル -->
+<!-- 日別予算編集モーダル -->
 <div class="modal fade" id="editDailyTargetModal" tabindex="-1" aria-labelledby="editDailyTargetModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -22,12 +22,12 @@
           </div>
 
           <div class="mb-3">
-            <%= f.label :target_amount, t('numerical_managements.modals.daily_target_yen'), class: "form-label" %>
+            <%= f.label :target_amount, t('numerical_managements.modals.labels.daily_target_yen'), class: "form-label" %>
             <%= f.number_field :target_amount, class: "form-control", min: 0, step: 1, required: true, placeholder: t('numerical_managements.placeholders.daily_target_amount'), id: "editTargetAmount" %>
           </div>
 
           <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.daily_target_info') %>
+            <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.daily_target_edit.info') %>
           </div>
         </div>
 
