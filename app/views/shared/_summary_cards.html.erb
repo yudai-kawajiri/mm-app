@@ -1,0 +1,58 @@
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card border-primary">
+      <div class="card-body p-3">
+        <h6 class="card-title text-primary mb-2">
+          <i class="bi bi-calendar-check"></i> 月間予算
+        </h6>
+        <p class="h4 mb-0">
+          <%= number_to_currency((forecast_data[:target_amount] || 0).to_i, unit: "¥", precision: 0) %>
+        </p>
+        <small class="text-muted">今月の目標額</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card border-info">
+      <div class="card-body p-3">
+        <h6 class="card-title text-info mb-2">
+          <i class="bi bi-clipboard-check"></i> 月間計画売上
+        </h6>
+        <p class="h4 mb-0">
+          <%= number_to_currency((forecast_data[:planned_amount] || 0).to_i, unit: "¥", precision: 0) %>
+        </p>
+        <small class="text-muted">今月の計画合計</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card border-success">
+      <div class="card-body p-3">
+        <h6 class="card-title text-success mb-2">
+          <i class="bi bi-graph-up-arrow"></i> 累計売上実績
+        </h6>
+        <p class="h4 mb-0">
+          <%= number_to_currency((forecast_data[:actual_amount] || 0).to_i, unit: "¥", precision: 0) %>
+        </p>
+        <small class="text-muted">昨日までの実績</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card border-warning">
+      <div class="card-body p-3">
+        <h6 class="card-title text-warning mb-2">
+          <i class="bi bi-speedometer2"></i> 予算達成率
+        </h6>
+        <% achievement = forecast_data[:daily_achievement_rate] || 0 %>
+        <p class="h4 mb-0 <%= achievement >= 100 ? 'text-success' : (achievement >= 80 ? 'text-warning' : 'text-danger') %>">
+          <%= number_to_percentage(achievement, precision: 1) %>
+        </p>
+        <small class="text-muted">昨日時点の達成率</small>
+      </div>
+    </div>
+  </div>
+</div>
