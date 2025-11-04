@@ -28,7 +28,11 @@
     <%= form_group_lg(f, :default_unit_weight,
         field_type: :number_field,
         step: :any,
-        label: t('materials.attributes.default_unit_weight')
+        label: t('materials.attributes.default_unit_weight'),
+        data: {
+          controller: 'number-input',
+          action: 'input->number-input#handleInput paste->number-input#handlePaste'
+        }
     ) %>
   </div>
 </div>
@@ -48,7 +52,11 @@
     <%= form_group_lg(f, :unit_weight_for_order,
         field_type: :number_field,
         step: :any,
-        label: t('materials.attributes.unit_weight_for_order')
+        label: t('materials.attributes.unit_weight_for_order'),
+        data: {
+          controller: 'number-input',
+          action: 'input->number-input#handleInput paste->number-input#handlePaste'
+        }
     ) %>
   </div>
 </div>
@@ -59,7 +67,11 @@
     <%= form_group_lg(f, :pieces_per_order_unit,
         field_type: :number_field,
         step: 1,
-        label: t('materials.attributes.pieces_per_order_unit_label')
+        label: t('materials.attributes.pieces_per_order_unit_label'),
+        data: {
+          controller: 'number-input',
+          action: 'input->number-input#handleInput paste->number-input#handlePaste'
+        }
     ) %>
     <p class="text-muted small"><%= t('materials.hints.pieces_per_order_unit') %></p>
   </div>

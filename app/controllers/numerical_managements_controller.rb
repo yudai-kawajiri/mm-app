@@ -152,10 +152,10 @@ class NumericalManagementsController < ApplicationController
       # 日別目標を自動生成
       @monthly_budget.generate_daily_targets!
 
-      redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   notice: t('numerical_managements.messages.budget_updated')
     else
-      redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   alert: t('numerical_managements.messages.budget_update_failed')
     end
   end
@@ -169,17 +169,18 @@ class NumericalManagementsController < ApplicationController
 
     if @monthly_budget&.destroy
       # 関連する日別目標も削除される（dependent: :destroy）
-      redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   notice: t('numerical_managements.messages.budget_deleted')
     else
-      redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   alert: t('numerical_managements.messages.budget_delete_failed')
     end
   end
 
   def bulk_update
-    unless params[:daily_targets].is_a?(Hash)
-      redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+    # パラメータ名を daily_data に修正
+    unless params[:daily_data].is_a?(Hash)
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   alert: t('api.errors.invalid_parameters')
       return
     end
@@ -187,14 +188,18 @@ class NumericalManagementsController < ApplicationController
     success_count = 0
     error_count = 0
 
-    params[:daily_targets].each do |day, attributes|
-      target_date = Date.new(params[:year].to_i, params[:month].to_i, day.to_i)
+    params[:daily_data].each do |index, attributes|
+      # 日付を取得
+      target_date = Date.parse(attributes[:date])
 
-      daily_target = current_user.daily_targets.find_or_initialize_by(
-        target_date: target_date
-      )
+      # 日別予算の更新
+      if attributes[:target_id].present?
+        daily_target = current_user.daily_targets.find_by(id: attributes[:target_id])
+      else
+        daily_target = current_user.daily_targets.find_or_initialize_by(target_date: target_date)
+      end
 
-      if daily_target.update(target_amount: attributes[:target_amount])
+      if daily_target && daily_target.update(target_amount: attributes[:target_amount])
         success_count += 1
       else
         error_count += 1
@@ -210,10 +215,10 @@ class NumericalManagementsController < ApplicationController
     end
 
     if error_count.zero?
-      redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   notice: t('numerical_managements.messages.bulk_update_success', count: success_count)
     else
-      redirect_to numerical_managements_path(month: "#{params[:year]}-#{params[:month]}"),
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   alert: t('numerical_managements.messages.bulk_update_partial', success: success_count, error: error_count)
     end
   end

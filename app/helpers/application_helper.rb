@@ -10,7 +10,7 @@ module ApplicationHelper
       { name: t("dashboard.menu.dashboard"), path: authenticated_root_path },
       {
         name: t("dashboard.menu.category_management"),
-        path: categories_path,  # ← 追加
+        path: categories_path,
         submenu: [
           { name: t("dashboard.menu.category_list"), path: categories_path },
           { name: t("dashboard.menu.new_category"), path: new_category_path }
@@ -18,7 +18,7 @@ module ApplicationHelper
       },
       {
         name: t("dashboard.menu.material_management"),
-        path: units_path,  # ← 追加（単位管理が最初）
+        path: units_path,
         submenu: [
           { name: t("dashboard.menu.unit_management"), path: units_path },
           { name: t("dashboard.menu.material_list"), path: materials_path },
@@ -27,7 +27,7 @@ module ApplicationHelper
       },
       {
         name: t("dashboard.menu.product_management"),
-        path: products_path,  # ← 追加
+        path: products_path,
         submenu: [
           { name: t("dashboard.menu.product_list"), path: products_path },
           { name: t("dashboard.menu.new_product"), path: new_product_path }
@@ -35,7 +35,7 @@ module ApplicationHelper
       },
       {
         name: t("dashboard.menu.plan_management"),
-        path: plans_path,  # ← 追加
+        path: plans_path,
         submenu: [
           { name: t("dashboard.menu.plan_list"), path: plans_path },
           { name: t("dashboard.menu.new_plan"), path: new_plan_path }
@@ -43,7 +43,7 @@ module ApplicationHelper
       },
       {
         name: t("dashboard.menu.numerical_management"),
-        path: numerical_managements_path,  # ← 追加
+        path: numerical_managements_path,
         submenu: [
           { name: t("dashboard.menu.numerical_dashboard"), path: numerical_managements_path }
         ]
@@ -173,7 +173,8 @@ module ApplicationHelper
     #  必須フィールドには required 属性を追加
     options[:required] = true if required
 
-    #  バリデーションターゲットの追加
+    # data オプションの正しいマージ
+    # ユーザーから渡された data オプションを保持し、必要な属性を追加
     options[:data] ||= {}
     options[:data][:form_validation_target] = "field" if required
 
@@ -181,7 +182,10 @@ module ApplicationHelper
     if character_counter && max_length
       options[:maxlength] = max_length
       options[:data][:character_counter_target] = "input"
-      options[:data][:action] = "input->character-counter#updateCount"
+      # action が既に存在する場合はスペース区切りで追加
+      existing_action = options[:data][:action]
+      counter_action = "input->character-counter#updateCount"
+      options[:data][:action] = existing_action ? "#{existing_action} #{counter_action}" : counter_action
     end
 
     #  ラッパーの data 属性

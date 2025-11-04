@@ -25,10 +25,11 @@ pin "controllers/resources/plan-product/sync_controller", to: "controllers/resou
 # Controllers - Product Material（手動 pin）
 pin "controllers/resources/product-material/material_controller", to: "controllers/resources/product-material/material_controller.js"
 
-# Branch 8: UI Enhancement Controllers（手動 pin）
+# UI Enhancement Controllers（手動 pin）
 pin "controllers/flash_controller", to: "controllers/flash_controller.js"
 pin "controllers/character_counter_controller", to: "controllers/character_counter_controller.js"
 pin "controllers/form_validation_controller", to: "controllers/form_validation_controller.js"
+pin "controllers/number_input_controller", to: "controllers/number_input_controller.js"
 
 # 計画割り当て Controller
 pin "controllers/plan_assignment_controller", to: "controllers/plan_assignment_controller.js"

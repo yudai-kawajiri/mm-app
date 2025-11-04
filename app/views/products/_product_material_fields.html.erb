@@ -51,8 +51,9 @@
       step: 'any',
       placeholder: t('helpers.forms.quantity_placeholder'),
       data: {
+        controller: 'number-input',
         'resources--product-material--material-target': 'quantityInput',
-        action: 'input->resources--product-material--material#syncQuantityToOtherTabs',
+        action: 'input->number-input#handleInput input->resources--product-material--material#syncQuantityToOtherTabs paste->number-input#handlePaste',
         'unique-id': unique_id
       } %>
   </td>
@@ -63,10 +64,11 @@
       class: 'form-control',
       min: 0,
       step: 'any',
-      placeholder: '重量を入力',
+      placeholder: t('products.product_material_fields.unit_weight_placeholder', default: '重量を入力'),
       data: {
+        controller: 'number-input',
         'resources--product-material--material-target': 'unitWeightInput',
-        action: 'input->resources--product-material--material#syncUnitWeightToOtherTabs',
+        action: 'input->number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->number-input#handlePaste',
         'unique-id': unique_id
       } %>
   </td>
