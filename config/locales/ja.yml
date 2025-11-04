@@ -577,3 +577,10 @@ ja:
           draft: "下書き"
           active: "実施中"
           completed: "完了"
+    api:
+      errors:
+        unauthorized: "認証が必要です"
+        plan_not_found: "計画が見つかりません、またはアクセスが拒否されました"
+        material_not_found: "原材料が見つかりません、またはアクセスが拒否されました"
+        product_not_found: "商品が見つかりません、またはアクセスが拒否されました"
+        server_error: "サーバーエラーが発生しました"
