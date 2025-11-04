@@ -2,7 +2,7 @@
 <html>
 <head>
 
-  <title>印刷 - <%= yield(:title) %></title>
+  <title><%= t('common.print') %> - <%= yield(:title) %></title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
@@ -49,10 +49,10 @@
 <body>
   <div class="no-print">
     <button onclick="window.print()" class="btn btn-primary btn-lg">
-      印刷する
+      <%= t('common.print_action') %>
     </button>
     <button onclick="window.close()" class="btn btn-secondary btn-lg ml-2">
-      ✕ 閉じる
+      ✕ <%= t('common.close') %>
     </button>
   </div>
 

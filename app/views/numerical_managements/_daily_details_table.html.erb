@@ -1,4 +1,4 @@
-<!-- 日別明細テーブル（一括編集対応版・累計表示対応） -->
+<!--/home/user/workspace/mm-app/app/views/numerical_managements/_daily_details_table.html.erb -->
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
     <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
@@ -6,7 +6,7 @@
             class="btn btn-primary btn-sm"
             id="bulkEditToggle"
             onclick="toggleBulkEditMode()">
-      <i class="bi bi-pencil-square"></i> 一括編集モード
+      <i class="bi bi-pencil-square"></i> <%= t('numerical_managements.bulk_edit.toggle_edit_mode') %>
     </button>
   </div>
 
@@ -14,15 +14,15 @@
   <div id="bulkEditSummary" class="card-body bg-light border-bottom" style="display: none;">
     <div class="row">
       <div class="col-md-4">
-        <strong>月間予算:</strong>
+        <strong><%= t('numerical_managements.bulk_edit.monthly_budget_label') %></strong>
         <span class="text-primary"><%= number_to_currency(@monthly_budget.target_amount || 0, unit: "¥", precision: 0) %></span>
       </div>
       <div class="col-md-4">
-        <strong>日別目標合計:</strong>
+        <strong><%= t('numerical_managements.bulk_edit.daily_target_sum') %></strong>
         <span id="dailyTargetSum" class="fw-bold">¥0</span>
       </div>
       <div class="col-md-4">
-        <strong>差分:</strong>
+        <strong><%= t('numerical_managements.bulk_edit.budget_diff_label') %></strong>
         <span id="budgetDiff" class="fw-bold">¥0</span>
       </div>
     </div>
@@ -36,13 +36,13 @@
         <table class="table table-sm table-hover mb-0">
           <thead class="table-light sticky-top">
             <tr>
-              <th style="width: 80px;">日付</th>
-              <th class="text-end" style="width: 100px;">予算</th>
-              <th class="text-end" style="width: 100px;">計画高</th>
-              <th class="text-end" style="width: 100px;">実績</th>
-              <th class="text-end" style="width: 80px;">達成率</th>
-              <th class="text-end" style="width: 100px;">差額</th>
-              <th class="text-center bulk-edit-hidden" style="width: 180px;">アクション</th>
+              <th style="width: 80px;"><%= t('common.labels.date') %></th>
+              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.budget') %></th>
+              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.planned') %></th>
+              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.actual') %></th>
+              <th class="text-end" style="width: 80px;"><%= t('numerical_managements.table_headers.achievement_rate') %></th>
+              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.budget_diff') %></th>
+              <th class="text-center bulk-edit-hidden" style="width: 180px;"><%= t('common.action') %></th>
             </tr>
           </thead>
           <tbody>
@@ -90,11 +90,11 @@
                   <div class="bulk-edit-input" style="display: none;">
                     <% first_schedule = day[:plan_schedules].first %>
                     <%= number_field_tag "daily_data[#{index}][actual_revenue]",
-                                          (first_schedule&.actual_revenue || 0).to_i,
-                                          class: "form-control form-control-sm text-end",
-                                          min: 0,
-                                          step: 1,
-                                          disabled: day[:plan_schedules].empty? %>
+                                         (first_schedule&.actual_revenue || 0).to_i,
+                                         class: "form-control form-control-sm text-end",
+                                         min: 0,
+                                         step: 1,
+                                         disabled: day[:plan_schedules].empty? %>
                     <%= hidden_field_tag "daily_data[#{index}][plan_schedule_id]", first_schedule&.id %>
                   </div>
                 </td>
@@ -107,7 +107,7 @@
                   </span>
                 </td>
 
-                <%# 日別差額 %>
+                <%# 日別予算差 %>
                 <td class="text-end <%= (day[:diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
                   <%= number_to_currency((day[:diff] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
@@ -125,7 +125,7 @@
                             data-target-id="<%= target_id %>"
                             data-target-amount="<%= day[:target].to_i %>"
                             onclick="setEditModalData(this)"
-                            title="目標編集">
+                            title="<%= t('numerical_managements.actions.edit_target') %>">
                       <i class="bi bi-pencil"></i>
                     </button>
 
@@ -146,7 +146,7 @@
                             data-category-name="<%= first_schedule&.plan&.category&.name %>"
                             data-planned-revenue="<%= first_schedule&.planned_revenue || 0 %>"
                             onclick="setPlanModalData(this)"
-                            title="<%= first_schedule ? '計画編集' : '計画追加' %>">
+                            title="<%= first_schedule ? t('numerical_managements.actions.edit_plan') : t('numerical_managements.actions.add_plan') %>">
                       <i class="bi bi-<%= first_schedule ? 'pencil-square' : 'calendar-plus' %>"></i>
                     </button>
 
@@ -162,7 +162,7 @@
                               data-plan-schedule-id="<%= first_schedule.id %>"
                               data-actual-revenue="<%= first_schedule.actual_revenue || 0 %>"
                               onclick="setActualModalData(this)"
-                              title="実績入力">
+                              title="<%= t('numerical_managements.actions.input_actual') %>">
                         <i class="bi bi-currency-yen"></i>
                       </button>
                     <% end %>
@@ -174,7 +174,7 @@
                                     class: "btn btn-outline-primary",
                                     target: "_blank",
                                     data: { turbo: false },
-                                    title: "計画を印刷" do %>
+                                    title: t('numerical_managements.actions.print_plan') do %>
                           <i class="bi bi-printer"></i>
                         <% end %>
                       <% else %>
@@ -183,7 +183,7 @@
                                   class="btn btn-outline-primary dropdown-toggle"
                                   data-bs-toggle="dropdown"
                                   aria-expanded="false"
-                                  title="印刷する計画を選択">
+                                  title="<%= t('numerical_managements.actions.select_plan_to_print') %>">
                             <i class="bi bi-printer"></i>
                           </button>
                           <ul class="dropdown-menu dropdown-menu-end">
@@ -209,34 +209,34 @@
               <tr class="table-light <%= 'table-secondary' unless is_past %>">
                 <%# 累計予算 %>
                 <td class="text-end">
-                  <small class="text-muted">累計:</small>
+                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
                   <%= number_to_currency((day[:cumulative_target] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
 
                 <%# 累計計画高 %>
                 <td class="text-end">
-                  <small class="text-muted">累計:</small>
+                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
                   <%= number_to_currency((day[:cumulative_planned] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
 
                 <%# 累計実績 %>
                 <td class="text-end">
-                  <small class="text-muted">累計:</small>
+                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
                   <%= number_to_currency((day[:cumulative_actual] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
 
                 <%# 累計達成率 %>
                 <td class="text-end">
                   <% cum_rate = day[:cumulative_achievement_rate] || 0 %>
-                  <small class="text-muted">累計:</small>
+                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
                   <span class="<%= cum_rate >= 100 ? 'text-success' : (cum_rate >= 80 ? 'text-warning' : 'text-danger') %>">
                     <%= number_to_percentage(cum_rate, precision: 1) %>
                   </span>
                 </td>
 
-                <%# 累計差額 %>
+                <%# 累計予算差 %>
                 <td class="text-end <%= (day[:cumulative_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
-                  <small class="text-muted">累計:</small>
+                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
                   <%= number_to_currency((day[:cumulative_diff] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
               </tr>
@@ -249,10 +249,10 @@
       <div class="card-footer bulk-edit-actions" style="display: none;">
         <div class="d-flex justify-content-end gap-2">
           <button type="button" class="btn btn-secondary" onclick="toggleBulkEditMode()">
-            <i class="bi bi-x-lg"></i> キャンセル
+            <i class="bi bi-x-lg"></i> <%= t('common.cancel') %>
           </button>
           <button type="submit" class="btn btn-success">
-            <i class="bi bi-check-lg"></i> 一括保存
+            <i class="bi bi-check-lg"></i> <%= t('numerical_managements.bulk_edit.bulk_save') %>
           </button>
         </div>
       </div>
@@ -275,7 +275,7 @@ function toggleBulkEditMode() {
 
   if (window.isEditMode) {
     // 編集モードON
-    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-eye"></i> 通常表示';
+    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-eye"></i> <%= t('numerical_managements.bulk_edit.toggle_normal_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'block';
     document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'block');
@@ -291,7 +291,7 @@ function toggleBulkEditMode() {
     });
   } else {
     // 編集モードOFF
-    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-pencil-square"></i> 一括編集モード';
+    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-pencil-square"></i> <%= t('numerical_managements.bulk_edit.toggle_edit_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'none';
     document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'inline');
     document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'none');
@@ -320,10 +320,10 @@ function calculateDailyTargetSum() {
   // 差分を表示
   const diffElement = document.getElementById('budgetDiff');
   if (diff > 0) {
-    diffElement.textContent = '+¥' + diff.toLocaleString() + ' 超過 ';
+    diffElement.textContent = '+¥' + diff.toLocaleString() + ' <%= t('numerical_managements.bulk_edit.excess') %> ';
     diffElement.className = 'fw-bold text-danger';
   } else if (diff < 0) {
-    diffElement.textContent = '-¥' + Math.abs(diff).toLocaleString() + ' 不足';
+    diffElement.textContent = '-¥' + Math.abs(diff).toLocaleString() + ' <%= t('numerical_managements.bulk_edit.shortage') %>';
     diffElement.className = 'fw-bold text-warning';
   } else {
     diffElement.textContent = '¥0';

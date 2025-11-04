@@ -1,134 +1,125 @@
-# app/controllers/plans_controller.rb
-class PlansController < AuthenticatedController
-  # define_search_params を使って許可するキーを定義
+class ProductsController < AuthenticatedController
   define_search_params :q, :category_id
+  find_resource :product, only: [ :show, :edit, :update, :destroy, :purge_image, :copy ]
 
-  find_resource :plan, only: [ :show, :edit, :update, :destroy, :update_status, :copy, :print ]
-
-  before_action -> { load_categories_for("plan", as: :plan) }, only: [ :index, :new, :edit, :create, :update ]
-  before_action -> { load_categories_for("product", as: :product) }, only: [ :new, :edit, :create, :update ]
-  before_action :load_plan_products, only: [ :show ]
+  before_action -> { load_categories_for("product", as: :product) }, only: [ :index, :new, :create, :edit, :update ]
+  before_action -> { load_categories_for("material", as: :material) }, only: [ :new, :create, :show, :edit, :update ]
 
   def index
-    @plans = apply_pagination(
-      Plan.for_index.search_and_filter(search_params)
+    @products = apply_pagination(
+      Product.includes(:category).search_and_filter(search_params).ordered
     )
+    @search_categories = @product_categories  # ← 追加
     set_search_term_for_view
   end
 
   def new
-    @plan = current_user.plans.build
-    @plan.status = nil
+    @product = current_user.products.build
   end
 
   def create
-    @plan = current_user.plans.build(plan_params)
-    respond_to_save(@plan, success_path: @plan)
+    @product = current_user.products.build(product_params)
+    respond_to_save(@product, success_path: @product)
   end
 
-  def show; end
-
-  def edit
-    @plan.plan_products.build unless @plan.plan_products.any?
+  def show
+    @product_materials = @product.product_materials.includes(:material, :unit).order(:id)
   end
+
+  def edit; end
 
   def update
-    @plan.assign_attributes(plan_params)
-    respond_to_save(@plan, success_path: @plan)
+    @product.assign_attributes(product_params)
+    respond_to_save(@product, success_path: @product)
   end
 
   def destroy
-    respond_to_destroy(@plan, success_path: plans_url)
+    respond_to_destroy(@product, success_path: products_url)
   end
 
-  # ステータス更新アクション
-  def update_status
-    new_status = status_param
-
-    if Plan.statuses.keys.include?(new_status)
-      @plan.update(status: new_status)
-      status_text = t("activerecord.enums.plan.status.#{new_status}")
-      redirect_to plans_path, notice: "計画「#{@plan.name}」のステータスを「#{status_text}」に変更しました。"
+  def purge_image
+    if @product.image.attached?
+      @product.image.purge
+      head :no_content
     else
-      redirect_to plans_path, alert: "無効なステータスです。"
+      head :not_found
     end
   end
 
   def copy
-    original_plan = @plan
-    base_name = original_plan.name
-    copy_count = Plan.where("name LIKE ?", "#{base_name}%").count
+    original_product = @product
+    base_name = original_product.name
+    copy_count = 1
+    new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
 
-    new_plan = original_plan.dup
-    new_plan.name = "#{base_name} (コピー#{copy_count})"
-    new_plan.status = :draft
-    new_plan.user_id = current_user.id
+    while Product.exists?(name: new_name, category_id: original_product.category_id)
+      copy_count += 1
+      new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
+    end
+
+    new_product = original_product.dup
+    new_product.name = new_name
+    new_product.user_id = current_user.id
+
+    temp_item_number = "C#{copy_count}"[0..3]
+
+    while Product.exists?(item_number: temp_item_number, category_id: original_product.category_id)
+      copy_count += 1
+      temp_item_number = "C#{copy_count}"[0..3]
+    end
+
+    new_product.item_number = temp_item_number
 
     ActiveRecord::Base.transaction do
-      new_plan.save!
+      new_product.save!
 
-      original_plan.plan_products.each do |plan_product|
-        new_plan.plan_products.create!(
-          product_id: plan_product.product_id,
-          production_count: plan_product.production_count
+      original_product.product_materials.each do |product_material|
+        new_product.product_materials.create!(
+          material_id: product_material.material_id,
+          unit_id: product_material.unit_id,
+          quantity: product_material.quantity,
+          unit_weight: product_material.unit_weight
         )
       end
     end
 
-    redirect_to plans_path, notice: "計画「#{original_plan.name}」をコピーしました（新規計画名: #{new_plan.name}）"
+    redirect_to products_path, notice: I18n.t('products.messages.copy_success', original_name: original_product.name, new_name: new_product.name, item_number: temp_item_number)
   rescue ActiveRecord::RecordInvalid => e
-    redirect_to plans_path, alert: "計画のコピーに失敗しました: #{e.message}"
+    redirect_to products_path, alert: I18n.t('products.messages.copy_failed', errors: e.record.errors.full_messages.join(', '))
   end
 
-  def print
-    @plan_products = @plan.plan_products
-                          .includes(product: [:category, :product_materials, { product_materials: [:material, :unit] }])
-                          .order(:id)
+  def reorder
+    product_ids = reorder_params[:product_ids]
 
-    # カレンダーから渡された日付を使用（なければ最初のスケジュール）
-    @scheduled_date = params[:date]&.to_date || @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
+    Rails.logger.debug "=== Received product_ids: #{product_ids.inspect}"
 
-    # 該当日付の予算を取得
-    if params[:date].present?
-      @budget = @plan.plan_schedules.where(scheduled_date: @scheduled_date).sum(:planned_revenue) || 0
-    else
-      @budget = @plan.plan_schedules.sum(:planned_revenue) || 0
-    end
-
-    @total_cost = @plan_products.sum { |pp| pp.product.price * pp.production_count }
-    @achievement_rate = @budget > 0 ? (@total_cost.to_f / @budget * 100).round(1) : 0
-    @materials_summary = @plan.aggregated_material_requirements
-
-    Rails.logger.info "========== Print Debug =========="
-    Rails.logger.info "Plan ID: #{@plan.id}"
-    Rails.logger.info "Scheduled Date: #{@scheduled_date}"
-    Rails.logger.info "Plan Products Count: #{@plan_products.count}"
-    Rails.logger.info "Materials Summary Count: #{@materials_summary.count}"
+    Product.update_display_orders(product_ids)
+    head :ok
   end
 
   private
 
-  def plan_params
-    params.require(:plan).permit(
-      :category_id,
-      :user_id,
+  def product_params
+    params.require(:product).permit(
       :name,
-      :description,
+      :item_number,
+      :price,
       :status,
-      plan_products_attributes: [
+      :description,
+      :category_id,
+      :image,
+      product_materials_attributes: [
         :id,
-        :_destroy,
-        :product_id,
-        :production_count
+        :material_id,
+        :unit_id,
+        :quantity,
+        :unit_weight,
+        :_destroy
       ]
     )
   end
 
-  def status_param
-    params.permit(:status)[:status]
-  end
-
-  def load_plan_products
-    @plan_products = @plan.plan_products.includes(:product)
+  def reorder_params
+    params.permit(product_ids: [])
   end
 end

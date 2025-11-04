@@ -5,7 +5,7 @@ class ProductMaterial < ApplicationRecord
 
   # バリデーション
   validates :material_id, presence: true
-  validates :material_id, uniqueness: { scope: :product_id, message: "は既に登録されています" }
+  validates :material_id, uniqueness: { scope: :product_id, message: :already_registered }
   validates :unit_id, presence: true
 
   validates :quantity,
@@ -39,7 +39,7 @@ class ProductMaterial < ApplicationRecord
 
   # 発注単位名
   def order_unit_name
-    material&.unit_for_order&.name || "未設定"
+    material&.unit_for_order&.name || I18n.t('common.not_set')
   end
 
   # 表示用（例: "1 パック", "2 箱"）
@@ -55,7 +55,7 @@ class ProductMaterial < ApplicationRecord
     when :weight
       "#{total_weight.round(1)}g → #{required_order_quantity}#{order_unit_name}"
     else
-      "計算不可"
+      I18n.t('common.calculation_unavailable')
     end
   end
 end

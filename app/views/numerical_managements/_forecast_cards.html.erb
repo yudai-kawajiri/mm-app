@@ -1,70 +1,58 @@
-<!-- 月末予測 3グループ横並び -->
 <div class="row g-3 mb-4">
-  <!-- グループ1: 月末予測 -->
   <div class="col-md-4">
     <div class="card h-100">
       <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">月末予測</h5>
+        <h5 class="mb-0"><%= t('numerical_managements.index.month_end_forecast') %></h5>
       </div>
       <div class="card-body">
         <table class="table table-sm mb-0">
           <tbody>
             <tr>
-              <td class="border-0">予測売上</td>
+              <td class="border-0"><%= t('numerical_managements.index.forecast_revenue') %></td>
               <td class="border-0 text-end fw-bold">
                 <%= number_to_currency((forecast_data[:forecast_amount] || 0).to_i, unit: "¥", precision: 0) %>
               </td>
             </tr>
             <tr>
-              <td>予測達成率</td>
+              <td><%= t('numerical_managements.index.achievement_rate') %></td>
               <td class="text-end fw-bold">
-                <%= number_to_percentage((forecast_data[:forecast_achievement_rate] || 0), precision: 1) %>
+                <%= number_to_percentage((forecast_data[:achievement_rate] || 0), precision: 1) %>
               </td>
             </tr>
             <tr>
-              <td>予算との差額</td>
-              <% diff = (forecast_data[:forecast_diff] || 0).to_i %>
-              <td class="text-end fw-bold <%= diff >= 0 ? 'text-success' : 'text-danger' %>">
-                <%= number_to_currency(diff, unit: "¥", precision: 0) %>
-                <% if diff >= 0 %>
-                  <span class="badge bg-success ms-1">超過見込み</span>
-                <% else %>
-                  <span class="badge bg-danger ms-1">未達見込み</span>
-                <% end %>
+              <td><%= t('numerical_managements.index.forecast_diff') %></td>
+              <td class="text-end fw-bold <%= (forecast_data[:forecast_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
+                <%= number_to_currency((forecast_data[:forecast_diff] || 0).to_i, unit: "¥", precision: 0) %>
               </td>
             </tr>
           </tbody>
         </table>
-        <small class="text-muted d-block mt-2">
-          <i class="bi bi-info-circle"></i> 昨日までの実績 + 今日以降の計画高
-        </small>
       </div>
     </div>
   </div>
 
-  <!-- グループ2: ギャップ分析 -->
   <div class="col-md-4">
     <div class="card h-100">
       <div class="card-header bg-warning text-dark">
-        <h5 class="mb-0">ギャップ分析</h5>
+        <h5 class="mb-0"><%= t('numerical_managements.index.gap_analysis') %></h5>
       </div>
       <div class="card-body">
         <table class="table table-sm mb-0">
           <tbody>
             <tr>
-              <td class="border-0">残り日数</td>
+              <td class="border-0"><%= t('numerical_managements.index.remaining_days') %></td>
               <td class="border-0 text-end fw-bold">
-                <%= (forecast_data[:remaining_days] || 0) %>日
+                <%= (forecast_data[:remaining_days] || 0) %><%= t('numerical_managements.index.days_suffix') %>
               </td>
             </tr>
             <tr>
-              <td>必要追加額</td>
+              <td><%= t('numerical_managements.index.required_additional') %></td>
               <td class="text-end fw-bold">
                 <%= number_to_currency((forecast_data[:required_additional] || 0).to_i, unit: "¥", precision: 0) %>
               </td>
             </tr>
             <tr>
-              <td>1日あたり必要額</td>
+              <td><%= t('numerical_managements.index.daily_required') %></td>
               <td class="text-end fw-bold">
                 <%= number_to_currency((forecast_data[:daily_required] || 0).to_i, unit: "¥", precision: 0) %>
               </td>
@@ -75,17 +63,16 @@
     </div>
   </div>
 
-  <!-- グループ3: アクションプラン -->
   <div class="col-md-4">
     <div class="card h-100">
       <div class="card-header bg-success text-white">
-        <h5 class="mb-0">アクションプラン</h5>
+        <h5 class="mb-0"><%= t('numerical_managements.index.action_plan') %></h5>
       </div>
       <div class="card-body">
         <table class="table table-sm mb-0">
           <tbody>
             <tr>
-              <td class="border-0">推奨日次目標</td>
+              <td class="border-0"><%= t('numerical_managements.index.recommended_daily_target') %></td>
               <td class="border-0 text-end fw-bold">
                 <%= number_to_currency((forecast_data[:daily_required] || 0).to_i, unit: "¥", precision: 0) %>
               </td>
@@ -95,13 +82,14 @@
                 <% if (forecast_data[:remaining_days] || 0) > 0 && (forecast_data[:required_additional] || 0) > 0 %>
                   <div class="alert alert-warning mb-0 p-2 small">
                     <i class="bi bi-exclamation-triangle-fill"></i>
-                    残り<strong><%= forecast_data[:remaining_days] %>日</strong>で
-                    <strong><%= number_to_currency(forecast_data[:required_additional].to_i, unit: "¥", precision: 0) %></strong>の追加が必要です。<br>
-                    1日あたり<strong><%= number_to_currency(forecast_data[:daily_required].to_i, unit: "¥", precision: 0) %></strong>を目指しましょう。
+                    <%= t('numerical_managements.index.alert_action_needed_html',
+                          days: forecast_data[:remaining_days],
+                          amount: number_to_currency(forecast_data[:required_additional].to_i, unit: "¥", precision: 0),
+                          daily: number_to_currency(forecast_data[:daily_required].to_i, unit: "¥", precision: 0)).html_safe %>
                   </div>
                 <% else %>
                   <div class="alert alert-success mb-0 p-2 small">
-                    <i class="bi bi-check-circle-fill"></i> 予算達成に向けて順調です！
+                    <i class="bi bi-check-circle-fill"></i> <%= t('numerical_managements.index.alert_on_track') %>
                   </div>
                 <% end %>
               </td>

@@ -9,7 +9,7 @@ class PlanSchedulesController < AuthenticatedController
     # パラメータチェック
     unless permitted[:plan_id].present?
       redirect_to numerical_managements_path,
-                  alert: "必要な情報が不足しています。"
+                  alert: I18n.t('api.errors.missing_required_info')
       return
     end
 
@@ -34,18 +34,18 @@ class PlanSchedulesController < AuthenticatedController
     Rails.logger.info "Is new record: #{@plan_schedule.new_record?}"
 
     if @plan_schedule.save
-      action = @plan_schedule.previously_new_record? ? "割り当てました" : "更新しました"
+      action = @plan_schedule.previously_new_record? ? I18n.t('plan_schedules.messages.assigned') : I18n.t('plan_schedules.messages.updated')
       Rails.logger.info "=== PlanSchedule Saved Successfully ==="
 
       redirect_to numerical_managements_path(
         month: scheduled_date.strftime("%Y-%m")
-      ), notice: "#{scheduled_date.strftime('%-m月%-d日')}の計画を#{action}。"
+      ), notice: I18n.t('plan_schedules.messages.plan_schedule_saved', date: scheduled_date.strftime('%-m月%-d日'), action: action)
     else
       Rails.logger.error "=== PlanSchedule Save Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
       redirect_to numerical_managements_path,
-                  alert: "計画の保存に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
+                  alert: I18n.t('plan_schedules.messages.plan_schedule_save_failed', errors: @plan_schedule.errors.full_messages.join(', '))
     end
   end
 
@@ -70,13 +70,13 @@ class PlanSchedulesController < AuthenticatedController
 
       redirect_to numerical_managements_path(
         month: scheduled_date.strftime("%Y-%m")
-      ), notice: "#{scheduled_date.strftime('%-m月%-d日')}の計画を更新しました。"
+      ), notice: I18n.t('plan_schedules.messages.plan_schedule_updated_with_date', date: scheduled_date.strftime('%-m月%-d日'))
     else
       Rails.logger.error "=== PlanSchedule Update Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
       redirect_to numerical_managements_path,
-                  alert: "計画の更新に失敗しました: #{@plan_schedule.errors.full_messages.join(', ')}"
+                  alert: I18n.t('plan_schedules.messages.plan_schedule_update_failed', errors: @plan_schedule.errors.full_messages.join(', '))
     end
   end
 
@@ -119,7 +119,7 @@ class PlanSchedulesController < AuthenticatedController
     Date.parse(date_string)
   rescue ArgumentError, TypeError
     redirect_to numerical_managements_path,
-                alert: "無効な日付形式です。"
+                alert: I18n.t('api.errors.invalid_date')
     nil
   end
 end

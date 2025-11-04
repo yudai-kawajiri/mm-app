@@ -50,11 +50,11 @@ class ProductsController < AuthenticatedController
     original_product = @product
     base_name = original_product.name
     copy_count = 1
-    new_name = "#{base_name} (コピー#{copy_count})"
+    new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
 
     while Product.exists?(name: new_name, category_id: original_product.category_id)
       copy_count += 1
-      new_name = "#{base_name} (コピー#{copy_count})"
+      new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
     end
 
     new_product = original_product.dup
@@ -83,9 +83,9 @@ class ProductsController < AuthenticatedController
       end
     end
 
-    redirect_to products_path, notice: "商品「#{original_product.name}」をコピーしました（新規商品名: #{new_product.name}）。品番「#{temp_item_number}」は仮の値です。編集画面で変更してください。"
+    redirect_to products_path, notice: I18n.t('products.messages.copy_success', original_name: original_product.name, new_name: new_product.name, item_number: temp_item_number)
   rescue ActiveRecord::RecordInvalid => e
-    redirect_to products_path, alert: "商品のコピーに失敗しました: #{e.record.errors.full_messages.join(', ')}"
+    redirect_to products_path, alert: I18n.t('products.messages.copy_failed', errors: e.record.errors.full_messages.join(', '))
   end
 
   def reorder

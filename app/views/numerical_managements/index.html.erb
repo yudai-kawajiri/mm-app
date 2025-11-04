@@ -37,7 +37,7 @@
         <% if @monthly_budget&.persisted? %>
           <%= button_to monthly_budget_path(@monthly_budget),
                         method: :delete,
-                        form: { data: { turbo_confirm: t('numerical_managements.modals.delete_confirm') } },
+                        form: { data: { turbo_confirm: t('numerical_managements.modals.confirm.delete') } },
                         class: "btn btn-outline-danger btn-sm" do %>
             <i class="bi bi-trash"></i> <%= t('numerical_managements.index.delete_budget') %>
           <% end %>
@@ -70,7 +70,7 @@
 
 <%# JavaScript - モーダル関連関数のみ（一括編集のJSは_daily_details_tableにあるので削除） %>
 <script>
-// ★★★ 日別目標編集モーダル ★★★
+// 日別予算編集モーダ
 function setEditModalData(button) {
   const date = button.dataset.date;
   const dateDisplay = button.dataset.dateDisplay;

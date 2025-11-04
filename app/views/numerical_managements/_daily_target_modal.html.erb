@@ -1,9 +1,9 @@
-<!-- 日別目標編集モーダル -->
+<!-- 日別予算編集モーダル -->
 <div class="modal fade" id="editDailyTargetModal" tabindex="-1" aria-labelledby="editDailyTargetModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editDailyTargetModalLabel"><%= t('numerical_managements.modals.daily_target_edit') %></h5>
+        <h5 class="modal-title" id="editDailyTargetModalLabel"><%= t('numerical_managements.modals.daily_target_edit.title') %></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
@@ -17,23 +17,23 @@
 
         <div class="modal-body">
           <div class="mb-3">
-            <label class="form-label"><%= t('numerical_managements.modals.target_date') %></label>
+            <label class="form-label"><%= t('numerical_managements.modals.labels.target_date') %></label>
             <input type="text" class="form-control" id="editTargetDate" readonly>
           </div>
 
           <div class="mb-3">
-            <%= f.label :target_amount, t('numerical_managements.modals.daily_target_yen'), class: "form-label" %>
-            <%= f.number_field :target_amount, class: "form-control", min: 0, step: 1, required: true, placeholder: t('numerical_managements.placeholders.daily_target_example'), id: "editTargetAmount" %>
+            <%= f.label :target_amount, t('numerical_managements.modals.labels.daily_target_yen'), class: "form-label" %>
+            <%= f.number_field :target_amount, class: "form-control", min: 0, step: 1, required: true, placeholder: t('numerical_managements.placeholders.daily_target_amount'), id: "editTargetAmount" %>
           </div>
 
           <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.daily_target_info') %>
+            <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.daily_target_edit.info') %>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('numerical_managements.modals.cancel') %></button>
-          <%= f.submit t('numerical_managements.modals.update'), class: "btn btn-primary" %>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common.cancel') %></button>
+          <%= f.submit t('common.update'), class: "btn btn-primary" %>
         </div>
       <% end %>
     </div>

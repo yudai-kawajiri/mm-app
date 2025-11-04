@@ -20,13 +20,13 @@ class DailyTargetsController < AuthenticatedController
     @daily_target.assign_attributes(permitted.except(:target_date))
 
     if @daily_target.save
-      message = @daily_target.previously_new_record? ? "作成" : "更新"
+      message = @daily_target.previously_new_record? ? I18n.t('common.created') : I18n.t('common.updated')
       redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  notice: "#{target_date.strftime('%-m月%-d日')}の目標を#{message}しました。"
+                  notice: I18n.t('numerical_managements.messages.daily_target_saved', date: target_date.strftime('%-m月%-d日'), action: message)
     else
       Rails.logger.error "DailyTarget保存失敗: #{@daily_target.errors.full_messages.join(', ')}"
       redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  alert: "目標の保存に失敗しました: #{@daily_target.errors.full_messages.join(', ')}"
+                  alert: I18n.t('numerical_managements.messages.daily_target_save_failed', errors: @daily_target.errors.full_messages.join(', '))
     end
   end
 
@@ -42,7 +42,7 @@ class DailyTargetsController < AuthenticatedController
     # 権限チェック
     unless @daily_target.user_id == current_user.id
       redirect_to numerical_managements_path,
-                  alert: "権限がありません。"
+                  alert: I18n.t('api.errors.unauthorized')
       return
     end
 
@@ -51,11 +51,11 @@ class DailyTargetsController < AuthenticatedController
 
     if @daily_target.save
       redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  notice: "#{target_date.strftime('%-m月%-d日')}の目標を更新しました。"
+                  notice: I18n.t('numerical_managements.messages.daily_target_updated_with_date', date: target_date.strftime('%-m月%-d日'))
     else
       Rails.logger.error "DailyTarget更新失敗: #{@daily_target.errors.full_messages.join(', ')}"
       redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  alert: "目標の更新に失敗しました: #{@daily_target.errors.full_messages.join(', ')}"
+                  alert: I18n.t('numerical_managements.messages.daily_target_update_failed', errors: @daily_target.errors.full_messages.join(', '))
     end
   end
 
@@ -73,7 +73,7 @@ class DailyTargetsController < AuthenticatedController
     Date.parse(date_string)
   rescue ArgumentError, TypeError
     redirect_to numerical_managements_path,
-                alert: "無効な日付形式です。"
+                alert: I18n.t('api.errors.invalid_date')
     nil
   end
 
@@ -86,7 +86,7 @@ class DailyTargetsController < AuthenticatedController
 
     unless monthly_budget
       redirect_to numerical_managements_path(month: date.strftime("%Y-%m")),
-                  alert: "この月の予算が設定されていません。"
+                  alert: I18n.t('numerical_managements.messages.budget_not_set')
       return nil
     end
 

@@ -75,6 +75,33 @@ ja:
     destroy:
       success: "%{resource} 「%{name}」を削除しました"
 
+  # 共通翻訳
+  common:
+    search: "検索"
+    clear: "クリア"
+    action: "アクション"
+    cancel: "キャンセル"
+    create: "作成"
+    created: "作成"
+    update: "更新"
+    updated: "更新"
+    save: "保存"
+    saving: "保存中..."
+    record: "レコード"
+    change: "変更"
+    uncategorized: "未分類"
+    not_set: "未設定"
+    calculation_unavailable: "計算不可"
+    print: "印刷"
+    print_action: "印刷する"
+    copy: "コピー"
+    close: "閉じる"
+    reorder_mode: "並び替えモード"
+    save_order: "並び順を保存"
+
+  labels:
+    date: "日付"
+
   dashboard:
     menu:
       title: "メニュー"
@@ -105,16 +132,7 @@ ja:
     chart:
       budget_trend: "売上予算推移（過去6ヶ月）"
 
-  categories:
-    new:
-      title: "カテゴリー登録"
-    index:
-      title: "カテゴリー一覧"
-    show:
-      title: "%{name} - カテゴリー詳細"
-    edit:
-      title: "%{name} - カテゴリー編集"
-
+  # 単位
   units:
     new:
       title: "単位登録"
@@ -125,6 +143,18 @@ ja:
     edit:
       title: "%{name} - 単位編集"
 
+  # カテゴリー
+  categories:
+    new:
+      title: "カテゴリー登録"
+    index:
+      title: "カテゴリー一覧"
+    show:
+      title: "%{name} - カテゴリー詳細"
+    edit:
+      title: "%{name} - カテゴリー編集"
+
+  # 原材料
   materials:
     new:
       title: "原材料登録"
@@ -134,7 +164,18 @@ ja:
       title: "%{name} - 原材料詳細 "
     edit:
       title: "%{name} - 原材料編集 "
+    attributes:
+      default_unit_weight: "デフォルト重量（g/単位）"
+      unit_weight_for_order: "発注単位の重量（g）"
+      pieces_per_order_unit: "発注単位あたりの個数"
+      pieces_per_order_unit_label: "発注単位あたりの個数（例: 1箱=50枚）※個数ベースの場合のみ"
+      order_group_name: "発注グループ名"
+    hints:
+      pieces_per_order_unit_note: "※個数ベース（トレイなど）の場合のみ表示"
+      pieces_per_order_unit: "※重量ベース（まぐろ、いくらなど）の場合は空欄にしてください。個数ベース（トレイなど）の場合のみ入力してください。"
+      order_group_name: "※同じ原材料を異なる切り方で使用する場合に設定します。<br>例: 「まぐろ赤身（にぎり）」と「まぐろ赤身（巻物）」の両方に「まぐろ赤身」と設定すると、印刷時は別々に表示され、発注時はまとめて計算されます。"
 
+  # 商品
   products:
     new:
       title: "商品登録"
@@ -165,7 +206,11 @@ ja:
       unit_weight: "商品単位重量"
       unit: "単位"
     add_material_button: "原材料を追加"
+    messages:
+      copy_success: "商品「%{original_name}」をコピーしました（新規商品名: %{new_name}）。品番「%{item_number}」は仮の値です。編集画面で変更してください。"
+      copy_failed: "商品のコピーに失敗しました: %{errors}"
 
+  # 製造計画
   plans:
     new:
       title: "製造計画登録"
@@ -188,30 +233,46 @@ ja:
       price: "売価"
       subtotal: "小計"
     add_product_button: "商品を追加"
+    messages:
+      status_updated: "計画「%{name}」のステータスを「%{status}」に変更しました"
+      copy_success: "計画「%{original_name}」をコピーしました（新規計画名: %{new_name}）"
+      copy_failed: "計画のコピーに失敗しました: %{error}"
 
+  # 計画スケジュール
+  plan_schedules:
+    messages:
+      assigned: "割り当てました"
+      updated: "更新しました"
+      plan_schedule_saved: "%{date}の計画を%{action}"
+      plan_schedule_save_failed: "計画の保存に失敗しました: %{errors}"
+      plan_schedule_updated_with_date: "%{date}の計画を更新しました"
+      plan_schedule_update_failed: "計画の更新に失敗しました: %{errors}"
+
+  # 数値管理（売上予算管理）
   numerical_managements:
     index:
-      title: "売上予算管理"
-      monthly_budget: "月間予算"
-      actual_revenue: "実績売上"
-      planned_revenue: "計画売上"
-      forecast_revenue: "予測売上"
+      title: "売上予算ダッシュボード"
+      monthly_budget_card: "月間売上予算"
+      monthly_planned_revenue: "月間計画売上"
+      cumulative_actual: "累計売上実績"
+      budget_achievement: "予算達成率"
+      target_amount_subtitle: "今月の予算額"
+      planned_total_subtitle: "今月の計画合計"
+      actual_until_yesterday: "昨日までの実績"
+      achievement_as_of_yesterday: "昨日時点の達成率"
       month_end_forecast: "月末予測"
+      forecast_revenue: "予測売上"
+      forecast_diff: "予測差"
       achievement_rate: "達成率"
-      forecast_diff: "予算差"
+      required_additional: "必要追加額"
       gap_analysis: "ギャップ分析"
       remaining_days: "残り日数"
-      required_additional: "必要追加額"
+      recommended_daily_target: "推奨日次目標"
       daily_required: "1日あたり必要額"
       action_plan: "アクションプラン"
-      recommended_daily_target: "推奨日別目標"
+      alert_action_needed_html: "残り<strong>%{days}日</strong>で<strong>%{amount}</strong>の追加が必要です。<br>1日あたり<strong>%{daily}</strong>を目指しましょう。"
+      alert_on_track: "予算達成に向けて順調です！"
       daily_details: "日別明細"
-      date: "日付"
-      target: "目標"
-      actual: "実績"
-      plan: "計画"
-      forecast: "予測"
-      diff: "差額"
       set_budget: "予算設定"
       delete_budget: "予算削除"
       target_month: "対象月"
@@ -220,43 +281,80 @@ ja:
       alert_remaining: "残り%{days}日で目標を達成するには、"
       alert_daily: "1日あたり%{amount}の追加が必要です"
       alert_add: "追加で%{amount}の売上が必要です"
-      alert_on_track: "現在のペースで達成可能です！"
-    modals:
-      budget_setting: "予算設定"
-      daily_target_edit: "日別目標編集"
-      actual_revenue_entry: "実績入力"
+    table_headers:
+      budget: "予算"
+      actual: "実績"
+      planned: "計画高"
+      achievement_rate: "達成率"
+      budget_diff: "予算差"
+    bulk_edit:
+      toggle_edit_mode: "一括編集モード"
+      toggle_normal_mode: "通常表示"
+      monthly_budget_label: "月間予算:"
+      daily_target_sum: "日別予算合計:"
+      budget_diff_label: "予算差:"
+      bulk_save: "一括保存"
+      excess: "超過"
+      shortage: "不足"
+    labels:
+      cumulative: "累計:"
+    actions:
+      edit_target: "予算編集"
       add_plan: "計画追加"
-      target_month: "対象月"
-      target_date: "対象日"
-      monthly_budget_yen: "月間予算（円）"
-      daily_target_yen: "日別目標（円）"
-      actual_revenue_yen: "実績売上（円）"
-      planned_revenue_yen: "計画高（円）"
-      note: "備考"
-      optional: "（任意）"
-      cancel: "キャンセル"
-      create: "作成"
-      update: "更新"
-      save: "保存"
-      category: "カテゴリ"
-      select_category: "カテゴリを選択"
-      select_plan_prompt: "計画を選択"
-      select_category_first: "まずカテゴリを選択してください"
-      plan_select: "計画選択"
-      category_help: "製造する製品のカテゴリを選択してください。"
-      plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます。"
-      revenue_help: "必要に応じて計画高を調整できます。"
-      budget_info: "月間の売上目標を設定します。日別目標は自動で分配されます。"
-      daily_target_info: "この日の目標金額を変更します。月間予算の合計には影響しません。"
-      actual_revenue_info: "この日の実績売上を入力してください。"
-      delete_confirm: "本当に削除しますか？"
+      edit_plan: "計画編集"
+      input_actual: "実績入力"
+      print_plan: "計画を印刷"
+      select_plan_to_print: "印刷する計画を選択"
+    modals:
+      budget_setting:
+        title: "予算設定"
+        info: "月間の売上目標を設定します。日別目標は自動で分配されます。"
+      daily_target_edit:
+        title: "日別予算編集"
+        info: "この日の予算金額を変更します。月間予算の合計には影響しません。"
+      actual_revenue_entry:
+        title: "実績入力"
+        info: "この日の実績売上を入力してください。"
+      assign_plan:
+        title: "計画追加"
+        edit_title: "計画編集"
+        category_help: "製造する製品のカテゴリを選択してください。"
+        plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます。"
+        revenue_help: "必要に応じて計画高を調整できます。"
+      labels:
+        target_month: "対象月"
+        target_date: "対象日"
+        monthly_budget_yen: "月間予算（円）"
+        daily_target_yen: "日別予算（円）"
+        actual_revenue_yen: "実績売上（円）"
+        planned_revenue_yen: "計画高（円）"
+        note: "備考"
+        optional: "（任意）"
+        category: "カテゴリ"
+        plan_select: "計画選択"
+      prompts:
+        select_category: "カテゴリを選択"
+        select_plan: "計画を選択"
+        select_plan_prompt: "計画を選択してください"
+        select_category_first: "まずカテゴリを選択してください"
+      confirm:
+        delete: "本当に削除しますか？"
+      actions:
+        cancel: "キャンセル"
+        create: "作成"
+        update: "更新"
+        close: "閉じる"
     messages:
       budget_updated: "月間予算を更新しました"
       budget_update_failed: "月間予算の更新に失敗しました"
       budget_deleted: "月間予算を削除しました"
       budget_delete_failed: "月間予算の削除に失敗しました"
+      budget_not_set: "この月の予算が設定されていません"
+      daily_target_saved: "%{date}の目標を%{action}しました"
+      daily_target_save_failed: "目標の保存に失敗しました: %{errors}"
       daily_target_updated: "日別目標を更新しました"
-      daily_target_update_failed: "日別目標の更新に失敗しました"
+      daily_target_updated_with_date: "%{date}の目標を更新しました"
+      daily_target_update_failed: "目標の更新に失敗しました: %{errors}"
       daily_target_deleted: "日別目標を削除しました"
       daily_target_delete_failed: "日別目標の削除に失敗しました"
       actual_updated: "実績を更新しました"
@@ -268,17 +366,14 @@ ja:
       plan_unassigned: "計画を削除しました"
       plan_unassign_failed: "計画の削除に失敗しました"
       plan_not_found: "計画が見つかりません"
-      actual_revenue_updated: "実績売上を更新しました"    # 🆕 追加
-      actual_revenue_update_failed: "実績売上の更新に失敗しました"    # 🆕 追加
+      actual_revenue_updated: "実績売上を更新しました"
+      actual_revenue_update_failed: "実績売上の更新に失敗しました"
+      bulk_update_success: "%{count}件のデータを更新しました"
+      bulk_update_partial: "%{success}件成功、%{error}件失敗しました"
     placeholders:
-      budget_example: "例: 1600000"
-      daily_target_example: "例: 51613"
-      actual_revenue_example: "例: 50000"
-
-  common:
-    search: "検索"
-    clear: "クリア"
-    action: "アクション"
+      budget_amount: "例: 1,000,000"
+      daily_target_amount: "例:1,000 "
+      actual_revenue_amount: "例: 10,000"
 
   forms:
     titles:
@@ -360,7 +455,7 @@ ja:
         description: "アカウント確認のメールを再送信します"
         email_placeholder: "example@sushi-manage.com"
         email_help: "登録時に使用したメールアドレスを入力してください"
-        submit: "確認メールを再送信"  #
+        submit: "確認メールを再送信"
     failure:
       unauthenticated: "アカウント登録もしくはログインが必要です"
       invalid: "メールアドレスまたはパスワードが違います"
@@ -408,18 +503,19 @@ ja:
     unlocks:
       new:
         title: "アカウントロック解除"
-        description: "ロック解除のメールを再送信します"
+        email: "メールアドレス"
         email_placeholder: "example@sushi-manage.com"
-        email_help: "登録時に使用したメールアドレスを入力してください"
+        email_hint: "登録時に使用したメールアドレスを入力してください"
         submit: "ロック解除のメールを送信"
+        back_to_login: "ログイン画面に戻る"
     mailer:
       reset_password_instructions:
         subject: "【寿司管理システム】パスワード再設定のご案内"
         greeting: "こんにちは %{name} さん！"
         action: "パスワードの変更"
-        instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください"
-        instruction_2: "このメールに心当たりがない場合は、無視して構いません"
-        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを作成するまで変更されません"
+        instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください。"
+        instruction_2: "このメールに心当たりがない場合は、無視して構いません。"
+        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを作成するまで変更されません。"
 
   activerecord:
     errors:
@@ -443,6 +539,10 @@ ja:
               greater_than: "は0より大きい値を入力してください"
             status:
               blank: "を選択してください"
+        product_material:
+          attributes:
+            material_id:
+              already_registered: "は既に登録されています"
     models:
       user: "アカウント"
       category: "カテゴリー"
@@ -512,3 +612,18 @@ ja:
           draft: "下書き"
           active: "実施中"
           completed: "完了"
+
+  # API エラーメッセージ
+  api:
+    errors:
+      unauthorized: "認証が必要です"
+      plan_not_found: "計画が見つかりません"
+      plan_schedule_not_found: "計画スケジュールが見つかりません"
+      daily_target_not_found: "日別目標が見つかりません、またはアクセスが拒否されました"
+      product_not_found: "商品が見つかりません、またはアクセスが拒否されました"
+      material_not_found: "原材料が見つかりません、またはアクセスが拒否されました"
+      server_error: "サーバーエラーが発生しました"
+      invalid_date: "無効な日付形式です"
+      invalid_parameters: "パラメータが不正です"
+      invalid_status: "無効なステータスです"
+      missing_required_info: "必要な情報が不足しています"
