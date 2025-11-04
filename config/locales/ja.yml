@@ -98,6 +98,8 @@ ja:
     close: "閉じる"
     reorder_mode: "並び替えモード"
     save_order: "並び順を保存"
+    year_suffix: "年"
+    month_suffix: "月"
 
   labels:
     date: "日付"
@@ -123,6 +125,12 @@ ja:
       numerical_dashboard: "予算ダッシュボード"
       account_settings: "アカウント設定"
     welcome_message: "ようこそ！ %{name} さんのダッシュボード"
+    display_month_label: "表示月："
+    display_button: "表示"
+    cumulative_trend_title: "の累計推移"
+    weather:
+      title: "週間天気予報"
+      rain_alert: "雨注意"
     kpi:
       monthly_target: "月間売上予算"
       monthly_actual: "月間売上実績"

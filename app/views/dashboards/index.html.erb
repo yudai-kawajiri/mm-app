@@ -3,39 +3,74 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1 class="h3 mb-0"><%= t('dashboard.welcome_message', name: current_user.name) %></h1>
 
-  <!-- 月選択フォーム -->
   <form method="get" class="d-flex align-items-center gap-2">
-    <label class="text-muted mb-0">表示月：</label>
+    <label class="text-muted mb-0"><%= t('dashboard.display_month_label') %></label>
     <div class="d-flex gap-1">
       <select name="year" class="form-select form-select-sm" style="width: 90px;">
         <% (Date.current.year - 2..Date.current.year + 1).each do |year| %>
-          <option value="<%= year %>"<%= 'selected' if year == @selected_date.year %>><%= year %>年</option>
+          <option value="<%= year %>" <%= 'selected' if year == @selected_date.year %>><%= year %><%= t('common.year_suffix') %></option>
         <% end %>
       </select>
 
       <select name="month" class="form-select form-select-sm" style="width: 80px;">
         <% (1..12).each do |month| %>
-          <option value="<%= month %>" <%= 'selected' if month == @selected_date.month %>><%= month %>月</option>
+          <option value="<%= month %>" <%= 'selected' if month == @selected_date.month %>><%= month %><%= t('common.month_suffix') %></option>
         <% end %>
       </select>
     </div>
-    <button type="submit" class="btn btn-primary btn-sm">表示</button>
+    <button type="submit" class="btn btn-primary btn-sm"><%= t('dashboard.display_button') %></button>
   </form>
 </div>
 
-<!-- KPIカード（売上予算ダッシュボードと同じ） -->
 <%= render 'shared/summary_cards', forecast_data: @forecast_data, monthly_budget: @monthly_budget %>
 
-<!-- 予算推移グラフ -->
 <div class="card mb-4" data-controller="budget-chart" data-chart-data="<%= @chart_data.to_json %>">
   <div class="card-header">
     <h5 class="mb-0">
-      <i class="bi bi-graph-up"></i> <%= @selected_date.strftime('%Y年%-m月') %>の累計推移
+      <i class="bi bi-graph-up"></i> <%= @selected_date.strftime('%Y年%-m月') %><%= t('dashboard.cumulative_trend_title') %>
     </h5>
   </div>
-    <div class="card-body" style="position: relative; height: 400px;">
+  <div class="card-body" style="position: relative; height: 400px;">
     <canvas id="budgetChart"></canvas>
   </div>
 </div>
 
-<!-- 週間天気 - 後で実装 -->
+<div class="card">
+  <div class="card-header">
+    <h5 class="mb-0">
+      <i class="bi bi-cloud-sun"></i> <%= t('dashboard.weather.title') %>
+    </h5>
+  </div>
+  <div class="card-body">
+    <div class="row g-2">
+      <% @weather_forecast.each do |weather| %>
+        <div class="col">
+          <div class="card <%= weather[:is_rainy] ? 'border-warning' : 'border-light' %> text-center">
+            <div class="card-body p-2">
+              <% if weather[:is_rainy] %>
+                <div class="badge bg-warning text-dark mb-1">
+                  <i class="bi bi-exclamation-triangle"></i> <%= t('dashboard.weather.rain_alert') %>
+                </div>
+              <% end %>
+              <div class="text-muted small"><%= weather[:date].strftime('%-m/%-d') %></div>
+              <div class="text-muted small"><%= weather[:date].strftime('(%a)') %></div>
+              <div class="my-2">
+                <img src="https://openweathermap.org/img/wn/<%= weather[:icon] %>@2x.png"
+                     alt="<%= weather[:weather_description] %>"
+                     style="width: 50px; height: 50px;">
+              </div>
+              <div class="small"><%= weather[:weather_description] %></div>
+              <div class="mt-1">
+                <span class="text-danger"><%= weather[:temp_max] %>°</span> /
+                <span class="text-primary"><%= weather[:temp_min] %>°</span>
+              </div>
+              <div class="text-muted small">
+                <i class="bi bi-umbrella"></i> <%= weather[:pop].round %>％
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
