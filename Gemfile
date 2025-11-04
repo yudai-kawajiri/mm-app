@@ -84,11 +84,14 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # --- 開発環境とテスト環境で必要なGem ---
 group :development, :test do
+  # セキュリティ脆弱性の静的解析ツール [https://brakemanscanner.org/]
+  gem "brakeman", require: false
+
   # 実行を停止し、変数の値を確認するための対話型デバッガ
   gem "byebug", platforms: [ :mri, :mingw, :x64_mingw ]
 
-  # セキュリティ脆弱性の静的解析ツール [https://brakemanscanner.org/]
-  gem "brakeman", require: false
+  # .envファイルから環境変数をロードし、APIキーなどの機密情報を安全に管理
+  gem "dotenv-rails"
 
   # デバッグに使用するGem [https://guides.rubyonrails.org/debugging_rails_applications.html]
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
