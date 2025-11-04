@@ -8,8 +8,16 @@ document.addEventListener('turbo:load', () => {
   const cancelButton = document.getElementById('cancel-new-image-button');
   const deleteButton = document.getElementById('delete-button');
 
-  if (!imageInput || !imagePreview || !previewLabel || !cancelButton) return;
+  // 必須要素がない場合は早期リターン（previewLabelはオプショナル）
+  if (!imageInput || !imagePreview || !cancelButton) return;
 
+  // ページロード時の初期化：既に画像が表示されている場合の処理
+  if (imagePreview.src && imagePreview.src !== window.location.href && imagePreview.style.display !== 'none') {
+    if (previewLabel) previewLabel.style.display = 'none';
+    cancelButton.style.display = 'inline-block';
+  }
+
+  // ファイル選択時の処理
   imageInput.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -17,22 +25,24 @@ document.addEventListener('turbo:load', () => {
       reader.onload = function(e) {
         imagePreview.src = e.target.result;
         imagePreview.style.display = 'block';
-        previewLabel.style.display = 'none';
+        if (previewLabel) previewLabel.style.display = 'none';
         cancelButton.style.display = 'inline-block';
       }
       reader.readAsDataURL(file);
     }
   });
 
+  // キャンセルボタンの処理
   cancelButton.addEventListener('click', function(e) {
     e.preventDefault();
     imageInput.value = '';
     imagePreview.src = '';
     imagePreview.style.display = 'none';
-    previewLabel.style.display = 'block';
+    if (previewLabel) previewLabel.style.display = 'block';
     cancelButton.style.display = 'none';
   });
 
+  // 画像削除ボタンの処理（既存の商品画像を削除）
   if (deleteButton) {
     deleteButton.addEventListener('click', function(e) {
       e.preventDefault();
