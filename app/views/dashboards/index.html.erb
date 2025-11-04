@@ -1,3 +1,9 @@
 <%= content_for :page_title, t('dashboard.menu.dashboard') %>
 
-<h1><%= t('dashboard.welcome_message', name: current_user.name) %></h1>
+<h1 class="mb-4"><%= t('dashboard.welcome_message', name: current_user.name) %></h1>
+
+<!-- KPIカード（売上予算ダッシュボードと同じ） -->
+<%= render 'shared/summary_cards', forecast_data: @forecast_data, monthly_budget: @monthly_budget %>
+
+<!-- 予算推移グラフ - 次のステップで実装 -->
+<!-- 週間天気 - 後で実装 -->
