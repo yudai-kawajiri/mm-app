@@ -144,4 +144,7 @@ group :test do
 
   # テストカバレッジ測定ツール [https://github.com/simplecov-ruby/simplecov]
   gem "simplecov", require: false
+
+  # WebDriverの自動管理（Chrome/Firefoxドライバーの自動ダウンロード・更新）
+  gem "webdrivers"
 end
