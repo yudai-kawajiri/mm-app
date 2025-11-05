@@ -6,7 +6,6 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   # PaperTrailで変更者を記録
-  before_action :set_paper_trail_whodunnit
 
   protected # privateではない理由は継承クラス（Deviseクラスから呼び出しOKにするため）
 
@@ -25,12 +24,13 @@ class ApplicationController < ActionController::Base
     authenticated_root_path
   end
 
-  # 認証状態に応じてレイアウトを切り替えるメソッド
+    # 認証状態に応じてレイアウトを切り替えるメソッド
   def layout_by_resource
-    # ★★★ print アクションの場合は専用レイアウト ★★★
+    # print アクションの場合は専用レイアウト 
     return 'print' if action_name == 'print'
 
     # Deviseのコントローラー（ログイン、新規登録など）であり、かつ未認証の場合
+    if devise_controller? && !user_signed_in?
       "application"
     # 認証済みの画面の場合
     elsif user_signed_in?
