@@ -25,6 +25,11 @@ require 'capybara/rspec'
 #
 # Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
 
+# -------------------------------------------------------------
+# **【追記】Support filesの読み込み**
+Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |f| require f }
+# -------------------------------------------------------------
+
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
 begin
@@ -40,6 +45,12 @@ RSpec.configure do |config|
   # Devise設定
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :request
+
+  # -------------------------------------------------------------
+  # **システムテスト（Capybara/Warden）の設定**
+  config.include Capybara::DSL, type: :system
+  config.include Warden::Test::Helpers, type: :system
+  # -------------------------------------------------------------
 
   config.before(:each, type: :controller) do
     @request.env["devise.mapping"] = Devise.mappings[:user] if @request
@@ -65,9 +76,9 @@ RSpec.configure do |config|
   # You can disable this behaviour by removing the line below, and instead
   # explicitly tag your specs with their type, e.g.:
   #
-  #     RSpec.describe UsersController, type: :controller do
-  #       # ...
-  #     end
+  #     RSpec.describe UsersController, type: :controller do
+  #       # ...
+  #     end
   #
   # The different available types are documented in the features, such as in
   # https://rspec.info/features/6-0/rspec-rails
