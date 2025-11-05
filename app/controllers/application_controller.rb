@@ -5,6 +5,9 @@ class ApplicationController < ActionController::Base
   # Devise利用時のストロングパラメータを設定するためのフック
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  # PaperTrailで変更者を記録
+  before_action :set_paper_trail_whodunnit
+
   protected # privateではない理由は継承クラス（Deviseクラスから呼び出しOKにするため）
 
   # Deviseのパラメータを許可するメソッド
@@ -28,7 +31,6 @@ class ApplicationController < ActionController::Base
     return 'print' if action_name == 'print'
 
     # Deviseのコントローラー（ログイン、新規登録など）であり、かつ未認証の場合
-    if devise_controller? && !user_signed_in?
       "application"
     # 認証済みの画面の場合
     elsif user_signed_in?
@@ -37,5 +39,10 @@ class ApplicationController < ActionController::Base
     else
       "application"
     end
+  end
+
+  # PaperTrailで「誰が変更したか」を記録するメソッド
+  def user_for_paper_trail
+    user_signed_in? ? current_user.id : nil
   end
 end
