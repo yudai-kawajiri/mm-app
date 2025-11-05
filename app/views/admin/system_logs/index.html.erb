@@ -1,20 +1,22 @@
+<%= content_for :title, t('admin.system_logs.index.title') %>
+
 <div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3"><%= t('admin.system_logs.index.title') %></h1>
   </div>
 
-  <!-- フィルタフォーム -->
+  <- フィルタフォーム -->
   <div class="card mb-4">
     <div class="card-body">
       <%= form_with url: admin_system_logs_path, method: :get, local: true, class: 'row g-3' do |f| %>
         <div class="col-md-3">
           <%= f.label :item_type, t('admin.system_logs.index.model'), class: 'form-label' %>
-          <%= f.select :item_type, options_for_select(@model_types.map { |m| [t("activerecord.models.#{m.underscore}", default: m), m] }, params[:item_type]), { include_blank: t('admin.system_logs.index.all_models') }, class: 'form-select' %>
+          <%= f.select :item_type, options_for_select(@model_types.map { |m| [t("activerecord.models.#{m.underscore}", default: m), m] }, params[:item_type]), { include_blank: t('helpers.prompt.select') }, class: 'form-select' %>
         </div>
 
         <div class="col-md-3">
           <%= f.label :whodunnit, t('admin.system_logs.index.user'), class: 'form-label' %>
-          <%= f.select :whodunnit, options_for_select(@users.map { |u| [u.name, u.id] }, params[:whodunnit]), { include_blank: t('admin.system_logs.index.all_users') }, class: 'form-select' %>
+          <%= f.select :whodunnit, options_for_select(@users.map { |u| [u.name, u.id.to_s] }, params[:whodunnit]), { include_blank: t('helpers.prompt.select') }, class: 'form-select' %>
         </div>
 
         <div class="col-md-2">
@@ -34,7 +36,6 @@
     </div>
   </div>
 
-  <- システムログテーブル -->
   <div class="card">
     <div class="card-body">
       <% if @versions.any? %>
@@ -47,6 +48,7 @@
                 <th><%= t('admin.system_logs.index.model') %></th>
                 <th><%= t('admin.system_logs.index.action') %></th>
                 <th><%= t('admin.system_logs.index.record_id') %></th>
+                <th><%= t('admin.system_logs.index.detail') %></th>
               </tr>
             </thead>
             <tbody>
@@ -55,7 +57,7 @@
                   <td><%= l(version.created_at, format: :long) %></td>
                   <td>
                     <% if version.whodunnit.present? %>
-                      <% user = User.find_by(id: version.whodunnit) %>
+                      <% user = User.find_by(id: version.whodunnit.to_i) %>
                       <%= user&.name || t('admin.system_logs.index.unknown_user') %>
                     <% else %>
                       <%= t('admin.system_logs.index.system') %>
@@ -76,14 +78,33 @@
                       <span class="badge bg-danger"><%= t('admin.system_logs.events.destroy') %></span>
                     <% end %>
                   </td>
-                  <td>#<%= version.item_id %></td>
+                  <td><%= version.item_id %></td>
+                  <td>
+                    <%
+                      begin
+                        if version.event == 'create'
+                          # 作成時は現在のレコードから取得
+                          record = version.item_type.constantize.find_by(id: version.item_id)
+                          detail = record&.name || record&.email || t('admin.system_logs.index.deleted_record')
+                        elsif version.object.present?
+                          # 更新・削除時はobjectから取得
+                          obj = YAML.unsafe_load(version.object)
+                          detail = obj['name'] || obj['email'] || t('admin.system_logs.index.no_detail')
+                        else
+                          detail = t('admin.system_logs.index.no_detail')
+                        end
+                      rescue => e
+                        detail = t('admin.system_logs.index.no_detail')
+                      end
+                    %>
+                    <span class="text-muted"><%= detail %></span>
+                  </td>
                 </tr>
               <% end %>
             </tbody>
           </table>
         </div>
 
-        <- ページネーション -->
         <div class="d-flex justify-content-center mt-4">
           <%= paginate @versions %>
         </div>
