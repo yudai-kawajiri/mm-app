@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :product do
     sequence(:name) { |n| "商品#{n}" }
     sequence(:item_number) { |n| n.to_s.rjust(4, '0') }
+    association :user
     association :category, factory: :category, category_type: :product
     price { 1000 }
     status { :selling }

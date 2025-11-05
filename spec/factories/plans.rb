@@ -3,6 +3,7 @@
 FactoryBot.define do
   factory :plan do
     sequence(:name) { |n| "製造計画#{n}" }
+    association :user
     association :category, factory: :category, category_type: :plan
     status { :draft }
     description { "テスト用の製造計画説明" }
