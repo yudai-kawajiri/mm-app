@@ -1,4 +1,7 @@
 class Material < ApplicationRecord
+  # PaperTrailで変更履歴を記録
+  has_paper_trail
+
   # 名前検索スコープを組み込み
   include NameSearchable
   include UserAssociatable

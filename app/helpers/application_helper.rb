@@ -56,7 +56,8 @@ module ApplicationHelper
         name: t("dashboard.menu.admin_management"),
         path: admin_users_path,
         submenu: [
-          { name: t("dashboard.menu.user_management"), path: admin_users_path }
+          { name: t("dashboard.menu.user_management"), path: admin_users_path },
+          { name: t("dashboard.menu.system_logs"), path: admin_system_logs_path }
         ]
       }
     end

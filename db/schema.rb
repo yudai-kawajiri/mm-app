@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_02_070835) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_05_032038) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -189,9 +189,21 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_02_070835) do
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
+    t.integer "role", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["role"], name: "index_users_on_role"
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.datetime "created_at"
+    t.string "event", null: false
+    t.bigint "item_id", null: false
+    t.string "item_type", null: false
+    t.text "object"
+    t.string "whodunnit"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

@@ -13,7 +13,7 @@ class User < ApplicationRecord
         :recoverable, :rememberable, :validatable
 
   # Role管理
-  enum role: { staff: 0, admin: 1 }
+  enum :role, { staff: 0, admin: 1 }
 
   # 名前（name）は登録時のみ必要
   validates :name, presence: true

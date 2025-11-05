@@ -1,4 +1,7 @@
 class PlanSchedule < ApplicationRecord
+  # PaperTrailで変更履歴を記録
+  has_paper_trail
+
   # 関連付け (Association)
   belongs_to :plan
   belongs_to :user
