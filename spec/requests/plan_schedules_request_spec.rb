@@ -1,0 +1,234 @@
+require 'rails_helper'
+
+RSpec.describe "PlanSchedules", type: :request do
+  let(:admin_user) { create(:user, :admin) }
+  let(:staff_user) { create(:user, :staff) }
+  let(:year) { Date.current.year }
+  let(:month) { Date.current.month }
+  let(:scheduled_date) { Date.new(year, month, 15) }
+  let(:plan_category) { create(:category, :plan, user: admin_user) }
+  let(:plan) { create(:plan, :active, user: admin_user, category: plan_category) }
+
+  describe 'POST /plan_schedules' do
+    context 'ログインしている場合' do
+      before { sign_in admin_user, scope: :user }
+
+      context '有効なパラメータの場合' do
+        let(:valid_params) do
+          {
+            plan_schedule: {
+              scheduled_date: scheduled_date.to_s,
+              plan_id: plan.id,
+              planned_revenue: 50000
+            }
+          }
+        end
+
+        it '計画スケジュールが作成されること' do
+          expect {
+            post plan_schedules_path, params: valid_params
+          }.to change(PlanSchedule, :count).by(1)
+        end
+
+        it '数値管理ページにリダイレクトされること' do
+          post plan_schedules_path, params: valid_params
+          expect(response).to redirect_to(numerical_managements_path(month: scheduled_date.strftime("%Y-%m")))
+        end
+
+        it '成功メッセージが表示されること' do
+          post plan_schedules_path, params: valid_params
+          expect(flash[:notice]).to be_present
+        end
+
+        it 'ステータスがscheduledになること' do
+          post plan_schedules_path, params: valid_params
+          created_schedule = PlanSchedule.last
+          expect(created_schedule.status).to eq('scheduled')
+        end
+      end
+
+      context '同じ日に既に計画がある場合' do
+        let!(:existing_schedule) { create(:plan_schedule, user: admin_user, plan: plan, scheduled_date: scheduled_date, planned_revenue: 30000) }
+
+        let(:update_params) do
+          {
+            plan_schedule: {
+              scheduled_date: scheduled_date.to_s,
+              plan_id: plan.id,
+              planned_revenue: 60000
+            }
+          }
+        end
+
+        it '新しい計画スケジュールが作成されず、既存のものが更新されること' do
+          expect {
+            post plan_schedules_path, params: update_params
+          }.not_to change(PlanSchedule, :count)
+        end
+
+        it '既存のスケジュールが更新されること' do
+          post plan_schedules_path, params: update_params
+          existing_schedule.reload
+          expect(existing_schedule.planned_revenue).to eq(60000)
+        end
+      end
+
+      context 'plan_idが指定されていない場合' do
+        let(:missing_plan_params) do
+          {
+            plan_schedule: {
+              scheduled_date: scheduled_date.to_s,
+              planned_revenue: 50000
+            }
+          }
+        end
+
+        it '計画スケジュールが作成されないこと' do
+          expect {
+            post plan_schedules_path, params: missing_plan_params
+          }.not_to change(PlanSchedule, :count)
+        end
+
+        it 'エラーメッセージが表示されること' do
+          post plan_schedules_path, params: missing_plan_params
+          expect(flash[:alert]).to be_present
+        end
+      end
+
+      context '無効な日付の場合' do
+        let(:invalid_date_params) do
+          {
+            plan_schedule: {
+              scheduled_date: 'invalid-date',
+              plan_id: plan.id,
+              planned_revenue: 50000
+            }
+          }
+        end
+
+        it '計画スケジュールが作成されないこと' do
+          expect {
+            post plan_schedules_path, params: invalid_date_params
+          }.not_to change(PlanSchedule, :count)
+        end
+
+        it 'エラーメッセージが表示されること' do
+          post plan_schedules_path, params: invalid_date_params
+          expect(flash[:alert]).to be_present
+        end
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        post plan_schedules_path, params: { plan_schedule: { scheduled_date: scheduled_date.to_s, plan_id: 1 } }
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'PATCH /plan_schedules/:id' do
+    let!(:plan_schedule) { create(:plan_schedule, user: admin_user, plan: plan, scheduled_date: scheduled_date, planned_revenue: 40000) }
+
+    context 'ログインしている場合' do
+      before { sign_in admin_user, scope: :user }
+
+      context '有効なパラメータの場合' do
+        let(:valid_params) do
+          {
+            plan_schedule: {
+              scheduled_date: scheduled_date.to_s,
+              planned_revenue: 70000
+            }
+          }
+        end
+
+        it '計画スケジュールが更新されること' do
+          patch plan_schedule_path(plan_schedule), params: valid_params
+          plan_schedule.reload
+          expect(plan_schedule.planned_revenue).to eq(70000)
+        end
+
+        it '数値管理ページにリダイレクトされること' do
+          patch plan_schedule_path(plan_schedule), params: valid_params
+          expect(response).to redirect_to(numerical_managements_path(month: scheduled_date.strftime("%Y-%m")))
+        end
+
+        it '成功メッセージが表示されること' do
+          patch plan_schedule_path(plan_schedule), params: valid_params
+          expect(flash[:notice]).to be_present
+        end
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        patch plan_schedule_path(plan_schedule), params: { plan_schedule: { planned_revenue: 80000 } }
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'PATCH /plan_schedules/:id/actual_revenue' do
+    let!(:plan_schedule) { create(:plan_schedule, user: admin_user, plan: plan, scheduled_date: scheduled_date, planned_revenue: 50000) }
+
+    context 'ログインしている場合' do
+      before { sign_in admin_user, scope: :user }
+
+      context '有効なパラメータの場合' do
+        let(:valid_params) do
+          {
+            plan_schedule: {
+              actual_revenue: 55000
+            }
+          }
+        end
+
+        it '実績が更新されること' do
+          patch actual_revenue_plan_schedule_path(plan_schedule), params: valid_params
+          plan_schedule.reload
+          expect(plan_schedule.actual_revenue).to eq(55000)
+        end
+
+        it '数値管理ページにリダイレクトされること' do
+          patch actual_revenue_plan_schedule_path(plan_schedule), params: valid_params
+          expect(response).to redirect_to(numerical_managements_path(month: scheduled_date.strftime("%Y-%m")))
+        end
+
+        it '成功メッセージが表示されること' do
+          patch actual_revenue_plan_schedule_path(plan_schedule), params: valid_params
+          expect(flash[:notice]).to be_present
+        end
+      end
+
+      context '無効なパラメータの場合' do
+        let(:invalid_params) do
+          {
+            plan_schedule: {
+              actual_revenue: 'invalid'
+            }
+          }
+        end
+
+        it '実績が更新されないこと' do
+          original_revenue = plan_schedule.actual_revenue
+          patch actual_revenue_plan_schedule_path(plan_schedule), params: invalid_params
+          plan_schedule.reload
+          expect(plan_schedule.actual_revenue).to eq(original_revenue)
+        end
+
+        it 'エラーメッセージが表示されること' do
+          patch actual_revenue_plan_schedule_path(plan_schedule), params: invalid_params
+          expect(flash[:alert]).to be_present
+        end
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        patch actual_revenue_plan_schedule_path(plan_schedule), params: { plan_schedule: { actual_revenue: 60000 } }
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+end
