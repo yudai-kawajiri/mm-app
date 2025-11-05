@@ -107,6 +107,9 @@ group :development, :test do
   # OpenWeatherMap APIとの通信に使用
   gem "httparty"
 
+  # Railsのコントローラーテストのサポート機能を提供するGem
+  gem 'rails-controller-testing'
+
   # RSpecテストフレームワーク [https://rspec.info/]
   gem "rspec-rails", "~> 6.1.0"
 
