@@ -126,6 +126,7 @@ ja:
       account_settings: "アカウント設定"
       admin_management: "管理者機能"
       user_management: "ユーザー管理"
+      system_logs: "システムログ"
     welcome_message: "ようこそ！ %{name} さんのダッシュボード"
     display_month_label: "表示月："
     display_button: "表示"
@@ -673,3 +674,24 @@ ja:
       messages:
         cannot_delete_self: "自分自身は削除できません"
         user_deleted: "%{name}のアカウントを削除しました"
+    system_logs:
+      index:
+        title: "システムログ"
+        model: "モデル"
+        user: "ユーザー"
+        date_from: "開始日"
+        date_to: "終了日"
+        filter: "絞り込み"
+        all_models: "すべてのモデル"
+        all_users: "すべてのユーザー"
+        datetime: "日時"
+        action: "操作"
+        record_id: "レコードID"
+        no_logs: "ログが見つかりませんでした"
+        unknown_user: "不明なユーザー"
+        system: "システム"
+      events:
+        create: "作成"
+        update: "更新"
+        destroy: "削除"
+
