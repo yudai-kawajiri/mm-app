@@ -114,6 +114,9 @@ group :development do
 
   # メール送信内容をブラウザで確認するGem
   gem "mailcatcher"
+
+  # cron設定を簡単に管理するGem [https://github.com/javan/whenever]
+  gem "whenever", require: false
 end
 
 
