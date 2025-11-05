@@ -8,7 +8,9 @@
 /.bundle
 
 # Ignore all environment files.
-/.env*
+/.env
+\n# .env.exampleはコミット対象に含める
+!/.env.example
 
 # Ignore all logfiles and tempfiles.
 /log/*
