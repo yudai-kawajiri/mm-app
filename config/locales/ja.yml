@@ -58,6 +58,8 @@ ja:
   time:
     formats:
       default: "%Y/%m/%d %H:%M:%S"
+      long: "%Y年%m月%d日 %H:%M:%S"
+      short: "%m/%d %H:%M"
 
   number:
     currency:
