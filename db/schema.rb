@@ -161,7 +161,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_05_032038) do
     t.string "item_number", null: false
     t.string "name", null: false
     t.integer "price", null: false
-    t.integer "status"
+    t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["category_id"], name: "index_products_on_category_id"
