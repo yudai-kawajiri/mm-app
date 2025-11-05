@@ -1,0 +1,97 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3"><%= t('admin.system_logs.index.title') %></h1>
+  </div>
+
+  <!-- フィルタフォーム -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <%= form_with url: admin_system_logs_path, method: :get, local: true, class: 'row g-3' do |f| %>
+        <div class="col-md-3">
+          <%= f.label :item_type, t('admin.system_logs.index.model'), class: 'form-label' %>
+          <%= f.select :item_type, options_for_select(@model_types.map { |m| [t("activerecord.models.#{m.underscore}", default: m), m] }, params[:item_type]), { include_blank: t('admin.system_logs.index.all_models') }, class: 'form-select' %>
+        </div>
+
+        <div class="col-md-3">
+          <%= f.label :whodunnit, t('admin.system_logs.index.user'), class: 'form-label' %>
+          <%= f.select :whodunnit, options_for_select(@users.map { |u| [u.name, u.id] }, params[:whodunnit]), { include_blank: t('admin.system_logs.index.all_users') }, class: 'form-select' %>
+        </div>
+
+        <div class="col-md-2">
+          <%= f.label :date_from, t('admin.system_logs.index.date_from'), class: 'form-label' %>
+          <%= f.date_field :date_from, value: params[:date_from], class: 'form-control' %>
+        </div>
+
+        <div class="col-md-2">
+          <%= f.label :date_to, t('admin.system_logs.index.date_to'), class: 'form-label' %>
+          <%= f.date_field :date_to, value: params[:date_to], class: 'form-control' %>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <%= f.submit t('admin.system_logs.index.filter'), class: 'btn btn-primary w-100' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <- システムログテーブル -->
+  <div class="card">
+    <div class="card-body">
+      <% if @versions.any? %>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th><%= t('admin.system_logs.index.datetime') %></th>
+                <th><%= t('admin.system_logs.index.user') %></th>
+                <th><%= t('admin.system_logs.index.model') %></th>
+                <th><%= t('admin.system_logs.index.action') %></th>
+                <th><%= t('admin.system_logs.index.record_id') %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @versions.each do |version| %>
+                <tr>
+                  <td><%= l(version.created_at, format: :long) %></td>
+                  <td>
+                    <% if version.whodunnit.present? %>
+                      <% user = User.find_by(id: version.whodunnit) %>
+                      <%= user&.name || t('admin.system_logs.index.unknown_user') %>
+                    <% else %>
+                      <%= t('admin.system_logs.index.system') %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <span class="badge bg-info">
+                      <%= t("activerecord.models.#{version.item_type.underscore}", default: version.item_type) %>
+                    </span>
+                  </td>
+                  <td>
+                    <% case version.event %>
+                    <% when 'create' %>
+                      <span class="badge bg-success"><%= t('admin.system_logs.events.create') %></span>
+                    <% when 'update' %>
+                      <span class="badge bg-warning"><%= t('admin.system_logs.events.update') %></span>
+                    <% when 'destroy' %>
+                      <span class="badge bg-danger"><%= t('admin.system_logs.events.destroy') %></span>
+                    <% end %>
+                  </td>
+                  <td>#<%= version.item_id %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <- ページネーション -->
+        <div class="d-flex justify-content-center mt-4">
+          <%= paginate @versions %>
+        </div>
+      <% else %>
+        <p class="text-muted text-center py-5">
+          <%= t('admin.system_logs.index.no_logs') %>
+        </p>
+      <% end %>
+    </div>
+  </div>
+</div>
