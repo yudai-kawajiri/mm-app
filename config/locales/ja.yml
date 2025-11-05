@@ -700,4 +700,4 @@ ja:
       auto_delete:
         no_logs_to_delete: "%{retention_days}日より古いログは見つかりませんでした。"
         success: "%{deleted_count}件のシステムログを削除しました（%{retention_days}日より古いログ、%{cutoff_date}以前）"
-
+      deleted_record: "削除済みレコード"

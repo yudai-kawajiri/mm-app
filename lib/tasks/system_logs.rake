@@ -8,23 +8,29 @@ namespace :system_logs do
     cutoff_date = retention_days.days.ago
 
     # 削除対象のログ件数をカウント
-    target_count = PaperTrail::Version.where('created_at < ?', cutoff_date).count
+    count_sql = "SELECT COUNT(*) FROM versions WHERE created_at < ?"
+    target_count = ActiveRecord::Base.connection.execute(
+      ActiveRecord::Base.sanitize_sql_array([count_sql, cutoff_date])
+    ).first['count'].to_i
 
     if target_count.zero?
-      puts I18n.t('system_logs.auto_delete.no_logs_to_delete', retention_days: retention_days)
+      puts I18n.t('admin.system_logs.auto_delete.no_logs_to_delete', retention_days: retention_days)
       next
     end
 
     # 削除実行
-    deleted_count = PaperTrail::Version.where('created_at < ?', cutoff_date).delete_all
+    delete_sql = "DELETE FROM versions WHERE created_at < ?"
+    ActiveRecord::Base.connection.execute(
+      ActiveRecord::Base.sanitize_sql_array([delete_sql, cutoff_date])
+    )
 
     # 結果をログ出力
-    puts I18n.t('system_logs.auto_delete.success',
-                deleted_count: deleted_count,
+    puts I18n.t('admin.system_logs.auto_delete.success',
+                deleted_count: target_count,
                 retention_days: retention_days,
                 cutoff_date: I18n.l(cutoff_date, format: :long))
 
     # Railsログにも記録
-    Rails.logger.info "[SystemLogs] #{deleted_count}件のログを削除しました（#{retention_days}日より古いログ）"
+    Rails.logger.info "[SystemLogs] #{target_count}件のログを削除しました（#{retention_days}日より古いログ）"
   end
 end
