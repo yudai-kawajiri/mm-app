@@ -6,7 +6,7 @@ module ApplicationHelper
   end
 
   def sidebar_menu_items
-    [
+    items = [
       { name: t("dashboard.menu.dashboard"), path: authenticated_root_path },
       {
         name: t("dashboard.menu.category_management"),
@@ -49,6 +49,19 @@ module ApplicationHelper
         ]
       }
     ]
+
+    # Admin専用メニューを追加
+    if current_user&.admin?
+      items << {
+        name: t("dashboard.menu.admin_management"),
+        path: admin_users_path,
+        submenu: [
+          { name: t("dashboard.menu.user_management"), path: admin_users_path }
+        ]
+      }
+    end
+
+    items
   end
 
 

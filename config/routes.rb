@@ -18,6 +18,13 @@ Rails.application.routes.draw do
   end
 
   # ====================
+  # 管理者機能
+  # ====================
+  namespace :admin do
+    resources :users, only: [ :index, :destroy ]
+  end
+
+  # ====================
   # 数値管理（ビュー専用）
   # ====================
   resources :numerical_managements, only: [ :index ] do
