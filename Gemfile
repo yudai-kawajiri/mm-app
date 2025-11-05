@@ -45,6 +45,9 @@ gem "bootstrap5-kaminari-views"
 # データベースとしてPostgreSQLを使用するためのGem
 gem "pg", "~> 1.1"
 
+# レコードの変更履歴を自動で記録し、ロールバックなどを可能にする
+gem 'paper_trail'
+
 # Railsのモダンなアセットパイプライン [https://github.com/rails/propshaft]
 gem "propshaft"
 

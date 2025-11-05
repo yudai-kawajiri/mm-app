@@ -1,4 +1,7 @@
 class PlanProduct < ApplicationRecord
+  # PaperTrailで変更履歴を記録
+  has_paper_trail
+
   belongs_to :plan
   belongs_to :product
 

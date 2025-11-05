@@ -1,4 +1,7 @@
 class DailyTarget < ApplicationRecord
+  # PaperTrailで変更履歴を記録
+  has_paper_trail
+
   # 関連付け
   belongs_to :user
   belongs_to :monthly_budget

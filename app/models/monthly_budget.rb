@@ -1,4 +1,7 @@
 class MonthlyBudget < ApplicationRecord
+  # PaperTrailで変更履歴を記録
+  has_paper_trail
+
   # 関連付け
   belongs_to :user
   # 日別目標との関連
