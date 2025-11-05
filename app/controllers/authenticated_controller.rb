@@ -16,9 +16,9 @@ class AuthenticatedController < ApplicationController
 
   def load_categories_for(category_type, as: nil, scope: :current_user)
     categories = if scope == :current_user
-                   current_user.categories.where(category_type: category_type)
+                    current_user.categories.where(category_type: category_type)
     else
-                   Category.where(category_type: category_type)
+                    Category.where(category_type: category_type)
     end
     categories = categories.order(:name)
 
@@ -30,5 +30,14 @@ class AuthenticatedController < ApplicationController
     @search_categories = categories if as == :search || as.nil?
 
     categories
+  end
+
+  private
+
+  # Admin権限チェック
+  def require_admin
+    unless current_user&.admin?
+      redirect_to root_path, alert: 'この操作には管理者権限が必要です'
+    end
   end
 end
