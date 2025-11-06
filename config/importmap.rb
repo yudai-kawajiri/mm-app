@@ -41,6 +41,11 @@ pin "controllers/sortable_table_controller", to: "controllers/sortable_table_con
 # Budget Chart Controller（予算グラフ表示）
 pin "controllers/budget_chart_controller", to: "controllers/budget_chart_controller.js"
 
+# Material Controllers（手動 pin）
+pin "controllers/measurement_type_controller", to: "controllers/measurement_type_controller.js"
+pin "controllers/order_group_controller", to: "controllers/order_group_controller.js"
+
+
 # Utils（手動 pin）
 pin "utils/logger", to: "utils/logger.js", preload: true
 pin "utils/currency_formatter", to: "utils/currency_formatter.js", preload: true
