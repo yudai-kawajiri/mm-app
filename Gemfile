@@ -111,7 +111,7 @@ group :development, :test do
   gem 'rails-controller-testing'
 
   # RSpecテストフレームワーク [https://rspec.info/]
-  gem "rspec-rails", "~> 6.1.0"
+  gem "rspec-rails", "~> 8.0.2"
 
   # Rubyのコーディング規約チェック（RuboCop Rails Omakaseスタイル）
   gem "rubocop-rails-omakase", require: false
