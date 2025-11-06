@@ -1,4 +1,7 @@
 class PlanSchedule < ApplicationRecord
+  include StripCommas
+  strip_commas_from :planned_revenue, :actual_revenue
+
   # PaperTrailで変更履歴を記録
   has_paper_trail
 

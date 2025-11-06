@@ -1,4 +1,7 @@
 class DailyTarget < ApplicationRecord
+  include StripCommas
+  strip_commas_from :target_amount
+  
   # PaperTrailで変更履歴を記録
   has_paper_trail
 

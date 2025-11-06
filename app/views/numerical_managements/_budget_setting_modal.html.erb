@@ -18,22 +18,21 @@
           <div class="modal-body">
             <div class="mb-3">
               <label class="form-label"><%= t('numerical_managements.modals.labels.target_month') %></label>
-              <input type="text" class="form-control" value="<%= @selected_date.strftime('%Y年%m月') %>" readonly>
+              <input type="text" class="form-control-plaintext" value="<%= @selected_date.strftime('%Y年%m月') %>" readonly>
             </div>
 
             <div class="mb-3">
               <%= f.label :target_amount, t('numerical_managements.modals.labels.monthly_budget_yen'), class: "form-label" %>
-              <%= f.number_field :target_amount,
-                                 value: @monthly_budget.target_amount.to_i,
-                                 class: "form-control",
-                                 min: 0,
-                                 step: 1,
-                                 required: true,
-                                 placeholder: t('numerical_managements.placeholders.budget_amount'),
-                                 data: {
-                                   controller: 'number-input',
-                                   action: 'input->number-input#handleInput paste->number-input#handlePaste'
-                                 } %>
+              <%= f.text_field :target_amount,
+                      value: @monthly_budget.target_amount.to_i,
+                      class: "form-control",
+                      required: true,
+                      placeholder: t('numerical_managements.placeholders.budget_amount'),
+                      inputmode: "numeric",
+                      data: {
+                        controller: 'number-input',
+                        action: 'input->number-input#handleInput paste->number-input#handlePaste'
+                      } %>
             </div>
 
             <div class="mb-3">
@@ -66,18 +65,17 @@
           <div class="modal-body">
             <div class="mb-3">
               <label class="form-label"><%= t('numerical_managements.modals.labels.target_month') %></label>
-              <input type="text" class="form-control" value="<%= @selected_date.strftime('%Y年%m月') %>" readonly>
+              <input type="text" class="form-control-plaintext" value="<%= @selected_date.strftime('%Y年%m月') %>" readonly>
             </div>
 
             <div class="mb-3">
               <%= label_tag 'monthly_budget[target_amount]', t('numerical_managements.modals.labels.monthly_budget_yen'), class: "form-label" %>
-              <%= number_field_tag 'monthly_budget[target_amount]',
+              <%= text_field_tag 'monthly_budget[target_amount]',
                 nil,
                 class: "form-control",
-                min: 0,
-                step: 1,
                 required: true,
                 placeholder: t('numerical_managements.placeholders.budget_amount'),
+                inputmode: "numeric",
                 data: {
                   controller: 'number-input',
                   action: 'input->number-input#handleInput paste->number-input#handlePaste'

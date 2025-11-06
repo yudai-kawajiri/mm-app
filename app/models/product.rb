@@ -14,7 +14,7 @@ class Product < ApplicationRecord
 
   has_many :product_materials, dependent: :destroy
   has_many :materials, through: :product_materials
-  has_many :plan_products, dependent: :destroy
+  has_many :plan_products, dependent: :destroy, dependent: :restrict_with_error
   has_many :plans, through: :plan_products, dependent: :restrict_with_error
 
   # ネストされたフォームから product_materials を受け入れる設定
@@ -85,7 +85,7 @@ class Product < ApplicationRecord
   end
 
   # 表示順でソート（display_orderが同じ場合はid順）
-  scope :ordered, -> { order(:display_order, :id) } 
+  scope :ordered, -> { order(:display_order, :id) }
 
   # 表示順を更新するメソッド
   def self.update_display_orders(product_ids)

@@ -4,26 +4,28 @@
   <table class="table table-sm table-borderless">
     <thead>
       <tr class="border-bottom">
-        <th><%= t('activerecord.attributes.plan_product.product_name', default: '商品名') %></th>
-        <th class="text-end"><%= t('activerecord.attributes.plan_product.production_count', default: '数量') %></th>
+        <%# すべてのヘッダーを text-muted に統一 %>
+        <th class="text-muted"><%= t('activerecord.attributes.plan_product.product_name', default: '商品名') %></th>
+        <th class="text-end text-muted"><%= t('activerecord.attributes.plan_product.production_count', default: '数量') %></th>
         <th class="text-end text-muted"><%= t('activerecord.attributes.product.price', default: '売価') %></th>
-        <th class="text-end text-dark"><%= t('views.common.subtotal', default: '小計') %></th>
+        <th class="text-end text-muted"><%= t('views.common.subtotal', default: '小計') %></th>
       </tr>
     </thead>
     <tbody>
-      <% (plan_products || []).each do |pp| %>
-        <tr class="border-bottom">
-          <%# 商品名: 未　pp.productがnilの場合に備え　%>
+      <% (plan_products || []).each_with_index do |pp, index| %>
+        <%# 最後の行以外にのみ border-bottom を適用 %>
+        <tr class="<%= 'border-bottom' unless index == plan_products.size - 1 %>">
+          <%# 商品名 %>
           <td><%= pp.product&.name %></td>
 
-          <%# 生産数 %>
+          <%# 生産数 - 濃い文字（デフォルト） %>
           <td class="text-end"><%= pp.production_count %></td>
 
-          <%# 売価: 未 安全アクセス (&.) と小数点抑制を適用 %>
-          <td class="text-end text-muted"><%= number_to_currency(pp.product&.price, precision: 0) %></td>
+          <%# 売価 - 濃い文字（デフォルト） %>
+          <td class="text-end"><%= number_to_currency(pp.product&.price, precision: 0) %></td>
 
-          <%# 小計%>
-          <td class="text-end text-dark">
+          <%# 小計 - 濃い文字（デフォルト） %>
+          <td class="text-end">
             <% subtotal = pp.production_count * (pp.product&.price || 0) %>
             <%= number_to_currency(subtotal, precision: 0) %>
           </td>
@@ -33,7 +35,6 @@
   </table>
 <% else %>
   <p class="text-muted text-center" style="padding-top: 50px; font-size: 1.0em;">
-    <%#  メッセージキ－%>
-    <%= t('plans.product_fields.no_products_set', default: '製造商品はまだ設定されていません。') %>
+    <%= t('plans.product_fields.no_products_set') %>
   </p>
 <% end %>

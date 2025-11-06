@@ -76,4 +76,9 @@ export default class extends Controller {
 
     return isValid
   }
+
+  //  追加: HTMLから呼ばれる validate メソッド（エイリアス）
+  validate(event) {
+    return this.validateForm(event)
+  }
 }

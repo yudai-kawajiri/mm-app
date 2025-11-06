@@ -1,4 +1,3 @@
-// app/javascript/controllers/form/submit_controller.js
 import { Controller } from "@hotwired/stimulus"
 import Logger from "utils/logger"
 
@@ -80,5 +79,10 @@ export default class extends Controller {
 
     // フォーム送信を続行
     return true
+  }
+
+  // HTMLから呼ばれる disableSubmit メソッド（エイリアス）
+  disableSubmit(event) {
+    return this.handleSubmit(event)
   }
 }

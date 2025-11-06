@@ -1,5 +1,5 @@
 ja:
-  application_name: "寿司管理システム"
+  application_name: "製造管理システム"
 
   date:
     formats:
@@ -7,49 +7,49 @@ ja:
       default: "%Y/%m/%d"
       long: "%Y年%m月%d日(%a)"
     abbr_day_names:
-      - 日
-      - 月
-      - 火
-      - 水
-      - 木
-      - 金
-      - 土
+      - "日"
+      - "月"
+      - "火"
+      - "水"
+      - "木"
+      - "金"
+      - "土"
     abbr_month_names:
-      -
-      - 1月
-      - 2月
-      - 3月
-      - 4月
-      - 5月
-      - 6月
-      - 7月
-      - 8月
-      - 9月
-      - 10月
-      - 11月
-      - 12月
+      - ""
+      - "1月"
+      - "2月"
+      - "3月"
+      - "4月"
+      - "5月"
+      - "6月"
+      - "7月"
+      - "8月"
+      - "9月"
+      - "10月"
+      - "11月"
+      - "12月"
     day_names:
-      - 日曜日
-      - 月曜日
-      - 火曜日
-      - 水曜日
-      - 木曜日
-      - 金曜日
-      - 土曜日
+      - "日曜日"
+      - "月曜日"
+      - "火曜日"
+      - "水曜日"
+      - "木曜日"
+      - "金曜日"
+      - "土曜日"
     month_names:
-      -
-      - 1月
-      - 2月
-      - 3月
-      - 4月
-      - 5月
-      - 6月
-      - 7月
-      - 8月
-      - 9月
-      - 10月
-      - 11月
-      - 12月
+      - ""
+      - "1月"
+      - "2月"
+      - "3月"
+      - "4月"
+      - "5月"
+      - "6月"
+      - "7月"
+      - "8月"
+      - "9月"
+      - "10月"
+      - "11月"
+      - "12月"
     order:
       - :year
       - :month
@@ -129,6 +129,7 @@ ja:
       admin_management: "管理者機能"
       user_management: "ユーザー管理"
       system_logs: "システムログ"
+
     welcome_message: "ようこそ！ %{name} さんのダッシュボード"
     display_month_label: "表示月："
     display_button: "表示"
@@ -136,6 +137,15 @@ ja:
     weather:
       title: "週間天気予報"
       rain_alert: "雨注意"
+      conditions:
+        clear: "晴れ"
+        clouds: "曇り"
+        rain: "雨"
+        drizzle: "霧雨"
+        thunderstorm: "雷雨"
+        snow: "雪"
+        mist: "霧"
+
     kpi:
       monthly_target: "月間売上予算"
       monthly_actual: "月間売上実績"
@@ -174,20 +184,19 @@ ja:
     index:
       title: "原材料一覧"
     show:
-      title: "%{name} - 原材料詳細 "
+      title: "%{name} - 原材料詳細"
     edit:
-      title: "%{name} - 原材料編集 "
+      title: "%{name} - 原材料編集"
     attributes:
-      default_unit_weight: "デフォルト重量（g/単位）"
+      default_unit_weight: "デフォルト分量"
       unit_weight_for_order: "発注単位の重量（g）"
       pieces_per_order_unit: "発注単位あたりの個数"
-      pieces_per_order_unit_label: "発注単位あたりの個数（例: 1箱=50枚）※個数ベースの場合のみ"
+      pieces_per_order_unit_label: "発注単位あたりの個数"
       order_group_name: "発注グループ名"
     hints:
       pieces_per_order_unit_note: "※個数ベース（トレイなど）の場合のみ表示"
-      pieces_per_order_unit: "※重量ベース（まぐろ、いくらなど）の場合は空欄にしてください。個数ベース（トレイなど）の場合のみ入力してください。"
-      order_group_name: "※同じ原材料を異なる切り方で使用する場合に設定します。<br>例: 「まぐろ赤身（にぎり）」と「まぐろ赤身（巻物）」の両方に「まぐろ赤身」と設定すると、印刷時は別々に表示され、発注時はまとめて計算されます。"
-
+      pieces_per_order_unit: "※個数ベース（トレイなど）の場合に設定します"
+      order_group_name: "※異なる切り方で使用する原材料の場合に設定します"
   # 商品
   products:
     new:
@@ -195,7 +204,7 @@ ja:
     index:
       title: "商品一覧"
     show:
-      title: "%{name} - 商品詳細 "
+      title: "%{name} - 商品詳細"
     edit:
       title: "%{name} - 商品編集"
     placeholder:
@@ -207,6 +216,7 @@ ja:
     product_material_fields:
       material_name_prompt: "原材料名"
       quantity_placeholder: "分量"
+      unit_weight: "商品単位分量"
       unit_prompt: "単位"
       delete_button: "削除"
       no_materials_set: "原材料はまだ設定されていません"
@@ -217,11 +227,11 @@ ja:
     table_headers:
       material_name: "原材料名"
       quantity: "数量"
-      unit_weight: "商品単位重量"
+      unit_weight: "分量"
       unit: "単位"
     add_material_button: "原材料を追加"
     messages:
-      copy_success: "商品「%{original_name}」をコピーしました（新規商品名: %{new_name}）。品番「%{item_number}」は仮の値です。編集画面で変更してください。"
+      copy_success: "商品「%{original_name}」をコピーしました（新規商品名: %{new_name}）。品番「%{item_number}」は仮の値です。編集画面で変更してください"
       copy_failed: "商品のコピーに失敗しました: %{errors}"
 
   # 製造計画
@@ -251,7 +261,7 @@ ja:
       status_updated: "計画「%{name}」のステータスを「%{status}」に変更しました"
       copy_success: "計画「%{original_name}」をコピーしました（新規計画名: %{new_name}）"
       copy_failed: "計画のコピーに失敗しました: %{error}"
-      copy_failed_duplicate: "計画名が重複しています。別の名前を試してください。"
+      copy_failed_duplicate: "計画名が重複しています。別の名前を試してください"
     errors:
       duplicate_name: "は既に同じカテゴリ内に存在します"
       duplicate_product: "同じ商品を複数回追加することはできません"
@@ -288,7 +298,7 @@ ja:
       recommended_daily_target: "推奨日次目標"
       daily_required: "1日あたり必要額"
       action_plan: "アクションプラン"
-      alert_action_needed_html: "残り<strong>%{days}日</strong>で<strong>%{amount}</strong>の追加が必要です。<br>1日あたり<strong>%{daily}</strong>を目指しましょう。"
+      alert_action_needed_html: "残り<strong>%{days}日</strong>で<strong>%{amount}</strong>の追加が必要です。<br>1日あたり<strong>%{daily}</strong>を目指しましょう"
       alert_on_track: "予算達成に向けて順調です！"
       daily_details: "日別明細"
       set_budget: "予算設定"
@@ -326,19 +336,19 @@ ja:
     modals:
       budget_setting:
         title: "予算設定"
-        info: "月間の売上目標を設定します。日別目標は自動で分配されます。"
+        info: "月間の売上目標を設定します。日別目標は自動で分配されます"
       daily_target_edit:
         title: "日別予算編集"
-        info: "この日の予算金額を変更します。月間予算の合計には影響しません。"
+        info: "この日の予算金額を変更します。月間予算の合計には影響しません"
       actual_revenue_entry:
         title: "実績入力"
-        info: "この日の実績売上を入力してください。"
+        info: "この日の実績売上を入力してください"
       assign_plan:
         title: "計画追加"
         edit_title: "計画編集"
-        category_help: "製造する製品のカテゴリを選択してください。"
-        plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます。"
-        revenue_help: "必要に応じて計画高を調整できます。"
+        category_help: "製造する製品のカテゴリを選択してください"
+        plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます"
+        revenue_help: "必要に応じて計画高を調整できます"
       labels:
         target_month: "対象月"
         target_date: "対象日"
@@ -363,6 +373,7 @@ ja:
         update: "更新"
         close: "閉じる"
     messages:
+      budget_created: "月間予算を作成しました"
       budget_updated: "月間予算を更新しました"
       budget_update_failed: "月間予算の更新に失敗しました"
       budget_deleted: "月間予算を削除しました"
@@ -390,7 +401,7 @@ ja:
       bulk_update_partial: "%{success}件成功、%{error}件失敗しました"
     placeholders:
       budget_amount: "例: 1,000,000"
-      daily_target_amount: "例:1,000 "
+      daily_target_amount: "例:1,000"
       actual_revenue_amount: "例: 10,000"
 
   forms:
@@ -463,7 +474,7 @@ ja:
     sessions:
       new:
         title: "ログイン"
-        submit: 'ログイン'
+        submit: "ログイン"
         email_placeholder: "example@sushi-manage.com"
         password_placeholder: "パスワードを入力"
       signed_in: "ログインしました"
@@ -493,7 +504,7 @@ ja:
         email_placeholder: "example@sushi-manage.com"
         unhappy: "アカウントの使用をやめる場合"
         cancel_my_account: "アカウントを削除する"
-        cancel_confirm: "本当にアカウントを削除してもよろしいですか？この操作は取り消せません。"
+        cancel_confirm: "本当にアカウントを削除してもよろしいですか？この操作は取り消せません"
         password_placeholder: "変更しない場合は空欄"
         password_help: "空白の場合は変更しません"
         current_password_help: "変更を確定するには現在のパスワードが必要です"
@@ -583,13 +594,16 @@ ja:
         password_confirmation: "パスワード（確認）"
         current_password: "現在のパスワード"
       category:
-        name: "カテゴリー名"
+        name: "カテゴリー"
         category_type: "カテゴリー"
-        description: '説明'
+        description: "説明"
+        materials: "原材料"
+        products: "商品"
+        plans: "製造計画"
       unit:
         name: "単位名"
         category: "カテゴリー"
-        description: '説明'
+        description: "説明"
         materials_as_product_unit: "原材料（商品単位）"
         materials_as_order_unit: "原材料（発注単位）"
       material:
@@ -610,6 +624,10 @@ ja:
         image: "画像"
         status: "ステータス"
         description: "説明"
+      product_material:
+        unit_weight: "分量"
+        material_id: "原材料"
+        quantity: "数量"
       plan:
         name: "計画名"
         category_id: "カテゴリー"
@@ -671,7 +689,7 @@ ja:
           delete: "削除"
           self: "（自分）"
         confirm:
-          delete: "%{name}のアカウントを削除してもよろしいですか？\nこの操作は取り消せません。"
+          delete: "%{name}のアカウントを削除してもよろしいですか？\nこの操作は取り消せません"
         empty_message: "ユーザーが登録されていません"
       messages:
         cannot_delete_self: "自分自身は削除できません"
@@ -698,6 +716,6 @@ ja:
         update: "更新"
         destroy: "削除"
       auto_delete:
-        no_logs_to_delete: "%{retention_days}日より古いログは見つかりませんでした。"
+        no_logs_to_delete: "%{retention_days}日より古いログは見つかりませんでした"
         success: "%{deleted_count}件のシステムログを削除しました（%{retention_days}日より古いログ、%{cutoff_date}以前）"
       deleted_record: "削除済みレコード"

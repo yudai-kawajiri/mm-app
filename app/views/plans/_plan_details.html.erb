@@ -7,7 +7,7 @@
   <%# 項目1: 計画名 (左カラム) %>
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
-      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:name) %></label>
+      <label class="form-label mb-0" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:name) %></label>
       <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
         <%= plan.name %>
       </div>
@@ -17,7 +17,7 @@
   <%# 項目2: カテゴリー (右カラム) %>
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
-      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:category_id) %></label>
+      <label class="form-label mb-0" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:category_id) %></label>
       <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
         <%= plan.category&.name || no_setting %>
       </div>
@@ -29,7 +29,7 @@
   <%# 項目3: ステータス (左カラム) %>
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
-      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:status) %></label>
+      <label class="form-label mb-0" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:status) %></label>
       <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
         <%= t("activerecord.enums.plan.status.#{plan.status}") %>
       </div>
@@ -39,7 +39,7 @@
 
 <%# 説明欄 %>
 <div class="mt-4">
-  <h6 class="text-muted" style="font-size: 1.1em;"><%= plan_class.human_attribute_name(:description) %></h6>
+  <h6 class="form-label text-muted" style="font-size: 1.1em;"><%= plan_class.human_attribute_name(:description) %></h6>
   <div class="p-3 border rounded d-flex align-items-center justify-content-center" style="min-height: 210px;">
     <%= render 'shared/components/description_content', content: plan.description %>
   </div>

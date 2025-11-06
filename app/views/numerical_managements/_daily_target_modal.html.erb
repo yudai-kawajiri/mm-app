@@ -18,18 +18,17 @@
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.labels.target_date') %></label>
-            <input type="text" class="form-control" id="editTargetDate" readonly>
+            <input type="text" class="form-control-plaintext" id="editTargetDate" readonly>
           </div>
 
           <div class="mb-3">
             <%= f.label :target_amount, t('numerical_managements.modals.labels.daily_target_yen'), class: "form-label" %>
-            <%= f.number_field :target_amount,
+            <%= f.text_field :target_amount,
               class: "form-control",
-              min: 0,
-              step: 1,
               required: true,
               placeholder: t('numerical_managements.placeholders.daily_target_amount'),
               id: "editTargetAmount",
+              inputmode: "numeric",
               data: {
                 controller: 'number-input',
                 action: 'input->number-input#handleInput paste->number-input#handlePaste'

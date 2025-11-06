@@ -16,22 +16,21 @@
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.labels.target_date') %></label>
-            <input type="text" class="form-control" id="editActualDate" readonly>
+            <input type="text" class="form-control-plaintext" id="editActualDate" readonly>
           </div>
 
           <div class="mb-3">
             <%= f.label :actual_revenue, t('numerical_managements.modals.labels.actual_revenue_yen'), class: "form-label" %>
-            <%= f.number_field :actual_revenue,
-              class: "form-control",
-              min: 0,
-              step: 1,
-              required: true,
-              placeholder: t('numerical_managements.placeholders.actual_revenue_amount'),
-              id: "editActualRevenue",
-              data: {
-                controller: 'number-input',
-                action: 'input->number-input#handleInput paste->number-input#handlePaste'
-              } %>
+            <%= f.text_field :actual_revenue,
+            class: "form-control",
+            required: true,
+            placeholder: t('numerical_managements.placeholders.actual_revenue_amount'),
+            id: "editActualRevenue",
+            inputmode: "numeric",
+            data: {
+              controller: 'number-input',
+              action: 'input->number-input#handleInput paste->number-input#handlePaste'
+            } %>
           </div>
 
           <div class="alert alert-info" role="alert">
