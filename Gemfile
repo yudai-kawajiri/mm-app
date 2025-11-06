@@ -60,7 +60,7 @@ gem "propshaft"
 gem "puma", ">= 5.0"
 
 # Railsのバージョン指定
-gem "rails", "~> 8.1.0"
+gem "rails", "~> 8.1.1"
 
 # Rails.cache, Active Job, Action Cableのためのデータベースバックアップアダプタ (Action Cable用)
 gem "solid_cable"
