@@ -27,7 +27,17 @@
     </div>
   </div>
 
+  <%# 🔧 修正: 左に重量、右に単位 %>
   <div class="row">
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= t('materials.attributes.default_unit_weight') %></label>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= material.default_unit_weight && material.default_unit_weight > 0 ? number_with_precision(material.default_unit_weight, precision: 1) : no_setting %>
+        </div>
+      </div>
+    </div>
+
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
         <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_for_product) %></label>
@@ -37,32 +47,24 @@
         </div>
       </div>
     </div>
-
-    <div class="col-md-6">
-      <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= t('materials.attributes.default_unit_weight') %></label>
-        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.default_unit_weight && material.default_unit_weight > 0 ? number_with_precision(material.default_unit_weight, precision: 1) : no_setting %>
-        </div>
-      </div>
-    </div>
   </div>
 
+  <%# 🔧 修正: 左に重量、右に単位 %>
   <div class="row">
-    <div class="col-md-6">
-      <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_for_order) %></label>
-        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.unit_for_order.name %>
-        </div>
-      </div>
-    </div>
-
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
         <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= t('materials.attributes.unit_weight_for_order') %></label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
           <%= material.unit_weight_for_order ? number_with_precision(material.unit_weight_for_order, precision: 1) : no_setting %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_for_order) %></label>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= material.unit_for_order.name %>
         </div>
       </div>
     </div>

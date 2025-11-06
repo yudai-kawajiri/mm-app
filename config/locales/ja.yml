@@ -191,13 +191,12 @@ ja:
       default_unit_weight: "デフォルト重量（g/単位）"
       unit_weight_for_order: "発注単位の重量（g）"
       pieces_per_order_unit: "発注単位あたりの個数"
-      pieces_per_order_unit_label: "発注単位あたりの個数（例: 1箱=50枚）※個数ベースの場合のみ"
+      pieces_per_order_unit_label: "発注単位あたりの個数"
       order_group_name: "発注グループ名"
     hints:
       pieces_per_order_unit_note: "※個数ベース（トレイなど）の場合のみ表示"
-      pieces_per_order_unit: "※重量ベース（まぐろ、いくらなど）の場合は空欄にしてください。個数ベース（トレイなど）の場合のみ入力してください。"
-      order_group_name: "※同じ原材料を異なる切り方で使用する場合に設定します。<br>例: 「まぐろ赤身（にぎり）」と「まぐろ赤身（巻物）」の両方に「まぐろ赤身」と設定すると、印刷時は別々に表示され、発注時はまとめて計算されます。"
-
+      pieces_per_order_unit: "※個数ベース（トレイなど）の場合に設定します。"
+      order_group_name: "※異なる切り方で使用する原材料の場合に設定します。"
   # 商品
   products:
     new:
