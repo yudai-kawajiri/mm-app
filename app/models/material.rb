@@ -17,6 +17,11 @@ class Material < ApplicationRecord
   # 発注グループへの参照（オプショナル）
   belongs_to :order_group, class_name: "MaterialOrderGroup", optional: true
 
+  # 仮想属性（フォームからの一時的なパラメータ）
+  attr_accessor :new_order_group_name
+
+  # 新規グループ名が入力された場合、保存前にグループを作成
+  before_validation :create_order_group_from_name, if: -> { new_order_group_name.present? }
   # 多対多
   has_many :product_materials, dependent: :destroy
   has_many :products, through: :product_materials, dependent: :restrict_with_error
@@ -39,21 +44,11 @@ class Material < ApplicationRecord
             allow_nil: true,
             if: :weight_based?
 
-  # 個数ベースの場合のバリデーション
-  validates :unit_count_for_product,
-            numericality: { greater_than_or_equal_to: 0 },
-            allow_nil: true,
-            if: :count_based?
-
-  validates :unit_count_for_order,
-            presence: true,
-            numericality: { greater_than: 0 },
-            if: :count_based?
-
-  # 後方互換性のため残す
+  # 個数ベースの場合のバリデーション（既存のpieces_per_order_unitを使用）
   validates :pieces_per_order_unit,
+            presence: true,
             numericality: { greater_than: 0, only_integer: true },
-            allow_nil: true
+            if: :count_based?
 
   # インデックス表示用のスコープ (N+1問題対策と並び替え)
   scope :for_index, -> { includes(:category, :unit_for_product, :unit_for_order).order(created_at: :desc) }
@@ -88,5 +83,16 @@ class Material < ApplicationRecord
     else
       :none
     end
+  end
+
+  private
+
+  # 新規グループ名から発注グループを作成または取得
+  def create_order_group_from_name
+    return if new_order_group_name.blank?
+
+    # 既存のグループを検索（同じユーザーの同じ名前）
+    group = user.material_order_groups.find_or_create_by(name: new_order_group_name)
+    self.order_group_id = group.id
   end
 end
