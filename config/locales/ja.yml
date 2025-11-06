@@ -373,6 +373,7 @@ ja:
         update: "更新"
         close: "閉じる"
     messages:
+      budget_created: "月間予算を作成しました"
       budget_updated: "月間予算を更新しました"
       budget_update_failed: "月間予算の更新に失敗しました"
       budget_deleted: "月間予算を削除しました"
