@@ -23,17 +23,16 @@
 
             <div class="mb-3">
               <%= f.label :target_amount, t('numerical_managements.modals.labels.monthly_budget_yen'), class: "form-label" %>
-              <%= f.number_field :target_amount,
-                                 value: @monthly_budget.target_amount.to_i,
-                                 class: "form-control",
-                                 min: 0,
-                                 step: 1,
-                                 required: true,
-                                 placeholder: t('numerical_managements.placeholders.budget_amount'),
-                                 data: {
-                                   controller: 'number-input',
-                                   action: 'input->number-input#handleInput paste->number-input#handlePaste'
-                                 } %>
+              <%= f.text_field :target_amount,
+                      value: @monthly_budget.target_amount.to_i,
+                      class: "form-control",
+                      required: true,
+                      placeholder: t('numerical_managements.placeholders.budget_amount'),
+                      inputmode: "numeric",
+                      data: {
+                        controller: 'number-input',
+                        action: 'input->number-input#handleInput paste->number-input#handlePaste'
+                      } %>
             </div>
 
             <div class="mb-3">
@@ -71,13 +70,12 @@
 
             <div class="mb-3">
               <%= label_tag 'monthly_budget[target_amount]', t('numerical_managements.modals.labels.monthly_budget_yen'), class: "form-label" %>
-              <%= number_field_tag 'monthly_budget[target_amount]',
+              <%= text_field_tag 'monthly_budget[target_amount]',
                 nil,
                 class: "form-control",
-                min: 0,
-                step: 1,
                 required: true,
                 placeholder: t('numerical_managements.placeholders.budget_amount'),
+                inputmode: "numeric",
                 data: {
                   controller: 'number-input',
                   action: 'input->number-input#handleInput paste->number-input#handlePaste'
