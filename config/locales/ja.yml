@@ -1,5 +1,5 @@
 ja:
-  application_name: "寿司管理システム"
+  application_name: "製造管理システム"
 
   date:
     formats:
@@ -7,49 +7,49 @@ ja:
       default: "%Y/%m/%d"
       long: "%Y年%m月%d日(%a)"
     abbr_day_names:
-      - 日
-      - 月
-      - 火
-      - 水
-      - 木
-      - 金
-      - 土
+      - "日"
+      - "月"
+      - "火"
+      - "水"
+      - "木"
+      - "金"
+      - "土"
     abbr_month_names:
-      -
-      - 1月
-      - 2月
-      - 3月
-      - 4月
-      - 5月
-      - 6月
-      - 7月
-      - 8月
-      - 9月
-      - 10月
-      - 11月
-      - 12月
+      - ""
+      - "1月"
+      - "2月"
+      - "3月"
+      - "4月"
+      - "5月"
+      - "6月"
+      - "7月"
+      - "8月"
+      - "9月"
+      - "10月"
+      - "11月"
+      - "12月"
     day_names:
-      - 日曜日
-      - 月曜日
-      - 火曜日
-      - 水曜日
-      - 木曜日
-      - 金曜日
-      - 土曜日
+      - "日曜日"
+      - "月曜日"
+      - "火曜日"
+      - "水曜日"
+      - "木曜日"
+      - "金曜日"
+      - "土曜日"
     month_names:
-      -
-      - 1月
-      - 2月
-      - 3月
-      - 4月
-      - 5月
-      - 6月
-      - 7月
-      - 8月
-      - 9月
-      - 10月
-      - 11月
-      - 12月
+      - ""
+      - "1月"
+      - "2月"
+      - "3月"
+      - "4月"
+      - "5月"
+      - "6月"
+      - "7月"
+      - "8月"
+      - "9月"
+      - "10月"
+      - "11月"
+      - "12月"
     order:
       - :year
       - :month
@@ -129,6 +129,7 @@ ja:
       admin_management: "管理者機能"
       user_management: "ユーザー管理"
       system_logs: "システムログ"
+
     welcome_message: "ようこそ！ %{name} さんのダッシュボード"
     display_month_label: "表示月："
     display_button: "表示"
@@ -136,6 +137,15 @@ ja:
     weather:
       title: "週間天気予報"
       rain_alert: "雨注意"
+      conditions:
+        clear: "晴れ"
+        clouds: "曇り"
+        rain: "雨"
+        drizzle: "霧雨"
+        thunderstorm: "雷雨"
+        snow: "雪"
+        mist: "霧"
+
     kpi:
       monthly_target: "月間売上予算"
       monthly_actual: "月間売上実績"
@@ -463,7 +473,7 @@ ja:
     sessions:
       new:
         title: "ログイン"
-        submit: 'ログイン'
+        submit: "ログイン"
         email_placeholder: "example@sushi-manage.com"
         password_placeholder: "パスワードを入力"
       signed_in: "ログインしました"
@@ -585,11 +595,14 @@ ja:
       category:
         name: "カテゴリー名"
         category_type: "カテゴリー"
-        description: '説明'
+        description: "説明"
+        materials: "原材料"
+        products: "商品"
+        plans: "製造計画"
       unit:
         name: "単位名"
         category: "カテゴリー"
-        description: '説明'
+        description: "説明"
         materials_as_product_unit: "原材料（商品単位）"
         materials_as_order_unit: "原材料（発注単位）"
       material:
