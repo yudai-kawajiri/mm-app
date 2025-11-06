@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_06_085707) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_06_134325) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -87,11 +87,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_06_085707) do
     t.bigint "order_group_id"
     t.string "order_group_name"
     t.integer "pieces_per_order_unit", comment: "1発注単位あたりの個数（トレイなど）"
-    t.decimal "unit_count_for_order", precision: 10, scale: 2
-    t.decimal "unit_count_for_product", precision: 10, scale: 2
     t.bigint "unit_for_order_id", null: false
     t.bigint "unit_for_product_id", null: false
-    t.decimal "unit_weight_for_order", precision: 10, scale: 3, null: false
+    t.decimal "unit_weight_for_order", precision: 10, scale: 3
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["category_id"], name: "index_materials_on_category_id"
@@ -176,7 +174,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_06_085707) do
     t.string "item_number", null: false
     t.string "name", null: false
     t.integer "price", null: false
-    t.integer "status"
+    t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["category_id"], name: "index_products_on_category_id"
