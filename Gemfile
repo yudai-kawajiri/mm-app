@@ -139,6 +139,9 @@ group :test do
   # データベースクリーナー（テスト間でDBをクリーンに保つ）
   gem "database_cleaner-active_record"
 
+  # CI/CD用: テスト結果をJUnit形式で出力
+  gem 'rspec_junit_formatter'
+
   # Capybaraがブラウザを操作するために使用するドライバー
   gem "selenium-webdriver"
 
