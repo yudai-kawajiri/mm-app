@@ -25,7 +25,7 @@
 
     <%# Allタブの内容 %>
     <div class="tab-pane fade show active" id="material-all" role="tabpanel" aria-labelledby="all-tab">
-      <%= render 'material_table', materials: all_materials %>
+      <%= render 'product_material_table', materials: all_materials %>
     </div>
 
     <%# カテゴリ別のタブの内容（商品に使用されているカテゴリのみ） %>
@@ -33,7 +33,7 @@
     <% material_categories.select { |c| used_category_ids.include?(c.id) }.each do |category| %>
       <% filtered_materials = all_materials.select { |pm| pm.material.category_id == category.id } %>
         <div class="tab-pane fade" id="material-<%= category.id %>" role="tabpanel" aria-labelledby="<%= category.id %>-tab">
-          <%= render 'material_table', materials: filtered_materials %>
+          <%= render 'product_material_table', materials: filtered_materials %>
         </div>
     <% end %>
 </div>
