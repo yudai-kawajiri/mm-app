@@ -593,7 +593,7 @@ ja:
         password_confirmation: "パスワード（確認）"
         current_password: "現在のパスワード"
       category:
-        name: "カテゴリー名"
+        name: "カテゴリー"
         category_type: "カテゴリー"
         description: "説明"
         materials: "原材料"

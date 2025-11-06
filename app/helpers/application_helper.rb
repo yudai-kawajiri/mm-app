@@ -121,9 +121,9 @@ module ApplicationHelper
 
   # === フォームヘルパーメソッド ===
 
-  # 標準的なラベルを生成（h5クラス付き）
+  # 標準的なラベルを生成（h5クラス + text-muted で統一）
   def form_label_lg(form, attribute, options = {})
-    options[:class] = "form-label h5 #{options[:class]}".strip
+    options[:class] = "form-label h5 text-muted #{options[:class]}".strip
     form.label(attribute, options)
   end
 

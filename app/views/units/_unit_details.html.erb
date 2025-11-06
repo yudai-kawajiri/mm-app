@@ -7,7 +7,7 @@
     <%# 項目1: 単位名 (左カラム) %>
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= unit_class.human_attribute_name(:name) %></label>
+        <label class="form-label mb-0" style="font-size: 1.0em;"><%= unit_class.human_attribute_name(:name) %></label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
           <%= unit.name %>
         </div>
@@ -17,7 +17,7 @@
     <%# 項目2: カテゴリ (右カラム) %>
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= unit_class.human_attribute_name(:category) %></label>
+        <label class="form-label mb-0" style="font-size: 1.0em;"><%= unit_class.human_attribute_name(:category) %></label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
           <%= I18n.t("activerecord.enums.unit.category.#{unit.category}") %>
         </div>
@@ -28,7 +28,7 @@
 
 <%# 説明欄 %>
 <div class="mt-4">
-  <h6 class="text-muted" style="font-size: 1.1em;"><%= unit_class.human_attribute_name(:description) %></h6>
+  <h6 class="form-label text-muted" style="font-size: 1.1em;"><%= unit_class.human_attribute_name(:description) %></h6>
   <div class="p-3 border rounded d-flex align-items-center justify-content-center" style="min-height: 210px;">
     <%= render 'shared/components/description_content', content: unit.description %>
   </div>

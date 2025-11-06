@@ -26,10 +26,11 @@
             <%# 数量 %>
             <td class="text-end"><%= number_with_precision(pm.quantity, precision: 0) %></td>
 
-            <%# 重量（商品単位） - product_materials.unit_weightから取得 %>
-            <td class="text-end text-muted"><%= number_with_precision(pm.unit_weight, precision: 1) %></td>
+            <%# 重量（商品単位） - 濃い文字に統一 %>
+            <td class="text-end"><%= number_with_precision(pm.unit_weight, precision: 1) %></td>
 
-            <td class="text-start text-dark"><%= pm.unit.name %></td>
+            <%# 単位 - 濃い文字に統一 %>
+            <td class="text-start"><%= pm.unit.name %></td>
           </tr>
         <% end %>
       </tbody>
@@ -39,3 +40,4 @@
       <%= t('products.product_material_fields.no_materials_set') %>
     </p>
   <% end %>
+  
