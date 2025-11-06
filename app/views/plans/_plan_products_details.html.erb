@@ -31,14 +31,7 @@
     <%# 1. すべて (All) タブの内容 %>
     <div class="tab-pane fade show active" id="plan-product-all" role="tabpanel" aria-labelledby="all-tab">
       <%= render 'plans/plan_product_table', plan_products: all_plan_products %>
-
-      <%# タブ内の合計金額表示 %>
-      <div class="text-end mt-3 border-top pt-2">
-        <span class="text-muted"><%= t('plans.tab_total', default: 'カテゴリ合計') %>:</span>
-        <% all_tab_total = total_amount %>
-        <span class="h5 text-dark"><%= number_to_currency(all_tab_total, precision: 0) %></span>
-      </div>
-    </div>
+   </div>
 
     <%# 2. カテゴリ別のタブの内容（計画に使用されているカテゴリのみ） %>
     <% used_category_ids = all_plan_products.map { |pp| pp.product&.category_id }.compact.uniq %>
