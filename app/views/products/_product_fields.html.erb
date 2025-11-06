@@ -33,7 +33,7 @@
 
       <%# 右カラム %>
       <div class="col-md-6">
-        <%# 3. ステータス %>
+        <%# 4. ステータス %>
         <%= form_group_lg(f, :status,
                           field_type: :select,
                           wrapper_class: 'mb-3',
@@ -50,12 +50,14 @@
                             action: 'input->number-input#handleInput paste->number-input#handlePaste'
                           }) %>
 
-
-        <%# 6. 画像（120px） %>
-        <div class="mb-3">
+        <%# 6. 画像（120px） - Stimulusコントローラーで制御 %>
+        <div class="mb-3" data-controller="image-preview">
           <%= form_label_lg(f, :image) %>
           <%= f.file_field :image,
-              id: 'product-image-input',
+              data: {
+                image_preview_target: "input",
+                action: "change->image-preview#handleFileSelect"
+              },
               class: "form-control",
               accept: "image/*" %>
           <small class="text-muted d-block mt-1">
@@ -71,8 +73,8 @@
             </div>
           <% end %>
 
-          <%# 画像プレビュー（高さ120px） %>
-          <div class="text-center mt-2 p-2 border rounded bg-light"
+          <%# 画像プレビュー（高さ120px） - 修正版 %>
+          <div class="text-center mt-2 p-2 border rounded bg-light position-relative"
                style="height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
             <%
               # 画像表示の判定
@@ -84,40 +86,51 @@
             <% if show_existing_image %>
               <%# 既存レコードの画像 %>
               <%= image_tag f.object.image,
-                    id: 'image-preview',
-                    style: "max-width: 100%; max-height: 110px; width: auto; height: auto; object-fit: contain;" %>
+                    data: { image_preview_target: "preview" },
+                    class: "position-relative",
+                    style: "max-width: 100%; max-height: 110px; width: auto; height: auto; object-fit: contain; z-index: 2;" %>
             <% elsif show_base64_preview %>
               <%# 新規作成でバリデーションエラー時のBase64プレビュー %>
               <%= image_tag "data:#{@image_content_type || 'image/png'};base64,#{@image_preview_data}",
-                    id: 'image-preview',
-                    style: "max-width: 100%; max-height: 110px; width: auto; height: auto; object-fit: contain;" %>
+                    data: { image_preview_target: "preview" },
+                    class: "position-relative",
+                    style: "max-width: 100%; max-height: 110px; width: auto; height: auto; object-fit: contain; z-index: 2;" %>
             <% else %>
               <%# 画像なし %>
               <%= image_tag '',
-                    id: 'image-preview',
-                    style: "max-width: 100%; max-height: 110px; width: auto; height: auto; object-fit: contain; display: none;" %>
+                    data: { image_preview_target: "preview" },
+                    class: "position-relative",
+                    style: "max-width: 100%; max-height: 110px; width: auto; height: auto; object-fit: contain; display: none; z-index: 2;" %>
             <% end %>
 
-            <label for="product-image-input" id="preview-label"
-                   style="<%= show_any_image ? 'display: none;' : '' %> cursor: pointer;">
+            <label data-image-preview-target="previewLabel"
+                   class="position-absolute"
+                   style="<%= show_any_image ? 'display: none;' : '' %> cursor: pointer; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">
               <span class="text-muted" style="font-size: 0.9em;"><%= t('products.image_help.no_image', default: '画像未選択') %></span>
             </label>
           </div>
 
           <%# 削除ボタンとキャンセルボタン %>
           <div class="text-center mt-2">
+            <%# 既存画像の削除ボタン（サーバー削除） %>
             <% if f.object.persisted? && f.object.image.attached? %>
-              <div id="current-image-container">
+              <div data-image-preview-target="currentImageContainer">
                 <%= link_to t('helpers.link.delete_image'), "#",
-                  data: { product_id: f.object.id, url: purge_image_product_path(f.object) },
-                  class: "btn btn-sm btn-danger",
-                  id: "delete-button" %>
+                  data: {
+                    product_id: f.object.id,
+                    url: purge_image_product_path(f.object),
+                    action: "click->image-preview#deleteExistingImage"
+                  },
+                  class: "btn btn-sm btn-danger" %>
               </div>
             <% end %>
 
-            <button type="button" id="cancel-new-image-button"
+            <%# 新規選択画像のキャンセルボタン（初期状態は非表示） %>
+            <button type="button"
+                    data-image-preview-target="cancelButton"
+                    data-action="click->image-preview#cancelNewImage"
                     class="btn btn-sm btn-outline-danger"
-                    style="<%= show_any_image ? '' : 'display: none;' %>">
+                    style="display: none;">
               <%= t('helpers.link.cancel_new_image') %>
             </button>
           </div>
