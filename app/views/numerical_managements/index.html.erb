@@ -79,7 +79,13 @@ function setEditModalData(button) {
 
   document.getElementById('editTargetDate').value = dateDisplay;
   document.getElementById('editTargetDateHidden').value = date;
-  document.getElementById('editTargetAmount').value = Math.floor(parseFloat(targetAmount) || 0);
+
+  // 値をセット
+  const targetAmountField = document.getElementById('editTargetAmount');
+  targetAmountField.value = Math.floor(parseFloat(targetAmount) || 0);
+
+  // inputイベントを発火してカンマをフォーマット
+  targetAmountField.dispatchEvent(new Event('input', { bubbles: true }));
 
   const form = document.getElementById('editDailyTargetForm');
   if (targetId) {
@@ -103,7 +109,13 @@ function setActualModalData(button) {
   const actualRevenue = button.dataset.actualRevenue || 0;
 
   document.getElementById('editActualDate').value = dateDisplay;
-  document.getElementById('editActualRevenue').value = Math.floor(parseFloat(actualRevenue) || 0);
+
+  // 値をセット
+  const actualRevenueField = document.getElementById('editActualRevenue');
+  actualRevenueField.value = Math.floor(parseFloat(actualRevenue) || 0);
+
+  // inputイベントを発火してカンマをフォーマット
+  actualRevenueField.dispatchEvent(new Event('input', { bubbles: true }));
 
   const form = document.getElementById('editActualRevenueForm');
   if (planScheduleId) {
