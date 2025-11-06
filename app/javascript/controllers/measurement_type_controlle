@@ -1,0 +1,73 @@
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static targets = [
+    "weightFields",
+    "countFields",
+    "defaultUnitLabel"
+  ]
+
+  connect() {
+    console.log('measurement-type controller connected')
+    this.toggleFields()
+  }
+
+  toggleFields() {
+    const selectedType = this.element.querySelector('input[name="material[measurement_type]"]:checked')?.value
+    console.log('toggleFields called, selectedType:', selectedType)
+
+    if (selectedType === 'weight') {
+      this.weightFieldsTarget.style.display = ''
+      this.countFieldsTarget.style.display = 'none'
+
+      // ラベルを切り替え
+      if (this.hasDefaultUnitLabelTarget) {
+        this.defaultUnitLabelTarget.textContent = '基本使用量'
+      }
+
+      // 個数ベースのフィールドの値をクリア（保存時に送信されないように）
+      this.clearFields(this.countFieldsTarget)
+
+      this.setRequiredFields(this.weightFieldsTarget, true)
+      this.setRequiredFields(this.countFieldsTarget, false)
+    } else if (selectedType === 'count') {
+      this.weightFieldsTarget.style.display = 'none'
+      this.countFieldsTarget.style.display = ''
+
+      // ラベルを切り替え
+      if (this.hasDefaultUnitLabelTarget) {
+        this.defaultUnitLabelTarget.textContent = 'デフォルト数量'
+      }
+
+      // 重量ベースのフィールドの値をクリア（保存時に送信されないように）
+      this.clearFields(this.weightFieldsTarget)
+
+      this.setRequiredFields(this.weightFieldsTarget, false)
+      this.setRequiredFields(this.countFieldsTarget, true)
+    }
+  }
+
+  // 非表示フィールドの値をクリアするメソッド
+  clearFields(container) {
+    const inputs = container.querySelectorAll('input[type="number"]')
+    inputs.forEach(input => {
+      input.value = ''
+      console.log('Cleared field:', input.name)
+    })
+  }
+
+  setRequiredFields(container, isRequired) {
+    const inputs = container.querySelectorAll('input[type="number"]')
+    console.log('setRequiredFields:', container, isRequired, 'found inputs:', inputs.length)
+
+    inputs.forEach(input => {
+      const fieldName = input.name || ''
+
+      if (fieldName.includes('unit_weight_for_order') ||
+          fieldName.includes('pieces_per_order_unit')) {
+        console.log('Setting required =', isRequired, 'for', fieldName)
+        input.required = isRequired
+      }
+    })
+  }
+}
