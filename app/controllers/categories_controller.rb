@@ -20,7 +20,7 @@ class CategoriesController < AuthenticatedController
 
   def create
     @category = current_user.categories.build(category_params)
-    respond_to_save(@category, success_path: categories_url)
+    respond_to_save(@category, success_path: @category)
   end
 
   def show; end
@@ -32,7 +32,7 @@ class CategoriesController < AuthenticatedController
 
   def update
     @category.assign_attributes(category_params)
-    respond_to_save(@category, success_path: categories_url)
+    respond_to_save(@category, success_path: @category)
   end
 
   def destroy

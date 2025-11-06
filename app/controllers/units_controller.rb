@@ -18,7 +18,7 @@ class UnitsController < AuthenticatedController
 
   def create
     @unit = current_user.units.build(unit_params)
-    respond_to_save(@unit, success_path: units_url)
+    respond_to_save(@unit, success_path: @unit)
   end
 
   def show; end
@@ -28,7 +28,7 @@ class UnitsController < AuthenticatedController
 
   def update
     @unit.assign_attributes(unit_params)
-    respond_to_save(@unit, success_path: units_url)
+    respond_to_save(@unit, success_path: @unit)
   end
 
   def destroy
