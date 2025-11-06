@@ -13,22 +13,57 @@
   </div>
 </div>
 
-<%# 🔧 修正: 左に重量、右に単位 %>
+<%# 計測方法選択 %>
+<div class="row mb-3">
+  <div class="col-md-12">
+    <div class="form-group">
+      <label class="form-label"><%= t('materials.attributes.measurement_type') %></label>
+      <div class="d-flex gap-4">
+        <div class="form-check">
+          <%= f.radio_button :measurement_type, 'weight',
+              checked: f.object.measurement_type != 'count',
+              class: 'form-check-input',
+              data: {
+                controller: 'measurement-type',
+                action: 'change->measurement-type#toggleFields'
+              } %>
+          <%= f.label :measurement_type_weight, t('materials.measurement_types.weight'), class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= f.radio_button :measurement_type, 'count',
+              class: 'form-check-input',
+              data: {
+                controller: 'measurement-type',
+                action: 'change->measurement-type#toggleFields'
+              } %>
+          <%= f.label :measurement_type_count, t('materials.measurement_types.count'), class: 'form-check-label' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%# 共通フィールド（常に表示） %>
 <div class="row">
-  <%# 左カラム: 商品単位あたりの重量 %>
+  <%# 左カラム: 基本使用量/個数 %>
   <div class="col-md-6">
-    <%= form_group_lg(f, :default_unit_weight,
-        field_type: :number_field,
-        step: :any,
-        label: t('materials.attributes.default_unit_weight'),
-        data: {
-          controller: 'number-input',
-          action: 'input->number-input#handleInput paste->number-input#handlePaste'
-        }
-    ) %>
+    <div class="mb-4">
+      <label for="material_default_unit_weight" class="form-label form-label-lg" data-measurement-type-target="defaultUnitLabel">
+        <%= t('materials.attributes.default_unit_weight') %>
+      </label>
+      <%= f.number_field :default_unit_weight,
+          step: :any,
+          class: 'form-control form-control-lg',
+          data: {
+            controller: 'number-input',
+            action: 'input->number-input#handleInput paste->number-input#handlePaste',
+            form_validation_target: 'field'
+          }
+      %>
+    </div>
   </div>
 
-  <%# 右カラム: 商品単位 %>
+  <%# 右カラム: 使用単位 %>
   <div class="col-md-6">
     <%= form_group_lg(f, :unit_for_product_id,
         field_type: :collection_select,
@@ -38,22 +73,20 @@
   </div>
 </div>
 
-<%# 🔧 修正: 左に重量、右に単位 %>
-<div class="row">
-  <%# 左カラム: 発注単位あたりの重量 %>
+<%# 重量ベース専用フィールド %>
+<div class="row" data-measurement-type-target="weightFields" style="<%= 'display: none;' if f.object.measurement_type == 'count' %>">
   <div class="col-md-6">
     <%= form_group_lg(f, :unit_weight_for_order,
         field_type: :number_field,
         step: :any,
         label: t('materials.attributes.unit_weight_for_order'),
-        data: {
+        data_attributes: {
           controller: 'number-input',
           action: 'input->number-input#handleInput paste->number-input#handlePaste'
         }
     ) %>
   </div>
 
-  <%# 右カラム: 発注単位 %>
   <div class="col-md-6">
     <%= form_group_lg(f, :unit_for_order_id,
         field_type: :collection_select,
@@ -63,35 +96,77 @@
   </div>
 </div>
 
-<div class="row">
-  <%# 発注単位あたりの個数（オプション） %>
-  <div class="col-md-12">
+<%# 個数ベース専用フィールド %>
+<div class="row" data-measurement-type-target="countFields" style="<%= 'display: none;' unless f.object.measurement_type == 'count' %>">
+  <div class="col-md-6">
     <%= form_group_lg(f, :pieces_per_order_unit,
         field_type: :number_field,
         step: 1,
         label: t('materials.attributes.pieces_per_order_unit_label'),
-        data: {
+        data_attributes: {
           controller: 'number-input',
           action: 'input->number-input#handleInput paste->number-input#handlePaste'
         }
     ) %>
-    <p class="text-muted small"><%= t('materials.hints.pieces_per_order_unit') %></p>
   </div>
-</div>
 
-<div class="row">
-  <%# 発注グループ名（オプション） %>
-  <div class="col-md-12">
-    <%= form_group_lg(f, :order_group_name,
-        field_type: :text_field,
-        label: t('materials.attributes.order_group_name')
+  <div class="col-md-6">
+    <%= form_group_lg(f, :unit_for_order_id,
+        field_type: :collection_select,
+        collection: current_user.units.where(category: :ordering),
+        label: Material.human_attribute_name(:unit_for_order)
     ) %>
-    <p class="text-muted small"><%= t('materials.hints.order_group_name') %></p>
+  </div>
+</div>
+
+<%# 発注グループ選択 %>
+<div class="row mb-3">
+  <div class="col-md-12">
+    <div class="form-group" data-controller="order-group">
+      <label class="form-label"><%= t('materials.attributes.order_group') %></label>
+      <div class="d-flex gap-4 mb-2">
+        <div class="form-check">
+          <%= radio_button_tag 'order_group_method', 'existing',
+              f.object.order_group_id.present?,
+              class: 'form-check-input',
+              data: { action: 'change->order-group#toggleFields' } %>
+          <%= label_tag 'order_group_method_existing', t('materials.order_group_methods.existing'), class: 'form-check-label' %>
+        </div>
+        <div class="form-check">
+          <%= radio_button_tag 'order_group_method', 'new',
+              f.object.order_group_id.blank?,
+              class: 'form-check-input',
+              data: { action: 'change->order-group#toggleFields' } %>
+          <%= label_tag 'order_group_method_new', t('materials.order_group_methods.new'), class: 'form-check-label' %>
+        </div>
+      </div>
+
+      <%# 既存グループから選択 %>
+      <div data-order-group-target="existingField" style="<%= 'display: none;' if f.object.order_group_id.blank? %>">
+        <%= form_group_lg(f, :order_group_id,
+            field_type: :collection_select,
+            collection: current_user.material_order_groups,
+            include_blank: t('materials.placeholders.select_order_group'),
+            label: false
+        ) %>
+      </div>
+
+      <%# 新規グループ作成 %>
+      <div data-order-group-target="newField" style="<%= 'display: none;' unless f.object.order_group_id.blank? %>">
+        <%= form_group_lg(f, :new_order_group_name,
+            field_type: :text_field,
+            label: false,
+            placeholder: t('materials.placeholders.new_order_group')
+        ) %>
+      </div>
+
+      <p class="text-muted small mt-2"><%= t('materials.hints.order_group') %></p>
+    </div>
   </div>
 </div>
 
 <div class="row">
-  <%# 説明（Description） - 1行全体を使用 + 文字数カウンター %>
+  <%# 説明（Description） %>
   <div class="col-md-12">
     <%= form_group_lg(f, :description,
         field_type: :text_area,
