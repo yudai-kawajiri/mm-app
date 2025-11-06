@@ -1,11 +1,15 @@
-<%= link_to ' 印刷', print_plan_path(@plan),
-            class: 'btn btn-outline-secondary',
-            target: '_blank' %>
-
 <%= render 'shared/details/resource_show',
     resource: @plan,
     title: t('plans.show.title', name: @plan.name),
     content_left_partial: 'plans/plan_details',
     content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.plan')),
     content_right_partial: 'plans/plan_products_details',
-    content_right_title: t('forms.titles.plan_product') %>
+    content_right_title: t('forms.titles.plan_product'),
+    additional_actions: [
+      {
+        label: t('common.print'),
+        path: print_plan_path(@plan),
+        class: 'btn-light',
+        target: '_blank'
+      }
+    ] %>

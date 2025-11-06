@@ -9,11 +9,13 @@
     content_right_partial: 右カラムのパーシャル名
     content_right_title: 右カラムのタイトル
     partial_locals: パーシャルに渡す追加のlocals（デフォルト: {}）
+    additional_actions: 追加のアクションボタン配列（例: [{label: '印刷', path: path, class: 'btn-outline-secondary', target: '_blank'}]）
 %>
 
 <% content_right_partial = local_assigns[:content_right_partial] %>
 <% content_right_title = local_assigns[:content_right_title] %>
 <% partial_locals = local_assigns.fetch(:partial_locals, {}) %>
+<% additional_actions = local_assigns.fetch(:additional_actions, []) %>
 
 <%= content_for(:title, title) %>
 
@@ -29,6 +31,14 @@
         <div class="d-flex gap-2">
           <%= link_to '戻る', polymorphic_path(resource.class), class: 'btn btn-light btn-sm' %>
           <%= link_to '編集', [:edit, resource], class: 'btn btn-light btn-sm' %>
+
+          <%# 追加アクションボタン %>
+          <% additional_actions.each do |action| %>
+            <%= link_to action[:label], action[:path],
+                        class: "btn btn-sm #{action[:class]}",
+                        target: action[:target] %>
+          <% end %>
+
           <%= button_to '削除', resource, method: :delete,
               data: { turbo_confirm: "本当に削除しますか？" },
               class: 'btn btn-danger btn-sm' %>

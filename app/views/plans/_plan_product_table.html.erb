@@ -12,8 +12,9 @@
       </tr>
     </thead>
     <tbody>
-      <% (plan_products || []).each do |pp| %>
-        <tr class="border-bottom">
+      <% (plan_products || []).each_with_index do |pp, index| %>
+        <%# 最後の行以外にのみ border-bottom を適用 %>
+        <tr class="<%= 'border-bottom' unless index == plan_products.size - 1 %>">
           <%# 商品名 %>
           <td><%= pp.product&.name %></td>
 
