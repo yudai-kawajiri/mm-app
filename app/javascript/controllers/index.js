@@ -21,6 +21,7 @@ import FlashController from "controllers/flash_controller"
 import CharacterCounterController from "controllers/character_counter_controller"
 import FormValidationController from "controllers/form_validation_controller"
 import NumberInputController from "controllers/number_input_controller"
+import ImagePreviewController from "controllers/image_preview_controller"
 
 // 計画割り当てController
 import PlanAssignmentController from "controllers/plan_assignment_controller"
@@ -44,6 +45,7 @@ application.register("flash", FlashController)
 application.register("character-counter", CharacterCounterController)
 application.register("form-validation", FormValidationController)
 application.register("number-input", NumberInputController)
+application.register("image-preview", ImagePreviewController)
 
 // 計画割り当てController登録
 application.register("plan-assignment", PlanAssignmentController)
