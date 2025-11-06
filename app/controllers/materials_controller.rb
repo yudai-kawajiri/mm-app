@@ -48,17 +48,10 @@ class MaterialsController < AuthenticatedController
 
   def material_params
     params.require(:material).permit(
-      :name,
-      :unit_for_product_id,
-      :default_unit_weight,
-      :unit_for_order_id,
-      :unit_weight_for_order,
-      :pieces_per_order_unit,
-      :order_group_name,
-      :category_id,
-      :description,
-      :display_order
-    )
+    :name, :category, :unit, :unit_weight_for_product, :unit_weight_for_order,
+    :minimum_order_quantity, :default_unit_weight, :order_group_name,
+    :measurement_type, :unit_count_for_product, :unit_count_for_order, :order_group_id
+  )
   end
 
   def reorder_params
