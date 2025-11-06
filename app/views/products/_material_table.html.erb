@@ -2,6 +2,7 @@
 <% product_materials = local_assigns[:materials] %>
 
 <% if product_materials.present? %>
+  <div class="table-responsive">
     <table class="table table-sm table-borderless">
       <thead>
         <tr class="border-bottom">
@@ -35,9 +36,9 @@
         <% end %>
       </tbody>
     </table>
-  <% else %>
-    <p class="text-muted text-center" style="padding-top: 50px; font-size: 1.0em;">
-      <%= t('products.product_material_fields.no_materials_set') %>
-    </p>
-  <% end %>
-  
+  </div>
+<% else %>
+  <p class="text-muted text-center" style="padding-top: 50px; font-size: 1.0em;">
+    <%= t('products.product_material_fields.no_materials_set') %>
+  </p>
+<% end %>

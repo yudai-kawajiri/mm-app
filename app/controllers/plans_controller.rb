@@ -6,7 +6,7 @@ class PlansController < AuthenticatedController
   find_resource :plan, only: [ :show, :edit, :update, :destroy, :update_status, :copy, :print ]
 
   before_action -> { load_categories_for("plan", as: :plan) }, only: [ :index, :new, :edit, :create, :update ]
-  before_action -> { load_categories_for("product", as: :product) }, only: [ :new, :edit, :create, :update ]
+  before_action -> { load_categories_for("product", as: :product) }, only: [ :new, :edit, :create, :update, :show ]
   before_action :load_plan_products, only: [ :show ]
 
   def index

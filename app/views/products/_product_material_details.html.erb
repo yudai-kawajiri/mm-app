@@ -10,8 +10,9 @@
       <%= t('products.tab_all') %>
     </button>
 
-    <%# カテゴリ別のタブ %>
-    <% material_categories.each do |category| %>
+    <%# カテゴリ別のタブ（商品に使用されているカテゴリのみ表示） %>
+    <% used_category_ids = all_materials.map { |pm| pm.material&.category_id }.compact.uniq %>
+    <% material_categories.select { |c| used_category_ids.include?(c.id) }.each do |category| %>
       <button class="nav-link" id="<%= category.id %>-tab" data-bs-toggle="tab" data-bs-target="#material-<%= category.id %>" type="button" role="tab" aria-controls="material-<%= category.id %>" aria-selected="false">
         <%= category.name %>
       </button>
@@ -27,8 +28,9 @@
       <%= render 'material_table', materials: all_materials %>
     </div>
 
-    <%# カテゴリ別のタブの内容 %>
-    <% material_categories.each do |category| %>
+    <%# カテゴリ別のタブの内容（商品に使用されているカテゴリのみ） %>
+    <% used_category_ids = all_materials.map { |pm| pm.material&.category_id }.compact.uniq %>
+    <% material_categories.select { |c| used_category_ids.include?(c.id) }.each do |category| %>
       <% filtered_materials = all_materials.select { |pm| pm.material.category_id == category.id } %>
         <div class="tab-pane fade" id="material-<%= category.id %>" role="tabpanel" aria-labelledby="<%= category.id %>-tab">
           <%= render 'material_table', materials: filtered_materials %>
