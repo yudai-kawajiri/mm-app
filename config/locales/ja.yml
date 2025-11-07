@@ -188,16 +188,30 @@ ja:
     edit:
       title: "%{name} - 原材料編集"
     attributes:
-      default_unit_weight: "デフォルト分量"
-      unit_weight_for_order: "発注単位の重量（g）"
-      pieces_per_order_unit: "発注単位あたりの個数"
-      pieces_per_order_unit_label: "発注単位あたりの個数"
-      order_group_name: "発注グループ名"
-    hints:
-      pieces_per_order_unit_note: "※個数ベース（トレイなど）の場合のみ表示"
-      pieces_per_order_unit: "※個数ベース（トレイなど）の場合に設定します"
-      order_group_name: "※異なる切り方で使用する原材料の場合に設定します"
-  # 商品
+      default_order_quantity: "基本発注量/発注入数"
+      measurement_type: "計測方法"
+    measurement_types:
+      weight: "重量ベース"
+      count: "個数ベース"
+    order_group_methods:
+      existing: "既存から選択"
+      new: "新規作成"
+    placeholders:
+      select_order_group: "選択してください"
+      new_order_group: "商品ごとに違う規格で使用する場合に入力してください"
+      order_group: "選択してください"
+
+  material_order_groups:
+    clear: "解除"
+    delete: "削除"
+    clear_group: "グループ解除"
+    delete_group: "グループ削除"
+    destroyed: "発注グループを削除しました"
+    errors:
+      not_found: "発注グループが見つかりません"
+      has_materials: "このグループは%{count}件の原材料で使用されているため削除できません"
+
+    # 商品
   products:
     new:
       title: "商品登録"
@@ -215,7 +229,7 @@ ja:
       no_image: "画像未選択"
     product_material_fields:
       material_name_prompt: "原材料名"
-      quantity_placeholder: "分量"
+      unit_weight_placeholder: "分量"
       unit_weight: "商品単位分量"
       unit_prompt: "単位"
       delete_button: "削除"
@@ -604,16 +618,21 @@ ja:
         name: "単位名"
         category: "カテゴリー"
         description: "説明"
-        materials_as_product_unit: "原材料（商品単位）"
+        materials_as_product_unit: "原材料（使用単位）"
         materials_as_order_unit: "原材料（発注単位）"
       material:
         name: "原材料名"
-        unit_for_product: "商品単位"
-        unit_weight_for_product: "重量（商品単位）"
-        unit_for_order: "発注単位"
-        unit_weight_for_order: "重量（発注単位）"
-        category_id: "カテゴリー"
         category: "カテゴリー"
+        category_id: "カテゴリー"
+        default_unit_weight: "基本使用量"
+        unit_for_product: "使用単位"
+        unit_weight_for_order: "基本発注量（g）"
+        pieces_per_order_unit: "基本発注入数"
+        default_order_quantity: "基本発注量/発注入数"
+        unit_for_order: "発注単位"
+        order_group: "発注グループ"
+        order_group_id: "発注グループ"
+        new_order_group_name: "新発注グループ"
         description: "説明"
       product:
         name: "商品名"
@@ -643,7 +662,7 @@ ja:
           plan: "計画"
       unit:
         category:
-          production: "商品単位"
+          production: "使用単位"
           ordering: "発注単位"
       product:
         status:

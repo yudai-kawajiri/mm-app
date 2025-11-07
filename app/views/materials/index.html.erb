@@ -27,22 +27,42 @@
       search_categories: @material_categories,
 
       columns: [
-          { header: '',
+        { header: '',
           data: Proc.new { |resource|
             content_tag(:span, '☰', class: 'drag-handle d-none', style: 'cursor: move; font-size: 1.2em; color: #999;')
           }
         },
         { header: :name, data: :name },
         { header: :category,
-          data: Proc.new { |material| material.category&.name },
+          data: Proc.new { |material| material.category&.name || '-' }
+        },
+        { header: :default_unit_weight,
+          data: Proc.new { |material|
+            material.default_unit_weight.present? && material.default_unit_weight > 0 ?
+              number_with_precision(material.default_unit_weight, precision: 1) :
+              '-'
+          }
         },
         { header: :unit_for_product,
-          data: Proc.new { |material| material.unit_for_product&.name }
+          data: Proc.new { |material| material.unit_for_product&.name || '-' }
+        },
+        { header: :default_order_quantity,
+          data: Proc.new { |material|
+            if material.weight_based? && material.unit_weight_for_order.present?
+              "#{number_with_precision(material.unit_weight_for_order, precision: 1)} g"
+            elsif material.count_based? && material.pieces_per_order_unit.present?
+              "#{material.pieces_per_order_unit} #{material.unit_for_product&.name}"
+            else
+              '-'
+            end
+          }
         },
         { header: :unit_for_order,
-          data: Proc.new { |material| material.unit_for_order&.name }
+          data: Proc.new { |material| material.unit_for_order&.name || '-' }
         },
-        { header: :unit_weight_for_order, data: :unit_weight_for_order }
+        { header: :order_group,
+          data: Proc.new { |material| material.order_group&.name || '-' }
+        }
       ]
   %>
 

@@ -43,30 +43,28 @@
       }) %>
   </td>
 
-    <!-- 2. 数量 -->
+  <!-- 2. 数量（カンマなし） -->
   <td>
-    <%= f.number_field :quantity,
+    <%= f.text_field :quantity,
       class: 'form-control',
-      min: 0,
-      step: 'any',
       placeholder: t('helpers.forms.quantity_placeholder'),
       data: {
         controller: 'number-input',
+        'number-input-no-comma': 'true',
         'resources--product-material--material-target': 'quantityInput',
         action: 'input->number-input#handleInput input->resources--product-material--material#syncQuantityToOtherTabs paste->number-input#handlePaste',
         'unique-id': unique_id
       } %>
   </td>
 
-  <!-- 3. 商品単位重量（入力フィールド） -->
+  <!-- 3. 商品単位重量（カンマなし） -->
   <td>
-    <%= f.number_field :unit_weight,
+    <%= f.text_field :unit_weight,
       class: 'form-control',
-      min: 0,
-      step: 'any',
       placeholder: t('products.product_material_fields.unit_weight_placeholder'),
       data: {
         controller: 'number-input',
+        'number-input-no-comma': 'true',
         'resources--product-material--material-target': 'unitWeightInput',
         action: 'input->number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->number-input#handlePaste',
         'unique-id': unique_id

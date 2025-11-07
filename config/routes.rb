@@ -66,6 +66,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # 発注グループ
+  resources :material_order_groups, only: [:index, :destroy]
+
   # 製品
   resources :products do
     collection do

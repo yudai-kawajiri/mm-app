@@ -16,6 +16,10 @@ import ResourcesPlanProductSyncController from "controllers/resources/plan-produ
 // Resources - Product Material Controllers
 import ResourcesProductMaterialMaterialController from "controllers/resources/product-material/material_controller"
 
+// Material Controllers
+import MeasurementTypeController from "controllers/measurement_type_controller"
+import OrderGroupController from "controllers/order_group_controller"
+
 // UI Enhancement Controllers
 import FlashController from "controllers/flash_controller"
 import CharacterCounterController from "controllers/character_counter_controller"
@@ -46,6 +50,8 @@ application.register("character-counter", CharacterCounterController)
 application.register("form-validation", FormValidationController)
 application.register("number-input", NumberInputController)
 application.register("image-preview", ImagePreviewController)
+application.register("measurement-type", MeasurementTypeController)
+application.register("order-group", OrderGroupController)
 
 // 計画割り当てController登録
 application.register("plan-assignment", PlanAssignmentController)
