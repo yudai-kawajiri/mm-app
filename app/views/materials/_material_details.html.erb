@@ -88,7 +88,7 @@
       <div class="mb-3 border-bottom py-3">
         <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:production_unit) %></label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.production_unit.present? ? material.production_unit : no_setting %>
+          <%= material.production_unit&.name || no_setting %>
         </div>
       </div>
     </div>
