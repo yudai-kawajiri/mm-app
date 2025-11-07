@@ -1,0 +1,6 @@
+<% content_for :title, t('material_order_groups.new.title') %>
+
+<%= render 'shared/resource_form',
+           resource: @material_order_group,
+           form_title: t('material_order_groups.new.title'),
+           submit_label: t('helpers.submit.create') %>
