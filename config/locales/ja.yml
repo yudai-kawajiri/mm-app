@@ -188,13 +188,8 @@ ja:
     edit:
       title: "%{name} - 原材料編集"
     attributes:
-      default_unit_weight: "基本使用量"
-      unit_weight_for_order: "基本発注量（g）"
-      pieces_per_order_unit: "基本発注入数"
-      unit_weight_for_order: "基本発注量（g）"
+      default_order_quantity: "基本発注量/発注入数"
       measurement_type: "計測方法"
-      default_unit_count: "基本使用量"
-      order_group: "発注グループ"
     measurement_types:
       weight: "重量ベース"
       count: "個数ベース"
@@ -202,8 +197,10 @@ ja:
       existing: "既存から選択"
       new: "新規作成"
     placeholders:
+      select_order_group: "選択してください"
+      new_order_group: "商品ごとに違う規格で使用する場合に入力してください"
       order_group: "選択してください"
-      new_order_group: "同じ原材料で使用規格が違う種類がある場合入力してください"
+
   material_order_groups:
     clear: "解除"
     delete: "削除"
@@ -213,6 +210,7 @@ ja:
     errors:
       not_found: "発注グループが見つかりません"
       has_materials: "このグループは%{count}件の原材料で使用されているため削除できません"
+
   # 製造計画
   plans:
     new:
@@ -587,17 +585,18 @@ ja:
         materials_as_order_unit: "原材料（発注単位）"
       material:
         name: "原材料名"
-        unit_for_product: "使用単位"
-        unit_weight_for_product: "基本発注入数"
-        unit_for_order: "発注単位"
-        unit_weight_for_order: "基本発注量（g）"
-        category_id: "カテゴリー"
         category: "カテゴリー"
-        description: "説明"
+        category_id: "カテゴリー"
+        default_unit_weight: "基本使用量"
+        unit_for_product: "使用単位"
+        unit_weight_for_order: "基本発注量（g）"
+        pieces_per_order_unit: "基本発注入数"
+        default_order_quantity: "基本発注量/発注入数"
+        unit_for_order: "発注単位"
+        order_group: "発注グループ"
         order_group_id: "発注グループ"
         new_order_group_name: "新発注グループ"
-        pieces_per_order_unit: "基本発注入数"
-        unit_weight_for_order: "基本発注量（g）"
+        description: "説明"
       product:
         name: "商品名"
         item_number: "品番"

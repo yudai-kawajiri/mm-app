@@ -6,7 +6,7 @@
   <div class="row">
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:name) %></label>
+        <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_weight_for_order) %></label>
 
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
           <%= material.name %>
@@ -17,7 +17,7 @@
     <div class="col-md-6">
       <% if material.category.present? %>
         <div class="mb-3 border-bottom py-3">
-          <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:category) %></label>
+          <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:pieces_per_order_unit) %></label>
 
           <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
             <%= material.category.name %>
@@ -30,7 +30,7 @@
   <div class="row">
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0" style="font-size: 1.0em;"><%= t('materials.attributes.default_unit_weight') %></label>
+        <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:default_unit_weight) %></label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
           <%= material.default_unit_weight && material.default_unit_weight > 0 ? number_with_precision(material.default_unit_weight, precision: 1) : no_setting %>
         </div>
@@ -62,7 +62,7 @@
       <% elsif material.count_based? %>
         <%# 個数ベース時 %>
         <div class="mb-3 border-bottom py-3">
-          <label class="form-label mb-0" style="font-size: 1.0em;"><%= t('materials.attributes.pieces_per_order_unit') %></label>
+          <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:pieces_per_order_unit) %></label>
           <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
             <%= material.pieces_per_order_unit && material.pieces_per_order_unit > 0 ? "#{material.pieces_per_order_unit}#{material.unit_for_product.name}" : no_setting %>
           </div>
@@ -86,7 +86,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="mb-3 border-bottom py-3">
-          <label class="form-label mb-0" style="font-size: 1.0em;"><%= t('materials.attributes.order_group') %></label>
+          <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:order_group) %></label>
           <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
             <%= material.order_group.name %>
           </div>
