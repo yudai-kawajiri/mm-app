@@ -85,6 +85,10 @@ class Material < ApplicationRecord
     end
   end
 
+  def order_group_name
+    order_group&.name
+  end
+
   private
 
   # 新規グループ名から発注グループを作成または取得
