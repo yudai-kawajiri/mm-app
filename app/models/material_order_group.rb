@@ -3,14 +3,15 @@ class MaterialOrderGroup < ApplicationRecord
   has_paper_trail
 
   # 関連付け
+  # userは履歴用（作成者記録）として残す
   belongs_to :user
   has_many :materials, foreign_key: :order_group_id, dependent: :nullify
 
   # バリデーション
-  validates :name, presence: true, uniqueness: { scope: :user_id }
+  # システム全体で一意（user_idスコープを外す）
+  validates :name, presence: true, uniqueness: true
 
   # スコープ
-  # ユーザーごとの発注グループを名前順で取得
-  scope :for_user, ->(user) { where(user: user).order(:name) }
+  # 全ユーザーのデータを名前順で取得
   scope :ordered_by_name, -> { order(:name) }
 end
