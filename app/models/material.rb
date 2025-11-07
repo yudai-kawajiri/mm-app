@@ -7,6 +7,7 @@ class Material < ApplicationRecord
   include UserAssociatable
 
   belongs_to :category
+  belongs_to :production_unit, class_name: "Unit", optional: true
 
   # unit_for_product_id カラムを参照し、Unitモデルであることを明示
   belongs_to :unit_for_product, class_name: "Unit"
