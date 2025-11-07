@@ -7,6 +7,7 @@ import { Controller } from "@hotwired/stimulus"
  *
  * 使用方法:
  *   <%= f.text_field :price, data: { controller: "number-input", action: "input->number-input#handleInput paste->number-input#handlePaste" } %>
+ *   カンマなし: data: { controller: "number-input", number_input_no_comma: "true", ... }
  *
  * 注意: type="text" を使用してください（type="number"はカンマを受け付けません）
  */
@@ -14,6 +15,10 @@ export default class extends Controller {
   connect() {
     this.isUpdating = false
     this.isComposing = false  // IME変換中フラグ
+    this.noComma = this.element.dataset.numberInputNoComma === 'true'  // カンマなしモード
+
+    // type="number"の場合はsetSelectionRangeが使えない
+    this.isNumberType = this.element.type === 'number'
 
     // IME変換開始・終了イベントをリスン
     this.element.addEventListener('compositionstart', () => {
@@ -35,7 +40,7 @@ export default class extends Controller {
     }
 
     // 初期値をフォーマット（既存データや編集時）
-    if (this.element.value) {
+    if (this.element.value && !this.noComma) {
       // 既に数値が入っている場合はカンマ付きに変換
       const initialValue = this.element.value.replace(/,/g, '') // カンマを削除
       if (initialValue && /^\d+$/.test(initialValue)) {
@@ -91,7 +96,9 @@ export default class extends Controller {
   convertAndFormat() {
     const input = this.element
     const originalValue = input.value
-    const cursorPosition = input.selectionStart
+
+    // type="number"の場合はsetSelectionRangeが使えないのでカーソル位置を取得しない
+    const cursorPosition = this.isNumberType ? null : input.selectionStart
 
     // 全角数字、マイナス記号を半角に変換
     let convertedValue = originalValue
@@ -114,15 +121,18 @@ export default class extends Controller {
       if (originalValue !== newValue) {
         this.isUpdating = true
         input.value = newValue
-        input.setSelectionRange(newValue.length, newValue.length)
+        // type="number"の場合はsetSelectionRangeをスキップ
+        if (!this.isNumberType) {
+          input.setSelectionRange(newValue.length, newValue.length)
+        }
         // 同期的にフラグを戻す
         this.isUpdating = false
       }
       return
     }
 
-    // カンマを挿入（3桁区切り）
-    const formatted = this.formatNumber(digitsOnly)
+    // カンマを挿入（3桁区切り）※カンマなしモードの場合はスキップ
+    const formatted = this.noComma ? digitsOnly : this.formatNumber(digitsOnly)
     const finalValue = hasNegative ? '-' + formatted : formatted
 
     // 値が変わっていない場合は何もしない
@@ -130,35 +140,38 @@ export default class extends Controller {
       return
     }
 
-    // カーソル位置を調整
-    // 元の値でカーソルより前にある数字の個数を数える
-    const originalBeforeCursor = originalValue.slice(0, cursorPosition)
-    const digitsBeforeCursor = (originalBeforeCursor.match(/\d/g) || []).length
-
     // 値を更新（isUpdatingフラグを立てる）
     this.isUpdating = true
     input.value = finalValue
 
-    // 新しい値で、同じ個数の数字の後ろにカーソルを配置
-    let digitsSeen = 0
-    let newCursorPos = hasNegative ? 1 : 0
+    // type="number"の場合はカーソル位置の調整をスキップ
+    if (!this.isNumberType && cursorPosition !== null) {
+      // カーソル位置を調整
+      // 元の値でカーソルより前にある数字の個数を数える
+      const originalBeforeCursor = originalValue.slice(0, cursorPosition)
+      const digitsBeforeCursor = (originalBeforeCursor.match(/\d/g) || []).length
 
-    for (let i = hasNegative ? 1 : 0; i < finalValue.length; i++) {
-      if (/\d/.test(finalValue[i])) {
-        digitsSeen++
-        if (digitsSeen >= digitsBeforeCursor) {
-          newCursorPos = i + 1
-          break
+      // 新しい値で、同じ個数の数字の後ろにカーソルを配置
+      let digitsSeen = 0
+      let newCursorPos = hasNegative ? 1 : 0
+
+      for (let i = hasNegative ? 1 : 0; i < finalValue.length; i++) {
+        if (/\d/.test(finalValue[i])) {
+          digitsSeen++
+          if (digitsSeen >= digitsBeforeCursor) {
+            newCursorPos = i + 1
+            break
+          }
         }
       }
-    }
 
-    // カーソルが先頭でマイナスがある場合
-    if (cursorPosition === 0 && hasNegative) {
-      newCursorPos = 0
-    }
+      // カーソルが先頭でマイナスがある場合
+      if (cursorPosition === 0 && hasNegative) {
+        newCursorPos = 0
+      }
 
-    input.setSelectionRange(newCursorPos, newCursorPos)
+      input.setSelectionRange(newCursorPos, newCursorPos)
+    }
 
     // 同期的にフラグを戻す
     this.isUpdating = false

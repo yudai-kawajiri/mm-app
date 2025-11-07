@@ -211,6 +211,43 @@ ja:
       not_found: "発注グループが見つかりません"
       has_materials: "このグループは%{count}件の原材料で使用されているため削除できません"
 
+    # 商品
+  products:
+    new:
+      title: "商品登録"
+    index:
+      title: "商品一覧"
+    show:
+      title: "%{name} - 商品詳細"
+    edit:
+      title: "%{name} - 商品編集"
+    placeholder:
+      item_number: "4桁で入力してください"
+    image_help:
+      select: "JPG、PNG、GIF形式の画像を選択してください"
+      change: "画像を変更する場合は新しいファイルを選択してください"
+      no_image: "画像未選択"
+    product_material_fields:
+      material_name_prompt: "原材料名"
+      quantity_placeholder: "分量"
+      unit_weight: "商品単位分量"
+      unit_prompt: "単位"
+      delete_button: "削除"
+      no_materials_set: "原材料はまだ設定されていません"
+    category_selector:
+      prompt: "カテゴリを選択"
+      add_button: "カテゴリタブを追加"
+    tab_all: "全て"
+    table_headers:
+      material_name: "原材料名"
+      quantity: "数量"
+      unit_weight: "分量"
+      unit: "単位"
+    add_material_button: "原材料を追加"
+    messages:
+      copy_success: "商品「%{original_name}」をコピーしました（新規商品名: %{new_name}）。品番「%{item_number}」は仮の値です。編集画面で変更してください"
+      copy_failed: "商品のコピーに失敗しました: %{errors}"
+
   # 製造計画
   plans:
     new:
