@@ -17,11 +17,6 @@ class Material < ApplicationRecord
   # 発注グループへの参照（オプショナル）
   belongs_to :order_group, class_name: "MaterialOrderGroup", optional: true
 
-  # 仮想属性（フォームからの一時的なパラメータ）
-  attr_accessor :new_order_group_name
-
-  # 新規グループ名が入力された場合、保存前にグループを作成
-  before_validation :create_order_group_from_name, if: -> { new_order_group_name.present? }
   # 多対多
   has_many :product_materials, dependent: :destroy
   has_many :products, through: :product_materials, dependent: :restrict_with_error
@@ -87,18 +82,5 @@ class Material < ApplicationRecord
 
   def order_group_name
     order_group&.name
-  end
-
-  private
-
-  # 新規グループ名から発注グループを作成または取得
-  def create_order_group_from_name
-    return if new_order_group_name.blank?
-
-    # 既存のグループを検索（全ユーザー共有、同じ名前があれば再利用）
-    group = MaterialOrderGroup.find_or_create_by(name: new_order_group_name) do |g|
-      g.user = user # 新規作成時のみuser設定（履歴用）
-    end
-  self.order_group_id = group.id
   end
 end
