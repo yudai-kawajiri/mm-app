@@ -202,15 +202,17 @@ ja:
       existing: "既存から選択"
       new: "新規作成"
     placeholders:
-      select_order_group: "グループを選択してください"
-      new_order_group: "新しいグループ名を入力"
-    select_order_group: "選択してください"
-    new_order_group: "新しいグループ名を入力"
-    hints:
-      pieces_per_order_unit_note: "※個数ベース（トレイなど）の場合のみ表示"
-      pieces_per_order_unit: "※個数ベース（トレイなど）の場合に設定します"
-      order_group_name: "※異なる切り方で使用する原材料の場合に設定します"
-      order_group: "同じタイミングで発注する原材料をグループ化できます"
+      order_group: "選択してください"
+      new_order_group: "同じ原材料で使用規格が違う種類がある場合入力してください"
+  material_order_groups:
+    clear: "解除"
+    delete: "削除"
+    clear_group: "グループ解除"
+    delete_group: "グループ削除"
+    destroyed: "発注グループを削除しました"
+    errors:
+      not_found: "発注グループが見つかりません"
+      has_materials: "このグループは%{count}件の原材料で使用されているため削除できません"
   # 製造計画
   plans:
     new:
@@ -592,6 +594,8 @@ ja:
         category_id: "カテゴリー"
         category: "カテゴリー"
         description: "説明"
+        order_group_id: "発注グループ"
+        new_order_group_name: "新発注グループ"
       product:
         name: "商品名"
         item_number: "品番"

@@ -91,8 +91,10 @@ class Material < ApplicationRecord
   def create_order_group_from_name
     return if new_order_group_name.blank?
 
-    # 既存のグループを検索（同じユーザーの同じ名前）
-    group = user.material_order_groups.find_or_create_by(name: new_order_group_name)
-    self.order_group_id = group.id
+    # 既存のグループを検索（全ユーザー共有、同じ名前があれば再利用）
+    group = MaterialOrderGroup.find_or_create_by(name: new_order_group_name) do |g|
+      g.user = user # 新規作成時のみuser設定（履歴用）
+    end
+  self.order_group_id = group.id
   end
 end
