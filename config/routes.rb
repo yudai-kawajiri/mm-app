@@ -67,7 +67,7 @@ Rails.application.routes.draw do
   end
 
   # 発注グループ
-  resources :material_order_groups, except: [:show]
+  resources :material_order_groups
 
 
   # 製品
