@@ -92,7 +92,7 @@
     <tr>
       <th class="col-material-name">原材料名</th>
       <th class="col-product-usage">商品での使用数量</th>
-      <th class="col-material-amount">原材料必要量</th>
+      <th class="col-material-amount">合計使用量</th>
       <th class="col-order-unit">発注単位</th>
       <th class="col-order">発注数量</th>
     </tr>
@@ -109,20 +109,26 @@
           <%
             material = Material.find(material_data[:material_id])
             material_name = material_data[:material_name]
-            total_quantity = material_data[:total_quantity]
-            total_weight = material_data[:total_weight]
-            required_order_quantity = material_data[:required_order_quantity]
 
-            # 発注単位の情報
-            order_type = material.order_conversion_type
-            if order_type == :pieces
-              order_unit_name = "箱"
-              order_unit_detail = "1箱 = #{material.pieces_per_order_unit}枚"
-            elsif order_type == :weight
-              order_unit_name = material.unit_for_order&.name || "パック"
+            # 商品での使用数量（1個あたり）
+            weight_per_product = material_data[:weight_per_product]
+
+            # 合計使用量
+            total_weight = material_data[:total_weight]
+
+            # 発注数量と単位
+            required_order_quantity = material_data[:required_order_quantity]
+            order_unit_name = material_data[:order_unit_name]
+
+            # 発注単位の情報（新しい構造に対応）
+            measurement_type = material.measurement_type
+            if measurement_type == 'count'
+              # 個数ベース
+              order_unit_detail = "1#{order_unit_name} = #{material.pieces_per_order_unit}#{material.unit_for_product&.name || '個'}"
+            elsif measurement_type == 'weight'
+              # 重量ベース
               order_unit_detail = "1#{order_unit_name} = #{material.unit_weight_for_order}g"
             else
-              order_unit_name = ""
               order_unit_detail = "未設定"
             end
           %>
@@ -131,29 +137,41 @@
             <!-- 原材料名 -->
             <td class="col-material-name"><%= material_name %></td>
 
-            <!-- 商品での使用数量 -->
+            <!-- 商品での使用数量（1個あたり） -->
             <td class="col-product-usage text-right">
-              <% if total_quantity % 1 == 0 %>
-                <%= number_with_delimiter(total_quantity.to_i) %>
+              <% if measurement_type == 'weight' %>
+                <!-- 重量ベースの場合 -->
+                <% if weight_per_product % 1 == 0 %>
+                  <%= number_with_delimiter(weight_per_product.to_i) %>g
+                <% else %>
+                  <%= number_with_delimiter(weight_per_product) %>g
+                <% end %>
               <% else %>
-                <%= number_with_delimiter(total_quantity) %>
+                <!-- 個数ベースの場合 -->
+                <% if material_data[:quantity] % 1 == 0 %>
+                  <%= number_with_delimiter(material_data[:quantity].to_i) %>
+                <% else %>
+                  <%= number_with_delimiter(material_data[:quantity]) %>
+                <% end %>
+                <%= material.unit_for_product&.name || '個' %>
               <% end %>
-              <%= material.unit_for_product&.name || '個' %>
             </td>
 
-            <!-- 原材料必要量 -->
+            <!-- 合計使用量 -->
             <td class="col-material-amount text-right">
-              <% if total_weight > 0 %>
+              <% if measurement_type == 'weight' %>
+                <!-- 重量ベースの場合 -->
                 <% if total_weight % 1 == 0 %>
                   <%= number_with_delimiter(total_weight.to_i) %>g
                 <% else %>
                   <%= number_with_delimiter(total_weight) %>g
                 <% end %>
               <% else %>
-                <% if total_quantity % 1 == 0 %>
-                  <%= number_with_delimiter(total_quantity.to_i) %>
+                <!-- 個数ベースの場合 -->
+                <% if material_data[:total_quantity] % 1 == 0 %>
+                  <%= number_with_delimiter(material_data[:total_quantity].to_i) %>
                 <% else %>
-                  <%= number_with_delimiter(total_quantity) %>
+                  <%= number_with_delimiter(material_data[:total_quantity]) %>
                 <% end %>
                 <%= material.unit_for_product&.name || '個' %>
               <% end %>
@@ -168,11 +186,7 @@
             <% if index == 0 %>
               <td class="col-order text-right order-needed" rowspan="<%= materials.size %>">
                 <strong>
-                  <% if required_order_quantity % 1 == 0 %>
-                    <%= number_with_delimiter(required_order_quantity.to_i) %>
-                  <% else %>
-                    <%= number_with_delimiter(required_order_quantity) %>
-                  <% end %>
+                  <%= number_with_delimiter(required_order_quantity) %>
                 </strong>
                 <%= order_unit_name %>
               </td>

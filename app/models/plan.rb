@@ -85,7 +85,7 @@ end
     plan_schedules.sum(:actual_revenue)
   end
 
-  # この計画全体で使う原材料を集計
+  # この計画全体で使う原材料を集計（新しい構造に対応）
   def aggregated_material_requirements
     materials_hash = {}
 
@@ -105,6 +105,9 @@ end
           materials_hash[material_name] = {
             material_id: material_id,
             material_name: material_name,
+            quantity: material_data[:quantity],
+            unit_weight: material_data[:unit_weight],
+            weight_per_product: material_data[:weight_per_product],
             total_quantity: material_data[:total_quantity],
             total_weight: material_data[:total_weight],
             material: material,
@@ -122,7 +125,7 @@ end
       group_key = material.order_group_name.present? ? material.order_group_name : material_name
 
       if groups_hash[group_key]
-        # 既存グループに重量を加算（発注量計算用）
+        # 既存グループに重量・個数を加算（発注量計算用）
         groups_hash[group_key][:group_total_weight] += data[:total_weight]
         groups_hash[group_key][:group_total_quantity] += data[:total_quantity]
       else
@@ -130,9 +133,10 @@ end
         groups_hash[group_key] = {
           group_total_weight: data[:total_weight],
           group_total_quantity: data[:total_quantity],
-          order_conversion_type: material.order_conversion_type,
+          measurement_type: material.measurement_type,
           unit_weight_for_order: material.unit_weight_for_order,
-          pieces_per_order_unit: material.pieces_per_order_unit
+          pieces_per_order_unit: material.pieces_per_order_unit,
+          unit_for_order_name: material.unit_for_order&.name
         }
       end
     end
@@ -143,12 +147,14 @@ end
       group_key = material.order_group_name.present? ? material.order_group_name : material_name
       group_data = groups_hash[group_key]
 
-      # グループ全体の発注量を計算
-      required_order_quantity = case group_data[:order_conversion_type]
-      when :pieces
-        (group_data[:group_total_quantity].to_f / group_data[:pieces_per_order_unit]).ceil
-      when :weight
-        (group_data[:group_total_weight].to_f / group_data[:unit_weight_for_order]).ceil
+      # グループ全体の発注量を計算（切り上げなし、小数点表示）
+      required_order_quantity = case group_data[:measurement_type]
+      when 'count'
+        # 個数ベース: 合計個数 ÷ 1発注単位あたりの個数
+        (group_data[:group_total_quantity].to_f / group_data[:pieces_per_order_unit]).round(2)
+      when 'weight'
+        # 重量ベース: 合計重量 ÷ 1発注単位あたりの重量
+        (group_data[:group_total_weight].to_f / group_data[:unit_weight_for_order]).round(2)
       else
         0
       end
@@ -156,9 +162,13 @@ end
       {
         material_id: data[:material_id],
         material_name: material_name,
+        quantity: data[:quantity],
+        unit_weight: data[:unit_weight],
+        weight_per_product: data[:weight_per_product],
         total_quantity: data[:total_quantity],
         total_weight: data[:total_weight],
         required_order_quantity: required_order_quantity,
+        order_unit_name: group_data[:unit_for_order_name],
         order_group_name: material.order_group_name,
         is_grouped: material.order_group_name.present?
       }
