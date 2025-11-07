@@ -69,8 +69,8 @@ ja:
 
   flash_messages:
     create:
-      success: "%{resource} 「%{name}」を作成しました"
-      failure: "%{resource}の作成に失敗しました"
+      success: "%{resource} 「%{name}」を登録しました" # 変更
+      failure: "%{resource}の登録に失敗しました" # 変更
     update:
       success: "%{resource} 「%{name}」を更新しました"
       failure: "%{resource}の更新に失敗しました"
@@ -83,8 +83,8 @@ ja:
     clear: "クリア"
     action: "アクション"
     cancel: "キャンセル"
-    create: "作成"
-    created: "作成"
+    create: "登録" # 変更
+    created: "登録" # 変更
     update: "更新"
     updated: "更新"
     save: "保存"
@@ -112,17 +112,18 @@ ja:
       dashboard: "ダッシュボード"
       category_management: "カテゴリー管理"
       category_list: "カテゴリー一覧"
-      new_category: "カテゴリー作成"
+      new_category: "カテゴリー登録" # 変更
       material_management: "原材料管理"
       unit_management: "単位管理"
+      order_group_management: "発注グループ管理"
       material_list: "原材料一覧"
-      new_material: "原材料作成"
+      new_material: "原材料登録" # 変更
       product_management: "商品管理"
       product_list: "商品一覧"
-      new_product: "商品作成"
+      new_product: "商品登録" # 変更
       plan_management: "製造計画管理"
       plan_list: "製造計画一覧"
-      new_plan: "製造計画作成"
+      new_plan: "製造計画登録" # 変更
       numerical_management: "売上予算管理"
       numerical_dashboard: "予算ダッシュボード"
       account_settings: "アカウント設定"
@@ -195,21 +196,35 @@ ja:
       count: "個数ベース"
     order_group_methods:
       existing: "既存から選択"
-      new: "新規作成"
+      new: "新規登録" # 変更
     placeholders:
       select_order_group: "選択してください"
       new_order_group: "商品ごとに違う規格で使用する場合に入力してください"
       order_group: "選択してください"
 
   material_order_groups:
-    clear: "解除"
-    delete: "削除"
-    clear_group: "グループ解除"
-    delete_group: "グループ削除"
-    destroyed: "発注グループを削除しました"
-    errors:
-      not_found: "発注グループが見つかりません"
-      has_materials: "このグループは%{count}件の原材料で使用されているため削除できません"
+    index:
+      title: "発注グループ管理"
+    new:
+      title: "発注グループ新規登録" # 変更
+    edit:
+      title: "%{name} - 編集"
+    show:
+      title: "%{name} - 詳細"
+      materials_using_this_group: "このグループを使用している原材料"
+      materials_count: "%{count}件の原材料"
+      no_materials: "このグループを使用している原材料はありません"
+    form:
+      name_placeholder: "例: 生まぐろ、冷凍まぐろ"
+      name_help: "同じグループに設定された原材料は、発注時にまとめて計算されます。"
+      clear: "解除"
+      delete: "削除"
+      clear_group: "グループ解除"
+      delete_group: "グループ削除"
+      destroyed: "発注グループを削除しました"
+      errors:
+        not_found: "発注グループが見つかりません"
+        has_materials: "このグループは%{count}件の原材料で使用されているため削除できません"
 
     # 商品
   products:
@@ -342,7 +357,7 @@ ja:
       cumulative: "累計:"
     actions:
       edit_target: "予算編集"
-      add_plan: "計画追加"
+      add_plan: "計画登録" # 変更
       edit_plan: "計画編集"
       input_actual: "実績入力"
       print_plan: "計画を印刷"
@@ -358,7 +373,7 @@ ja:
         title: "実績入力"
         info: "この日の実績売上を入力してください"
       assign_plan:
-        title: "計画追加"
+        title: "計画登録" # 変更
         edit_title: "計画編集"
         category_help: "製造する製品のカテゴリを選択してください"
         plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます"
@@ -383,11 +398,11 @@ ja:
         delete: "本当に削除しますか？"
       actions:
         cancel: "キャンセル"
-        create: "作成"
+        create: "登録" # 変更
         update: "更新"
         close: "閉じる"
     messages:
-      budget_created: "月間予算を作成しました"
+      budget_created: "月間予算を登録しました" # 変更
       budget_updated: "月間予算を更新しました"
       budget_update_failed: "月間予算の更新に失敗しました"
       budget_deleted: "月間予算を削除しました"
@@ -404,8 +419,8 @@ ja:
       actual_update_failed: "実績の更新に失敗しました"
       actual_deleted: "実績を削除しました"
       actual_delete_failed: "実績の削除に失敗しました"
-      plan_assigned: "計画を追加しました"
-      plan_assign_failed: "計画の追加に失敗しました"
+      plan_assigned: "計画を登録しました" # 変更
+      plan_assign_failed: "計画の登録に失敗しました" # 変更
       plan_unassigned: "計画を削除しました"
       plan_unassign_failed: "計画の削除に失敗しました"
       plan_not_found: "計画が見つかりません"
@@ -436,7 +451,7 @@ ja:
       select: "選択してください"
       category_select: "カテゴリを選択してください"
     submit:
-      create: "登録"
+      create: "登録" # 変更
       edit: "編集"
       update: "更新"
     select:
@@ -452,10 +467,10 @@ ja:
       edit: "編集"
       show: "詳細"
       destroy: "削除"
-      new: "新規作成"
+      new: "新規登録" # 変更
       back_to_dashboard: "ダッシュボードへ戻る"
       add_material: "原材料を追加"
-      add_item: "+ %{resource}を追加"
+      add_item: "+ %{resource}を登録" # 変更
       delete_image: "画像削除"
       cancel_new_image: "選択をキャンセル"
     forms:
@@ -565,7 +580,7 @@ ja:
         action: "パスワードの変更"
         instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください。"
         instruction_2: "このメールに心当たりがない場合は、無視して構いません。"
-        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを作成するまで変更されません。"
+        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを登録するまで変更されません。" # 変更
 
   activerecord:
     errors:
@@ -597,6 +612,7 @@ ja:
       user: "アカウント"
       category: "カテゴリー"
       unit: "単位"
+      material_order_group: "発注グループ"
       material: "原材料"
       product: "商品"
       plan: "製造計画"
@@ -620,6 +636,9 @@ ja:
         description: "説明"
         materials_as_product_unit: "原材料（使用単位）"
         materials_as_order_unit: "原材料（発注単位）"
+      material_order_group:
+        name: "グループ名"
+        materials_count: "使用原材料"
       material:
         name: "原材料名"
         category: "カテゴリー"
@@ -731,7 +750,7 @@ ja:
         unknown_user: "不明なユーザー"
         system: "システム"
       events:
-        create: "作成"
+        create: "登録" # 変更
         update: "更新"
         destroy: "削除"
       auto_delete:
