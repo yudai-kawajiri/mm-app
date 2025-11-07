@@ -5,13 +5,14 @@ class MaterialsController < AuthenticatedController
 
   def index
     @materials = apply_pagination(
-      Material.includes(:category, :unit_for_product, :unit_for_order)
+      Material.includes(:category, :unit_for_product, :unit_for_order, :production_unit, :order_group)
               .search_and_filter(search_params)
               .ordered
     )
-    @search_categories = @material_categories  # ← 追加
+    @search_categories = @material_categories
     set_search_term_for_view
   end
+
 
   def show; end
 
@@ -60,7 +61,8 @@ class MaterialsController < AuthenticatedController
       :order_group_id,
       :order_group_method,
       :new_order_group_name,
-      :description
+      :description,
+      :production_unit_id
     )
   end
 
