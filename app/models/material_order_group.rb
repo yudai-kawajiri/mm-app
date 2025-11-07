@@ -7,7 +7,7 @@ class MaterialOrderGroup < ApplicationRecord
 
   # 関連付け
   belongs_to :user
-  has_many :materials, foreign_key: :order_group_id, dependent: :nullify
+  has_many :materials, foreign_key: :order_group_id, dependent: :restrict_with_error
 
   # バリデーション
   validates :name, presence: true, uniqueness: true

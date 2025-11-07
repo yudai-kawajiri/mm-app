@@ -2,8 +2,9 @@ class MaterialOrderGroupsController < AuthenticatedController
   # 検索パラメータの定義
   define_search_params :q
 
-  # リソースの自動取得（edit, update, destroyで使用）
-  find_resource :material_order_group, only: [:edit, :update, :destroy]
+  # リソースの自動取得
+  find_resource :material_order_group, only: [:show, :edit, :update, :destroy]
+
 
   def index
     # ページネーションと検索を適用
@@ -22,6 +23,10 @@ class MaterialOrderGroupsController < AuthenticatedController
     @material_order_group = MaterialOrderGroup.new(material_order_group_params)
     @material_order_group.user = current_user  # 作成者を記録
     respond_to_save(@material_order_group, success_path: material_order_groups_path)
+  end
+
+  def show
+    # find_resourceで自動取得済み
   end
 
   def edit
