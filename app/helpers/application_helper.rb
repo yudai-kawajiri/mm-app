@@ -21,6 +21,7 @@ module ApplicationHelper
         path: units_path,
         submenu: [
           { name: t("dashboard.menu.unit_management"), path: units_path },
+          { name: t("dashboard.menu.order_group_management"), path: material_order_groups_path },
           { name: t("dashboard.menu.material_list"), path: materials_path },
           { name: t("dashboard.menu.new_material"), path: new_material_path }
         ]

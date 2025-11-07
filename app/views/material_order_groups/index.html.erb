@@ -1,0 +1,70 @@
+<% content_for(:title, t('material_order_groups.index.title')) %>
+
+<% title = t('material_order_groups.index.title') %>
+
+<%= render 'shared/layouts/header_with_actions',
+    title: title,
+    resource: nil,
+    is_index_page: true,
+    is_form_page: false,
+    is_show_page: false,
+    new_path: new_material_order_group_path
+%>
+
+<%# 検索フォーム（フィルターなし） %>
+<%= form_with url: material_order_groups_path,
+              method: :get,
+              local: true,
+              class: "mb-3" do |f| %>
+  <div class="d-flex align-items-center">
+    <div class="p-1" style="min-width: 300px;">
+      <div class="input-group">
+        <%= f.text_field :q,
+          value: params[:q],
+          class: "form-control",
+          placeholder: '名前を入力' %>
+        <div class="input-group-append">
+          <%= f.submit t('common.search'), class: "btn btn-primary" %>
+          <% if params[:q].present? %>
+            <%= link_to t('common.clear'), material_order_groups_path, class: "btn btn-outline-secondary" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<%# テーブル %>
+<table class="table mt-4">
+  <thead class="table-light">
+    <tr>
+      <th><%= MaterialOrderGroup.human_attribute_name(:name) %></th>
+      <th><%= MaterialOrderGroup.human_attribute_name(:materials_count) %></th>
+      <th><%= t('common.action') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @material_order_groups.each do |group| %>
+      <tr data-id="<%= group.id %>">
+        <td><%= group.name %></td>
+        <td>
+          <% if group.materials.any? %>
+            <span class="badge bg-info text-dark"><%= group.materials.count %>件</span>
+          <% else %>
+            <span class="text-muted">未使用</span>
+          <% end %>
+        </td>
+        <td>
+          <%= render 'shared/actions/resource_action_links',
+              resource: group,
+              resource_name: MaterialOrderGroup.model_name.human,
+              show_link: true,
+              show_copy: false %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%# ページネーション %>
+<%= paginate @material_order_groups, theme: 'bootstrap-5' %>

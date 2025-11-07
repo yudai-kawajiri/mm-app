@@ -116,79 +116,12 @@
 </div>
 
 <%# 発注グループ選択 %>
-<div class="row mb-3">
-  <div class="col-md-12">
-    <div class="form-group" data-controller="order-group">
-      <div class="d-flex align-items-center gap-4 mb-2">
-        <label class="form-label mb-0 h5"><%= Material.human_attribute_name(:order_group) %></label>
-        <div class="form-check">
-          <%= radio_button_tag 'order_group_method', 'existing',
-              f.object.order_group_id.present?,
-              class: 'form-check-input',
-              data: {
-                order_group_target: 'existingRadio',
-                action: 'change->order-group#toggleGroupType'
-              } %>
-          <%= label_tag 'order_group_method_existing', t('materials.order_group_methods.existing'), class: 'form-check-label' %>
-        </div>
-        <div class="form-check">
-          <%= radio_button_tag 'order_group_method', 'new',
-              f.object.order_group_id.blank?,
-              class: 'form-check-input',
-              data: {
-                order_group_target: 'newRadio',
-                action: 'change->order-group#toggleGroupType'
-              } %>
-          <%= label_tag 'order_group_method_new', t('materials.order_group_methods.new'), class: 'form-check-label' %>
-        </div>
-
-        <%# 解除・削除ボタンを右に配置 %>
-        <div class="ms-auto d-flex gap-2">
-          <button type="button"
-                  class="btn btn-outline-secondary btn-sm"
-                  data-order-group-target="clearButton"
-                  data-action="click->order-group#clearGroup"
-                  style="<%= 'display: none;' if f.object.order_group_id.blank? %>"
-                  title="<%= t('material_order_groups.clear_group') %>">
-            <i class="bi bi-x-lg"></i> <%= t('material_order_groups.clear') %>
-          </button>
-          <button type="button"
-                  class="btn btn-outline-danger btn-sm"
-                  data-order-group-target="deleteButton"
-                  data-action="click->order-group#deleteGroup"
-                  style="<%= 'display: none;' if f.object.order_group_id.blank? %>"
-                  title="<%= t('material_order_groups.delete_group') %>">
-            <i class="bi bi-trash"></i> <%= t('material_order_groups.delete') %>
-          </button>
-        </div>
-      </div>
-
-      <%# 既存グループから選択 %>
-      <div data-order-group-target="existingGroup" style="<%= 'display: none;' if f.object.order_group_id.blank? %>">
-        <%= f.collection_select :order_group_id,
-            MaterialOrderGroup.ordered_by_name,
-            :id,
-            :name,
-            { include_blank: t('materials.placeholders.select_order_group') },
-            {
-              class: 'form-select form-select-lg',
-              data: {
-                order_group_target: 'existingSelect',
-                action: 'change->order-group#toggleClearButton'
-              }
-            }
-        %>
-      </div>
-
-      <%# 新規グループ作成 %>
-      <div data-order-group-target="newGroup" style="<%= 'display: none;' unless f.object.order_group_id.blank? %>">
-        <%= f.text_field :new_order_group_name,
-            placeholder: t('materials.placeholders.new_order_group'),
-            class: 'form-control form-control-lg',
-            data: { order_group_target: 'newInput' }
-        %>
-      </div>
-    </div>
+<div class="row">
+  <div class="col-md-6">
+    <%= form_group_lg(f, :order_group_id,
+        field_type: :collection_select,
+        collection: MaterialOrderGroup.ordered_by_name
+    ) %>
   </div>
 </div>
 

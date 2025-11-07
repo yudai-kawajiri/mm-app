@@ -137,21 +137,27 @@
             <!-- 原材料名 -->
             <td class="col-material-name"><%= material_name %></td>
 
-            <!-- 商品での使用数量（1個あたり） -->
+            <!-- 商品での使用数量（合計） -->
             <td class="col-product-usage text-right">
               <% if measurement_type == 'weight' %>
-                <!-- 重量ベースの場合 -->
-                <% if weight_per_product % 1 == 0 %>
-                  <%= number_with_delimiter(weight_per_product.to_i) %>g
+                <!-- 重量ベースの場合: 個数を表示してから重量 -->
+                <% if material_data[:total_quantity] % 1 == 0 %>
+                  <%= number_with_delimiter(material_data[:total_quantity].to_i) %>
                 <% else %>
-                  <%= number_with_delimiter(weight_per_product) %>g
+                  <%= number_with_delimiter(material_data[:total_quantity]) %>
+                <% end %>
+                <%= material.unit_for_product&.name || '個' %>
+                <% if total_weight % 1 == 0 %>
+                  (<%= number_with_delimiter(total_weight.to_i) %>g)
+                <% else %>
+                  (<%= number_with_delimiter(total_weight) %>g)
                 <% end %>
               <% else %>
-                <!-- 個数ベースの場合 -->
-                <% if material_data[:quantity] % 1 == 0 %>
-                  <%= number_with_delimiter(material_data[:quantity].to_i) %>
+                <!-- 個数ベースの場合: 合計数量を表示 -->
+                <% if material_data[:total_quantity] % 1 == 0 %>
+                  <%= number_with_delimiter(material_data[:total_quantity].to_i) %>
                 <% else %>
-                  <%= number_with_delimiter(material_data[:quantity]) %>
+                  <%= number_with_delimiter(material_data[:total_quantity]) %>
                 <% end %>
                 <%= material.unit_for_product&.name || '個' %>
               <% end %>
