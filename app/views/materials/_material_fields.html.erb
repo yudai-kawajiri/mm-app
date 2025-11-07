@@ -44,76 +44,84 @@
     </div>
   </div>
 
-  <%# 計測方法選択 %>
-  <div class="row mb-3">
-    <div class="col-md-12">
-      <div class="d-flex align-items-center gap-4">
-        <div class="form-check">
-          <%= f.radio_button :measurement_type, 'weight',
-              checked: f.object.measurement_type != 'count',
-              class: 'form-check-input',
+  <%# 基本発注入数フィールドと発注単位（横並び） %>
+  <div class="row">
+    <%# 左カラム: 基本発注入数フィールド（条件付き） %>
+    <div class="col-md-6">
+      <%# 重量ベース専用フィールド %>
+      <div data-measurement-type-target="weightFields" style="<%= 'display: none;' if f.object.measurement_type == 'count' %>">
+        <div class="mb-4">
+          <div class="d-flex align-items-center gap-3 mb-2">
+            <label for="material_unit_weight_for_order" class="form-label form-label-lg mb-0">
+              <%= t('materials.attributes.unit_weight_for_order') %>
+            </label>
+            <div class="form-check">
+              <%= f.radio_button :measurement_type, 'weight',
+                  checked: f.object.measurement_type != 'count',
+                  class: 'form-check-input',
+                  data: {
+                    action: 'change->measurement-type#toggleFields'
+                  } %>
+              <%= f.label :measurement_type_weight, t('materials.measurement_types.weight'), class: 'form-check-label' %>
+            </div>
+            <div class="form-check">
+              <%= f.radio_button :measurement_type, 'count',
+                  class: 'form-check-input',
+                  data: {
+                    action: 'change->measurement-type#toggleFields'
+                  } %>
+              <%= f.label :measurement_type_count, t('materials.measurement_types.count'), class: 'form-check-label' %>
+            </div>
+          </div>
+          <%= f.number_field :unit_weight_for_order,
+              step: :any,
+              class: 'form-control form-control-lg',
               data: {
-                action: 'change->measurement-type#toggleFields'
-              } %>
-          <%= f.label :measurement_type_weight, t('materials.measurement_types.weight'), class: 'form-check-label' %>
+                controller: 'number-input',
+                action: 'input->number-input#handleInput paste->number-input#handlePaste'
+              }
+          %>
         </div>
-        <div class="form-check">
-          <%= f.radio_button :measurement_type, 'count',
-              class: 'form-check-input',
+      </div>
+
+      <%# 個数ベース専用フィールド %>
+      <div data-measurement-type-target="countFields" style="<%= 'display: none;' unless f.object.measurement_type == 'count' %>">
+        <div class="mb-4">
+          <div class="d-flex align-items-center gap-3 mb-2">
+            <label for="material_pieces_per_order_unit" class="form-label form-label-lg mb-0">
+              <%= t('materials.attributes.pieces_per_order_unit') %>
+            </label>
+            <div class="form-check">
+              <%= f.radio_button :measurement_type, 'weight',
+                  checked: f.object.measurement_type != 'count',
+                  class: 'form-check-input',
+                  data: {
+                    action: 'change->measurement-type#toggleFields'
+                  } %>
+              <%= f.label :measurement_type_weight, t('materials.measurement_types.weight'), class: 'form-check-label' %>
+            </div>
+            <div class="form-check">
+              <%= f.radio_button :measurement_type, 'count',
+                  class: 'form-check-input',
+                  data: {
+                    action: 'change->measurement-type#toggleFields'
+                  } %>
+              <%= f.label :measurement_type_count, t('materials.measurement_types.count'), class: 'form-check-label' %>
+            </div>
+          </div>
+          <%= f.number_field :pieces_per_order_unit,
+              step: 1,
+              class: 'form-control form-control-lg',
               data: {
-                action: 'change->measurement-type#toggleFields'
-              } %>
-          <%= f.label :measurement_type_count, t('materials.measurement_types.count'), class: 'form-check-label' %>
+                controller: 'number-input',
+                action: 'input->number-input#handleInput paste->number-input#handlePaste'
+              }
+          %>
         </div>
       </div>
     </div>
-  </div>
 
-  <%# 重量ベース専用フィールド %>
-  <div class="row" data-measurement-type-target="weightFields" style="<%= 'display: none;' if f.object.measurement_type == 'count' %>">
-    <div class="col-md-6">
-      <div class="mb-4">
-        <label for="material_unit_weight_for_order" class="form-label form-label-lg">
-          <%= t('materials.attributes.unit_weight_for_order') %>
-        </label>
-        <%= f.number_field :unit_weight_for_order,
-            step: :any,
-            class: 'form-control form-control-lg',
-            data: {
-              controller: 'number-input',
-              action: 'input->number-input#handleInput paste->number-input#handlePaste'
-            }
-        %>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <%= form_group_lg(f, :unit_for_order_id,
-          field_type: :collection_select,
-          collection: current_user.units.where(category: :ordering),
-          label: Material.human_attribute_name(:unit_for_order)
-      ) %>
-    </div>
-  </div>
-
-  <%# 個数ベース専用フィールド %>
-  <div class="row" data-measurement-type-target="countFields" style="<%= 'display: none;' unless f.object.measurement_type == 'count' %>">
-    <div class="col-md-6">
-      <div class="mb-4">
-        <label for="material_pieces_per_order_unit" class="form-label form-label-lg">
-          <%= t('materials.attributes.pieces_per_order_unit_label') %>
-        </label>
-        <%= f.number_field :pieces_per_order_unit,
-            step: 1,
-            class: 'form-control form-control-lg',
-            data: {
-              controller: 'number-input',
-              action: 'input->number-input#handleInput paste->number-input#handlePaste'
-            }
-        %>
-      </div>
-    </div>
-
+    <%# 右カラム: 発注単位 %>
     <div class="col-md-6">
       <%= form_group_lg(f, :unit_for_order_id,
           field_type: :collection_select,
@@ -129,7 +137,6 @@
   <div class="col-md-12">
     <div class="form-group" data-controller="order-group">
       <div class="d-flex align-items-center gap-4 mb-2">
-        <%# ラベルのスタイルを調整 (h5追加) %>
         <label class="form-label mb-0 h5"><%= t('materials.attributes.order_group') %></label>
         <div class="form-check">
           <%= radio_button_tag 'order_group_method', 'existing',
@@ -179,7 +186,7 @@
             MaterialOrderGroup.ordered_by_name,
             :id,
             :name,
-            { include_blank: t('materials.placeholders.order_group') },
+            { include_blank: t('materials.placeholders.select_order_group') },
             {
               class: 'form-select form-select-lg',
               data: {
