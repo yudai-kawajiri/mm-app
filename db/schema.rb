@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_07_090424) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_07_123330) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -87,6 +87,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_07_090424) do
     t.bigint "order_group_id"
     t.string "order_group_name"
     t.integer "pieces_per_order_unit", comment: "1発注単位あたりの個数（トレイなど）"
+    t.string "production_unit"
     t.decimal "unit_count_for_order", precision: 10, scale: 2
     t.decimal "unit_count_for_product", precision: 10, scale: 2
     t.bigint "unit_for_order_id", null: false
@@ -98,6 +99,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_07_090424) do
     t.index ["measurement_type"], name: "index_materials_on_measurement_type"
     t.index ["name", "category_id"], name: "index_materials_on_name_and_category_id", unique: true
     t.index ["order_group_id"], name: "index_materials_on_order_group_id"
+    t.index ["production_unit"], name: "index_materials_on_production_unit"
     t.index ["unit_for_order_id"], name: "index_materials_on_unit_for_order_id"
     t.index ["unit_for_product_id"], name: "index_materials_on_unit_for_product_id"
     t.index ["user_id"], name: "index_materials_on_user_id"
