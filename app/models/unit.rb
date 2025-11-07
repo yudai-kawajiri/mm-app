@@ -17,6 +17,11 @@ class Unit < ApplicationRecord
             foreign_key: "unit_for_order_id",
             dependent: :restrict_with_error
 
+  has_many :materials_as_production_unit,
+            class_name: "Material",
+            foreign_key: "production_unit_id",
+            dependent: :restrict_with_error
+
   # falseを追加したので、バリデーションも追加
   validates :name, presence: true
   validates :category, presence: true
@@ -28,8 +33,11 @@ class Unit < ApplicationRecord
   # 名前順
   scope :for_index, -> { order(name: :asc) }
 
-  # 基本単位と発注単位(basic を production に修正)
-  enum :category, { production: 0, ordering: 1 }
+  # 単位のカテゴリー
+  # production: 使用単位（商品製造で使う単位: g, 本, など）
+  # ordering: 発注単位（発注時の単位: kg, 箱, など）
+  # manufacturing: 製造単位（印刷時に表示する数え方: 枚, カン, 本, 切れ, など）
+  enum :category, { production: 0, ordering: 1, manufacturing: 2 }
 
   # categoryで絞り込むためのスコープ
   scope :filter_by_category, ->(category) do

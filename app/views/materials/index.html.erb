@@ -60,6 +60,9 @@
         { header: :unit_for_order,
           data: Proc.new { |material| material.unit_for_order&.name || '-' }
         },
+                { header: :production_unit,
+          data: Proc.new { |material| material.production_unit&.name || '-' }
+        },
         { header: :order_group,
           data: Proc.new { |material| material.order_group&.name || '-' }
         }

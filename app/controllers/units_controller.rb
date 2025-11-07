@@ -7,7 +7,7 @@ class UnitsController < AuthenticatedController
   def index
     # ページネーションと検索を適用
     @units = apply_pagination(
-      Unit.for_index.search_and_filter(search_params)
+      Unit.for_index.search_and_filter(search_params).filter_by_category(search_params[:category])
     )
     set_search_term_for_view
   end

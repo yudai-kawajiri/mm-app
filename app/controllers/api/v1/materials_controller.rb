@@ -18,8 +18,8 @@ class Api::V1::MaterialsController < AuthenticatedController
       Rails.logger.info " Material found: #{@material.name}"
 
       # 単位名を取得
-      unit_name = @material.unit_for_product&.name
-      unit_id = @material.unit_for_product_id
+      unit_name = @material.production_unit&.name
+      unit_id = @material.production_unit_id
 
       Rails.logger.info "  unit_for_product: #{@material.unit_for_product.inspect}"
       Rails.logger.info "  unit_for_product_id: #{unit_id}"

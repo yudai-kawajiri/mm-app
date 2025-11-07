@@ -115,8 +115,16 @@
   </div>
 </div>
 
-<%# 発注グループ選択 %>
+<%# 製造単位と発注グループ選択 %>
 <div class="row">
+  <div class="col-md-6">
+    <%= form_group_lg(f, :production_unit_id,
+        field_type: :collection_select,
+        collection: current_user.units.where(category: :manufacturing),
+        label: Material.human_attribute_name(:production_unit),
+        select_options: { include_blank: t('helpers.prompt.select') }
+    ) %>
+  </div>
   <div class="col-md-6">
     <%= form_group_lg(f, :order_group_id,
         field_type: :collection_select,
