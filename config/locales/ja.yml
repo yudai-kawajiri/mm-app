@@ -645,13 +645,14 @@ ja:
         category_id: "カテゴリー"
         default_unit_weight: "基本使用量"
         unit_for_product: "使用単位"
-        unit_weight_for_order: "基本発注量（g）"
+        unit_weight_for_order: "基本発注量"
         pieces_per_order_unit: "基本発注入数"
         default_order_quantity: "基本発注量/発注入数"
         unit_for_order: "発注単位"
         order_group: "発注グループ"
         order_group_id: "発注グループ"
         new_order_group_name: "新発注グループ"
+        production_unit: "製造単位"
         description: "説明"
       product:
         name: "商品名"
@@ -683,6 +684,7 @@ ja:
         category:
           production: "使用単位"
           ordering: "発注単位"
+          manufacturing: "製造単位"
       product:
         status:
           draft: "下書き"

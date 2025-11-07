@@ -36,7 +36,7 @@
     <div class="col-md-6">
       <%= form_group_lg(f, :unit_for_product_id,
           field_type: :collection_select,
-          collection: current_user.units.where(category: :production),
+          collection: current_user.units.where(category: :manufacturing),
           label: Material.human_attribute_name(:unit_for_product)
       ) %>
     </div>
