@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   resources :numerical_managements, only: [ :index ] do
     collection do
       post :bulk_update
+      patch :update_daily_target
     end
   end
 
