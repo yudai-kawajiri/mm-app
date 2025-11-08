@@ -22,7 +22,7 @@
             </div>
 
             <div class="mb-3">
-              <%= f.label :target_amount, t('numerical_managements.modals.labels.monthly_budget_yen'), class: "form-label" %>
+              <%= f.label :target_amount, t('numerical_managements.modals.fields.monthly_budget'), class: "form-label" %>
               <%= f.text_field :target_amount,
                       value: @monthly_budget.target_amount.to_i,
                       class: "form-control",
@@ -69,7 +69,7 @@
             </div>
 
             <div class="mb-3">
-              <%= label_tag 'monthly_budget[target_amount]', t('numerical_managements.modals.labels.monthly_budget_yen'), class: "form-label" %>
+              <%= label_tag 'monthly_budget[target_amount]', t('numerical_managements.modals.fields.monthly_budget'), class: "form-label" %>
               <%= text_field_tag 'monthly_budget[target_amount]',
                 nil,
                 class: "form-control",
