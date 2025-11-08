@@ -27,22 +27,9 @@
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="mb-0"><%= title %></h2>
 
-        <%# 右側にアクションボタン（横並び） %>
-        <div class="d-flex gap-2">
-          <%= link_to '戻る', polymorphic_path(resource.class), class: 'btn btn-light btn-sm' %>
-          <%= link_to '編集', [:edit, resource], class: 'btn btn-light btn-sm' %>
-
-          <%# 追加アクションボタン %>
-          <% additional_actions.each do |action| %>
-            <%= link_to action[:label], action[:path],
-                        class: "btn btn-sm #{action[:class]}",
-                        target: action[:target] %>
-          <% end %>
-
-          <%= button_to '削除', resource, method: :delete,
-              data: { turbo_confirm: "本当に削除しますか？" },
-              class: 'btn btn-danger btn-sm' %>
-        </div>
+        <%= render 'shared/actions/show_action_links',
+          resource: resource,
+          additional_actions: additional_actions %>
       </div>
     </div>
 
