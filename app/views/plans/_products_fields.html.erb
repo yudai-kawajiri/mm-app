@@ -89,7 +89,7 @@
               items: @plan.plan_products.reject(&:marked_for_destruction?),
               form_builder: f,
               association_name: :plan_products,
-              item_partial: 'plan_product_fields',
+              item_partial: 'product_fields',
               table_headers: %{
                 <tr>
                   <th style="width: 35%;">#{t('plans.table_headers.product_name')}</th>
@@ -116,7 +116,7 @@
                 items: @plan.plan_products.select { |pp| pp.product&.category_id == category.id && !pp.marked_for_destruction? },
                 form_builder: f,
                 association_name: :plan_products,
-                item_partial: 'plan_product_fields',
+                item_partial: 'product_fields',
                 table_headers: %{
                   <tr>
                     <th style="width: 35%;">#{t('plans.table_headers.product_name')}</th>
@@ -183,7 +183,7 @@
               <button type="button"
                       class="btn btn-outline-success w-100"
                       data-category-id="CATEGORY_ID_PLACEHOLDER"
-                      data-template-id="plan_product_fields_template_CATEGORY_ID_PLACEHOLDER"
+                      data-template-id="product_fields_template_CATEGORY_ID_PLACEHOLDER"
                       data-action="click->form--nested-form#add">
                 <%= t('plans.add_product_button') %>
               </button>
@@ -200,11 +200,11 @@
 
       <!-- 商品行テンプレート（各カテゴリ用） -->
       <% @product_categories.each do |category| %>
-        <template id="plan_product_fields_template_<%= category.id %>" data-form--nested-form-target="template">
+        <template id="product_fields_template_<%= category.id %>" data-form--nested-form-target="template">
           <%= f.fields_for :plan_products,
               @plan.plan_products.build(product: Product.new(category_id: category.id)),
               child_index: 'NEW_RECORD' do |product_f| %>
-            <%= render 'plan_product_fields', f: product_f, category_id: category.id %>
+            <%= render 'product_fields', f: product_f, category_id: category.id %>
           <% end %>
         </template>
       <% end %>

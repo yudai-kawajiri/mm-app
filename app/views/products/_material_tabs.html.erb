@@ -22,13 +22,13 @@
   <div class="tab-pane fade show active" id="materials-form" role="tabpanel" aria-labelledby="materials-tab">
     <div class="p-3">
       <%= f.fields_for :product_materials do |pmf| %>
-        <%= render 'product_material_fields', f: pmf %>
+        <%= render 'material_fields', f: pmf %>
       <% end %>
 
       <%# 新しい原材料を追加するためのボタン %>
       <div class="d-flex justify-content-end mt-3">
         <%= link_to_add_association t('helpers.add_material'), f, :product_materials,
-            partial: 'product_material_fields',
+            partial: 'material_fields',
             class: 'btn btn-sm btn-outline-primary',
             data: {
               association_insertion_node: '#product_materials_fields',

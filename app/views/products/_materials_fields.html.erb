@@ -81,7 +81,7 @@
               items: @product.product_materials.reject(&:marked_for_destruction?),
               form_builder: f,
               association_name: :product_materials,
-              item_partial: 'product_material_fields',
+              item_partial: 'material_fields',
               table_headers: %{
                 <tr>
                   <th style="width: 35%;">#{t('products.table_headers.material_name')}</th>
@@ -106,7 +106,7 @@
                 items: @product.product_materials.select { |pm| pm.material&.category_id == category.id && !pm.marked_for_destruction? },
                 form_builder: f,
                 association_name: :product_materials,
-                item_partial: 'product_material_fields',
+                item_partial: 'material_fields',
                 table_headers: %{
                   <tr>
                     <th style="width: 35%;">#{t('products.table_headers.material_name')}</th>
@@ -171,7 +171,7 @@
               <button type="button"
                       class="btn btn-outline-success w-100"
                       data-category-id="CATEGORY_ID_PLACEHOLDER"
-                      data-template-id="product_material_fields_template_CATEGORY_ID_PLACEHOLDER"
+                      data-template-id="material_fields_template_CATEGORY_ID_PLACEHOLDER"
                       data-action="click->form--nested-form#add">
                 <%= t('products.add_material_button') %>
               </button>
@@ -182,11 +182,11 @@
 
       <!-- 原材料行テンプレート（各カテゴリ用） -->
       <% @material_categories.each do |category| %>
-        <template id="product_material_fields_template_<%= category.id %>" data-form--nested-form-target="template">
+        <template id="material_fields_template_<%= category.id %>" data-form--nested-form-target="template">
           <%= f.fields_for :product_materials,
               @product.product_materials.build(material: Material.new(category_id: category.id)),
               child_index: 'NEW_RECORD' do |material_f| %>
-            <%= render 'product_material_fields', f: material_f, category_id: category.id %>
+            <%= render 'material_fields', f: material_f, category_id: category.id %>
           <% end %>
         </template>
       <% end %>

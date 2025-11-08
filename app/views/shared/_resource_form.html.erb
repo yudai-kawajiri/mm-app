@@ -33,7 +33,7 @@
             }
           ) do |f| %>
         <%# 各リソースのフィールドパーシャルを呼び出し %>
-        <%= render "#{resource.model_name.plural}/#{resource.model_name.singular}_fields", f: f %>
+        <%= render "#{resource.model_name.plural}/fields", f: f %>
 
         <%# 共通のフォームアクションリンク（マージンなし） %>
         <%= render 'shared/actions/form_action_links', f: f, resource: resource %>
