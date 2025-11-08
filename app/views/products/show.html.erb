@@ -1,8 +1,8 @@
 <%= render 'shared/details/resource_show',
     resource: @product,
     title: t('products.show.title', name: @product.name),
-    content_left_partial: 'products/product_details',
+    content_left_partial: 'products/details',
     content_left_title: t('forms.titles.basic_info', model: t('activerecord.models.product')),
-    content_right_partial: 'products/product_material_details',
+    content_right_partial: 'products/material_details',
     content_right_title: t('forms.titles.product_material'),
     partial_locals: { product: @product } %>

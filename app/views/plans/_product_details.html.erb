@@ -30,7 +30,7 @@
 
     <%# 1. すべて (All) タブの内容 %>
     <div class="tab-pane fade show active" id="plan-product-all" role="tabpanel" aria-labelledby="all-tab">
-      <%= render 'plans/plan_product_table', plan_products: all_plan_products %>
+      <%= render 'plans/product_table', plan_products: all_plan_products %>
    </div>
 
     <%# 2. カテゴリ別のタブの内容（計画に使用されているカテゴリのみ） %>
@@ -38,7 +38,7 @@
     <% product_categories.select { |c| used_category_ids.include?(c.id) }.each do |category| %>
       <% filtered_plan_products = all_plan_products.select { |pp| pp.product&.category_id == category.id } %>
       <div class="tab-pane fade" id="plan-product-<%= category.id %>" role="tabpanel" aria-labelledby="<%= category.id %>-tab">
-        <%= render 'plans/plan_product_table', plan_products: filtered_plan_products %>
+        <%= render 'plans/product_table', plan_products: filtered_plan_products %>
 
         <%# カテゴリタブ内の合計金額表示 %>
         <div class="text-end mt-3 border-top pt-2">
