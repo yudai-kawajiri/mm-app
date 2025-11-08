@@ -81,10 +81,11 @@
   <!-- 5. 削除ボタン -->
   <td class="text-end">
     <button type="button"
-            class="btn btn-sm btn-outline-danger"
-            data-action="click->form--nested-form-item#remove"
-            data-unique-id="<%= unique_id %>">
-      <%= t('helpers.link.destroy') %>
+      class="btn btn-sm btn-danger"
+      data-action="click->form--nested-form-item#remove"
+      data-unique-id="<%= unique_id %>"
+      title="<%= t('helpers.link.destroy') %>">
+      <i class="bi bi-trash"></i>
     </button>
   </td>
 </tr>

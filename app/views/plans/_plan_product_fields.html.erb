@@ -50,11 +50,12 @@
   </td>
 
   <td style="width: 10%;" class="text-end">
-    <button type="button"
-        class="btn btn-danger btn-sm"
-        data-action="click->form--nested-form-item#remove"
-        data-row-unique-id="<%= row_unique_id %>">
-      <%= t('helpers.links.destroy') %>
-    </button>
+  <button type="button"
+    class="btn btn-danger btn-sm"
+    data-action="click->form--nested-form-item#remove"
+    data-row-unique-id="<%= row_unique_id %>"
+    title="<%= t('helpers.link.destroy') %>">
+    <i class="bi bi-trash"></i>
+  </button>
   </td>
 </tr>
