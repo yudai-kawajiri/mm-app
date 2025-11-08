@@ -35,16 +35,8 @@
         <%# 各リソースのフィールドパーシャルを呼び出し %>
         <%= render "#{resource.model_name.plural}/#{resource.model_name.singular}_fields", f: f %>
 
-        <%# アクションボタン %>
-        <div class="form-group text-center mt-4">
-          <%# 🆕 Branch 8: 二重送信防止のターゲットを追加 %>
-          <%= f.submit submit_label,
-                       class: "btn btn-primary btn-lg px-5 me-2",
-                       data: { form__submit_target: "submit" } %>
-          <%= render 'shared/actions/back_link',
-                     url: polymorphic_path(resource.class),
-                     custom_class: 'btn-lg px-5' %>
-        </div>
+        <%# 共通のフォームアクションリンク（マージンなし） %>
+        <%= render 'shared/actions/form_action_links', f: f, resource: resource %>
       <% end %>
     </div>
   </div>
