@@ -1,0 +1,40 @@
+<%# 2カラムレイアウト専用フォームラッパー %>
+<%# 必須パラメータ:
+  - resource: フォーム対象のモデルインスタンス
+  - form_title: ページタイトル
+  - basic_fields: 左カラムのフィールドパーシャル名
+  - detail_fields: 右カラムのフィールドパーシャル名
+  - custom_right_title: 右カラムのタイトル（オプション）
+%>
+
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <%# ヘッダー %>
+    <div class="card-header bg-primary text-white">
+      <h2 class="mb-0"><%= form_title %></h2>
+    </div>
+
+    <%# フォーム本体 %>
+    <div class="card-body">
+      <%# エラーメッセージ %>
+      <%= render 'shared/forms/error_messages', resource: resource %>
+
+      <%# フォーム %>
+      <%= form_with(model: resource, local: true, data: { controller: 'form-submit' }) do |f| %>
+        <%# 2カラムレイアウト %>
+        <%= render 'shared/layouts/resource_layout_wrapper',
+          f: f,
+          basic_fields: basic_fields,
+          detail_fields: detail_fields,
+          content_left_title: nil,
+          content_right_title: custom_right_title
+        %>
+
+        <%# ボタン（フォーム内に配置） %>
+        <div class="mt-4">
+          <%= render 'shared/actions/form_action_links', f: f, resource: resource %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

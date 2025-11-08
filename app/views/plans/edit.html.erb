@@ -1,15 +1,9 @@
 <% content_for(:title, t('plans.edit.title', name: @plan.name)) %>
 
-<%# Card デザインでラップ %>
-<div class="container mt-4">
-  <div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-      <h2 class="mb-0"><%= t('plans.edit.title', name: @plan.name) %></h2>
-    </div>
-
-    <div class="card-body">
-      <%# フォームを呼び出し %>
-      <%= render 'form', plan: @plan %>
-    </div>
-  </div>
-</div>
+<%= render 'shared/resource_two_column_form_wrapper',
+  resource: @plan,
+  form_title: t('plans.edit.title', name: @plan.name),
+  basic_fields: 'plans/plan_fields',
+  detail_fields: 'plans/plan_products_fields',
+  custom_right_title: t('forms.titles.plan_product')
+%>

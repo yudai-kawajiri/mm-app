@@ -1,35 +1,91 @@
 <%# 必須引数: resource, resource_name %>
-<%# オプション引数: show_link, show_copy, copy_url %>
+<%# オプション引数: show_link, show_copy, copy_url, show_print,
 <% show_link = local_assigns.fetch(:show_link, true) %>
+<% show_print = local_assigns.fetch(:show_print, false) %>
+<% print_url = local_assigns[:print_url] %>
 <% show_copy = local_assigns.fetch(:show_copy, false) %>
 <% copy_url = local_assigns[:copy_url] %>
+<% icon_mode = local_assigns.fetch(:icon_mode, false) %>
 
 <% return if resource.nil? %>
 
 <div class="d-flex">
-  <%# 1. 詳細リンク %>
-  <% if show_link %>
-    <%= render 'shared/actions/show_link',
-        url: resource,
+  <% if icon_mode %>
+    <%# アイコンモード %>
+
+    <%# 1. 詳細リンク（アイコン） %>
+    <% if show_link %>
+      <%= link_to resource,
+          class: 'btn btn-sm btn-outline-primary me-1',
+          title: t('helpers.link.show') do %>
+        <i class="bi bi-eye"></i>
+      <% end %>
+    <% end %>
+
+    <%# 2. 編集リンク（アイコン） %>
+    <%= link_to url_for([:edit, resource]),
+        class: 'btn btn-sm btn-outline-secondary me-1',
+        title: t('helpers.link.edit') do %>
+      <i class="bi bi-pencil"></i>
+    <% end %>
+
+    <%# 3. コピーリンク（アイコン・オプション） %>
+    <% if show_copy && copy_url.present? %>
+      <%= button_to copy_url,
+          method: :post,
+          class: 'btn btn-sm btn-secondary me-1',
+          data: { confirm: "この#{resource_name}をコピーしますか？" },
+          title: 'コピー' do %>
+        <i class="bi bi-files"></i>
+      <% end %>
+    <% end %>
+
+    <%# 4. 印刷リンク（アイコン・オプション） %>
+    <% if show_print && print_url.present? %>
+      <%= link_to print_url,
+          class: 'btn btn-sm btn-light me-1',
+          target: '_blank',
+          title: t('common.print') do %>
+        <i class="bi bi-printer"></i>
+      <% end %>
+    <% end %>
+    <%= link_to resource,
+        data: {
+          turbo_method: :delete,
+          turbo_confirm: t('helpers.confirm.destroy', resource: resource_name)
+        },
+        class: 'btn btn-sm btn-danger',
+        title: t('helpers.link.destroy') do %>
+      <i class="bi bi-trash"></i>
+    <% end %>
+
+  <% else %>
+    <%# テキストモード（既存） %>
+
+    <%# 1. 詳細リンク %>
+    <% if show_link %>
+      <%= render 'shared/actions/show_link',
+          url: resource,
+          custom_class: 'me-2' %>
+    <% end %>
+
+    <%# 2. 編集リンク %>
+    <%= render 'shared/actions/edit_link',
+        url: url_for([:edit, resource]),
         custom_class: 'me-2' %>
+
+    <%# 3. コピーリンク（オプション） %>
+    <% if show_copy && copy_url.present? %>
+      <%= render 'shared/actions/copy_link',
+          url: copy_url,
+          custom_class: 'me-2',
+          confirm_message: "この#{resource_name}をコピーしますか？" %>
+    <% end %>
+
+    <%# 4. 削除リンク %>
+    <%= render 'shared/actions/delete_link',
+        url: resource,
+        resource_name: resource_name
+    %>
   <% end %>
-
-  <%# 2. 編集リンク %>
-  <%= render 'shared/actions/edit_link',
-      url: url_for([:edit, resource]),
-      custom_class: 'me-2' %>
-
-  <%# 3. コピーリンク（オプション） %>
-  <% if show_copy && copy_url.present? %>
-    <%= render 'shared/actions/copy_link',
-        url: copy_url,
-        custom_class: 'me-2',
-        confirm_message: "この#{resource_name}をコピーしますか？" %>
-  <% end %>
-
-  <%# 4. 削除リンク %>
-  <%= render 'shared/actions/delete_link',
-      url: resource,
-      resource_name: resource_name
-  %>
 </div>

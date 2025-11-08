@@ -9,5 +9,8 @@
   basic_fields: basic_fields,
   detail_fields: detail_fields,
   content_left_title: nil,
-  content_right_title: nil
+  content_right_title: custom_right_title
 %>
+
+<%# フォームアクションボタン（マージンなし） %>
+<%= render 'shared/actions/form_action_links', f: f, resource: f.object %>

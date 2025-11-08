@@ -1,10 +1,13 @@
 <%# 必須引数: title, resources, columns, resource_class :search_target, :resource_class %>
-<%# オプション引数: new_path %>
+<%# オプション引数: new_path, icon_mode %>
 <% search_target = local_assigns[:search_target] %>
 <% resource_class = local_assigns[:resource_class] %>
 <% search_categories = local_assigns[:search_categories] %>
 <% show_copy = local_assigns.fetch(:show_copy, false) %>
 <% copy_url_method = local_assigns[:copy_url_method] %>
+<% show_print = local_assigns.fetch(:show_print, false) %>
+<% print_url_method = local_assigns[:print_url_method] %>
+<% icon_mode = local_assigns.fetch(:icon_mode, false) %>
 
 <%# 2.検索フォーム %>
 <% if search_target.present? %>
@@ -45,7 +48,8 @@
               show_link: defined?(show_action_link) ? show_action_link : true,
               show_copy: show_copy,
               copy_url: show_copy && copy_url_method.present? ?
-              send(copy_url_method, resource) : nil
+              send(copy_url_method, resource) : nil,
+              icon_mode: icon_mode
           %>
         </td>
       </tr>
