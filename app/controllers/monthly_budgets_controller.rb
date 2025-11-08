@@ -14,9 +14,6 @@ class MonthlyBudgetsController < ApplicationController
     @monthly_budget.assign_attributes(monthly_budget_params)
 
     if @monthly_budget.save
-      # 日別目標を自動生成
-      regenerate_daily_targets(@monthly_budget)
-
       redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                   notice: t("numerical_managements.messages.budget_created")
     else
@@ -27,9 +24,6 @@ class MonthlyBudgetsController < ApplicationController
 
   def update
     if @monthly_budget.update(monthly_budget_params)
-      # 日別目標を再生成
-      regenerate_daily_targets(@monthly_budget)
-
       redirect_to numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
                   notice: t("numerical_managements.messages.budget_updated")
     else
@@ -41,13 +35,27 @@ class MonthlyBudgetsController < ApplicationController
   def destroy
     budget_month = @monthly_budget.budget_month
 
-    if @monthly_budget.destroy
+    ActiveRecord::Base.transaction do
+      start_date = budget_month.beginning_of_month
+      end_date = budget_month.end_of_month
+
+      # 実績が入力されていない計画スケジュールのみ削除
+      # (actual_revenue が nil または 0 のもの)
+      current_user.plan_schedules
+                  .where(scheduled_date: start_date..end_date)
+                  .where("actual_revenue IS NULL OR actual_revenue = 0")
+                  .destroy_all
+
+      # 月次予算を削除（日別目標は dependent: :destroy で自動削除）
+      @monthly_budget.destroy!
+
       redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                   notice: t("numerical_managements.messages.budget_deleted")
-    else
-      redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
-                  alert: t("numerical_managements.messages.budget_delete_failed")
     end
+  rescue ActiveRecord::RecordNotDestroyed, ActiveRecord::RecordInvalid => e
+    Rails.logger.error "Monthly budget deletion failed: #{e.message}"
+    redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
+                alert: t("numerical_managements.messages.budget_delete_failed")
   end
 
   private
@@ -58,19 +66,5 @@ class MonthlyBudgetsController < ApplicationController
 
   def monthly_budget_params
     params.require(:monthly_budget).permit(:target_amount, :note)
-  end
-
-  # 日別目標を再生成
-  def regenerate_daily_targets(monthly_budget)
-    start_date = monthly_budget.budget_month
-    end_date = start_date.end_of_month
-
-    # 既存の日別目標を削除
-    current_user.daily_targets
-                .where(target_date: start_date..end_date)
-                .delete_all
-
-    # MonthlyBudget モデルのメソッドを使用して日別目標を生成
-    monthly_budget.generate_daily_targets!
   end
 end

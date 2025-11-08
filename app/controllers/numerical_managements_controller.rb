@@ -65,11 +65,45 @@ class NumericalManagementsController < ApplicationController
       target_date: target_date
     )
 
+    # 月次予算を取得
+    selected_date = Date.new(params[:year].to_i, params[:month].to_i, 1)
+    monthly_budget = current_user.monthly_budgets.find_by(budget_month: selected_date)
+
+    # 月次予算が存在しない場合はエラー
+    unless monthly_budget
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
+                  alert: t('numerical_managements.messages.budget_not_set')
+      return
+    end
+
+    # 予算超過チェック
+    new_target_amount = daily_target_params[:target_amount].to_i
+
+    # この日以外の日別予算の合計を計算
+    other_targets_sum = current_user.daily_targets
+                                    .where(target_date: selected_date..selected_date.end_of_month)
+                                    .where.not(id: @daily_target.id)
+                                    .sum(:target_amount)
+
+    total_target = other_targets_sum + new_target_amount
+
+    # 予算超過チェック
+    if total_target > monthly_budget.target_amount
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
+                  alert: t('numerical_managements.messages.budget_mismatch',
+                          budget: view_context.number_to_currency(monthly_budget.target_amount, unit: "¥", precision: 0),
+                          total: view_context.number_to_currency(total_target, unit: "¥", precision: 0))
+      return
+    end
+
+    # monthly_budget_id を設定
+    @daily_target.monthly_budget = monthly_budget
+
     if @daily_target.update(daily_target_params)
-      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   notice: t("numerical_managements.messages.daily_target_updated")
     else
-      redirect_to calendar_numerical_managements_path(year: params[:year], month: params[:month]),
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   alert: t("numerical_managements.messages.daily_target_update_failed")
     end
   end
@@ -94,7 +128,6 @@ class NumericalManagementsController < ApplicationController
     begin
       plan = current_user.plans.find(params[:plan_id])
 
-      # scheduled_date を構築
       scheduled_date = Date.new(
         params[:year].to_i,
         params[:month].to_i,
@@ -103,8 +136,7 @@ class NumericalManagementsController < ApplicationController
 
       @plan_schedule = current_user.plan_schedules.new(
         plan: plan,
-        scheduled_date: scheduled_date,
-        planned_revenue: plan.expected_revenue
+        scheduled_date: scheduled_date
       )
 
       if @plan_schedule.save
@@ -144,14 +176,6 @@ class NumericalManagementsController < ApplicationController
     )
 
     if @monthly_budget.update(target_amount: params[:monthly_budget][:target_amount])
-      # 既存の日別目標を削除
-      current_user.daily_targets
-                  .where(target_date: @selected_date..@selected_date.end_of_month)
-                  .delete_all
-
-      # 日別目標を自動生成
-      @monthly_budget.generate_daily_targets!
-
       redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   notice: t('numerical_managements.messages.budget_updated')
     else
@@ -168,7 +192,6 @@ class NumericalManagementsController < ApplicationController
     )
 
     if @monthly_budget&.destroy
-      # 関連する日別目標も削除される（dependent: :destroy）
       redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   notice: t('numerical_managements.messages.budget_deleted')
     else
@@ -178,10 +201,36 @@ class NumericalManagementsController < ApplicationController
   end
 
   def bulk_update
-    # パラメータ名を daily_data に修正
-    unless params[:daily_data].is_a?(Hash)
+    # パラメータ検証
+    unless params[:daily_data].present?
       redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
                   alert: t('api.errors.invalid_parameters')
+      return
+    end
+
+    # 月次予算を取得
+    selected_date = Date.new(params[:year].to_i, params[:month].to_i, 1)
+    monthly_budget = current_user.monthly_budgets.find_by(budget_month: selected_date)
+
+    # 月次予算が存在しない場合はエラー
+    unless monthly_budget
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
+                  alert: t('numerical_managements.messages.budget_not_set')
+      return
+    end
+
+    # 日別目標の合計を計算
+    total_target = 0
+    params[:daily_data].each do |index, attributes|
+      total_target += attributes[:target_amount].to_i
+    end
+
+    # 月次予算を超過する場合のみエラー
+    if total_target > monthly_budget.target_amount
+      redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
+                  alert: t('numerical_managements.messages.budget_mismatch',
+                          budget: view_context.number_to_currency(monthly_budget.target_amount, unit: "¥", precision: 0),
+                          total: view_context.number_to_currency(total_target, unit: "¥", precision: 0))
       return
     end
 
@@ -192,17 +241,24 @@ class NumericalManagementsController < ApplicationController
       # 日付を取得
       target_date = Date.parse(attributes[:date])
 
-      # 日別予算の更新
+      # 必ず monthly_budget_id を設定
       if attributes[:target_id].present?
         daily_target = current_user.daily_targets.find_by(id: attributes[:target_id])
+        if daily_target
+          daily_target.monthly_budget = monthly_budget  # 既存レコードにも設定
+        end
       else
-        daily_target = current_user.daily_targets.find_or_initialize_by(target_date: target_date)
+        daily_target = current_user.daily_targets.find_or_initialize_by(
+          target_date: target_date
+        )
+        daily_target.monthly_budget = monthly_budget  # 新規レコードに設定
       end
 
       if daily_target && daily_target.update(target_amount: attributes[:target_amount])
         success_count += 1
       else
         error_count += 1
+        Rails.logger.error "DailyTarget update failed: #{daily_target&.errors&.full_messages}"
       end
 
       # 実績の更新
@@ -216,10 +272,10 @@ class NumericalManagementsController < ApplicationController
 
     if error_count.zero?
       redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
-                  notice: t('numerical_managements.messages.bulk_update_success', count: success_count)
+                  notice: t('numerical_managements.messages.daily_details_updated')
     else
       redirect_to numerical_managements_path(year: params[:year], month: params[:month]),
-                  alert: t('numerical_managements.messages.bulk_update_partial', success: success_count, error: error_count)
+                  alert: t('numerical_managements.messages.update_failed')
     end
   end
 
@@ -245,16 +301,17 @@ class NumericalManagementsController < ApplicationController
       day = date.day
       daily_target = @daily_targets[day]
 
-      plan_schedules = current_user.plan_schedules.where(scheduled_date: date)
-      planned_revenue = plan_schedules.sum(:planned_revenue)
+      plan_schedules = current_user.plan_schedules
+                                   .includes(:plan)
+                                   .where(scheduled_date: date)
+
+      planned_revenue = plan_schedules.sum { |ps| ps.current_planned_revenue }
       actual_revenue = plan_schedules.where.not(actual_revenue: nil).sum(:actual_revenue)
 
-      # 日別の計算
       target_amount = daily_target&.target_amount || 0
       achievement_rate = target_amount.positive? ? ((actual_revenue.to_f / target_amount) * 100).round(1) : 0.0
       diff = actual_revenue - target_amount
 
-      # 累計の計算
       cumulative_target += target_amount
       cumulative_actual += actual_revenue
       cumulative_planned += planned_revenue
@@ -263,18 +320,15 @@ class NumericalManagementsController < ApplicationController
 
       {
         date: date,
-        # 日別データ
         target: target_amount,
         actual: actual_revenue,
         achievement_rate: achievement_rate,
         diff: diff,
-        # 累計データ
         cumulative_target: cumulative_target,
         cumulative_actual: cumulative_actual,
         cumulative_achievement_rate: cumulative_achievement_rate,
         cumulative_diff: cumulative_diff,
         cumulative_planned: cumulative_planned,
-        # その他
         planned: planned_revenue,
         plan_schedules: plan_schedules
       }

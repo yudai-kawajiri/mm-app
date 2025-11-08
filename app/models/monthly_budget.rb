@@ -92,28 +92,6 @@ class MonthlyBudget < ApplicationRecord
     total_forecast_revenue - target_amount
   end
 
-  # 日別目標管理メソッド
-
-  # 日別目標を自動生成（端数を最終日に加算して予算額と完全一致させる）
-  def generate_daily_targets!
-    days_in_month = budget_month.end_of_month.day
-    daily_amount = (target_amount / days_in_month).floor  # 切り捨て
-    remainder = target_amount - (daily_amount * days_in_month)  # 端数計算
-
-    days_in_month.times do |i|
-      date = budget_month + i.days
-      # 最終日に端数を加算
-      amount = (i == days_in_month - 1) ? daily_amount + remainder : daily_amount
-
-      daily_targets.create!(
-        user: user,
-        target_date: date,
-        target_amount: amount
-      )
-    end
-  end
-
-
   private
 
   # 入力された budget_month を常にその月の1日（月初）に設定する
