@@ -59,9 +59,9 @@ export default class extends Controller {
    */
   async fetchUnitData(materialId) {
     try {
-      console.log('📡 Fetching unit data for material:', materialId)
+      console.log(' Fetching unit data for material:', materialId)
 
-      const response = await fetch(`/api/v1/materials/${materialId}/product_unit_data`, {
+      const response = await fetch(`/api/v1/materials/${materialId}/fetch_product_unit_data`, {
         headers: {
           'Accept': 'application/json',
           'X-Requested-With': 'XMLHttpRequest'

@@ -1,21 +1,22 @@
+# app/controllers/api/v1/materials_controller.rb
 class Api::V1::MaterialsController < AuthenticatedController
-  # GET /api/v1/materials/:id/product_unit_data
-  def product_unit_data
-    Rails.logger.info "=== product_unit_data API called ==="
+  # GET /api/v1/materials/:id/fetch_product_unit_data
+  def fetch_product_unit_data
+    Rails.logger.info "=== fetch_product_unit_data API called ==="
     Rails.logger.info "Material ID: #{params[:id]}"
     Rails.logger.info "Current User: #{current_user&.id}"
 
     begin
       # current_user が存在するか確認
       unless current_user
-        Rails.logger.error " current_user is nil"
+        Rails.logger.error "❌ current_user is nil"
         render json: { error: "Unauthorized" }, status: :unauthorized
         return
       end
 
       # Material を検索
       @material = current_user.materials.find(params[:id])
-      Rails.logger.info " Material found: #{@material.name}"
+      Rails.logger.info "✅ Material found: #{@material.name}"
 
       # 単位名を取得
       unit_name = @material.production_unit&.name
@@ -39,11 +40,11 @@ class Api::V1::MaterialsController < AuthenticatedController
         default_unit_weight: default_unit_weight
       }
     rescue ActiveRecord::RecordNotFound => e
-      Rails.logger.error "Material not found: #{params[:id]}"
+      Rails.logger.error "❌ Material not found: #{params[:id]}"
       Rails.logger.error e.message
       render json: { error: "Material not found or access denied" }, status: :not_found
     rescue StandardError => e
-      Rails.logger.error "Unexpected error in product_unit_data:"
+      Rails.logger.error "❌ Unexpected error in fetch_product_unit_data:"
       Rails.logger.error "  Error class: #{e.class}"
       Rails.logger.error "  Error message: #{e.message}"
       Rails.logger.error "  Backtrace:"

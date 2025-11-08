@@ -126,7 +126,7 @@ function setActualModalData(button) {
 
   const form = document.getElementById('editActualRevenueForm');
   if (planScheduleId) {
-    form.action = `/plan_schedules/${planScheduleId}/actual_revenue`;
+    form.action = `/plan_schedules/${planScheduleId}/update_actual_revenue`;
     const existingMethod = form.querySelector('input[name="_method"]');
     if (existingMethod) {
       existingMethod.remove();

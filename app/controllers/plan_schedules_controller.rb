@@ -88,8 +88,8 @@ class PlanSchedulesController < AuthenticatedController
     end
   end
 
-  # 実績入力専用アクション
-  def actual_revenue
+  # 実績入力専用アクション（RESTful命名規則に準拠）
+  def update_actual_revenue
     @plan_schedule = current_user.plan_schedules.find(params[:id])
 
     Rails.logger.info "=== Updating Actual Revenue for PlanSchedule ID: #{@plan_schedule.id} ==="
