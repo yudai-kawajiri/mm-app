@@ -124,8 +124,8 @@ ja:
       plan_management: "製造計画管理"
       plan_list: "製造計画一覧"
       new_plan: "製造計画登録" # 変更
-      numerical_management: "売上予算管理"
-      numerical_dashboard: "予算ダッシュボード"
+      numerical_management: "数値管理"
+      numerical_dashboard: "売上予算ダッシュボード"
       account_settings: "アカウント設定"
       admin_management: "管理者機能"
       user_management: "ユーザー管理"
@@ -327,9 +327,10 @@ ja:
       recommended_daily_target: "推奨日次目標"
       daily_required: "1日あたり必要額"
       action_plan: "アクションプラン"
+      daily_target_diff: "目標との差"
       alert_action_needed_html: "残り<strong>%{days}日</strong>で<strong>%{amount}</strong>の追加が必要です。<br>1日あたり<strong>%{daily}</strong>を目指しましょう"
       alert_on_track: "予算達成に向けて順調です！"
-      daily_details: "日別明細"
+      daily_details: "日別詳細"
       set_budget: "予算設定"
       delete_budget: "予算削除"
       target_month: "対象月"
@@ -349,7 +350,7 @@ ja:
       toggle_normal_mode: "通常表示"
       monthly_budget_label: "月間予算:"
       daily_target_sum: "日別予算合計:"
-      budget_diff_label: "予算差:"
+      budget_diff_label: "予算過不足:"
       bulk_save: "一括保存"
       excess: "超過"
       shortage: "不足"
@@ -378,6 +379,7 @@ ja:
         category_help: "製造する製品のカテゴリを選択してください"
         plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます"
         revenue_help: "必要に応じて計画高を調整できます"
+        revenue_readonly_help: 計画から自動計算されます（編集不可）
       labels:
         target_month: "対象月"
         target_date: "対象日"
@@ -428,6 +430,9 @@ ja:
       actual_revenue_update_failed: "実績売上の更新に失敗しました"
       bulk_update_success: "%{count}件のデータを更新しました"
       bulk_update_partial: "%{success}件成功、%{error}件失敗しました"
+      budget_not_set: 月次予算が設定されていません。先に予算設定を行ってください。
+      budget_mismatch: 日別予算の合計（%{total}）が月次予算（%{budget}）と一致しません。
+      daily_details_updated: "日別詳細を更新しました"
     placeholders:
       budget_amount: "例: 1,000,000"
       daily_target_amount: "例:1,000"
