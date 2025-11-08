@@ -52,16 +52,16 @@
           <div class="mb-3">
             <%= f.label :planned_revenue, t('numerical_managements.modals.labels.planned_revenue_yen'), class: "form-label" %>
             <%= f.text_field :planned_revenue,
-              class: "form-control",
+              class: "form-control-plaintext",
               id: "assignPlanAmount",
-              placeholder: t('numerical_managements.placeholders.actual_revenue_amount'),
-              inputmode: "numeric",
+              readonly: true,
               data: {
                 controller: 'number-input',
                 action: 'input->number-input#handleInput paste->number-input#handlePaste'
               } %>
+            <%= f.hidden_field :planned_revenue, id: "assignPlanAmountHidden" %>
 
-            <div class="form-text"><%= t('numerical_managements.modals.assign_plan.revenue_help') %></div>
+            <div class="form-text"><%= t('numerical_managements.modals.assign_plan.revenue_readonly_help') %></div>
           </div>
         </div>
         <div class="modal-footer">
@@ -128,6 +128,7 @@ function setPlanModalData(button) {
     }
 
     document.getElementById('assignPlanAmount').value = plannedRevenue || 0;
+    document.getElementById("assignPlanAmountHidden").value = plannedRevenue || 0
   } else {
     // 新規追加モード
     modalTitle.textContent = window.assignPlanI18n.addTitle;
@@ -145,6 +146,7 @@ function setPlanModalData(button) {
     planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanPrompt}</option>`;
     planSelect.disabled = true;
     document.getElementById('assignPlanAmount').value = '';
+    document.getElementById('assignPlanAmountHidden').value = '';
   }
 }
 
@@ -193,6 +195,7 @@ function handlePlanChange(select) {
   if (selectedOption && selectedOption.value) {
     const revenue = selectedOption.dataset.revenue || 0
     document.getElementById('assignPlanAmount').value = revenue
+    document.getElementById("assignPlanAmountHidden").value = revenue
     console.log("売上設定:", revenue)
   }
 }

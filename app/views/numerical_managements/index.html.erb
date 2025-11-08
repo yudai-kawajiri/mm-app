@@ -70,12 +70,18 @@
 
 <%# JavaScript - モーダル関連関数のみ（一括編集のJSは_daily_details_tableにあるので削除） %>
 <script>
-// 日別予算編集モーダ
+// ★★★ 修正: 日別予算編集モーダル - 正しいURLとパラメータを設定 ★★★
 function setEditModalData(button) {
   const date = button.dataset.date;
   const dateDisplay = button.dataset.dateDisplay;
   const targetId = button.dataset.targetId;
   const targetAmount = button.dataset.targetAmount;
+
+  // 日付から年月日を抽出
+  const dateObj = new Date(date);
+  const year = dateObj.getFullYear();
+  const month = dateObj.getMonth() + 1;
+  const day = dateObj.getDate();
 
   document.getElementById('editTargetDate').value = dateDisplay;
   document.getElementById('editTargetDateHidden').value = date;
@@ -87,19 +93,20 @@ function setEditModalData(button) {
   // inputイベントを発火してカンマをフォーマット
   targetAmountField.dispatchEvent(new Event('input', { bubbles: true }));
 
+  // ★★★ 修正: NumericalManagementsController#update_daily_target を呼び出す ★★★
   const form = document.getElementById('editDailyTargetForm');
-  if (targetId) {
-    form.action = `/daily_targets/${targetId}`;
-    form.querySelector('input[name="_method"]')?.remove();
-    const methodInput = document.createElement('input');
-    methodInput.type = 'hidden';
-    methodInput.name = '_method';
-    methodInput.value = 'patch';
-    form.appendChild(methodInput);
-  } else {
-    form.action = '/daily_targets';
-    form.querySelector('input[name="_method"]')?.remove();
+  form.action = `/numerical_managements/update_daily_target?year=${year}&month=${month}&day=${day}`;
+
+  // PATCHメソッドを設定
+  const existingMethod = form.querySelector('input[name="_method"]');
+  if (existingMethod) {
+    existingMethod.remove();
   }
+  const methodInput = document.createElement('input');
+  methodInput.type = 'hidden';
+  methodInput.name = '_method';
+  methodInput.value = 'patch';
+  form.appendChild(methodInput);
 }
 
 // ★★★ 実績入力モーダル ★★★
