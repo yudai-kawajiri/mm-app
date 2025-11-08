@@ -10,33 +10,26 @@ class PlanSchedule < ApplicationRecord
   belongs_to :user
 
   # バリデーション (Validation)
-  # 実施日は必須入力
-  # uniqueness: { scope: :plan_id } により、同一のPlanに対し同じ日にスケジュールを重複作成できないようにする
   validates :scheduled_date, presence: true, uniqueness: { scope: :plan_id }
-  # ステータスは必須
   validates :status, presence: true
-  # 実績売上は0以上の数値のみ許可（nilも許可し、未入力に対応）
   validates :actual_revenue, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   # スケジュールの現在の状態を定義
   enum :status, { scheduled: 0, completed: 1, cancelled: 2 }
 
-  # スコープ (Scope)
+  # ★★★ 修正: actual_revenue 入力時に planned_revenue を固定 ★★★
+  before_save :freeze_planned_revenue_on_actual_input
 
-  # 指定された日付のスケジュールを取得
+  # スコープ (Scope)
   scope :for_date, ->(date) { where(scheduled_date: date) }
-  # 指定された年月のスケジュールを範囲で取得
   scope :for_month, ->(year, month) {
     start_date = Date.new(year, month, 1)
     end_date = start_date.end_of_month
     where(scheduled_date: start_date..end_date)
   }
-  # 実施日の降順でスケジュールを取得（新しい日付順）
   scope :recent, -> { order(scheduled_date: :desc) }
 
   # クラスメソッド (Class Methods)
-
-  # 特定日付の全計画から原材料を集計
   def self.material_requirements_for_date(user, date)
     schedules = where(user: user, scheduled_date: date)
                 .includes(plan: { plan_products: { product: { product_materials: [:material, :unit] } } })
@@ -48,14 +41,12 @@ class PlanSchedule < ApplicationRecord
         material_id = req[:material_id]
 
         if requirements[material_id]
-          # 既存の原材料に加算
           requirements[material_id][:total_quantity] += req[:total_quantity]
           requirements[material_id][:total_weight] += req[:total_weight]
           requirements[material_id][:required_order_quantity] += req[:required_order_quantity]
           requirements[material_id][:plans] ||= []
           requirements[material_id][:plans] << schedule.plan.name
         else
-          # 新しい原材料
           requirements[material_id] = req.dup
           requirements[material_id][:plans] = [schedule.plan.name]
         end
@@ -66,16 +57,24 @@ class PlanSchedule < ApplicationRecord
   end
 
   # デリゲート (Delegate)
-
-  # 関連する Plan モデルの属性を 'plan_' プレフィックスを付けて直接呼び出せるようにする
   delegate :name, :description, :category, :products, to: :plan, prefix: true
 
   # インスタンスメソッド (Instance Methods)
 
+  # ★★★ 修正: 実績の有無だけで判定（planned_revenue の値は見ない）★★★
+  def current_planned_revenue
+    if actual_revenue.present?
+      # 実績入力済み → freeze されている planned_revenue を使用
+      planned_revenue || plan&.expected_revenue || 0
+    else
+      # 実績未入力 → 常に Plan の最新値を動的参照
+      plan&.expected_revenue || 0
+    end
+  end
 
   # 計画 (Plan) から予定売上を取得する
   def expected_revenue
-    plan.expected_revenue
+    current_planned_revenue
   end
 
   # 実績売上が入力されているかチェック
@@ -84,18 +83,16 @@ class PlanSchedule < ApplicationRecord
   end
 
   # 売上差異（実績 - 予定）を計算
-  # 修正: nilを返さず、実績がない場合は 0 - expected_revenue を返す
   def revenue_variance
     (actual_revenue || 0) - expected_revenue
   end
 
-  # variance エイリアス（ビューで使用）
   alias_method :variance, :revenue_variance
 
   # 達成率（実績 / 予定 * 100）を計算
   def achievement_rate
     return nil unless has_actual?
-    return 0 if expected_revenue.zero? # 予定売上がゼロの場合は0%とする
+    return 0 if expected_revenue.zero?
     (actual_revenue / expected_revenue * 100).round(1)
   end
 
@@ -112,5 +109,15 @@ class PlanSchedule < ApplicationRecord
   # スケジュール日が未来であるか
   def future?
     scheduled_date > Date.current
+  end
+
+  private
+
+  # ★★★ actual_revenue が nil → 値あり に変化したときに planned_revenue を保存 ★★★
+  def freeze_planned_revenue_on_actual_input
+    if actual_revenue_changed? && actual_revenue.present? && actual_revenue_was.nil?
+      self.planned_revenue = plan&.expected_revenue || 0
+      Rails.logger.info "PlanSchedule##{id || 'new'}: planned_revenue を固定 → #{self.planned_revenue}"
+    end
   end
 end
