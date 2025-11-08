@@ -13,25 +13,27 @@ class PlanSchedulesController < AuthenticatedController
       return
     end
 
+    # 計画を取得して expected_revenue を計算
+    plan = current_user.plans.find(permitted[:plan_id])
+
     # 1日1計画のみ（同じ日の計画は上書き）
     @plan_schedule = PlanSchedule.find_or_initialize_by(
       user: current_user,
       scheduled_date: scheduled_date
     )
 
-    # Strong Parameters で受け取った値を設定
+    # 計画高は計画から自動計算（パラメータの値は無視）
     @plan_schedule.assign_attributes(
-      permitted.except(:scheduled_date).merge(
-        status: @plan_schedule.persisted? ? @plan_schedule.status : :scheduled
-      )
+      plan: plan,
+      planned_revenue: plan.expected_revenue,
+      status: @plan_schedule.persisted? ? @plan_schedule.status : :scheduled
     )
 
     Rails.logger.info "=== Creating/Updating PlanSchedule ==="
     Rails.logger.info "User ID: #{current_user.id}"
     Rails.logger.info "Scheduled Date: #{scheduled_date}"
-    Rails.logger.info "Plan ID: #{permitted[:plan_id]}"
-    Rails.logger.info "Planned Revenue: #{permitted[:planned_revenue]}"
-    Rails.logger.info "Is new record: #{@plan_schedule.new_record?}"
+    Rails.logger.info "Plan ID: #{plan.id}"
+    Rails.logger.info "Planned Revenue (auto-calculated): #{plan.expected_revenue}"
 
     if @plan_schedule.save
       action = @plan_schedule.previously_new_record? ? I18n.t('plan_schedules.messages.assigned') : I18n.t('plan_schedules.messages.updated')
@@ -58,12 +60,18 @@ class PlanSchedulesController < AuthenticatedController
     # 既存レコードを取得
     @plan_schedule = current_user.plan_schedules.find(params[:id])
 
-    # Strong Parameters で受け取った値を設定
-    @plan_schedule.assign_attributes(permitted.except(:scheduled_date))
+    # 計画を取得して expected_revenue を計算
+    plan = current_user.plans.find(permitted[:plan_id])
+
+    # 計画高は計画から自動計算（パラメータの値は無視）
+    @plan_schedule.assign_attributes(
+      plan: plan,
+      planned_revenue: plan.expected_revenue
+    )
 
     Rails.logger.info "=== Updating PlanSchedule ID: #{@plan_schedule.id} ==="
-    Rails.logger.info "Plan ID: #{permitted[:plan_id]}"
-    Rails.logger.info "Planned Revenue: #{permitted[:planned_revenue]}"
+    Rails.logger.info "Plan ID: #{plan.id}"
+    Rails.logger.info "Planned Revenue (auto-calculated): #{plan.expected_revenue}"
 
     if @plan_schedule.save
       Rails.logger.info "=== PlanSchedule Updated Successfully ==="
