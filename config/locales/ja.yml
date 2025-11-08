@@ -451,7 +451,7 @@ ja:
       select: "選択してください"
       category_select: "カテゴリを選択してください"
     submit:
-      create: "登録" # 変更
+      create: "登録"
       edit: "編集"
       update: "更新"
     select:
@@ -467,7 +467,8 @@ ja:
       edit: "編集"
       show: "詳細"
       destroy: "削除"
-      new: "新規登録" # 変更
+      new: "新規登録"
+      cancel: "キャンセル"
       back_to_dashboard: "ダッシュボードへ戻る"
       add_material: "原材料を追加"
       add_item: "+ %{resource}を登録" # 変更
