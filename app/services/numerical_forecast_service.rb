@@ -1,128 +1,144 @@
+# app/services/numerical_forecast_service.rb
 class NumericalForecastService
-  attr_reader :user, :year, :month, :budget
+  attr_reader :user, :year, :month
 
   def initialize(user:, year:, month:)
     @user = user
     @year = year.to_i
     @month = month.to_i
-    @budget = find_budget
-    @today = Date.current
   end
 
+  # メインメソッド：予測データを計算して返す
   def calculate
-    actual = actual_amount
-    planned = planned_amount
-    forecast = actual + planned
-    target = target_amount
+    budget = find_monthly_budget
+    return default_data unless budget
+
+    # 月の範囲を取得
+    start_date = Date.new(@year, @month, 1)
+    end_date = start_date.end_of_month
+    today = Date.current
+
+    # 昨日までの日付範囲（今日が月内の場合のみ）
+    yesterday = today - 1.day
+    past_end = [yesterday, end_date].min
+
+    # 今日から月末までの日付範囲
+    future_start = [today, start_date].max
+    future_end = end_date
+
+    # データ取得
+    target = budget.target_amount || 0
+
+    # 昨日までの実績（actual_revenue が入力されているもののみ）
+    actual = user.plan_schedules
+                 .where(scheduled_date: start_date..past_end)
+                 .where.not(actual_revenue: nil)
+                 .sum(:actual_revenue) || 0
+
+    # ★★★ 修正1: 今日から月末までの計画高（current_planned_revenue を使用）★★★
+    future_schedules = user.plan_schedules
+                           .includes(:plan)
+                           .where(scheduled_date: future_start..future_end)
+                           .where(actual_revenue: nil)
+
+    planned_amount_for_forecast = future_schedules.sum { |ps| ps.current_planned_revenue }
+
+    # ★★★ 修正2: 月全体の計画高（月間計画売上カード用）★★★
+    all_schedules = user.plan_schedules
+                        .includes(:plan)
+                        .where(scheduled_date: start_date..end_date)
+
+    total_planned_amount = all_schedules.sum { |ps| ps.current_planned_revenue }
+
+    # 月末予測売上 = 昨日までの実績 + 今日からの計画高
+    forecast = actual + planned_amount_for_forecast
+
+    # 予算差
     diff = forecast - target
 
+    # 予測達成率（月末予測 ÷ 月次予算）
+    forecast_achievement_rate = target.positive? ? ((forecast.to_f / target) * 100).round(1) : 0.0
+
+    # 昨日までの日別予算の合計（実際の合計）
+    past_target = user.daily_targets
+                      .where(target_date: start_date..past_end)
+                      .sum(:target_amount) || 0
+
+    # 昨日までの日別予算達成率
+    daily_achievement_rate = past_target.positive? ? ((actual.to_f / past_target) * 100).round(1) : 0.0
+
+    # 残り日数（今日から月末まで）
+    remaining_days = if today <= end_date && today >= start_date
+                       (end_date - today).to_i + 1
+                     else
+                       0
+                     end
+
+    # 必要追加額（予算に達していない場合のみ）
+    required_additional = diff < 0 ? diff.abs : 0
+
+    # 推奨日次目標（1日あたり必要額）
+    daily_required = if remaining_days > 0 && required_additional > 0
+                       (required_additional.to_f / remaining_days).round
+                     else
+                       0
+                     end
+
+    # 現在の1日平均実績
+    elapsed_days = if today >= start_date && today <= end_date
+                     (today - start_date).to_i
+                   elsif today > end_date
+                     (end_date - start_date).to_i + 1
+                   else
+                     0
+                   end
+    current_daily_average = elapsed_days > 0 ? (actual.to_f / elapsed_days).round : 0
+
+    # 目標との差（推奨日次目標 - 現在の1日平均）
+    daily_target_diff = daily_required - current_daily_average
+
     {
+      # 月末予測カード用
       target_amount: target,
       actual_amount: actual,
-      planned_amount: planned_amount,
+      planned_amount: total_planned_amount,  # ★★★ 月全体の計画高
       forecast_amount: forecast,
-      daily_achievement_rate: daily_achievement_rate,
-
-      forecast_achievement_rate: target > 0 ? (forecast / target * 100).round(1) : 0,
+      achievement_rate: forecast_achievement_rate,
       forecast_diff: diff,
 
+      # 日別予算達成率（参考用）
+      daily_achievement_rate: daily_achievement_rate,
+
+      # アクションプランカード用
       remaining_days: remaining_days,
-      required_additional: diff < 0 ? diff.abs : 0,
-      daily_required: remaining_days > 0 && diff < 0 ? (diff.abs / remaining_days).round(0) : 0
+      required_additional: required_additional,
+      daily_required: daily_required,
+      current_daily_average: current_daily_average,
+      daily_target_diff: daily_target_diff
     }
   end
 
   private
 
-  def find_budget
+  def find_monthly_budget
     budget_month = Date.new(@year, @month, 1)
-    MonthlyBudget.find_by(
-      user: @user,
-      budget_month: budget_month
-    )
+    user.monthly_budgets.find_by(budget_month: budget_month)
   end
 
-  def target_amount
-    @budget&.target_amount || 0
-  end
-
-  # 月全体の実績売上
-  def actual_amount
-    return 0 unless @budget
-
-    PlanSchedule.joins(:plan)
-                .where(plans: { user_id: @user.id })
-                .where("DATE_TRUNC('month', scheduled_date) = ?", Date.new(@year, @month, 1))
-                .where.not(actual_revenue: nil)
-                .where("actual_revenue > 0")
-                .sum(:actual_revenue) || 0
-  end
-
-  # 指定日までの実績売上（日次予算達成率の計算用）
-  def actual_amount_until(date)
-    return 0 unless @budget
-
-    PlanSchedule.joins(:plan)
-                .where(plans: { user_id: @user.id })
-                .where("scheduled_date >= ? AND scheduled_date <= ?", Date.new(@year, @month, 1), date)
-                .where.not(actual_revenue: nil)
-                .where("actual_revenue > 0")
-                .sum(:actual_revenue) || 0
-  end
-
-  def planned_amount
-    return 0 unless @budget
-
-    schedules_without_actual = PlanSchedule.joins(:plan)
-                                           .where(plans: { user_id: @user.id })
-                                           .where("DATE_TRUNC('month', scheduled_date) = ?", Date.new(@year, @month, 1))
-                                           .where("actual_revenue IS NULL OR actual_revenue = 0")
-                                           .includes(plan: { plan_products: :product })
-
-    schedules_without_actual.sum do |schedule|
-      schedule.plan.plan_products.sum do |pp|
-        pp.product.price * pp.production_count
-      end
-    end
-  end
-
-  def remaining_days
-    first_day = Date.new(@year, @month, 1)
-    last_day = Date.new(@year, @month, -1)
-
-    return 0 if @today > last_day
-    return last_day.day if @today < first_day
-
-    (last_day - @today).to_i + 1
-  end
-
-  # 日次予算達成率（昨日までの予算に対する昨日までの実績の割合）
-  def daily_achievement_rate
-    return 0 if target_amount == 0
-
-    first_day = Date.new(@year, @month, 1)
-    last_day = Date.new(@year, @month, -1)
-    yesterday = @today - 1.day
-
-    return 0 if @today < first_day
-
-    # 対象月が過去の場合（月末までの達成率）
-    if @today > last_day
-      return target_amount > 0 ? (actual_amount.to_f / target_amount * 100).round(1) : 0
-    end
-
-    # 昨日までの経過日数
-    days_passed = [(yesterday - first_day).to_i, 0].max + 1
-    days_in_month = last_day.day
-
-    # 昨日までの日割り予算
-    budget_until_yesterday = (target_amount.to_f / days_in_month * days_passed).round
-
-    # 昨日までの実績
-    actual_until_yesterday = actual_amount_until(yesterday)
-
-
-    # 昨日までの予算達成率
-    budget_until_yesterday > 0 ? (actual_until_yesterday.to_f / budget_until_yesterday * 100).round(1) : 0
+  def default_data
+    {
+      target_amount: 0,
+      actual_amount: 0,
+      planned_amount: 0,
+      forecast_amount: 0,
+      achievement_rate: 0.0,
+      forecast_diff: 0,
+      daily_achievement_rate: 0.0,
+      remaining_days: 0,
+      required_additional: 0,
+      daily_required: 0,
+      current_daily_average: 0,
+      daily_target_diff: 0
+    }
   end
 end
