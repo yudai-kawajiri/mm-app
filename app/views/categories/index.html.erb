@@ -1,7 +1,6 @@
 <%= content_for(:title, t('categories.index.title')) %>
 <% title = t('categories.index.title') %>
 
-<%# 🚨 修正: ヘッダー呼び出しでコメントを分離 🚨 %>
 <%= render 'shared/layouts/header_with_actions',
     title: title,
     resource: nil,
@@ -16,6 +15,7 @@
     resources: @categories,
     resource_class: Category,
     search_target: :category_type,
+    icon_mode: true,
 
     columns: [
       { header: :name, data: :name },
