@@ -1,0 +1,10 @@
+<%# 必須引数: f, resource %>
+<% f = local_assigns[:f] %>
+<% resource = local_assigns[:resource] %>
+
+<%# オプション引数: label, class %>
+<% default_label = t("helpers.submit.#{resource.persisted? ? 'update' : 'create'}") %>
+<% label = local_assigns.fetch(:label, default_label) %>
+<% css_class = local_assigns.fetch(:class, 'btn btn-primary') %>
+
+<%= f.submit label, class: css_class %>
