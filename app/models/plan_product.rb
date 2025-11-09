@@ -1,17 +1,27 @@
+# frozen_string_literal: true
+
+# PlanProduct
+#
+# 計画製品中間モデル - 計画と製品の多対多の関連を管理
+#
+# 使用例:
+#   PlanProduct.create(plan_id: 1, product_id: 1, production_count: 100)
+#   pp.material_requirements
 class PlanProduct < ApplicationRecord
-  # PaperTrailで変更履歴を記録
+  # 変更履歴の記録
   has_paper_trail
 
+  # 関連付け
   belongs_to :plan
   belongs_to :product
 
-  # バリデーション (データの整合性のため必須)
+  # バリデーション
   validates :production_count, presence: true, numericality: { greater_than: 0 }
-
-  # 同じ計画に同じ製品を登録不可にする
   validates :product_id, uniqueness: { scope: :plan_id }
 
   # この商品で使う原材料の必要量を計算
+  #
+  # @return [Array<Hash>] 原材料必要量の配列
   def material_requirements
     product.product_materials.includes(:material, :unit).map do |pm|
       {
@@ -26,27 +36,6 @@ class PlanProduct < ApplicationRecord
         unit: pm.unit,
         unit_name: pm.unit.name
       }
-    end
-  end
-
-  private
-
-  # 発注量を計算（商品の生産数を考慮）
-  # ※ このメソッドは現在使用されていないため、削除または更新が必要
-  def calculate_order_quantity(product_material)
-    material = product_material.material
-    total_quantity = product_material.quantity * production_count
-    total_weight = product_material.total_weight * production_count
-
-    case material.measurement_type
-    when 'count'
-      # 個数ベース（例: トレイ 100枚 ÷ 50枚/箱 = 2箱）
-      (total_quantity.to_f / material.pieces_per_order_unit).ceil
-    when 'weight'
-      # 重量ベース（例: まぐろ 9600g ÷ 1000g/パック = 10パック）
-      (total_weight / material.unit_weight_for_order).ceil
-    else
-      0
     end
   end
 end

@@ -1,24 +1,38 @@
+# frozen_string_literal: true
+
+# Category
+#
+# カテゴリーモデル - 材料、製品、計画の分類を管理
+#
+# 使用例:
+#   Category.create(name: "生ネタ", category_type: :material)
+#   Category.material.for_index
+#   Category.search_by_name("生")
+#
+# カテゴリー種別:
+#   - material: 材料カテゴリー (0)
+#   - product: 製品カテゴリー (1)
+#   - plan: 計画カテゴリー (2)
 class Category < ApplicationRecord
-  # PaperTrailで変更履歴を記録
+  # 変更履歴の記録
   has_paper_trail
-  
-  # 名前検索スコープを組み込み
+
+  # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
 
-  # データベースには 0, 1, 2 が保存されるが、コードでは :material, :product, :plan で扱う
+  # カテゴリー種別の定義（データベースには0, 1, 2として保存）
   enum :category_type, { material: 0, product: 1, plan: 2 }
 
-  # 関連付け
+  # 関連付け（削除時は関連データの存在をチェック）
   has_many :materials, dependent: :restrict_with_error
   has_many :products, dependent: :restrict_with_error
   has_many :plans, dependent: :restrict_with_error
-
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_type }
   validates :category_type, presence: true
 
-  # 名前順
+  # 名前の昇順で取得
   scope :for_index, -> { order(name: :asc) }
 end
