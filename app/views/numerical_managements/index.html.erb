@@ -1,3 +1,14 @@
+<%#
+  機能: 売上管理メイン画面
+
+  主要機能:
+  - 月選択フォーム
+  - 予算設定・削除
+  - サマリーカード・予測カード表示
+  - 日別明細テーブル
+  - 各種モーダル（予算設定、日別目標、実績入力、計画割当）
+%>
+
 <% content_for :title, t('numerical_managements.index.title') %>
 
 <div class="container-fluid py-4">
@@ -5,19 +16,16 @@
     <h1 class="h3 mb-0"><%= t('numerical_managements.index.title') %></h1>
 
     <div class="d-flex align-items-center gap-3">
-      <!-- 月選択フォーム -->
       <form method="get" class="d-flex align-items-center gap-2">
         <label class="text-muted mb-0"><%= t('numerical_managements.index.target_month') %></label>
 
         <div class="d-flex gap-1">
-          <!-- 年選択 -->
           <select name="year" class="form-select form-select-sm" style="width: 90px;">
             <% (Date.current.year - 2..Date.current.year + 1).each do |year| %>
               <option value="<%= year %>" <%= 'selected' if year == @selected_date.year %>><%= year %>年</option>
             <% end %>
           </select>
 
-          <!-- 月選択 -->
           <select name="month" class="form-select form-select-sm" style="width: 80px;">
             <% (1..12).each do |month| %>
               <option value="<%= month %>" <%= 'selected' if month == @selected_date.month %>><%= month %>月</option>
@@ -28,7 +36,6 @@
         <button type="submit" class="btn btn-primary btn-sm"><%= t('numerical_managements.index.display') %></button>
       </form>
 
-      <!-- 予算設定ボタン -->
       <div class="d-flex gap-2">
         <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#budgetSettingModal">
           <i class="bi bi-gear"></i> <%= t('numerical_managements.index.set_budget') %>
@@ -46,38 +53,26 @@
     </div>
   </div>
 
-  <%# サマリーカード（4つ横並び） %>
   <%= render 'shared/summary_cards', forecast_data: @forecast_data, monthly_budget: @monthly_budget %>
-
-  <%# 予測カード（3つ横並び） %>
   <%= render 'forecast_cards', forecast_data: @forecast_data %>
-
-  <%# 日別明細テーブル %>
   <%= render 'daily_details_table', daily_data: @daily_data %>
 </div>
 
-<%# 計画データをJavaScriptに渡す %>
 <script>
   window.plansByCategory = <%= raw (@plans_by_category || {}).transform_values { |plans| plans.map { |p| { id: p.id, name: p.name, expected_revenue: p.expected_revenue.to_i } } }.to_json %>;
-  console.log('plansByCategory 初期化:', window.plansByCategory);
 </script>
 
-<%# モーダル群 %>
 <%= render 'budget_setting_modal' %>
 <%= render 'daily_target_modal' %>
 <%= render 'actual_revenue_modal' %>
 <%= render 'assign_plan_modal', plans_by_category: @plans_by_category %>
 
-<%# JavaScript - モーダル関連関数のみ（一括編集のJSは_daily_details_tableにあるので削除） %>
 <script>
-// ★★★ 修正: 日別予算編集モーダル - 正しいURLとパラメータを設定 ★★★
 function setEditModalData(button) {
   const date = button.dataset.date;
   const dateDisplay = button.dataset.dateDisplay;
-  const targetId = button.dataset.targetId;
   const targetAmount = button.dataset.targetAmount;
 
-  // 日付から年月日を抽出
   const dateObj = new Date(date);
   const year = dateObj.getFullYear();
   const month = dateObj.getMonth() + 1;
@@ -86,18 +81,13 @@ function setEditModalData(button) {
   document.getElementById('editTargetDate').value = dateDisplay;
   document.getElementById('editTargetDateHidden').value = date;
 
-  // 値をセット
   const targetAmountField = document.getElementById('editTargetAmount');
   targetAmountField.value = Math.floor(parseFloat(targetAmount) || 0);
-
-  // inputイベントを発火してカンマをフォーマット
   targetAmountField.dispatchEvent(new Event('input', { bubbles: true }));
 
-  // ★★★ 修正: NumericalManagementsController#update_daily_target を呼び出す ★★★
   const form = document.getElementById('editDailyTargetForm');
   form.action = `/numerical_managements/update_daily_target?year=${year}&month=${month}&day=${day}`;
 
-  // PATCHメソッドを設定
   const existingMethod = form.querySelector('input[name="_method"]');
   if (existingMethod) {
     existingMethod.remove();
@@ -109,7 +99,6 @@ function setEditModalData(button) {
   form.appendChild(methodInput);
 }
 
-// ★★★ 実績入力モーダル ★★★
 function setActualModalData(button) {
   const dateDisplay = button.dataset.dateDisplay;
   const planScheduleId = button.dataset.planScheduleId;
@@ -117,11 +106,8 @@ function setActualModalData(button) {
 
   document.getElementById('editActualDate').value = dateDisplay;
 
-  // 値をセット
   const actualRevenueField = document.getElementById('editActualRevenue');
   actualRevenueField.value = Math.floor(parseFloat(actualRevenue) || 0);
-
-  // inputイベントを発火してカンマをフォーマット
   actualRevenueField.dispatchEvent(new Event('input', { bubbles: true }));
 
   const form = document.getElementById('editActualRevenueForm');
@@ -139,13 +125,9 @@ function setActualModalData(button) {
   }
 }
 
-// ★★★ 計画追加モーダルの日付設定 ★★★
 function initializePlanModal() {
   const assignPlanModal = document.getElementById('assignPlanModal');
-  if (!assignPlanModal) {
-    console.error('assignPlanModal not found!');
-    return;
-  }
+  if (!assignPlanModal) return;
 
   assignPlanModal.addEventListener('show.bs.modal', function(event) {
     const button = event.relatedTarget;
@@ -162,13 +144,7 @@ function initializePlanModal() {
   });
 }
 
-// ページ読み込み時に初期化
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOMContentLoaded: plansByCategory =', window.plansByCategory);
-  initializePlanModal();
-});
-
-// Turboでページ遷移したときも初期化
+document.addEventListener('DOMContentLoaded', initializePlanModal);
 document.addEventListener('turbo:load', function() {
   const assignPlanModal = document.getElementById('assignPlanModal');
   if (assignPlanModal) {
