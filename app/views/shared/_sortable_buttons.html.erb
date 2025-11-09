@@ -1,4 +1,12 @@
-<%# app/views/shared/_sortable_buttons.html.erb %>
+<%# ソート可能ボタン %>
+<%#
+  機能:
+  - テーブルの並び替えモード切り替えボタン
+  - 並び替え保存/キャンセルボタン
+
+  Stimulusコントローラー:
+  - sortable-table: ドラッグ&ドロップによる並び替え制御
+%>
 <div class="mb-3">
   <button data-sortable-table-target="toggleBtn"
           data-action="click->sortable-table#toggleReorderMode"

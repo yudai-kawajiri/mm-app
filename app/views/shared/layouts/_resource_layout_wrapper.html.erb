@@ -1,48 +1,43 @@
-<%# 2カラムレイアウトラッパー %>
-<%# フォーム用のローカル変数 %>
-<% f = local_assigns[:f] %>
-<% basic_fields = local_assigns[:basic_fields] %>
-<% detail_fields = local_assigns[:detail_fields] %>
+<%# リソース2カラムフォームラッパー %>
+<%#
+  機能:
+  - 2カラムレイアウト専用フォームラッパー
+  - 基本情報と詳細情報を左右に分けて表示
 
-<%# 詳細用のローカル変数 (タイトル) %>
-<% content_left_title = local_assigns[:content_left_title] %>
-<% content_right_title = local_assigns[:content_right_title] %>
+  必須引数:
+  - resource: フォーム対象のモデルインスタンス
+  - form_title: ページタイトル
+  - basic_fields: 左カラムのフィールドパーシャル名
+  - detail_fields: 右カラムのフィールドパーシャル名
 
-<%# 1. 右コンテンツの有無を判定し、左カラム幅を動的に設定 %>
-<% has_right_content = detail_fields.present? || content_for?(:content_right) %>
-<% left_column_width = has_right_content ? 'col-md-6' : 'col-md-12' %>
+  オプション引数:
+  - custom_right_title: 右カラムのタイトル (デフォルト: なし)
 
-<%# 2. 全体ラッパー %>
-<div class="row">
-  <%# 左カラムの枠  %>
-  <div class="<%= left_column_width %> mb-3 mb-md-0">
-    <%# 3. タイトル %>
-    <% if content_left_title.present? %>
-      <h4 class="mb-3"><%= content_left_title %></h4>
-    <% end %>
+  Stimulusコントローラー:
+  - form-submit: フォーム送信制御
+%>
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h2 class="mb-0"><%= form_title %></h2>
+    </div>
 
-    <%# 4. コンテンツ %>
-    <% if basic_fields.present? %>
-      <%= render basic_fields, f: f %>
-    <% else %>
-      <%= yield :content_left %>
-    <% end %>
-  </div>
+    <div class="card-body">
+      <%= render 'shared/forms/error_messages', resource: resource %>
 
-  <%# 右カラムの枠 %>
-  <% if has_right_content %>
-    <div class="col-md-6">
-      <%# 3. タイトル %>
-      <% if content_right_title.present? %>
-        <h4 class="mb-3"><%= content_right_title %></h4>
-      <% end %>
+      <%= form_with(model: resource, local: true, data: { controller: 'form-submit' }) do |f| %>
+        <%= render 'shared/layouts/resource_layout_wrapper',
+          f: f,
+          basic_fields: basic_fields,
+          detail_fields: detail_fields,
+          content_left_title: nil,
+          content_right_title: custom_right_title
+        %>
 
-      <%# 4. コンテンツ %>
-      <% if detail_fields.present? %>
-        <%= render detail_fields, f: f %>
-      <% else %>
-        <%= yield :content_right %>
+        <div class="mt-4">
+          <%= render 'shared/actions/form_action_links', f: f, resource: resource %>
+        </div>
       <% end %>
     </div>
-  <% end %>
+  </div>
 </div>
