@@ -32,4 +32,3 @@
 #
 module UnitsHelper
 end
-Response
