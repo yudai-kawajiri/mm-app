@@ -1,10 +1,74 @@
+# frozen_string_literal: true
+
+#
+# ApplicationHelper
+#
+# アプリケーション全体で使用される共通ヘルパーメソッド群
+#
+# @description
+#   ビュー全体で共有される基本的なヘルパーメソッドを提供します。
+#   - Enum値の翻訳
+#   - サイドバーメニュー構築
+#   - リソーステーブル表示
+#   - 標準フォームコンポーネント
+#   - バリデーション対応フォームグループ
+#
+# @features
+#   - i18n対応のEnum翻訳
+#   - 権限ベースのメニュー表示
+#   - アクティブリンク判定
+#   - 統一されたフォームスタイル（Bootstrapベース）
+#   - 文字数カウンター機能
+#   - 自動バリデーション表示
+#
 module ApplicationHelper
+  # ============================================================
+  # Enum翻訳
+  # ============================================================
+
+  #
+  # Enum値をi18nで翻訳して返す
+  #
+  # @param record [ActiveRecord::Base] モデルインスタンス
+  # @param attribute [Symbol] Enum属性名
+  # @return [String] 翻訳されたEnum値、または空文字列
+  #
+  # @example
+  #   translate_enum_value(@plan, :status)
+  #   # => "下書き" (for status: "draft")
+  #
+  # @note
+  #   翻訳キーは "activerecord.enums.モデル名.属性名.値" の形式
+  #
   def translate_enum_value(record, attribute)
     value = record.send(attribute)
     return "" if value.blank?
+
     I18n.t("activerecord.enums.#{record.model_name.i18n_key}.#{attribute}.#{value}")
   end
 
+  # ============================================================
+  # サイドバーメニュー
+  # ============================================================
+
+  #
+  # サイドバーのメニュー項目を構築
+  #
+  # @return [Array<Hash>] メニュー項目の配列
+  #
+  # @option [String] :name メニュー名（i18n翻訳済み）
+  # @option [String] :path メニューのパス
+  # @option [Array<Hash>] :submenu サブメニュー項目（オプション）
+  #
+  # @note
+  #   - 管理者権限（admin）の場合のみ管理メニューが表示される
+  #   - 各メニュー項目はi18nキー "dashboard.menu.*" で翻訳される
+  #
+  # @example
+  #   sidebar_menu_items.each do |item|
+  #     # メニューをレンダリング
+  #   end
+  #
   def sidebar_menu_items
     items = [
       { name: t("dashboard.menu.dashboard"), path: authenticated_root_path },
@@ -66,130 +130,290 @@ module ApplicationHelper
     items
   end
 
-
-  # サブメニューを含むアクティブ判定
+  #
+  # サイドバーリンクがアクティブかどうかを判定
+  #
+  # @param item [Hash] メニュー項目
+  # @option item [String] :path メインパス
+  # @option item [Array<Hash>] :submenu サブメニュー項目
+  # @return [Boolean] アクティブな場合true
+  #
+  # @note
+  #   - サブメニューがある場合、いずれかのサブメニューがアクティブならtrueを返す
+  #   - サブメニューがない場合、自身のパスで判定
+  #
+  # @example
+  #   sidebar_link_active?(item) ? "active" : ""
+  #
   def sidebar_link_active?(item)
     if item[:submenu]
-      # サブメニューがある場合は、サブメニューのいずれかがアクティブか判定
+      # サブメニューのいずれかがアクティブか判定
       item[:submenu].any? { |sub| current_page?(sub[:path]) }
     elsif item[:path]
-      # サブメニューがない場合は、自身のパスで判定
+      # 自身のパスで判定
       current_page?(item[:path])
     else
       false
     end
   end
 
-  # サイドバーリンクのクラス
+  #
+  # サイドバーリンクのCSSクラスを返す
+  #
+  # @param path [String] リンクのパス
+  # @return [String] CSSクラス文字列
+  #
+  # @example
+  #   sidebar_link_class(categories_path)
+  #   # => "list-group-item list-group-item-action active"
+  #
   def sidebar_link_class(path)
     base_class = "list-group-item list-group-item-action"
     current_page?(path) ? "#{base_class} active" : base_class
   end
 
-  # サブメニューのクラス
+  #
+  # サイドバーサブメニューのCSSクラスを返す
+  #
+  # @param path [String] サブメニューのパス
+  # @return [String] CSSクラス文字列（左パディング付き）
+  #
+  # @example
+  #   sidebar_submenu_link_class(new_category_path)
+  #   # => "list-group-item list-group-item-action ps-5 active"
+  #
   def sidebar_submenu_link_class(path)
     base_class = "list-group-item list-group-item-action ps-5"
     current_page?(path) ? "#{base_class} active" : base_class
   end
 
+  #
+  # サブメニューのインジケーター（└ 記号）を返す
+  #
+  # @return [String] HTMLタグ
+  #
+  # @example
+  #   submenu_indicator
+  #   # => "<span class='submenu-indicator'>└ </span>"
+  #
   def submenu_indicator
     content_tag(:span, "└ ", class: "submenu-indicator")
   end
 
-  # リソースリストのテーブルセルに表示するデータを整形して返却するメソッド
+  # ============================================================
+  # リソーステーブル表示
+  # ============================================================
+
+  #
+  # リソースリストのテーブルセルデータを整形して返す
+  #
+  # @param resource [ActiveRecord::Base] リソースオブジェクト
+  # @param column_definition [Hash] カラム定義
+  # @option column_definition [Symbol, Proc] :data データ取得方法
+  # @return [String, ActiveSupport::SafeBuffer] 表示用HTML
+  #
+  # @note
+  #   以下の特殊カラムタイプに対応：
+  #   - :image - Active Storageの画像サムネイル表示
+  #   - :price - 通貨フォーマット表示
+  #   - Proc - カスタムレンダリング
+  #
+  # @example
+  #   render_resource_data(@product, { data: :image })
+  #   # => <img src="..." class="img-thumbnail" />
+  #
+  #   render_resource_data(@product, { data: :price })
+  #   # => "¥1,000"
+  #
+  #   render_resource_data(@product, { data: ->(r) { r.name.upcase } })
+  #   # => "PRODUCT NAME"
+  #
   def render_resource_data(resource, column_definition)
     data = column_definition[:data]
 
     if data == :image
-      # 1. 画像カラムの処理
+      # 画像カラムの処理
       if resource.image.attached?
-        # 画像が添付されていればサムネイルを表示
-        image_tag resource.image.variant(resize_to_limit: [ 50, 50 ]), class: "img-thumbnail"
+        image_tag resource.image.variant(resize_to_limit: [50, 50]), class: "img-thumbnail"
       else
         "-"
       end
     elsif data == :price
-      # 2. 金額表示カラムの処理
+      # 金額表示カラムの処理
       number_to_currency(resource.price, precision: 0)
     elsif data.respond_to?(:call)
-      # 3. Procの場合の処理
+      # Procの場合の処理
       data.call(resource)
     else
-      # 4. カラムの場合の処理
+      # 通常のカラムの処理
       resource.send(data)
     end
   end
 
-  # === フォームヘルパーメソッド ===
+  # ============================================================
+  # 標準フォームコンポーネント（Bootstrap lg サイズ統一）
+  # ============================================================
 
-  # 標準的なラベルを生成（h5クラス + text-muted で統一）
+  #
+  # 標準ラベルを生成（h5 + text-muted スタイル）
+  #
+  # @param form [ActionView::Helpers::FormBuilder] フォームビルダー
+  # @param attribute [Symbol] 属性名
+  # @param options [Hash] オプション
+  # @return [String] ラベルHTML
+  #
   def form_label_lg(form, attribute, options = {})
     options[:class] = "form-label h5 text-muted #{options[:class]}".strip
     form.label(attribute, options)
   end
 
-  # 標準的なテキストフィールドを生成（lgサイズ）
+  #
+  # 標準テキストフィールドを生成（lgサイズ）
+  #
+  # @param form [ActionView::Helpers::FormBuilder] フォームビルダー
+  # @param attribute [Symbol] 属性名
+  # @param options [Hash] HTML属性オプション
+  # @return [String] テキストフィールドHTML
+  #
   def form_text_field_lg(form, attribute, options = {})
     options[:class] = "form-control form-control-lg #{options[:class]}".strip
     form.text_field(attribute, options)
   end
 
-  # 標準的なナンバーフィールドを生成（lgサイズ）
+  #
+  # 標準ナンバーフィールドを生成（lgサイズ）
+  #
+  # @param form [ActionView::Helpers::FormBuilder] フォームビルダー
+  # @param attribute [Symbol] 属性名
+  # @param options [Hash] HTML属性オプション
+  # @return [String] ナンバーフィールドHTML
+  #
   def form_number_field_lg(form, attribute, options = {})
     options[:class] = "form-control form-control-lg #{options[:class]}".strip
     form.number_field(attribute, options)
   end
 
-  # 標準的なセレクトボックスを生成（lgサイズ）
+  #
+  # 標準セレクトボックスを生成（lgサイズ）
+  #
+  # @param form [ActionView::Helpers::FormBuilder] フォームビルダー
+  # @param attribute [Symbol] 属性名
+  # @param choices [Array] 選択肢の配列
+  # @param select_options [Hash] selectメソッドのオプション
+  # @param html_options [Hash] HTML属性オプション
+  # @return [String] セレクトボックスHTML
+  #
   def form_select_lg(form, attribute, choices, select_options = {}, html_options = {})
     html_options[:class] = "form-select form-select-lg #{html_options[:class]}".strip
     form.select(attribute, choices, select_options, html_options)
   end
 
-  # 標準的なコレクションセレクトを生成（lgサイズ）
+  #
+  # 標準コレクションセレクトを生成（lgサイズ）
+  #
+  # @param form [ActionView::Helpers::FormBuilder] フォームビルダー
+  # @param attribute [Symbol] 属性名
+  # @param collection [Array] コレクション
+  # @param value_method [Symbol] 値取得メソッド
+  # @param text_method [Symbol] 表示テキスト取得メソッド
+  # @param select_options [Hash] selectメソッドのオプション
+  # @param html_options [Hash] HTML属性オプション
+  # @return [String] コレクションセレクトHTML
+  #
   def form_collection_select_lg(form, attribute, collection, value_method, text_method, select_options = {}, html_options = {})
     html_options[:class] = "form-select form-select-lg #{html_options[:class]}".strip
     form.collection_select(attribute, collection, value_method, text_method, select_options, html_options)
   end
 
-  # 標準的なテキストエリアを生成（lgサイズ）
+  #
+  # 標準テキストエリアを生成（lgサイズ）
+  #
+  # @param form [ActionView::Helpers::FormBuilder] フォームビルダー
+  # @param attribute [Symbol] 属性名
+  # @param options [Hash] HTML属性オプション
+  # @return [String] テキストエリアHTML
+  #
   def form_text_area_lg(form, attribute, options = {})
     options[:class] = "form-control form-control-lg #{options[:class]}".strip
     form.text_area(attribute, options)
   end
 
-  # フォームグループ（ラベル + フィールド）を一括生成
-  # バリデーション、文字数カウンター、エラー表示、prefix対応を追加
+  # ============================================================
+  # 統合フォームグループ（ラベル + フィールド + バリデーション）
+  # ============================================================
+
+  #
+  # フォームグループを一括生成（ラベル + フィールド + バリデーション + 文字数カウンター）
+  #
+  # @param form [ActionView::Helpers::FormBuilder] フォームビルダー
+  # @param attribute [Symbol] 属性名
+  # @param field_type [Symbol] フィールドタイプ（:text_field, :number_field, :text_area, :select, :collection_select）
+  # @param options [Hash] オプション
+  #
+  # @option options [String] :wrapper_class ラッパーdivのクラス（デフォルト: "mb-4"）
+  # @option options [String] :label ラベルテキスト（省略時は自動翻訳）
+  # @option options [String] :help_text ヘルプテキスト
+  # @option options [String] :prefix プレフィックス（例: "¥"）
+  # @option options [Boolean] :character_counter 文字数カウンター表示（デフォルト: false）
+  # @option options [Integer] :max_length 最大文字数（character_counter有効時）
+  # @option options [Array] :choices セレクトボックスの選択肢（:select時）
+  # @option options [Hash] :select_options selectメソッドのオプション
+  # @option options [Array] :collection コレクション（:collection_select時）
+  # @option options [Symbol] :value_method 値取得メソッド（:collection_select時）
+  # @option options [Symbol] :text_method 表示テキスト取得メソッド（:collection_select時）
+  #
+  # @yield ブロックが渡された場合はカスタムフィールドをレンダリング
+  # @return [String] フォームグループHTML
+  #
+  # @note
+  #   - モデルのバリデーションから自動的に必須フィールドを判定
+  #   - エラーがある場合は is-invalid クラスを自動追加
+  #   - 文字数カウンターはStimulusコントローラー連携
+  #
+  # @example 基本的なテキストフィールド
+  #   form_group_lg(f, :name, field_type: :text_field)
+  #
+  # @example 文字数カウンター付きテキストエリア
+  #   form_group_lg(f, :description,
+  #     field_type: :text_area,
+  #     character_counter: true,
+  #     max_length: 500
+  #   )
+  #
+  # @example プレフィックス付き金額フィールド
+  #   form_group_lg(f, :price,
+  #     field_type: :number_field,
+  #     prefix: "¥"
+  #   )
+  #
+  # @example コレクションセレクト
+  #   form_group_lg(f, :category_id,
+  #     field_type: :collection_select,
+  #     collection: @categories,
+  #     value_method: :id,
+  #     text_method: :name
+  #   )
+  #
   def form_group_lg(form, attribute, field_type: :text_field, **options, &block)
     wrapper_class = options.delete(:wrapper_class) || "mb-4"
     label_text = options.delete(:label)
     help_text = options.delete(:help_text)
-
-    # prefix オプション（¥記号など）
     prefix = options.delete(:prefix)
-
-    # 文字数カウンターのオプション
     character_counter = options.delete(:character_counter) || false
     max_length = options.delete(:max_length)
 
-    #  必須かどうかを判定（モデルのバリデーションから自動判定）
+    # 必須かどうかを判定（モデルのバリデーションから自動判定）
     required = form.object.class.validators_on(attribute).any? { |v| v.is_a?(ActiveModel::Validations::PresenceValidator) }
 
-    #  エラーがある場合、is-invalid クラスを追加
+    # エラーがある場合、is-invalid クラスを追加
     if form.object.errors[attribute].any?
-      case field_type
-      when :select, :collection_select
-        options[:class] = "#{options[:class]} is-invalid".strip
-      else
-        options[:class] = "#{options[:class]} is-invalid".strip
-      end
+      options[:class] = "#{options[:class]} is-invalid".strip
     end
 
-    #  必須フィールドには required 属性を追加
+    # 必須フィールドには required 属性を追加
     options[:required] = true if required
 
     # data オプションの正しいマージ
-    # ユーザーから渡された data オプションを保持し、必要な属性を追加
     options[:data] ||= {}
     options[:data][:form_validation_target] = "field" if required
 
@@ -197,13 +421,12 @@ module ApplicationHelper
     if character_counter && max_length
       options[:maxlength] = max_length
       options[:data][:character_counter_target] = "input"
-      # action が既に存在する場合はスペース区切りで追加
       existing_action = options[:data][:action]
       counter_action = "input->character-counter#updateCount"
       options[:data][:action] = existing_action ? "#{existing_action} #{counter_action}" : counter_action
     end
 
-    #  ラッパーの data 属性
+    # ラッパーの data 属性
     wrapper_data = {}
     if character_counter && max_length
       wrapper_data[:controller] = "character-counter"
@@ -222,7 +445,7 @@ module ApplicationHelper
         when :text_field
           form_text_field_lg(form, attribute, options)
         when :number_field
-          # 🆕 prefix がある場合は input-group で囲む
+          # prefix がある場合は input-group で囲む
           if prefix
             content_tag(:div, class: "input-group input-group-lg") do
               concat content_tag(:span, prefix, class: "input-group-text")
@@ -236,7 +459,6 @@ module ApplicationHelper
         when :select
           choices = options.delete(:choices) || []
           select_options = options.delete(:select_options) || {}
-          # select の場合は form-control を form-select に変更
           options[:class] = (options[:class] || "form-control form-control-lg").gsub("form-control", "form-select")
           form_select_lg(form, attribute, choices, select_options, options)
         when :collection_select
@@ -244,7 +466,6 @@ module ApplicationHelper
           value_method = options.delete(:value_method) || :id
           text_method = options.delete(:text_method) || :name
           select_options = options.delete(:select_options) || { prompt: t("helpers.prompt.select") }
-          # collection_select の場合は form-control を form-select に変更
           options[:class] = (options[:class] || "form-control form-control-lg").gsub("form-control", "form-select")
           form_collection_select_lg(form, attribute, collection, value_method, text_method, select_options, options)
         end
@@ -264,14 +485,14 @@ module ApplicationHelper
         "".html_safe
       end
 
-      #  ヘルプテキスト
+      # ヘルプテキスト
       help_html = if help_text
         content_tag(:div, help_text, class: "form-text")
       else
         "".html_safe
       end
 
-      #  エラーメッセージ
+      # エラーメッセージ
       error_html = if form.object.errors[attribute].any?
         content_tag(:div, form.object.errors[attribute].first, class: "invalid-feedback d-block")
       else
