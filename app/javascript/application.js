@@ -1,72 +1,42 @@
-import "@hotwired/turbo-rails"
-import "controllers/index"
+/**
+ * @file application.js
+ * Stimulusアプリケーションの初期化と設定
+ *
+ * @module JavaScript
+ */
 
-document.addEventListener('turbo:load', () => {
-  const imageInput = document.getElementById('product-image-input');
-  const imagePreview = document.getElementById('image-preview');
-  const previewLabel = document.getElementById('preview-label');
-  const cancelButton = document.getElementById('cancel-new-image-button');
-  const deleteButton = document.getElementById('delete-button');
+/**
+ * Stimulus アプリケーション設定
+ *
+ * Stimulusアプリケーションインスタンスの初期化と設定を行う。
+ * 開発環境ではデバッグモードを有効化し、ブラウザコンソールから
+ * Stimulusインスタンスにアクセス可能にする。
+ *
+ * 機能:
+ * - 開発環境でのデバッグモード有効化
+ * - コントローラー接続時のコンソールログ
+ * - window.Stimulusでのグローバルアクセス
+ *
+ * @example ブラウザコンソールからのアクセス
+ *   // 登録済みコントローラーの確認
+ *   window.Stimulus.router.modules
+ *
+ *   // コントローラーインスタンスの取得
+ *   const controller = window.Stimulus.getControllerForElementAndIdentifier(element, "flash")
+ *
+ * @see {@link https://stimulus.hotwired.dev/reference/application|Stimulus Application API}
+ */
 
-  // 必須要素がない場合は早期リターン（previewLabelはオプショナル）
-  if (!imageInput || !imagePreview || !cancelButton) return;
+import { Application } from "@hotwired/stimulus"
 
-  // ページロード時の初期化：既に画像が表示されている場合の処理
-  if (imagePreview.src && imagePreview.src !== window.location.href && imagePreview.style.display !== 'none') {
-    if (previewLabel) previewLabel.style.display = 'none';
-    cancelButton.style.display = 'inline-block';
-  }
+const application = Application.start()
 
-  // ファイル選択時の処理
-  imageInput.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        imagePreview.src = e.target.result;
-        imagePreview.style.display = 'block';
-        if (previewLabel) previewLabel.style.display = 'none';
-        cancelButton.style.display = 'inline-block';
-      }
-      reader.readAsDataURL(file);
-    }
-  });
+// Rails環境変数を使用してデバッグモードを設定
+// 開発環境では常にデバッグモードを有効化
+application.debug = true
 
-  // キャンセルボタンの処理
-  cancelButton.addEventListener('click', function(e) {
-    e.preventDefault();
-    imageInput.value = '';
-    imagePreview.src = '';
-    imagePreview.style.display = 'none';
-    if (previewLabel) previewLabel.style.display = 'block';
-    cancelButton.style.display = 'none';
-  });
+// デバッグ用: ブラウザコンソールからStimulusにアクセス可能
+window.Stimulus = application
+console.log('Stimulus debug mode enabled')
 
-  // 画像削除ボタンの処理（既存の商品画像を削除）
-  if (deleteButton) {
-    deleteButton.addEventListener('click', function(e) {
-      e.preventDefault();
-      if (!confirm('本当に画像を削除しますか？')) return;
-
-      const url = this.dataset.url;
-      fetch(url, {
-        method: 'DELETE',
-        headers: {
-          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
-          'Accept': 'application/json'
-        }
-      })
-      .then(response => {
-        if (response.ok) {
-          location.reload();
-        } else {
-          alert('画像の削除に失敗しました');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('画像の削除に失敗しました');
-      });
-    });
-  }
-});
+export { application }

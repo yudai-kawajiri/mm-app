@@ -1,16 +1,75 @@
-import { Controller } from "@hotwired/stimulus"
+/**
+ * @file image_preview_controller.js
+ * 画像プレビューと削除UI制御
+ *
+ * @module Controllers
+ */
 
-// 画像プレビューと削除UI制御
+import { Controller } from "@hotwired/stimulus"
+import i18n from "../i18n"
+
+/**
+ * Image Preview Controller
+ *
+ * @description
+ *   画像プレビューと削除UI制御を行うコントローラー。
+ *   ファイル選択時のプレビュー表示、新規選択のキャンセル、
+ *   既存画像の削除をサポートします。
+ *
+ * @example HTML での使用
+ *   <div data-controller="image-preview">
+ *     <input
+ *       type="file"
+ *       accept="image/*"
+ *       data-image-preview-target="input"
+ *       data-action="change->image-preview#handleFileSelect"
+ *     />
+ *     <img data-image-preview-target="preview" />
+ *     <span data-image-preview-target="previewLabel">画像未選択</span>
+ *     <button
+ *       data-image-preview-target="deleteButton"
+ *       data-action="click->image-preview#deleteExistingImage"
+ *       data-url="/products/:id/delete_image"
+ *     >削除</button>
+ *     <button
+ *       data-image-preview-target="cancelButton"
+ *       data-action="click->image-preview#cancelNewImage"
+ *     >キャンセル</button>
+ *   </div>
+ *
+ * @targets
+ *   input - file input 要素
+ *   preview - img タグ（プレビュー表示）
+ *   previewLabel - "画像未選択" のラベル
+ *   deleteButton - 既存画像の削除ボタン（サーバー削除）
+ *   cancelButton - 新規選択画像のキャンセルボタン
+ *   currentImageContainer - 削除ボタンのコンテナ
+ *
+ * @features
+ *   - ファイル選択時の即時プレビュー
+ *   - 新規選択のキャンセル機能
+ *   - 既存画像のサーバー削除
+ *   - Base64 プレビュー表示
+ *   - i18n対応のメッセージ表示
+ *
+ * @requires i18n.js - 翻訳機能
+ */
 export default class extends Controller {
   static targets = [
-    "input",           // file input
-    "preview",         // img tag
-    "previewLabel",    // "画像未選択"のラベル
-    "deleteButton",    // 既存画像の削除ボタン（サーバー削除）
-    "cancelButton",    // 新規選択画像のキャンセルボタン
-    "currentImageContainer" // 削除ボタンのコンテナ
+    "input",                    // file input
+    "preview",                  // img tag
+    "previewLabel",             // "画像未選択"のラベル
+    "deleteButton",             // 既存画像の削除ボタン（サーバー削除）
+    "cancelButton",             // 新規選択画像のキャンセルボタン
+    "currentImageContainer"     // 削除ボタンのコンテナ
   ]
 
+  /**
+   * コントローラー接続時の処理
+   *
+   * @description
+   *   初期状態では新規選択されていないため、キャンセルボタンを非表示
+   */
   connect() {
     console.log('Image preview controller connected')
     // 初期状態: 新規選択されていないのでキャンセルボタンは非表示
@@ -19,7 +78,16 @@ export default class extends Controller {
     }
   }
 
-  // ファイル選択時の処理
+  /**
+   * ファイル選択時の処理
+   *
+   * @param {Event} event - change イベント
+   *
+   * @description
+   *   選択されたファイルを読み込み、Base64 形式でプレビュー表示。
+   *   新規画像選択時は既存画像の削除ボタンを非表示にし、
+   *   キャンセルボタンを表示します。
+   */
   handleFileSelect(event) {
     const file = event.target.files[0]
 
@@ -52,7 +120,16 @@ export default class extends Controller {
     }
   }
 
-  // キャンセルボタン: 新規選択をキャンセル
+  /**
+   * 新規選択のキャンセル処理
+   *
+   * @param {Event} event - click イベント
+   *
+   * @description
+   *   ファイル選択をクリアし、既存画像の有無に応じて表示を切り替えます。
+   *   - 既存画像がある場合: 既存画像を再表示
+   *   - 既存画像がない場合: "画像未選択"表示
+   */
   cancelNewImage(event) {
     event.preventDefault()
 
@@ -101,7 +178,21 @@ export default class extends Controller {
     }
   }
 
-  // 削除ボタン: 既存画像をサーバーから削除
+  /**
+   * 既存画像のサーバー削除処理
+   *
+   * @param {Event} event - click イベント
+   * @async
+   *
+   * @description
+   *   確認ダイアログを表示後、サーバーにDELETEリクエストを送信して画像を削除。
+   *   削除成功時はプレビューをクリアし、"画像未選択"表示に切り替えます。
+   *
+   * @i18n
+   *   - products.confirm_delete_image: 削除確認メッセージ
+   *   - products.image_deleted: 削除成功メッセージ
+   *   - products.image_delete_failed: 削除失敗メッセージ
+   */
   async deleteExistingImage(event) {
     event.preventDefault()
 
@@ -109,7 +200,8 @@ export default class extends Controller {
     const url = button.dataset.url
     const productId = button.dataset.productId
 
-    if (!confirm('画像を削除してもよろしいですか？')) {
+    // i18n対応の確認ダイアログ
+    if (!confirm(i18n.t('products.confirm_delete_image'))) {
       return
     }
 
@@ -140,15 +232,17 @@ export default class extends Controller {
           this.currentImageContainerTarget.style.display = 'none'
         }
 
-        // 成功メッセージ（オプション）
-        alert('画像を削除しました')
+        // i18n対応の成功メッセージ
+        alert(i18n.t('products.image_deleted'))
       } else {
         console.error('Failed to delete image:', response.status)
-        alert('画像の削除に失敗しました')
+        // i18n対応のエラーメッセージ
+        alert(i18n.t('products.image_delete_failed'))
       }
     } catch (error) {
       console.error('削除エラー:', error)
-      alert('画像の削除に失敗しました')
+      // i18n対応のエラーメッセージ
+      alert(i18n.t('products.image_delete_failed'))
     }
   }
 }

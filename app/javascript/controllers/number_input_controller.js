@@ -1,17 +1,57 @@
-// app/javascript/controllers/number_input_controller.js
+/**
+ * @file number_input_controller.js
+ * 数値入力フィールドの全角→半角自動変換とカンマ挿入
+ *
+ * @module Controllers
+ */
 
 import { Controller } from "@hotwired/stimulus"
 
 /**
- * 数値入力フィールドの全角→半角自動変換 + カンマ挿入コントローラー
+ * Number Input Controller
  *
- * 使用方法:
- *   <%= f.text_field :price, data: { controller: "number-input", action: "input->number-input#handleInput paste->number-input#handlePaste" } %>
- *   カンマなし: data: { controller: "number-input", number_input_no_comma: "true", ... }
+ * @description
+ *   数値入力フィールドの全角→半角自動変換とカンマ挿入を行うコントローラー。
+ *   IME変換中の挙動を考慮し、カーソル位置を保持しながらフォーマットします。
  *
- * 注意: type="text" を使用してください（type="number"はカンマを受け付けません）
+ * @example HTML での使用
+ *   <!-- カンマあり（デフォルト） -->
+ *   <%= f.text_field :price,
+ *       data: {
+ *         controller: "number-input",
+ *         action: "input->number-input#handleInput paste->number-input#handlePaste"
+ *       }
+ *   %>
+ *
+ *   <!-- カンマなし -->
+ *   <%= f.text_field :quantity,
+ *       data: {
+ *         controller: "number-input",
+ *         number_input_no_comma: "true",
+ *         action: "input->number-input#handleInput paste->number-input#handlePaste"
+ *       }
+ *   %>
+ *
+ * @note
+ *   - type="text" を使用してください（type="number"はカンマを受け付けません）
+ *   - フォーム送信前に自動的にカンマを削除します
+ *
+ * @features
+ *   - 全角数字→半角数字の自動変換
+ *   - 3桁ごとのカンマ挿入（オプション）
+ *   - IME変換中の処理スキップ
+ *   - カーソル位置の保持
+ *   - フォーム送信前のカンマ自動削除
+ *   - マイナス記号対応
  */
 export default class extends Controller {
+  /**
+   * コントローラー接続時の処理
+   *
+   * @description
+   *   初期設定とイベントリスナーの登録を行います。
+   *   既存の数値データがある場合は初期フォーマットを適用。
+   */
   connect() {
     this.isUpdating = false
     this.isComposing = false  // IME変換中フラグ
@@ -51,8 +91,13 @@ export default class extends Controller {
   }
 
   /**
-   * input イベント時に全角→半角変換 + カンマ挿入
+   * input イベント時の処理
+   *
    * @param {Event} event - input イベント
+   *
+   * @description
+   *   全角→半角変換とカンマ挿入を実行。
+   *   IME変換中または自分が起こしたinputイベントの場合はスキップ。
    */
   handleInput(event) {
     // IME変換中または自分が起こしたinputイベントの場合はスキップ
@@ -63,8 +108,12 @@ export default class extends Controller {
   }
 
   /**
-   * paste イベント時に全角→半角変換 + カンマ挿入
+   * paste イベント時の処理
+   *
    * @param {Event} event - paste イベント
+   *
+   * @description
+   *   ペースト後に変換処理を実行（次のイベントループで実行）
    */
   handlePaste(event) {
     // ペースト後に変換（次のイベントループで実行）
@@ -73,8 +122,13 @@ export default class extends Controller {
 
   /**
    * 数値をカンマ区切りにフォーマット
+   *
    * @param {string} digits - 数字のみの文字列
-   * @returns {string} カンマ区切りの文字列
+   * @return {string} カンマ区切りの文字列
+   *
+   * @example
+   *   formatNumber("1000")    // => "1,000"
+   *   formatNumber("1000000") // => "1,000,000"
    */
   formatNumber(digits) {
     return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -82,6 +136,9 @@ export default class extends Controller {
 
   /**
    * フォーム送信前にカンマを削除
+   *
+   * @description
+   *   サーバーに送信する前にカンマを削除して純粋な数値にします。
    */
   removeCommasBeforeSubmit() {
     if (this.element.value) {
@@ -92,6 +149,15 @@ export default class extends Controller {
 
   /**
    * 全角文字を半角に変換 + カンマ挿入
+   *
+   * @description
+   *   入力値を以下の順で処理：
+   *   1. 全角数字→半角数字
+   *   2. 全角マイナス記号→半角マイナス記号
+   *   3. カンマ削除
+   *   4. 数値以外の文字削除
+   *   5. カンマ挿入（noCommaモードでない場合）
+   *   6. カーソル位置の調整
    */
   convertAndFormat() {
     const input = this.element
