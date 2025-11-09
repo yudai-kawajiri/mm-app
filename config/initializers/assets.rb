@@ -1,8 +1,30 @@
-# Be sure to restart your server when you modify this file.
+# ====================================================================================
+# アセットパイプライン設定
+# ====================================================================================
+# このファイルを変更した場合は、サーバーの再起動が必要です。
+#
+# アセットパイプラインは、JavaScript、CSS、画像などの静的ファイルを
+# 効率的に管理・配信するための仕組みです。
 
-# Version of your assets, change this if you want to expire all your assets.
+# ====================
+# アセットバージョン
+# ====================
+# アセットのバージョン番号を設定します。
+# この値を変更すると、すべてのアセットのキャッシュが無効化され、
+# ブラウザが最新版を再ダウンロードします。
+#
+# 使用例：デザインの大幅変更時に "2.0" に変更
 Rails.application.config.assets.version = "1.0"
 
-# Add additional assets to the asset load path.
-# Rails.application.config.assets.paths << Emoji.images_path
+# ====================
+# アセット読み込みパス
+# ====================
+# アセットパイプラインが参照するディレクトリを追加します。
+# ここに追加したパスからも画像、フォント、JavaScriptなどを読み込めます。
+
+# Bootstrap Icons のフォントファイルを読み込みパスに追加
+# node_modules からアイコンフォントを直接利用可能にする
 Rails.application.config.assets.paths << Rails.root.join("node_modules/bootstrap-icons/font")
+
+# 参考：絵文字画像を追加する場合（コメントアウト例）
+# Rails.application.config.assets.paths << Emoji.images_path
