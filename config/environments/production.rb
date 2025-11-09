@@ -1,66 +1,101 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
+  # config/application.rb の設定よりも、ここに指定した設定が優先されます。
 
-  # Code is not reloaded between requests.
+  # ====================
+  # 一般設定
+  # ====================
+  # コードの自動リロードを無効化（本番環境では不要）
   config.enable_reloading = false
 
-  # Eager load code on boot for better performance and memory savings (ignored by Rake tasks).
+  # 起動時にすべてのコードをプリロード（パフォーマンス向上）
   config.eager_load = true
 
-  # Full error reports are disabled.
+  # 詳細なエラーレポートを無効化（セキュリティのため）
   config.consider_all_requests_local = false
 
-  # Turn on fragment caching in view templates.
-  config.action_controller.perform_caching = true
-
-  # Cache assets for far-future expiry since they are all digest stamped.
-  config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
-
-  # Enable serving of images, stylesheets, and JavaScripts from an asset server.
-  # config.asset_host = "http://assets.example.com"
-
-  # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
-
-  # Assume all access to the app is happening through a SSL-terminating reverse proxy.
+  # ====================
+  # SSL / セキュリティ設定
+  # ====================
+  # SSL終端リバースプロキシを前提とした設定
   config.assume_ssl = true
 
-  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
+  # すべてのアクセスをHTTPSに強制（HSTS有効化、セキュアCookie）
   config.force_ssl = true
 
-  # Skip http-to-https redirect for the default health check endpoint.
+  # ヘルスチェックエンドポイント（/up）のHTTPSリダイレクトをスキップ
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
-  # Log to STDOUT with the current request id as a default log tag.
-  config.log_tags = [ :request_id ]
-  config.logger   = ActiveSupport::TaggedLogging.logger(STDOUT)
+  # DNSリバインディング攻撃対策（Hostヘッダー検証）
+  # config.hosts = [
+  #   "example.com",     # Allow requests from example.com
+  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
+  # ]
+  #
+  # ヘルスチェックエンドポイントの Host 検証をスキップ
+  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
-  # Change to "debug" to log everything (including potentially personally-identifiable information!)
-  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
+  # ====================
+  # キャッシング設定
+  # ====================
+  # ビューテンプレートのフラグメントキャッシングを有効化
+  config.action_controller.perform_caching = true
 
-  # Prevent health checks from clogging up the logs.
-  config.silence_healthcheck_path = "/up"
+  # アセットファイルのキャッシュヘッダー設定（1年間有効）
+  config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
 
-  # Don't log any deprecations.
-  config.active_support.report_deprecations = false
-
-  # Replace the default in-process memory cache store with a durable alternative.
+  # キャッシュストアに Solid Cache を使用（永続的なキャッシュ）
   config.cache_store = :solid_cache_store
 
-  # Replace the default in-process and non-durable queuing backend for Active Job.
+  # CDN / アセットサーバーの設定（必要に応じて有効化）
+  # config.asset_host = "http://assets.example.com"
+
+  # ====================
+  # Active Storage 設定
+  # ====================
+  # アップロードされたファイルをローカルファイルシステムに保存
+  # 本番環境では S3 などのクラウドストレージへの変更を推奨
+  config.active_storage.service = :local
+
+  # ====================
+  # ロギング設定
+  # ====================
+  # 標準出力（STDOUT）にログを出力（コンテナ環境対応）
+  config.logger = ActiveSupport::TaggedLogging.logger(STDOUT)
+
+  # リクエストIDをログタグとして追加（リクエスト追跡が容易）
+  config.log_tags = [ :request_id ]
+
+  # ログレベルを環境変数で設定可能（デフォルトは info）
+  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
+
+  # ヘルスチェックエンドポイント（/up）のログを出力しない
+  config.silence_healthcheck_path = "/up"
+
+  # 非推奨通知（deprecation notices）のログ出力を無効化
+  config.active_support.report_deprecations = false
+
+  # ====================
+  # バックグラウンドジョブ設定
+  # ====================
+  # Active Job のキューアダプターに Solid Queue を使用
   config.active_job.queue_adapter = :solid_queue
+
+  # Solid Queue の接続先データベースを指定
   config.solid_queue.connects_to = { database: { writing: :queue } }
 
-  # Ignore bad email addresses and do not raise email delivery errors.
-  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
-
-  # Set host to be used by links generated in mailer templates.
+  # ====================
+  # Action Mailer 設定
+  # ====================
+  # メーラーテンプレートで生成されるリンクのホスト設定
+  # 実際のドメイン名に変更してください
   config.action_mailer.default_url_options = { host: "example.com" }
 
-  # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
+  # メール送信エラーを無視（必要に応じて true に変更）
+  # config.action_mailer.raise_delivery_errors = false
+
+  # SMTP設定（rails credentials:edit で管理）
   # config.action_mailer.smtp_settings = {
   #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
   #   password: Rails.application.credentials.dig(:smtp, :password),
@@ -69,22 +104,19 @@ Rails.application.configure do
   #   authentication: :plain
   # }
 
-  # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
-  # the I18n.default_locale when a translation cannot be found).
+  # ====================
+  # 国際化設定
+  # ====================
+  # ロケールのフォールバック機能を有効化
+  # （翻訳が見つからない場合、デフォルトロケールにフォールバック）
   config.i18n.fallbacks = true
 
-  # Do not dump schema after migrations.
+  # ====================
+  # データベース設定
+  # ====================
+  # マイグレーション実行後のスキーマダンプを無効化
   config.active_record.dump_schema_after_migration = false
 
-  # Only use :id for inspections in production.
+  # ログ内でのレコード検査時に :id のみ表示（個人情報保護）
   config.active_record.attributes_for_inspect = [ :id ]
-
-  # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
-  #
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end
