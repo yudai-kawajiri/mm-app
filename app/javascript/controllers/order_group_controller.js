@@ -1,6 +1,72 @@
-import { Controller } from "@hotwired/stimulus"
+/**
+ * @file order_group_controller.js
+ * 発注グループの選択・削除・解除制御
+ *
+ * @module Controllers
+ */
 
-// 発注グループの選択方法（既存/新規）の切り替えを制御
+import { Controller } from "@hotwired/stimulus"
+import i18n from "../i18n"
+
+/**
+ * Order Group Controller
+ *
+ * @description
+ *   発注グループの選択方法（既存/新規）の切り替えを制御するコントローラー。
+ *   グループの削除・解除機能も提供します。
+ *
+ * @example HTML での使用
+ *   <div data-controller="order-group">
+ *     <!-- ラジオボタン -->
+ *     <input
+ *       type="radio"
+ *       value="existing"
+ *       data-order-group-target="existingRadio"
+ *       data-action="change->order-group#toggleGroupType"
+ *     /> 既存から選択
+ *     <input
+ *       type="radio"
+ *       value="new"
+ *       data-order-group-target="newRadio"
+ *       data-action="change->order-group#toggleGroupType"
+ *     /> 新規作成
+ *
+ *     <!-- 既存グループ選択 -->
+ *     <div data-order-group-target="existingGroup">
+ *       <select
+ *         data-order-group-target="existingSelect"
+ *         data-action="change->order-group#toggleClearButton"
+ *       >
+ *         <option value="">選択してください</option>
+ *       </select>
+ *       <button data-order-group-target="clearButton" data-action="click->order-group#clearGroup">解除</button>
+ *       <button data-order-group-target="deleteButton" data-action="click->order-group#deleteGroup">削除</button>
+ *     </div>
+ *
+ *     <!-- 新規グループ作成 -->
+ *     <div data-order-group-target="newGroup">
+ *       <input type="text" data-order-group-target="newInput" />
+ *     </div>
+ *   </div>
+ *
+ * @targets
+ *   existingGroup - 既存グループ選択エリア
+ *   newGroup - 新規グループ名入力エリア
+ *   existingSelect - 既存グループセレクトボックス
+ *   newInput - 新規グループ名入力
+ *   existingRadio - 既存選択ラジオボタン
+ *   newRadio - 新規選択ラジオボタン
+ *   deleteButton - 削除ボタン
+ *   clearButton - グループ解除ボタン
+ *
+ * @features
+ *   - 既存/新規の切り替え表示
+ *   - グループ選択時の削除・解除ボタン表示制御
+ *   - グループ削除（Ajax）
+ *   - グループ解除（セレクトボックスクリア）
+ *
+ * @requires i18n.js - 翻訳機能
+ */
 export default class extends Controller {
   static targets = [
     "existingGroup",  // 既存グループ選択エリア
@@ -13,12 +79,28 @@ export default class extends Controller {
     "clearButton"     // グループ解除ボタン
   ]
 
+  /**
+   * コントローラー接続時の処理
+   *
+   * @description
+   *   初期表示時にボタンの表示状態を設定
+   */
   connect() {
     // 初期表示時にボタンの表示状態を設定
     this.toggleClearButton()
   }
 
-  // 選択方法が変更されたときに呼ばれる
+  /**
+   * 選択方法が変更されたときの処理
+   *
+   * @param {Event} event - change イベント
+   *
+   * @description
+   *   選択された方法（existing/new）に応じて：
+   *   - 対応するエリアを表示
+   *   - 非対応のエリアを非表示
+   *   - 非対応のフィールドをクリア
+   */
   toggleGroupType(event) {
     const selectedType = event.target.value
 
@@ -50,7 +132,13 @@ export default class extends Controller {
     }
   }
 
-  // セレクトボックスの値が変更された時に解除・削除ボタンの表示を切り替え
+  /**
+   * セレクトボックスの値変更時の処理
+   *
+   * @description
+   *   セレクトボックスに値が選択されているかに応じて、
+   *   削除・解除ボタンの表示を切り替えます。
+   */
   toggleClearButton() {
     if (!this.hasExistingSelectTarget) return
 
@@ -67,7 +155,14 @@ export default class extends Controller {
     }
   }
 
-  // グループ解除（セレクトボックスを空にする）
+  /**
+   * グループ解除処理
+   *
+   * @param {Event} event - click イベント
+   *
+   * @description
+   *   セレクトボックスを空にしてグループ選択を解除
+   */
   clearGroup(event) {
     event.preventDefault()
 
@@ -77,7 +172,23 @@ export default class extends Controller {
     }
   }
 
-  // グループ削除
+  /**
+   * グループ削除処理
+   *
+   * @param {Event} event - click イベント
+   * @async
+   *
+   * @description
+   *   選択されたグループをサーバーから削除します。
+   *   削除確認後、Ajaxでサーバーにリクエストを送信。
+   *   成功時はセレクトボックスから削除します。
+   *
+   * @i18n
+   *   - material_order_groups.select_group_to_delete: グループ選択促進メッセージ
+   *   - material_order_groups.confirm_delete: 削除確認メッセージ
+   *   - material_order_groups.deleted: 削除成功メッセージ
+   *   - material_order_groups.delete_failed: 削除失敗メッセージ
+   */
   async deleteGroup(event) {
     event.preventDefault()
 
@@ -86,13 +197,15 @@ export default class extends Controller {
     const groupId = this.existingSelectTarget.value
 
     if (!groupId) {
-      alert('削除するグループを選択してください')
+      alert(i18n.t('material_order_groups.select_group_to_delete'))
       return
     }
 
     const groupName = this.existingSelectTarget.options[this.existingSelectTarget.selectedIndex].text
 
-    if (!confirm(`「${groupName}」を削除しますか？\n\nこのグループを使用している原材料がある場合は削除できません。`)) {
+    // i18n対応の確認ダイアログ
+    const confirmMessage = i18n.t('material_order_groups.confirm_delete', { name: groupName })
+    if (!confirm(confirmMessage)) {
       return
     }
 
@@ -112,14 +225,17 @@ export default class extends Controller {
         this.existingSelectTarget.querySelector(`option[value="${groupId}"]`).remove()
         this.existingSelectTarget.value = ''
         this.toggleClearButton()
-        alert(data.message || '削除しました')
+
+        // i18n対応の成功メッセージ
+        alert(data.message || i18n.t('material_order_groups.deleted'))
       } else {
         // 削除失敗：エラーメッセージ表示
-        alert(data.error || '削除できませんでした')
+        alert(data.error || i18n.t('material_order_groups.delete_failed'))
       }
     } catch (error) {
       console.error('削除エラー:', error)
-      alert('削除に失敗しました')
+      // i18n対応のエラーメッセージ
+      alert(i18n.t('material_order_groups.delete_failed'))
     }
   }
 }
