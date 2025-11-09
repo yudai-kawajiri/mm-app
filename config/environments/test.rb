@@ -1,53 +1,76 @@
-# The test environment is used exclusively to run your application's
-# test suite. You never need to work with it otherwise. Remember that
-# your test database is "scratch space" for the test suite and is wiped
-# and recreated between test runs. Don't rely on the data there!
+# テスト環境は、テストスイートを実行するためだけに使用されます。
+# テストデータベースは「スクラッチスペース」であり、テスト実行ごとに
+# 削除・再作成されます。データの永続性に依存しないでください。
 
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
+  # config/application.rb の設定よりも、ここに指定した設定が優先されます。
 
-  # While tests run files are not watched, reloading is not necessary.
+  # ====================
+  # 一般設定
+  # ====================
+  # ファイル監視とリロードを無効化（テスト実行には不要）
   config.enable_reloading = false
 
-  # Eager loading loads your entire application. When running a single test locally,
-  # this is usually not necessary, and can slow down your test suite. However, it's
-  # recommended that you enable it in continuous integration systems to ensure eager
-  # loading is working properly before deploying your code.
+  # Eager loading の設定（CI環境では有効化推奨）
+  # ローカルテスト: false（高速化）
+  # CI環境: true（本番環境と同じ条件でテスト）
   config.eager_load = ENV["CI"].present?
 
-  # Configure public file server for tests with cache-control for performance.
-  config.public_file_server.headers = { "cache-control" => "public, max-age=3600" }
-
-  # Show full error reports.
+  # すべてのリクエストをローカルとして扱う（詳細なエラー表示）
   config.consider_all_requests_local = true
+
+  # ====================
+  # キャッシング設定
+  # ====================
+  # キャッシュを無効化（テストごとにクリーンな状態を保証）
   config.cache_store = :null_store
 
-  # Render exception templates for rescuable exceptions and raise for other exceptions.
+  # 公開ファイルサーバーのキャッシュヘッダー（1時間）
+  config.public_file_server.headers = { "cache-control" => "public, max-age=3600" }
+
+  # ====================
+  # エラーハンドリング設定
+  # ====================
+  # レスキュー可能な例外はテンプレートを表示、その他は例外を発生
   config.action_dispatch.show_exceptions = :rescuable
 
-  # Disable request forgery protection in test environment.
+  # ====================
+  # セキュリティ設定
+  # ====================
+  # CSRF保護を無効化（テスト環境では不要）
   config.action_controller.allow_forgery_protection = false
 
-  # Store uploaded files on the local file system in a temporary directory.
+  # `before_action` の `only`/`except` で存在しないアクションを参照した場合にエラー
+  config.action_controller.raise_on_missing_callback_actions = true
+
+  # ====================
+  # Active Storage 設定
+  # ====================
+  # アップロードされたファイルを一時ディレクトリに保存
+  # テスト実行後に自動削除される
   config.active_storage.service = :test
 
-  # Tell Action Mailer not to deliver emails to the real world.
-  # The :test delivery method accumulates sent emails in the
-  # ActionMailer::Base.deliveries array.
+  # ====================
+  # Action Mailer 設定
+  # ====================
+  # メールを実際に送信せず、配列に蓄積（ActionMailer::Base.deliveries）
   config.action_mailer.delivery_method = :test
 
-  # Set host to be used by links generated in mailer templates.
+  # メーラーテンプレートで生成されるリンクのホスト設定
   config.action_mailer.default_url_options = { host: "example.com" }
 
-  # Print deprecation notices to the stderr.
+  # ====================
+  # ロギングとデバッグ設定
+  # ====================
+  # 非推奨通知（deprecation notices）を標準エラー出力に表示
   config.active_support.deprecation = :stderr
 
-  # Raises error for missing translations.
+  # ====================
+  # 開発支援機能（コメントアウト）
+  # ====================
+  # 翻訳ファイルがない場合にエラーを発生させる（i18nテスト時に有効化）
   # config.i18n.raise_on_missing_translations = true
 
-  # Annotate rendered view with file names.
+  # レンダリングされたビューにファイル名を注釈として追記（デバッグ時に有効化）
   # config.action_view.annotate_rendered_view_with_filenames = true
-
-  # Raise error when a before_action's only/except options reference missing actions.
-  config.action_controller.raise_on_missing_callback_actions = true
 end
