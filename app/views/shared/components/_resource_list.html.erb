@@ -1,5 +1,25 @@
-<%# 必須引数: title, resources, columns, resource_class :search_target, :resource_class %>
-<%# オプション引数: new_path, icon_mode %>
+<%# リソース一覧テーブル %>
+<%#
+  機能:
+  - リソース一覧をテーブル形式で表示
+  - 検索フォーム、アクションリンク付き
+
+  必須引数:
+  - title: ページタイトル
+  - resources: 表示するリソースのコレクション
+  - columns: 表示カラム定義の配列
+  - resource_class: リソースのクラス
+
+  オプション引数:
+  - search_target: 検索対象フィールド (デフォルト: なし)
+  - search_categories: 検索カテゴリ (デフォルト: なし)
+  - new_path: 新規作成パス (デフォルト: なし)
+  - icon_mode: アイコンモード (デフォルト: false)
+  - show_copy: コピーボタン表示 (デフォルト: false)
+  - copy_url_method: コピーURL生成メソッド名 (デフォルト: なし)
+  - show_print: 印刷ボタン表示 (デフォルト: false)
+  - print_url_method: 印刷URL生成メソッド名 (デフォルト: なし)
+%>
 <% search_target = local_assigns[:search_target] %>
 <% resource_class = local_assigns[:resource_class] %>
 <% search_categories = local_assigns[:search_categories] %>
@@ -9,7 +29,6 @@
 <% print_url_method = local_assigns[:print_url_method] %>
 <% icon_mode = local_assigns.fetch(:icon_mode, false) %>
 
-<%# 2.検索フォーム %>
 <% if search_target.present? %>
   <%= render 'shared/forms/search_form',
       form_path: send(resource_class.model_name.route_key + '_path'),
@@ -17,19 +36,18 @@
       search_categories: search_categories %>
 <% end %>
 
-<%# 3. テーブル全体の描画 %>
 <table class="table mt-4">
   <thead class="table-light">
     <tr>
       <% columns.each do |col| %>
-    <th>
-      <% if col[:header].present? %>
-        <%= resource_class.human_attribute_name(col[:header]) %>
+        <th>
+          <% if col[:header].present? %>
+            <%= resource_class.human_attribute_name(col[:header]) %>
+          <% end %>
+        </th>
       <% end %>
-    </th>
-  <% end %>
-  <th><%= t('common.action') %></th>
-</tr>
+      <th><%= t('common.action') %></th>
+    </tr>
   </thead>
   <tbody>
     <% resources.each do |resource| %>
@@ -39,8 +57,6 @@
             <%= render_resource_data(resource, col) %>
           </td>
         <% end %>
-
-        <%# アクションカラム %>
         <td>
           <%= render 'shared/actions/resource_action_links',
               resource: resource,

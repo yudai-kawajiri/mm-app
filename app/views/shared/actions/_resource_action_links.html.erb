@@ -1,5 +1,21 @@
-<%# 必須引数: resource, resource_name %>
-<%# オプション引数: show_link, show_copy, copy_url, show_print,
+<%# リソースアクションリンク %>
+<%#
+  機能:
+  - 詳細・編集・コピー・印刷・削除のアクションリンクを表示
+  - icon_mode で表示形式を切り替え（アイコンのみ / テキスト付き）
+
+  必須引数:
+  - resource: リソースインスタンス
+  - resource_name: リソース名（人間が読める形式）
+
+  オプション引数:
+  - show_link: 詳細リンクを表示するか（デフォルト: true）
+  - show_print: 印刷リンクを表示するか（デフォルト: false）
+  - print_url: 印刷用URL
+  - show_copy: コピーリンクを表示するか（デフォルト: false）
+  - copy_url: コピー先URL
+  - icon_mode: アイコンモードで表示するか（デフォルト: false）
+%>
 <% show_link = local_assigns.fetch(:show_link, true) %>
 <% show_print = local_assigns.fetch(:show_print, false) %>
 <% print_url = local_assigns[:print_url] %>
@@ -34,8 +50,8 @@
       <%= button_to copy_url,
           method: :post,
           class: 'btn btn-sm btn-secondary me-1',
-          data: { confirm: "この#{resource_name}をコピーしますか？" },
-          title: 'コピー' do %>
+          data: { confirm: t('helpers.confirm.copy_resource', resource: resource_name) },
+          title: t('helpers.link.copy') do %>
         <i class="bi bi-files"></i>
       <% end %>
     <% end %>
@@ -49,6 +65,8 @@
         <i class="bi bi-printer"></i>
       <% end %>
     <% end %>
+
+    <%# 5. 削除リンク（アイコン） %>
     <%= link_to resource,
         data: {
           turbo_method: :delete,
@@ -79,7 +97,7 @@
       <%= render 'shared/actions/copy_link',
           url: copy_url,
           custom_class: 'me-2',
-          confirm_message: "この#{resource_name}をコピーしますか？" %>
+          confirm_message: t('helpers.confirm.copy_resource', resource: resource_name) %>
     <% end %>
 
     <%# 4. 削除リンク %>

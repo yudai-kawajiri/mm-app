@@ -1,10 +1,16 @@
-<%# 必要引数: url  %>
-<%# オプション引数: custom_class %>
-<% custom_class ||= nil %>
+<%# 新規作成リンク %>
+<%#
+  機能:
+  - リソース新規作成ページへのリンクボタンを表示
 
-<% link_text = t('helpers.link.new') %>
+  必須引数:
+  - url: 新規作成ページのURL
+
+  オプション引数:
+  - custom_class: 追加CSSクラス (デフォルト: なし)
+%>
+<% custom_class = local_assigns[:custom_class] %>
 <% default_class = "btn btn-primary" %>
-<%# 個々のカスタムクラスと結合。その際は空欄でもstripで対応 %>
-<% final_class = "#{default_class} #{custom_class}".strip %>
+<% final_class = [default_class, custom_class].compact.join(' ') %>
 
-<%= link_to link_text, url, class: final_class %>
+<%= link_to t('helpers.link.new'), url, class: final_class %>

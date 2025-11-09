@@ -1,21 +1,32 @@
-<%# 必須引数: resource %>
-<% resource = local_assigns[:resource] %>
+<%# リソース詳細アクションボタン %>
+<%#
+  機能:
+  - 詳細画面の標準アクションボタン（戻る・編集・削除）を表示
+  - 追加アクション（印刷など）にも対応
 
-<%# オプション引数: additional_actions %>
+  必須引数:
+  - resource: 対象リソース
+
+  オプション引数:
+  - additional_actions: 追加アクション配列 (デフォルト: [])
+    - path: リンク先URL
+    - label: ラベル
+    - icon: Bootstrapアイコンクラス
+    - class: CSSクラス
+    - target: リンクターゲット
+%>
+<% resource = local_assigns[:resource] %>
 <% additional_actions = local_assigns.fetch(:additional_actions, []) %>
 
 <div class="d-flex gap-2">
-  <%# 戻るボタン %>
   <%= link_to polymorphic_path(resource.class), class: 'btn btn-light btn-sm', title: t('helpers.link.back') do %>
     <i class="bi bi-arrow-left"></i>
   <% end %>
 
-  <%# 編集ボタン %>
   <%= link_to [:edit, resource], class: 'btn btn-light btn-sm', title: t('helpers.link.edit') do %>
     <i class="bi bi-pencil"></i>
   <% end %>
 
-  <%# 追加アクションボタン（印刷など） %>
   <% additional_actions.each do |action| %>
     <%= link_to action[:path],
                 class: "btn btn-sm #{action[:class] || 'btn-light'}",
@@ -29,7 +40,6 @@
     <% end %>
   <% end %>
 
-  <%# 削除ボタン %>
   <%= button_to resource, method: :delete,
       data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource.class.model_name.human) },
       class: 'btn btn-danger btn-sm',

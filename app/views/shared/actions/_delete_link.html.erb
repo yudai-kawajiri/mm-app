@@ -1,16 +1,21 @@
-<%# NameError回避のため、オプション引数を初期化 %>
-<% custom_class ||= nil %>
+<%# 削除リンク %>
+<%#
+  機能:
+  - リソース削除用のリンクボタンを表示
+  - Turbo DELETEメソッドと確認ダイアログ付き
 
-<%# 必要引数: url, resource_name %>
-<%# オプション引数: custom_class %>
-<% link_text = t('helpers.link.destroy') %>
+  必須引数:
+  - url: 削除リクエストのURL
+  - resource_name: 削除対象リソースの名前（確認メッセージ用）
 
-<%# クラスのデフォルト値を設定 %>
+  オプション引数:
+  - custom_class: 追加CSSクラス (デフォルト: なし)
+%>
+<% custom_class = local_assigns[:custom_class] %>
 <% default_class = "btn btn-danger btn-sm" %>
-<%# 個々のカスタムクラスと結合。その際は空欄でもstripで対応 %>
-<% final_class = "#{default_class} #{custom_class}".strip %>
+<% final_class = [default_class, custom_class].compact.join(' ') %>
 
-<%= link_to link_text, url,
+<%= link_to t('helpers.link.destroy'), url,
   data: {
     turbo_method: :delete,
     turbo_confirm: t('helpers.confirm.destroy', resource: resource_name)

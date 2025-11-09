@@ -1,8 +1,19 @@
-<%# 必須引数: f, resource %>
+<%# 送信ボタン %>
+<%#
+  機能:
+  - フォーム送信ボタンを表示
+  - 新規作成/更新で自動的にラベルを切り替え
+
+  必須引数:
+  - f: フォームビルダー
+  - resource: 対象リソース
+
+  オプション引数:
+  - label: ボタンラベル (デフォルト: 自動判定)
+  - class: CSSクラス (デフォルト: 'btn btn-primary')
+%>
 <% f = local_assigns[:f] %>
 <% resource = local_assigns[:resource] %>
-
-<%# オプション引数: label, class %>
 <% default_label = t("helpers.submit.#{resource.persisted? ? 'update' : 'create'}") %>
 <% label = local_assigns.fetch(:label, default_label) %>
 <% css_class = local_assigns.fetch(:class, 'btn btn-primary') %>
