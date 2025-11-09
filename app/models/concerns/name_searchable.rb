@@ -1,48 +1,68 @@
+# frozen_string_literal: true
+
+# NameSearchable
+#
+# 名前検索とカテゴリーフィルタリングの共通機能を提供するConcern
+#
+# 使用例:
+#   Product.search_by_name("マグロ")
+#   Material.filter_by_category_id(1)
+#   Plan.search_and_filter(name: "ランチ", category_id: 2)
+#
+# 使用モデル: Product, Material, Plan, Unit, Category など
 module NameSearchable
   extend ActiveSupport::Concern
 
   included do
-    scope :search_by_name, ->(query) do
-      if query.present?
-        # SQL組込前にインジェクション対策した値を部分一致検索
-        sanitized_query = sanitize_sql_like(query)
-        # 開発者が意図するワイルドカード%を明示的に結合
-        term = "%#{sanitized_query}%"
-        where("name ILIKE ?", term)
+    # 名前による部分一致検索
+    #
+    # @param name [String, nil] 検索する名前（部分一致）
+    # @return [ActiveRecord::Relation] 検索結果
+    scope :search_by_name, lambda { |name|
+      if name.present?
+        where("name ILIKE ?", "%#{sanitize_sql_like(name)}%")
+      else
+        all
       end
-    end
+    }
 
-    # 共通のカテゴリーIDによる絞り込みスコープを追加
-    scope :filter_by_category_id, ->(category_id) do
+    # カテゴリーIDによる絞り込み
+    #
+    # @param category_id [Integer, String, nil] カテゴリーID
+    # @return [ActiveRecord::Relation] 絞り込み結果
+    scope :filter_by_category_id, lambda { |category_id|
       if category_id.present?
         where(category_id: category_id)
+      else
+        all
       end
-    end
+    }
 
-    # カテゴリー種別による絞り込みのスコープ
-    scope :filter_by_category_type, ->(category_type) do
-      # category_type が存在する場合のみ絞り込み適用
-      # タイポ修正
-      where(category_type: category_type) if category_type.present?
-    end
-  end
+    # カテゴリー種別による絞り込み
+    #
+    # @param category_type [String, nil] カテゴリー種別
+    # @return [ActiveRecord::Relation] 絞り込み結果
+    scope :filter_by_category_type, lambda { |category_type|
+      if category_type.present?
+        joins(:category).where(categories: { category_type: category_type })
+      else
+        all
+      end
+    }
 
-  # モデルクラスメソッドとして定義
-  module ClassMethods
-    def search_and_filter(params)
-      # 全てのレコードを取得
-      results = all
-
-      # 検索キーワードがある場合のみ適用
-      results = results.search_by_name(params[:q]) if params[:q].present?
-
-      # category_id フィルタを適用
-      results = results.filter_by_category_id(params[:category_id]) if params[:category_id].present?
-
-      # 共通の category_type フィルタを適用
-      results = results.filter_by_category_type(params[:category_type]) if params[:category_type].present?
-
-      results
-    end
+    # 名前とカテゴリーによる複合検索
+    #
+    # @param options [Hash] 検索条件のオプション
+    # @option options [String] :name 検索する名前（部分一致）
+    # @option options [Integer, String] :category_id カテゴリーID
+    # @option options [String] :category_type カテゴリー種別
+    # @return [ActiveRecord::Relation] 検索結果
+    scope :search_and_filter, lambda { |options = {}|
+      result = all
+      result = result.search_by_name(options[:name]) if options[:name].present?
+      result = result.filter_by_category_id(options[:category_id]) if options[:category_id].present?
+      result = result.filter_by_category_type(options[:category_type]) if options[:category_type].present?
+      result
+    }
   end
 end
