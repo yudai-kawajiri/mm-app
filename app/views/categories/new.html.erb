@@ -1,6 +1,10 @@
+<%#
+  機能: カテゴリー新規作成画面
+  - 新しいカテゴリーを作成
+%>
 <% content_for :title, t('categories.new.title') %>
 
 <%= render 'shared/resource_form',
-           resource: @category,
-           form_title: t('categories.new.title'),
-           submit_label: t('helpers.submit.create') %>
+            resource: @category,
+            form_title: t('categories.new.title'),
+            submit_label: t('helpers.submit.create') %>
