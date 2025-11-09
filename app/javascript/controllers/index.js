@@ -1,3 +1,10 @@
+/**
+ * @file index.js
+ * Stimulus コントローラーの一括登録
+ *
+ * @module Controllers
+ */
+
 import { application } from "controllers/application"
 
 // Form Controllers

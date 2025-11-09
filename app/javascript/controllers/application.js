@@ -1,4 +1,10 @@
-// app/javascript/controllers/application.js
+/**
+ * @file application.js
+ * Stimulus Application の初期化とデバッグモード設定
+ *
+ * @module Controllers
+ */
+
 import { Application } from "@hotwired/stimulus"
 
 const application = Application.start()
@@ -9,6 +15,6 @@ application.debug = true
 
 // デバッグ用: ブラウザコンソールから Stimulus にアクセス可能
 window.Stimulus = application
-console.log('🔧 Stimulus debug mode enabled')
+console.log('Stimulus debug mode enabled')
 
 export { application }
