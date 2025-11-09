@@ -1,13 +1,20 @@
 <%# app/views/shared/actions/_copy_link.html.erb %>
-<%# 必須引数: url %>
-<%# オプション引数: custom_class, confirm_message %>
+<%# コピーボタン（button_to形式） %>
+<%#
+  必須引数:
+  - url: コピー先のパス
+
+  オプション引数:
+  - custom_class: 追加のCSSクラス
+  - confirm_message: 確認ダイアログのメッセージ（デフォルト: i18n翻訳）
+%>
 <% custom_class = local_assigns.fetch(:custom_class, '') %>
-<% confirm_message = local_assigns.fetch(:confirm_message, 'この項目をコピーしますか？') %>
+<% confirm_message = local_assigns.fetch(:confirm_message, t('helpers.confirm.copy')) %>
 
 <%= button_to url,
     method: :post,
     class: "btn btn-sm btn-secondary #{custom_class}",
     data: { confirm: confirm_message },
-    title: 'コピー' do %>
-  <i class="bi bi-files"></i> コピー
+    title: t('helpers.link.copy') do %>
+  <i class="bi bi-files"></i> <%= t('helpers.link.copy') %>
 <% end %>

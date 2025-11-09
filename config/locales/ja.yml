@@ -468,6 +468,8 @@ ja:
       hint: "最大%{max}文字"
     confirm:
       destroy: "本当にこの%{resource}を削除してもよろしいですか？"
+      copy: "この項目をコピーしますか？"
+      copy_resource: "この%{resource}をコピーしますか？"  # 追加
     link:
       back: "戻る"
       edit: "編集"
@@ -475,9 +477,10 @@ ja:
       destroy: "削除"
       new: "新規登録"
       cancel: "キャンセル"
+      copy: "コピー"
       back_to_dashboard: "ダッシュボードへ戻る"
       add_material: "原材料を追加"
-      add_item: "+ %{resource}を登録" # 変更
+      add_item: "+ %{resource}を登録"
       delete_image: "画像削除"
       cancel_new_image: "選択をキャンセル"
     forms:

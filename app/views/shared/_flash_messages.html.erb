@@ -1,35 +1,46 @@
 <%# 統一されたフラッシュメッセージコンポーネント %>
+<%#
+  機能:
+  - flash[:notice], flash[:alert], flash[:error] を自動表示
+  - Bootstrap Alert コンポーネントを使用
+  - 自動非表示機能（flash_controller.js）
+
+  表示時間（flash_controller.js で定義）:
+  - notice: 5秒後に自動非表示
+  - alert: 7秒後に自動非表示
+  - error: 手動で閉じるまで表示
+%>
 <div class="flash-messages-container">
   <% if flash[:notice] %>
     <div class="alert alert-success alert-dismissible fade show"
-         role="alert"
-         data-controller="flash"
-         data-flash-duration-value="5000">
+          role="alert"
+          data-controller="flash"
+          data-flash-type="notice">
       <i class="bi bi-check-circle-fill me-2"></i>
       <%= flash[:notice] %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t('common.close') %>"></button>
     </div>
   <% end %>
 
   <% if flash[:alert] %>
     <div class="alert alert-warning alert-dismissible fade show"
-         role="alert"
-         data-controller="flash"
-         data-flash-duration-value="7000">
+          role="alert"
+          data-controller="flash"
+          data-flash-type="alert">
       <i class="bi bi-exclamation-triangle-fill me-2"></i>
       <%= flash[:alert] %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t('common.close') %>"></button>
     </div>
   <% end %>
 
   <% if flash[:error] %>
     <div class="alert alert-danger alert-dismissible fade show"
-         role="alert"
-         data-controller="flash"
-         data-flash-duration-value="0">
+          role="alert"
+          data-controller="flash"
+          data-flash-type="error">
       <i class="bi bi-x-circle-fill me-2"></i>
       <%= flash[:error] %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t('common.close') %>"></button>
     </div>
   <% end %>
 </div>
