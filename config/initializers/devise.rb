@@ -1,181 +1,90 @@
-# frozen_string_literal: true
-
 # ====================================================================================
-# Devise 認証設定
+# ログフィルタリング設定（機密情報の保護）
 # ====================================================================================
 # このファイルを変更した場合は、サーバーの再起動が必要です。
 #
-# Devise は Rails の認証ライブラリです。
-# - ユーザー登録・ログイン
-# - パスワードリセット
-# - アカウントロック
-# - メールアドレス確認
-# などの機能を提供します。
+# この設定は、Railsのログファイル（log/development.log等）に出力される
+# パラメータから機密情報をマスキングします。
 #
-# 参考：Devise公式ドキュメント
-# https://github.com/heartcombo/devise
-
-Devise.setup do |config|
-  # ====================
-  # 0. シークレットキー設定
-  # ====================
-  # Deviseの暗号化に使用するシークレットキー
-  # Rails の secret_key_base がデフォルトで使用されるため、通常は設定不要
-  # config.secret_key = '...'
-
-  # ====================
-  # 1. ORM（データベース接続）設定
-  # ====================
-  # Active Record を使用（Rails標準のO/Rマッパー）
-  require "devise/orm/active_record"
-
-  # ====================
-  # 2. メール設定
-  # ====================
-  # パスワードリセットメール等の送信元アドレス
-  # 【重要】本番環境では必ず実際のドメインに変更してください
-  # 例：'noreply@sushi-management.com'
-  config.mailer_sender = "info@your-app-domain.com"
-
-  # Deviseのメール送信クラス（デフォルトのまま使用）
-  # カスタムメーラーを使用する場合のみ変更
-  # config.mailer = 'Devise::Mailer'
-
-  # ====================
-  # 3. 認証方法の設定
-  # ====================
-  # ログイン時に使用するキー（デフォルト：メールアドレス）
-  # ユーザー名でログインする場合は [:username] に変更
-  # config.authentication_keys = [:email]
-
-  # 大文字小文字を区別しないキー
-  # メールアドレスは通常区別しない（user@example.com = USER@example.com）
-  config.case_insensitive_keys = [:email]
-
-  # 前後の空白を自動削除するキー
-  # ユーザーが誤って空白を入力してもログインできるようにする
-  config.strip_whitespace_keys = [:email]
-
-  # セッションストレージをスキップする認証方式
-  # HTTP Basic認証などでセッションを使用しない場合の設定
-  config.skip_session_storage = [:http_auth]
-
-  # ====================
-  # 4. パスワード設定
-  # ====================
-  # パスワードのハッシュ化のストレッチ回数
-  # 回数が多いほど安全だが処理時間が増える
-  # - テスト環境：1回（高速化）
-  # - 開発/本番環境：12回（セキュリティ重視）
-  config.stretches = Rails.env.test? ? 1 : 12
-
-  # パスワードの長さの制限
-  # 最小6文字、最大128文字
-  # 【セキュリティ】最小8文字以上を推奨（現在は6文字）
-  config.password_length = 6..128
-
-  # ====================
-  # 5. バリデーション設定
-  # ====================
-  # メールアドレスの形式を検証する正規表現
-  # デフォルトは簡易的なチェック（@が含まれているか）
-  config.email_regexp = /\A[^@\s]+@[^@\s]+\z/
-
-  # ====================
-  # 6. メールアドレス確認（Confirmable）
-  # ====================
-  # メールアドレス変更時に再確認を要求する
-  # セキュリティのため true を推奨
-  # - true：変更後に確認メールが送信される
-  # - false：即座に変更される（セキュリティリスク）
-  config.reconfirmable = true
-
-  # ====================
-  # 7. ログイン状態の保持（Rememberable）
-  # ====================
-  # サインアウト時に全ての「ログイン状態を保持」トークンを無効化
-  # セキュリティのため true を推奨
-  # 他のデバイスでログイン中でも、1箇所でログアウトすれば全て無効化
-  config.expire_all_remember_me_on_sign_out = true
-
-  # ====================
-  # 8. パスワードリセット（Recoverable）
-  # ====================
-  # パスワードリセット用トークンの有効期間
-  # 6時間に設定（デフォルトは24時間）
-  # セキュリティのため短めの設定を推奨
-  config.reset_password_within = 6.hours
-
-  # ====================
-  # 9. アカウントロック（Lockable）
-  # ====================
-  # 現在は無効化されています
-  # 有効化する場合は以下を設定：
-  # config.lock_strategy = :failed_attempts  # ログイン失敗回数でロック
-  # config.unlock_strategy = :email          # メールでアンロック
-  # config.maximum_attempts = 5              # 最大試行回数
-  # config.unlock_in = 1.hour                # 自動アンロックまでの時間
-  config.lock_strategy = :none
-  config.unlock_strategy = :none
-
-  # ====================
-  # 10. ログアウト設定
-  # ====================
-  # ログアウトに使用するHTTPメソッド
-  # :delete = DELETEメソッド（RESTful、CSRF保護のため推奨）
-  # :get を使用する場合は CSRF攻撃のリスクあり
-  config.sign_out_via = :delete
-
-  # ====================
-  # 11. Hotwire/Turbo対応
-  # ====================
-  # Rails 7+ の Turbo との互換性設定
-
-  # エラー時のHTTPステータスコード
-  # 422 Unprocessable Entity（Turbo推奨）
-  config.responder.error_status = :unprocessable_entity
-
-  # リダイレクト時のHTTPステータスコード
-  # 303 See Other（Turbo推奨）
-  config.responder.redirect_status = :see_other
-end
+# 【重要】
+# ログファイルは開発中に頻繁に参照されますが、パスワードやクレジットカード番号などの
+# 機密情報が平文で記録されると、セキュリティリスクになります。
+# この設定により、指定したキーワードに一致するパラメータは "[FILTERED]" に置き換えられます。
+#
+# 参考：ActiveSupport::ParameterFilter ドキュメント
+# https://api.rubyonrails.org/classes/ActiveSupport/ParameterFilter.html
 
 # ====================
-# 製造管理システムでの Devise 使用状況
+# フィルタリング対象のパラメータ
 # ====================
-# 【有効化されているモジュール】
-# - Database Authenticatable：パスワード認証
-# - Registerable：ユーザー登録
-# - Recoverable：パスワードリセット
-# - Rememberable：ログイン状態の保持
-# - Validatable：メールアドレス/パスワードの検証
-#
-# 【無効化されているモジュール】
-# - Confirmable：メールアドレス確認（必要に応じて有効化）
-# - Lockable：アカウントロック（現在は無効）
-# - Trackable：ログイン履歴の追跡
-# - Timeoutable：一定時間後の自動ログアウト
-# - Omniauthable：外部サービス認証（Google, Facebook等）
-#
-# 【カスタマイズ】
-# - Users::RegistrationsController でレイアウトを切り替え
-#   - 新規登録：シンプルなレイアウト
-#   - 編集：認証後のレイアウト（サイドバー付き）
+# 部分一致でフィルタリングされます
+# 例：:passw は password, password_confirmation, current_password などにマッチ
+
+Rails.application.config.filter_parameters += [
+  # ====================
+  # 認証関連
+  # ====================
+  :passw,        # password, password_confirmation, current_password
+  :secret,       # secret_key, client_secret, api_secret
+  :token,        # access_token, refresh_token, csrf_token
+  :_key,         # api_key, encryption_key, private_key
+  :otp,          # one_time_password, otp_code
+
+  # ====================
+  # 暗号化関連
+  # ====================
+  :crypt,        # encrypted_password, bcrypt_salt
+  :salt,         # password_salt, encryption_salt
+  :certificate,  # ssl_certificate, client_certificate
+
+  # ====================
+  # 個人情報
+  # ====================
+  :email,        # email, email_address, user_email
+  :ssn,          # social_security_number（米国社会保障番号）
+
+  # ====================
+  # 決済情報
+  # ====================
+  :cvv,          # クレジットカードのセキュリティコード（Card Verification Value）
+  :cvc,          # クレジットカードのセキュリティコード（Card Verification Code）
+
+  # ====================
+  # 寿司管理システム固有の機密情報（必要に応じて追加）
+  # ====================
+  # :bank_account,  # 銀行口座番号
+  # :credit_card,   # クレジットカード番号
+  # :phone,         # 電話番号（個人情報保護法対応）
+]
 
 # ====================
-# 本番環境での推奨設定
+# フィルタリングの動作例
 # ====================
-# 1. メール送信元の変更
-#    config.mailer_sender = 'noreply@your-actual-domain.com'
+# 【フィルタリング前のログ】
+# Parameters: {"user"=>{"email"=>"user@example.com", "password"=>"secret123"}}
 #
-# 2. パスワード最小文字数の引き上げ（オプション）
-#    config.password_length = 8..128
+# 【フィルタリング後のログ】
+# Parameters: {"user"=>{"email"=>"[FILTERED]", "password"=>"[FILTERED]"}}
 #
-# 3. アカウントロックの有効化（オプション）
-#    config.lock_strategy = :failed_attempts
-#    config.unlock_strategy = :email
-#    config.maximum_attempts = 5
+# これにより、ログファイルを確認しても機密情報は見えません。
+
+# ====================
+# 追加のフィルタリング設定
+# ====================
+# 正規表現でのフィルタリング（より複雑なパターン）
+# Rails.application.config.filter_parameters += [
+#   /credit_card_\d+/,  # credit_card_1, credit_card_2 などにマッチ
+#   /^api_/,            # api_ で始まるすべてのパラメータ
+# ]
 #
-# 4. メールアドレス確認の有効化（オプション）
-#    モデルに :confirmable を追加
-#    マイグレーションで confirmation_token 等を追加
+# ブロックを使用したカスタムフィルタリング
+# Rails.application.config.filter_parameters << lambda do |key, value|
+#   value.replace("[CUSTOM FILTERED]") if key.match?(/sensitive/)
+# end
+
+# ====================
+# 本番環境での確認事項
+# ====================
+# 1. ログファイルに機密情報が記録されていないか定期的にチェック
+# 2. 新しい機密情報フィールドを追加した際は、このファイルも更新
+# 3. エラーレポートサービス（Sentry, Rollbar等）でも同様のフィルタリングを設定
