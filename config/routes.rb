@@ -47,7 +47,7 @@ Rails.application.routes.draw do
   # 計画スケジュール
   resources :plan_schedules, only: [ :create, :update, :destroy ] do
     member do
-      patch :actual_revenue  # 実績入力（PATCH /plan_schedules/:id/actual_revenue）
+      patch :update_actual_revenue  # 実績入力
     end
   end
 
@@ -70,7 +70,6 @@ Rails.application.routes.draw do
   # 発注グループ
   resources :material_order_groups
 
-
   # 製品
   resources :products do
     collection do
@@ -82,7 +81,7 @@ Rails.application.routes.draw do
       post :copy           # 複製
     end
 
-    # 製品-材料の管理（複数形に修正）
+    # 製品-材料の関連管理
     resources :product_materials, only: [ :index, :edit, :update ]
   end
 
@@ -103,21 +102,21 @@ Rails.application.routes.draw do
       # 製品API
       resources :products, only: [ :index, :show ] do
         member do
-          get :details_for_plan  # GET /api/v1/products/:id/details_for_plan
+          get :fetch_plan_details  # 計画用の製品詳細を取得
         end
       end
 
       # 材料API
       resources :materials, only: [ :index, :show ] do
         member do
-          get :product_unit_data  # GET /api/v1/materials/:id/product_unit_data
+          get :fetch_product_unit_data  # 製品単位データを取得
         end
       end
 
       # 計画API
       resources :plans, only: [ :index, :show ] do
         member do
-          get :revenue  # GET /api/v1/plans/:id/revenue
+          get :fetch_revenue  # 売上データを取得
         end
       end
     end

@@ -1,11 +1,11 @@
 <%# app/views/shared/components/tabs/_category_tab_content.html.erb %>
 <%#
   汎用カテゴリタブコンテンツ - ネストフォーム統合版
-  
+
   使用箇所:
   - 製造計画の商品選択タブ
   - 商品の原材料選択タブ
-  
+
   必須locals:
   - category_id: カテゴリID（0=全て表示）
   - items: 表示するアイテムのコレクション
@@ -14,7 +14,7 @@
   - item_partial: 行パーシャル名 ('plan_product_fields' または 'product_material_fields')
   - table_headers: テーブルヘッダーのHTML（ブロックまたは文字列）
   - add_button_text: 追加ボタンのテキスト
-  
+
   オプションlocals:
   - show_category_total: カテゴリ合計を表示するか（デフォルト: false）
   - total_target: 合計表示のdata-target属性
@@ -61,7 +61,7 @@
     <% if show_category_total && total_target.present? %>
       <div class="text-end mt-3 fw-bold">
         カテゴリ合計:
-        <span data-<%= total_target %>="categoryTotal" data-category-id="<%= category_id %>">¥0</span>
+        <span data-resources--plan-product--totals-target="categoryTotal" data-category-id="<%= category_id %>">¥0</span>
       </div>
     <% end %>
   <% end %>

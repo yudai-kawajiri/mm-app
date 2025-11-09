@@ -65,8 +65,7 @@ export default class extends Controller {
     try {
       Logger.log(`🔍 Fetching product info for: ${productId}`)
 
-      // ✅ 修正: コントローラーのアクション名に合わせる
-      const response = await fetch(`/api/v1/products/${productId}/details_for_plan`)
+      const response = await fetch(`/api/v1/products/${productId}/fetch_plan_details`)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)

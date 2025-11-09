@@ -8,13 +8,13 @@
     <div class="d-flex gap-1">
       <select name="year" class="form-select form-select-sm" style="width: 90px;">
         <% (Date.current.year - 2..Date.current.year + 1).each do |year| %>
-          <option value="<%= year %>" <%= 'selected' if year == @selected_date.year %>><%= year %><%= t('common.year_suffix') %></option>
+          <option value="<%= year %>" <%= 'selected' if year == @selected_date.year %>><%= year %><%= t('common.suffix.year') %></option>
         <% end %>
       </select>
 
       <select name="month" class="form-select form-select-sm" style="width: 80px;">
         <% (1..12).each do |month| %>
-          <option value="<%= month %>" <%= 'selected' if month == @selected_date.month %>><%= month %><%= t('common.month_suffix') %></option>
+          <option value="<%= month %>" <%= 'selected' if month == @selected_date.month %>><%= month %><%= t('common.suffix.month') %></option>
         <% end %>
       </select>
     </div>

@@ -1,10 +1,11 @@
-require "active_support/core_ext/integer/time" # 時間に関するメソッド（例: 2.days）を使うために必要
+require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # config/application.rb の設定よりも、ここに指定した設定が優先されます。
 
-  # --- 一般設定 ---
-
+  # ====================
+  # 一般設定
+  # ====================
   # コードの変更をサーバー再起動なしで即座に反映させる（開発効率向上）
   config.enable_reloading = true
 
@@ -17,83 +18,97 @@ Rails.application.configure do
   # サーバーの処理時間計測を有効にする
   config.server_timing = true
 
-  # --- キャッシング設定 ---
+  # ====================
+  # URL設定（Devise / Active Storage 共通）
+  # ====================
+  # メーラーとコントローラーで生成されるリンクのホストとポートを設定
+  # - Devise: パスワードリセットメールなどのリンク生成に必須
+  # - Active Storage: 画像URL生成に必須
+  default_url_options = { host: "localhost", port: 3000 }
+  config.action_mailer.default_url_options = default_url_options
+  config.action_controller.default_url_options = default_url_options
 
-  # Action Controller のキャッシングを有効/無効にする設定
-  # "tmp/caching-dev.txt" ファイルの有無で切り替わる
+  # ====================
+  # キャッシング設定
+  # ====================
+  # "tmp/caching-dev.txt" ファイルの有無でキャッシングを切り替える
+  # 作成: rails dev:cache
+  # 削除: rails dev:cache（再実行）
   if Rails.root.join("tmp/caching-dev.txt").exist?
-    # ファイルが存在する場合（キャッシングが有効な場合）
+    # キャッシング有効時の設定
     config.action_controller.perform_caching = true
-    # フラグメントキャッシュのログ出力を有効にする
     config.action_controller.enable_fragment_cache_logging = true
-    # 公開ファイルのキャッシュヘッダーを設定 (2日間有効)
     config.public_file_server.headers = { "cache-control" => "public, max-age=#{2.days.to_i}" }
   else
-    # ファイルが存在しない場合（キャッシングが無効な場合）
+    # キャッシング無効時の設定
     config.action_controller.perform_caching = false
   end
 
-  # キャッシュストアの変更 (デフォルトでは:memory_store)
+  # キャッシュストアの設定（開発環境ではメモリストアを使用）
   config.cache_store = :memory_store
 
-  # --- Active Storage 設定 ---
-
-  # アップロードされたファイルをローカルファイルシステムに保存する設定
+  # ====================
+  # Active Storage 設定
+  # ====================
+  # アップロードされたファイルをローカルファイルシステムに保存
   config.active_storage.service = :local
 
-  # --- Action Mailer / Devise 設定 ---
-
-  # メーラーがメールを送信できなくてもエラーを発生させない
+  # ====================
+  # Action Mailer 設定
+  # ====================
+  # メール送信エラーを無視（開発環境では送信失敗してもエラーにしない）
   config.action_mailer.raise_delivery_errors = false
 
   # テンプレート変更時のメーラーのキャッシングを行わない
   config.action_mailer.perform_caching = false
 
-  # 【Devise必須設定】メーラーテンプレートで生成されるリンクのホストとポートを設定
-  # （パスワードリセットなどのメール機能に必要）
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
-
-  # MailCatcherのSMTPサーバーを使用するように設定
-  # MailCatcherはデフォルトでポート1025でSMTPを受け付ける
+  # MailCatcher を使用してメールをキャプチャ
+  # Docker環境: サービス名 "mailcatcher"、ポート 1025
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = { address: "mailcatcher", port: 1025 }
 
-  # --- ロギングとデバッグ設定 ---
-
-  # 非推奨通知（deprecation notices）をRailsロガーに出力する
-  config.active_support.deprecation = :log
-
+  # ====================
+  # データベース設定
+  # ====================
   # マイグレーションが未完了の場合、ページロード時にエラーを発生させる
   config.active_record.migration_error = :page_load
 
-  # ログ内でデータベースクエリをトリガーしたコードをハイライト表示する
+  # ログ内でデータベースクエリをトリガーしたコードをハイライト表示
   config.active_record.verbose_query_logs = true
 
-  # ログ内のSQLクエリに実行時情報タグ（ランタイム情報）を追記する
+  # ログ内のSQLクエリに実行時情報タグを追記
   config.active_record.query_log_tags_enabled = true
 
-  # ログ内でバックグラウンドジョブをエンキューしたコードをハイライト表示する
+  # ====================
+  # バックグラウンドジョブ設定
+  # ====================
+  # ログ内でバックグラウンドジョブをエンキューしたコードをハイライト表示
   config.active_job.verbose_enqueue_logs = true
 
-  # --- i18n / View 設定 ---
+  # ====================
+  # ロギングとデバッグ設定
+  # ====================
+  # 非推奨通知（deprecation notices）をRailsロガーに出力
+  config.active_support.deprecation = :log
 
-  # 翻訳ファイルがない場合にエラーを発生させる設定（現在はコメントアウト）
-  # config.i18n.raise_on_missing_translations = true
-
-  # レンダリングされたビューにファイル名を注釈として追記する
+  # レンダリングされたビューにファイル名を注釈として追記
   config.action_view.annotate_rendered_view_with_filenames = true
 
-  # --- その他設定 ---
-
-  # Action Cable のCSRF保護を無効にする設定（現在はコメントアウト）
-  # config.action_cable.disable_request_forgery_protection = true
-
+  # ====================
+  # セキュリティ設定
+  # ====================
   # `before_action` の `only`/`except` オプションで存在しないアクションを参照した場合にエラーを発生させる
   config.action_controller.raise_on_missing_callback_actions = true
 
-  # 【Active Storage / 画像URL生成に必須】コントローラー生成リンクのホストとポートを設定
-  config.action_controller.default_url_options = { host: "localhost", port: 3000 }
+  # ====================
+  # 開発支援機能（コメントアウト）
+  # ====================
+  # 翻訳ファイルがない場合にエラーを発生させる（i18n開発時に有効化）
+  # config.i18n.raise_on_missing_translations = true
 
-  # `bin/rails generate`で生成されたファイルにRuboCopの自動修正を適用する設定（現在はコメントアウト）
+  # Action Cable のCSRF保護を無効にする（WebSocket開発時に有効化）
+  # config.action_cable.disable_request_forgery_protection = true
+
+  # `bin/rails generate`で生成されたファイルにRuboCopの自動修正を適用
   # config.generators.apply_rubocop_autocorrect_after_generate!
 end
