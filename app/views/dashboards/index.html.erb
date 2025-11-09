@@ -1,3 +1,16 @@
+<%#
+  機能: ダッシュボードメイン画面
+
+  主要機能:
+  - 月選択フォーム（年・月のドロップダウン）
+  - サマリーカード表示（shared/summary_cards）
+  - 累計トレンドグラフ（Chart.js、budget-chart Stimulus Controller）
+  - 天気予報表示（OpenWeatherMap API）
+
+  Stimulus Controller:
+  - budget-chart: Chart.jsによる累計トレンドグラフの描画
+%>
+
 <%= content_for :title, t('dashboard.menu.dashboard') %>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -59,7 +72,6 @@
                       alt="<%= weather[:weather_description] %>"
                       style="width: 50px; height: 50px;">
               </div>
-              <%# weather[:weather]を使用 %>
               <div class="small">
                 <%= t("dashboard.weather.conditions.#{weather[:weather].downcase}", default: weather[:weather_description]) %>
               </div>
