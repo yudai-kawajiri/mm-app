@@ -1,11 +1,43 @@
+/**
+ * @file form/submit_controller.js
+ * フォーム送信時の重複行無効化処理
+ *
+ * @module Controllers/Form
+ */
+
 import { Controller } from "@hotwired/stimulus"
 import Logger from "utils/logger"
 
 /**
- * フォーム送信時の重複行無効化コントローラー
- * 同じunique-idを持つ行が複数ある場合、2つ目以降を無効化
+ * Form Submit Controller
+ *
+ * @description
+ *   フォーム送信時の重複行無効化コントローラー。
+ *   同じunique-idを持つ行が複数ある場合、2つ目以降を無効化して
+ *   サーバーに送信されないようにします。
+ *
+ * @example HTML での使用
+ *   <form data-controller="form--submit">
+ *     <!-- ネストフォームフィールド -->
+ *     <tr data-unique-id="123">...</tr>
+ *     <tr data-unique-id="123">...</tr> <!-- 重複：無効化される -->
+ *   </form>
+ *
+ * @features
+ *   - 重複行の自動検出
+ *   - 2つ目以降の行のフィールド無効化
+ *   - _destroy=1 の行はスキップ
+ *   - hidden フィールドは無効化しない
+ *
+ * @requires utils/logger - ログ出力ユーティリティ
  */
 export default class extends Controller {
+  /**
+   * コントローラー接続時の処理
+   *
+   * @description
+   *   フォーム要素に submit イベントリスナーを登録
+   */
   connect() {
     Logger.log("Form submit controller connected")
 
@@ -16,6 +48,19 @@ export default class extends Controller {
     form.addEventListener('submit', this.handleSubmit.bind(this))
   }
 
+  /**
+   * フォーム送信時の処理
+   *
+   * @param {Event} event - submit イベント
+   * @return {boolean} 送信を続行する場合 true
+   *
+   * @description
+   *   以下の処理を実行：
+   *   1. すべてのネストフォーム行を取得
+   *   2. unique-id ごとにグループ化
+   *   3. 重複がある場合、2つ目以降の行のフィールドを無効化
+   *   4. _destroy=1 の行はスキップ
+   */
   handleSubmit(event) {
     Logger.log("Form submitting, removing duplicates...")
 
@@ -24,7 +69,7 @@ export default class extends Controller {
 
     if (allRows.length === 0) {
       Logger.log("No nested fields found, proceeding with submit")
-      return
+      return true
     }
 
     // unique_id ごとにグループ化
@@ -63,7 +108,7 @@ export default class extends Controller {
           const inputs = row.querySelectorAll('input:not([type="hidden"]), select, textarea')
           inputs.forEach(input => {
             input.disabled = true
-            Logger.log(`  Disabled field: ${input.name}`)
+            Logger.log(`Disabled field: ${input.name}`)
           })
 
           duplicatesFound++
@@ -81,7 +126,15 @@ export default class extends Controller {
     return true
   }
 
-  // HTMLから呼ばれる disableSubmit メソッド（エイリアス）
+  /**
+   * handleSubmit のエイリアス
+   *
+   * @param {Event} event - submit イベント
+   * @return {boolean} 送信を続行する場合 true
+   *
+   * @description
+   *   HTML から呼ばれる disableSubmit メソッド
+   */
   disableSubmit(event) {
     return this.handleSubmit(event)
   }
