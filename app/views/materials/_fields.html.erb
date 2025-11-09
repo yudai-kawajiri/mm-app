@@ -1,10 +1,17 @@
+<%#
+  機能: 原材料フォームフィールド
+  - 原材料の全入力フィールド
+  - 計測方法切り替え（重量/個数ベース）
+  - 新規作成・編集画面で使用
+
+  必須引数:
+  - f: FormBuilder - フォームビルダーオブジェクト
+%>
 <div class="row">
-  <%# 左カラム: 原材料名 %>
   <div class="col-md-6">
     <%= form_group_lg(f, :name) %>
   </div>
 
-  <%# 右カラム: カテゴリー %>
   <div class="col-md-6">
     <%= form_group_lg(f, :category_id,
         field_type: :collection_select,
@@ -14,9 +21,7 @@
 </div>
 
 <div data-controller="measurement-type">
-  <%# 共通フィールド（常に表示） %>
   <div class="row">
-    <%# 左カラム: 基本使用量/個数 %>
     <div class="col-md-6">
       <div class="form-group mb-4">
         <%= f.label :default_unit_weight, Material.human_attribute_name(:default_unit_weight), class: 'form-label h5' %>
@@ -32,7 +37,6 @@
       </div>
     </div>
 
-    <%# 右カラム: 使用単位 %>
     <div class="col-md-6">
       <%= form_group_lg(f, :unit_for_product_id,
           field_type: :collection_select,
@@ -42,18 +46,15 @@
     </div>
   </div>
 
-  <%# 基本発注入数フィールドと発注単位（横並び） %>
   <div class="row">
-    <%# 左カラム: 基本発注入数フィールド（条件付き） %>
     <div class="col-md-6">
-      <%# ラベルとラジオボタン（常に表示） %>
       <div class="d-flex align-items-center gap-3 mb-2">
         <label class="form-label mb-0" style="font-size: 1.25rem; font-weight: 400;">
           <span data-measurement-type-target="weightLabel" style="<%= 'display: none;' if f.object.measurement_type == 'count' %>">
-            基本発注量（g）
+            <%= t('materials.attributes.unit_weight_for_order_label') %>
           </span>
           <span data-measurement-type-target="countLabel" style="<%= 'display: none;' unless f.object.measurement_type == 'count' %>">
-            基本発注入数
+            <%= t('materials.attributes.pieces_per_order_unit_label') %>
           </span>
         </label>
         <div class="form-check">
@@ -75,7 +76,6 @@
         </div>
       </div>
 
-      <%# 重量ベース専用フィールド %>
       <div data-measurement-type-target="weightFields" style="<%= 'display: none;' if f.object.measurement_type == 'count' %>">
         <div class="mb-4">
           <%= f.text_field :unit_weight_for_order,
@@ -89,7 +89,6 @@
         </div>
       </div>
 
-      <%# 個数ベース専用フィールド %>
       <div data-measurement-type-target="countFields" style="<%= 'display: none;' unless f.object.measurement_type == 'count' %>">
         <div class="mb-4">
           <%= f.text_field :pieces_per_order_unit,
@@ -104,7 +103,6 @@
       </div>
     </div>
 
-    <%# 右カラム: 発注単位 %>
     <div class="col-md-6">
       <%= form_group_lg(f, :unit_for_order_id,
           field_type: :collection_select,
@@ -115,7 +113,6 @@
   </div>
 </div>
 
-<%# 製造単位と発注グループ選択 %>
 <div class="row">
   <div class="col-md-6">
     <%= form_group_lg(f, :production_unit_id,
@@ -134,7 +131,6 @@
 </div>
 
 <div class="row">
-  <%# 説明（Description） %>
   <div class="col-md-12">
     <%= form_group_lg(f, :description,
         field_type: :text_area,

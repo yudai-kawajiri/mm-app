@@ -1,6 +1,10 @@
+<%#
+  機能: 原材料新規作成画面
+  - 新しい原材料を作成
+%>
 <% content_for :title, t('materials.new.title') %>
 
 <%= render 'shared/resource_form',
-           resource: @material,
-           form_title: t('materials.new.title'),
-           submit_label: t('helpers.submit.create') %>
+            resource: @material,
+            form_title: t('materials.new.title'),
+            submit_label: t('helpers.submit.create') %>

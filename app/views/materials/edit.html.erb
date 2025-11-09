@@ -1,6 +1,10 @@
+<%#
+  機能: 原材料編集画面
+  - 既存の原材料情報を編集
+%>
 <% content_for :title, t('materials.edit.title', name: @material.name) %>
 
 <%= render 'shared/resource_form',
-           resource: @material,
-           form_title: t('materials.edit.title', name: @material.name),
-           submit_label: t('common.update') %>
+            resource: @material,
+            form_title: t('materials.edit.title', name: @material.name),
+            submit_label: t('common.update') %>
