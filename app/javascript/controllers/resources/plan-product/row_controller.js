@@ -1,12 +1,42 @@
-// app/javascript/controllers/resources/plan-product/row_controller.js
+/**
+ * @file resources/plan-product/row_controller.js
+ * 製造計画の商品行における小計計算コントローラー（子）
+ *
+ * @module Controllers/Resources/PlanProduct
+ */
 
 import { Controller } from "@hotwired/stimulus"
-import Logger from "utils/logger"
-import CurrencyFormatter from "utils/currency_formatter"
+import Logger from "../../../utils/logger"
+import CurrencyFormatter from "../../../utils/currency_formatter"
 
 /**
- * 製造計画：商品行の計算コントローラー（子）
- * 各行の小計計算を担当
+ * Plan Product Row Controller (Child)
+ *
+ * 製造計画：商品行の計算コントローラー（子）。
+ * 各行の小計計算を担当する。
+ *
+ * 責務:
+ * - 商品選択時のAPI連携（価格・カテゴリ取得）
+ * - 数量×単価の小計計算
+ * - 親コントローラーへの再計算通知
+ * - 編集時の既存データ読み込み
+ *
+ * データフロー:
+ * 1. 商品選択 → updateProduct() → API取得 → 価格・カテゴリ設定
+ * 2. 数量入力 → calculate() → 小計計算 → 親に通知
+ * 3. 親コントローラー → getCurrentValues() → 値取得 → 合計計算
+ *
+ * @extends Controller
+ *
+ * @example HTML での使用
+ *   <tr data-controller="resources--plan-product--row" data-resources--plan-product--row-price-value="1000">
+ *     <select data-resources--plan-product--row-target="productSelect" data-action="change->resources--plan-product--row#updateProduct">
+ *       <option value="">選択</option>
+ *     </select>
+ *     <input type="number" data-resources--plan-product--row-target="productionCount" data-action="input->resources--plan-product--row#calculate" />
+ *     <span data-resources--plan-product--row-target="priceDisplay">¥1,000</span>
+ *     <span data-resources--plan-product--row-target="subtotal">¥0</span>
+ *   </tr>
  */
 export default class extends Controller {
   static targets = ["productSelect", "productionCount", "priceDisplay", "subtotal"]
@@ -16,12 +46,35 @@ export default class extends Controller {
     categoryId: Number
   }
 
+  /**
+   * 遅延時間定数: 初期計算処理の遅延（ミリ秒）
+   *
+   * コントローラー接続直後の初期計算を遅延させる時間。
+   * DOM構築完了後に確実に計算が実行されるよう、わずかな待機時間を設ける。
+   */
+  static INITIAL_CALCULATION_DELAY_MS = 100
+
+  /**
+   * 遅延時間定数: 親への通知処理の遅延（ミリ秒）
+   *
+   * 小計計算後、親コントローラーへの通知を遅延させる時間。
+   * 短時間に複数の変更が発生した場合、最後の変更から指定時間後に
+   * 通知を実行することで、不要な中間通知を防ぐ。
+   */
+  static PARENT_NOTIFICATION_DELAY_MS = 100
+
   // ============================================================
   // 初期化
   // ============================================================
 
+  /**
+   * コントローラー接続時の処理
+   *
+   * 計算中フラグを初期化し、既存の商品選択がある場合は
+   * 商品情報を取得する（編集画面用）。
+   */
   connect() {
-    Logger.log('🔌 Plan product row controller connected')
+    Logger.log('Plan product row controller connected')
 
     // 計算中フラグの初期化
     this.isCalculating = false
@@ -29,11 +82,11 @@ export default class extends Controller {
     // 既に商品が選択されている場合は情報を取得（編集画面用）
     if (this.hasProductSelectTarget && this.productSelectTarget.value) {
       const productId = this.productSelectTarget.value
-      Logger.log(`📦 Product already selected on connect: ${productId}`)
+      Logger.log(`Product already selected on connect: ${productId}`)
       this.fetchProductInfo(productId)
     } else {
       // 新規作成時は初期計算
-      setTimeout(() => this.calculate(), 100)
+      setTimeout(() => this.calculate(), this.constructor.INITIAL_CALCULATION_DELAY_MS)
     }
   }
 
@@ -43,11 +96,13 @@ export default class extends Controller {
 
   /**
    * 商品選択時に価格とカテゴリを取得
+   *
    * @param {Event} event - change イベント
+   * @async
    */
   async updateProduct(event) {
     const productId = event.target.value
-    Logger.log(`📦 Product selected: ${productId}`)
+    Logger.log(`Product selected: ${productId}`)
 
     if (!productId) {
       this.resetProduct()
@@ -59,11 +114,16 @@ export default class extends Controller {
 
   /**
    * 商品情報をAPIから取得
+   *
    * @param {string} productId - 商品ID
+   * @async
+   *
+   * /api/v1/products/:id/fetch_plan_details から
+   * 商品の価格とカテゴリIDを取得し、表示を更新する。
    */
   async fetchProductInfo(productId) {
     try {
-      Logger.log(`🔍 Fetching product info for: ${productId}`)
+      Logger.log(`Fetching product info for: ${productId}`)
 
       const response = await fetch(`/api/v1/products/${productId}/fetch_plan_details`)
 
@@ -72,7 +132,7 @@ export default class extends Controller {
       }
 
       const product = await response.json()
-      Logger.log('✅ Product data received:', product)
+      Logger.log('Product data received:', product)
 
       this.priceValue = product.price || 0
       this.categoryIdValue = product.category_id || 0
@@ -80,9 +140,9 @@ export default class extends Controller {
       this.updatePriceDisplay()
       this.calculate()
 
-      Logger.log(`✅ Price set to: ${this.priceValue}, Category: ${this.categoryIdValue}`)
+      Logger.log(`Price set to: ${this.priceValue}, Category: ${this.categoryIdValue}`)
     } catch (error) {
-      Logger.error('❌ Product fetch error:', error)
+      Logger.error('Product fetch error:', error)
       alert('商品情報の取得に失敗しました。ページを再読み込みしてください。')
       this.resetProduct()
     }
@@ -94,9 +154,9 @@ export default class extends Controller {
   updatePriceDisplay() {
     if (this.hasPriceDisplayTarget) {
       this.priceDisplayTarget.textContent = CurrencyFormatter.format(this.priceValue)
-      Logger.log(`💰 Price display updated: ${CurrencyFormatter.format(this.priceValue)}`)
+      Logger.log(`Price display updated: ${CurrencyFormatter.format(this.priceValue)}`)
     } else {
-      Logger.warn('⚠️ Price display target not found')
+      Logger.warn('Price display target not found')
     }
   }
 
@@ -114,7 +174,7 @@ export default class extends Controller {
     }
 
     this.calculate()
-    Logger.log('🔄 Product reset')
+    Logger.log('Product reset')
   }
 
   // ============================================================
@@ -123,19 +183,22 @@ export default class extends Controller {
 
   /**
    * 小計を計算
+   *
+   * 数量×単価で小計を計算し、表示を更新。
+   * 親コントローラーへの通知を遅延実行する。
    */
   calculate() {
     // 計算中なら無視
     if (this.isCalculating) return
 
     this.isCalculating = true
-    Logger.log('🧮 Calculate started')
+    Logger.log('Calculate started')
 
     const quantity = this.getQuantity()
     const price = this.priceValue || 0
     const subtotal = quantity * price
 
-    Logger.log(`  📊 ${quantity} × ${price} = ${subtotal}`)
+    Logger.log(`${quantity} × ${price} = ${subtotal}`)
 
     this.updateSubtotal(subtotal)
 
@@ -144,38 +207,43 @@ export default class extends Controller {
     this.notifyTimeout = setTimeout(() => {
       this.notifyParent()
       this.isCalculating = false
-    }, 100)
+    }, this.constructor.PARENT_NOTIFICATION_DELAY_MS)
   }
 
   /**
    * 数量を取得
-   * @returns {number} - 数量
+   *
+   * @return {number} 数量
    */
   getQuantity() {
     if (!this.hasProductionCountTarget) return 0
     const value = parseFloat(this.productionCountTarget.value) || 0
-    Logger.log(`📦 Quantity: ${value}`)
+    Logger.log(`Quantity: ${value}`)
     return value
   }
 
   /**
    * 小計を更新
+   *
    * @param {number} subtotal - 小計
    */
   updateSubtotal(subtotal) {
     if (this.hasSubtotalTarget) {
       this.subtotalTarget.textContent = CurrencyFormatter.format(subtotal)
-      Logger.log(`✅ Subtotal updated: ${CurrencyFormatter.format(subtotal)}`)
+      Logger.log(`Subtotal updated: ${CurrencyFormatter.format(subtotal)}`)
     } else {
-      Logger.warn('⚠️ Subtotal target not found')
+      Logger.warn('Subtotal target not found')
     }
   }
 
   /**
    * 親コントローラーに再計算を通知
+   *
+   * resources--plan-product--totals コントローラーの
+   * recalculate メソッドを直接呼び出す。
    */
   notifyParent() {
-    Logger.log('📢 Notifying parent to recalculate')
+    Logger.log('Notifying parent to recalculate')
 
     // 直接親コントローラーを探して呼び出す
     const parentElement = document.querySelector('[data-controller~="resources--plan-product--totals"]')
@@ -185,13 +253,13 @@ export default class extends Controller {
         'resources--plan-product--totals'
       )
       if (parentController && parentController !== this && typeof parentController.recalculate === 'function') {
-        Logger.log('✅ Calling parent recalculate')
+        Logger.log('Calling parent recalculate')
         parentController.recalculate({ type: 'row-calculated' })
       } else {
-        Logger.warn('⚠️ Parent controller not found or invalid')
+        Logger.warn('Parent controller not found or invalid')
       }
     } else {
-      Logger.warn('⚠️ Parent element not found')
+      Logger.warn('Parent element not found')
     }
   }
 
@@ -201,7 +269,10 @@ export default class extends Controller {
 
   /**
    * 現在の値を取得（親コントローラーから呼ばれる）
-   * @returns {Object} - { quantity, price, subtotal, categoryId }
+   *
+   * @return {Object} { quantity, price, subtotal, categoryId }
+   *
+   * 親コントローラーが合計計算時に各行の値を取得するために使用。
    */
   getCurrentValues() {
     const quantity = this.getQuantity()
