@@ -192,6 +192,8 @@ ja:
     attributes:
       default_order_quantity: "基本発注量/発注入数"
       measurement_type: "計測方法"
+      unit_weight_for_order_label: "基本発注量"
+      pieces_per_order_unit_label: "基本発注入数"    # 追加
     measurement_types:
       weight: "重量ベース"
       count: "個数ベース"
@@ -206,6 +208,7 @@ ja:
   material_order_groups:
     index:
       title: "発注グループ管理"
+      unused: "未使用"
     new:
       title: "発注グループ新規登録"
     edit:

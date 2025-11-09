@@ -1,25 +1,26 @@
+<%#
+  機能: 原材料一覧画面
+  - 全原材料の一覧表示
+  - カテゴリ検索機能
+  - ドラッグ&ドロップ並び替え機能
+  - 計測方法に応じた発注量表示
+%>
 <%= content_for(:title, t('materials.index.title')) %>
 
-<% title = t('materials.index.title') %>
-
 <%= render 'shared/layouts/header_with_actions',
-    title: title,
+    title: t('materials.index.title'),
     resource: nil,
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: new_material_path
-%>
+    new_path: new_material_path %>
 
-<!--  Stimulus Controller を適用 -->
 <div data-controller="sortable-table"
       data-sortable-table-reorder-path-value="<%= reorder_materials_path %>"
       data-sortable-table-param-name-value="material_ids">
 
-  <!--  パーシャル化したボタン -->
   <%= render 'shared/sortable_buttons' %>
 
-  <%# リソース一覧（検索、フィルター、テーブル） %>
   <%= render 'shared/components/resource_list',
       resources: @materials,
       resource_class: Material,
@@ -61,7 +62,7 @@
         { header: :unit_for_order,
           data: Proc.new { |material| material.unit_for_order&.name || '-' }
         },
-                { header: :production_unit,
+        { header: :production_unit,
           data: Proc.new { |material| material.production_unit&.name || '-' }
         },
         { header: :order_group,
@@ -70,6 +71,5 @@
       ]
   %>
 
-  <%# ページネーション %>
   <%= paginate @materials, theme: 'bootstrap-5' %>
 </div>

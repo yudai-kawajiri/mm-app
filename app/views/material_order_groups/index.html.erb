@@ -1,17 +1,19 @@
+<%#
+  機能: 発注グループ一覧画面
+  - 全発注グループの一覧表示
+  - 名前検索機能
+  - 使用原材料数の表示
+%>
 <% content_for(:title, t('material_order_groups.index.title')) %>
 
-<% title = t('material_order_groups.index.title') %>
-
 <%= render 'shared/layouts/header_with_actions',
-    title: title,
+    title: t('material_order_groups.index.title'),
     resource: nil,
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: new_material_order_group_path
-%>
+    new_path: new_material_order_group_path %>
 
-<%# 検索フォーム（フィルターなし） %>
 <%= form_with url: material_order_groups_path,
               method: :get,
               local: true,
@@ -22,7 +24,7 @@
         <%= f.text_field :q,
           value: params[:q],
           class: "form-control",
-          placeholder: '名前を入力' %>
+          placeholder: t('search.placeholders.enter_name') %>
         <div class="input-group-append">
           <%= f.submit t('common.search'), class: "btn btn-primary" %>
           <% if params[:q].present? %>
@@ -34,7 +36,6 @@
   </div>
 <% end %>
 
-<%# テーブル %>
 <table class="table mt-4">
   <thead class="table-light">
     <tr>
@@ -51,7 +52,7 @@
           <% if group.materials.any? %>
             <span class="badge bg-info text-dark"><%= group.materials.count %>件</span>
           <% else %>
-            <span class="text-muted">未使用</span>
+            <span class="text-muted"><%= t('material_order_groups.index.unused') %></span>
           <% end %>
         </td>
         <td>
@@ -66,5 +67,4 @@
   </tbody>
 </table>
 
-<%# ページネーション %>
 <%= paginate @material_order_groups, theme: 'bootstrap-5' %>

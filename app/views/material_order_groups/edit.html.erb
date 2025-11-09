@@ -1,6 +1,10 @@
+<%#
+  機能: 発注グループ編集画面
+  - 既存の発注グループ情報を編集
+%>
 <% content_for :title, t('material_order_groups.edit.title', name: @material_order_group.name) %>
 
 <%= render 'shared/resource_form',
-           resource: @material_order_group,
-           form_title: t('material_order_groups.edit.title', name: @material_order_group.name),
-           submit_label: t('common.update') %>
+            resource: @material_order_group,
+            form_title: t('material_order_groups.edit.title', name: @material_order_group.name),
+            submit_label: t('common.update') %>
