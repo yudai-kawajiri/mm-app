@@ -1,16 +1,22 @@
-<%# 基本情報 - すべてを1つのカードに統合 %>
+<%#
+  機能: 商品基本情報フォームフィールド
+  - 商品名、売価、カテゴリ、ステータス、品番、画像、説明の入力フィールド
+  - 画像プレビュー・削除機能付き
+  - Stimulus Controller（image-preview）による画像管理
+  - 新規作成・編集画面で使用
+
+  必須引数:
+  - f: FormBuilder - フォームビルダーオブジェクト
+%>
 <div class="card mb-3">
   <div class="card-header bg-light">
     <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i><%= t('forms.titles.basic_info') %></h5>
   </div>
   <div class="card-body">
     <div class="row g-3">
-      <%# 左カラム %>
       <div class="col-md-6">
-        <%# 1. 商品名 %>
         <%= form_group_lg(f, :name, wrapper_class: 'mb-3') %>
 
-        <%# 2. 売価 %>
         <%= form_group_lg(f, :price,
                           wrapper_class: 'mb-3',
                           field_type: :text_field,
@@ -21,7 +27,6 @@
                             action: 'input->number-input#handleInput paste->number-input#handlePaste'
                           }) %>
 
-        <%# 3. カテゴリ %>
         <%= form_group_lg(f, :category_id,
                           field_type: :collection_select,
                           wrapper_class: 'mb-3',
@@ -30,9 +35,7 @@
                           text_method: :name) %>
       </div>
 
-      <%# 右カラム %>
       <div class="col-md-6">
-        <%# 4. ステータス %>
         <%= form_group_lg(f, :status,
                           field_type: :select,
                           wrapper_class: 'mb-3',
@@ -40,7 +43,6 @@
                           select_options: { include_blank: t('helpers.prompt.select') })
                           %>
 
-        <%# 5. 品番 %>
         <%= form_group_lg(f, :item_number,
                           wrapper_class: 'mb-3',
                           placeholder: t('products.placeholder.item_number'),
@@ -50,11 +52,9 @@
                             action: 'input->number-input#handleInput paste->number-input#handlePaste'
                           }) %>
 
-        <%# 6. 画像（120px） - Stimulusコントローラーで制御 %>
         <div class="mb-3" data-controller="image-preview">
           <%= form_label_lg(f, :image) %>
 
-          <%# 実際のfile_fieldを非表示（Stimulusのターゲットとアクションはそのまま） %>
           <%= f.file_field :image,
               data: {
                 image_preview_target: "input",
@@ -63,49 +63,42 @@
               class: "d-none",
               accept: "image/*" %>
 
-          <%# カスタムボタン - file_fieldをトリガー（Stimulusのロジックに影響なし） %>
           <button type="button"
                   class="btn btn-outline-primary w-100"
                   onclick="this.previousElementSibling.click()">
             <i class="bi bi-upload me-2"></i>
             <% if f.object.persisted? && f.object.image.attached? %>
-              画像を変更する場合は新しいファイルを選択してください
+              <%= t('products.image_help.change') %>
             <% else %>
-              JPG、PNG、GIF形式の画像を選択してください
+              <%= t('products.image_help.select') %>
             <% end %>
           </button>
 
-          <%# バリデーションエラー表示 %>
           <% if f.object.errors[:image].any? %>
             <div class="invalid-feedback d-block">
               <%= f.object.errors[:image].first %>
             </div>
           <% end %>
 
-          <%# 画像プレビュー（高さ120px） - 修正版 %>
           <div class="text-center mt-2 p-2 border rounded bg-light position-relative"
-               style="height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                style="height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
             <%
-              # 画像表示の判定
               show_existing_image = f.object.persisted? && f.object.image.attached?
               show_base64_preview = !f.object.persisted? && defined?(@image_preview_data) && @image_preview_data.present?
               show_any_image = show_existing_image || show_base64_preview
             %>
 
             <% if show_existing_image %>
-              <%# 既存レコードの画像 %>
               <%= image_tag f.object.image,
                     data: { image_preview_target: "preview" },
                     class: "position-relative",
                     style: "max-width: 100%; max-height: 110px; width: auto; height: auto; object-fit: contain; z-index: 2;" %>
             <% elsif show_base64_preview %>
-              <%# 新規作成でバリデーションエラー時のBase64プレビュー %>
               <%= image_tag "data:#{@image_content_type || 'image/png'};base64,#{@image_preview_data}",
                     data: { image_preview_target: "preview" },
                     class: "position-relative",
                     style: "max-width: 100%; max-height: 110px; width: auto; height: auto; object-fit: contain; z-index: 2;" %>
             <% else %>
-              <%# 画像なし %>
               <%= image_tag '',
                     data: { image_preview_target: "preview" },
                     class: "position-relative",
@@ -113,15 +106,13 @@
             <% end %>
 
             <label data-image-preview-target="previewLabel"
-                   class="position-absolute"
-                   style="<%= show_any_image ? 'display: none;' : '' %> cursor: pointer; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">
-              <span class="text-muted" style="font-size: 0.9em;"><%= t('products.image_help.no_image', default: '画像未選択') %></span>
+                    class="position-absolute"
+                    style="<%= show_any_image ? 'display: none;' : '' %> cursor: pointer; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">
+              <span class="text-muted" style="font-size: 0.9em;"><%= t('products.image_help.no_image') %></span>
             </label>
           </div>
 
-          <%# 削除ボタンとキャンセルボタン %>
           <div class="text-center mt-2">
-            <%# 既存画像の削除ボタン（サーバー削除） %>
             <% if f.object.persisted? && f.object.image.attached? %>
               <div data-image-preview-target="currentImageContainer">
                 <%= link_to t('helpers.link.delete_image'), "#",
@@ -134,7 +125,6 @@
               </div>
             <% end %>
 
-            <%# 新規選択画像のキャンセルボタン（初期状態は非表示） %>
             <button type="button"
                     data-image-preview-target="cancelButton"
                     data-action="click->image-preview#cancelNewImage"
@@ -147,7 +137,6 @@
       </div>
     </div>
 
-    <%# 説明欄（全幅・下に配置） %>
     <div class="row mt-3">
       <div class="col-md-12">
         <div class="mb-3">

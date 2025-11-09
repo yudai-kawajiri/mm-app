@@ -1,112 +1,36 @@
 <%#
-  機能: 原材料詳細表示パーシャル
-  - 原材料の全属性情報を表示
-  - 計測方法に応じた条件付き表示
+  機能: 商品原材料詳細表示パーシャル（読み取り専用）
+  - 原材料名、数量、商品単位重量、単位を表示
   - 詳細画面で使用
 
   必須引数:
-  - material: Material - 表示対象の原材料
+  - materials: Array<ProductMaterial> - 表示対象の商品原材料配列
 %>
-<% material = local_assigns[:material] %>
-<% material_class = material.class %>
-<% no_setting = t('helpers.no_setting') %>
+<% product_materials = local_assigns[:materials] %>
 
-<div class="pt-1">
-  <div class="row">
-    <div class="col-md-6">
-      <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:name) %></label>
-        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.name %>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <% if material.category.present? %>
-        <div class="mb-3 border-bottom py-3">
-          <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:category) %></label>
-          <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-            <%= material.category.name %>
-          </div>
-        </div>
+<% if product_materials.present? %>
+  <table class="table table-sm table-borderless">
+    <thead>
+      <tr class="border-bottom">
+        <th class="text-muted"><%= t('activerecord.attributes.material.name') %></th>
+        <th class="text-end text-muted"><%= t('products.table_headers.quantity') %></th>
+        <th class="text-end text-muted"><%= t('products.table_headers.unit_weight') %></th>
+        <th class="text-start text-muted"><%= t('products.table_headers.unit') %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% product_materials.each do |pm| %>
+        <tr class="border-bottom">
+          <td><%= pm.material.name %></td>
+          <td class="text-end"><%= number_with_precision(pm.quantity, precision: 0) %></td>
+          <td class="text-end"><%= number_with_precision(pm.unit_weight, precision: 1) %></td>
+          <td class="text-start"><%= pm.unit.name %></td>
+        </tr>
       <% end %>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
-      <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:default_unit_weight) %></label>
-        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.default_unit_weight && material.default_unit_weight > 0 ? number_with_precision(material.default_unit_weight, precision: 1) : no_setting %>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_for_product) %></label>
-        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.unit_for_product.name %>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
-      <% if material.weight_based? %>
-        <div class="mb-3 border-bottom py-3">
-          <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_weight_for_order) %></label>
-          <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-            <%= material.unit_weight_for_order ? number_with_precision(material.unit_weight_for_order, precision: 1) : no_setting %>
-          </div>
-        </div>
-      <% elsif material.count_based? %>
-        <div class="mb-3 border-bottom py-3">
-          <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:pieces_per_order_unit) %></label>
-          <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-            <%= material.pieces_per_order_unit && material.pieces_per_order_unit > 0 ? "#{material.pieces_per_order_unit}#{material.unit_for_product.name}" : no_setting %>
-          </div>
-        </div>
-      <% end %>
-    </div>
-
-    <div class="col-md-6">
-      <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:unit_for_order) %></label>
-        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.unit_for_order.name %>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
-      <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:production_unit) %></label>
-        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.production_unit&.name || no_setting %>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0" style="font-size: 1.0em;"><%= material_class.human_attribute_name(:order_group) %></label>
-        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= material.order_group.present? ? material.order_group.name : no_setting %>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="mt-4">
-  <h6 class="form-label text-muted" style="font-size: 1.1em;"><%= material_class.human_attribute_name(:description) %></h6>
-  <div class="p-3 border rounded d-flex align-items-center justify-content-center" style="min-height: 210px;">
-    <%= render 'shared/components/description_content', content: material.description %>
-  </div>
-</div>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-muted text-center" style="padding-top: 50px; font-size: 1.0em;">
+    <%= t('products.product_material_fields.no_materials_set') %>
+  </p>
+<% end %>

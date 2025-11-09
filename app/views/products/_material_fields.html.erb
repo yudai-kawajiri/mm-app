@@ -1,19 +1,26 @@
+<%#
+  機能: 商品原材料行パーシャル
+  - 1つの原材料行を表示（テーブル行形式）
+  - 原材料選択、数量入力、商品単位重量入力、単位表示、削除ボタン
+  - Stimulus Controllerで単位自動更新・タブ間同期処理
+  - フォーム新規作成・編集画面で使用
+
+  必須引数:
+  - f: FormBuilder - product_materialsのフォームビルダー
+
+  オプション引数:
+  - category_id: Integer - カテゴリID（原材料フィルタリング用）
+%>
 <%
-  # ユニークIDの生成
-  # 既存レコード: existing_{id}
-  # 新規レコード: new_{object_id}
   unique_id = f.object.persisted? ? "existing_#{f.object.id}" : "new_#{f.object.object_id}"
   category_id ||= local_assigns[:category_id] || f.object.material&.category_id || 0
 
-  # ALLタブ（category_id=0）の場合はすべての原材料を表示
-  # それ以外は該当カテゴリの原材料のみ
   if category_id == 0
     materials = Material.order(:name)
   else
     materials = Material.where(category_id: category_id).order(:name)
   end
 
-  # 商品単位重量を取得（product_materials.unit_weightから）
   unit_weight = f.object.unit_weight
   unit_weight_display = unit_weight && unit_weight > 0 ? (unit_weight.to_i == unit_weight ? unit_weight.to_i : unit_weight) : t('helpers.no_setting')
 %>
@@ -30,7 +37,6 @@
                     value: f.object.unit_id || f.object.material&.unit_for_product_id,
                     data: { 'resources--product-material--material-target': 'unitIdInput' } %>
 
-  <!-- 1. 原材料選択 -->
   <td>
     <%= f.collection_select(:material_id, materials, :id, :name,
       { include_blank: t('helpers.prompt.select') },
@@ -43,7 +49,6 @@
       }) %>
   </td>
 
-  <!-- 2. 数量（カンマなし） -->
   <td>
     <%= f.text_field :quantity,
       class: 'form-control',
@@ -57,7 +62,6 @@
       } %>
   </td>
 
-  <!-- 3. 商品単位重量（カンマなし） -->
   <td>
     <%= f.text_field :unit_weight,
       class: 'form-control',
@@ -71,14 +75,12 @@
       } %>
   </td>
 
-  <!-- 4. 単位 -->
   <td>
     <span data-resources--product-material--material-target="unitDisplay" class="fw-bold">
       <%= f.object.material&.production_unit&.name || t('helpers.no_setting') %>
     </span>
   </td>
 
-  <!-- 5. 削除ボタン -->
   <td class="text-end">
     <button type="button"
       class="btn btn-sm btn-danger"

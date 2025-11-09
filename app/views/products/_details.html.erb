@@ -1,10 +1,18 @@
+<%#
+  機能: 商品詳細表示パーシャル
+  - 商品名、カテゴリ、売価、品番、ステータス、画像、説明を表示
+  - 詳細画面で使用
+
+  必須引数:
+  - product: Product - 表示対象の商品
+  または
+  - resource: Product - 表示対象の商品（代替引数）
+%>
 <% product = local_assigns[:product] || local_assigns[:resource] %>
 <% product_class = product.class %>
 <% no_setting = t('helpers.no_setting') %>
 
-<%# ✅ Bパターン: new/editと統一 %>
 <div class="row">
-  <%# 項目1: 商品名 (左カラム) %>
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
       <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:name) %></label>
@@ -14,7 +22,6 @@
     </div>
   </div>
 
-  <%# 項目2: カテゴリー (右カラム) %>
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
       <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:category_id) %></label>
@@ -26,7 +33,6 @@
 </div>
 
 <div class="row">
-  <%# 項目3: 売価 (左カラム) %>
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
       <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:price) %></label>
@@ -36,7 +42,6 @@
     </div>
   </div>
 
-  <%# 項目4: 品番 (右カラム) %>
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
       <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:item_number) %></label>
@@ -48,7 +53,6 @@
 </div>
 
 <div class="row">
-  <%# 項目5: ステータス (左カラム) %>
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
       <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:status) %></label>
@@ -58,7 +62,6 @@
     </div>
   </div>
 
-  <%# 項目6: 画像 (右カラム・固定150px) %>
   <div class="col-md-6">
     <div class="mb-3">
       <label class="form-label mb-0" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:image) %></label>
@@ -75,7 +78,6 @@
   </div>
 </div>
 
-<%# 説明欄（全幅・下に配置） %>
 <div class="row mt-4">
   <div class="col-md-12">
     <h6 class="text-muted" style="font-size: 1.1em;"><%= product_class.human_attribute_name(:description) %></h6>
