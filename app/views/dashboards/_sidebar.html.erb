@@ -1,12 +1,26 @@
-<%# 左側ナビゲーションエリアの土台 %>
+<%#
+  機能: ダッシュボードサイドバーナビゲーション
+
+  主要機能:
+  - 階層メニュー（サブメニュー対応）
+  - アコーディオン展開/折りたたみ
+  - アクティブリンクハイライト
+  - アカウント設定・ログアウトリンク
+
+  Helper連携:
+  - sidebar_menu_items: メニュー項目配列を取得
+  - sidebar_link_active?: リンクがアクティブか判定
+  - sidebar_link_class: リンクのCSSクラスを返す
+  - sidebar_submenu_link_class: サブメニューリンクのCSSクラスを返す
+  - submenu_indicator: サブメニューのインジケータを返す
+%>
+
 <div class="col-md-3 bg-light border-end p-4">
   <h2><%= t('dashboard.menu.title') %></h2>
   <div class="list-group" id="sidebar-accordion">
 
-    <%# ヘルパーからメニュー項目を取得し、動的にリンクを描画 %>
     <% sidebar_menu_items.each_with_index do |item, index| %>
       <% if item[:submenu] %>
-        <%# サブメニューがある場合 %>
         <% collapse_id = "collapse-menu-#{index}" %>
         <% is_active = sidebar_link_active?(item) %>
 
@@ -33,7 +47,6 @@
           <% end %>
         </div>
       <% else %>
-        <%# 通常のメニュー項目 %>
         <%= link_to item[:name], item[:path],
             class: sidebar_link_class(item[:path]) %>
       <% end %>
@@ -41,11 +54,9 @@
 
     <hr>
 
-    <%# アカウント設定 %>
     <%= link_to t('dashboard.menu.account_settings'), edit_user_registration_path,
         class: sidebar_link_class(edit_user_registration_path) %>
 
-    <%# ログアウト %>
     <%= button_to destroy_user_session_path, method: :delete, class: "list-group-item list-group-item-action text-danger mt-2" do %>
       <%= t('devise.sessions.sign_out') %>
     <% end %>
