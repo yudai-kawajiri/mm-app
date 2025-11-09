@@ -1,10 +1,23 @@
-# app/controllers/monthly_budgets_controller.rb
+# frozen_string_literal: true
+
+# MonthlyBudgetsController
+#
+# 月次予算のCRUD操作を管理
+#
+# 機能:
+#   - 月次予算の作成・更新
+#   - 月次予算の削除（日別目標・計画スケジュールも連動）
+#   - 実績入力済みスケジュールの保護
 class MonthlyBudgetsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_monthly_budget, only: [ :update, :destroy ]
+  before_action :set_monthly_budget, only: [:update, :destroy]
 
+  # 月次予算を作成
+  #
+  # year と month パラメータから budget_month を構築
+  #
+  # @return [void]
   def create
-    # year と month パラメータから budget_month を構築
     budget_month = Date.new(params[:year].to_i, params[:month].to_i, 1)
 
     @monthly_budget = current_user.monthly_budgets.find_or_initialize_by(
@@ -22,6 +35,9 @@ class MonthlyBudgetsController < ApplicationController
     end
   end
 
+  # 月次予算を更新
+  #
+  # @return [void]
   def update
     if @monthly_budget.update(monthly_budget_params)
       redirect_to numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
@@ -32,6 +48,12 @@ class MonthlyBudgetsController < ApplicationController
     end
   end
 
+  # 月次予算を削除
+  #
+  # 実績が入力されていない計画スケジュールのみ削除
+  # 日別目標は dependent: :destroy で自動削除
+  #
+  # @return [void]
   def destroy
     budget_month = @monthly_budget.budget_month
 
@@ -39,14 +61,13 @@ class MonthlyBudgetsController < ApplicationController
       start_date = budget_month.beginning_of_month
       end_date = budget_month.end_of_month
 
-      # 実績が入力されていない計画スケジュールのみ削除
-      # (actual_revenue が nil または 0 のもの)
+      # 実績未入力の計画スケジュールのみ削除
       current_user.plan_schedules
                   .where(scheduled_date: start_date..end_date)
                   .where("actual_revenue IS NULL OR actual_revenue = 0")
                   .destroy_all
 
-      # 月次予算を削除（日別目標は dependent: :destroy で自動削除）
+      # 月次予算を削除
       @monthly_budget.destroy!
 
       redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
@@ -60,10 +81,16 @@ class MonthlyBudgetsController < ApplicationController
 
   private
 
+  # 月次予算を取得
+  #
+  # @return [void]
   def set_monthly_budget
     @monthly_budget = current_user.monthly_budgets.find(params[:id])
   end
 
+  # Strong Parameters
+  #
+  # @return [ActionController::Parameters]
   def monthly_budget_params
     params.require(:monthly_budget).permit(:target_amount, :note)
   end

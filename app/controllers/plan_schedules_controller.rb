@@ -1,28 +1,42 @@
-# app/controllers/plan_schedules_controller.rb
+# frozen_string_literal: true
+
+# PlanSchedulesController
+#
+# 計画スケジュールのCRUD操作と実績入力を管理
+#
+# 機能:
+#   - 計画のスケジュール登録（1日1計画）
+#   - 計画の変更（上書き）
+#   - 実績売上の入力
+#   - 計画高の自動計算
 class PlanSchedulesController < AuthenticatedController
+  # 計画スケジュールを作成
+  #
+  # 1日1計画のみ（同じ日の計画は上書き）
+  # 計画高は計画から自動計算
+  #
+  # @return [void]
   def create
-    # Strong Parameters で受け取る
     permitted = plan_schedule_params
     scheduled_date = parse_scheduled_date(permitted[:scheduled_date])
     return unless scheduled_date
 
-    # パラメータチェック
     unless permitted[:plan_id].present?
       redirect_to numerical_managements_path,
                   alert: I18n.t('api.errors.missing_required_info')
       return
     end
 
-    # 計画を取得して expected_revenue を計算
+    # 計画を取得
     plan = current_user.plans.find(permitted[:plan_id])
 
-    # 1日1計画のみ（同じ日の計画は上書き）
+    # 1日1計画（find_or_initialize_by）
     @plan_schedule = PlanSchedule.find_or_initialize_by(
       user: current_user,
       scheduled_date: scheduled_date
     )
 
-    # 計画高は計画から自動計算（パラメータの値は無視）
+    # 計画高は計画から自動計算
     @plan_schedule.assign_attributes(
       plan: plan,
       planned_revenue: plan.expected_revenue,
@@ -41,29 +55,33 @@ class PlanSchedulesController < AuthenticatedController
 
       redirect_to numerical_managements_path(
         month: scheduled_date.strftime("%Y-%m")
-      ), notice: I18n.t('plan_schedules.messages.plan_schedule_saved', date: scheduled_date.strftime('%-m月%-d日'), action: action)
+      ), notice: I18n.t('plan_schedules.messages.plan_schedule_saved',
+                        date: scheduled_date.strftime('%-m月%-d日'),
+                        action: action)
     else
       Rails.logger.error "=== PlanSchedule Save Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
       redirect_to numerical_managements_path,
-                  alert: I18n.t('plan_schedules.messages.plan_schedule_save_failed', errors: @plan_schedule.errors.full_messages.join(', '))
+                  alert: I18n.t('plan_schedules.messages.plan_schedule_save_failed',
+                                errors: @plan_schedule.errors.full_messages.join(', '))
     end
   end
 
+  # 計画スケジュールを更新
+  #
+  # @return [void]
   def update
-    # Strong Parameters で受け取る
     permitted = plan_schedule_params
     scheduled_date = parse_scheduled_date(permitted[:scheduled_date])
     return unless scheduled_date
 
-    # 既存レコードを取得
     @plan_schedule = current_user.plan_schedules.find(params[:id])
 
-    # 計画を取得して expected_revenue を計算
+    # 計画を取得
     plan = current_user.plans.find(permitted[:plan_id])
 
-    # 計画高は計画から自動計算（パラメータの値は無視）
+    # 計画高は計画から自動計算
     @plan_schedule.assign_attributes(
       plan: plan,
       planned_revenue: plan.expected_revenue
@@ -78,24 +96,29 @@ class PlanSchedulesController < AuthenticatedController
 
       redirect_to numerical_managements_path(
         month: scheduled_date.strftime("%Y-%m")
-      ), notice: I18n.t('plan_schedules.messages.plan_schedule_updated_with_date', date: scheduled_date.strftime('%-m月%-d日'))
+      ), notice: I18n.t('plan_schedules.messages.plan_schedule_updated_with_date',
+                        date: scheduled_date.strftime('%-m月%-d日'))
     else
       Rails.logger.error "=== PlanSchedule Update Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
       redirect_to numerical_managements_path,
-                  alert: I18n.t('plan_schedules.messages.plan_schedule_update_failed', errors: @plan_schedule.errors.full_messages.join(', '))
+                  alert: I18n.t('plan_schedules.messages.plan_schedule_update_failed',
+                                errors: @plan_schedule.errors.full_messages.join(', '))
     end
   end
 
-  # 実績入力専用アクション（RESTful命名規則に準拠）
+  # 実績入力専用アクション
+  #
+  # RESTful命名規則に準拠
+  #
+  # @return [void]
   def update_actual_revenue
     @plan_schedule = current_user.plan_schedules.find(params[:id])
 
     Rails.logger.info "=== Updating Actual Revenue for PlanSchedule ID: #{@plan_schedule.id} ==="
     Rails.logger.info "Actual Revenue: #{plan_schedule_params[:actual_revenue]}"
 
-    # Strong Parameters を使用
     if @plan_schedule.update(plan_schedule_params.slice(:actual_revenue))
       Rails.logger.info "=== Actual Revenue Updated Successfully ==="
 
@@ -112,15 +135,19 @@ class PlanSchedulesController < AuthenticatedController
     end
   end
 
-
   private
 
   # Strong Parameters
+  #
+  # @return [ActionController::Parameters]
   def plan_schedule_params
     params.require(:plan_schedule).permit(:scheduled_date, :plan_id, :planned_revenue, :actual_revenue, :note)
   end
 
-  # 日付パース（共通化）
+  # 日付パース
+  #
+  # @param date_string [String] 日付文字列
+  # @return [Date, nil] パース結果
   def parse_scheduled_date(date_string)
     return nil unless date_string.present?
 

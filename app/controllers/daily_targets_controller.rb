@@ -1,7 +1,20 @@
-# app/controllers/daily_targets_controller.rb
+# frozen_string_literal: true
+
+# DailyTargetsController
+#
+# 日別目標のCRUD操作を管理
+#
+# 機能:
+#   - 日別目標の作成・更新
+#   - 月次予算との紐付け
+#   - 権限チェック
 class DailyTargetsController < AuthenticatedController
+  # 日別目標を作成
+  #
+  # find_or_initialize_by で既存レコード検索 or 新規作成
+  #
+  # @return [void]
   def create
-    # Strong Parameters で受け取る
     permitted = daily_target_params
     target_date = parse_target_date(permitted[:target_date])
     return unless target_date
@@ -9,34 +22,36 @@ class DailyTargetsController < AuthenticatedController
     monthly_budget = find_monthly_budget_for_date(target_date)
     return unless monthly_budget
 
-    # find_or_initialize_by で既存レコード検索 or 新規作成
     @daily_target = DailyTarget.find_or_initialize_by(
       user: current_user,
       monthly_budget: monthly_budget,
       target_date: target_date
     )
 
-    # Strong Parameters で受け取った値を設定
     @daily_target.assign_attributes(permitted.except(:target_date))
 
     if @daily_target.save
       message = @daily_target.previously_new_record? ? I18n.t('common.created') : I18n.t('common.updated')
       redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  notice: I18n.t('numerical_managements.messages.daily_target_saved', date: target_date.strftime('%-m月%-d日'), action: message)
+                  notice: I18n.t('numerical_managements.messages.daily_target_saved',
+                                date: target_date.strftime('%-m月%-d日'),
+                                action: message)
     else
       Rails.logger.error "DailyTarget保存失敗: #{@daily_target.errors.full_messages.join(', ')}"
       redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  alert: I18n.t('numerical_managements.messages.daily_target_save_failed', errors: @daily_target.errors.full_messages.join(', '))
+                  alert: I18n.t('numerical_managements.messages.daily_target_save_failed',
+                                errors: @daily_target.errors.full_messages.join(', '))
     end
   end
 
+  # 日別目標を更新
+  #
+  # @return [void]
   def update
-    # Strong Parameters で受け取る
     permitted = daily_target_params
     target_date = parse_target_date(permitted[:target_date])
     return unless target_date
 
-    # 既存レコードを取得
     @daily_target = DailyTarget.find(params[:id])
 
     # 権限チェック
@@ -46,27 +61,33 @@ class DailyTargetsController < AuthenticatedController
       return
     end
 
-    # Strong Parameters で受け取った値を設定
     @daily_target.assign_attributes(permitted.except(:target_date))
 
     if @daily_target.save
       redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  notice: I18n.t('numerical_managements.messages.daily_target_updated_with_date', date: target_date.strftime('%-m月%-d日'))
+                  notice: I18n.t('numerical_managements.messages.daily_target_updated_with_date',
+                                date: target_date.strftime('%-m月%-d日'))
     else
       Rails.logger.error "DailyTarget更新失敗: #{@daily_target.errors.full_messages.join(', ')}"
       redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  alert: I18n.t('numerical_managements.messages.daily_target_update_failed', errors: @daily_target.errors.full_messages.join(', '))
+                  alert: I18n.t('numerical_managements.messages.daily_target_update_failed',
+                                errors: @daily_target.errors.full_messages.join(', '))
     end
   end
 
   private
 
   # Strong Parameters
+  #
+  # @return [ActionController::Parameters]
   def daily_target_params
     params.require(:daily_target).permit(:target_date, :target_amount)
   end
 
-  # 日付パース（共通化）
+  # 日付パース
+  #
+  # @param date_string [String] 日付文字列
+  # @return [Date, nil] パース結果
   def parse_target_date(date_string)
     return nil unless date_string.present?
 
@@ -77,7 +98,10 @@ class DailyTargetsController < AuthenticatedController
     nil
   end
 
-  # MonthlyBudget検索（共通化）
+  # 月次予算を検索
+  #
+  # @param date [Date] 対象日
+  # @return [MonthlyBudget, nil] 月次予算
   def find_monthly_budget_for_date(date)
     monthly_budget = MonthlyBudget.find_by(
       user: current_user,
