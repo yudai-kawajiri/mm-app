@@ -13,7 +13,7 @@
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: new_plan_path %>
+    new_path: new_resources_plan_path %>
 
 <%= render('shared/components/resource_list',
     resources: @plans,
@@ -21,9 +21,9 @@
     search_target: :category_id,
     search_categories: @plan_categories,
     show_copy: true,
-    copy_url_method: :copy_plan_path,
+    copy_url_method: :copy_resources_plan_path,
     show_print: true,
-    print_url_method: :print_plan_path,
+    print_url_method: :print_resources_plan_path,
     icon_mode: true,
 
     columns: [

@@ -118,7 +118,7 @@
                 <%= link_to t('helpers.link.delete_image'), "#",
                   data: {
                     product_id: f.object.id,
-                    url: purge_image_product_path(f.object),
+                    url: purge_image_resources_product_path(f.object),
                     action: "click->image-preview#deleteExistingImage"
                   },
                   class: "btn btn-sm btn-danger" %>

@@ -13,10 +13,10 @@
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: new_product_path %>
+    new_path: new_resources_resources_product_path %>
 
 <div data-controller="sortable-table"
-      data-sortable-table-reorder-path-value="<%= reorder_products_path %>"
+      data-sortable-table-reorder-path-value="<%= reorder_resources_products_path %>"
       data-sortable-table-param-name-value="product_ids">
 
   <%= render 'shared/sortable_buttons' %>
@@ -27,7 +27,7 @@
       search_target: :category_id,
       search_categories: @product_categories,
       show_copy: true,
-      copy_url_method: :copy_product_path,
+      copy_url_method: :copy_resources_product_path,
       icon_mode: true,
 
       columns: [

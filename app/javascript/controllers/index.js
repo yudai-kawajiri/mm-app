@@ -13,7 +13,7 @@ import FormNestedFormItemController from "controllers/form/nested_form_item_cont
 import FormSubmitController from "controllers/form/submit_controller"
 
 // Tabs Controllers
-import TabsCategoryTabsController from "controllers/tabs/category_tabs_controller"
+import TabsCategoryTabsController from "controllers/ui/tabs/category_tabs_controller"
 
 // Resources - Plan Product Controllers
 import ResourcesPlanProductRowController from "controllers/resources/plan-product/row_controller"
@@ -24,24 +24,24 @@ import ResourcesPlanProductSyncController from "controllers/resources/plan-produ
 import ResourcesProductMaterialMaterialController from "controllers/resources/product-material/material_controller"
 
 // Material Controllers
-import MeasurementTypeController from "controllers/measurement_type_controller"
-import OrderGroupController from "controllers/order_group_controller"
+import MeasurementTypeController from "controllers/input/measurement_type_controller"
+import OrderGroupController from "controllers/management/order_group_controller"
 
 // UI Enhancement Controllers
-import FlashController from "controllers/flash_controller"
-import CharacterCounterController from "controllers/character_counter_controller"
+import FlashController from "controllers/ui/flash_controller"
+import CharacterCounterController from "controllers/input/character_counter_controller"
 import FormValidationController from "controllers/form_validation_controller"
-import NumberInputController from "controllers/number_input_controller"
-import ImagePreviewController from "controllers/image_preview_controller"
+import NumberInputController from "controllers/input/number_input_controller"
+import ImagePreviewController from "controllers/ui/image_preview_controller"
 
 // 計画割り当てController
-import PlanAssignmentController from "controllers/plan_assignment_controller"
+import PlanAssignmentController from "controllers/management/plan_assignment_controller"
 
 //  Sortable Table Controller（ドラッグ&ドロップ並び替え）
-import SortableTableController from "controllers/sortable_table_controller"
+import SortableTableController from "controllers/ui/sortable_table_controller"
 
 // Budget Chart Controller（予算グラフ表示）
-import BudgetChartController from "controllers/budget_chart_controller"
+import BudgetChartController from "controllers/charts/budget_chart_controller"
 
 // 手動登録
 application.register("form--nested-form", FormNestedFormController)

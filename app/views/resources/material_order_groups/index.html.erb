@@ -12,9 +12,9 @@
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: new_material_order_group_path %>
+    new_path: new_resources_resources_material_order_group_path %>
 
-<%= form_with url: material_order_groups_path,
+<%= form_with url: resources_material_order_groups_path,
               method: :get,
               local: true,
               class: "mb-3" do |f| %>
@@ -28,7 +28,7 @@
         <div class="input-group-append">
           <%= f.submit t('common.search'), class: "btn btn-primary" %>
           <% if params[:q].present? %>
-            <%= link_to t('common.clear'), material_order_groups_path, class: "btn btn-outline-secondary" %>
+            <%= link_to t('common.clear'), resources_material_order_groups_path, class: "btn btn-outline-secondary" %>
           <% end %>
         </div>
       </div>

@@ -63,7 +63,7 @@ module PlansHelper
         )
 
         # ドロップダウンメニュー項目（すべてのステータスを選択可能）
-        menu_items = Plan.statuses.keys.map do |status_key|
+        menu_items = Resources::Plan.statuses.keys.map do |status_key|
           status_label = t("activerecord.enums.plan.status.#{status_key}")
           content_tag(:li) do
             button_to status_label,
