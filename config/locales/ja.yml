@@ -206,6 +206,7 @@ ja:
   material_order_groups:
     index:
       title: "発注グループ管理"
+      unused: "未使用"
     new:
       title: "発注グループ新規登録"
     edit:
