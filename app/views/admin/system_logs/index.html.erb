@@ -1,3 +1,15 @@
+<%# システムログ一覧 %>
+<%#
+  機能:
+  - PaperTrailのバージョン履歴を表示
+  - モデル・ユーザー・日付範囲でフィルタリング
+  - イベントタイプ別にバッジ表示
+
+  インスタンス変数:
+  - @versions: バージョン履歴のコレクション（ページネーション済み）
+  - @model_types: フィルタ用のモデルタイプ配列
+  - @users: フィルタ用のユーザー一覧
+%>
 <%= content_for :title, t('admin.system_logs.index.title') %>
 
 <div class="container-fluid py-4">
@@ -5,6 +17,7 @@
     <h1 class="h3"><%= t('admin.system_logs.index.title') %></h1>
   </div>
 
+  <%# フィルタフォーム %>
   <div class="card mb-4">
     <div class="card-body">
       <%= form_with url: admin_system_logs_path, method: :get, local: true, class: 'row g-3' do |f| %>
@@ -35,6 +48,7 @@
     </div>
   </div>
 
+  <%# ログテーブル %>
   <div class="card">
     <div class="card-body">
       <% if @versions.any? %>
@@ -54,49 +68,16 @@
               <% @versions.each do |version| %>
                 <tr>
                   <td><%= l(version.created_at, format: :long) %></td>
-                  <td>
-                    <% if version.whodunnit.present? %>
-                      <% user = User.find_by(id: version.whodunnit.to_i) %>
-                      <%= user&.name || t('admin.system_logs.index.unknown_user') %>
-                    <% else %>
-                      <%= t('admin.system_logs.index.system') %>
-                    <% end %>
-                  </td>
+                  <td><%= system_log_user_name(version) %></td>
                   <td>
                     <span class="badge bg-info">
                       <%= t("activerecord.models.#{version.item_type.underscore}", default: version.item_type) %>
                     </span>
                   </td>
-                  <td>
-                    <% case version.event %>
-                    <% when 'create' %>
-                      <span class="badge bg-success"><%= t('admin.system_logs.events.create') %></span>
-                    <% when 'update' %>
-                      <span class="badge bg-warning"><%= t('admin.system_logs.events.update') %></span>
-                    <% when 'destroy' %>
-                      <span class="badge bg-danger"><%= t('admin.system_logs.events.destroy') %></span>
-                    <% end %>
-                  </td>
+                  <td><%= system_log_event_badge(version.event) %></td>
                   <td><%= version.item_id %></td>
                   <td>
-                    <%
-                      begin
-                        if version.event == 'create'
-                          # 作成時は現在のレコードから取得
-                          record = version.item_type.constantize.find_by(id: version.item_id)
-                          detail = record&.name || record&.email || t('admin.system_logs.index.deleted_record')
-                        elsif version.object.present?
-                          # 更新・削除時はobjectから取得
-                          obj = YAML.unsafe_load(version.object)
-                          detail = obj['name'] || obj['email'] || t('admin.system_logs.index.no_detail')
-                        else
-                          detail = t('admin.system_logs.index.no_detail')
-                        end
-                      rescue => e
-                        detail = t('admin.system_logs.index.no_detail')
-                      end
-                    %>
-                    <span class="text-muted"><%= detail %></span>
+                    <span class="text-muted"><%= system_log_detail(version) %></span>
                   </td>
                 </tr>
               <% end %>
