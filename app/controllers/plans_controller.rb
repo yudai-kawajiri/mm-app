@@ -90,8 +90,8 @@ class PlansController < AuthenticatedController
       @plan.update(status: new_status)
       status_text = t("activerecord.enums.plan.status.#{new_status}")
       redirect_to plans_path, notice: t('plans.messages.status_updated',
-                                       name: @plan.name,
-                                       status: status_text)
+                                        name: @plan.name,
+                                        status: status_text)
     else
       redirect_to plans_path, alert: t('api.errors.invalid_status')
     end
@@ -133,8 +133,8 @@ class PlansController < AuthenticatedController
     end
 
     redirect_to plans_path, notice: t('plans.messages.copy_success',
-                                     original_name: original_plan.name,
-                                     new_name: new_plan.name)
+                                      original_name: original_plan.name,
+                                      new_name: new_plan.name)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Plan copy failed: #{e.record.errors.full_messages.join(', ')}"
     redirect_to plans_path, alert: t('plans.messages.copy_failed',
