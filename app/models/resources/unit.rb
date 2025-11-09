@@ -13,7 +13,7 @@
 #   - production: 使用単位（商品製造で使う単位: g, 本など）
 #   - ordering: 発注単位（発注時の単位: kg, 箱など）
 #   - manufacturing: 製造単位（印刷時に表示する数え方: 枚, カン, 本, 切れなど）
-class Unit < ApplicationRecord
+class Resources::Unit < ApplicationRecord
   # 変更履歴の記録
   has_paper_trail
 

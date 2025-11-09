@@ -8,7 +8,7 @@
 #   Material.create(name: "本マグロ", measurement_type: "weight", category_id: 1)
 #   Material.search_by_name("マグロ")
 #   material.weight_based?
-class Material < ApplicationRecord
+class Resources::Material < ApplicationRecord
   # 変更履歴の記録
   has_paper_trail
 
@@ -17,15 +17,15 @@ class Material < ApplicationRecord
   include UserAssociatable
 
   # 関連付け
-  belongs_to :category
-  belongs_to :production_unit, class_name: "Unit", optional: true
-  belongs_to :unit_for_product, class_name: "Unit"
-  belongs_to :unit_for_order, class_name: "Unit"
-  belongs_to :order_group, class_name: "MaterialOrderGroup", optional: true
+  belongs_to :category, class_name: 'Resources::Category'
+  belongs_to :production_unit, class_name: 'Resources::Unit', optional: true
+  belongs_to :unit_for_product, class_name: 'Resources::Unit'
+  belongs_to :unit_for_order, class_name: 'Resources::Unit'
+  belongs_to :order_group, class_name: 'Resources::MaterialOrderGroup', optional: true
 
   # 多対多の関連
-  has_many :product_materials, dependent: :destroy
-  has_many :products, through: :product_materials, dependent: :restrict_with_error
+  has_many :product_materials, class_name: 'Planning::ProductMaterial', dependent: :destroy
+  has_many :products, through: :product_materials, class_name: 'Resources::Product', dependent: :restrict_with_error
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_id }

@@ -13,7 +13,7 @@
 #   - material: 材料カテゴリー (0)
 #   - product: 製品カテゴリー (1)
 #   - plan: 計画カテゴリー (2)
-class Category < ApplicationRecord
+class Resources::Category < ApplicationRecord
   # 変更履歴の記録
   has_paper_trail
 
@@ -25,9 +25,9 @@ class Category < ApplicationRecord
   enum :category_type, { material: 0, product: 1, plan: 2 }
 
   # 関連付け（削除時は関連データの存在をチェック）
-  has_many :materials, dependent: :restrict_with_error
-  has_many :products, dependent: :restrict_with_error
-  has_many :plans, dependent: :restrict_with_error
+  has_many :materials, class_name: 'Resources::Material', dependent: :restrict_with_error
+  has_many :products, class_name: 'Resources::Product', dependent: :restrict_with_error
+  has_many :plans, class_name: 'Resources::Plan', dependent: :restrict_with_error
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_type }

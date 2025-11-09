@@ -8,7 +8,7 @@
 #   MaterialOrderGroup.create(name: "マグロ類")
 #   MaterialOrderGroup.search_by_name("マグロ")
 #   group.materials
-class MaterialOrderGroup < ApplicationRecord
+class Resources::MaterialOrderGroup < ApplicationRecord
   # 変更履歴の記録
   has_paper_trail
 
@@ -17,7 +17,7 @@ class MaterialOrderGroup < ApplicationRecord
   include UserAssociatable
 
   # 関連付け
-  has_many :materials, foreign_key: :order_group_id, dependent: :restrict_with_error
+  has_many :materials, class_name: 'Resources::Material', foreign_key: :order_group_id, dependent: :restrict_with_error
 
   # バリデーション
   validates :name, presence: true, uniqueness: true

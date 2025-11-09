@@ -8,7 +8,7 @@
 #   MonthlyBudget.create(budget_month: Date.new(2024, 12, 1), target_amount: 1500000)
 #   MonthlyBudget.for_month(2024, 12)
 #   budget.achievement_rate
-class MonthlyBudget < ApplicationRecord
+class Management::MonthlyBudget < ApplicationRecord
   # カンマ削除機能
   include StripCommas
   strip_commas_from :target_amount

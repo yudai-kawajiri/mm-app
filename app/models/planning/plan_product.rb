@@ -7,13 +7,13 @@
 # 使用例:
 #   PlanProduct.create(plan_id: 1, product_id: 1, production_count: 100)
 #   pp.material_requirements
-class PlanProduct < ApplicationRecord
+class Planning::PlanProduct < ApplicationRecord
   # 変更履歴の記録
   has_paper_trail
 
   # 関連付け
-  belongs_to :plan
-  belongs_to :product
+  belongs_to :plan, class_name: 'Resources::Plan'
+  belongs_to :product, class_name: 'Resources::Product'
 
   # バリデーション
   validates :production_count, presence: true, numericality: { greater_than: 0 }

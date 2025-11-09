@@ -8,7 +8,7 @@
 #   PlanSchedule.create(plan_id: 1, scheduled_date: Date.today, status: :scheduled)
 #   PlanSchedule.for_month(2024, 12)
 #   schedule.achievement_rate
-class PlanSchedule < ApplicationRecord
+class Planning::PlanSchedule < ApplicationRecord
   # カンマ削除機能
   include StripCommas
   strip_commas_from :planned_revenue, :actual_revenue
@@ -20,7 +20,7 @@ class PlanSchedule < ApplicationRecord
   include UserAssociatable
 
   # 計画との関連
-  belongs_to :plan
+  belongs_to :plan, class_name: 'Resources::Plan'
 
   # バリデーション
   validates :scheduled_date, presence: true, uniqueness: { scope: :plan_id }

@@ -8,7 +8,7 @@
 #   DailyTarget.create(target_date: Date.today, target_amount: 50000, monthly_budget_id: 1)
 #   DailyTarget.for_month(2024, 12)
 #   DailyTarget.recent
-class DailyTarget < ApplicationRecord
+class Management::DailyTarget < ApplicationRecord
   # カンマ削除機能
   include StripCommas
   strip_commas_from :target_amount
@@ -20,7 +20,7 @@ class DailyTarget < ApplicationRecord
   include UserAssociatable
 
   # 月次予算との関連
-  belongs_to :monthly_budget
+  belongs_to :monthly_budget, class_name: 'Management::MonthlyBudget'
 
   # バリデーション
   validates :target_date, presence: true, uniqueness: { scope: :monthly_budget_id }

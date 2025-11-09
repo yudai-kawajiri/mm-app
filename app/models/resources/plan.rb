@@ -8,7 +8,7 @@
 #   Plan.create(name: "ランチセット", category_id: 1, status: :active)
 #   Plan.active_plans
 #   plan.expected_revenue
-class Plan < ApplicationRecord
+class Resources::Plan < ApplicationRecord
   # 変更履歴の記録
   has_paper_trail
 
@@ -17,12 +17,12 @@ class Plan < ApplicationRecord
   include UserAssociatable
 
   # 関連付け
-  belongs_to :category
-  has_many :plan_products, inverse_of: :plan, dependent: :destroy
+  belongs_to :category, class_name: 'Resources::Category'
+  has_many :plan_products, class_name: 'Planning::PlanProduct', inverse_of: :plan, dependent: :destroy
   accepts_nested_attributes_for :plan_products,
                                 allow_destroy: true,
                                 reject_if: :reject_plan_products
-  has_many :plan_schedules, dependent: :destroy
+  has_many :plan_schedules, class_name: 'Planning::PlanSchedule', dependent: :destroy
 
   # 計画のステータス定義
   enum :status, {

@@ -8,7 +8,7 @@
 #   Product.create(name: "まぐろ", price: 500, item_number: "0001", category_id: 1)
 #   Product.search_by_name("まぐろ")
 #   product.materials
-class Product < ApplicationRecord
+class Resources::Product < ApplicationRecord
   # 変更履歴の記録
   has_paper_trail
 
@@ -20,11 +20,11 @@ class Product < ApplicationRecord
   enum :status, { draft: 0, selling: 1, discontinued: 2 }
 
   # 関連付け
-  belongs_to :category
-  has_many :product_materials, dependent: :destroy
-  has_many :materials, through: :product_materials
-  has_many :plan_products, dependent: :restrict_with_error
-  has_many :plans, through: :plan_products, dependent: :restrict_with_error
+  belongs_to :category, class_name: 'Resources::Category'
+  has_many :product_materials, class_name: 'Planning::ProductMaterial', dependent: :destroy
+  has_many :materials, through: :product_materials, class_name: 'Resources::Material'
+  has_many :plan_products, class_name: 'Planning::PlanProduct', dependent: :restrict_with_error
+  has_many :plans, through: :plan_products, class_name: 'Resources::Plan', dependent: :restrict_with_error
 
   # ネストされたフォームから product_materials を受け入れる
   accepts_nested_attributes_for :product_materials, allow_destroy: true

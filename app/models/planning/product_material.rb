@@ -8,14 +8,14 @@
 #   ProductMaterial.create(product_id: 1, material_id: 1, quantity: 2, unit_weight: 50, unit_id: 1)
 #   pm.total_weight
 #   pm.required_order_quantity
-class ProductMaterial < ApplicationRecord
+class Planning::ProductMaterial < ApplicationRecord
   # 変更履歴の記録
   has_paper_trail
 
   # 関連付け
-  belongs_to :product
-  belongs_to :material
-  belongs_to :unit
+  belongs_to :product, class_name: 'Resources::Product'
+  belongs_to :material, class_name: 'Resources::Material'
+  belongs_to :unit, class_name: 'Resources::Unit'
 
   # バリデーション
   validates :material_id, presence: true, uniqueness: { scope: :product_id, message: :already_registered }
