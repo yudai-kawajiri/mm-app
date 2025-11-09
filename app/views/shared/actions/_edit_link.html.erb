@@ -1,11 +1,16 @@
-<%# 必須引数: url %>
-<%# オプション引数: custom_class %>
-<% custom_class ||= nil %>
+<%# 編集リンク %>
+<%#
+  機能:
+  - リソース編集ページへのリンクボタンを表示
 
-<%# リンクテキスト: helpers.link.edit を使用 %>
-<% link_text = t('helpers.link.edit') %>
+  必須引数:
+  - url: 編集ページのURL
 
+  オプション引数:
+  - custom_class: 追加CSSクラス (デフォルト: なし)
+%>
+<% custom_class = local_assigns[:custom_class] %>
 <% default_class = "btn btn-sm btn-outline-secondary" %>
-<% final_class = "#{default_class} #{custom_class}".strip %>
+<% final_class = [default_class, custom_class].compact.join(' ') %>
 
-<%= link_to link_text, url, class: final_class %>
+<%= link_to t('helpers.link.edit'), url, class: final_class %>
