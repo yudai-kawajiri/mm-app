@@ -1,6 +1,9 @@
+<%#
+  機能: 商品編集画面
+  - 既存の商品情報を編集
+%>
 <% content_for(:title, t('products.edit.title', name: @product.name)) %>
 
-<%# Card デザインでラップ %>
 <div class="container mt-4">
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white">
@@ -8,7 +11,6 @@
     </div>
 
     <div class="card-body">
-      <%# フォームを呼び出し %>
       <%= render 'form', product: @product %>
     </div>
   </div>
