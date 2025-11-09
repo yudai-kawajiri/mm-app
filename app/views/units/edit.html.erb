@@ -1,6 +1,10 @@
+<%#
+  機能: 単位編集画面
+  - 既存の単位情報を編集
+%>
 <% content_for :title, t('units.edit.title', name: @unit.name) %>
 
 <%= render 'shared/resource_form',
-           resource: @unit,
-           form_title: t('units.edit.title', name: @unit.name),
-           submit_label: t('common.update') %>
+            resource: @unit,
+            form_title: t('units.edit.title', name: @unit.name),
+            submit_label: t('common.update') %>

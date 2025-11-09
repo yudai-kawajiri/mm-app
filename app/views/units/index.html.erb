@@ -1,17 +1,18 @@
+<%#
+  機能: 単位一覧画面
+  - 全単位の一覧表示
+  - カテゴリによる検索機能
+%>
 <%= content_for(:title, t('units.index.title')) %>
 
-<% title = t('units.index.title') %>
-
 <%= render 'shared/layouts/header_with_actions',
-    title: title,
+    title: t('units.index.title'),
     resource: nil,
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: new_unit_path
-%>
+    new_path: new_unit_path %>
 
-<%# リソース一覧（検索、フィルター、テーブル） %>
 <%= render 'shared/components/resource_list',
     resources: @units,
     resource_class: Unit,
@@ -26,5 +27,4 @@
     ]
 %>
 
-<%# ページネーション %>
 <%= paginate @units, theme: 'bootstrap-5' %>

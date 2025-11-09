@@ -1,6 +1,10 @@
+<%#
+  機能: 単位新規作成画面
+  - 新しい単位を作成
+%>
 <% content_for :title, t('units.new.title') %>
 
 <%= render 'shared/resource_form',
-           resource: @unit,
-           form_title: t('units.new.title'),
-           submit_label: t('helpers.submit.create') %>
+            resource: @unit,
+            form_title: t('units.new.title'),
+            submit_label: t('helpers.submit.create') %>
