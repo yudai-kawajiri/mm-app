@@ -1,7 +1,12 @@
+<%#
+  機能: 印刷用レイアウト
+  - 製造計画等の印刷機能で使用
+  - A4サイズ(210mm)対応
+  - 画面表示時はプレビュー、印刷時は最適化されたレイアウト
+%>
 <!DOCTYPE html>
 <html>
 <head>
-
   <title><%= t('common.print') %> - <%= yield(:title) %></title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
@@ -10,7 +15,6 @@
   <%= stylesheet_link_tag 'application', media: 'all' %>
 
   <style>
-    /* 画面表示用のスタイル */
     @media screen {
       body {
         background-color: #f5f5f5;
@@ -31,7 +35,6 @@
       }
     }
 
-    /* 印刷時は余計な要素を非表示 */
     @media print {
       .no-print {
         display: none !important;
@@ -49,7 +52,7 @@
 <body>
   <div class="no-print">
     <button onclick="window.print()" class="btn btn-primary btn-lg">
-      <%= t('common.actions.print')%>
+      <%= t('common.print_action') %>
     </button>
     <button onclick="window.close()" class="btn btn-secondary btn-lg ml-2">
       ✕ <%= t('common.close') %>
