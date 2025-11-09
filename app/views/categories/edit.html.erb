@@ -1,6 +1,10 @@
+<%#
+  機能: カテゴリー編集画面
+  - 既存のカテゴリー情報を編集
+%>
 <% content_for :title, t('categories.edit.title', name: @category.name) %>
 
 <%= render 'shared/resource_form',
-           resource: @category,
-           form_title: t('categories.edit.title', name: @category.name),
-           submit_label: t('common.update') %>
+            resource: @category,
+            form_title: t('categories.edit.title', name: @category.name),
+            submit_label: t('common.update') %>
