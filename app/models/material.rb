@@ -1,33 +1,35 @@
+# frozen_string_literal: true
+
+# Material
+#
+# 材料モデル - 寿司ネタなどの原材料を管理
+#
+# 使用例:
+#   Material.create(name: "本マグロ", measurement_type: "weight", category_id: 1)
+#   Material.search_by_name("マグロ")
+#   material.weight_based?
 class Material < ApplicationRecord
-  # PaperTrailで変更履歴を記録
+  # 変更履歴の記録
   has_paper_trail
 
-  # 名前検索スコープを組み込み
+  # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
 
+  # 関連付け
   belongs_to :category
   belongs_to :production_unit, class_name: "Unit", optional: true
-
-  # unit_for_product_id カラムを参照し、Unitモデルであることを明示
   belongs_to :unit_for_product, class_name: "Unit"
-
-  # unit_for_order_id カラムを参照し、Unitモデルであることを明示
   belongs_to :unit_for_order, class_name: "Unit"
-
-  # 発注グループへの参照（オプショナル）
   belongs_to :order_group, class_name: "MaterialOrderGroup", optional: true
 
-  # 多対多
+  # 多対多の関連
   has_many :product_materials, dependent: :destroy
   has_many :products, through: :product_materials, dependent: :restrict_with_error
 
-  # 計測方法のバリデーション
+  # バリデーション
+  validates :name, presence: true, uniqueness: { scope: :category_id }
   validates :measurement_type, presence: true, inclusion: { in: %w[weight count] }
-
-  # 各バリデーションを設定
-  validates :name, presence: true
-  validates :name, uniqueness: { scope: :category_id }
 
   # 重量ベースの場合のバリデーション
   validates :unit_weight_for_order,
@@ -40,47 +42,61 @@ class Material < ApplicationRecord
             allow_nil: true,
             if: :weight_based?
 
-  # 個数ベースの場合のバリデーション（既存のpieces_per_order_unitを使用）
+  # 個数ベースの場合のバリデーション
   validates :pieces_per_order_unit,
             presence: true,
             numericality: { greater_than: 0, only_integer: true },
             if: :count_based?
 
-  # インデックス表示用のスコープ (N+1問題対策と並び替え)
+  # インデックス表示用（N+1問題対策と並び替え）
   scope :for_index, -> { includes(:category, :unit_for_product, :unit_for_order).order(created_at: :desc) }
 
-  # 表示順でソート（display_orderが同じ場合はid順）
+  # 表示順でソート
   scope :ordered, -> { order(:display_order, :id) }
 
+  # 表示順を更新
+  #
+  # @param material_ids [Array<Integer>] 材料IDの配列（並び順）
+  # @return [void]
   def self.update_display_orders(material_ids)
     material_ids.each_with_index do |material_id, index|
       Material.where(id: material_id).update_all(display_order: index + 1)
     end
   end
 
-  # 計測方法の判定メソッド
+  # 重量ベースかどうかを判定
+  #
+  # @return [Boolean]
   def weight_based?
     measurement_type == 'weight'
   end
 
+  # 個数ベースかどうかを判定
+  #
+  # @return [Boolean]
   def count_based?
     measurement_type == 'count'
   end
 
   # 発注単位の換算タイプを判定（後方互換性のため残す）
+  #
+  # @return [Symbol] :weight, :count, :pieces, :none
   def order_conversion_type
     return :weight if weight_based?
     return :count if count_based?
 
-    if pieces_per_order_unit.present? && pieces_per_order_unit > 0
+    if pieces_per_order_unit.present? && pieces_per_order_unit.positive?
       :pieces
-    elsif unit_weight_for_order.to_f > 0
+    elsif unit_weight_for_order.to_f.positive?
       :weight
     else
       :none
     end
   end
 
+  # 発注グループ名を取得
+  #
+  # @return [String, nil] 発注グループ名
   def order_group_name
     order_group&.name
   end
