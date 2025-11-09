@@ -1,12 +1,39 @@
+# frozen_string_literal: true
+
+# WeatherService
+#
+# OpenWeatherMap APIから天気予報データを取得するサービス
+#
+# 使用例:
+#   service = WeatherService.new(city: 'Tokyo', country_code: 'JP')
+#   forecast = service.fetch_weekly_forecast
+#
+# 機能:
+#   - 7日間の天気予報を取得
+#   - API未設定時はダミーデータを返却
+#   - エラー時も安全にダミーデータを返却
 class WeatherService
   BASE_URL = 'https://api.openweathermap.org/data/2.5/forecast'
 
+  # @param city [String] 都市名（デフォルト: Tokyo）
+  # @param country_code [String] 国コード（デフォルト: JP）
   def initialize(city: 'Tokyo', country_code: 'JP')
     @city = city
     @country_code = country_code
     @api_key = ENV['OPENWEATHER_API_KEY']
   end
 
+  # 週間天気予報を取得
+  #
+  # @return [Array<Hash>] 7日間の天気予報データ
+  #   - date: 日付
+  #   - temp_max: 最高気温
+  #   - temp_min: 最低気温
+  #   - weather: 天気（英語）
+  #   - weather_description: 天気説明（日本語）
+  #   - icon: 天気アイコンID
+  #   - pop: 降水確率（%）
+  #   - is_rainy: 雨天フラグ
   def fetch_weekly_forecast
     return dummy_data if @api_key.blank?
 
@@ -30,6 +57,10 @@ class WeatherService
 
   private
 
+  # APIレスポンスを解析して天気予報データに変換
+  #
+  # @param data [Hash] APIレスポンスデータ
+  # @return [Array<Hash>] 7日間の天気予報
   def parse_forecast(data)
     daily_forecasts = group_by_date(data['list'])
 
@@ -49,15 +80,26 @@ class WeatherService
     end.first(7)
   end
 
+  # 予報データを日付ごとにグループ化
+  #
+  # @param list [Array<Hash>] 予報データリスト
+  # @return [Hash] 日付をキーとしたグループ化データ
   def group_by_date(list)
     list.group_by { |item| item['dt_txt'].split(' ').first }
   end
 
+  # 雨天かどうかを判定
+  #
+  # @param forecast [Hash] 予報データ
+  # @return [Boolean] 雨天の場合true
   def rainy?(forecast)
     weather = forecast.dig('weather', 0, 'main')
     ['Rain', 'Drizzle', 'Thunderstorm'].include?(weather)
   end
 
+  # ダミーデータを生成（API未設定時やエラー時用）
+  #
+  # @return [Array<Hash>] 7日間のダミー天気予報
   def dummy_data
     (0..6).map do |i|
       date = Date.current + i.days
@@ -68,7 +110,7 @@ class WeatherService
         temp_max: rand(15..25),
         temp_min: rand(8..15),
         weather: is_rainy ? 'Rain' : ['Clear', 'Clouds', 'Clear'].sample,
-        weather_description: is_rainy ? 'Rain' : ['Clear', 'Clouds', 'Clear'].sample,
+        weather_description: is_rainy ? '雨' : ['晴れ', '曇り', '晴れ'].sample,
         icon: is_rainy ? '10d' : '01d',
         pop: is_rainy ? rand(60..90) : rand(0..30),
         is_rainy: is_rainy
