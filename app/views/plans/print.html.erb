@@ -1,27 +1,32 @@
-<% content_for :title, @plan&.name || '計画' %>
+<%#
+  機能: 製造計画印刷画面
+  - 2ページ構成の印刷レイアウト
+  - 1ページ目: 商品一覧（画像・品番・数量・単価・小計）
+  - 2ページ目: 原材料管理表（発注数量計算）
+  - A4サイズ対応
+%>
+<% content_for :title, @plan&.name || t('activerecord.models.plan') %>
 
-<!-- ===== 1ページ目: 製造計画書（商品一覧） ===== -->
 <div class="print-header">
-  <h2>① 製造計画書（商品一覧）</h2>
+  <h2><%= t('plans.print.page1_title') %></h2>
   <div class="print-header-info">
-    <strong>計画名:</strong> <%= @plan.name %> |
-    <strong>実施日:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || '未設定' %> |
-    <strong>予算:</strong> ¥<%= number_with_delimiter(@budget) %> |
-    <strong>計画高:</strong> ¥<%= number_with_delimiter(@total_cost) %> |
-    <strong>達成率:</strong> <%= @achievement_rate %>%
+    <strong><%= t('plans.print.plan_name') %>:</strong> <%= @plan.name %> |
+    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || t('helpers.no_setting') %> |
+    <strong><%= t('plans.print.budget') %>:</strong> ¥<%= number_with_delimiter(@budget) %> |
+    <strong><%= t('plans.print.planned_total') %>:</strong> ¥<%= number_with_delimiter(@total_cost) %> |
+    <strong><%= t('plans.print.achievement_rate') %>:</strong> <%= @achievement_rate %>%
   </div>
 </div>
 
-<!-- 商品テーブル -->
 <table class="print-table products-table">
   <thead>
     <tr>
-      <th class="col-image">画像</th>
-      <th class="col-item-number">品番</th>
-      <th class="col-product-name">商品名</th>
-      <th class="col-quantity">製造数</th>
-      <th class="col-price">単価</th>
-      <th class="col-subtotal">小計</th>
+      <th class="col-image"><%= t('plans.print.image') %></th>
+      <th class="col-item-number"><%= t('plans.print.item_number') %></th>
+      <th class="col-product-name"><%= t('plans.print.product_name') %></th>
+      <th class="col-quantity"><%= t('plans.print.production_count') %></th>
+      <th class="col-price"><%= t('plans.print.unit_price') %></th>
+      <th class="col-subtotal"><%= t('plans.print.subtotal') %></th>
     </tr>
   </thead>
   <tbody>
@@ -29,36 +34,30 @@
       <% @plan_products.each do |plan_product| %>
         <% product = plan_product.product %>
         <tr>
-          <!-- 画像 -->
           <td class="col-image">
             <% if product.image.attached? %>
               <%= image_tag product.image, class: 'product-image', alt: product.name %>
             <% else %>
-              <div class="no-image">画像なし</div>
+              <div class="no-image"><%= t('plans.print.no_image') %></div>
             <% end %>
           </td>
 
-          <!-- 品番 -->
           <td class="col-item-number"><%= product.item_number %></td>
 
-          <!-- 商品名 -->
           <td class="col-product-name"><%= product.name %></td>
 
-          <!-- 製造数 -->
           <td class="col-quantity text-right">
             <% if plan_product.production_count % 1 == 0 %>
-              <%= number_with_delimiter(plan_product.production_count.to_i) %> 個
+              <%= number_with_delimiter(plan_product.production_count.to_i) %> <%= t('plans.print.count_unit') %>
             <% else %>
-              <%= number_with_delimiter(plan_product.production_count) %> 個
+              <%= number_with_delimiter(plan_product.production_count) %> <%= t('plans.print.count_unit') %>
             <% end %>
           </td>
 
-          <!-- 単価 -->
           <td class="col-price text-right">
             ¥<%= number_with_delimiter(product.price) %>
           </td>
 
-          <!-- 小計 -->
           <td class="col-subtotal text-right">
             ¥<%= number_with_delimiter(product.price * plan_product.production_count) %>
           </td>
@@ -67,40 +66,36 @@
     <% else %>
       <tr>
         <td colspan="6" class="text-center" style="padding: 20px; color: #999;">
-          商品が登録されていません
+          <%= t('plans.print.no_products') %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<!-- ===== ページ区切り ===== -->
 <div class="page-break"></div>
 
-<!-- ===== 2ページ目: 原材料管理表（発注・使用） ===== -->
 <div class="print-header">
-  <h2>② 原材料管理表（発注・使用）</h2>
+  <h2><%= t('plans.print.page2_title') %></h2>
   <div class="print-header-info">
-    <strong>計画名:</strong> <%= @plan.name %> |
-    <strong>実施日:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || '未設定' %>
+    <strong><%= t('plans.print.plan_name') %>:</strong> <%= @plan.name %> |
+    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || t('helpers.no_setting') %>
   </div>
 </div>
 
-<!-- 原材料テーブル -->
 <table class="print-table materials-table">
   <thead>
     <tr>
-      <th class="col-material-name">原材料名</th>
-      <th class="col-product-usage">商品での使用数量</th>
-      <th class="col-material-amount">合計使用量</th>
-      <th class="col-order-unit">発注単位</th>
-      <th class="col-order">発注数量</th>
+      <th class="col-material-name"><%= t('plans.print.material_name') %></th>
+      <th class="col-product-usage"><%= t('plans.print.product_usage') %></th>
+      <th class="col-material-amount"><%= t('plans.print.total_usage') %></th>
+      <th class="col-order-unit"><%= t('plans.print.order_unit') %></th>
+      <th class="col-order"><%= t('plans.print.order_quantity') %></th>
     </tr>
   </thead>
   <tbody>
     <% if @materials_summary.present? %>
       <%
-        # グループごとに整理
         grouped = @materials_summary.group_by { |m| m[:order_group_name] || m[:material_name] }
       %>
 
@@ -109,38 +104,26 @@
           <%
             material = Material.find(material_data[:material_id])
             material_name = material_data[:material_name]
-
-            # 商品での使用数量（1個あたり）
             weight_per_product = material_data[:weight_per_product]
-
-            # 合計使用量
             total_weight = material_data[:total_weight]
-
-            # 発注数量と単位
             required_order_quantity = material_data[:required_order_quantity]
             order_unit_name = material_data[:order_unit_name]
 
-            # 発注単位の情報（新しい構造に対応）
             measurement_type = material.measurement_type
             if measurement_type == 'count'
-              # 個数ベース
-              order_unit_detail = "1#{order_unit_name} = #{material.pieces_per_order_unit}#{material.unit_for_product&.name || '個'}"
+              order_unit_detail = "1#{order_unit_name} = #{material.pieces_per_order_unit}#{material.unit_for_product&.name || t('plans.print.count_unit')}"
             elsif measurement_type == 'weight'
-              # 重量ベース
               order_unit_detail = "1#{order_unit_name} = #{material.unit_weight_for_order}g"
             else
-              order_unit_detail = "未設定"
+              order_unit_detail = t('helpers.no_setting')
             end
           %>
 
           <tr>
-            <!-- 原材料名 -->
             <td class="col-material-name"><%= material_name %></td>
 
-            <!-- 商品での使用数量（製造単位で表示） -->
             <td class="col-product-usage text-right">
               <% if material.production_unit.present? %>
-                <!-- 製造単位が設定されている場合 -->
                 <% if material_data[:total_quantity] % 1 == 0 %>
                   <%= number_with_delimiter(material_data[:total_quantity].to_i) %>
                 <% else %>
@@ -148,42 +131,36 @@
                 <% end %>
                 <%= material.production_unit.name %>
               <% else %>
-                <!-- 製造単位が未設定の場合：使用単位で表示 -->
                 <% if material_data[:total_quantity] % 1 == 0 %>
                   <%= number_with_delimiter(material_data[:total_quantity].to_i) %>
                 <% else %>
                   <%= number_with_delimiter(material_data[:total_quantity]) %>
                 <% end %>
-                <%= material.unit_for_product&.name || '個' %>
+                <%= material.unit_for_product&.name || t('plans.print.count_unit') %>
               <% end %>
             </td>
 
-            <!-- 合計使用量 -->
             <td class="col-material-amount text-right">
               <% if measurement_type == 'weight' %>
-                <!-- 重量ベースの場合 -->
                 <% if total_weight % 1 == 0 %>
                   <%= number_with_delimiter(total_weight.to_i) %>g
                 <% else %>
                   <%= number_with_delimiter(total_weight) %>g
                 <% end %>
               <% else %>
-                <!-- 個数ベースの場合 -->
                 <% if material_data[:total_quantity] % 1 == 0 %>
                   <%= number_with_delimiter(material_data[:total_quantity].to_i) %>
                 <% else %>
                   <%= number_with_delimiter(material_data[:total_quantity]) %>
                 <% end %>
-                <%= material.unit_for_product&.name || '個' %>
+                <%= material.unit_for_product&.name || t('plans.print.count_unit') %>
               <% end %>
             </td>
 
-            <!-- 発注単位 -->
             <td class="col-order-unit text-left">
               <small style="color: #666;"><%= order_unit_detail %></small>
             </td>
 
-            <!-- 発注数量（グループの最初の行のみ表示） -->
             <% if index == 0 %>
               <td class="col-order text-right order-needed" rowspan="<%= materials.size %>">
                 <strong>
@@ -198,7 +175,7 @@
     <% else %>
       <tr>
         <td colspan="5" class="text-center" style="padding: 20px; color: #999;">
-          原材料が登録されていません
+          <%= t('plans.print.no_materials') %>
         </td>
       </tr>
     <% end %>
