@@ -1,4 +1,10 @@
-<%# app/views/devise/sessions/new.html.erb %>
+<%# ログイン %>
+<%#
+  機能:
+  - ユーザーログインフォーム
+  - メールアドレス・パスワード入力
+  - ログイン状態保持（remember me）オプション
+%>
 <% content_for :title, t('devise.sessions.new.title') %>
 <%= render layout: 'devise/shared/auth_card_frame' do %>
 
@@ -28,7 +34,6 @@
       <%= f.submit t("devise.sessions.new.submit"), class: "btn btn-primary btn-lg" %>
     </div>
 
-    <%# パスワードを忘れた方へのリンク %>
     <div class="text-center mt-3">
       <%= link_to t("devise.shared.links.forgot_your_password"), new_password_path(resource_name), class: "text-decoration-none" %>
     </div>
