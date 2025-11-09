@@ -1,5 +1,16 @@
-<p>Welcome <%= @email %>!</p>
+<%# アカウント確認メール %>
+<%#
+  機能:
+  - 新規登録時に送信されるアカウント確認メール
+  - 確認リンクをクリックしてアカウントを有効化
 
-<p>You can confirm your account email through the link below:</p>
+  変数:
+  - @email: 登録メールアドレス
+  - @resource: ユーザーリソース
+  - @token: 確認トークン
+%>
+<p><%= t('devise.mailer.confirmation_instructions.greeting', email: @email) %></p>
 
-<p><%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %></p>
+<p><%= t('devise.mailer.confirmation_instructions.instruction') %></p>
+
+<p><%= link_to t('devise.mailer.confirmation_instructions.action'), confirmation_url(@resource, confirmation_token: @token) %></p>

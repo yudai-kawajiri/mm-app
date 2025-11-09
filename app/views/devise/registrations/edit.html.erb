@@ -1,4 +1,10 @@
-<%# app/views/devise/registrations/edit.html.erb %>
+<%# プロフィール編集 %>
+<%#
+  機能:
+  - ユーザープロフィール（名前・メール・パスワード）編集フォーム
+  - アカウント削除機能
+  - 現在のパスワード確認必須
+%>
 <%= content_for :title, t('devise.registrations.edit.title') %>
 
 <div class="container">
@@ -31,7 +37,6 @@
               </div>
             <% end %>
 
-            <%# パスワードフィールドを横並びに %>
             <div class="row">
               <div class="col-md-6">
                 <div class="mb-4">
@@ -55,7 +60,6 @@
               <small class="form-text text-muted"><%= t('devise.registrations.edit.current_password_help') %></small>
             </div>
 
-            <%# ボタンを右寄せに変更（戻るが左、更新が右） %>
             <div class="d-flex justify-content-end gap-2">
               <%= link_to t("helpers.link.back"), authenticated_root_path, class: "btn btn-outline-secondary btn-lg" %>
               <%= f.submit t("helpers.submit.update"), class: "btn btn-primary btn-lg" %>

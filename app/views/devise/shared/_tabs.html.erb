@@ -1,4 +1,8 @@
-<%# app/views/devise/shared/_tabs.html.erb %>
+<%#
+  機能: 認証画面タブナビゲーション
+  - ログイン/新規登録画面の切り替えタブ
+  - 現在のページに応じてアクティブ状態を表示
+%>
 <ul class="nav nav-tabs mb-4" role="tablist">
   <li class="nav-item" role="presentation">
     <%= link_to new_session_path(resource_name),
