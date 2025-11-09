@@ -76,6 +76,7 @@ ja:
       failure: "%{resource}の更新に失敗しました"
     destroy:
       success: "%{resource} 「%{name}」を削除しました"
+    not_authorized: "この操作を実行する権限がありません"
 
   # 共通翻訳
   common:
