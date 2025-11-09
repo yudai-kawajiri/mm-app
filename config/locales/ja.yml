@@ -69,8 +69,8 @@ ja:
 
   flash_messages:
     create:
-      success: "%{resource} 「%{name}」を登録しました" # 変更
-      failure: "%{resource}の登録に失敗しました" # 変更
+      success: "%{resource} 「%{name}」を登録しました"
+      failure: "%{resource}の登録に失敗しました"
     update:
       success: "%{resource} 「%{name}」を更新しました"
       failure: "%{resource}の更新に失敗しました"
@@ -84,8 +84,8 @@ ja:
     clear: "クリア"
     action: "アクション"
     cancel: "キャンセル"
-    create: "登録" # 変更
-    created: "登録" # 変更
+    create: "登録"
+    created: "登録"
     update: "更新"
     updated: "更新"
     save: "保存"
@@ -113,18 +113,18 @@ ja:
       dashboard: "ダッシュボード"
       category_management: "カテゴリー管理"
       category_list: "カテゴリー一覧"
-      new_category: "カテゴリー登録" # 変更
+      new_category: "カテゴリー登録"
       material_management: "原材料管理"
       unit_management: "単位管理"
       order_group_management: "発注グループ管理"
       material_list: "原材料一覧"
-      new_material: "原材料登録" # 変更
+      new_material: "原材料登録"
       product_management: "商品管理"
       product_list: "商品一覧"
-      new_product: "商品登録" # 変更
+      new_product: "商品登録"
       plan_management: "製造計画管理"
       plan_list: "製造計画一覧"
-      new_plan: "製造計画登録" # 変更
+      new_plan: "製造計画登録"
       numerical_management: "数値管理"
       numerical_dashboard: "売上予算ダッシュボード"
       account_settings: "アカウント設定"
@@ -197,7 +197,7 @@ ja:
       count: "個数ベース"
     order_group_methods:
       existing: "既存から選択"
-      new: "新規登録" # 変更
+      new: "新規登録"
     placeholders:
       select_order_group: "選択してください"
       new_order_group: "商品ごとに違う規格で使用する場合に入力してください"
@@ -207,7 +207,7 @@ ja:
     index:
       title: "発注グループ管理"
     new:
-      title: "発注グループ新規登録" # 変更
+      title: "発注グループ新規登録"
     edit:
       title: "%{name} - 編集"
     show:
@@ -227,7 +227,7 @@ ja:
         not_found: "発注グループが見つかりません"
         has_materials: "このグループは%{count}件の原材料で使用されているため削除できません"
 
-    # 商品
+  # 商品
   products:
     new:
       title: "商品登録"
@@ -359,7 +359,7 @@ ja:
       cumulative: "累計:"
     actions:
       edit_target: "予算編集"
-      add_plan: "計画登録" # 変更
+      add_plan: "計画登録"
       edit_plan: "計画編集"
       input_actual: "実績入力"
       print_plan: "計画を印刷"
@@ -375,7 +375,7 @@ ja:
         title: "実績入力"
         info: "この日の実績売上を入力してください"
       assign_plan:
-        title: "計画登録" # 変更
+        title: "計画登録"
         edit_title: "計画編集"
         category_help: "製造する製品のカテゴリを選択してください"
         plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます"
@@ -401,11 +401,11 @@ ja:
         delete: "本当に削除しますか？"
       actions:
         cancel: "キャンセル"
-        create: "登録" # 変更
+        create: "登録"
         update: "更新"
         close: "閉じる"
     messages:
-      budget_created: "月間予算を登録しました" # 変更
+      budget_created: "月間予算を登録しました"
       budget_updated: "月間予算を更新しました"
       budget_update_failed: "月間予算の更新に失敗しました"
       budget_deleted: "月間予算を削除しました"
@@ -422,8 +422,8 @@ ja:
       actual_update_failed: "実績の更新に失敗しました"
       actual_deleted: "実績を削除しました"
       actual_delete_failed: "実績の削除に失敗しました"
-      plan_assigned: "計画を登録しました" # 変更
-      plan_assign_failed: "計画の登録に失敗しました" # 変更
+      plan_assigned: "計画を登録しました"
+      plan_assign_failed: "計画の登録に失敗しました"
       plan_unassigned: "計画を削除しました"
       plan_unassign_failed: "計画の削除に失敗しました"
       plan_not_found: "計画が見つかりません"
@@ -469,7 +469,7 @@ ja:
     confirm:
       destroy: "本当にこの%{resource}を削除してもよろしいですか？"
       copy: "この項目をコピーしますか？"
-      copy_resource: "この%{resource}をコピーしますか？"  # 追加
+      copy_resource: "この%{resource}をコピーしますか？"
     link:
       back: "戻る"
       edit: "編集"
@@ -584,13 +584,30 @@ ja:
         submit: "ロック解除のメールを送信"
         back_to_login: "ログイン画面に戻る"
     mailer:
+      confirmation_instructions:
+        greeting: "ようこそ、%{recipient}さん！"
+        instruction: "以下のリンクをクリックして、メールアドレスの確認を完了してください:"
+        action: "メールアドレスを確認する"
+      email_changed:
+        greeting: "こんにちは、%{recipient}さん！"
+        message: "メールアドレスが変更されたことをお知らせします。"
+        message_unconfirmed: "メールアドレスが%{email}に変更されました。現在確認待ちです。"
+        message_confirmed: "メールアドレスが%{email}に変更されました。"
+      password_change:
+        greeting: "こんにちは、%{recipient}さん！"
+        message: "パスワードが変更されたことをお知らせします。"
       reset_password_instructions:
-        subject: "【寿司管理システム】パスワード再設定のご案内"
-        greeting: "こんにちは %{name} さん！"
+        subject: "【製造管理システム】パスワード再設定のご案内"
+        greeting: "こんにちは %{recipient} さん！"
         action: "パスワードの変更"
         instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください。"
         instruction_2: "このメールに心当たりがない場合は、無視して構いません。"
-        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを登録するまで変更されません。" # 変更
+        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを登録するまで変更されません。"
+      unlock_instructions:
+        greeting: "こんにちは、%{recipient}さん！"
+        message: "ログイン試行回数が上限に達したため、アカウントがロックされました。"
+        instruction: "以下のリンクをクリックしてアカウントのロックを解除してください:"
+        action: "アカウントのロックを解除する"
 
   activerecord:
     errors:
@@ -762,7 +779,7 @@ ja:
         unknown_user: "不明なユーザー"
         system: "システム"
       events:
-        create: "登録" # 変更
+        create: "登録"
         update: "更新"
         destroy: "削除"
       auto_delete:

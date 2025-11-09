@@ -1,39 +1,20 @@
-<%# app/views/devise/unlocks/new.html.erb %>
-<%= render "devise/shared/auth_card_frame" do %>
-  <div class="mb-4 text-center">
-    <h3 class="fw-bold text-primary mb-2">
-      <i class="bi bi-unlock me-2"></i>アカウントロック解除
-    </h3>
-    <p class="text-muted mb-0">ロック解除のメールを再送信します</p>
-  </div>
+<%# アカウントロック解除メール %>
+<%#
+  機能:
+  - 複数回のログイン失敗後に送信されるロック解除メール
+  - 解除リンクをクリックしてアカウントのロックを解除
 
-  <%= render "devise/shared/error_messages", resource: resource %>
+  変数:
+  - @resource: ユーザーリソース
+  - @token: ロック解除トークン
 
-  <%= form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post, class: 'needs-validation', novalidate: true }) do |f| %>
-    <div class="mb-4">
-      <%= f.label :email, class: 'form-label fw-bold' do %>
-        <i class="bi bi-envelope me-1"></i>メールアドレス
-      <% end %>
-      <%= f.email_field :email,
-          autofocus: true,
-          autocomplete: "email",
-          class: 'form-control form-control-lg',
-          placeholder: 'example@sushi-manage.com',
-          required: true %>
-      <div class="form-text">
-        登録時に使用したメールアドレスを入力してください
-      </div>
-    </div>
+  注意:
+  - 現在このアプリではアカウントロック機能は使用していません
+%>
+<p><%= t('devise.mailer.unlock_instructions.greeting', email: @resource.email) %></p>
 
-    <div class="d-grid gap-2 mb-3">
-      <%= f.submit "ロック解除のメールを送信", class: 'btn btn-primary btn-lg' %>
-    </div>
+<p><%= t('devise.mailer.unlock_instructions.message') %></p>
 
-    <%# ログイン画面へのリンク %>
-    <div class="text-center">
-      <%= link_to new_session_path(resource_name), class: 'text-decoration-none' do %>
-        <i class="bi bi-arrow-left me-1"></i>ログイン画面に戻る
-      <% end %>
-    </div>
-  <% end %>
-<% end %>
+<p><%= t('devise.mailer.unlock_instructions.instruction') %></p>
+
+<p><%= link_to t('devise.mailer.unlock_instructions.action'), unlock_url(@resource, unlock_token: @token) %></p>

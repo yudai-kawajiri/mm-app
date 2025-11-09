@@ -1,7 +1,17 @@
-<p>Hello <%= @email %>!</p>
+<%# メールアドレス変更通知 %>
+<%#
+  機能:
+  - メールアドレス変更時に送信される通知メール
+  - 変更前のメールアドレスに送信
+
+  変数:
+  - @email: 変更前のメールアドレス
+  - @resource: ユーザーリソース
+%>
+<p><%= t('devise.mailer.email_changed.greeting', email: @email) %></p>
 
 <% if @resource.try(:unconfirmed_email?) %>
-  <p>We're contacting you to notify you that your email is being changed to <%= @resource.unconfirmed_email %>.</p>
+  <p><%= t('devise.mailer.email_changed.message_unconfirmed', unconfirmed_email: @resource.unconfirmed_email) %></p>
 <% else %>
-  <p>We're contacting you to notify you that your email has been changed to <%= @resource.email %>.</p>
+  <p><%= t('devise.mailer.email_changed.message_confirmed', email: @resource.email) %></p>
 <% end %>
