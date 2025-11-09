@@ -13,7 +13,7 @@
   <div class="col-md-6">
     <%= form_group_lg(f, :category_type,
         field_type: :select,
-        choices: Category.category_types.keys.map { |k| [I18n.t("activerecord.enums.category.category_type.#{k}"), k] },
+        choices: Resources::Category.category_types.keys.map { |k| [I18n.t("activerecord.enums.category.category_type.#{k}"), k] },
         select_options: { include_blank: t('helpers.prompt.select')}
     ) %>
   </div>

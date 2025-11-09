@@ -39,7 +39,7 @@
         <%= form_group_lg(f, :status,
                           field_type: :select,
                           wrapper_class: 'mb-3',
-                          choices: Product.statuses.keys.map { |status| [t("activerecord.enums.product.status.#{status}"), status] },
+                          choices: Resources::Product.statuses.keys.map { |status| [t("activerecord.enums.product.status.#{status}"), status] },
                           select_options: { include_blank: t('helpers.prompt.select') })
                           %>
 

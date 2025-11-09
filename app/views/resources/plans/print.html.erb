@@ -102,7 +102,7 @@
       <% grouped.each do |group_name, materials| %>
         <% materials.each_with_index do |material_data, index| %>
           <%
-            material = Material.find(material_data[:material_id])
+            material = Resources::Material.find(material_data[:material_id])
             material_name = material_data[:material_name]
             weight_per_product = material_data[:weight_per_product]
             total_weight = material_data[:total_weight]

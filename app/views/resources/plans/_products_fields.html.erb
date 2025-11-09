@@ -200,7 +200,7 @@
       <% @product_categories.each do |category| %>
         <template id="product_fields_template_<%= category.id %>" data-form--nested-form-target="template">
           <%= f.fields_for :plan_products,
-              @plan.plan_products.build(product: Product.new(category_id: category.id)),
+              @plan.plan_products.build(product: Resources::Product.new(category_id: category.id)),
               child_index: 'NEW_RECORD' do |product_f| %>
             <%= render 'product_fields', f: product_f, category_id: category.id %>
           <% end %>

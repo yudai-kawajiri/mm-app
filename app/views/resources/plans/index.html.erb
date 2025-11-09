@@ -17,7 +17,7 @@
 
 <%= render('shared/components/resource_list',
     resources: @plans,
-    resource_class: Plan,
+    resource_class: Resources::Plan,
     search_target: :category_id,
     search_categories: @plan_categories,
     show_copy: true,

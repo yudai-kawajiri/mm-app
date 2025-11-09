@@ -23,7 +23,7 @@
         <% if search_target == :category_type %>
           <%= f.select :category_type,
               options_for_select(
-                Category.category_types.keys.map { |k|
+                Resources::Category.category_types.keys.map { |k|
                   [I18n.t("activerecord.enums.category.category_type.#{k}"), k] },
                 params[:category_type]
               ),
@@ -33,7 +33,7 @@
         <% elsif search_target == :category %>
           <%= f.select :category,
               options_for_select(
-                Unit.categories.keys.map { |k|
+                Resources::Unit.categories.keys.map { |k|
                   [I18n.t("activerecord.enums.unit.category.#{k}"), k] },
                 params[:category]
               ),

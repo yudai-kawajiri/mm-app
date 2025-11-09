@@ -26,7 +26,7 @@
 
   <td style="width: 35%;">
     <% current_category_id = f.object.product&.category_id || local_assigns[:category_id] %>
-    <% products = current_category_id ? Product.where(category_id: current_category_id) : Product.all %>
+    <% products = current_category_id ? Resources::Product.where(category_id: current_category_id) : Resources::Product.all %>
     <%= f.collection_select(:product_id, products, :id, :name,
         { include_blank: t('helpers.select.prompt') },
         { class: 'form-select form-select-sm',

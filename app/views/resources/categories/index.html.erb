@@ -11,11 +11,11 @@
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: new_resources_resources_category_path %>
+    new_path: new_resources_category_path %>
 
 <%= render 'shared/components/resource_list',
     resources: @categories,
-    resource_class: Category,
+    resource_class: Resources::Category,
     search_target: :category_type,
     icon_mode: true,
 

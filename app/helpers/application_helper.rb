@@ -503,3 +503,23 @@ module ApplicationHelper
     end
   end
 end
+
+  # ============================================================
+  # リソースパーシャルパス生成
+  # ============================================================
+
+  #
+  # 名前空間付きモデルの正しいパーシャルパスを生成
+  #
+  # @param resource [ActiveRecord::Base] モデルインスタンス
+  # @param partial_name [String] パーシャル名（デフォルト: "fields"）
+  # @return [String] パーシャルパス
+  #
+  # @example
+  #   resource_partial_path(@category, "fields")
+  #   # => "resources/categories/fields"
+  #
+  def resource_partial_path(resource, partial_name = "fields")
+    model_name = resource.class.name.underscore
+    "#{model_name.pluralize}/#{partial_name}"
+  end

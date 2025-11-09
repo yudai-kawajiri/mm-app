@@ -13,7 +13,7 @@
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: new_resources_resources_product_path %>
+    new_path: new_resources_product_path %>
 
 <div data-controller="sortable-table"
       data-sortable-table-reorder-path-value="<%= reorder_resources_products_path %>"
@@ -23,7 +23,7 @@
 
   <%= render('shared/components/resource_list',
       resources: @products,
-      resource_class: Product,
+      resource_class: Resources::Product,
       search_target: :category_id,
       search_categories: @product_categories,
       show_copy: true,

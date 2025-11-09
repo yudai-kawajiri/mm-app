@@ -16,9 +16,9 @@
   category_id ||= local_assigns[:category_id] || f.object.material&.category_id || 0
 
   if category_id == 0
-    materials = Material.order(:name)
+    materials = Resources::Material.order(:name)
   else
-    materials = Material.where(category_id: category_id).order(:name)
+    materials = Resources::Material.where(category_id: category_id).order(:name)
   end
 
   unit_weight = f.object.unit_weight

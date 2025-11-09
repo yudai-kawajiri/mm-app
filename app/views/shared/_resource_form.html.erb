@@ -35,7 +35,7 @@
               form__submit_target: "form"
             }
           ) do |f| %>
-        <%= render "#{resource.model_name.plural}/fields", f: f %>
+        <%= render resource_partial_path(resource, 'fields'), f: f %>
         <%= render 'shared/actions/form_action_links', f: f, resource: resource %>
       <% end %>
     </div>
