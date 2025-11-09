@@ -1,3 +1,12 @@
+<%#
+  機能: 計画割当モーダル（新規作成・編集）
+
+  JavaScript機能:
+  - setPlanModalData: 新規/編集モードの切り替え
+  - handleCategoryChange: カテゴリ選択時に計画リストを動的に追加
+  - handlePlanChange: 計画選択時に売上額を自動設定
+%>
+
 <div class="modal fade"
      id="assignPlanModal"
      tabindex="-1"
@@ -74,14 +83,12 @@
 </div>
 
 <script>
-// i18n変数をwindowオブジェクトに設定（重複宣言エラー回避）
 window.assignPlanI18n = window.assignPlanI18n || {
   editTitle: '<%= t('numerical_managements.modals.assign_plan.edit_title') %>',
   addTitle: '<%= t('numerical_managements.modals.assign_plan.title') %>',
   selectPlanPrompt: '<%= t('numerical_managements.modals.prompts.select_plan_prompt') %>'
 };
 
-// モーダルデータ設定関数
 function setPlanModalData(button) {
   const scheduleId = button.dataset.scheduleId;
   const planId = button.dataset.planId;
@@ -90,9 +97,6 @@ function setPlanModalData(button) {
   const dateDisplay = button.dataset.dateDisplay;
   const date = button.dataset.date;
 
-  console.log('モーダルデータ設定:', { scheduleId, planId, categoryName, plannedRevenue });
-
-  // 日付設定
   document.getElementById('assignPlanDate').value = dateDisplay;
   document.getElementById('assignPlanDateHidden').value = date;
 
@@ -100,11 +104,9 @@ function setPlanModalData(button) {
   const modalTitle = document.getElementById('assignPlanModalLabel');
 
   if (scheduleId) {
-    // 編集モード
     modalTitle.textContent = window.assignPlanI18n.editTitle;
     form.action = `/plan_schedules/${scheduleId}`;
 
-    // PATCHメソッドを設定
     let methodInput = form.querySelector('input[name="_method"]');
     if (!methodInput) {
       methodInput = document.createElement('input');
@@ -114,33 +116,26 @@ function setPlanModalData(button) {
     }
     methodInput.value = 'patch';
 
-    // 既存データを設定
     if (categoryName) {
       document.getElementById('assignPlanCategory').value = categoryName;
       handleCategoryChange(document.getElementById('assignPlanCategory'));
 
-      // カテゴリの計画が読み込まれるのを待ってから計画を選択
-      setTimeout(() => {
-        if (planId) {
-          document.getElementById('assignPlanSelect').value = planId;
-        }
-      }, 100);
+      if (planId) {
+        document.getElementById('assignPlanSelect').value = planId;
+      }
     }
 
     document.getElementById('assignPlanAmount').value = plannedRevenue || 0;
     document.getElementById("assignPlanAmountHidden").value = plannedRevenue || 0
   } else {
-    // 新規追加モード
     modalTitle.textContent = window.assignPlanI18n.addTitle;
     form.action = '/plan_schedules';
 
-    // PATCHメソッドを削除
     const methodInput = form.querySelector('input[name="_method"]');
     if (methodInput) {
       methodInput.remove();
     }
 
-    // フォームをリセット
     document.getElementById('assignPlanCategory').value = '';
     const planSelect = document.getElementById('assignPlanSelect');
     planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanPrompt}</option>`;
@@ -150,16 +145,8 @@ function setPlanModalData(button) {
   }
 }
 
-// モーダルが閉じた時のリセット（オプション）
-document.getElementById('assignPlanModal').addEventListener('hidden.bs.modal', function() {
-  console.log("モーダル閉じた")
-})
-
-// カテゴリ変更
 function handleCategoryChange(select) {
   const category = select.value
-  console.log("カテゴリ選択:", category)
-
   const planSelect = document.getElementById('assignPlanSelect')
   planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanPrompt}</option>`;
 
@@ -169,10 +156,8 @@ function handleCategoryChange(select) {
   }
 
   const plans = window.plansByCategory[category]
-  console.log("計画:", plans)
 
   if (!plans || plans.length === 0) {
-    console.warn("計画が見つかりません")
     planSelect.disabled = true
     return
   }
@@ -186,18 +171,14 @@ function handleCategoryChange(select) {
   })
 
   planSelect.disabled = false
-  console.log(`${plans.length}件の計画を追加しました`)
 }
 
-// 計画変更
 function handlePlanChange(select) {
   const selectedOption = select.selectedOptions[0]
   if (selectedOption && selectedOption.value) {
     const revenue = selectedOption.dataset.revenue || 0
     document.getElementById('assignPlanAmount').value = revenue
     document.getElementById("assignPlanAmountHidden").value = revenue
-    console.log("売上設定:", revenue)
   }
 }
 </script>
-

@@ -1,9 +1,11 @@
-<!-- 予算設定モーダル -->
+<%#
+  機能: 予算設定モーダル（新規作成・編集）
+%>
+
 <div class="modal fade" id="budgetSettingModal" tabindex="-1" aria-labelledby="budgetSettingModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <% if @monthly_budget&.persisted? %>
-        <%# 既存予算の更新（PATCH） %>
         <%= form_with model: @monthly_budget,
                       url: monthly_budget_path(@monthly_budget),
                       method: :patch,
@@ -51,7 +53,6 @@
           </div>
         <% end %>
       <% else %>
-        <%# 新規予算の作成（POST） %>
         <%= form_with url: monthly_budgets_path, method: :post, local: true do |f| %>
           <%= hidden_field_tag :year, @selected_date.year %>
           <%= hidden_field_tag :month, @selected_date.month %>
