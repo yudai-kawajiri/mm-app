@@ -1,3 +1,16 @@
+<%#
+  機能: 製造計画商品行パーシャル
+  - 1つの商品行を表示（テーブル行形式）
+  - 商品選択、数量入力、価格・小計表示、削除ボタン
+  - Stimulus Controllerで動的計算・同期処理
+  - フォーム新規作成・編集画面で使用
+
+  必須引数:
+  - f: FormBuilder - plan_productsのフォームビルダー
+
+  オプション引数:
+  - category_id: Integer - カテゴリID（商品フィルタリング用）
+%>
 <% row_unique_id = f.object.persisted? ? "row_#{f.object.id}" : "row_#{Time.now.to_i}_#{rand(1000)}"%>
 
 <tr data-controller="resources--plan-product--row resources--plan-product--sync form--nested-form-item"
@@ -8,7 +21,8 @@
 
   <%= f.hidden_field :_destroy,
       value: f.object.marked_for_destruction? ? 1 : 0,
-      data: { 'form--nested-form-item-target': 'destroy' } %><%= f.hidden_field :id %>
+      data: { 'form--nested-form-item-target': 'destroy' } %>
+  <%= f.hidden_field :id %>
 
   <td style="width: 35%;">
     <% current_category_id = f.object.product&.category_id || local_assigns[:category_id] %>
@@ -50,12 +64,12 @@
   </td>
 
   <td style="width: 10%;" class="text-end">
-  <button type="button"
-    class="btn btn-danger btn-sm"
-    data-action="click->form--nested-form-item#remove"
-    data-row-unique-id="<%= row_unique_id %>"
-    title="<%= t('helpers.link.destroy') %>">
-    <i class="bi bi-trash"></i>
-  </button>
+    <button type="button"
+      class="btn btn-danger btn-sm"
+      data-action="click->form--nested-form-item#remove"
+      data-row-unique-id="<%= row_unique_id %>"
+      title="<%= t('helpers.link.destroy') %>">
+      <i class="bi bi-trash"></i>
+    </button>
   </td>
 </tr>

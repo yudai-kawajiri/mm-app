@@ -1,46 +1,53 @@
-<% plan = local_assigns[:plan] || local_assigns[:resource] %>
-<% plan_class = plan.class %>
-<% no_setting = t('helpers.no_setting') %>
+<%#
+  機能: 製造計画商品詳細タブ（読み取り専用）
+  - 詳細画面での商品一覧をタブ表示
+  - 全商品タブ + カテゴリ別タブ
+  - カテゴリ合計・総合計を表示
 
-<%# ✅ new/editと同じスタイルに統一 - シンプルな表示 %>
-<div class="row">
-  <%# 項目1: 計画名 (左カラム) %>
-  <div class="col-md-6">
-    <div class="mb-3 border-bottom py-3">
-      <label class="form-label mb-0" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:name) %></label>
-      <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-        <%= plan.name %>
-      </div>
-    </div>
-  </div>
+  必須引数:
+  - all_plan_products: Array<PlanProduct> - 全商品配列
+  - product_categories: Array<Category> - 商品カテゴリ配列
+%>
+<% all_plan_products = @plan_products %>
+<% product_categories = @product_categories || [] %>
 
-  <%# 項目2: カテゴリー (右カラム) %>
-  <div class="col-md-6">
-    <div class="mb-3 border-bottom py-3">
-      <label class="form-label mb-0" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:category_id) %></label>
-      <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-        <%= plan.category&.name || no_setting %>
-      </div>
-    </div>
-  </div>
+<% total_amount = all_plan_products.sum { |pp| pp.production_count * pp.product&.price } %>
+<div class="text-end mb-3">
+  <span class="text-muted"><%= t('plans.total_price_label') %>:</span>
+  <span class="h4 text-dark"><%= number_to_currency(total_amount, precision: 0) %></span>
 </div>
 
-<div class="row">
-  <%# 項目3: ステータス (左カラム) %>
-  <div class="col-md-6">
-    <div class="mb-3 border-bottom py-3">
-      <label class="form-label mb-0" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:status) %></label>
-      <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-        <%= t("activerecord.enums.plan.status.#{plan.status}") %>
+<nav>
+  <div class="nav nav-tabs" id="planProductTab" role="tablist">
+    <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#plan-product-all" type="button" role="tab" aria-controls="plan-product-all" aria-selected="true">
+      <%= t('plans.tab_all') %>
+    </button>
+
+    <% used_category_ids = all_plan_products.map { |pp| pp.product&.category_id }.compact.uniq %>
+    <% product_categories.select { |c| used_category_ids.include?(c.id) }.each do |category| %>
+      <button class="nav-link" id="<%= category.id %>-tab" data-bs-toggle="tab" data-bs-target="#plan-product-<%= category.id %>" type="button" role="tab" aria-controls="plan-product-<%= category.id %>" aria-selected="false">
+        <%= category.name %>
+      </button>
+    <% end %>
+  </div>
+</nav>
+
+<div class="tab-content pt-3" id="planProductTabContent">
+  <div class="tab-pane fade show active" id="plan-product-all" role="tabpanel" aria-labelledby="all-tab">
+    <%= render 'plans/product_table', plan_products: all_plan_products %>
+  </div>
+
+  <% used_category_ids = all_plan_products.map { |pp| pp.product&.category_id }.compact.uniq %>
+  <% product_categories.select { |c| used_category_ids.include?(c.id) }.each do |category| %>
+    <% filtered_plan_products = all_plan_products.select { |pp| pp.product&.category_id == category.id } %>
+    <div class="tab-pane fade" id="plan-product-<%= category.id %>" role="tabpanel" aria-labelledby="<%= category.id %>-tab">
+      <%= render 'plans/product_table', plan_products: filtered_plan_products %>
+
+      <div class="text-end mt-3 border-top pt-2">
+        <span class="text-muted"><%= t('plans.category_total_label') %>:</span>
+        <% category_tab_total = filtered_plan_products.sum { |pp| pp.production_count * pp.product&.price } %>
+        <span class="h5 text-dark"><%= number_to_currency(category_tab_total, precision: 0) %></span>
       </div>
     </div>
-  </div>
-</div>
-
-<%# 説明欄 %>
-<div class="mt-4">
-  <h6 class="form-label text-muted" style="font-size: 1.1em;"><%= plan_class.human_attribute_name(:description) %></h6>
-  <div class="p-3 border rounded d-flex align-items-center justify-content-center" style="min-height: 210px;">
-    <%= render 'shared/components/description_content', content: plan.description %>
-  </div>
+  <% end %>
 </div>
