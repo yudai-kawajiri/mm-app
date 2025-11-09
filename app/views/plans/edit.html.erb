@@ -1,3 +1,8 @@
+<%#
+  機能: 製造計画編集画面
+  - 既存の製造計画情報を編集
+  - 基本情報と製造商品の2カラムフォーム
+%>
 <% content_for(:title, t('plans.edit.title', name: @plan.name)) %>
 
 <%= render 'shared/resource_two_column_form_wrapper',

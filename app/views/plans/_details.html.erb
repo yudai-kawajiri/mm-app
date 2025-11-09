@@ -1,10 +1,18 @@
+<%#
+  機能: 製造計画詳細表示パーシャル
+  - 計画名、カテゴリー、ステータス、説明を表示
+  - 詳細画面で使用
+
+  必須引数:
+  - plan: Plan - 表示対象の製造計画
+  または
+  - resource: Plan - 表示対象の製造計画（代替引数）
+%>
 <% plan = local_assigns[:plan] || local_assigns[:resource] %>
 <% plan_class = plan.class %>
 <% no_setting = t('helpers.no_setting') %>
 
-<%# ✅ new/editと同じスタイルに統一 - シンプルな表示 %>
 <div class="row">
-  <%# 項目1: 計画名 (左カラム) %>
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
       <label class="form-label mb-0" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:name) %></label>
@@ -14,7 +22,6 @@
     </div>
   </div>
 
-  <%# 項目2: カテゴリー (右カラム) %>
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
       <label class="form-label mb-0" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:category_id) %></label>
@@ -26,7 +33,6 @@
 </div>
 
 <div class="row">
-  <%# 項目3: ステータス (左カラム) %>
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
       <label class="form-label mb-0" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:status) %></label>
@@ -37,7 +43,6 @@
   </div>
 </div>
 
-<%# 説明欄 %>
 <div class="mt-4">
   <h6 class="form-label text-muted" style="font-size: 1.1em;"><%= plan_class.human_attribute_name(:description) %></h6>
   <div class="p-3 border rounded d-flex align-items-center justify-content-center" style="min-height: 210px;">
