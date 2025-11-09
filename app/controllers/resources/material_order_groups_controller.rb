@@ -8,7 +8,7 @@
 #   - 発注グループの一覧表示（全ユーザー共有）
 #   - 発注グループの作成・編集・削除
 #   - グループ削除時の材料への影響（dependent: :nullify）
-class MaterialOrderGroupsController < AuthenticatedController
+class Resources::MaterialOrderGroupsController < AuthenticatedController
   # 検索パラメータの定義
   define_search_params :q
 
@@ -22,7 +22,7 @@ class MaterialOrderGroupsController < AuthenticatedController
   # @return [void]
   def index
     @material_order_groups = apply_pagination(
-      MaterialOrderGroup.includes(:materials)
+      Resources::MaterialOrderGroup.includes(:materials)
                         .ordered_by_name
                         .search_and_filter(search_params)
     )
@@ -33,14 +33,14 @@ class MaterialOrderGroupsController < AuthenticatedController
   #
   # @return [void]
   def new
-    @material_order_group = MaterialOrderGroup.new
+    @material_order_group = Resources::MaterialOrderGroup.new
   end
 
   # 発注グループを作成
   #
   # @return [void]
   def create
-    @material_order_group = MaterialOrderGroup.new(material_order_group_params)
+    @material_order_group = Resources::MaterialOrderGroup.new(material_order_group_params)
     @material_order_group.user = current_user
     respond_to_save(@material_order_group, success_path: material_order_groups_path)
   end

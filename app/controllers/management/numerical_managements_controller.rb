@@ -21,7 +21,7 @@
 #   - 達成率の可視化
 #   - 月次予測データの表示
 #
-class NumericalManagementsController < ApplicationController
+class Management::NumericalManagementsController < ApplicationController
   # 認証必須
   before_action :authenticate_user!
 
@@ -114,7 +114,7 @@ class NumericalManagementsController < ApplicationController
     target_value = params[:daily_target][:target]
 
     # 既存レコードを検索または新規作成
-    daily_target = DailyTarget.find_or_initialize_by(
+    daily_target = Management::DailyTarget.find_or_initialize_by(
       user: current_user,
       date: date
     )

@@ -8,7 +8,7 @@
 #   - カテゴリーの一覧表示（検索・種別フィルタ・ページネーション）
 #   - カテゴリーの作成・編集・削除
 #   - 種別による分類（material, product, plan）
-class CategoriesController < AuthenticatedController
+class Resources::CategoriesController < AuthenticatedController
   # 検索パラメータの定義
   define_search_params :q, :category_type
 
@@ -20,7 +20,7 @@ class CategoriesController < AuthenticatedController
   # @return [void]
   def index
     @categories = apply_pagination(
-      Category.for_index.search_and_filter(search_params)
+      Resources::Category.for_index.search_and_filter(search_params)
     )
     set_search_term_for_view
   end

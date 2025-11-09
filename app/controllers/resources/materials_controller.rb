@@ -9,7 +9,7 @@
 #   - 材料の作成・編集・削除
 #   - 表示順の並び替え（drag & drop）
 #   - 計測方法の管理（重量ベース・個数ベース）
-class MaterialsController < AuthenticatedController
+class Resources::MaterialsController < AuthenticatedController
   # 検索パラメータの定義
   define_search_params :q, :category_id
 
@@ -24,7 +24,7 @@ class MaterialsController < AuthenticatedController
   # @return [void]
   def index
     @materials = apply_pagination(
-      Material.includes(:category, :unit_for_product, :unit_for_order, :production_unit, :order_group)
+      Resources::Material.includes(:category, :unit_for_product, :unit_for_order, :production_unit, :order_group)
               .search_and_filter(search_params)
               .ordered
     )
@@ -82,7 +82,7 @@ class MaterialsController < AuthenticatedController
 
     Rails.logger.debug "=== Received material_ids: #{material_ids.inspect}"
 
-    Material.update_display_orders(material_ids)
+    Resources::Material.update_display_orders(material_ids)
     head :ok
   end
 

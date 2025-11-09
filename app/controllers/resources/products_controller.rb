@@ -11,7 +11,7 @@
 #   - 製品コピー機能（材料構成も複製）
 #   - 表示順の並び替え
 #   - 画像削除
-class ProductsController < AuthenticatedController
+class Resources::ProductsController < AuthenticatedController
   # 検索パラメータの定義
   define_search_params :q, :category_id
 
@@ -27,7 +27,7 @@ class ProductsController < AuthenticatedController
   # @return [void]
   def index
     @products = apply_pagination(
-      Product.includes(:category).search_and_filter(search_params).ordered
+      Resources::Product.includes(:category).search_and_filter(search_params).ordered
     )
     @search_categories = @product_categories
     set_search_term_for_view
@@ -60,7 +60,7 @@ class ProductsController < AuthenticatedController
     if @product.save
       image_upload_service.cleanup
       redirect_to @product, notice: t("flash_messages.create.success",
-                                     resource: Product.model_name.human,
+                                     resource: Resources::Product.model_name.human,
                                      name: @product.name)
     else
       # バリデーションエラー時、プレビューデータを生成
@@ -73,7 +73,7 @@ class ProductsController < AuthenticatedController
       end
 
       flash.now[:alert] = t("flash_messages.create.failure",
-                           resource: Product.model_name.human)
+                           resource: Resources::Product.model_name.human)
       render :new, status: :unprocessable_entity
     end
   end
@@ -101,11 +101,11 @@ class ProductsController < AuthenticatedController
 
     if @product.update(product_params.except(:image))
       redirect_to @product, notice: t("flash_messages.update.success",
-                                     resource: Product.model_name.human,
+                                     resource: Resources::Product.model_name.human,
                                      name: @product.name)
     else
       flash.now[:alert] = t("flash_messages.update.failure",
-                           resource: Product.model_name.human)
+                           resource: Resources::Product.model_name.human)
       render :edit, status: :unprocessable_entity
     end
   end
@@ -142,7 +142,7 @@ class ProductsController < AuthenticatedController
     new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
 
     # ユニーク制約を考慮して名前を生成
-    while Product.exists?(name: new_name, category_id: original_product.category_id)
+    while Resources::Product.exists?(name: new_name, category_id: original_product.category_id)
       copy_count += 1
       new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
     end
@@ -153,7 +153,7 @@ class ProductsController < AuthenticatedController
 
     # 品番を生成
     temp_item_number = "C#{copy_count}"[0..3]
-    while Product.exists?(item_number: temp_item_number, category_id: original_product.category_id)
+    while Resources::Product.exists?(item_number: temp_item_number, category_id: original_product.category_id)
       copy_count += 1
       temp_item_number = "C#{copy_count}"[0..3]
     end
@@ -189,7 +189,7 @@ class ProductsController < AuthenticatedController
     product_ids = reorder_params[:product_ids]
     Rails.logger.debug "=== Received product_ids: #{product_ids.inspect}"
 
-    Product.update_display_orders(product_ids)
+    Resources::Product.update_display_orders(product_ids)
     head :ok
   end
 

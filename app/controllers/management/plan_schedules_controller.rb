@@ -9,7 +9,7 @@
 #   - 計画の変更（上書き）
 #   - 実績売上の入力
 #   - 計画高の自動計算
-class PlanSchedulesController < AuthenticatedController
+class Management::PlanSchedulesController < AuthenticatedController
   # 計画スケジュールを作成
   #
   # 1日1計画のみ（同じ日の計画は上書き）
@@ -31,7 +31,7 @@ class PlanSchedulesController < AuthenticatedController
     plan = current_user.plans.find(permitted[:plan_id])
 
     # 1日1計画（find_or_initialize_by）
-    @plan_schedule = PlanSchedule.find_or_initialize_by(
+    @plan_schedule = Planning::PlanSchedule.find_or_initialize_by(
       user: current_user,
       scheduled_date: scheduled_date
     )

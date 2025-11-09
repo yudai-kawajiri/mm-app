@@ -26,71 +26,73 @@ Rails.application.routes.draw do
   end
 
   # ====================
-  # 数値管理（ビュー専用）
+  # 数値管理（Management名前空間）
   # ====================
-  resources :numerical_managements, only: [ :index ] do
-    collection do
-      post :bulk_update
-      patch :update_daily_target
+  namespace :management do
+    # 数値管理（ビュー専用）
+    resources :numerical_managements, only: [ :index ] do
+      collection do
+        post :bulk_update
+        patch :update_daily_target
+      end
+    end
+
+    # 月間予算
+    resources :monthly_budgets, only: [ :create, :update, :destroy ]
+
+    # 日別目標
+    resources :daily_targets, only: [ :create, :update ]
+
+    # 計画スケジュール
+    resources :plan_schedules, only: [ :create, :update, :destroy ] do
+      member do
+        patch :update_actual_revenue  # 実績入力
+      end
     end
   end
 
   # ====================
-  # 数値管理リソース（RESTful）
+  # リソース管理（Resources名前空間）
   # ====================
-  # 月間予算
-  resources :monthly_budgets, only: [ :create, :update, :destroy ]
+  namespace :resources do
+    # カテゴリ
+    resources :categories
 
-  # 日別目標
-  resources :daily_targets, only: [ :create, :update ]
+    # 単位
+    resources :units
 
-  # 計画スケジュール
-  resources :plan_schedules, only: [ :create, :update, :destroy ] do
-    member do
-      patch :update_actual_revenue  # 実績入力
-    end
-  end
-
-  # ====================
-  # マスタデータ
-  # ====================
-  # カテゴリ
-  resources :categories
-
-  # 単位
-  resources :units
-
-  # 材料
-  resources :materials do
-    collection do
-      post :reorder
-    end
-  end
-
-  # 発注グループ
-  resources :material_order_groups
-
-  # 製品
-  resources :products do
-    collection do
-      post :reorder
+    # 材料
+    resources :materials do
+      collection do
+        post :reorder
+      end
     end
 
-    member do
-      delete :purge_image  # 画像削除
-      post :copy           # 複製
+    # 発注グループ
+    resources :material_order_groups
+
+    # 製品
+    resources :products do
+      collection do
+        post :reorder
+      end
+
+      member do
+        delete :purge_image  # 画像削除
+        post :copy           # 複製
+      end
+
+      # 製品-材料の関連管理
+      resources :product_materials, only: [ :index, :edit, :update ]
     end
 
-    # 製品-材料の関連管理
-    resources :product_materials, only: [ :index, :edit, :update ]
-  end
-
-  # 計画
-  resources :plans do
-    member do
-      patch :update_status  # ステータス更新
-      post :copy            # 複製
-      get :print            # 印刷用ページ
+    # 計画
+    resources :plans do
+      member do
+        patch :update_status  # ステータス更新
+        post :copy            # 複製
+        get :print            # 印刷用ページ
+      end
     end
   end
 

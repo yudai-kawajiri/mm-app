@@ -11,7 +11,7 @@
 #   - 計画コピー機能（商品構成も複製）
 #   - 印刷機能（材料集計表示）
 #   - 重複エラーハンドリング
-class PlansController < AuthenticatedController
+class Resources::PlansController < AuthenticatedController
   # 検索パラメータの定義
   define_search_params :q, :category_id
 
@@ -28,7 +28,7 @@ class PlansController < AuthenticatedController
   # @return [void]
   def index
     @plans = apply_pagination(
-      Plan.for_index.search_and_filter(search_params)
+      Resources::Plan.for_index.search_and_filter(search_params)
     )
     set_search_term_for_view
   end
@@ -86,7 +86,7 @@ class PlansController < AuthenticatedController
   def update_status
     new_status = status_param
 
-    if Plan.statuses.keys.include?(new_status)
+    if Resources::Plan.statuses.keys.include?(new_status)
       @plan.update(status: new_status)
       status_text = t("activerecord.enums.plan.status.#{new_status}")
       redirect_to plans_path, notice: t('plans.messages.status_updated',
@@ -110,7 +110,7 @@ class PlansController < AuthenticatedController
     new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
 
     # ユニーク制約を考慮して名前を生成
-    while Plan.exists?(name: new_name, category_id: original_plan.category_id, user_id: current_user.id)
+    while Resources::Plan.exists?(name: new_name, category_id: original_plan.category_id, user_id: current_user.id)
       copy_count += 1
       new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
     end

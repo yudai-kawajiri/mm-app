@@ -8,7 +8,7 @@
 #   - 月次予算の作成・更新
 #   - 月次予算の削除（日別目標・計画スケジュールも連動）
 #   - 実績入力済みスケジュールの保護
-class MonthlyBudgetsController < ApplicationController
+class Management::MonthlyBudgetsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_monthly_budget, only: [:update, :destroy]
 

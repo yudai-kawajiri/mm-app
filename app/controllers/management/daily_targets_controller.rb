@@ -8,7 +8,7 @@
 #   - 日別目標の作成・更新
 #   - 月次予算との紐付け
 #   - 権限チェック
-class DailyTargetsController < AuthenticatedController
+class Management::DailyTargetsController < AuthenticatedController
   # 日別目標を作成
   #
   # find_or_initialize_by で既存レコード検索 or 新規作成
@@ -22,7 +22,7 @@ class DailyTargetsController < AuthenticatedController
     monthly_budget = find_monthly_budget_for_date(target_date)
     return unless monthly_budget
 
-    @daily_target = DailyTarget.find_or_initialize_by(
+    @daily_target = Management::DailyTarget.find_or_initialize_by(
       user: current_user,
       monthly_budget: monthly_budget,
       target_date: target_date
@@ -52,7 +52,7 @@ class DailyTargetsController < AuthenticatedController
     target_date = parse_target_date(permitted[:target_date])
     return unless target_date
 
-    @daily_target = DailyTarget.find(params[:id])
+    @daily_target = Management::DailyTarget.find(params[:id])
 
     # 権限チェック
     unless @daily_target.user_id == current_user.id
@@ -103,7 +103,7 @@ class DailyTargetsController < AuthenticatedController
   # @param date [Date] 対象日
   # @return [MonthlyBudget, nil] 月次予算
   def find_monthly_budget_for_date(date)
-    monthly_budget = MonthlyBudget.find_by(
+    monthly_budget = Management::MonthlyBudget.find_by(
       user: current_user,
       budget_month: date.beginning_of_month
     )

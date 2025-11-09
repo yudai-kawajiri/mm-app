@@ -8,7 +8,7 @@
 #   - 単位の一覧表示（検索・カテゴリフィルタ・ページネーション）
 #   - 単位の作成・編集・削除
 #   - カテゴリ別フィルタリング（production, ordering, manufacturing）
-class UnitsController < AuthenticatedController
+class Resources::UnitsController < AuthenticatedController
   # 検索パラメータの定義
   define_search_params :q, :category
 
@@ -20,7 +20,7 @@ class UnitsController < AuthenticatedController
   # @return [void]
   def index
     @units = apply_pagination(
-      Unit.for_index
+      Resources::Unit.for_index
           .search_and_filter(search_params)
           .filter_by_category(search_params[:category])
     )
