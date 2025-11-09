@@ -295,6 +295,7 @@ ja:
       copy_success: "計画「%{original_name}」をコピーしました（新規計画名: %{new_name}）"
       copy_failed: "計画のコピーに失敗しました: %{error}"
       copy_failed_duplicate: "計画名が重複しています。別の名前を試してください"
+      no_products_set: "商品はまだ設定されていません"
     errors:
       duplicate_name: "は既に同じカテゴリ内に存在します"
       duplicate_product: "同じ商品を複数回追加することはできません"

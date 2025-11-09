@@ -1,30 +1,29 @@
+<%#
+  機能: 製造計画商品一覧テーブル（読み取り専用）
+  - 商品名、数量、売価、小計を表示
+  - 詳細画面のタブコンテンツで使用
+
+  必須引数:
+  - plan_products: Array<PlanProduct> - 表示対象の商品配列
+%>
 <% plan_products = local_assigns[:plan_products] %>
 
 <% if plan_products.present? %>
   <table class="table table-sm table-borderless">
     <thead>
       <tr class="border-bottom">
-        <%# すべてのヘッダーを text-muted に統一 %>
-        <th class="text-muted"><%= t('activerecord.attributes.plan_product.product_name', default: '商品名') %></th>
-        <th class="text-end text-muted"><%= t('activerecord.attributes.plan_product.production_count', default: '数量') %></th>
-        <th class="text-end text-muted"><%= t('activerecord.attributes.product.price', default: '売価') %></th>
-        <th class="text-end text-muted"><%= t('views.common.subtotal', default: '小計') %></th>
+        <th class="text-muted"><%= t('plans.table_headers.product_name') %></th>
+        <th class="text-end text-muted"><%= t('plans.table_headers.quantity') %></th>
+        <th class="text-end text-muted"><%= t('plans.table_headers.price') %></th>
+        <th class="text-end text-muted"><%= t('plans.table_headers.subtotal') %></th>
       </tr>
     </thead>
     <tbody>
       <% (plan_products || []).each_with_index do |pp, index| %>
-        <%# 最後の行以外にのみ border-bottom を適用 %>
         <tr class="<%= 'border-bottom' unless index == plan_products.size - 1 %>">
-          <%# 商品名 %>
           <td><%= pp.product&.name %></td>
-
-          <%# 生産数 - 濃い文字（デフォルト） %>
           <td class="text-end"><%= pp.production_count %></td>
-
-          <%# 売価 - 濃い文字（デフォルト） %>
           <td class="text-end"><%= number_to_currency(pp.product&.price, precision: 0) %></td>
-
-          <%# 小計 - 濃い文字（デフォルト） %>
           <td class="text-end">
             <% subtotal = pp.production_count * (pp.product&.price || 0) %>
             <%= number_to_currency(subtotal, precision: 0) %>
@@ -35,6 +34,6 @@
   </table>
 <% else %>
   <p class="text-muted text-center" style="padding-top: 50px; font-size: 1.0em;">
-    <%= t('plans.product_fields.no_products_set') %>
+    <%= t('plans.messages.no_products_set') %>
   </p>
 <% end %>
