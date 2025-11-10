@@ -77,7 +77,7 @@ class Resources::PlansController < AuthenticatedController
   #
   # @return [void]
   def destroy
-    respond_to_destroy(@plan, success_path: plans_url)
+    respond_to_destroy(@plan, success_path: resources_plans_url)
   end
 
   # ステータス更新アクション
@@ -89,11 +89,11 @@ class Resources::PlansController < AuthenticatedController
     if Resources::Plan.statuses.keys.include?(new_status)
       @plan.update(status: new_status)
       status_text = t("activerecord.enums.plan.status.#{new_status}")
-      redirect_to plans_path, notice: t('plans.messages.status_updated',
+      redirect_to resources_plans_path, notice: t('plans.messages.status_updated',
                                         name: @plan.name,
                                         status: status_text)
     else
-      redirect_to plans_path, alert: t('api.errors.invalid_status')
+      redirect_to resources_plans_path, alert: t('api.errors.invalid_status')
     end
   end
 
@@ -132,16 +132,16 @@ class Resources::PlansController < AuthenticatedController
       end
     end
 
-    redirect_to plans_path, notice: t('plans.messages.copy_success',
+    redirect_to resources_plans_path, notice: t('plans.messages.copy_success',
                                       original_name: original_plan.name,
                                       new_name: new_plan.name)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Plan copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to plans_path, alert: t('plans.messages.copy_failed',
+    redirect_to resources_plans_path, alert: t('plans.messages.copy_failed',
                                     error: e.record.errors.full_messages.join(', '))
   rescue ActiveRecord::RecordNotUnique => e
     Rails.logger.error "Plan copy failed (duplicate): #{e.message}"
-    redirect_to plans_path, alert: t('plans.messages.copy_failed_duplicate')
+    redirect_to resources_plans_path, alert: t('plans.messages.copy_failed_duplicate')
   end
 
   # 印刷用ページ
@@ -181,7 +181,7 @@ class Resources::PlansController < AuthenticatedController
   #
   # @return [ActionController::Parameters]
   def plan_params
-    params.require(:plan).permit(
+    params.require(:resources_plan).permit(
       :category_id,
       :user_id,
       :name,

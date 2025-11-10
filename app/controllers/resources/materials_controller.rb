@@ -69,7 +69,7 @@ class Resources::MaterialsController < AuthenticatedController
   #
   # @return [void]
   def destroy
-    respond_to_destroy(@material, success_path: materials_url)
+    respond_to_destroy(@material, success_path: resources_materials_url)
   end
 
   # 材料の表示順を並び替え
@@ -92,7 +92,7 @@ class Resources::MaterialsController < AuthenticatedController
   #
   # @return [ActionController::Parameters]
   def material_params
-    params.require(:material).permit(
+    params.require(:resources_material).permit(
       :name,
       :category_id,
       :default_unit_weight,

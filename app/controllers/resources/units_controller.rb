@@ -64,7 +64,7 @@ class Resources::UnitsController < AuthenticatedController
   #
   # @return [void]
   def destroy
-    respond_to_destroy(@unit, success_path: units_url)
+    respond_to_destroy(@unit, success_path: resources_units_url)
   end
 
   private
@@ -73,6 +73,6 @@ class Resources::UnitsController < AuthenticatedController
   #
   # @return [ActionController::Parameters]
   def unit_params
-    params.require(:unit).permit(:name, :category, :description)
+    params.require(:resources_unit).permit(:name, :category, :description)
   end
 end

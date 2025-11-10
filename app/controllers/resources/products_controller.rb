@@ -114,7 +114,7 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [void]
   def destroy
-    respond_to_destroy(@product, success_path: products_url)
+    respond_to_destroy(@product, success_path: resources_products_url)
   end
 
   # 画像を削除
@@ -173,12 +173,12 @@ class Resources::ProductsController < AuthenticatedController
       end
     end
 
-    redirect_to products_path, notice: I18n.t('products.messages.copy_success',
+    redirect_to resources_products_path, notice: I18n.t('products.messages.copy_success',
                                               original_name: original_product.name,
                                               new_name: new_product.name,
                                               item_number: temp_item_number)
   rescue ActiveRecord::RecordInvalid => e
-    redirect_to products_path, alert: I18n.t('products.messages.copy_failed',
+    redirect_to resources_products_path, alert: I18n.t('products.messages.copy_failed',
                                              errors: e.record.errors.full_messages.join(', '))
   end
 
@@ -199,7 +199,7 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [ActionController::Parameters]
   def product_params
-    params.require(:product).permit(
+    params.require(:resources_product).permit(
       :name,
       :item_number,
       :price,

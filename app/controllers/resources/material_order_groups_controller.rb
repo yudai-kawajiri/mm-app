@@ -42,7 +42,7 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   def create
     @material_order_group = Resources::MaterialOrderGroup.new(material_order_group_params)
     @material_order_group.user = current_user
-    respond_to_save(@material_order_group, success_path: material_order_groups_path)
+    respond_to_save(@material_order_group, success_path: resources_material_order_groups_path)
   end
 
   # 発注グループ詳細
@@ -60,7 +60,7 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   # @return [void]
   def update
     @material_order_group.assign_attributes(material_order_group_params)
-    respond_to_save(@material_order_group, success_path: material_order_groups_path)
+    respond_to_save(@material_order_group, success_path: resources_material_order_groups_path)
   end
 
   # 発注グループを削除
@@ -69,7 +69,7 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   #
   # @return [void]
   def destroy
-    respond_to_destroy(@material_order_group, success_path: material_order_groups_path)
+    respond_to_destroy(@material_order_group, success_path: resources_material_order_groups_path)
   end
 
   private
@@ -78,6 +78,6 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   #
   # @return [ActionController::Parameters]
   def material_order_group_params
-    params.require(:material_order_group).permit(:name)
+    params.require(:resources_material_order_group).permit(:name)
   end
 end
