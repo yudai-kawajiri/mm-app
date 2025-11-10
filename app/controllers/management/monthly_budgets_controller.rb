@@ -29,10 +29,10 @@ class Management::MonthlyBudgetsController < ApplicationController
     @monthly_budget.assign_attributes(sanitized_monthly_budget_params)
 
     if @monthly_budget.save
-      redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                   notice: t("numerical_managements.messages.budget_created")
     else
-      redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                   alert: t("numerical_managements.messages.budget_create_failed")
     end
   end
@@ -42,10 +42,10 @@ class Management::MonthlyBudgetsController < ApplicationController
   # @return [void]
   def update
     if @monthly_budget.update(sanitized_monthly_budget_params)
-      redirect_to numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
                   notice: t("numerical_managements.messages.budget_updated")
     else
-      redirect_to numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
                   alert: t("numerical_managements.messages.budget_update_failed")
     end
   end
@@ -72,12 +72,12 @@ class Management::MonthlyBudgetsController < ApplicationController
       # 月次予算を削除
       @monthly_budget.destroy!
 
-      redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                   notice: t("numerical_managements.messages.budget_deleted")
     end
   rescue ActiveRecord::RecordNotDestroyed, ActiveRecord::RecordInvalid => e
     Rails.logger.error "Monthly budget deletion failed: #{e.message}"
-    redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
+    redirect_to management_numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                 alert: t("numerical_managements.messages.budget_delete_failed")
   end
 

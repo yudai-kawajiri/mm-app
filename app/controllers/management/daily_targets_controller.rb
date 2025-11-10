@@ -34,13 +34,13 @@ class Management::DailyTargetsController < AuthenticatedController
 
     if @daily_target.save
       message = @daily_target.previously_new_record? ? I18n.t('common.created') : I18n.t('common.updated')
-      redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(month: target_date.strftime("%Y-%m")),
                   notice: I18n.t('numerical_managements.messages.daily_target_saved',
                                 date: target_date.strftime('%-m月%-d日'),
                                 action: message)
     else
       Rails.logger.error "DailyTarget保存失敗: #{@daily_target.errors.full_messages.join(', ')}"
-      redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(month: target_date.strftime("%Y-%m")),
                   alert: I18n.t('numerical_managements.messages.daily_target_save_failed',
                                 errors: @daily_target.errors.full_messages.join(', '))
     end
@@ -58,7 +58,7 @@ class Management::DailyTargetsController < AuthenticatedController
 
     # 権限チェック
     unless @daily_target.user_id == current_user.id
-      redirect_to numerical_managements_path,
+      redirect_to management_numerical_managements_path,
                   alert: I18n.t('api.errors.unauthorized')
       return
     end
@@ -66,12 +66,12 @@ class Management::DailyTargetsController < AuthenticatedController
     @daily_target.assign_attributes(permitted.except(:target_date))
 
     if @daily_target.save
-      redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(month: target_date.strftime("%Y-%m")),
                   notice: I18n.t('numerical_managements.messages.daily_target_updated_with_date',
                                 date: target_date.strftime('%-m月%-d日'))
     else
       Rails.logger.error "DailyTarget更新失敗: #{@daily_target.errors.full_messages.join(', ')}"
-      redirect_to numerical_managements_path(month: target_date.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(month: target_date.strftime("%Y-%m")),
                   alert: I18n.t('numerical_managements.messages.daily_target_update_failed',
                                 errors: @daily_target.errors.full_messages.join(', '))
     end
@@ -107,7 +107,7 @@ class Management::DailyTargetsController < AuthenticatedController
 
     Date.parse(date_string)
   rescue ArgumentError, TypeError
-    redirect_to numerical_managements_path,
+    redirect_to management_numerical_managements_path,
                 alert: I18n.t('api.errors.invalid_date')
     nil
   end
@@ -123,7 +123,7 @@ class Management::DailyTargetsController < AuthenticatedController
     )
 
     unless monthly_budget
-      redirect_to numerical_managements_path(month: date.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(month: date.strftime("%Y-%m")),
                   alert: I18n.t('numerical_managements.messages.budget_not_set')
       return nil
     end

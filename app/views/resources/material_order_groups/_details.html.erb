@@ -34,7 +34,7 @@
       <ul class="list-group">
         <% material_order_group.materials.each do |material| %>
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <%= link_to material.name, material_path(material), class: 'text-decoration-none' %>
+            <%= link_to material.name, resources_material_path(material), class: 'text-decoration-none' %>
             <small class="text-muted">
               <%= material.category&.name %>
             </small>

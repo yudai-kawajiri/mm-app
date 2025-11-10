@@ -24,7 +24,7 @@ class Management::PlanSchedulesController < AuthenticatedController
     return unless scheduled_date
 
     unless permitted[:plan_id].present?
-      redirect_to numerical_managements_path,
+      redirect_to management_numerical_managements_path,
                   alert: I18n.t('api.errors.missing_required_info')
       return
     end
@@ -55,7 +55,7 @@ class Management::PlanSchedulesController < AuthenticatedController
       action = @plan_schedule.previously_new_record? ? I18n.t('plan_schedules.messages.assigned') : I18n.t('plan_schedules.messages.updated')
       Rails.logger.info "=== PlanSchedule Saved Successfully ==="
 
-      redirect_to numerical_managements_path(
+      redirect_to management_numerical_managements_path(
         month: scheduled_date.strftime("%Y-%m")
       ), notice: I18n.t('plan_schedules.messages.plan_schedule_saved',
                         date: scheduled_date.strftime('%-m月%-d日'),
@@ -64,7 +64,7 @@ class Management::PlanSchedulesController < AuthenticatedController
       Rails.logger.error "=== PlanSchedule Save Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
-      redirect_to numerical_managements_path,
+      redirect_to management_numerical_managements_path,
                   alert: I18n.t('plan_schedules.messages.plan_schedule_save_failed',
                                 errors: @plan_schedule.errors.full_messages.join(', '))
     end
@@ -96,7 +96,7 @@ class Management::PlanSchedulesController < AuthenticatedController
     if @plan_schedule.save
       Rails.logger.info "=== PlanSchedule Updated Successfully ==="
 
-      redirect_to numerical_managements_path(
+      redirect_to management_numerical_managements_path(
         month: scheduled_date.strftime("%Y-%m")
       ), notice: I18n.t('plan_schedules.messages.plan_schedule_updated_with_date',
                         date: scheduled_date.strftime('%-m月%-d日'))
@@ -104,7 +104,7 @@ class Management::PlanSchedulesController < AuthenticatedController
       Rails.logger.error "=== PlanSchedule Update Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
-      redirect_to numerical_managements_path,
+      redirect_to management_numerical_managements_path,
                   alert: I18n.t('plan_schedules.messages.plan_schedule_update_failed',
                                 errors: @plan_schedule.errors.full_messages.join(', '))
     end
@@ -126,14 +126,14 @@ class Management::PlanSchedulesController < AuthenticatedController
     if @plan_schedule.update(permitted.slice(:actual_revenue))
       Rails.logger.info "=== Actual Revenue Updated Successfully ==="
 
-      redirect_to numerical_managements_path(
+      redirect_to management_numerical_managements_path(
         month: @plan_schedule.scheduled_date.strftime("%Y-%m")
       ), notice: t("numerical_managements.messages.actual_revenue_updated")
     else
       Rails.logger.error "=== Actual Revenue Update Failed ==="
       Rails.logger.error "Errors: #{@plan_schedule.errors.full_messages.join(', ')}"
 
-      redirect_to numerical_managements_path(
+      redirect_to management_numerical_managements_path(
         month: @plan_schedule.scheduled_date.strftime("%Y-%m")
       ), alert: t("numerical_managements.messages.actual_revenue_update_failed")
     end
@@ -169,7 +169,7 @@ class Management::PlanSchedulesController < AuthenticatedController
 
     Date.parse(date_string)
   rescue ArgumentError, TypeError
-    redirect_to numerical_managements_path,
+    redirect_to management_numerical_managements_path,
                 alert: I18n.t('api.errors.invalid_date')
     nil
   end

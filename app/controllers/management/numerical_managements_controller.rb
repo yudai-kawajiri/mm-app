@@ -80,10 +80,10 @@ class Management::NumericalManagementsController < ApplicationController
     )[:target]
 
     if daily_target.update(target: sanitized_value)
-      redirect_to calendar_numerical_managements_path(year: date.year, month: date.month),
+      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
                   notice: t('numerical_managements.messages.target_updated')
     else
-      redirect_to calendar_numerical_managements_path(year: date.year, month: date.month),
+      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
                   alert: "更新に失敗しました: #{daily_target.errors.full_messages.join(', ')}"
     end
   end
@@ -101,10 +101,10 @@ class Management::NumericalManagementsController < ApplicationController
     service = NumericalDataBulkUpdateService.new(current_user, sanitized_bulk_update_params)
 
     if service.call
-      redirect_to calendar_numerical_managements_path(year: year, month: month),
+      redirect_to management_numerical_managements_path(year: year, month: month),
                   notice: t('numerical_managements.messages.data_updated')
     else
-      redirect_to calendar_numerical_managements_path(year: year, month: month),
+      redirect_to management_numerical_managements_path(year: year, month: month),
                   alert: "更新に失敗しました: #{service.errors.join(', ')}"
     end
   end
