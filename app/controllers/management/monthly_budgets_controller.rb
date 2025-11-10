@@ -9,6 +9,8 @@
 #   - 月次予算の削除（日別目標・計画スケジュールも連動）
 #   - 実績入力済みスケジュールの保護
 class Management::MonthlyBudgetsController < ApplicationController
+  include NumericSanitizer
+
   before_action :authenticate_user!
   before_action :set_monthly_budget, only: [:update, :destroy]
 
@@ -24,7 +26,7 @@ class Management::MonthlyBudgetsController < ApplicationController
       budget_month: budget_month
     )
 
-    @monthly_budget.assign_attributes(monthly_budget_params)
+    @monthly_budget.assign_attributes(sanitized_monthly_budget_params)
 
     if @monthly_budget.save
       redirect_to numerical_managements_path(month: budget_month.strftime("%Y-%m")),
@@ -39,7 +41,7 @@ class Management::MonthlyBudgetsController < ApplicationController
   #
   # @return [void]
   def update
-    if @monthly_budget.update(monthly_budget_params)
+    if @monthly_budget.update(sanitized_monthly_budget_params)
       redirect_to numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
                   notice: t("numerical_managements.messages.budget_updated")
     else
@@ -93,5 +95,17 @@ class Management::MonthlyBudgetsController < ApplicationController
   # @return [ActionController::Parameters]
   def monthly_budget_params
     params.require(:monthly_budget).permit(:target_amount, :note)
+  end
+
+  # サニタイズ済みパラメータ
+  #
+  # NumericSanitizerで全角→半角、カンマ削除、スペース削除
+  #
+  # @return [ActionController::Parameters]
+  def sanitized_monthly_budget_params
+    sanitize_numeric_params(
+      monthly_budget_params,
+      with_comma: [:target_amount]
+    )
   end
 end

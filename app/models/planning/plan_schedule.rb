@@ -11,7 +11,6 @@
 class Planning::PlanSchedule < ApplicationRecord
   # カンマ削除機能
   include StripCommas
-  strip_commas_from :planned_revenue, :actual_revenue
 
   # 変更履歴の記録
   has_paper_trail

@@ -11,7 +11,6 @@
 class Management::DailyTarget < ApplicationRecord
   # カンマ削除機能
   include StripCommas
-  strip_commas_from :target_amount
 
   # 変更履歴の記録
   has_paper_trail

@@ -10,6 +10,8 @@
 #   - 実績売上の入力
 #   - 計画高の自動計算
 class Management::PlanSchedulesController < AuthenticatedController
+  include NumericSanitizer
+
   # 計画スケジュールを作成
   #
   # 1日1計画のみ（同じ日の計画は上書き）
@@ -17,7 +19,7 @@ class Management::PlanSchedulesController < AuthenticatedController
   #
   # @return [void]
   def create
-    permitted = plan_schedule_params
+    permitted = sanitized_plan_schedule_params
     scheduled_date = parse_scheduled_date(permitted[:scheduled_date])
     return unless scheduled_date
 
@@ -72,7 +74,7 @@ class Management::PlanSchedulesController < AuthenticatedController
   #
   # @return [void]
   def update
-    permitted = plan_schedule_params
+    permitted = sanitized_plan_schedule_params
     scheduled_date = parse_scheduled_date(permitted[:scheduled_date])
     return unless scheduled_date
 
@@ -116,10 +118,12 @@ class Management::PlanSchedulesController < AuthenticatedController
   def update_actual_revenue
     @plan_schedule = current_user.plan_schedules.find(params[:id])
 
-    Rails.logger.info "=== Updating Actual Revenue for PlanSchedule ID: #{@plan_schedule.id} ==="
-    Rails.logger.info "Actual Revenue: #{plan_schedule_params[:actual_revenue]}"
+    permitted = sanitized_plan_schedule_params
 
-    if @plan_schedule.update(plan_schedule_params.slice(:actual_revenue))
+    Rails.logger.info "=== Updating Actual Revenue for PlanSchedule ID: #{@plan_schedule.id} ==="
+    Rails.logger.info "Actual Revenue: #{permitted[:actual_revenue]}"
+
+    if @plan_schedule.update(permitted.slice(:actual_revenue))
       Rails.logger.info "=== Actual Revenue Updated Successfully ==="
 
       redirect_to numerical_managements_path(
@@ -142,6 +146,18 @@ class Management::PlanSchedulesController < AuthenticatedController
   # @return [ActionController::Parameters]
   def plan_schedule_params
     params.require(:plan_schedule).permit(:scheduled_date, :plan_id, :planned_revenue, :actual_revenue, :note)
+  end
+
+  # サニタイズ済みパラメータ
+  #
+  # NumericSanitizerで全角→半角、カンマ削除、スペース削除
+  #
+  # @return [ActionController::Parameters]
+  def sanitized_plan_schedule_params
+    sanitize_numeric_params(
+      plan_schedule_params,
+      with_comma: [:planned_revenue, :actual_revenue]
+    )
   end
 
   # 日付パース

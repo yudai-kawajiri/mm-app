@@ -9,13 +9,15 @@
 #   - 月次予算との紐付け
 #   - 権限チェック
 class Management::DailyTargetsController < AuthenticatedController
+  include NumericSanitizer
+
   # 日別目標を作成
   #
   # find_or_initialize_by で既存レコード検索 or 新規作成
   #
   # @return [void]
   def create
-    permitted = daily_target_params
+    permitted = sanitized_daily_target_params
     target_date = parse_target_date(permitted[:target_date])
     return unless target_date
 
@@ -48,7 +50,7 @@ class Management::DailyTargetsController < AuthenticatedController
   #
   # @return [void]
   def update
-    permitted = daily_target_params
+    permitted = sanitized_daily_target_params
     target_date = parse_target_date(permitted[:target_date])
     return unless target_date
 
@@ -82,6 +84,18 @@ class Management::DailyTargetsController < AuthenticatedController
   # @return [ActionController::Parameters]
   def daily_target_params
     params.require(:daily_target).permit(:target_date, :target_amount)
+  end
+
+  # サニタイズ済みパラメータ
+  #
+  # NumericSanitizerで全角→半角、カンマ削除、スペース削除
+  #
+  # @return [ActionController::Parameters]
+  def sanitized_daily_target_params
+    sanitize_numeric_params(
+      daily_target_params,
+      with_comma: [:target_amount]
+    )
   end
 
   # 日付パース
