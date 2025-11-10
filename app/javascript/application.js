@@ -1,3 +1,4 @@
+import "@hotwired/turbo-rails"
 /**
  * @file application.js
  * Stimulusアプリケーションの初期化と設定

@@ -69,8 +69,8 @@
     <%# 5. 削除リンク（アイコン） %>
     <%= link_to resource,
         data: {
-          turbo_method: :delete,
-          turbo_confirm: t('helpers.confirm.destroy', resource: resource_name)
+          "turbo-method": "delete",
+          "turbo-confirm": t('helpers.confirm.destroy', resource: resource_name)
         },
         class: 'btn btn-sm btn-danger',
         title: t('helpers.link.destroy') do %>

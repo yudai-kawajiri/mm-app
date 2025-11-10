@@ -9,8 +9,6 @@
 #   DailyTarget.for_month(2024, 12)
 #   DailyTarget.recent
 class Management::DailyTarget < ApplicationRecord
-  # カンマ削除機能
-  include StripCommas
 
   # 変更履歴の記録
   has_paper_trail
