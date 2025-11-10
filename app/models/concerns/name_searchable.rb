@@ -40,11 +40,24 @@ module NameSearchable
 
     # カテゴリー種別による絞り込み
     #
+    # Categoryモデル自身の場合は直接category_typeカラムを使用
+    # 他のモデルの場合はcategoryリレーションを経由
+    #
     # @param category_type [String, nil] カテゴリー種別
     # @return [ActiveRecord::Relation] 絞り込み結果
     scope :filter_by_category_type, lambda { |category_type|
       if category_type.present?
-        joins(:category).where(categories: { category_type: category_type })
+        # Categoryモデル自身かどうかをチェック
+        if name == 'Resources::Category'
+          # Categoryモデルの場合は直接category_typeカラムで検索
+          where(category_type: category_type)
+        elsif reflect_on_association(:category)
+          # categoryリレーションが存在する場合のみjoin
+          joins(:category).where(categories: { category_type: category_type })
+        else
+          # categoryリレーションがない場合はそのまま返す
+          all
+        end
       else
         all
       end
@@ -53,13 +66,18 @@ module NameSearchable
     # 名前とカテゴリーによる複合検索
     #
     # @param options [Hash] 検索条件のオプション
+    # @option options [String] :q 検索する名前（部分一致） - :nameのエイリアス
     # @option options [String] :name 検索する名前（部分一致）
     # @option options [Integer, String] :category_id カテゴリーID
     # @option options [String] :category_type カテゴリー種別
     # @return [ActiveRecord::Relation] 検索結果
     scope :search_and_filter, lambda { |options = {}|
       result = all
-      result = result.search_by_name(options[:name]) if options[:name].present?
+
+      # :q と :name の両方をサポート（:q を優先）
+      search_term = options[:q] || options[:name]
+      result = result.search_by_name(search_term) if search_term.present?
+
       result = result.filter_by_category_id(options[:category_id]) if options[:category_id].present?
       result = result.filter_by_category_type(options[:category_type]) if options[:category_type].present?
       result

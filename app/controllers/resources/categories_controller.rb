@@ -37,7 +37,15 @@ class Resources::CategoriesController < AuthenticatedController
   # @return [void]
   def create
     @category = current_user.categories.build(category_params)
-    respond_to_save(@category, success_path: @category)
+
+    if @category.save
+      redirect_to resources_category_path(@category),
+                  notice: t('flash_messages.create.success',
+                           resource: Resources::Category.model_name.human,
+                           name: @category.name)
+    else
+      render :new, status: :unprocessable_entity
+    end
   end
 
   # カテゴリー詳細
@@ -54,15 +62,26 @@ class Resources::CategoriesController < AuthenticatedController
   #
   # @return [void]
   def update
-    @category.assign_attributes(category_params)
-    respond_to_save(@category, success_path: @category)
+    if @category.update(category_params)
+      redirect_to resources_category_path(@category),
+                  notice: t('flash_messages.update.success',
+                           resource: Resources::Category.model_name.human,
+                           name: @category.name)
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   # カテゴリーを削除
   #
   # @return [void]
   def destroy
-    respond_to_destroy(@category, success_path: categories_url)
+    name = @category.name
+    @category.destroy!
+    redirect_to resources_categories_path,
+                notice: t('flash_messages.destroy.success',
+                         resource: Resources::Category.model_name.human,
+                         name: name)
   end
 
   private
@@ -71,6 +90,6 @@ class Resources::CategoriesController < AuthenticatedController
   #
   # @return [ActionController::Parameters]
   def category_params
-    params.require(:category).permit(:name, :category_type, :description)
+    params.require(:resources_category).permit(:name, :category_type, :description)
   end
 end
