@@ -16,7 +16,7 @@
         <%= form_group_lg(f, :name) %>
         <%= form_group_lg(f, :status,
                           field_type: :select,
-                          choices: Resources::Plan.statuses.keys.map { |status| [t("activerecord.enums.plan.status.#{status}"), status] },
+                          choices: Resources::Plan.statuses.keys.map { |status| [t("activerecord.enums.resources/plan.status.#{status}"), status] },
                           select_options: { include_blank: t('helpers.prompt.select') }) %>
       </div>
 

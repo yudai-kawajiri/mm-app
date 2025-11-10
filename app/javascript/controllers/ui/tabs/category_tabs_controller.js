@@ -6,7 +6,7 @@
  */
 
 import { Controller } from "@hotwired/stimulus"
-import Logger from "../../utils/logger"
+import Logger from "utils/logger"
 
 /**
  * Category Tabs Controller

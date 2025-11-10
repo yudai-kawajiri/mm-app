@@ -60,7 +60,7 @@ class Resources::Material < ApplicationRecord
   # @return [void]
   def self.update_display_orders(material_ids)
     material_ids.each_with_index do |material_id, index|
-      Material.where(id: material_id).update_all(display_order: index + 1)
+      where(id: material_id).update_all(display_order: index + 1)
     end
   end
 

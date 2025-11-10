@@ -87,7 +87,7 @@ export default class extends Controller {
    *   - ラベルを切り替え
    */
   toggleFields() {
-    const selectedType = this.element.querySelector('input[name="material[measurement_type]"]:checked')?.value
+    const selectedType = this.element.querySelector('input[name*="[measurement_type]"]:checked')?.value
     console.log('toggleFields called, selectedType:', selectedType)
 
     if (selectedType === 'weight') {
@@ -97,7 +97,7 @@ export default class extends Controller {
 
       // ラベルを切り替え
       if (this.hasWeightLabelTarget && this.hasCountLabelTarget) {
-        this.weightLabelTarget.style.display = ''
+        this.weightLabelTarget.style.display = 'inline'
         this.countLabelTarget.style.display = 'none'
         console.log('Label switched to weight')
       }
@@ -113,7 +113,7 @@ export default class extends Controller {
       // ラベルを切り替え
       if (this.hasWeightLabelTarget && this.hasCountLabelTarget) {
         this.weightLabelTarget.style.display = 'none'
-        this.countLabelTarget.style.display = ''
+        this.countLabelTarget.style.display = 'inline'
         console.log('Label switched to count')
       }
 
@@ -140,7 +140,7 @@ export default class extends Controller {
     console.log('clearFields called, container:', container)
 
     // number型の入力フィールドをクリア
-    const numberInputs = container.querySelectorAll('input[type="number"]')
+    const numberInputs = container.querySelectorAll('input:not([name*="unit_for_order"])')
     console.log('Found number inputs:', numberInputs.length)
 
     numberInputs.forEach(input => {

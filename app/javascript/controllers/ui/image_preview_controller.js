@@ -6,7 +6,7 @@
  */
 
 import { Controller } from "@hotwired/stimulus"
-import i18n from "../i18n"
+import i18n from "controllers/i18n"
 
 /**
  * Image Preview Controller

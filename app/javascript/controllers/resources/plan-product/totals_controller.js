@@ -6,8 +6,8 @@
  */
 
 import { Controller } from "@hotwired/stimulus"
-import Logger from "../../../utils/logger"
-import CurrencyFormatter from "../../../utils/currency_formatter"
+import Logger from "utils/logger"
+import CurrencyFormatter from "utils/currency_formatter"
 
 /**
  * Plan-Product Totals Controller

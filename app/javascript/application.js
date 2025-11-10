@@ -40,3 +40,8 @@ window.Stimulus = application
 console.log('Stimulus debug mode enabled')
 
 export { application }
+
+// コントローラーの読み込み
+
+// コントローラーの読み込み（importmap経由）
+import "controllers/index"

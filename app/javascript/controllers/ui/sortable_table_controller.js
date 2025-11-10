@@ -7,7 +7,7 @@
 
 import { Controller } from "@hotwired/stimulus"
 import Sortable from "sortablejs"
-import i18n from "../i18n"
+import i18n from "controllers/i18n"
 
 /**
  * Sortable Table Controller

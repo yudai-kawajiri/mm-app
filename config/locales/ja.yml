@@ -97,6 +97,9 @@ ja:
     calculation_unavailable: "計算不可"
     print: "印刷"
     print_action: "印刷する"
+    save_order: "並び順を保存"
+    actions:
+      reorder: "並び替え"
     copy: "コピー"
     close: "閉じる"
     reorder_mode: "並び替えモード"
@@ -910,3 +913,8 @@ ja:
         no_logs_to_delete: "%{retention_days}日より古いログは見つかりませんでした"
         success: "%{deleted_count}件のシステムログを削除しました（%{retention_days}日より古いログ、%{cutoff_date}以前）"
       deleted_record: "削除済みレコード"
+
+  # Stimulus Controller メッセージ
+  sortable_table:
+    saved: "並び替えを保存しました"
+    save_failed: "並び替えの保存に失敗しました"

@@ -39,8 +39,8 @@
 <table class="table mt-4">
   <thead class="table-light">
     <tr>
-      <th><%= MaterialOrderGroup.human_attribute_name(:name) %></th>
-      <th><%= MaterialOrderGroup.human_attribute_name(:materials_count) %></th>
+      <th><%= Resources::MaterialOrderGroup.human_attribute_name(:name) %></th>
+      <th><%= Resources::MaterialOrderGroup.human_attribute_name(:materials_count) %></th>
       <th><%= t('common.action') %></th>
     </tr>
   </thead>
@@ -58,7 +58,7 @@
         <td>
           <%= render 'shared/actions/resource_action_links',
               resource: group,
-              resource_name: MaterialOrderGroup.model_name.human,
+              resource_name: Resources::MaterialOrderGroup.model_name.human,
               show_link: true,
               show_copy: false %>
         </td>
