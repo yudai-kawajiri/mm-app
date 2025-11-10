@@ -329,8 +329,8 @@ ja:
   # 計画スケジュール
   plan_schedules:
     messages:
-      assigned: "割り当てました"
-      updated: "更新しました"
+      assigned: "%{date}を登録しました"
+      updated: "%{date}を更新しました"
       plan_schedule_saved: "%{date}の計画を%{action}"
       plan_schedule_save_failed: "計画の保存に失敗しました: %{errors}"
       plan_schedule_updated_with_date: "%{date}の計画を更新しました"
@@ -358,7 +358,7 @@ ja:
       recommended_daily_target: "推奨日次目標"
       daily_required: "1日あたり必要額"
       action_plan: "アクションプラン"
-      daily_target_diff: "目標との差"
+      daily_target_diff: "予算との差"
       alert_action_needed_html: "残り<strong>%{days}日</strong>で<strong>%{amount}</strong>の追加が必要です。<br>1日あたり<strong>%{daily}</strong>を目指しましょう"
       alert_on_track: "予算達成に向けて順調です！"
       daily_details: "日別詳細"
@@ -367,7 +367,7 @@ ja:
       target_month: "対象月"
       display: "表示"
       days_suffix: "日"
-      alert_remaining: "残り%{days}日で目標を達成するには、"
+      alert_remaining: "残り%{days}日で予算を達成するには、"
       alert_daily: "1日あたり%{amount}の追加が必要です"
       alert_add: "追加で%{amount}の売上が必要です"
     table_headers:
@@ -397,20 +397,26 @@ ja:
     modals:
       budget_setting:
         title: "予算設定"
-        info: "月間の売上目標を設定します。日別目標は自動で分配されます"
       daily_target_edit:
         title: "日別予算編集"
-        info: "この日の予算金額を変更します。月間予算の合計には影響しません"
+        info: "この日の予算金額を入力してください"
       actual_revenue_entry:
         title: "実績入力"
         info: "この日の実績売上を入力してください"
       assign_plan:
         title: "計画登録"
         edit_title: "計画編集"
-        category_help: "製造する製品のカテゴリを選択してください"
-        plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます"
-        revenue_help: "必要に応じて計画高を調整できます"
-        revenue_readonly_help: "計画から自動計算されます（編集不可）"
+        planned_revenue_help: "計画を選択後に自動で入力されます"
+        title: "実績入力"
+      assign_plan:
+        title: "計画登録"
+        edit_title: "計画編集"
+        planned_revenue_help: "計画を選択後に自動で入力されます"
+        info: "この日の実績売上を入力してください"
+      assign_plan:
+        title: "計画登録"
+        edit_title: "計画編集"
+        planned_revenue_help: "計画を選択後に自動で入力されます"
       labels:
         target_month: "対象月"
         target_date: "対象日"
@@ -422,10 +428,13 @@ ja:
         optional: "（任意）"
         category: "カテゴリ"
         plan_select: "計画選択"
+      fields:
+        monthly_budget: "月間予算"
+        daily_target: "日別予算"
       prompts:
-        select_category: "カテゴリを選択"
-        select_plan: "計画を選択"
-        select_plan_prompt: "計画を選択してください"
+        select_category: "選択してください"
+        select_plan: "選択してください"
+        select_plan_prompt: "選択してください（カテゴリ選択後に選択可能）"
         select_category_first: "まずカテゴリを選択してください"
       confirm:
         delete: "本当に削除しますか？"
@@ -441,13 +450,13 @@ ja:
       budget_deleted: "月間予算を削除しました"
       budget_delete_failed: "月間予算の削除に失敗しました"
       budget_not_set: "この月の予算が設定されていません"
-      daily_target_saved: "%{date}の目標を%{action}しました"
-      daily_target_save_failed: "目標の保存に失敗しました: %{errors}"
-      daily_target_updated: "日別目標を更新しました"
-      daily_target_updated_with_date: "%{date}の目標を更新しました"
-      daily_target_update_failed: "目標の更新に失敗しました: %{errors}"
-      daily_target_deleted: "日別目標を削除しました"
-      daily_target_delete_failed: "日別目標の削除に失敗しました"
+      daily_target_saved: "%{date}の予算を%{action}しました"
+      daily_target_save_failed: "予算の保存に失敗しました: %{errors}"
+      daily_target_updated: "日別予算を更新しました"
+      daily_target_updated_with_date: "%{date}の予算を更新しました"
+      daily_target_update_failed: "予算の更新に失敗しました: %{errors}"
+      daily_target_deleted: "日別予算を削除しました"
+      daily_target_delete_failed: "日別予算の削除に失敗しました"
       actual_updated: "実績を更新しました"
       actual_update_failed: "実績の更新に失敗しました"
       actual_deleted: "実績を削除しました"
@@ -860,7 +869,7 @@ ja:
       unauthorized: "認証が必要です"
       plan_not_found: "計画が見つかりません"
       plan_schedule_not_found: "計画スケジュールが見つかりません"
-      daily_target_not_found: "日別目標が見つかりません、またはアクセスが拒否されました"
+      daily_target_not_found: "日別が予算見つかりません、またはアクセスが拒否されました"
       product_not_found: "商品が見つかりません、またはアクセスが拒否されました"
       material_not_found: "原材料が見つかりません、またはアクセスが拒否されました"
       server_error: "サーバーエラーが発生しました"

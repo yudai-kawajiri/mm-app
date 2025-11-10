@@ -52,9 +52,13 @@ class Management::NumericalManagementsController < ApplicationController
       year: year,
       month: month
     ).calculate
-  end
-  # カレンダー表示
+
+    # 計画登録モーダル用：カテゴリ別計画データ
+    @plans_by_category = current_user.plans
   #
+                                     .includes(:category)
+                                     .group_by { |plan| plan.category.name }
+  end
   # 指定された年月のカレンダーを表示
   # 日別の売上実績、予算、目標、達成率を一覧表示
   #

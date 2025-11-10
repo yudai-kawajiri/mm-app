@@ -8,18 +8,19 @@
 %>
 
 <div class="modal fade"
-     id="assignPlanModal"
-     tabindex="-1"
-     aria-labelledby="assignPlanModalLabel"
-     aria-hidden="true">
+      id="assignPlanModal"
+      tabindex="-1"
+      aria-labelledby="assignPlanModalLabel"
+      aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <%= form_with model: Planning::PlanSchedule.new,
+                    scope: :plan_schedule,
                     url: management_plan_schedules_path,
                     method: :post,
                     local: true do |f| %>
         <div class="modal-header">
-          <h5 class="modal-title" id="assignPlanModalLabel"><%= t('numerical_managements.modals.assign_plan.title') %></h5>
+          <h5 class="modal-title" id="assignPlanModalLabel"><%= t("numerical_managements.modals.assign_plan.title") %></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -42,7 +43,6 @@
                 <% end %>
               <% end %>
             </select>
-            <div class="form-text"><%= t('numerical_managements.modals.assign_plan.category_help') %></div>
           </div>
 
           <div class="mb-3">
@@ -55,7 +55,6 @@
                     required>
               <option value=""><%= t('numerical_managements.modals.prompts.select_plan') %></option>
             </select>
-            <div class="form-text"><%= t('numerical_managements.modals.assign_plan.plan_help') %></div>
           </div>
 
           <div class="mb-3">
@@ -69,13 +68,11 @@
                 action: 'input->number-input#handleInput paste->number-input#handlePaste'
               } %>
             <%= f.hidden_field :planned_revenue, id: "assignPlanAmountHidden" %>
-
-            <div class="form-text"><%= t('numerical_managements.modals.assign_plan.revenue_readonly_help') %></div>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common.cancel') %></button>
-          <%= f.submit t('common.save'), class: "btn btn-primary", data: { disable_with: t('common.saving') } %>
+          <%= f.submit t('common.create'), id: 'assignPlanSubmitBtn', class: "btn btn-primary", data: { disable_with: t('common.saving') } %>
         </div>
       <% end %>
     </div>
@@ -84,6 +81,8 @@
 
 <script>
 window.assignPlanI18n = window.assignPlanI18n || {
+  createLabel: '<%= t("common.create") %>',
+  updateLabel: '<%= t("common.update") %>',
   editTitle: '<%= t('numerical_managements.modals.assign_plan.edit_title') %>',
   addTitle: '<%= t('numerical_managements.modals.assign_plan.title') %>',
   selectPlanPrompt: '<%= t('numerical_managements.modals.prompts.select_plan_prompt') %>'
@@ -105,7 +104,8 @@ function setPlanModalData(button) {
 
   if (scheduleId) {
     modalTitle.textContent = window.assignPlanI18n.editTitle;
-    form.action = `/plan_schedules/${scheduleId}`;
+    document.getElementById('assignPlanSubmitBtn').value = window.assignPlanI18n.updateLabel;
+    form.action = '/management/plan_schedules/' + scheduleId;
 
     let methodInput = form.querySelector('input[name="_method"]');
     if (!methodInput) {
@@ -126,10 +126,11 @@ function setPlanModalData(button) {
     }
 
     document.getElementById('assignPlanAmount').value = plannedRevenue || 0;
-    document.getElementById("assignPlanAmountHidden").value = plannedRevenue || 0
+    document.getElementById("assignPlanAmountHidden").value = plannedRevenue || 0;
   } else {
     modalTitle.textContent = window.assignPlanI18n.addTitle;
-    form.action = '/plan_schedules';
+    document.getElementById('assignPlanSubmitBtn').value = window.assignPlanI18n.createLabel;
+    form.action = '<%= management_plan_schedules_path %>';
 
     const methodInput = form.querySelector('input[name="_method"]');
     if (methodInput) {
@@ -146,39 +147,39 @@ function setPlanModalData(button) {
 }
 
 function handleCategoryChange(select) {
-  const category = select.value
-  const planSelect = document.getElementById('assignPlanSelect')
+  const category = select.value;
+  const planSelect = document.getElementById('assignPlanSelect');
   planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanPrompt}</option>`;
 
   if (!category) {
-    planSelect.disabled = true
-    return
+    planSelect.disabled = true;
+    return;
   }
 
-  const plans = window.plansByCategory[category]
+  const plans = window.plansByCategory[category];
 
   if (!plans || plans.length === 0) {
-    planSelect.disabled = true
-    return
+    planSelect.disabled = true;
+    return;
   }
 
   plans.forEach(plan => {
-    const option = document.createElement('option')
-    option.value = plan.id
-    option.textContent = plan.name
-    option.dataset.revenue = plan.expected_revenue || 0
-    planSelect.appendChild(option)
-  })
+    const option = document.createElement('option');
+    option.value = plan.id;
+    option.textContent = plan.name;
+    option.dataset.revenue = plan.expected_revenue || 0;
+    planSelect.appendChild(option);
+  });
 
-  planSelect.disabled = false
+  planSelect.disabled = false;
 }
 
 function handlePlanChange(select) {
-  const selectedOption = select.selectedOptions[0]
+  const selectedOption = select.selectedOptions[0];
   if (selectedOption && selectedOption.value) {
-    const revenue = selectedOption.dataset.revenue || 0
-    document.getElementById('assignPlanAmount').value = revenue
-    document.getElementById("assignPlanAmountHidden").value = revenue
+    const revenue = selectedOption.dataset.revenue || 0;
+    document.getElementById('assignPlanAmount').value = revenue;
+    document.getElementById("assignPlanAmountHidden").value = revenue;
   }
 }
 </script>

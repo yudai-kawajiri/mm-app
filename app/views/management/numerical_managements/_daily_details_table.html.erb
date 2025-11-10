@@ -71,6 +71,7 @@
                   <%= day[:date].strftime('%-m/%-d') %>
                 </td>
 
+                <%# 日別目標 %>
                 <td class="text-end">
                   <span class="normal-mode-display">
                     <%= number_to_currency((day[:target] || 0).to_i, unit: "¥", precision: 0) %>
@@ -86,10 +87,12 @@
                   </div>
                 </td>
 
+                <%# 計画高 %>
                 <td class="text-end">
                   <%= number_to_currency((day[:planned] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
 
+                <%# 実績 %>
                 <td class="text-end">
                   <span class="normal-mode-display">
                     <%= number_to_currency((day[:actual] || 0).to_i, unit: "¥", precision: 0) %>
@@ -105,6 +108,7 @@
                   </div>
                 </td>
 
+                <%# 達成率 %>
                 <td class="text-end">
                   <% rate = day[:achievement_rate] || 0 %>
                   <span class="<%= rate >= 100 ? 'text-success' : (rate >= 80 ? 'text-warning' : 'text-danger') %>">
@@ -112,12 +116,15 @@
                   </span>
                 </td>
 
+                <%# 予算差 %>
                 <td class="text-end <%= (day[:diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
                   <%= number_to_currency((day[:diff] || 0).to_i, unit: "¥", precision: 0) %>
                 </td>
 
+                <%# アクションボタン群 %>
                 <td class="text-center bulk-edit-hidden" rowspan="2" class="align-middle">
                   <div class="btn-group btn-group-sm" role="group">
+                    <%# 日別目標編集ボタン %>
                     <button type="button"
                             class="btn btn-outline-secondary"
                             data-bs-toggle="modal"
@@ -131,6 +138,7 @@
                       <i class="bi bi-pencil"></i>
                     </button>
 
+                    <%# 計画追加/編集ボタン %>
                     <% first_schedule = day[:plan_schedules].first %>
                     <button type="button"
                             class="btn <%= first_schedule ? 'btn-outline-warning' : 'btn-outline-info' %> plan-add-btn"
@@ -151,25 +159,25 @@
                       <i class="bi bi-<%= first_schedule ? 'pencil-square' : 'calendar-plus' %>"></i>
                     </button>
 
+                    <%# 実績入力ボタン（修正版：onclickとdata-bs-targetを削除） %>
                     <% if day[:plan_schedules].present? %>
                       <% first_schedule = day[:plan_schedules].first %>
                       <button type="button"
                               class="btn btn-outline-success"
                               data-bs-toggle="modal"
-                              data-bs-target="#editActualRevenueModal"
-                              data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
+                              data-bs-target="#actualRevenueModal"
                               data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
                               data-plan-schedule-id="<%= first_schedule.id %>"
                               data-actual-revenue="<%= first_schedule.actual_revenue || 0 %>"
-                              onclick="setActualModalData(this)"
                               title="<%= t('numerical_managements.actions.input_actual') %>">
                         <i class="bi bi-currency-yen"></i>
                       </button>
                     <% end %>
 
+                    <%# 印刷ボタン %>
                     <% if day[:plan_schedules].present? %>
                       <% if day[:plan_schedules].count == 1 %>
-                        <%= link_to print_plan_path(day[:plan_schedules].first.plan, date: day[:date]),
+                        <%= link_to "/plans/#{day[:plan_schedules].first.plan.id}/print?date=#{day[:date]}",
                                     class: "btn btn-outline-primary",
                                     target: "_blank",
                                     data: { turbo: false },
@@ -188,7 +196,7 @@
                           <ul class="dropdown-menu dropdown-menu-end">
                             <% day[:plan_schedules].each do |ps| %>
                               <li>
-                                <%= link_to print_plan_path(ps.plan, date: day[:date]),
+                                <%= link_to "/plans/#{ps.plan.id}/print?date=#{day[:date]}",
                                             class: "dropdown-item",
                                             target: "_blank",
                                             data: { turbo: false } do %>
@@ -204,6 +212,7 @@
                 </td>
               </tr>
 
+              <%# 累計行 %>
               <tr class="table-light <%= 'table-secondary' unless is_past %>">
                 <td class="text-end">
                   <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
@@ -238,6 +247,7 @@
         </table>
       </div>
 
+      <%# 一括編集アクション %>
       <div class="card-footer bulk-edit-actions" style="display: none;">
         <div class="d-flex justify-content-end gap-2">
           <button type="button" class="btn btn-secondary" onclick="toggleBulkEditMode()">
@@ -253,9 +263,16 @@
 </div>
 
 <script>
+<%# 一括編集モードのグローバル変数 %>
 window.isEditMode = false;
 window.monthlyBudget = <%= @monthly_budget&.target_amount || 0 %>;
 
+/**
+ * 数値入力フィールドのセットアップ
+ * IME入力、全角→半角変換、カンマ区切り表示に対応
+ *
+ * @param {HTMLElement} input - 対象の入力フィールド
+ */
 function setupNumericInput(input) {
   let isComposing = false;
 
@@ -286,13 +303,21 @@ function setupNumericInput(input) {
   });
 }
 
+/**
+ * 数値フォーマット処理
+ * 全角数字を半角に変換し、数字以外を除去してカンマ区切り表示
+ *
+ * @param {HTMLElement} input - 対象の入力フィールド
+ */
 function formatNumericValue(input) {
   let value = input.value;
 
+  // 全角数字を半角に変換
   value = value.replace(/[０-９]/g, function(s) {
     return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
   });
 
+  // 数字以外を除去
   value = value.replace(/[^\d]/g, '');
 
   if (value === '') {
@@ -300,14 +325,19 @@ function formatNumericValue(input) {
     return;
   }
 
+  // カンマ区切り表示
   const numValue = parseInt(value) || 0;
   input.value = numValue.toLocaleString();
 }
 
+/**
+ * 一括編集モードの切り替え
+ */
 function toggleBulkEditMode() {
   window.isEditMode = !window.isEditMode;
 
   if (window.isEditMode) {
+    // 編集モードON
     document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-eye"></i> <%= j t('numerical_managements.bulk_edit.toggle_normal_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'block';
     document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'none');
@@ -315,6 +345,7 @@ function toggleBulkEditMode() {
     document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'none');
     document.querySelector('.bulk-edit-actions').style.display = 'block';
 
+    // 数値入力フィールドのセットアップ
     document.querySelectorAll('.numeric-input').forEach(input => {
       const newInput = input.cloneNode(true);
       input.parentNode.replaceChild(newInput, input);
@@ -328,6 +359,7 @@ function toggleBulkEditMode() {
 
     calculateDailyTargetSum();
   } else {
+    // 編集モードOFF（通常モードに戻る）
     document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-pencil-square"></i> <%= j t('numerical_managements.bulk_edit.toggle_edit_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'none';
     document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'inline');
@@ -335,6 +367,7 @@ function toggleBulkEditMode() {
     document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'table-cell');
     document.querySelector('.bulk-edit-actions').style.display = 'none';
 
+    // 元の値に戻す
     document.querySelectorAll('.bulk-edit-target').forEach(input => {
       const originalValue = parseInt(input.dataset.original) || 0;
       input.value = originalValue.toLocaleString();
@@ -342,6 +375,10 @@ function toggleBulkEditMode() {
   }
 }
 
+/**
+ * 日別目標の合計と予算差を計算
+ * 予算を超える場合は保存ボタンを無効化
+ */
 function calculateDailyTargetSum() {
   let sum = 0;
   document.querySelectorAll('.bulk-edit-target').forEach(input => {
@@ -357,20 +394,27 @@ function calculateDailyTargetSum() {
   const saveButton = document.getElementById('bulkSaveButton');
 
   if (diff > 0) {
+    // 予算超過
     diffElement.textContent = '+¥' + diff.toLocaleString() + ' <%= j t('numerical_managements.bulk_edit.excess') %>';
     diffElement.className = 'fw-bold text-danger';
     saveButton.disabled = true;
   } else if (diff < 0) {
+    // 予算未達
     diffElement.textContent = '-¥' + Math.abs(diff).toLocaleString() + ' <%= j t('numerical_managements.bulk_edit.shortage') %>';
     diffElement.className = 'fw-bold text-warning';
     saveButton.disabled = false;
   } else {
+    // ぴったり
     diffElement.textContent = '¥0';
     diffElement.className = 'fw-bold text-success';
     saveButton.disabled = false;
   }
 }
 
+/**
+ * フォーム送信時の処理
+ * カンマを除去して数値のみを送信
+ */
 document.getElementById('bulkEditForm').addEventListener('submit', function(e) {
   document.querySelectorAll('.numeric-input').forEach(input => {
     if (!input.disabled) {
