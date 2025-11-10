@@ -1,0 +1,10 @@
+<%#
+  機能: カテゴリー詳細画面
+  - カテゴリー情報の詳細を表示
+%>
+<%= render 'shared/details/resource_show',
+  resource: @category,
+  title: t('categories.show.title', name: @category.name),
+  content_left_partial: 'resources/categories/details',
+  content_left_title: nil,
+  partial_locals: { category: @category } %>

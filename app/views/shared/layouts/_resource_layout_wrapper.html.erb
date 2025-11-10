@@ -1,43 +1,52 @@
-<%# リソース2カラムフォームラッパー %>
+<%# 2カラムレイアウトコンテナ %>
 <%#
   機能:
-  - 2カラムレイアウト専用フォームラッパー
-  - 基本情報と詳細情報を左右に分けて表示
+  - フォーム内の2カラムレイアウトを提供
+  - 左カラム：基本情報、右カラム：詳細情報
 
   必須引数:
-  - resource: フォーム対象のモデルインスタンス
-  - form_title: ページタイトル
-  - basic_fields: 左カラムのフィールドパーシャル名
-  - detail_fields: 右カラムのフィールドパーシャル名
+  - f: フォームビルダー
+  - basic_fields: 左カラムのパーシャル名
+  - detail_fields: 右カラムのパーシャル名
 
   オプション引数:
-  - custom_right_title: 右カラムのタイトル (デフォルト: なし)
-
-  Stimulusコントローラー:
-  - form-submit: フォーム送信制御
+  - content_left_title: 左カラムのタイトル
+  - content_right_title: 右カラムのタイトル
+  - resource: リソースオブジェクト
 %>
-<div class="container mt-4">
-  <div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-      <h2 class="mb-0"><%= form_title %></h2>
-    </div>
+<% content_left_title = local_assigns[:content_left_title] %>
+<% content_right_title = local_assigns[:content_right_title] %>
 
-    <div class="card-body">
-      <%= render 'shared/forms/error_messages', resource: resource %>
-
-      <%= form_with(model: resource, local: true, data: { controller: 'form-submit' }) do |f| %>
-        <%= render 'shared/layouts/resource_layout_wrapper',
-          f: f,
-          basic_fields: basic_fields,
-          detail_fields: detail_fields,
-          content_left_title: nil,
-          content_right_title: custom_right_title
-        %>
-
-        <div class="mt-4">
-          <%= render 'shared/actions/form_action_links', f: f, resource: resource %>
+<div class="row">
+  <%# 左カラム：基本情報 %>
+  <div class="col-md-6">
+    <% if content_left_title %>
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= content_left_title %></h5>
         </div>
-      <% end %>
-    </div>
+        <div class="card-body">
+          <%= render basic_fields, f: f %>
+        </div>
+      </div>
+    <% else %>
+      <%= render basic_fields, f: f %>
+    <% end %>
+  </div>
+
+  <%# 右カラム：詳細情報 %>
+  <div class="col-md-6">
+    <% if content_right_title %>
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= content_right_title %></h5>
+        </div>
+        <div class="card-body">
+          <%= render detail_fields, f: f %>
+        </div>
+      </div>
+    <% else %>
+      <%= render detail_fields, f: f %>
+    <% end %>
   </div>
 </div>

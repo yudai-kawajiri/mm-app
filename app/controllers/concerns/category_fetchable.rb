@@ -21,12 +21,12 @@ module CategoryFetchable
   # @param type_key [String, Symbol] カテゴリー種別（:product, :material, :plan）
   # @return [ActiveRecord::Relation] カテゴリーのコレクション
   def fetch_categories_by_type(type_key)
-    db_value = Category.category_types[type_key.to_sym]
+    db_value = Resources::Category.category_types[type_key.to_sym]
 
     if db_value.present? || db_value == 0
       current_user.categories.where(category_type: db_value).order(:name)
     else
-      Category.none
+      Resources::Category.none
     end
   end
 

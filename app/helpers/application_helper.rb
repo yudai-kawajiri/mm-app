@@ -74,43 +74,43 @@ module ApplicationHelper
       { name: t("dashboard.menu.dashboard"), path: authenticated_root_path },
       {
         name: t("dashboard.menu.category_management"),
-        path: categories_path,
+        path: resources_categories_path,
         submenu: [
-          { name: t("dashboard.menu.category_list"), path: categories_path },
-          { name: t("dashboard.menu.new_category"), path: new_category_path }
+          { name: t("dashboard.menu.category_list"), path: resources_categories_path },
+          { name: t("dashboard.menu.new_category"), path: new_resources_category_path }
         ]
       },
       {
         name: t("dashboard.menu.material_management"),
-        path: units_path,
+        path: resources_units_path,
         submenu: [
-          { name: t("dashboard.menu.unit_management"), path: units_path },
-          { name: t("dashboard.menu.order_group_management"), path: material_order_groups_path },
-          { name: t("dashboard.menu.material_list"), path: materials_path },
-          { name: t("dashboard.menu.new_material"), path: new_material_path }
+          { name: t("dashboard.menu.unit_management"), path: resources_units_path },
+          { name: t("dashboard.menu.order_group_management"), path: resources_material_order_groups_path },
+          { name: t("dashboard.menu.material_list"), path: resources_materials_path },
+          { name: t("dashboard.menu.new_material"), path: new_resources_material_path }
         ]
       },
       {
         name: t("dashboard.menu.product_management"),
-        path: products_path,
+        path: resources_products_path,
         submenu: [
-          { name: t("dashboard.menu.product_list"), path: products_path },
-          { name: t("dashboard.menu.new_product"), path: new_product_path }
+          { name: t("dashboard.menu.product_list"), path: resources_products_path },
+          { name: t("dashboard.menu.new_product"), path: new_resources_product_path }
         ]
       },
       {
         name: t("dashboard.menu.plan_management"),
-        path: plans_path,
+        path: resources_plans_path,
         submenu: [
-          { name: t("dashboard.menu.plan_list"), path: plans_path },
-          { name: t("dashboard.menu.new_plan"), path: new_plan_path }
+          { name: t("dashboard.menu.plan_list"), path: resources_plans_path },
+          { name: t("dashboard.menu.new_plan"), path: new_resources_plan_path }
         ]
       },
       {
         name: t("dashboard.menu.numerical_management"),
-        path: numerical_managements_path,
+        path: management_numerical_managements_path,
         submenu: [
-          { name: t("dashboard.menu.numerical_dashboard"), path: numerical_managements_path }
+          { name: t("dashboard.menu.numerical_dashboard"), path: management_numerical_managements_path }
         ]
       }
     ]
@@ -164,7 +164,7 @@ module ApplicationHelper
   # @return [String] CSSクラス文字列
   #
   # @example
-  #   sidebar_link_class(categories_path)
+  #   sidebar_link_class(resources_categories_path)
   #   # => "list-group-item list-group-item-action active"
   #
   def sidebar_link_class(path)
@@ -179,7 +179,7 @@ module ApplicationHelper
   # @return [String] CSSクラス文字列（左パディング付き）
   #
   # @example
-  #   sidebar_submenu_link_class(new_category_path)
+  #   sidebar_submenu_link_class(new_resources_category_path)
   #   # => "list-group-item list-group-item-action ps-5 active"
   #
   def sidebar_submenu_link_class(path)
@@ -503,3 +503,23 @@ module ApplicationHelper
     end
   end
 end
+
+  # ============================================================
+  # リソースパーシャルパス生成
+  # ============================================================
+
+  #
+  # 名前空間付きモデルの正しいパーシャルパスを生成
+  #
+  # @param resource [ActiveRecord::Base] モデルインスタンス
+  # @param partial_name [String] パーシャル名（デフォルト: "fields"）
+  # @return [String] パーシャルパス
+  #
+  # @example
+  #   resource_partial_path(@category, "fields")
+  #   # => "resources/categories/fields"
+  #
+  def resource_partial_path(resource, partial_name = "fields")
+    model_name = resource.class.name.underscore
+    "#{model_name.pluralize}/#{partial_name}"
+  end

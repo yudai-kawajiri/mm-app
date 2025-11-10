@@ -133,7 +133,7 @@
 
   <!-- 削除ボタン -->
   <%= render 'shared/actions/delete_link',
-              url: polymorphic_path(resource),
+              url: resource,
               resource_name: resource.class.model_name.human %>
 
 <% elsif is_index_page %>

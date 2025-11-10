@@ -1,0 +1,60 @@
+<%#
+  機能: 製造計画基本情報フォームフィールド
+  - 計画名、カテゴリ、ステータス、説明の入力フィールド
+  - 新規作成・編集画面で使用
+
+  必須引数:
+  - f: FormBuilder - フォームビルダーオブジェクト
+%>
+<div class="card mb-3">
+  <div class="card-header bg-light">
+    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i><%= t('forms.titles.basic_info') %></h5>
+  </div>
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <%= form_group_lg(f, :name) %>
+        <%= form_group_lg(f, :status,
+                          field_type: :select,
+                          choices: Resources::Plan.statuses.keys.map { |status| [t("activerecord.enums.resources/plan.status.#{status}"), status] },
+                          select_options: { include_blank: t('helpers.prompt.select') }) %>
+      </div>
+
+      <div class="col-md-6">
+        <%= form_group_lg(f, :category_id,
+                        field_type: :collection_select,
+                        wrapper_class: 'mb-3',
+                        collection: @plan_categories,
+                        value_method: :id,
+                        text_method: :name) %>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <div class="mb-3">
+          <%= form_label_lg(f, :description) %>
+          <%= f.text_area :description,
+              class: "form-control",
+              rows: 4,
+              maxlength: 1000,
+              data: {
+                controller: "character-counter",
+                character_counter_max_value: 1000,
+                character_counter_warning_value: 20,
+                character_counter_danger_value: 10
+              } %>
+          <div class="form-text d-flex justify-content-between align-items-center mt-1">
+            <span><%= t('helpers.character_counter.hint', max: 1000) %></span>
+            <span data-character-counter-target="counter" class="badge bg-secondary"></span>
+          </div>
+          <% if f.object.errors[:description].any? %>
+            <div class="invalid-feedback d-block">
+              <%= f.object.errors[:description].first %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

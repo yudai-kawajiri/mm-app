@@ -1,0 +1,25 @@
+<%#
+  機能: カテゴリーフォームフィールド
+  - カテゴリー名、種別、説明の入力フィールド
+  - 新規作成・編集画面で使用
+
+  必須引数:
+  - f: FormBuilder - フォームビルダーオブジェクト
+%>
+<div class="row">
+  <div class="col-md-6">
+    <%= form_group_lg(f, :name) %>
+  </div>
+  <div class="col-md-6">
+    <%= form_group_lg(f, :category_type,
+        field_type: :select,
+        choices: Resources::Category.category_types.keys.map { |k| [I18n.t("activerecord.enums.resources/category.category_type.#{k}"), k] },
+        select_options: { include_blank: t('helpers.prompt.select') }
+    ) %>
+  </div>
+</div>
+
+<%= form_group_lg(f, :description,
+                  field_type: :text_area,
+                  character_counter: true,
+                  max_length: 1000) %>

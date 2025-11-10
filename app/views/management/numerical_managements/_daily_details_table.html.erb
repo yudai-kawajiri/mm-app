@@ -1,0 +1,381 @@
+<%#
+  機能: 日別明細テーブル（一括編集機能付き）
+
+  主要機能:
+  - 日別・累計データ表示（予算・計画高・実績・達成率・予算差）
+  - 一括編集モード切り替え
+  - IME入力対応の数値フォーマット処理
+  - 月間予算との差分チェック
+  - アクションボタン群（目標編集・計画追加/編集・実績入力・印刷）
+
+  引数:
+  - daily_data: 日別データ配列
+%>
+
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
+    <button type="button"
+            class="btn btn-primary btn-sm"
+            id="bulkEditToggle"
+            onclick="toggleBulkEditMode()">
+      <i class="bi bi-pencil-square"></i> <%= t('numerical_managements.bulk_edit.toggle_edit_mode') %>
+    </button>
+  </div>
+
+  <div id="bulkEditSummary" class="card-body bg-light border-bottom" style="display: none;">
+    <div class="row">
+      <div class="col-md-4">
+        <strong><%= t('numerical_managements.bulk_edit.monthly_budget_label') %></strong>
+        <span class="text-primary"><%= number_to_currency(@monthly_budget&.target_amount || 0, unit: "¥", precision: 0) %></span>
+      </div>
+      <div class="col-md-4">
+        <strong><%= t('numerical_managements.bulk_edit.daily_target_sum') %></strong>
+        <span id="dailyTargetSum" class="fw-bold">¥0</span>
+      </div>
+      <div class="col-md-4">
+        <strong><%= t('numerical_managements.bulk_edit.budget_diff_label') %></strong>
+        <span id="budgetDiff" class="fw-bold">¥0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body p-0">
+    <%= form_with url: bulk_update_management_numerical_managements_path, method: :post, id: "bulkEditForm", local: true do |f| %>
+      <%= hidden_field_tag :year, @selected_date.year %>
+      <%= hidden_field_tag :month, @selected_date.month %>
+
+      <div style="max-height: 500px; overflow-y: auto;">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-light sticky-top">
+            <tr>
+              <th style="width: 80px;"><%= t('labels.date') %></th>
+              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.budget') %></th>
+              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.planned') %></th>
+              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.actual') %></th>
+              <th class="text-end" style="width: 80px;"><%= t('numerical_managements.table_headers.achievement_rate') %></th>
+              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.budget_diff') %></th>
+              <th class="text-center bulk-edit-hidden" style="width: 180px;"><%= t('common.action') %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% daily_data.each_with_index do |day, index| %>
+              <%
+                daily_target = @daily_targets[day[:date].day]
+                target_id = daily_target&.id
+                is_past = day[:date] < Date.current
+              %>
+
+              <tr class="<%= 'table-secondary' unless is_past %>">
+                <td style="width: 80px;" rowspan="2" class="align-middle">
+                  <%= day[:date].strftime('%-m/%-d') %>
+                </td>
+
+                <td class="text-end">
+                  <span class="normal-mode-display">
+                    <%= number_to_currency((day[:target] || 0).to_i, unit: "¥", precision: 0) %>
+                  </span>
+                  <div class="bulk-edit-input" style="display: none;">
+                    <%= text_field_tag "daily_data[#{index}][target_amount]",
+                                       number_with_delimiter(day[:target].to_i),
+                                       class: "form-control form-control-sm text-end bulk-edit-target numeric-input",
+                                       data: { original: day[:target].to_i },
+                                       placeholder: "0" %>
+                    <%= hidden_field_tag "daily_data[#{index}][date]", day[:date].strftime('%Y-%m-%d') %>
+                    <%= hidden_field_tag "daily_data[#{index}][target_id]", target_id %>
+                  </div>
+                </td>
+
+                <td class="text-end">
+                  <%= number_to_currency((day[:planned] || 0).to_i, unit: "¥", precision: 0) %>
+                </td>
+
+                <td class="text-end">
+                  <span class="normal-mode-display">
+                    <%= number_to_currency((day[:actual] || 0).to_i, unit: "¥", precision: 0) %>
+                  </span>
+                  <div class="bulk-edit-input" style="display: none;">
+                    <% first_schedule = day[:plan_schedules].first %>
+                    <%= text_field_tag "daily_data[#{index}][actual_revenue]",
+                                       number_with_delimiter((first_schedule&.actual_revenue || 0).to_i),
+                                       class: "form-control form-control-sm text-end numeric-input",
+                                       disabled: day[:plan_schedules].empty?,
+                                       placeholder: "0" %>
+                    <%= hidden_field_tag "daily_data[#{index}][plan_schedule_id]", first_schedule&.id %>
+                  </div>
+                </td>
+
+                <td class="text-end">
+                  <% rate = day[:achievement_rate] || 0 %>
+                  <span class="<%= rate >= 100 ? 'text-success' : (rate >= 80 ? 'text-warning' : 'text-danger') %>">
+                    <%= number_to_percentage(rate, precision: 1) %>
+                  </span>
+                </td>
+
+                <td class="text-end <%= (day[:diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
+                  <%= number_to_currency((day[:diff] || 0).to_i, unit: "¥", precision: 0) %>
+                </td>
+
+                <td class="text-center bulk-edit-hidden" rowspan="2" class="align-middle">
+                  <div class="btn-group btn-group-sm" role="group">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editDailyTargetModal"
+                            data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
+                            data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
+                            data-target-id="<%= target_id %>"
+                            data-target-amount="<%= day[:target].to_i %>"
+                            onclick="setEditModalData(this)"
+                            title="<%= t('numerical_managements.actions.edit_target') %>">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+
+                    <% first_schedule = day[:plan_schedules].first %>
+                    <button type="button"
+                            class="btn <%= first_schedule ? 'btn-outline-warning' : 'btn-outline-info' %> plan-add-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#assignPlanModal"
+                            data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
+                            data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
+                            data-year="<%= day[:date].year %>"
+                            data-month="<%= day[:date].month %>"
+                            data-day="<%= day[:date].day %>"
+                            data-schedule-id="<%= first_schedule&.id %>"
+                            data-plan-id="<%= first_schedule&.plan_id %>"
+                            data-plan-name="<%= first_schedule&.plan&.name %>"
+                            data-category-name="<%= first_schedule&.plan&.category&.name %>"
+                            data-planned-revenue="<%= first_schedule&.planned_revenue || 0 %>"
+                            onclick="setPlanModalData(this)"
+                            title="<%= first_schedule ? t('numerical_managements.actions.edit_plan') : t('numerical_managements.actions.add_plan') %>">
+                      <i class="bi bi-<%= first_schedule ? 'pencil-square' : 'calendar-plus' %>"></i>
+                    </button>
+
+                    <% if day[:plan_schedules].present? %>
+                      <% first_schedule = day[:plan_schedules].first %>
+                      <button type="button"
+                              class="btn btn-outline-success"
+                              data-bs-toggle="modal"
+                              data-bs-target="#editActualRevenueModal"
+                              data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
+                              data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
+                              data-plan-schedule-id="<%= first_schedule.id %>"
+                              data-actual-revenue="<%= first_schedule.actual_revenue || 0 %>"
+                              onclick="setActualModalData(this)"
+                              title="<%= t('numerical_managements.actions.input_actual') %>">
+                        <i class="bi bi-currency-yen"></i>
+                      </button>
+                    <% end %>
+
+                    <% if day[:plan_schedules].present? %>
+                      <% if day[:plan_schedules].count == 1 %>
+                        <%= link_to print_plan_path(day[:plan_schedules].first.plan, date: day[:date]),
+                                    class: "btn btn-outline-primary",
+                                    target: "_blank",
+                                    data: { turbo: false },
+                                    title: t('numerical_managements.actions.print_plan') do %>
+                          <i class="bi bi-printer"></i>
+                        <% end %>
+                      <% else %>
+                        <div class="btn-group" role="group">
+                          <button type="button"
+                                  class="btn btn-outline-primary dropdown-toggle"
+                                  data-bs-toggle="dropdown"
+                                  aria-expanded="false"
+                                  title="<%= t('numerical_managements.actions.select_plan_to_print') %>">
+                            <i class="bi bi-printer"></i>
+                          </button>
+                          <ul class="dropdown-menu dropdown-menu-end">
+                            <% day[:plan_schedules].each do |ps| %>
+                              <li>
+                                <%= link_to print_plan_path(ps.plan, date: day[:date]),
+                                            class: "dropdown-item",
+                                            target: "_blank",
+                                            data: { turbo: false } do %>
+                                  <%= ps.plan.name %>
+                                <% end %>
+                              </li>
+                            <% end %>
+                          </ul>
+                        </div>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="table-light <%= 'table-secondary' unless is_past %>">
+                <td class="text-end">
+                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
+                  <%= number_to_currency((day[:cumulative_target] || 0).to_i, unit: "¥", precision: 0) %>
+                </td>
+
+                <td class="text-end">
+                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
+                  <%= number_to_currency((day[:cumulative_planned] || 0).to_i, unit: "¥", precision: 0) %>
+                </td>
+
+                <td class="text-end">
+                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
+                  <%= number_to_currency((day[:cumulative_actual] || 0).to_i, unit: "¥", precision: 0) %>
+                </td>
+
+                <td class="text-end">
+                  <% cum_rate = day[:cumulative_achievement_rate] || 0 %>
+                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
+                  <span class="<%= cum_rate >= 100 ? 'text-success' : (cum_rate >= 80 ? 'text-warning' : 'text-danger') %>">
+                    <%= number_to_percentage(cum_rate, precision: 1) %>
+                  </span>
+                </td>
+
+                <td class="text-end <%= (day[:cumulative_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
+                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
+                  <%= number_to_currency((day[:cumulative_diff] || 0).to_i, unit: "¥", precision: 0) %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-footer bulk-edit-actions" style="display: none;">
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-secondary" onclick="toggleBulkEditMode()">
+            <i class="bi bi-x-lg"></i> <%= t('common.cancel') %>
+          </button>
+          <button type="submit" class="btn btn-success" id="bulkSaveButton">
+            <i class="bi bi-check-lg"></i> <%= t('numerical_managements.bulk_edit.bulk_save') %>
+          </button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+window.isEditMode = false;
+window.monthlyBudget = <%= @monthly_budget&.target_amount || 0 %>;
+
+function setupNumericInput(input) {
+  let isComposing = false;
+
+  input.addEventListener('compositionstart', function() {
+    isComposing = true;
+  });
+
+  input.addEventListener('compositionend', function(e) {
+    isComposing = false;
+    formatNumericValue(e.target);
+  });
+
+  input.addEventListener('input', function(e) {
+    if (isComposing) return;
+    formatNumericValue(e.target);
+  });
+
+  input.addEventListener('blur', function(e) {
+    if (e.target.value === '') {
+      e.target.value = '0';
+    }
+  });
+
+  input.addEventListener('focus', function(e) {
+    if (e.target.value === '0') {
+      e.target.select();
+    }
+  });
+}
+
+function formatNumericValue(input) {
+  let value = input.value;
+
+  value = value.replace(/[０-９]/g, function(s) {
+    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+  });
+
+  value = value.replace(/[^\d]/g, '');
+
+  if (value === '') {
+    input.value = '';
+    return;
+  }
+
+  const numValue = parseInt(value) || 0;
+  input.value = numValue.toLocaleString();
+}
+
+function toggleBulkEditMode() {
+  window.isEditMode = !window.isEditMode;
+
+  if (window.isEditMode) {
+    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-eye"></i> <%= j t('numerical_managements.bulk_edit.toggle_normal_mode') %>';
+    document.getElementById('bulkEditSummary').style.display = 'block';
+    document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'block');
+    document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'none');
+    document.querySelector('.bulk-edit-actions').style.display = 'block';
+
+    document.querySelectorAll('.numeric-input').forEach(input => {
+      const newInput = input.cloneNode(true);
+      input.parentNode.replaceChild(newInput, input);
+
+      setupNumericInput(newInput);
+
+      if (newInput.classList.contains('bulk-edit-target')) {
+        newInput.addEventListener('input', calculateDailyTargetSum);
+      }
+    });
+
+    calculateDailyTargetSum();
+  } else {
+    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-pencil-square"></i> <%= j t('numerical_managements.bulk_edit.toggle_edit_mode') %>';
+    document.getElementById('bulkEditSummary').style.display = 'none';
+    document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'inline');
+    document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'table-cell');
+    document.querySelector('.bulk-edit-actions').style.display = 'none';
+
+    document.querySelectorAll('.bulk-edit-target').forEach(input => {
+      const originalValue = parseInt(input.dataset.original) || 0;
+      input.value = originalValue.toLocaleString();
+    });
+  }
+}
+
+function calculateDailyTargetSum() {
+  let sum = 0;
+  document.querySelectorAll('.bulk-edit-target').forEach(input => {
+    const value = parseInt(input.value.replace(/,/g, '')) || 0;
+    sum += value;
+  });
+
+  const diff = sum - window.monthlyBudget;
+
+  document.getElementById('dailyTargetSum').textContent = '¥' + sum.toLocaleString();
+
+  const diffElement = document.getElementById('budgetDiff');
+  const saveButton = document.getElementById('bulkSaveButton');
+
+  if (diff > 0) {
+    diffElement.textContent = '+¥' + diff.toLocaleString() + ' <%= j t('numerical_managements.bulk_edit.excess') %>';
+    diffElement.className = 'fw-bold text-danger';
+    saveButton.disabled = true;
+  } else if (diff < 0) {
+    diffElement.textContent = '-¥' + Math.abs(diff).toLocaleString() + ' <%= j t('numerical_managements.bulk_edit.shortage') %>';
+    diffElement.className = 'fw-bold text-warning';
+    saveButton.disabled = false;
+  } else {
+    diffElement.textContent = '¥0';
+    diffElement.className = 'fw-bold text-success';
+    saveButton.disabled = false;
+  }
+}
+
+document.getElementById('bulkEditForm').addEventListener('submit', function(e) {
+  document.querySelectorAll('.numeric-input').forEach(input => {
+    if (!input.disabled) {
+      input.value = input.value.replace(/,/g, '');
+    }
+  });
+});
+</script>

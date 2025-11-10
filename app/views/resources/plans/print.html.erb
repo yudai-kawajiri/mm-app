@@ -1,0 +1,183 @@
+<%#
+  機能: 製造計画印刷画面
+  - 2ページ構成の印刷レイアウト
+  - 1ページ目: 商品一覧（画像・品番・数量・単価・小計）
+  - 2ページ目: 原材料管理表（発注数量計算）
+  - A4サイズ対応
+%>
+<% content_for :title, @plan&.name || t('activerecord.models.plan') %>
+
+<div class="print-header">
+  <h2><%= t('plans.print.page1_title') %></h2>
+  <div class="print-header-info">
+    <strong><%= t('plans.print.plan_name') %>:</strong> <%= @plan.name %> |
+    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || t('helpers.no_setting') %> |
+    <strong><%= t('plans.print.budget') %>:</strong> ¥<%= number_with_delimiter(@budget) %> |
+    <strong><%= t('plans.print.planned_total') %>:</strong> ¥<%= number_with_delimiter(@total_cost) %> |
+    <strong><%= t('plans.print.achievement_rate') %>:</strong> <%= @achievement_rate %>%
+  </div>
+</div>
+
+<table class="print-table products-table">
+  <thead>
+    <tr>
+      <th class="col-image"><%= t('plans.print.image') %></th>
+      <th class="col-item-number"><%= t('plans.print.item_number') %></th>
+      <th class="col-product-name"><%= t('plans.print.product_name') %></th>
+      <th class="col-quantity"><%= t('plans.print.production_count') %></th>
+      <th class="col-price"><%= t('plans.print.unit_price') %></th>
+      <th class="col-subtotal"><%= t('plans.print.subtotal') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @plan_products.present? %>
+      <% @plan_products.each do |plan_product| %>
+        <% product = plan_product.product %>
+        <tr>
+          <td class="col-image">
+            <% if product.image.attached? %>
+              <%= image_tag product.image, class: 'product-image', alt: product.name %>
+            <% else %>
+              <div class="no-image"><%= t('plans.print.no_image') %></div>
+            <% end %>
+          </td>
+
+          <td class="col-item-number"><%= product.item_number %></td>
+
+          <td class="col-product-name"><%= product.name %></td>
+
+          <td class="col-quantity text-right">
+            <% if plan_product.production_count % 1 == 0 %>
+              <%= number_with_delimiter(plan_product.production_count.to_i) %> <%= t('plans.print.count_unit') %>
+            <% else %>
+              <%= number_with_delimiter(plan_product.production_count) %> <%= t('plans.print.count_unit') %>
+            <% end %>
+          </td>
+
+          <td class="col-price text-right">
+            ¥<%= number_with_delimiter(product.price) %>
+          </td>
+
+          <td class="col-subtotal text-right">
+            ¥<%= number_with_delimiter(product.price * plan_product.production_count) %>
+          </td>
+        </tr>
+      <% end %>
+    <% else %>
+      <tr>
+        <td colspan="6" class="text-center" style="padding: 20px; color: #999;">
+          <%= t('plans.print.no_products') %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<div class="print-header">
+  <h2><%= t('plans.print.page2_title') %></h2>
+  <div class="print-header-info">
+    <strong><%= t('plans.print.plan_name') %>:</strong> <%= @plan.name %> |
+    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || t('helpers.no_setting') %>
+  </div>
+</div>
+
+<table class="print-table materials-table">
+  <thead>
+    <tr>
+      <th class="col-material-name"><%= t('plans.print.material_name') %></th>
+      <th class="col-product-usage"><%= t('plans.print.product_usage') %></th>
+      <th class="col-material-amount"><%= t('plans.print.total_usage') %></th>
+      <th class="col-order-unit"><%= t('plans.print.order_unit') %></th>
+      <th class="col-order"><%= t('plans.print.order_quantity') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @materials_summary.present? %>
+      <%
+        grouped = @materials_summary.group_by { |m| m[:order_group_name] || m[:material_name] }
+      %>
+
+      <% grouped.each do |group_name, materials| %>
+        <% materials.each_with_index do |material_data, index| %>
+          <%
+            material = Resources::Material.find(material_data[:material_id])
+            material_name = material_data[:material_name]
+            weight_per_product = material_data[:weight_per_product]
+            total_weight = material_data[:total_weight]
+            required_order_quantity = material_data[:required_order_quantity]
+            order_unit_name = material_data[:order_unit_name]
+
+            measurement_type = material.measurement_type
+            if measurement_type == 'count'
+              order_unit_detail = "1#{order_unit_name} = #{material.pieces_per_order_unit}#{material.unit_for_product&.name || t('plans.print.count_unit')}"
+            elsif measurement_type == 'weight'
+              order_unit_detail = "1#{order_unit_name} = #{material.unit_weight_for_order}g"
+            else
+              order_unit_detail = t('helpers.no_setting')
+            end
+          %>
+
+          <tr>
+            <td class="col-material-name"><%= material_name %></td>
+
+            <td class="col-product-usage text-right">
+              <% if material.production_unit.present? %>
+                <% if material_data[:total_quantity] % 1 == 0 %>
+                  <%= number_with_delimiter(material_data[:total_quantity].to_i) %>
+                <% else %>
+                  <%= number_with_delimiter(material_data[:total_quantity]) %>
+                <% end %>
+                <%= material.production_unit.name %>
+              <% else %>
+                <% if material_data[:total_quantity] % 1 == 0 %>
+                  <%= number_with_delimiter(material_data[:total_quantity].to_i) %>
+                <% else %>
+                  <%= number_with_delimiter(material_data[:total_quantity]) %>
+                <% end %>
+                <%= material.unit_for_product&.name || t('plans.print.count_unit') %>
+              <% end %>
+            </td>
+
+            <td class="col-material-amount text-right">
+              <% if measurement_type == 'weight' %>
+                <% if total_weight % 1 == 0 %>
+                  <%= number_with_delimiter(total_weight.to_i) %>g
+                <% else %>
+                  <%= number_with_delimiter(total_weight) %>g
+                <% end %>
+              <% else %>
+                <% if material_data[:total_quantity] % 1 == 0 %>
+                  <%= number_with_delimiter(material_data[:total_quantity].to_i) %>
+                <% else %>
+                  <%= number_with_delimiter(material_data[:total_quantity]) %>
+                <% end %>
+                <%= material.unit_for_product&.name || t('plans.print.count_unit') %>
+              <% end %>
+            </td>
+
+            <td class="col-order-unit text-left">
+              <small style="color: #666;"><%= order_unit_detail %></small>
+            </td>
+
+            <% if index == 0 %>
+              <td class="col-order text-right order-needed" rowspan="<%= materials.size %>">
+                <strong>
+                  <%= number_with_delimiter(required_order_quantity) %>
+                </strong>
+                <%= order_unit_name %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      <% end %>
+    <% else %>
+      <tr>
+        <td colspan="5" class="text-center" style="padding: 20px; color: #999;">
+          <%= t('plans.print.no_materials') %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,37 @@
+<%#
+  機能: 商品原材料詳細表示パーシャル（読み取り専用）
+  - 原材料名、数量、商品単位重量、単位を表示
+  - 詳細画面で使用
+
+  必須引数:
+  - product: Product - 表示対象の商品オブジェクト
+%>
+<% product = local_assigns[:product] %>
+<% product_materials = product.product_materials.includes(:material, :unit).order(:id) if product.present? %>
+
+<% if product_materials.present? %>
+  <table class="table table-sm table-borderless">
+    <thead>
+      <tr class="border-bottom">
+        <th class="text-muted"><%= t('activerecord.attributes.material.name') %></th>
+        <th class="text-end text-muted"><%= t('products.table_headers.quantity') %></th>
+        <th class="text-end text-muted"><%= t('products.table_headers.unit_weight') %></th>
+        <th class="text-start text-muted"><%= t('products.table_headers.unit') %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% product_materials.each do |pm| %>
+        <tr class="border-bottom">
+          <td><%= pm.material.name %></td>
+          <td class="text-end"><%= number_with_precision(pm.quantity, precision: 0) %></td>
+          <td class="text-end"><%= number_with_precision(pm.unit_weight, precision: 1) %></td>
+          <td class="text-start"><%= pm.unit.name %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-muted text-center" style="padding-top: 50px; font-size: 1.0em;">
+    <%= t('products.product_material_fields.no_materials_set') %>
+  </p>
+<% end %>

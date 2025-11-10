@@ -69,7 +69,7 @@ class AuthenticatedController < ApplicationController
     categories = if scope == :current_user
                     current_user.categories.where(category_type: category_type)
                   else
-                    Category.where(category_type: category_type)
+                    Resources::Category.where(category_type: category_type)
                   end
     categories = categories.order(:name)
 

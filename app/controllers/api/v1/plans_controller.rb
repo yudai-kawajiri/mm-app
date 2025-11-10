@@ -6,7 +6,7 @@ module Api
       def revenue
         Rails.logger.info "=== API Debug: Plan ID #{params[:id]} ==="
 
-        plan = Plan.find(params[:id])
+        plan = Resources::Plan.find(params[:id])
         Rails.logger.info "=== Plan found: #{plan.name} ==="
 
         revenue = plan.expected_revenue

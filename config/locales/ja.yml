@@ -97,6 +97,9 @@ ja:
     calculation_unavailable: "計算不可"
     print: "印刷"
     print_action: "印刷する"
+    save_order: "並び順を保存"
+    actions:
+      reorder: "並び替え"
     copy: "コピー"
     close: "閉じる"
     reorder_mode: "並び替えモード"
@@ -193,7 +196,7 @@ ja:
       default_order_quantity: "基本発注量/発注入数"
       measurement_type: "計測方法"
       unit_weight_for_order_label: "基本発注量"
-      pieces_per_order_unit_label: "基本発注入数"    # 追加
+      pieces_per_order_unit_label: "基本発注入数"
     measurement_types:
       weight: "重量ベース"
       count: "個数ベース"
@@ -407,7 +410,7 @@ ja:
         category_help: "製造する製品のカテゴリを選択してください"
         plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます"
         revenue_help: "必要に応じて計画高を調整できます"
-        revenue_readonly_help: 計画から自動計算されます（編集不可）
+        revenue_readonly_help: "計画から自動計算されます（編集不可）"
       labels:
         target_month: "対象月"
         target_date: "対象日"
@@ -517,8 +520,15 @@ ja:
         remember_me: "ログイン情報を記憶する"
 
   errors:
+    template:
+      header:
+        one: "%{model}にエラーが発生しました"
+        other: "%{count}件のエラーが発生したため、%{model}を保存できませんでした"
+      body: "以下の項目を確認してください:"
     messages:
-      not_saved: "以下の %{count} 件のエラーにより、%{resource} を保存できませんでした"
+      not_saved:
+        one: "%{resource}の保存に失敗しました"
+        other: "%{count}件のエラーが発生したため、%{resource}の保存に失敗しました"
       blank: "を入力してください"
       required: "を入力してください"
       not_a_number: "は数値で入力してください"
@@ -577,7 +587,7 @@ ja:
       signed_up: "アカウント登録が完了しました"
       pending_reconfirmation: "現在、%{unconfirmed_email} の確認待ちです"
       user:
-        updated: "アカウント情報が正常に更新されました"
+        updated: "アカウント情報を更新しました"
         destroyed: "アカウントを削除しました"
     shared:
       minimum_password_length: "%{count}文字以上で入力してください"
@@ -589,7 +599,7 @@ ja:
         didn_t_receive_unlock_instructions: "ロック解除の手順が届いていませんか？"
     passwords:
       send_instructions: "パスワード再設定のメールを送信しました"
-      updated: "パスワードを変更しました"
+      updated: "パスワードを更新しました"
       new:
         title: "パスワードを忘れた方"
         submit: "パスワード再設定のメールを送信"
@@ -612,26 +622,26 @@ ja:
         back_to_login: "ログイン画面に戻る"
     mailer:
       confirmation_instructions:
-        greeting: "ようこそ、%{recipient}さん！"
+        greeting: "ようこそ、%{name}さん！"
         instruction: "以下のリンクをクリックして、メールアドレスの確認を完了してください:"
         action: "メールアドレスを確認する"
       email_changed:
-        greeting: "こんにちは、%{recipient}さん！"
+        greeting: "こんにちは、%{name}さん！"
         message: "メールアドレスが変更されたことをお知らせします。"
         message_unconfirmed: "メールアドレスが%{email}に変更されました。現在確認待ちです。"
         message_confirmed: "メールアドレスが%{email}に変更されました。"
       password_change:
-        greeting: "こんにちは、%{recipient}さん！"
+        greeting: "こんにちは、%{name}さん！"
         message: "パスワードが変更されたことをお知らせします。"
       reset_password_instructions:
         subject: "【製造管理システム】パスワード再設定のご案内"
-        greeting: "こんにちは %{recipient} さん！"
+        greeting: "こんにちは %{name} さん！"
         action: "パスワードの変更"
         instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください。"
         instruction_2: "このメールに心当たりがない場合は、無視して構いません。"
         instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを登録するまで変更されません。"
       unlock_instructions:
-        greeting: "こんにちは、%{recipient}さん！"
+        greeting: "こんにちは、%{name}さん！"
         message: "ログイン試行回数が上限に達したため、アカウントがロックされました。"
         instruction: "以下のリンクをクリックしてアカウントのロックを解除してください:"
         action: "アカウントのロックを解除する"
@@ -665,11 +675,22 @@ ja:
     models:
       user: "アカウント"
       category: "カテゴリー"
+      "resources/category": "カテゴリー"
       unit: "単位"
+      "resources/unit": "単位"
       material_order_group: "発注グループ"
+      "resources/material_order_group": "発注グループ"
       material: "原材料"
+      "resources/material": "原材料"
       product: "商品"
+      "planning/product_material": "商品原材料"
+      "resources/product": "商品"
       plan: "製造計画"
+      "resources/plan": "製造計画"
+      "planning/plan_schedule": "計画スケジュール"
+      "planning/daily_target": "日別予算"
+      "planning/actual_revenue": "実績売上"
+      "management/monthly_budget": "月間予算"
     attributes:
       user:
         email: "メールアドレス"
@@ -678,8 +699,15 @@ ja:
         password_confirmation: "パスワード（確認）"
         current_password: "現在のパスワード"
       category:
-        name: "カテゴリー"
-        category_type: "カテゴリー"
+        name: "カテゴリー名"
+        category_type: "種別"
+        description: "説明"
+        materials: "原材料"
+        products: "商品"
+        plans: "製造計画"
+      "resources/category":
+        name: "カテゴリー名"
+        category_type: "種別"
         description: "説明"
         materials: "原材料"
         products: "商品"
@@ -690,10 +718,34 @@ ja:
         description: "説明"
         materials_as_product_unit: "原材料（使用単位）"
         materials_as_order_unit: "原材料（発注単位）"
+      "resources/unit":
+        name: "単位名"
+        category: "カテゴリー"
+        description: "説明"
+        materials_as_product_unit: "原材料（使用単位）"
+        materials_as_order_unit: "原材料（発注単位）"
       material_order_group:
         name: "グループ名"
         materials_count: "使用原材料"
+      "resources/material_order_group":
+        name: "グループ名"
+        materials_count: "使用原材料"
       material:
+        name: "原材料名"
+        category: "カテゴリー"
+        category_id: "カテゴリー"
+        default_unit_weight: "基本使用量"
+        unit_for_product: "使用単位"
+        unit_weight_for_order: "基本発注量"
+        pieces_per_order_unit: "基本発注入数"
+        default_order_quantity: "基本発注量/発注入数"
+        unit_for_order: "発注単位"
+        order_group: "発注グループ"
+        order_group_id: "発注グループ"
+        new_order_group_name: "新発注グループ"
+        production_unit: "製造単位"
+        description: "説明"
+      "resources/material":
         name: "原材料名"
         category: "カテゴリー"
         category_id: "カテゴリー"
@@ -717,19 +769,56 @@ ja:
         image: "画像"
         status: "ステータス"
         description: "説明"
-      product_material:
-        unit_weight: "分量"
+      "resources/product":
+        name: "商品名"
+        item_number: "品番"
+        price: "売価"
+        category_id: "カテゴリー"
+        category: "カテゴリー"
+        image: "画像"
+        status: "ステータス"
+        description: "説明"
+        product_materials_quantity: "数量"
+        product_materials_unit_weight: "分量"
+      "planning/product_material":
         material_id: "原材料"
+        unit_id: "単位"
         quantity: "数量"
+        unit_weight: "分量"
       plan:
+        name: "計画名"
+        category_id: "カテゴリー"
+        status: "ステータス"
+        description: "説明"
+      "resources/plan":
         name: "計画名"
         category_id: "カテゴリー"
         status: "ステータス"
         description: "説明"
       plan_product:
         production_count: "数量"
+      "planning/plan_schedule":
+        scheduled_date: "実施日"
+        plan_id: "製造計画"
+        note: "備考"
+      "planning/daily_target":
+        target_date: "対象日"
+        target_amount: "予算額"
+        note: "備考"
+      "planning/actual_revenue":
+        revenue_date: "実績日"
+        amount: "売上額"
+        note: "備考"
+      "management/monthly_budget":
+        target_month: "対象月"
+        target_amount: "予算額"
     enums:
       category:
+        category_type:
+          material: "原材料"
+          product: "商品"
+          plan: "計画"
+      "resources/category":
         category_type:
           material: "原材料"
           product: "商品"
@@ -739,12 +828,27 @@ ja:
           production: "使用単位"
           ordering: "発注単位"
           manufacturing: "製造単位"
+      "resources/unit":
+        category:
+          production: "使用単位"
+          ordering: "発注単位"
+          manufacturing: "製造単位"
       product:
         status:
           draft: "下書き"
           selling: "販売中"
           discontinued: "販売中止"
+      "resources/product":
+        status:
+          draft: "下書き"
+          selling: "販売中"
+          discontinued: "販売中止"
       plan:
+        status:
+          draft: "下書き"
+          active: "実施中"
+          completed: "完了"
+      "resources/plan":
         status:
           draft: "下書き"
           active: "実施中"
@@ -813,3 +917,8 @@ ja:
         no_logs_to_delete: "%{retention_days}日より古いログは見つかりませんでした"
         success: "%{deleted_count}件のシステムログを削除しました（%{retention_days}日より古いログ、%{cutoff_date}以前）"
       deleted_record: "削除済みレコード"
+
+  # Stimulus Controller メッセージ
+  sortable_table:
+    saved: "並び替えを保存しました"
+    save_failed: "並び替えの保存に失敗しました"

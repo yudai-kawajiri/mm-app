@@ -1,3 +1,4 @@
+import "@hotwired/turbo-rails"
 /**
  * @file application.js
  * Stimulusアプリケーションの初期化と設定
@@ -40,3 +41,8 @@ window.Stimulus = application
 console.log('Stimulus debug mode enabled')
 
 export { application }
+
+// コントローラーの読み込み
+
+// コントローラーの読み込み（importmap経由）
+import "controllers/index"

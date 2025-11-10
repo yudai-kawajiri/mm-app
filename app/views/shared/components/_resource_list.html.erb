@@ -5,7 +5,6 @@
   - 検索フォーム、アクションリンク付き
 
   必須引数:
-  - title: ページタイトル
   - resources: 表示するリソースのコレクション
   - columns: 表示カラム定義の配列
   - resource_class: リソースのクラス
@@ -30,10 +29,16 @@
 <% icon_mode = local_assigns.fetch(:icon_mode, false) %>
 
 <% if search_target.present? %>
+  <%# 名前空間付きルートに対応 %>
+  <%
+    route_key = resource_class.model_name.route_key
+    form_path = send("#{route_key}_path")
+  %>
   <%= render 'shared/forms/search_form',
-      form_path: send(resource_class.model_name.route_key + '_path'),
+      form_path: form_path,
       search_target: search_target,
-      search_categories: search_categories %>
+      search_categories: search_categories,
+      resource_class: resource_class %>
 <% end %>
 
 <table class="table mt-4">

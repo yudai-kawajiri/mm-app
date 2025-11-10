@@ -1,0 +1,70 @@
+<%#
+  機能: 発注グループ一覧画面
+  - 全発注グループの一覧表示
+  - 名前検索機能
+  - 使用原材料数の表示
+%>
+<% content_for(:title, t('material_order_groups.index.title')) %>
+
+<%= render 'shared/layouts/header_with_actions',
+    title: t('material_order_groups.index.title'),
+    resource: nil,
+    is_index_page: true,
+    is_form_page: false,
+    is_show_page: false,
+    new_path: new_resources_material_order_group_path %>
+
+<%= form_with url: resources_material_order_groups_path,
+              method: :get,
+              local: true,
+              class: "mb-3" do |f| %>
+  <div class="d-flex align-items-center">
+    <div class="p-1" style="min-width: 300px;">
+      <div class="input-group">
+        <%= f.text_field :q,
+          value: params[:q],
+          class: "form-control",
+          placeholder: t('search.placeholders.enter_name') %>
+        <div class="input-group-append">
+          <%= f.submit t('common.search'), class: "btn btn-primary" %>
+          <% if params[:q].present? %>
+            <%= link_to t('common.clear'), resources_material_order_groups_path, class: "btn btn-outline-secondary" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<table class="table mt-4">
+  <thead class="table-light">
+    <tr>
+      <th><%= Resources::MaterialOrderGroup.human_attribute_name(:name) %></th>
+      <th><%= Resources::MaterialOrderGroup.human_attribute_name(:materials_count) %></th>
+      <th><%= t('common.action') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @material_order_groups.each do |group| %>
+      <tr data-id="<%= group.id %>">
+        <td><%= group.name %></td>
+        <td>
+          <% if group.materials.any? %>
+            <span class="badge bg-info text-dark"><%= group.materials.count %>件</span>
+          <% else %>
+            <span class="text-muted"><%= t('material_order_groups.index.unused') %></span>
+          <% end %>
+        </td>
+        <td>
+          <%= render 'shared/actions/resource_action_links',
+              resource: group,
+              resource_name: Resources::MaterialOrderGroup.model_name.human,
+              show_link: true,
+              show_copy: false %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @material_order_groups, theme: 'bootstrap-5' %>

@@ -26,7 +26,7 @@
 
   <div class="col-md-4">
     <%= f.label :product_category_id, class: 'form-label visually-hidden' %>
-    <%= f.collection_select(:id, Product.all, :id, :name,
+    <%= f.collection_select(:id, Resources::Product.all, :id, :name,
       { include_blank: t('helpers.prompt.select') },
       { class: 'form-select',
         data: {
