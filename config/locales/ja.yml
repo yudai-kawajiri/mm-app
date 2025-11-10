@@ -410,7 +410,7 @@ ja:
         category_help: "製造する製品のカテゴリを選択してください"
         plan_help: "選択したカテゴリの計画を選択すると、計画高が自動入力されます"
         revenue_help: "必要に応じて計画高を調整できます"
-        revenue_readonly_help: 計画から自動計算されます（編集不可）
+        revenue_readonly_help: "計画から自動計算されます（編集不可）"
       labels:
         target_month: "対象月"
         target_date: "対象日"
@@ -683,6 +683,7 @@ ja:
       material: "原材料"
       "resources/material": "原材料"
       product: "商品"
+      "planning/product_material": "商品原材料"
       "resources/product": "商品"
       plan: "製造計画"
       "resources/plan": "製造計画"
@@ -777,10 +778,13 @@ ja:
         image: "画像"
         status: "ステータス"
         description: "説明"
-      product_material:
-        unit_weight: "分量"
+        product_materials_quantity: "数量"
+        product_materials_unit_weight: "分量"
+      "planning/product_material":
         material_id: "原材料"
+        unit_id: "単位"
         quantity: "数量"
+        unit_weight: "分量"
       plan:
         name: "計画名"
         category_id: "カテゴリー"

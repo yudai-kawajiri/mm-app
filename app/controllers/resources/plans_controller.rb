@@ -11,7 +11,10 @@
 #   - 計画コピー機能（商品構成も複製）
 #   - 印刷機能（材料集計表示）
 #   - 重複エラーハンドリング
+#   - 数値入力のサニタイズ処理（NumericSanitizer）
 class Resources::PlansController < AuthenticatedController
+  include NumericSanitizer
+
   # 検索パラメータの定義
   define_search_params :q, :category_id
 
@@ -45,7 +48,7 @@ class Resources::PlansController < AuthenticatedController
   #
   # @return [void]
   def create
-    @plan = current_user.plans.build(plan_params)
+    @plan = current_user.plans.build(sanitized_plan_params)
     respond_to_save(@plan, success_path: @plan)
   rescue ActiveRecord::RecordNotUnique => e
     handle_duplicate_error(e)
@@ -67,7 +70,7 @@ class Resources::PlansController < AuthenticatedController
   #
   # @return [void]
   def update
-    @plan.assign_attributes(plan_params)
+    @plan.assign_attributes(sanitized_plan_params)
     respond_to_save(@plan, success_path: @plan)
   rescue ActiveRecord::RecordNotUnique => e
     handle_duplicate_error(e)
@@ -109,7 +112,6 @@ class Resources::PlansController < AuthenticatedController
     copy_count = 1
     new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
 
-    # ユニーク制約を考慮して名前を生成
     while Resources::Plan.exists?(name: new_name, category_id: original_plan.category_id, user_id: current_user.id)
       copy_count += 1
       new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
@@ -123,7 +125,6 @@ class Resources::PlansController < AuthenticatedController
     ActiveRecord::Base.transaction do
       new_plan.save!
 
-      # 商品構成も複製
       original_plan.plan_products.each do |plan_product|
         new_plan.plan_products.create!(
           product_id: plan_product.product_id,
@@ -154,10 +155,8 @@ class Resources::PlansController < AuthenticatedController
                           .includes(product: [:category, :product_materials, { product_materials: [:material, :unit] }])
                           .order(:id)
 
-    # カレンダーから渡された日付を使用（なければ最初のスケジュール）
     @scheduled_date = params[:date]&.to_date || @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
 
-    # 該当日付の予算を取得
     if params[:date].present?
       @budget = @plan.plan_schedules.where(scheduled_date: @scheduled_date).sum(:planned_revenue) || 0
     else
@@ -196,6 +195,29 @@ class Resources::PlansController < AuthenticatedController
     )
   end
 
+  # 数値パラメータのサニタイズ処理
+  #
+  # 対象フィールド:
+  #   - plan_products[].production_count: 製造数（整数のみ）
+  #
+  # @return [ActionController::Parameters]
+  def sanitized_plan_params
+    params_hash = plan_params
+
+    if params_hash[:plan_products_attributes].present?
+      params_hash[:plan_products_attributes].each do |_, product_attrs|
+        next if product_attrs[:_destroy] == '1'
+
+        sanitize_numeric_params(
+          product_attrs,
+          without_comma: [:production_count]
+        )
+      end
+    end
+
+    params_hash
+  end
+
   # ステータスパラメータ
   #
   # @return [String]
@@ -218,17 +240,13 @@ class Resources::PlansController < AuthenticatedController
     Rails.logger.error "Duplicate key error: #{exception.message}"
 
     if exception.message.include?('index_plans_on_name_and_category_id')
-      # 計画名の重複
       @plan.errors.add(:name, t('plans.errors.duplicate_name'))
     elsif exception.message.include?('index_plan_products_on_plan_id_and_product_id')
-      # 同じ商品の重複
       @plan.errors.add(:base, t('plans.errors.duplicate_product'))
     else
-      # その他の重複エラー
       @plan.errors.add(:base, t('api.errors.invalid_parameters'))
     end
 
-    # フォームを再表示
     load_categories_for("plan", as: :plan)
     load_categories_for("product", as: :product)
     render(@plan.new_record? ? :new : :edit, status: :unprocessable_entity)

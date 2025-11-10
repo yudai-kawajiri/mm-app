@@ -9,7 +9,10 @@
 #   - 材料の作成・編集・削除
 #   - 表示順の並び替え（drag & drop）
 #   - 計測方法の管理（重量ベース・個数ベース）
+#   - 数値入力のサニタイズ処理（NumericSanitizer）
 class Resources::MaterialsController < AuthenticatedController
+  include NumericSanitizer
+
   # 検索パラメータの定義
   define_search_params :q, :category_id
 
@@ -48,7 +51,7 @@ class Resources::MaterialsController < AuthenticatedController
   #
   # @return [void]
   def create
-    @material = current_user.materials.build(material_params)
+    @material = current_user.materials.build(sanitized_material_params)
     respond_to_save(@material, success_path: @material)
   end
 
@@ -61,7 +64,7 @@ class Resources::MaterialsController < AuthenticatedController
   #
   # @return [void]
   def update
-    @material.assign_attributes(material_params)
+    @material.assign_attributes(sanitized_material_params)
     respond_to_save(@material, success_path: @material)
   end
 
@@ -107,6 +110,27 @@ class Resources::MaterialsController < AuthenticatedController
       :new_order_group_name,
       :description,
       :production_unit_id
+    )
+  end
+
+  # 数値パラメータのサニタイズ処理
+  #
+  # 対象フィールド:
+  #   - default_unit_weight: 基本分量（整数・小数対応）
+  #   - unit_weight_for_order: 発注単位分量（整数・小数対応）
+  #   - pieces_per_order_unit: 発注単位ピース数（整数のみ）
+  #   - minimum_order_quantity: 最小発注数量（整数・小数対応）
+  #
+  # @return [ActionController::Parameters]
+  def sanitized_material_params
+    sanitize_numeric_params(
+      material_params,
+      without_comma: [
+        :default_unit_weight,
+        :unit_weight_for_order,
+        :pieces_per_order_unit,
+        :minimum_order_quantity
+      ]
     )
   end
 

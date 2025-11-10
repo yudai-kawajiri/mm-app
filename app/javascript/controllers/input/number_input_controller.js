@@ -34,14 +34,15 @@ import { Controller } from "@hotwired/stimulus"
  *
  * @note
  *   - type="text" を使用してください（type="number"はカンマを受け付けません）
- *   - フォーム送信前に自動的にカンマを削除します
+ *   - フォーム送信前に自動的にカンマを削除し、数値型に変換します
  *
  * @features
  *   - 全角数字→半角数字の自動変換
+ *   - 全角スペース・半角スペースの自動削除
  *   - 3桁ごとのカンマ挿入（オプション）
  *   - IME変換中の処理スキップ
  *   - カーソル位置の保持
- *   - フォーム送信前のカンマ自動削除
+ *   - フォーム送信前のカンマ自動削除 + 数値型変換
  *   - マイナス記号対応
  */
 export default class extends Controller {
@@ -71,19 +72,20 @@ export default class extends Controller {
       setTimeout(() => this.convertAndFormat(), 0)
     })
 
-    // フォーム送信前にカンマを削除
+    // フォーム送信前にカンマを削除して数値型に変換
     const form = this.element.closest('form')
     if (form) {
-      form.addEventListener('submit', () => {
+      // submitイベントをリスン（フォーム全体の送信時）
+      form.addEventListener('submit', (e) => {
         this.removeCommasBeforeSubmit()
-      })
+      }, { capture: true })
     }
 
     // 初期値をフォーマット（既存データや編集時）
     if (this.element.value && !this.noComma) {
       // 既に数値が入っている場合はカンマ付きに変換
       const initialValue = this.element.value.replace(/,/g, '') // カンマを削除
-      if (initialValue && /^\d+$/.test(initialValue)) {
+      if (initialValue && /^-?\d+(\.\d+)?$/.test(initialValue)) {
         // 純粋な数値の場合のみフォーマット
         this.element.value = this.formatNumber(initialValue)
       }
@@ -131,33 +133,66 @@ export default class extends Controller {
    *   formatNumber("1000000") // => "1,000,000"
    */
   formatNumber(digits) {
+    // 小数点がある場合は整数部分のみにカンマを挿入
+    if (digits.includes('.')) {
+      const [integer, decimal] = digits.split('.')
+      return integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '.' + decimal
+    }
     return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
   /**
-   * フォーム送信前にカンマを削除
+   * フォーム送信前にカンマとスペースを削除して数値型に変換
    *
    * @description
-   *   サーバーに送信する前にカンマを削除して純粋な数値にします。
+   *   サーバーに送信する前にカンマとスペースを削除して純粋な数値にします。
+   *   空欄の場合は空文字列のまま（サーバー側でバリデーションエラー）。
    */
   removeCommasBeforeSubmit() {
-    if (this.element.value) {
-      // カンマを削除して数値のみにする
-      this.element.value = this.element.value.replace(/,/g, '')
+    if (!this.element.value) {
+      // 空欄の場合は何もしない（サーバー側でpresenceバリデーション）
+      return
+    }
+
+    // カンマとスペース（全角・半角）を削除
+    let cleanValue = this.element.value
+      .replace(/,/g, '')           // カンマ削除
+      .replace(/\s/g, '')          // 半角スペース削除
+      .replace(/　/g, '')          // 全角スペース削除
+
+    // マイナス記号と小数点以外の非数値文字を削除
+    cleanValue = cleanValue.replace(/[^\d.-]/g, '')
+
+    // 空文字列でない場合は数値型に変換
+    if (cleanValue !== '') {
+      // parseFloatで数値に変換（小数点対応）
+      const numericValue = parseFloat(cleanValue)
+
+      // NaNでない場合のみ設定
+      if (!isNaN(numericValue)) {
+        this.element.value = numericValue
+        console.log('✅ Converted to numeric:', numericValue)
+      } else {
+        // NaNの場合は空文字列に設定（バリデーションエラーにする）
+        this.element.value = ''
+        console.warn('⚠️ Invalid numeric value:', cleanValue)
+      }
     }
   }
 
   /**
-   * 全角文字を半角に変換 + カンマ挿入
+   * 全角文字を半角に変換 + スペース削除 + カンマ挿入
    *
    * @description
    *   入力値を以下の順で処理：
    *   1. 全角数字→半角数字
    *   2. 全角マイナス記号→半角マイナス記号
-   *   3. カンマ削除
-   *   4. 数値以外の文字削除
-   *   5. カンマ挿入（noCommaモードでない場合）
-   *   6. カーソル位置の調整
+   *   3. 全角小数点→半角小数点
+   *   4. **全角・半角スペースを削除**
+   *   5. カンマ削除
+   *   6. 数値以外の文字削除
+   *   7. カンマ挿入（noCommaモードでない場合）
+   *   8. カーソル位置の調整
    */
   convertAndFormat() {
     const input = this.element
@@ -166,23 +201,31 @@ export default class extends Controller {
     // type="number"の場合はsetSelectionRangeが使えないのでカーソル位置を取得しない
     const cursorPosition = this.isNumberType ? null : input.selectionStart
 
-    // 全角数字、マイナス記号を半角に変換
+    // 全角数字、マイナス記号、小数点を半角に変換
     let convertedValue = originalValue
       .replace(/[０-９]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0xFEE0))
       .replace(/[ー−]/g, '-')
+      .replace(/[。．]/g, '.')
+      .replace(/\s/g, '')          // ★ 半角スペース削除
+      .replace(/　/g, '')          // ★ 全角スペース削除
 
     // カンマを削除して数値のみを抽出
     const withoutCommas = convertedValue.replace(/,/g, '')
 
-    // 数値とマイナス記号のみ許可
-    const cleanValue = withoutCommas.replace(/[^\d-]/g, '')
+    // 数値、マイナス記号、小数点のみ許可
+    const cleanValue = withoutCommas.replace(/[^\d.-]/g, '')
 
     // マイナス記号は先頭のみ許可
     const hasNegative = cleanValue.startsWith('-')
-    const digitsOnly = cleanValue.replace(/-/g, '')
+    const withoutNegative = cleanValue.replace(/-/g, '')
+
+    // 小数点の処理
+    const parts = withoutNegative.split('.')
+    const integerPart = parts[0] || ''
+    const decimalPart = parts.length > 1 ? '.' + parts[1] : ''
 
     // 空の場合
-    if (digitsOnly === '') {
+    if (integerPart === '' && decimalPart === '') {
       const newValue = hasNegative ? '-' : ''
       if (originalValue !== newValue) {
         this.isUpdating = true
@@ -198,8 +241,8 @@ export default class extends Controller {
     }
 
     // カンマを挿入（3桁区切り）※カンマなしモードの場合はスキップ
-    const formatted = this.noComma ? digitsOnly : this.formatNumber(digitsOnly)
-    const finalValue = hasNegative ? '-' + formatted : formatted
+    const formatted = this.noComma ? integerPart : this.formatNumber(integerPart)
+    const finalValue = (hasNegative ? '-' : '') + formatted + decimalPart
 
     // 値が変わっていない場合は何もしない
     if (originalValue === finalValue) {

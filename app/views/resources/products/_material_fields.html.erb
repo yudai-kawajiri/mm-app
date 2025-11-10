@@ -52,6 +52,7 @@
   <td>
     <%= f.text_field :quantity,
       class: 'form-control',
+      inputmode: 'decimal',
       placeholder: t('helpers.forms.quantity_placeholder'),
       data: {
         controller: 'number-input',
@@ -65,6 +66,7 @@
   <td>
     <%= f.text_field :unit_weight,
       class: 'form-control',
+      inputmode: 'decimal',
       placeholder: t('products.product_material_fields.unit_weight_placeholder'),
       data: {
         controller: 'number-input',

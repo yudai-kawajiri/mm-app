@@ -63,7 +63,7 @@ class Resources::Product < ApplicationRecord
   # @return [void]
   def self.update_display_orders(product_ids)
     product_ids.each_with_index do |product_id, index|
-      Product.where(id: product_id).update_all(display_order: index + 1)
+      where(id: product_id).update_all(display_order: index + 1)
     end
   end
 

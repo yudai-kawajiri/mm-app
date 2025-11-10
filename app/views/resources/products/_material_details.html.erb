@@ -4,9 +4,10 @@
   - 詳細画面で使用
 
   必須引数:
-  - materials: Array<ProductMaterial> - 表示対象の商品原材料配列
+  - product: Product - 表示対象の商品オブジェクト
 %>
-<% product_materials = local_assigns[:materials] %>
+<% product = local_assigns[:product] %>
+<% product_materials = product.product_materials.includes(:material, :unit).order(:id) if product.present? %>
 
 <% if product_materials.present? %>
   <table class="table table-sm table-borderless">

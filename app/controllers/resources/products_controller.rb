@@ -11,7 +11,10 @@
 #   - 製品コピー機能（材料構成も複製）
 #   - 表示順の並び替え
 #   - 画像削除
+#   - 数値入力のサニタイズ処理（NumericSanitizer）
 class Resources::ProductsController < AuthenticatedController
+  include NumericSanitizer
+
   # 検索パラメータの定義
   define_search_params :q, :category_id
 
@@ -47,10 +50,9 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [void]
   def create
-    @product = current_user.products.build(product_params)
+    @product = current_user.products.build(sanitized_product_params)
 
-    # 画像アップロード処理
-    uploaded_image = params[:product][:image]
+    uploaded_image = params.dig(:resources_product, :image)
     if uploaded_image.present?
       image_upload_service.handle_upload(@product, uploaded_image)
     elsif image_upload_service.pending_image?
@@ -63,7 +65,6 @@ class Resources::ProductsController < AuthenticatedController
                                      resource: Resources::Product.model_name.human,
                                      name: @product.name)
     else
-      # バリデーションエラー時、プレビューデータを生成
       if @product.image.attached?
         preview_data = image_upload_service.generate_preview_data
         if preview_data
@@ -94,12 +95,11 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [void]
   def update
-    # 画像が新規アップロードされている場合、添付
-    if params[:product][:image].present?
-      @product.image.attach(params[:product][:image])
+    if params.dig(:resources_product, :image).present?
+      @product.image.attach(params.dig(:resources_product, :image))
     end
 
-    if @product.update(product_params.except(:image))
+    if @product.update(sanitized_product_params.except(:image))
       redirect_to @product, notice: t("flash_messages.update.success",
                                      resource: Resources::Product.model_name.human,
                                      name: @product.name)
@@ -141,7 +141,6 @@ class Resources::ProductsController < AuthenticatedController
     copy_count = 1
     new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
 
-    # ユニーク制約を考慮して名前を生成
     while Resources::Product.exists?(name: new_name, category_id: original_product.category_id)
       copy_count += 1
       new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
@@ -151,7 +150,6 @@ class Resources::ProductsController < AuthenticatedController
     new_product.name = new_name
     new_product.user_id = current_user.id
 
-    # 品番を生成
     temp_item_number = "C#{copy_count}"[0..3]
     while Resources::Product.exists?(item_number: temp_item_number, category_id: original_product.category_id)
       copy_count += 1
@@ -162,7 +160,6 @@ class Resources::ProductsController < AuthenticatedController
     ActiveRecord::Base.transaction do
       new_product.save!
 
-      # 材料構成も複製
       original_product.product_materials.each do |product_material|
         new_product.product_materials.create!(
           material_id: product_material.material_id,
@@ -216,6 +213,38 @@ class Resources::ProductsController < AuthenticatedController
         :_destroy
       ]
     )
+  end
+
+  # 数値パラメータのサニタイズ処理
+  #
+  # 対象フィールド:
+  #   - price: 売価（カンマ区切り対応）
+  #   - item_number: 商品番号（整数のみ）
+  #   - product_materials[].quantity: 数量（整数・小数対応）
+  #   - product_materials[].unit_weight: 分量（整数・小数対応）
+  #
+  # @return [ActionController::Parameters]
+  def sanitized_product_params
+    params_hash = product_params
+
+    params_hash = sanitize_numeric_params(
+      params_hash,
+      with_comma: [:price],
+      without_comma: [:item_number]
+    )
+
+    if params_hash[:product_materials_attributes].present?
+      params_hash[:product_materials_attributes].each do |key, material_attrs|
+        next if material_attrs[:_destroy] == '1'
+
+        params_hash[:product_materials_attributes][key] = sanitize_numeric_params(
+          material_attrs,
+          without_comma: [:quantity, :unit_weight]
+        )
+      end
+    end
+
+    params_hash
   end
 
   # 並び替え用パラメータ
