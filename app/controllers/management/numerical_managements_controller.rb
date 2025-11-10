@@ -29,18 +29,30 @@ class Management::NumericalManagementsController < ApplicationController
   #
   # @return [void]
   def index
-    @selected_date = Date.current
+    # パラメータから年月を取得、なければ現在の年月
+    year = params[:year].to_i
+    month = params[:month].to_i
+    year = Date.current.year if year.zero? || year < 2000 || year > 2100
+    month = Date.current.month if month.zero? || month < 1 || month > 12
+    @selected_date = Date.new(year, month, 1)
 
-    @forecast_data = {
-      target_amount: 0,
-      actual_amount: 0,
-      achievement_rate: 0
-    }
-    @monthly_budget = nil
-    @daily_data = []
-    @daily_targets = {}
+    # 選択された月の予算データを取得
+    @monthly_budget = current_user.monthly_budgets.find_or_initialize_by(
+      budget_month: @selected_date.beginning_of_month
+    )
+
+    # カレンダーデータを構築
+    calendar_data = CalendarDataBuilderService.new(current_user, year, month).build
+    @daily_data = calendar_data[:daily_data]
+    @daily_targets = calendar_data[:daily_targets]
+
+    # 予測データを取得（正しい呼び出し方）
+    @forecast_data = NumericalForecastService.new(
+      user: current_user,
+      year: year,
+      month: month
+    ).calculate
   end
-
   # カレンダー表示
   #
   # 指定された年月のカレンダーを表示
@@ -80,10 +92,10 @@ class Management::NumericalManagementsController < ApplicationController
     )[:target]
 
     if daily_target.update(target: sanitized_value)
-      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
+      redirect_to calendar_numerical_managements_path(year: date.year, month: date.month),
                   notice: t('numerical_managements.messages.target_updated')
     else
-      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
+      redirect_to calendar_numerical_managements_path(year: date.year, month: date.month),
                   alert: "更新に失敗しました: #{daily_target.errors.full_messages.join(', ')}"
     end
   end
@@ -101,10 +113,10 @@ class Management::NumericalManagementsController < ApplicationController
     service = NumericalDataBulkUpdateService.new(current_user, sanitized_bulk_update_params)
 
     if service.call
-      redirect_to management_numerical_managements_path(year: year, month: month),
+      redirect_to calendar_numerical_managements_path(year: year, month: month),
                   notice: t('numerical_managements.messages.data_updated')
     else
-      redirect_to management_numerical_managements_path(year: year, month: month),
+      redirect_to calendar_numerical_managements_path(year: year, month: month),
                   alert: "更新に失敗しました: #{service.errors.join(', ')}"
     end
   end

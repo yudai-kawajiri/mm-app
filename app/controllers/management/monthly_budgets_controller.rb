@@ -80,7 +80,6 @@ class Management::MonthlyBudgetsController < ApplicationController
     redirect_to management_numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                 alert: t("numerical_managements.messages.budget_delete_failed")
   end
-
   private
 
   # 月次予算を取得

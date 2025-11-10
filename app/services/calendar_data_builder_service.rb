@@ -54,8 +54,8 @@ class CalendarDataBuilderService
   #   - achievement_rate: 達成率（%）
   #   - is_today: 今日かどうか
   #   - is_future: 未来の日付かどうか
-  # @option return [MonthlyBudget, nil] :monthly_budget 月次予算オブジェクト
-  # @option return [Hash] :daily_targets 日別目標のハッシュ（日付 => DailyTarget）
+  # @option return [Management::MonthlyBudget, nil] :monthly_budget 月次予算オブジェクト
+  # @option return [Hash] :daily_targets 日別目標のハッシュ（日付 => Management::DailyTarget）
   #
   # @example
   #   data = service.build
@@ -91,7 +91,7 @@ class CalendarDataBuilderService
     (@start_date..@end_date).map do |date|
       actual = daily_data_hash[date]&.dig(:actual) || 0
       budget = calculate_daily_budget(date, monthly_budget)
-      target = daily_targets_hash[date]&.target || 0
+      target = daily_targets_hash[date]&.target_amount || 0
 
       {
         date: date,
@@ -99,6 +99,7 @@ class CalendarDataBuilderService
         budget: budget,
         target: target,
         achievement_rate: calculate_achievement_rate(actual, budget),
+        plan_schedules: daily_data_hash[date]&.dig(:plan_schedules) || [],
         is_today: date == Date.today,
         is_future: date > Date.today
       }
@@ -114,22 +115,21 @@ class CalendarDataBuilderService
   #   DailyDataService.call(user, year, month) の戻り値を利用
   #
   def fetch_daily_data_hash
-    DailyDataService.call(@user, @year, @month)
+    DailyDataService.new(@user, @year, @month).call.index_by { |data| data[:date] }
   end
 
   #
   # 月次予算を取得
   #
-  # @return [MonthlyBudget, nil] 該当月の予算オブジェクト
+  # @return [Management::MonthlyBudget, nil] 該当月の予算オブジェクト
   #
   # @note
   #   存在しない場合はnilを返す
   #
   def fetch_monthly_budget
-    MonthlyBudget.find_by(
+    Management::MonthlyBudget.find_by(
       user: @user,
-      year: @year,
-      month: @month
+      budget_month: Date.new(@year, @month, 1)
     )
   end
 
@@ -139,19 +139,19 @@ class CalendarDataBuilderService
   # @return [Hash] 日付をキーとするDailyTargetのハッシュ
   #
   # @example
-  #   { Date.new(2024,11,1) => #<DailyTarget:0x...>, ... }
+  #   { Date.new(2024,11,1) => #<Management::DailyTarget:0x...>, ... }
   #
   def fetch_daily_targets_hash
-    DailyTarget
-      .where(user: @user, date: @start_date..@end_date)
-      .index_by(&:date)
+    Management::DailyTarget
+      .where(user: @user, target_date: @start_date..@end_date)
+      .index_by(&:target_date)
   end
 
   #
   # 日別予算を計算
   #
   # @param date [Date] 対象日
-  # @param monthly_budget [MonthlyBudget, nil] 月次予算
+  # @param monthly_budget [Management::MonthlyBudget, nil] 月次予算
   # @return [Integer] 日別予算（円）
   #
   # @note
@@ -159,9 +159,9 @@ class CalendarDataBuilderService
   #   存在しない場合は0を返す
   #
   def calculate_daily_budget(date, monthly_budget)
-    return 0 unless monthly_budget&.budget
+    return 0 unless monthly_budget&.target_amount
 
-    (monthly_budget.budget.to_f / @end_date.day).round
+    (monthly_budget.target_amount.to_f / @end_date.day).round
   end
 
   #

@@ -8,10 +8,7 @@
       <% if @monthly_budget&.persisted? %>
         <%= form_with model: @monthly_budget,
                       url: management_monthly_budget_path(@monthly_budget),
-                      method: :patch,
-                      local: true do |f| %>
-          <%= hidden_field_tag :return_to, 'index' %>
-
+                      method: :patch do |f| %>
           <div class="modal-header">
             <h5 class="modal-title" id="budgetSettingModalLabel"><%= t('numerical_managements.modals.budget_setting.title') %></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -29,8 +26,7 @@
                       value: @monthly_budget.target_amount.to_i,
                       class: "form-control",
                       required: true,
-                      placeholder: t('numerical_managements.placeholders.budget_amount'),
-                      inputmode: "numeric",
+                      inputmode: "numeric", autocomplete: "off",
                       data: {
                         controller: 'number-input',
                         action: 'input->number-input#handleInput paste->number-input#handlePaste'
@@ -53,7 +49,7 @@
           </div>
         <% end %>
       <% else %>
-        <%= form_with url: management_monthly_budgets_path, method: :post, local: true do |f| %>
+        <%= form_with url: management_monthly_budgets_path, method: :post do |f| %>
           <%= hidden_field_tag :year, @selected_date.year %>
           <%= hidden_field_tag :month, @selected_date.month %>
           <%= hidden_field_tag :return_to, 'index' %>
@@ -75,8 +71,7 @@
                 nil,
                 class: "form-control",
                 required: true,
-                placeholder: t('numerical_managements.placeholders.budget_amount'),
-                inputmode: "numeric",
+                inputmode: "numeric", autocomplete: "off",
                 data: {
                   controller: 'number-input',
                   action: 'input->number-input#handleInput paste->number-input#handlePaste'
