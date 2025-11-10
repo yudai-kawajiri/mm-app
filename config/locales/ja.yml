@@ -612,26 +612,26 @@ ja:
         back_to_login: "ログイン画面に戻る"
     mailer:
       confirmation_instructions:
-        greeting: "ようこそ、%{recipient}さん！"
+        greeting: "ようこそ、%{name}さん！"
         instruction: "以下のリンクをクリックして、メールアドレスの確認を完了してください:"
         action: "メールアドレスを確認する"
       email_changed:
-        greeting: "こんにちは、%{recipient}さん！"
+        greeting: "こんにちは、%{name}さん！"
         message: "メールアドレスが変更されたことをお知らせします。"
         message_unconfirmed: "メールアドレスが%{email}に変更されました。現在確認待ちです。"
         message_confirmed: "メールアドレスが%{email}に変更されました。"
       password_change:
-        greeting: "こんにちは、%{recipient}さん！"
+        greeting: "こんにちは、%{name}さん！"
         message: "パスワードが変更されたことをお知らせします。"
       reset_password_instructions:
         subject: "【製造管理システム】パスワード再設定のご案内"
-        greeting: "こんにちは %{recipient} さん！"
+        greeting: "こんにちは %{name} さん！"
         action: "パスワードの変更"
         instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください。"
         instruction_2: "このメールに心当たりがない場合は、無視して構いません。"
         instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを登録するまで変更されません。"
       unlock_instructions:
-        greeting: "こんにちは、%{recipient}さん！"
+        greeting: "こんにちは、%{name}さん！"
         message: "ログイン試行回数が上限に達したため、アカウントがロックされました。"
         instruction: "以下のリンクをクリックしてアカウントのロックを解除してください:"
         action: "アカウントのロックを解除する"

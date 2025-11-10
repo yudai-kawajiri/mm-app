@@ -11,8 +11,8 @@
               data: { controller: 'form-submit', turbo: false } do |f| %>
   <%= render 'shared/forms/resource_two_column_form',
     f: f,
-    basic_fields: 'products/fields',
-    detail_fields: 'products/materials_fields',
+    basic_fields: 'resources/products/fields',
+    detail_fields: 'resources/products/materials_fields',
     resource_name: 'products',
     custom_right_title: t('forms.titles.product_material') %>
 <% end %>

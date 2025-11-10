@@ -34,14 +34,14 @@
 
 <div class="tab-content pt-3" id="planProductTabContent">
   <div class="tab-pane fade show active" id="plan-product-all" role="tabpanel" aria-labelledby="all-tab">
-    <%= render 'plans/product_table', plan_products: all_plan_products %>
+    <%= render 'resources/plans/product_table', plan_products: all_plan_products %>
   </div>
 
   <% used_category_ids = all_plan_products.map { |pp| pp.product&.category_id }.compact.uniq %>
   <% product_categories.select { |c| used_category_ids.include?(c.id) }.each do |category| %>
     <% filtered_plan_products = all_plan_products.select { |pp| pp.product&.category_id == category.id } %>
     <div class="tab-pane fade" id="plan-product-<%= category.id %>" role="tabpanel" aria-labelledby="<%= category.id %>-tab">
-      <%= render 'plans/product_table', plan_products: filtered_plan_products %>
+      <%= render 'resources/plans/product_table', plan_products: filtered_plan_products %>
 
       <div class="text-end mt-3 border-top pt-2">
         <span class="text-muted"><%= t('plans.tab_total', default: 'カテゴリ合計') %>:</span>

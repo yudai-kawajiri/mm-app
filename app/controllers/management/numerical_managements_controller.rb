@@ -35,9 +35,19 @@ class Management::NumericalManagementsController < ApplicationController
   #
   # @render
   #   app/views/numerical_managements/index.html.erb
-  #
   def index
-    # 月選択画面（シンプルなビュー）
+    # デフォルトで今日の日付を設定
+    @selected_date = Date.current
+    
+    # ダミーデータを設定（Viewが期待する形式）
+    @forecast_data = {
+      target_amount: 0,
+      actual_amount: 0,
+      achievement_rate: 0
+    }
+    @monthly_budget = nil
+    @daily_data = []
+    @daily_targets = {}
   end
 
   #
@@ -122,7 +132,7 @@ class Management::NumericalManagementsController < ApplicationController
     # 目標値を更新（StripCommas concernが自動でカンマ除去）
     if daily_target.update(target: target_value)
       redirect_to calendar_numerical_managements_path(year: date.year, month: date.month),
-                  notice: '目標を更新しました'
+                  notice: t('numerical_managements.messages.target_updated')
     else
       redirect_to calendar_numerical_managements_path(year: date.year, month: date.month),
                   alert: "更新に失敗しました: #{daily_target.errors.full_messages.join(', ')}"
@@ -171,7 +181,7 @@ class Management::NumericalManagementsController < ApplicationController
 
     if service.call
       redirect_to calendar_numerical_managements_path(year: year, month: month),
-                  notice: 'データを更新しました'
+                  notice: t('numerical_managements.messages.data_updated')
     else
       redirect_to calendar_numerical_managements_path(year: year, month: month),
                   alert: "更新に失敗しました: #{service.errors.join(', ')}"

@@ -27,7 +27,7 @@
     <div class="row">
       <div class="col-md-4">
         <strong><%= t('numerical_managements.bulk_edit.monthly_budget_label') %></strong>
-        <span class="text-primary"><%= number_to_currency(@monthly_budget.target_amount || 0, unit: "¥", precision: 0) %></span>
+        <span class="text-primary"><%= number_to_currency(@monthly_budget&.target_amount || 0, unit: "¥", precision: 0) %></span>
       </div>
       <div class="col-md-4">
         <strong><%= t('numerical_managements.bulk_edit.daily_target_sum') %></strong>
@@ -254,7 +254,7 @@
 
 <script>
 window.isEditMode = false;
-window.monthlyBudget = <%= @monthly_budget.target_amount || 0 %>;
+window.monthlyBudget = <%= @monthly_budget&.target_amount || 0 %>;
 
 function setupNumericInput(input) {
   let isComposing = false;
