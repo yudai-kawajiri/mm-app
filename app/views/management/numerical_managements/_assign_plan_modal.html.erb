@@ -2,7 +2,7 @@
   機能: 計画割当モーダル（新規作成・編集）
 
   JavaScript機能:
-  - setPlanModalData: 新規/編集モードの切り替え
+  - setAssignPlanModalData: 新規/編集モードの切り替え
   - handleCategoryChange: カテゴリ選択時に計画リストを動的に追加
   - handlePlanChange: 計画選択時に売上額を自動設定
 %>
@@ -53,7 +53,7 @@
                     onchange="handlePlanChange(this)"
                     disabled
                     required>
-              <option value=""><%= t('numerical_managements.modals.prompts.select_plan') %></option>
+              <option value=""><%= t('numerical_managements.modals.prompts.select_plan_after_category') %></option>
             </select>
           </div>
 
@@ -80,31 +80,37 @@
 </div>
 
 <script>
-window.assignPlanI18n = window.assignPlanI18n || {
-  createLabel: '<%= t("common.create") %>',
-  updateLabel: '<%= t("common.update") %>',
-  editTitle: '<%= t('numerical_managements.modals.assign_plan.edit_title') %>',
-  addTitle: '<%= t('numerical_managements.modals.assign_plan.title') %>',
-  selectPlanPrompt: '<%= t('numerical_managements.modals.prompts.select_plan_prompt') %>'
+window.plansByCategory = <%= raw @plans_by_category.transform_values { |plans|
+  plans.map { |p| { id: p.id, name: p.name, expected_revenue: p.expected_revenue } }
+}.to_json %>;
+
+window.assignPlanI18n = {
+  createLabel: '<%= j t("common.create") %>',
+  updateLabel: '<%= j t("common.update") %>',
+  editTitle: '<%= j t('numerical_managements.modals.assign_plan.edit_title') %>',
+  addTitle: '<%= j t('numerical_managements.modals.assign_plan.title') %>',
+  selectPlanPrompt: '<%= j t('numerical_managements.modals.prompts.select_plan') %>',
+  selectPlanAfterCategory: '<%= j t('numerical_managements.modals.prompts.select_plan_after_category') %>'
 };
 
-function setPlanModalData(button) {
-  const scheduleId = button.dataset.scheduleId;
-  const planId = button.dataset.planId;
-  const categoryName = button.dataset.categoryName;
-  const plannedRevenue = button.dataset.plannedRevenue;
-  const dateDisplay = button.dataset.dateDisplay;
-  const date = button.dataset.date;
+function setAssignPlanModalData(button) {
+  const scheduleId = button.getAttribute('data-schedule-id');
+  const planId = button.getAttribute('data-plan-id');
+  const categoryName = button.getAttribute('data-category-name');
+  const plannedRevenue = button.getAttribute('data-planned-revenue');
+  const dateDisplay = button.getAttribute('data-date-display');
+  const date = button.getAttribute('data-date');
 
-  document.getElementById('assignPlanDate').value = dateDisplay;
-  document.getElementById('assignPlanDateHidden').value = date;
+  document.getElementById('assignPlanDate').value = dateDisplay || '';
+  document.getElementById('assignPlanDateHidden').value = date || '';
 
   const form = document.querySelector('#assignPlanModal form');
   const modalTitle = document.getElementById('assignPlanModalLabel');
+  const submitBtn = document.getElementById('assignPlanSubmitBtn');
 
   if (scheduleId) {
     modalTitle.textContent = window.assignPlanI18n.editTitle;
-    document.getElementById('assignPlanSubmitBtn').value = window.assignPlanI18n.updateLabel;
+    submitBtn.value = window.assignPlanI18n.updateLabel;
     form.action = '/management/plan_schedules/' + scheduleId;
 
     let methodInput = form.querySelector('input[name="_method"]');
@@ -120,16 +126,19 @@ function setPlanModalData(button) {
       document.getElementById('assignPlanCategory').value = categoryName;
       handleCategoryChange(document.getElementById('assignPlanCategory'));
 
-      if (planId) {
-        document.getElementById('assignPlanSelect').value = planId;
-      }
+      setTimeout(() => {
+        if (planId) {
+          document.getElementById('assignPlanSelect').value = planId;
+          handlePlanChange(document.getElementById('assignPlanSelect'));
+        }
+      }, 50);
     }
 
     document.getElementById('assignPlanAmount').value = plannedRevenue || 0;
     document.getElementById("assignPlanAmountHidden").value = plannedRevenue || 0;
   } else {
     modalTitle.textContent = window.assignPlanI18n.addTitle;
-    document.getElementById('assignPlanSubmitBtn').value = window.assignPlanI18n.createLabel;
+    submitBtn.value = window.assignPlanI18n.createLabel;
     form.action = '<%= management_plan_schedules_path %>';
 
     const methodInput = form.querySelector('input[name="_method"]');
@@ -139,7 +148,7 @@ function setPlanModalData(button) {
 
     document.getElementById('assignPlanCategory').value = '';
     const planSelect = document.getElementById('assignPlanSelect');
-    planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanPrompt}</option>`;
+    planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanAfterCategory}</option>`;
     planSelect.disabled = true;
     document.getElementById('assignPlanAmount').value = '';
     document.getElementById('assignPlanAmountHidden').value = '';
@@ -149,12 +158,16 @@ function setPlanModalData(button) {
 function handleCategoryChange(select) {
   const category = select.value;
   const planSelect = document.getElementById('assignPlanSelect');
-  planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanPrompt}</option>`;
 
   if (!category) {
+    planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanAfterCategory}</option>`;
     planSelect.disabled = true;
+    document.getElementById('assignPlanAmount').value = '';
+    document.getElementById('assignPlanAmountHidden').value = '';
     return;
   }
+
+  planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanPrompt}</option>`;
 
   const plans = window.plansByCategory[category];
 
@@ -180,6 +193,9 @@ function handlePlanChange(select) {
     const revenue = selectedOption.dataset.revenue || 0;
     document.getElementById('assignPlanAmount').value = revenue;
     document.getElementById("assignPlanAmountHidden").value = revenue;
+  } else {
+    document.getElementById('assignPlanAmount').value = '';
+    document.getElementById('assignPlanAmountHidden').value = '';
   }
 }
 </script>

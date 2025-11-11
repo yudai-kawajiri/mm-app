@@ -47,7 +47,7 @@ class Management::PlanSchedulesController < AuthenticatedController
     )
 
     if @plan_schedule.save
-      action = @plan_schedule.previously_new_record? ? I18n.t('plan_schedules.messages.assigned', date: scheduled_date.strftime('%-m月%-d日')) : I18n.t('plan_schedules.messages.updated', date: scheduled_date.strftime('%-m月%-d日'))
+      action = @plan_schedule.previously_new_record? ? I18n.t('plan_schedules.messages.plan_assigned') : I18n.t('plan_schedules.messages.plan_updated')
 
       redirect_to management_numerical_managements_path(
         month: scheduled_date.strftime("%Y-%m")
@@ -80,7 +80,7 @@ class Management::PlanSchedulesController < AuthenticatedController
     if @plan_schedule.save
       redirect_to management_numerical_managements_path(
         month: scheduled_date.strftime("%Y-%m")
-      ), notice: I18n.t('plan_schedules.messages.updated', date: scheduled_date.strftime('%-m月%-d日'))
+      ), notice: I18n.t('plan_schedules.messages.plan_updated')
     else
       redirect_to management_numerical_managements_path,
                   alert: I18n.t('plan_schedules.messages.plan_schedule_update_failed',

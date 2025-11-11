@@ -331,6 +331,8 @@ ja:
     messages:
       assigned: "%{date}を登録しました"
       updated: "%{date}を更新しました"
+      plan_assigned: "計画を登録しました"
+      plan_updated: "計画を更新しました"
       plan_schedule_saved: "%{date}の計画を%{action}"
       plan_schedule_save_failed: "計画の保存に失敗しました: %{errors}"
       plan_schedule_updated_with_date: "%{date}の計画を更新しました"
@@ -395,6 +397,9 @@ ja:
       print_plan: "計画を印刷"
       select_plan_to_print: "印刷する計画を選択"
     modals:
+      monthly_budget_edit:
+        title: "月間予算編集"
+        info: "月間予算を入力してください"
       budget_setting:
         title: "予算設定"
       daily_target_edit:
@@ -408,14 +413,10 @@ ja:
         edit_title: "計画編集"
         planned_revenue_help: "計画を選択後に自動で入力されます"
         title: "実績入力"
-      assign_plan:
         title: "計画登録"
         edit_title: "計画編集"
         planned_revenue_help: "計画を選択後に自動で入力されます"
         info: "この日の実績売上を入力してください"
-      assign_plan:
-        title: "計画登録"
-        edit_title: "計画編集"
         planned_revenue_help: "計画を選択後に自動で入力されます"
       labels:
         target_month: "対象月"
@@ -434,8 +435,8 @@ ja:
       prompts:
         select_category: "選択してください"
         select_plan: "選択してください"
-        select_plan_prompt: "選択してください（カテゴリ選択後に選択可能）"
         select_category_first: "まずカテゴリを選択してください"
+        select_plan_after_category: "選択してください（カテゴリ選択後に選択可能）"
       confirm:
         delete: "本当に削除しますか？"
       actions:
@@ -454,6 +455,7 @@ ja:
       daily_target_save_failed: "予算の保存に失敗しました: %{errors}"
       daily_target_updated: "日別予算を更新しました"
       daily_target_updated_with_date: "%{date}の予算を更新しました"
+      data_updated: "日別詳細を更新しました"
       daily_target_update_failed: "予算の更新に失敗しました: %{errors}"
       daily_target_deleted: "日別予算を削除しました"
       daily_target_delete_failed: "日別予算の削除に失敗しました"
@@ -473,10 +475,6 @@ ja:
       budget_not_set: 月次予算が設定されていません。先に予算設定を行ってください。
       budget_mismatch: 日別予算の合計（%{total}）が月次予算（%{budget}）と一致しません。
       daily_details_updated: "日別詳細を更新しました"
-    placeholders:
-      budget_amount: "例: 1,000,000"
-      daily_target_amount: "例:1,000"
-      actual_revenue_amount: "例: 10,000"
 
   forms:
     titles:

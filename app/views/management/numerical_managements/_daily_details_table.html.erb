@@ -19,8 +19,7 @@
             class="btn btn-primary btn-sm"
             id="bulkEditToggle"
             onclick="toggleBulkEditMode()">
-      <i class="bi bi-pencil-square"></i> <%= t('numerical_managements.bulk_edit.toggle_edit_mode') %>
-    </button>
+      <i class="bi bi-pencil-square"></i> <%= t('numerical_managements.bulk_edit.toggle_edit_mode') %></button>
   </div>
 
   <div id="bulkEditSummary" class="card-body bg-light border-bottom" style="display: none;">
@@ -154,21 +153,23 @@
                             data-plan-name="<%= first_schedule&.plan&.name %>"
                             data-category-name="<%= first_schedule&.plan&.category&.name %>"
                             data-planned-revenue="<%= first_schedule&.planned_revenue || 0 %>"
-                            onclick="setPlanModalData(this)"
+                            onclick="setAssignPlanModalData(this)"
                             title="<%= first_schedule ? t('numerical_managements.actions.edit_plan') : t('numerical_managements.actions.add_plan') %>">
                       <i class="bi bi-<%= first_schedule ? 'pencil-square' : 'calendar-plus' %>"></i>
                     </button>
 
-                    <%# 実績入力ボタン（修正版：onclickとdata-bs-targetを削除） %>
+                    <%# 実績入力ボタン %>
                     <% if day[:plan_schedules].present? %>
                       <% first_schedule = day[:plan_schedules].first %>
                       <button type="button"
                               class="btn btn-outline-success"
                               data-bs-toggle="modal"
                               data-bs-target="#actualRevenueModal"
+                              data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
                               data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
                               data-plan-schedule-id="<%= first_schedule.id %>"
                               data-actual-revenue="<%= first_schedule.actual_revenue || 0 %>"
+                              onclick="setActualModalData(this)"
                               title="<%= t('numerical_managements.actions.input_actual') %>">
                         <i class="bi bi-currency-yen"></i>
                       </button>
@@ -422,4 +423,68 @@ document.getElementById('bulkEditForm').addEventListener('submit', function(e) {
     }
   });
 });
+
+/**
+ * 日別予算編集モーダルにデータをセット
+ */
+function setEditModalData(button) {
+  const date = button.getAttribute('data-date');
+  const dateDisplay = button.getAttribute('data-date-display');
+  const targetId = button.getAttribute('data-target-id');
+  const targetAmount = button.getAttribute('data-target-amount');
+
+  const form = document.getElementById('editDailyTargetForm');
+  document.getElementById('editTargetDate').value = dateDisplay || '';
+  document.getElementById('editTargetDateHidden').value = date || '';
+  document.getElementById('editTargetAmount').value = targetAmount || '0';
+
+  if (targetId) {
+    form.action = `/management/daily_targets/${targetId}`;
+  } else {
+    form.action = '/management/daily_targets';
+    form.method = 'post';
+  }
+}
+
+/**
+ * 実績入力モーダルにデータをセット
+ */
+function setActualModalData(button) {
+  const date = button.getAttribute('data-date');
+  const dateDisplay = button.getAttribute('data-date-display');
+  const scheduleId = button.getAttribute('data-plan-schedule-id');
+  const actualRevenue = button.getAttribute('data-actual-revenue');
+
+  const form = document.getElementById('editActualRevenueForm');
+  document.getElementById('editActualDate').value = dateDisplay || '';
+  document.getElementById('editActualDateHidden').value = date || '';
+  document.getElementById('editActualRevenue').value = actualRevenue || '0';
+
+  if (scheduleId) {
+    form.action = `/management/plan_schedules/${scheduleId}`;
+  }
+}
+
+/**
+ * 計画登録モーダルにデータをセット
+ */
+function setAssignPlanModalData(button) {
+  const date = button.getAttribute('data-date');
+  const dateDisplay = button.getAttribute('data-date-display');
+  const scheduleId = button.getAttribute('data-schedule-id');
+  const plannedRevenue = button.getAttribute('data-planned-revenue');
+
+  const form = document.getElementById('assignPlanForm');
+  document.getElementById('assignPlanDate').value = dateDisplay || '';
+  document.getElementById('scheduledDateHidden').value = date || '';
+  document.getElementById('plannedRevenue').value = plannedRevenue || '0';
+
+  if (scheduleId) {
+    form.action = `/management/plan_schedules/${scheduleId}`;
+    form.method = 'patch';
+  } else {
+    form.action = '/management/plan_schedules';
+    form.method = 'post';
+  }
+}
 </script>
