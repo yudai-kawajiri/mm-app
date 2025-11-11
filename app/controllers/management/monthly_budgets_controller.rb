@@ -29,8 +29,8 @@ class Management::MonthlyBudgetsController < ApplicationController
     @monthly_budget.assign_attributes(sanitized_monthly_budget_params)
 
     if @monthly_budget.save
-      redirect_to management_numerical_managements_path(month: budget_month.strftime("%Y-%m")),
-                  notice: t("numerical_managements.messages.budget_created")
+      redirect_to management_numerical_managements_path(year: budget_month.year, month: budget_month.month),
+            notice: t("numerical_managements.messages.budget_created")
     else
       redirect_to management_numerical_managements_path(month: budget_month.strftime("%Y-%m")),
                   alert: t("numerical_managements.messages.budget_create_failed")
@@ -42,8 +42,8 @@ class Management::MonthlyBudgetsController < ApplicationController
   # @return [void]
   def update
     if @monthly_budget.update(sanitized_monthly_budget_params)
-      redirect_to management_numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
-                  notice: t("numerical_managements.messages.budget_updated")
+      redirect_to management_numerical_managements_path(year: @monthly_budget.budget_month.year, month: @monthly_budget.budget_month.month),
+            notice: t("numerical_managements.messages.budget_updated")
     else
       redirect_to management_numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
                   alert: t("numerical_managements.messages.budget_update_failed")
@@ -72,8 +72,8 @@ class Management::MonthlyBudgetsController < ApplicationController
       # 月次予算を削除
       @monthly_budget.destroy!
 
-      redirect_to management_numerical_managements_path(month: budget_month.strftime("%Y-%m")),
-                  notice: t("numerical_managements.messages.budget_deleted")
+      redirect_to management_numerical_managements_path(year: budget_month.year, month: budget_month.month),
+            notice: t("numerical_managements.messages.budget_deleted")
     end
   rescue ActiveRecord::RecordNotDestroyed, ActiveRecord::RecordInvalid => e
     Rails.logger.error "Monthly budget deletion failed: #{e.message}"

@@ -27,9 +27,6 @@ class Planning::PlanSchedule < ApplicationRecord
   # スケジュールの現在の状態を定義
   enum :status, { scheduled: 0, completed: 1, cancelled: 2 }
 
-  # actual_revenue 入力時に planned_revenue を固定
-  before_save :freeze_planned_revenue_on_actual_input
-
   # 指定日のスケジュールを取得
   #
   # @param date [Date] 対象日
@@ -86,21 +83,11 @@ class Planning::PlanSchedule < ApplicationRecord
 
   # 現在の計画売上を取得
   #
-  # 実績入力済みの場合は固定された planned_revenue を使用
-  # 実績未入力の場合は計画の最新値を動的参照
+  # スナップショットから計画売上を返す
   #
   # @return [Integer] 計画売上
   def current_planned_revenue
-    if actual_revenue.present?
-      # 実績入力済み → 固定された planned_revenue を使用
-      planned_revenue || plan&.expected_revenue || 0
-    elsif has_snapshot?
-      # スナップショットあり → スナップショットの値を使用
-      plan_products_snapshot['total_cost'] || 0
-    else
-      # 実績未入力 & スナップショットなし → 計画の最新値を動的参照
-      plan&.expected_revenue || 0
-    end
+    snapshot_total_cost
   end
 
   # 計画から予定売上を取得
@@ -175,10 +162,7 @@ class Planning::PlanSchedule < ApplicationRecord
   # @return [Boolean] 保存成功の可否
   def update_products_snapshot(products_data)
     snapshot = build_products_snapshot(products_data)
-    update(
-      plan_products_snapshot: snapshot,
-      planned_revenue: snapshot['total_cost']
-    )
+    update(plan_products_snapshot: snapshot)
   end
 
   # 現在の計画から商品構成スナップショットを作成
@@ -212,9 +196,10 @@ class Planning::PlanSchedule < ApplicationRecord
     products_data = hash.map do |product_id, production_count|
       { product_id: product_id.to_i, production_count: production_count.to_i }
     end
-    
+
     update_products_snapshot(products_data)
   end
+
   # スナップショットから商品情報を取得
   #
   # @return [Array<Hash>] 商品情報配列
@@ -231,6 +216,7 @@ class Planning::PlanSchedule < ApplicationRecord
       }
     end
   end
+
   # スナップショットの商品データを配列で返す（JSON用）
   def snapshot_products_for_json
     return [] unless has_snapshot?
@@ -239,26 +225,13 @@ class Planning::PlanSchedule < ApplicationRecord
   end
 
   # スナップショットの合計金額を取得
-  # スナップショットがあればその合計金額を、なければ planned_revenue を返す
+  #
+  # @return [Integer] 合計金額
   def snapshot_total_cost
-    return planned_revenue unless plan_products_snapshot.present?
-    
-    plan_products_snapshot['total_cost'] || planned_revenue
+    plan_products_snapshot.dig('total_cost') || 0
   end
-
 
   private
-
-  # actual_revenue が nil → 値あり に変化したときに planned_revenue を保存
-  def freeze_planned_revenue_on_actual_input
-    if actual_revenue_changed? && actual_revenue.present? && actual_revenue_was.nil?
-      # スナップショットがなければ作成
-      create_snapshot_from_plan unless has_snapshot?
-
-      self.planned_revenue = current_planned_revenue
-      Rails.logger.info "PlanSchedule##{id || 'new'}: planned_revenue を固定 → #{planned_revenue}"
-    end
-  end
 
   # 商品データからスナップショットを構築
   #

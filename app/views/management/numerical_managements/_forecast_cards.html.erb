@@ -17,7 +17,7 @@
             <tr>
               <td class="py-1"><%= t('numerical_managements.index.forecast_revenue') %></td>
               <td class="py-1 text-end fw-bold">
-                <%= number_to_currency((forecast_data[:forecast_amount] || 0).to_i, unit: "¥", precision: 0) %>
+                <%= format_currency(forecast_data[:forecast_amount] || 0) %>
               </td>
             </tr>
             <tr>
@@ -29,7 +29,7 @@
             <tr>
               <td class="py-1"><%= t('numerical_managements.index.forecast_diff') %></td>
               <td class="py-1 text-end fw-bold <%= (forecast_data[:forecast_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
-                <%= number_to_currency((forecast_data[:forecast_diff] || 0).to_i, unit: "¥", precision: 0) %>
+                <%= format_currency(forecast_data[:forecast_diff] || 0) %>
               </td>
             </tr>
           </tbody>
@@ -55,13 +55,13 @@
             <tr>
               <td class="py-1"><%= t('numerical_managements.index.required_additional') %></td>
               <td class="py-1 text-end fw-bold text-danger">
-                <%= number_to_currency((forecast_data[:required_additional] || 0).to_i, unit: "¥", precision: 0) %>
+                <%= format_currency(forecast_data[:required_additional] || 0) %>
               </td>
             </tr>
             <tr>
               <td class="py-1"><%= t('numerical_managements.index.recommended_daily_target') %></td>
               <td class="py-1 text-end fw-bold text-primary">
-                <%= number_to_currency((forecast_data[:daily_required] || 0).to_i, unit: "¥", precision: 0) %>
+                <%= format_currency(forecast_data[:daily_required] || 0) %>
               </td>
             </tr>
           </tbody>

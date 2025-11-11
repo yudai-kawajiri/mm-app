@@ -6,7 +6,7 @@
           <i class="bi bi-calendar-check"></i> <%= t('numerical_managements.index.monthly_budget_card') %>
         </h6>
         <p class="h4 mb-0">
-          <%= number_to_currency((forecast_data[:target_amount] || 0).to_i, unit: "¥", precision: 0) %>
+          <%= format_currency(forecast_data[:target_amount] || 0) %>
         </p>
         <small class="text-muted"><%= t('numerical_managements.index.target_amount_subtitle') %></small>
       </div>
@@ -20,7 +20,7 @@
           <i class="bi bi-clipboard-check"></i> <%= t('numerical_managements.index.monthly_planned_revenue') %>
         </h6>
         <p class="h4 mb-0">
-          <%= number_to_currency((forecast_data[:planned_amount] || 0).to_i, unit: "¥", precision: 0) %>
+          <%= format_currency(forecast_data[:planned_amount] || 0) %>
         </p>
         <small class="text-muted"><%= t('numerical_managements.index.planned_total_subtitle') %></small>
       </div>
@@ -34,7 +34,7 @@
           <i class="bi bi-graph-up-arrow"></i> <%= t('numerical_managements.index.cumulative_actual') %>
         </h6>
         <p class="h4 mb-0">
-          <%= number_to_currency((forecast_data[:actual_amount] || 0).to_i, unit: "¥", precision: 0) %>
+          <%= format_currency(forecast_data[:actual_amount] || 0) %>
         </p>
         <small class="text-muted"><%= t('numerical_managements.index.actual_until_yesterday') %></small>
       </div>

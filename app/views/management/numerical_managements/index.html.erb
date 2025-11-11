@@ -97,7 +97,7 @@ function setEditModalData(button) {
 
   // フォームのaction URLを設定
   const form = document.getElementById('editDailyTargetForm');
-  form.action = `/numerical_managements/update_daily_target?year=${year}&month=${month}&day=${day}`;
+  form.action = `/management/numerical_managements/update_daily_target?year=${year}&month=${month}&day=${day}`;
 
   // PATCHメソッドを設定
   const existingMethod = form.querySelector('input[name="_method"]');

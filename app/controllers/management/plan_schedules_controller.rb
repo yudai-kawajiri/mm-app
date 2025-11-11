@@ -19,7 +19,6 @@ class Management::PlanSchedulesController < AuthenticatedController
   # 計画スケジュールを作成
   #
   # 1日1計画のみ（同じ日の計画は上書き）
-  # 計画高は計画から自動計算
   # 商品数量調整がある場合はスナップショット作成
   #
   # @return [void]
@@ -42,16 +41,8 @@ class Management::PlanSchedulesController < AuthenticatedController
       scheduled_date: scheduled_date
     )
 
-    # 商品数量調整がある場合は、調整後の合計金額を planned_revenue に設定
-    planned_revenue = if permitted[:planned_revenue].present?
-                        permitted[:planned_revenue]
-                      else
-                        plan.expected_revenue
-                      end
-
     @plan_schedule.assign_attributes(
       plan: plan,
-      planned_revenue: planned_revenue,
       status: @plan_schedule.persisted? ? @plan_schedule.status : :scheduled
     )
 
@@ -59,6 +50,9 @@ class Management::PlanSchedulesController < AuthenticatedController
       # 商品数量調整がある場合、スナップショットを作成
       if params[:plan_schedule][:products].present?
         @plan_schedule.create_snapshot_from_products(params[:plan_schedule][:products])
+      else
+        # 商品数量調整がない場合、計画からスナップショットを作成
+        @plan_schedule.create_snapshot_from_plan
       end
 
       action = @plan_schedule.previously_new_record? ? I18n.t('plan_schedules.messages.plan_assigned') : I18n.t('plan_schedules.messages.plan_updated')
@@ -88,22 +82,17 @@ class Management::PlanSchedulesController < AuthenticatedController
     @plan_schedule = current_user.plan_schedules.find(params[:id])
     plan = current_user.plans.find(permitted[:plan_id])
 
-    # 商品数量調整がある場合は、調整後の合計金額を planned_revenue に設定
-    planned_revenue = if permitted[:planned_revenue].present?
-                        permitted[:planned_revenue]
-                      else
-                        plan.expected_revenue
-                      end
-
     @plan_schedule.assign_attributes(
-      plan: plan,
-      planned_revenue: planned_revenue
+      plan: plan
     )
 
     if @plan_schedule.save
       # 商品数量調整がある場合、スナップショットを更新
       if permitted[:products].present?
         @plan_schedule.create_snapshot_from_products(params[:plan_schedule][:products])
+      else
+        # 商品数量調整がない場合、計画からスナップショットを更新
+        @plan_schedule.create_snapshot_from_plan
       end
 
       redirect_to management_numerical_managements_path(
@@ -154,7 +143,7 @@ class Management::PlanSchedulesController < AuthenticatedController
   def plan_schedule_params
     # planning_plan_schedule でも plan_schedule でも受け付ける
     key = params.key?(:planning_plan_schedule) ? :planning_plan_schedule : :plan_schedule
-    params.require(key).permit(:scheduled_date, :plan_id, :planned_revenue, :actual_revenue, :note, products: {})
+    params.require(key).permit(:scheduled_date, :plan_id, :actual_revenue, :note, products: {})
   end
 
   #
@@ -167,7 +156,7 @@ class Management::PlanSchedulesController < AuthenticatedController
   def sanitized_plan_schedule_params
     sanitize_numeric_params(
       plan_schedule_params,
-      with_comma: [:planned_revenue, :actual_revenue]
+      with_comma: [:actual_revenue]
     )
   end
 

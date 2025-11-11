@@ -23,10 +23,10 @@
         <tr class="<%= 'border-bottom' unless index == plan_products.size - 1 %>">
           <td><%= pp.product&.name %></td>
           <td class="text-end"><%= pp.production_count %></td>
-          <td class="text-end"><%= number_to_currency(pp.product&.price, precision: 0) %></td>
+          <td class="text-end"><%= format_currency(pp.product&.price) %></td>
           <td class="text-end">
             <% subtotal = pp.production_count * (pp.product&.price || 0) %>
-            <%= number_to_currency(subtotal, precision: 0) %>
+            <%= format_currency(subtotal) %>
           </td>
         </tr>
       <% end %>

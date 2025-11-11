@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_11_050243) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_11_083036) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -131,7 +131,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_050243) do
     t.text "note", comment: "備考"
     t.bigint "plan_id", null: false
     t.jsonb "plan_products_snapshot", default: {}, null: false, comment: "計画商品のスナップショット（日別調整用）"
-    t.integer "planned_revenue"
     t.date "scheduled_date", null: false, comment: "スケジュール実施日"
     t.integer "status", default: 0, null: false, comment: "ステータス"
     t.datetime "updated_at", null: false
