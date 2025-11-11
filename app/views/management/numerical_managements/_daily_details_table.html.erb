@@ -26,7 +26,7 @@
     <div class="row">
       <div class="col-md-4">
         <strong><%= t('numerical_managements.bulk_edit.monthly_budget_label') %></strong>
-        <span class="text-primary"><%= number_to_currency(@monthly_budget&.target_amount || 0, unit: "¥", precision: 0) %></span>
+        <span class="text-primary"><%= format_currency(@monthly_budget&.target_amount || 0) %></span>
       </div>
       <div class="col-md-4">
         <strong><%= t('numerical_managements.bulk_edit.daily_target_sum') %></strong>
@@ -73,7 +73,7 @@
                 <%# 日別目標 %>
                 <td class="text-end">
                   <span class="normal-mode-display">
-                    <%= number_to_currency((day[:target] || 0).to_i, unit: "¥", precision: 0) %>
+                    <%= format_currency(day[:target] || 0) %>
                   </span>
                   <div class="bulk-edit-input" style="display: none;">
                     <%= text_field_tag "daily_data[#{index}][target_amount]",
@@ -88,13 +88,13 @@
 
                 <%# 計画高 %>
                 <td class="text-end">
-                  <%= number_to_currency((day[:planned] || 0).to_i, unit: "¥", precision: 0) %>
+                  <%= format_currency(day[:planned] || 0) %>
                 </td>
 
                 <%# 実績 %>
                 <td class="text-end">
                   <span class="normal-mode-display">
-                    <%= number_to_currency((day[:actual] || 0).to_i, unit: "¥", precision: 0) %>
+                    <%= format_currency(day[:actual] || 0) %>
                   </span>
                   <div class="bulk-edit-input" style="display: none;">
                     <% first_schedule = day[:plan_schedules].first %>
@@ -117,7 +117,7 @@
 
                 <%# 予算差 %>
                 <td class="text-end <%= (day[:diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
-                  <%= number_to_currency((day[:diff] || 0).to_i, unit: "¥", precision: 0) %>
+                  <%= format_currency(day[:diff] || 0) %>
                 </td>
 
                 <%# アクションボタン群 %>
@@ -218,17 +218,17 @@
               <tr class="table-light <%= 'table-secondary' unless is_past %>">
                 <td class="text-end">
                   <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
-                  <%= number_to_currency((day[:cumulative_target] || 0).to_i, unit: "¥", precision: 0) %>
+                  <%= format_currency(day[:cumulative_target] || 0) %>
                 </td>
 
                 <td class="text-end">
                   <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
-                  <%= number_to_currency((day[:cumulative_planned] || 0).to_i, unit: "¥", precision: 0) %>
+                  <%= format_currency(day[:cumulative_planned] || 0) %>
                 </td>
 
                 <td class="text-end">
                   <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
-                  <%= number_to_currency((day[:cumulative_actual] || 0).to_i, unit: "¥", precision: 0) %>
+                  <%= format_currency(day[:cumulative_actual] || 0) %>
                 </td>
 
                 <td class="text-end">
@@ -241,7 +241,7 @@
 
                 <td class="text-end <%= (day[:cumulative_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
                   <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
-                  <%= number_to_currency((day[:cumulative_diff] || 0).to_i, unit: "¥", precision: 0) %>
+                  <%= format_currency(day[:cumulative_diff] || 0) %>
                 </td>
               </tr>
             <% end %>

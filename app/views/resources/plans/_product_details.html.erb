@@ -14,7 +14,7 @@
 <% total_amount = all_plan_products.sum { |pp| pp.production_count * pp.product&.price } %>
 <div class="text-end mb-3">
   <span class="text-muted"><%= t('plans.grand_total', default: '総合計') %>:</span>
-  <span class="h4 text-dark"><%= number_to_currency(total_amount, precision: 0) %></span>
+  <span class="h4 text-dark"><%= format_currency(total_amount) %></span>
 </div>
 
 <nav>
@@ -46,7 +46,7 @@
       <div class="text-end mt-3 border-top pt-2">
         <span class="text-muted"><%= t('plans.tab_total', default: 'カテゴリ合計') %>:</span>
         <% category_tab_total = filtered_plan_products.sum { |pp| pp.production_count * pp.product&.price } %>
-        <span class="h5 text-dark"><%= number_to_currency(category_tab_total, precision: 0) %></span>
+        <span class="h5 text-dark"><%= format_currency(category_tab_total) %></span>
       </div>
     </div>
   <% end %>
