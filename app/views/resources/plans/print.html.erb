@@ -16,9 +16,6 @@
     <strong><%= t('plans.print.planned_total') %>:</strong> ¥<%= number_with_delimiter(@planned_revenue) %> |
     <strong><%= t('plans.print.product_total') %>:</strong> ¥<%= number_with_delimiter(@total_product_cost) %> |
     <strong><%= t('plans.print.achievement_rate') %>:</strong> <%= @achievement_rate %>%
-    <% if @plan_schedule&.has_snapshot? %>
-      <span style="background-color: #17a2b8; color: white; padding: 2px 8px; border-radius: 3px; font-size: 12px; margin-left: 8px;">スナップショット</span>
-    <% end %>
   </div>
 </div>
 

@@ -27,8 +27,9 @@ class Management::NumericalManagementsController < ApplicationController
       month: month
     ).calculate
 
+    # ★★★ 修正: plan_products をプリロード ★★★
     @plans_by_category = current_user.plans
-                                     .includes(:category)
+                                     .includes(:category, plan_products: :product)
                                      .group_by { |plan| plan.category.name }
   end
 

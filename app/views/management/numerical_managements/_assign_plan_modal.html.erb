@@ -1,30 +1,35 @@
 <%#
-  機能: 計画割当モーダル（新規作成・編集）
+  機能: 計画割当モーダル（新規作成・編集・商品数量調整）
 
   JavaScript機能:
   - setAssignPlanModalData: 新規/編集モードの切り替え
   - handleCategoryChange: カテゴリ選択時に計画リストを動的に追加
-  - handlePlanChange: 計画選択時に売上額を自動設定
+  - handlePlanChange: 計画選択時に商品リスト表示
+  - updateTotalCost: 商品数量変更時に合計金額を再計算（CurrencyFormatter使用）
 %>
+
+<!-- CurrencyFormatterの読み込み -->
+<script src="<%= asset_path('utils/currency_formatter.js') %>"></script>
 
 <div class="modal fade"
       id="assignPlanModal"
       tabindex="-1"
       aria-labelledby="assignPlanModalLabel"
       aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <%= form_with model: Planning::PlanSchedule.new,
                     scope: :plan_schedule,
                     url: management_plan_schedules_path,
                     method: :post,
-                    local: true do |f| %>
+                    local: true,
+                    id: "assignPlanForm" do |f| %>
         <div class="modal-header">
           <h5 class="modal-title" id="assignPlanModalLabel"><%= t("numerical_managements.modals.assign_plan.title") %></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <%= f.hidden_field :scheduled_date, id: "assignPlanDateHidden" %>
+          <%= f.hidden_field :scheduled_date, id: "scheduledDateHidden" %>
 
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.labels.target_date') %></label>
@@ -57,18 +62,20 @@
             </select>
           </div>
 
-          <div class="mb-3">
-            <%= f.label :planned_revenue, t('numerical_managements.modals.labels.planned_revenue_yen'), class: "form-label" %>
-            <%= f.text_field :planned_revenue,
-              class: "form-control-plaintext",
-              id: "assignPlanAmount",
-              readonly: true,
-              data: {
-                controller: 'number-input',
-                action: 'input->number-input#handleInput paste->number-input#handlePaste'
-              } %>
-            <%= f.hidden_field :planned_revenue, id: "assignPlanAmountHidden" %>
+          <!-- 商品数量調整セクション -->
+          <div id="productsAdjustSection" style="display: none;">
+            <hr>
+            <h6 class="mb-3"><%= t('numerical_managements.modals.labels.product_quantity_adjustment') %></h6>
+            <div id="productsContainer" class="mb-3">
+              <!-- 商品リストが動的に挿入される -->
+            </div>
+            <div class="alert alert-info mb-0">
+              <strong><%= t('numerical_managements.modals.labels.planned_revenue') %>:</strong>
+              <span id="totalCostDisplay"></span>
+            </div>
           </div>
+
+          <%= f.hidden_field :planned_revenue, id: "plannedRevenue" %>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common.cancel') %></button>
@@ -80,8 +87,19 @@
 </div>
 
 <script>
+// 計画データをグローバル変数に保存
 window.plansByCategory = <%= raw @plans_by_category.transform_values { |plans|
-  plans.map { |p| { id: p.id, name: p.name, expected_revenue: p.expected_revenue } }
+  plans.map { |p| {
+    id: p.id,
+    name: p.name,
+    expected_revenue: p.expected_revenue,
+    plan_products: p.plan_products.map { |pp| {
+      product_id: pp.product_id,
+      product_name: pp.product.name,
+      production_count: pp.production_count,
+      price: pp.product.price
+    }}
+  }}
 }.to_json %>;
 
 window.assignPlanI18n = {
@@ -93,6 +111,12 @@ window.assignPlanI18n = {
   selectPlanAfterCategory: '<%= j t('numerical_managements.modals.prompts.select_plan_after_category') %>'
 };
 
+// 現在選択されている計画の商品データ
+window.currentPlanProducts = [];
+
+/**
+ * モーダルにデータをセット
+ */
 function setAssignPlanModalData(button) {
   const scheduleId = button.getAttribute('data-schedule-id');
   const planId = button.getAttribute('data-plan-id');
@@ -102,13 +126,19 @@ function setAssignPlanModalData(button) {
   const date = button.getAttribute('data-date');
 
   document.getElementById('assignPlanDate').value = dateDisplay || '';
-  document.getElementById('assignPlanDateHidden').value = date || '';
+  document.getElementById('scheduledDateHidden').value = date || '';
 
-  const form = document.querySelector('#assignPlanModal form');
+  const form = document.getElementById('assignPlanForm');
   const modalTitle = document.getElementById('assignPlanModalLabel');
   const submitBtn = document.getElementById('assignPlanSubmitBtn');
 
+  // 商品セクションをリセット
+  document.getElementById('productsAdjustSection').style.display = 'none';
+  document.getElementById('productsContainer').innerHTML = '';
+  window.currentPlanProducts = [];
+
   if (scheduleId) {
+    // 編集モード
     modalTitle.textContent = window.assignPlanI18n.editTitle;
     submitBtn.value = window.assignPlanI18n.updateLabel;
     form.action = '/management/plan_schedules/' + scheduleId;
@@ -122,6 +152,18 @@ function setAssignPlanModalData(button) {
     }
     methodInput.value = 'patch';
 
+    // CSRFトークンを確実に含める（編集モード）
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    let tokenInput = form.querySelector('input[name="authenticity_token"]');
+
+    if (!tokenInput) {
+      tokenInput = document.createElement('input');
+      tokenInput.type = 'hidden';
+      tokenInput.name = 'authenticity_token';
+      form.appendChild(tokenInput);
+    }
+    tokenInput.value = csrfToken;
+
     if (categoryName) {
       document.getElementById('assignPlanCategory').value = categoryName;
       handleCategoryChange(document.getElementById('assignPlanCategory'));
@@ -130,40 +172,73 @@ function setAssignPlanModalData(button) {
         if (planId) {
           document.getElementById('assignPlanSelect').value = planId;
           handlePlanChange(document.getElementById('assignPlanSelect'));
+
+          // スナップショットから調整済み数量を適用
+          const snapshotData = button.getAttribute('data-snapshot');
+          if (snapshotData && snapshotData !== 'null' && snapshotData !== 'undefined') {
+            setTimeout(() => {
+              try {
+                const snapshot = JSON.parse(snapshotData);
+                if (snapshot && Array.isArray(snapshot)) {
+                  applySnapshotToProducts(snapshot);
+                }
+              } catch (e) {
+                console.error('スナップショット解析エラー:', e);
+              }
+            }, 150);
+          }
         }
       }, 50);
     }
 
-    document.getElementById('assignPlanAmount').value = plannedRevenue || 0;
-    document.getElementById("assignPlanAmountHidden").value = plannedRevenue || 0;
+    document.getElementById('plannedRevenue').value = plannedRevenue || 0;
   } else {
+    // 新規作成モード
     modalTitle.textContent = window.assignPlanI18n.addTitle;
     submitBtn.value = window.assignPlanI18n.createLabel;
-    form.action = '<%= management_plan_schedules_path %>';
+    form.action = '/management/plan_schedules';
 
     const methodInput = form.querySelector('input[name="_method"]');
     if (methodInput) {
       methodInput.remove();
     }
 
+    // CSRFトークンを確実に含める（新規作成モード）
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    let tokenInput = form.querySelector('input[name="authenticity_token"]');
+
+    if (!tokenInput) {
+      tokenInput = document.createElement('input');
+      tokenInput.type = 'hidden';
+      tokenInput.name = 'authenticity_token';
+      form.appendChild(tokenInput);
+    }
+    tokenInput.value = csrfToken;
+
     document.getElementById('assignPlanCategory').value = '';
     const planSelect = document.getElementById('assignPlanSelect');
     planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanAfterCategory}</option>`;
     planSelect.disabled = true;
-    document.getElementById('assignPlanAmount').value = '';
-    document.getElementById('assignPlanAmountHidden').value = '';
+    document.getElementById('plannedRevenue').value = '';
   }
 }
 
+/**
+ * カテゴリ選択時の処理
+ */
 function handleCategoryChange(select) {
   const category = select.value;
   const planSelect = document.getElementById('assignPlanSelect');
 
+  // 商品セクションを非表示
+  document.getElementById('productsAdjustSection').style.display = 'none';
+  document.getElementById('productsContainer').innerHTML = '';
+  window.currentPlanProducts = [];
+
   if (!category) {
     planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanAfterCategory}</option>`;
     planSelect.disabled = true;
-    document.getElementById('assignPlanAmount').value = '';
-    document.getElementById('assignPlanAmountHidden').value = '';
+    document.getElementById('plannedRevenue').value = '';
     return;
   }
 
@@ -181,21 +256,121 @@ function handleCategoryChange(select) {
     option.value = plan.id;
     option.textContent = plan.name;
     option.dataset.revenue = plan.expected_revenue || 0;
+    option.dataset.products = JSON.stringify(plan.plan_products);
     planSelect.appendChild(option);
   });
 
   planSelect.disabled = false;
 }
 
+/**
+ * 計画選択時の処理（商品リスト表示）
+ */
 function handlePlanChange(select) {
   const selectedOption = select.selectedOptions[0];
+
   if (selectedOption && selectedOption.value) {
-    const revenue = selectedOption.dataset.revenue || 0;
-    document.getElementById('assignPlanAmount').value = revenue;
-    document.getElementById("assignPlanAmountHidden").value = revenue;
+    const products = JSON.parse(selectedOption.dataset.products || '[]');
+    window.currentPlanProducts = products;
+
+    displayProducts(products);
   } else {
-    document.getElementById('assignPlanAmount').value = '';
-    document.getElementById('assignPlanAmountHidden').value = '';
+    document.getElementById('productsAdjustSection').style.display = 'none';
+    document.getElementById('productsContainer').innerHTML = '';
+    document.getElementById('plannedRevenue').value = '';
+    window.currentPlanProducts = [];
   }
+}
+
+/**
+ * 商品リストを表示（CurrencyFormatterで通貨フォーマット統一）
+ */
+function displayProducts(products) {
+  const container = document.getElementById('productsContainer');
+  container.innerHTML = '';
+
+  if (products.length === 0) {
+    container.innerHTML = '<p class="text-muted">この計画には商品が登録されていません</p>';
+    document.getElementById('productsAdjustSection').style.display = 'block';
+    return;
+  }
+
+  products.forEach((product, index) => {
+    const subtotal = product.price * product.production_count;
+    const row = document.createElement('div');
+    row.className = 'row mb-2 align-items-center';
+    row.innerHTML = `
+      <div class="col-md-6">
+        <label class="form-label mb-0">${product.product_name}</label>
+      </div>
+      <div class="col-md-3">
+        <input type="number"
+               class="form-control form-control-sm"
+               name="plan_schedule[products][${product.product_id}]"
+               value="${product.production_count}"
+               min="0"
+               data-price="${product.price}"
+               data-product-id="${product.product_id}"
+               onchange="updateTotalCost()">
+      </div>
+      <div class="col-md-3 text-end">
+        <small class="text-muted" data-subtotal="${product.product_id}">${CurrencyFormatter.format(subtotal)}</small>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+
+  document.getElementById('productsAdjustSection').style.display = 'block';
+  updateTotalCost();
+}
+
+/**
+ * スナップショットの数量を商品入力フィールドに適用
+ */
+function applySnapshotToProducts(snapshotProducts) {
+  if (!snapshotProducts || !Array.isArray(snapshotProducts)) {
+    console.log('スナップショットデータが無効です');
+    return;
+  }
+
+  console.log('スナップショットを適用:', snapshotProducts);
+
+  snapshotProducts.forEach(sp => {
+    const input = document.querySelector(`input[data-product-id="${sp.product_id}"]`);
+    if (input) {
+      input.value = sp.production_count;
+      console.log(`商品ID ${sp.product_id} の数量を ${sp.production_count} に設定`);
+    }
+  });
+
+  // 合計金額を再計算
+  updateTotalCost();
+}
+
+/**
+ * 合計金額を再計算（CurrencyFormatterで統一的な通貨表示）
+ */
+function updateTotalCost() {
+  let total = 0;
+
+  // 各商品の小計を更新
+  document.querySelectorAll('#productsContainer input[type="number"]').forEach(input => {
+    const count = parseInt(input.value) || 0;
+    const price = parseInt(input.dataset.price) || 0;
+    const productId = input.dataset.productId;
+    const subtotal = count * price;
+
+    // 小計表示を更新
+    const subtotalElement = document.querySelector(`[data-subtotal="${productId}"]`);
+    if (subtotalElement) {
+      subtotalElement.textContent = CurrencyFormatter.format(subtotal);
+    }
+
+    total += subtotal;
+  });
+
+  // 合計金額表示を更新（CurrencyFormatterで統一）
+  document.getElementById('totalCostDisplay').textContent = CurrencyFormatter.format(total);
+  document.getElementById('plannedRevenue').value = total;
 }
 </script>

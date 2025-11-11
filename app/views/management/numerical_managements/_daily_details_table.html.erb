@@ -153,6 +153,7 @@
                             data-plan-name="<%= first_schedule&.plan&.name %>"
                             data-category-name="<%= first_schedule&.plan&.category&.name %>"
                             data-planned-revenue="<%= first_schedule&.planned_revenue || 0 %>"
+                            data-snapshot="<%= first_schedule&.snapshot_products&.to_json %>"
                             onclick="setAssignPlanModalData(this)"
                             title="<%= first_schedule ? t('numerical_managements.actions.edit_plan') : t('numerical_managements.actions.add_plan') %>">
                       <i class="bi bi-<%= first_schedule ? 'pencil-square' : 'calendar-plus' %>"></i>
@@ -467,24 +468,4 @@ function setActualModalData(button) {
 
 /**
  * 計画登録モーダルにデータをセット
- */
-function setAssignPlanModalData(button) {
-  const date = button.getAttribute('data-date');
-  const dateDisplay = button.getAttribute('data-date-display');
-  const scheduleId = button.getAttribute('data-schedule-id');
-  const plannedRevenue = button.getAttribute('data-planned-revenue');
-
-  const form = document.getElementById('assignPlanForm');
-  document.getElementById('assignPlanDate').value = dateDisplay || '';
-  document.getElementById('scheduledDateHidden').value = date || '';
-  document.getElementById('plannedRevenue').value = plannedRevenue || '0';
-
-  if (scheduleId) {
-    form.action = `/management/plan_schedules/${scheduleId}`;
-    form.method = 'patch';
-  } else {
-    form.action = '/management/plan_schedules';
-    form.method = 'post';
-  }
-}
 </script>

@@ -191,6 +191,30 @@ class Planning::PlanSchedule < ApplicationRecord
     update_products_snapshot(products_data)
   end
 
+  # 商品パラメータからスナップショットを作成
+  #
+  # モーダルから送信された products パラメータを受け取り、
+  # 調整後の商品数量でスナップショットを作成
+  #
+  # @param products_hash [Hash] 商品パラメータ { "product_id" => "数量", ... }
+  # @return [Boolean] 保存成功の可否
+  def create_snapshot_from_products(products_hash)
+    # ActionController::Parameters を安全に変換
+    hash = case products_hash
+           when ActionController::Parameters
+             products_hash.to_unsafe_h
+           when Hash
+             products_hash
+           else
+             products_hash.to_h
+           end
+
+    products_data = hash.map do |product_id, production_count|
+      { product_id: product_id.to_i, production_count: production_count.to_i }
+    end
+    
+    update_products_snapshot(products_data)
+  end
   # スナップショットから商品情報を取得
   #
   # @return [Array<Hash>] 商品情報配列
