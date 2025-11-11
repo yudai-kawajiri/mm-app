@@ -108,39 +108,54 @@ class Management::NumericalManagementsController < ApplicationController
 
   private
 
-  def convert_daily_data_to_bulk_params(daily_data)
-    monthly_budgets = {}
-    daily_targets = {}
-    plan_schedule_actuals = {}
+    def convert_daily_data_to_bulk_params(daily_data)
+      monthly_budgets = {}
+      daily_targets = {}
+      plan_schedule_actuals = {}
 
-    daily_data.each do |index, day_attrs|
-      if day_attrs[:target_id].present? && day_attrs[:target_amount].present?
-        daily_targets[day_attrs[:target_id]] = {
-          target_amount: day_attrs[:target_amount]
-        }
+      daily_data.each do |index, day_attrs|
+        # 日別目標の処理（target_amountが0以外の場合のみ）
+        target_amount = day_attrs[:target_amount].to_i
+        if target_amount > 0
+          if day_attrs[:target_id].present?
+            # 既存の日別目標を更新
+            daily_targets[day_attrs[:target_id]] = {
+              target_amount: day_attrs[:target_amount],
+              target_date: day_attrs[:date]
+            }
+          else
+            # 新規作成の場合は日付をキーにする
+            daily_targets[day_attrs[:date]] = {
+              target_amount: day_attrs[:target_amount],
+              target_date: day_attrs[:date]
+            }
+          end
+        end
+
+        # 実績の処理
+        if day_attrs[:plan_schedule_id].present? && day_attrs[:actual_revenue].present?
+          plan_schedule_actuals[day_attrs[:plan_schedule_id]] = {
+            actual_revenue: day_attrs[:actual_revenue]
+          }
+        end
       end
 
-      if day_attrs[:plan_schedule_id].present? && day_attrs[:actual_revenue].present?
-        plan_schedule_actuals[day_attrs[:plan_schedule_id]] = {
-          actual_revenue: day_attrs[:actual_revenue]
-        }
-      end
+      {
+        monthly_budgets: monthly_budgets,
+        daily_targets: daily_targets,
+        plan_schedule_actuals: plan_schedule_actuals
+      }
     end
 
-    {
-      monthly_budgets: monthly_budgets,
-      daily_targets: daily_targets,
-      plan_schedule_actuals: plan_schedule_actuals
-    }
-  end
 
   def bulk_update_params
     params.permit(
       :year,
       :month,
-      monthly_budgets: [:target_amount],
-      daily_targets: [:target_amount],
-      plan_schedule_actuals: [:actual_revenue]
+      monthly_budgets: {},
+      daily_targets: {},
+      plan_schedule_actuals: {},
+      daily_data: {}
     )
   end
 

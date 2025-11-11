@@ -5,72 +5,21 @@
 #
 # 数値管理データの一括更新を処理するサービスクラス
 #
-# @description
-#   MonthlyBudget（月次予算）とDailyTarget（日別目標）の一括更新を
-#   トランザクション内で安全に実行します。
-#
-# @usage
-#   service = NumericalDataBulkUpdateService.new(user, params)
-#   if service.call
-#     # 成功処理
-#   else
-#     # エラーハンドリング: service.errors
-#   end
-#
-# @features
-#   - トランザクション管理による整合性保証
-#   - カンマ区切り数値の自動変換
-#   - バリデーションエラーの詳細収集
-#   - 部分更新失敗時のロールバック
-#
 class NumericalDataBulkUpdateService
-  # @return [Array<String>] エラーメッセージの配列
   attr_reader :errors
 
-  #
-  # サービスの初期化
-  #
-  # @param user [User] 現在のユーザー（権限チェック用）
-  # @param params [ActionController::Parameters] 更新パラメータ
-  #
-  # @option params [Hash] :monthly_budgets MonthlyBudgetの更新データ（id => { budget: "1,000" }）
-  # @option params [Hash] :daily_targets DailyTargetの更新データ（id => { target: "500" }）
-  #
-  # @example
-  #   params = {
-  #     monthly_budgets: { "1" => { budget: "100,000" } },
-  #     daily_targets: { "2" => { target: "3,500" } }
-  #   }
-  #   service = NumericalDataBulkUpdateService.new(current_user, params)
-  #
   def initialize(user, params)
     @user = user
     @params = params
     @errors = []
   end
 
-  #
-  # 一括更新を実行
-  #
-  # @return [Boolean] 成功時true、失敗時false
-  #
-  # @note
-  #   トランザクション内で実行され、一つでも失敗するとすべてロールバックされます
-  #
-  # @example
-  #   if service.call
-  #     redirect_to numerical_managements_path, notice: "更新しました"
-  #   else
-  #     flash.now[:alert] = service.errors.join(", ")
-  #     render :index
-  #   end
-  #
   def call
     ActiveRecord::Base.transaction do
       update_monthly_budgets
       update_daily_targets
+      update_plan_schedule_actuals
 
-      # エラーがある場合はロールバック
       raise ActiveRecord::Rollback if @errors.any?
     end
 
@@ -82,59 +31,80 @@ class NumericalDataBulkUpdateService
   #
   # MonthlyBudgetレコードの一括更新
   #
-  # @return [void]
-  #
-  # @note
-  #   - カンマ区切り数値を自動変換（StripCommas concern）
-  #   - バリデーションエラーは@errorsに追加
-  #
   def update_monthly_budgets
     return unless @params[:monthly_budgets].present?
 
     @params[:monthly_budgets].each do |id, attributes|
-      budget = MonthlyBudget.find_by(id: id)
+      budget = Management::MonthlyBudget.find_by(id: id)
       next unless budget
 
-      # カンマ除去済みの値で更新
-      unless budget.update(budget: strip_commas(attributes[:budget]))
+      unless budget.update(target_amount: strip_commas(attributes[:target_amount]))
         @errors << "月次予算ID #{id}: #{budget.errors.full_messages.join(', ')}"
       end
     end
   end
 
   #
-  # DailyTargetレコードの一括更新
-  #
-  # @return [void]
-  #
-  # @note
-  #   - カンマ区切り数値を自動変換（StripCommas concern）
-  #   - バリデーションエラーは@errorsに追加
+  # DailyTargetレコードの一括更新・作成
   #
   def update_daily_targets
     return unless @params[:daily_targets].present?
 
-    @params[:daily_targets].each do |id, attributes|
-      target = DailyTarget.find_by(id: id)
-      next unless target
+    @params[:daily_targets].each do |key, attributes|
+      target_amount = strip_commas(attributes[:target_amount])
+      next if target_amount.to_i.zero?
 
-      # カンマ除去済みの値で更新
-      unless target.update(target: strip_commas(attributes[:target]))
-        @errors << "日別目標ID #{id}: #{target.errors.full_messages.join(', ')}"
+      # キーが数値ならID、日付文字列なら新規作成
+      if key.to_s =~ /^\d+$/ && key.to_i > 0
+        # 既存レコードの更新
+        target = Management::DailyTarget.find_by(id: key)
+        if target
+          unless target.update(target_amount: target_amount)
+            @errors << "日別目標ID #{key}: #{target.errors.full_messages.join(', ')}"
+          end
+        end
+      else
+        # 新規作成（キーは日付文字列）
+        target_date = Date.parse(attributes[:target_date])
+        monthly_budget = @user.monthly_budgets.find_or_create_by!(
+          budget_month: target_date.beginning_of_month
+        ) do |budget|
+          budget.target_amount = 0
+        end
+
+        target = Management::DailyTarget.find_or_initialize_by(
+          user: @user,
+          monthly_budget: monthly_budget,
+          target_date: target_date
+        )
+
+        unless target.update(target_amount: target_amount)
+          @errors << "日別目標 #{target_date}: #{target.errors.full_messages.join(', ')}"
+        end
+      end
+    rescue Date::Error
+      @errors << "日別目標: 無効な日付 #{attributes[:target_date]}"
+    end
+  end
+
+  #
+  # PlanScheduleの実績更新
+  #
+  def update_plan_schedule_actuals
+    return unless @params[:plan_schedule_actuals].present?
+
+    @params[:plan_schedule_actuals].each do |id, attributes|
+      schedule = Planning::PlanSchedule.find_by(id: id)
+      next unless schedule
+
+      unless schedule.update(actual_revenue: strip_commas(attributes[:actual_revenue]))
+        @errors << "計画スケジュールID #{id}: #{schedule.errors.full_messages.join(', ')}"
       end
     end
   end
 
   #
   # 文字列からカンマを除去して数値化
-  #
-  # @param value [String, Numeric] 変換対象の値
-  # @return [Numeric, nil] 数値またはnil
-  #
-  # @example
-  #   strip_commas("1,000")  # => 1000
-  #   strip_commas("500")    # => 500
-  #   strip_commas(nil)      # => nil
   #
   def strip_commas(value)
     return nil if value.blank?
