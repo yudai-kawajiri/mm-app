@@ -502,6 +502,26 @@ module ApplicationHelper
       label_html + field_html + counter_html + help_html + error_html
     end
   end
+
+  # ============================================================
+  # 通貨フォーマット
+  # ============================================================
+
+  #
+  # 金額を日本円形式にフォーマット
+  #
+  # @param amount [Numeric, nil] 金額
+  # @return [String] フォーマット済み通貨文字列（例: "¥1,000"）
+  #
+  # @example
+  #   format_currency(1000)      # => "¥1,000"
+  #   format_currency(1234567)   # => "¥1,234,567"
+  #   format_currency(0)         # => "¥0"
+  #   format_currency(nil)       # => "¥0"
+  #
+  def format_currency(amount)
+    number_to_currency(amount || 0, unit: "¥", precision: 0, delimiter: ",")
+  end
 end
 
   # ============================================================
@@ -523,3 +543,4 @@ end
     model_name = resource.class.name.underscore
     "#{model_name.pluralize}/#{partial_name}"
   end
+end

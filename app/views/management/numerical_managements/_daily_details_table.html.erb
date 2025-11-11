@@ -152,7 +152,7 @@
                             data-plan-id="<%= first_schedule&.plan_id %>"
                             data-plan-name="<%= first_schedule&.plan&.name %>"
                             data-category-name="<%= first_schedule&.plan&.category&.name %>"
-                            data-planned-revenue="<%= first_schedule&.planned_revenue || 0 %>"
+                            data-planned-revenue="<%= first_schedule&.snapshot_total_cost || 0 %>"
                             data-snapshot="<%= first_schedule&.snapshot_products_for_json&.to_json %>"
                             onclick="setAssignPlanModalData(this)"
                             title="<%= first_schedule ? t('numerical_managements.actions.edit_plan') : t('numerical_managements.actions.add_plan') %>">
