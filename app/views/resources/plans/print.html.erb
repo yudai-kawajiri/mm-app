@@ -13,8 +13,12 @@
     <strong><%= t('plans.print.plan_name') %>:</strong> <%= @plan.name %> |
     <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || t('helpers.no_setting') %> |
     <strong><%= t('plans.print.budget') %>:</strong> ¥<%= number_with_delimiter(@budget) %> |
-    <strong><%= t('plans.print.planned_total') %>:</strong> ¥<%= number_with_delimiter(@total_cost) %> |
+    <strong><%= t('plans.print.planned_total') %>:</strong> ¥<%= number_with_delimiter(@planned_revenue) %> |
+    <strong><%= t('plans.print.product_total') %>:</strong> ¥<%= number_with_delimiter(@total_product_cost) %> |
     <strong><%= t('plans.print.achievement_rate') %>:</strong> <%= @achievement_rate %>%
+    <% if @plan_schedule&.has_snapshot? %>
+      <span style="background-color: #17a2b8; color: white; padding: 2px 8px; border-radius: 3px; font-size: 12px; margin-left: 8px;">スナップショット</span>
+    <% end %>
   </div>
 </div>
 
@@ -30,9 +34,9 @@
     </tr>
   </thead>
   <tbody>
-    <% if @plan_products.present? %>
-      <% @plan_products.each do |plan_product| %>
-        <% product = plan_product.product %>
+    <% if @plan_products_for_print.present? %>
+      <% @plan_products_for_print.each do |item| %>
+        <% product = item[:product] %>
         <tr>
           <td class="col-image">
             <% if product.image.attached? %>
@@ -47,19 +51,19 @@
           <td class="col-product-name"><%= product.name %></td>
 
           <td class="col-quantity text-right">
-            <% if plan_product.production_count % 1 == 0 %>
-              <%= number_with_delimiter(plan_product.production_count.to_i) %> <%= t('plans.print.count_unit') %>
+            <% if item[:production_count] % 1 == 0 %>
+              <%= number_with_delimiter(item[:production_count].to_i) %> <%= t('plans.print.count_unit') %>
             <% else %>
-              <%= number_with_delimiter(plan_product.production_count) %> <%= t('plans.print.count_unit') %>
+              <%= number_with_delimiter(item[:production_count]) %> <%= t('plans.print.count_unit') %>
             <% end %>
           </td>
 
           <td class="col-price text-right">
-            ¥<%= number_with_delimiter(product.price) %>
+            ¥<%= number_with_delimiter(item[:price]) %>
           </td>
 
           <td class="col-subtotal text-right">
-            ¥<%= number_with_delimiter(product.price * plan_product.production_count) %>
+            ¥<%= number_with_delimiter(item[:subtotal]) %>
           </td>
         </tr>
       <% end %>
