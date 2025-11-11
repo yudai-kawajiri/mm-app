@@ -522,7 +522,35 @@ module ApplicationHelper
   def format_currency(amount)
     number_to_currency(amount || 0, unit: "¥", precision: 0, delimiter: ",")
   end
-end
+
+  #
+  # 達成率に応じたBootstrapテキストカラークラスを返す
+  #
+  # @param achievement_rate [Numeric] 達成率（パーセント）
+  # @return [String] Bootstrapカラークラス
+  #
+  # @note
+  #   閾値による判定ロジック：
+  #   - 100%以上: text-success（緑）
+  #   - 80%以上100%未満: text-warning（黄）
+  #   - 80%未満: text-danger（赤）
+  #
+  # @example
+  #   achievement_rate_color_class(105)
+  #   # => "text-success"
+  #
+  #   achievement_rate_color_class(85)
+  #   # => "text-warning"
+  #
+  #   achievement_rate_color_class(50)
+  #   # => "text-danger"
+  #
+  def achievement_rate_color_class(achievement_rate)
+    return 'text-success' if achievement_rate >= 100
+    return 'text-warning' if achievement_rate >= 80
+
+    'text-danger'
+  end
 
   # ============================================================
   # リソースパーシャルパス生成
