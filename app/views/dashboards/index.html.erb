@@ -4,11 +4,7 @@
   主要機能:
   - 月選択フォーム（年・月のドロップダウン）
   - サマリーカード表示（shared/summary_cards）
-  - 累計トレンドグラフ（Chart.js、budget-chart Stimulus Controller）
   - 天気予報表示（OpenWeatherMap API）
-
-  Stimulus Controller:
-  - budget-chart: Chart.jsによる累計トレンドグラフの描画
 %>
 
 <%= content_for :title, t('dashboard.menu.dashboard') %>
@@ -36,17 +32,6 @@
 </div>
 
 <%= render 'shared/summary_cards', forecast_data: @forecast_data, monthly_budget: @monthly_budget %>
-
-<div class="card mb-4" data-controller="budget-chart" data-chart-data="<%= @chart_data.to_json %>">
-  <div class="card-header">
-    <h5 class="mb-0">
-      <i class="bi bi-graph-up"></i> <%= @selected_date.strftime('%Y年%-m月') %><%= t('dashboard.cumulative_trend_title') %>
-    </h5>
-  </div>
-  <div class="card-body" style="position: relative; height: 400px;">
-    <canvas id="budgetChart"></canvas>
-  </div>
-</div>
 
 <div class="card">
   <div class="card-header">
