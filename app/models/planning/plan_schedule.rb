@@ -94,8 +94,11 @@ class Planning::PlanSchedule < ApplicationRecord
     if actual_revenue.present?
       # 実績入力済み → 固定された planned_revenue を使用
       planned_revenue || plan&.expected_revenue || 0
+    elsif has_snapshot?
+      # スナップショットあり → スナップショットの値を使用
+      plan_products_snapshot['total_cost'] || 0
     else
-      # 実績未入力 → 計画の最新値を動的参照
+      # 実績未入力 & スナップショットなし → 計画の最新値を動的参照
       plan&.expected_revenue || 0
     end
   end
@@ -154,13 +157,100 @@ class Planning::PlanSchedule < ApplicationRecord
     scheduled_date > Date.current
   end
 
+  # ========================================
+  # スナップショット機能
+  # ========================================
+
+  # スナップショットが存在するか
+  #
+  # @return [Boolean]
+  def has_snapshot?
+    plan_products_snapshot.present? && plan_products_snapshot['products'].present?
+  end
+
+  # 商品構成スナップショットを更新
+  #
+  # @param products_data [Array<Hash>] 商品データ配列
+  #   [{ product_id: 1, production_count: 10 }, ...]
+  # @return [Boolean] 保存成功の可否
+  def update_products_snapshot(products_data)
+    snapshot = build_products_snapshot(products_data)
+    update(
+      plan_products_snapshot: snapshot,
+      planned_revenue: snapshot['total_cost']
+    )
+  end
+
+  # 現在の計画から商品構成スナップショットを作成
+  #
+  # @return [Boolean] 保存成功の可否
+  def create_snapshot_from_plan
+    products_data = plan.plan_products.map do |pp|
+      { product_id: pp.product_id, production_count: pp.production_count }
+    end
+    update_products_snapshot(products_data)
+  end
+
+  # スナップショットから商品情報を取得
+  #
+  # @return [Array<Hash>] 商品情報配列
+  def snapshot_products
+    return [] unless has_snapshot?
+
+    plan_products_snapshot['products'].map do |product_data|
+      product = Resources::Product.find(product_data['product_id'])
+      {
+        product: product,
+        production_count: product_data['production_count'],
+        price: product_data['price'],
+        subtotal: product_data['subtotal']
+      }
+    end
+  end
+
   private
 
   # actual_revenue が nil → 値あり に変化したときに planned_revenue を保存
   def freeze_planned_revenue_on_actual_input
     if actual_revenue_changed? && actual_revenue.present? && actual_revenue_was.nil?
-      self.planned_revenue = plan&.expected_revenue || 0
+      # スナップショットがなければ作成
+      create_snapshot_from_plan unless has_snapshot?
+
+      self.planned_revenue = current_planned_revenue
       Rails.logger.info "PlanSchedule##{id || 'new'}: planned_revenue を固定 → #{planned_revenue}"
     end
+  end
+
+  # 商品データからスナップショットを構築
+  #
+  # @param products_data [Array<Hash>] 商品データ配列
+  # @return [Hash] スナップショットデータ
+  def build_products_snapshot(products_data)
+    products = []
+    total_cost = 0
+
+    products_data.each do |data|
+      product = Resources::Product.find(data[:product_id])
+      production_count = data[:production_count].to_i
+      price = product.price
+      subtotal = price * production_count
+
+      products << {
+        'product_id' => product.id,
+        'name' => product.name,
+        'item_number' => product.item_number,
+        'production_count' => production_count,
+        'price' => price,
+        'subtotal' => subtotal
+      }
+
+      total_cost += subtotal
+    end
+
+    {
+      'products' => products,
+      'total_cost' => total_cost,
+      'created_at' => Time.current.iso8601
+    }
   end
 end

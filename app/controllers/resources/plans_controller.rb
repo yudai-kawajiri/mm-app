@@ -150,27 +150,60 @@ class Resources::PlansController < AuthenticatedController
   # 材料集計、予算、達成率を表示
   #
   # @return [void]
-  def print
-    @plan_products = @plan.plan_products
-                          .includes(product: [:category, :product_materials, { product_materials: [:material, :unit] }])
-                          .order(:id)
 
+    def print
     @scheduled_date = params[:date]&.to_date || @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
 
-    if params[:date].present?
-      @budget = @plan.plan_schedules.where(scheduled_date: @scheduled_date).sum(:planned_revenue) || 0
+    # その日の plan_schedule を取得
+    @plan_schedule = @plan.plan_schedules.find_by(scheduled_date: @scheduled_date)
+
+    # 商品データの取得: スナップショットがあればそれを使用、なければ計画の最新値
+    if @plan_schedule&.has_snapshot?
+      # スナップショットから取得（過去のデータが保持される）
+      @plan_products_for_print = @plan_schedule.snapshot_products
+      @total_product_cost = @plan_schedule.plan_products_snapshot['total_cost']
     else
-      @budget = @plan.plan_schedules.sum(:planned_revenue) || 0
+      # 計画の最新値を使用
+      @plan_products = @plan.plan_products
+                            .includes(product: [:category, :product_materials, { product_materials: [:material, :unit] }])
+                            .order(:id)
+      @plan_products_for_print = @plan_products.map do |pp|
+        {
+          product: pp.product,
+          production_count: pp.production_count,
+          price: pp.product.price,
+          subtotal: pp.product.price * pp.production_count
+        }
+      end
+      @total_product_cost = @plan_products.sum { |pp| pp.product.price * pp.production_count }
     end
 
-    @total_cost = @plan_products.sum { |pp| pp.product.price * pp.production_count }
-    @achievement_rate = @budget.positive? ? (@total_cost.to_f / @budget * 100).round(1) : 0
+    # 予算: daily_targets から取得（整数化）
+    if @scheduled_date.present?
+      daily_target = current_user.daily_targets.find_by(target_date: @scheduled_date)
+      @budget = (daily_target&.target_amount || 0).to_i
+    else
+      @budget = 0
+    end
+
+    # 計画高: plan_schedule から取得
+    @planned_revenue = @plan_schedule&.current_planned_revenue || 0
+
+    # 達成率: 計画高 ÷ 予算 × 100
+    @achievement_rate = @budget.positive? ? (@planned_revenue.to_f / @budget * 100).round(1) : 0
+
+    # 材料集計
     @materials_summary = @plan.aggregated_material_requirements
 
     Rails.logger.info "========== Print Debug =========="
     Rails.logger.info "Plan ID: #{@plan.id}"
     Rails.logger.info "Scheduled Date: #{@scheduled_date}"
-    Rails.logger.info "Plan Products Count: #{@plan_products.count}"
+    Rails.logger.info "Has Snapshot: #{@plan_schedule&.has_snapshot? || false}"
+    Rails.logger.info "Budget (from daily_targets): #{@budget}"
+    Rails.logger.info "Planned Revenue: #{@planned_revenue}"
+    Rails.logger.info "Total Product Cost: #{@total_product_cost}"
+    Rails.logger.info "Achievement Rate: #{@achievement_rate}%"
+    Rails.logger.info "Products Count: #{@plan_products_for_print.count}"
     Rails.logger.info "Materials Summary Count: #{@materials_summary.count}"
   end
 

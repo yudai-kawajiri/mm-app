@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_07_133735) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_11_050243) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -130,6 +130,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_07_133735) do
     t.datetime "created_at", null: false
     t.text "note", comment: "備考"
     t.bigint "plan_id", null: false
+    t.jsonb "plan_products_snapshot", default: {}, null: false, comment: "計画商品のスナップショット（日別調整用）"
     t.integer "planned_revenue"
     t.date "scheduled_date", null: false, comment: "スケジュール実施日"
     t.integer "status", default: 0, null: false, comment: "ステータス"
@@ -137,6 +138,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_07_133735) do
     t.bigint "user_id", null: false
     t.index ["plan_id", "scheduled_date"], name: "index_plan_schedules_on_plan_id_and_scheduled_date", unique: true
     t.index ["plan_id"], name: "index_plan_schedules_on_plan_id"
+    t.index ["plan_products_snapshot"], name: "index_plan_schedules_on_plan_products_snapshot", using: :gin
     t.index ["scheduled_date"], name: "index_plan_schedules_on_scheduled_date"
     t.index ["user_id"], name: "index_plan_schedules_on_user_id"
   end
