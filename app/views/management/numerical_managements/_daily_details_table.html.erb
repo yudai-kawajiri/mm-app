@@ -153,6 +153,7 @@
                             data-plan-name="<%= first_schedule&.plan&.name %>"
                             data-category-name="<%= first_schedule&.plan&.category&.name %>"
                             data-planned-revenue="<%= first_schedule&.planned_revenue || 0 %>"
+                            data-snapshot="<%= first_schedule&.snapshot_products_for_json&.to_json %>"
                             onclick="setAssignPlanModalData(this)"
                             title="<%= first_schedule ? t('numerical_managements.actions.edit_plan') : t('numerical_managements.actions.add_plan') %>">
                       <i class="bi bi-<%= first_schedule ? 'pencil-square' : 'calendar-plus' %>"></i>
@@ -178,7 +179,7 @@
                     <%# 印刷ボタン %>
                     <% if day[:plan_schedules].present? %>
                       <% if day[:plan_schedules].count == 1 %>
-                        <%= link_to "/plans/#{day[:plan_schedules].first.plan.id}/print?date=#{day[:date]}",
+                        <%= link_to "/resources/plans/#{day[:plan_schedules].first.plan.id}/print?date=#{day[:date]}",
                                     class: "btn btn-outline-primary",
                                     target: "_blank",
                                     data: { turbo: false },
@@ -197,7 +198,7 @@
                           <ul class="dropdown-menu dropdown-menu-end">
                             <% day[:plan_schedules].each do |ps| %>
                               <li>
-                                <%= link_to "/plans/#{ps.plan.id}/print?date=#{day[:date]}",
+                                <%= link_to "/resources/plans/#{ps.plan.id}/print?date=#{day[:date]}",
                                             class: "dropdown-item",
                                             target: "_blank",
                                             data: { turbo: false } do %>

@@ -1,44 +1,51 @@
 /**
- * @file utils/currency_formatter.js
- * 通貨フォーマットユーティリティ
+ * CurrencyFormatter - 通貨フォーマットユーティリティ
  *
- * @module Utils
+ * 日本円の統一的なフォーマット処理を提供します。
+ * Railsの number_to_currency(unit: "¥", precision: 0) と同等の出力を実現。
  */
+(function() {
+  'use strict';
 
-/**
- * CurrencyFormatter クラス
- *
- * 通貨フォーマット機能を提供するユーティリティ。
- * Intl.NumberFormat APIを使用して日本円形式にフォーマットする。
- *
- * 機能:
- * - 数値を日本円形式（¥記号付き）にフォーマット
- * - 小数点以下を表示しない整数表示
- * - カンマ区切り（3桁ごと）
- * - null/undefined を0円として扱う
- *
- * @example 使用例
- *   import CurrencyFormatter from "utils/currency_formatter"
- *
- *   CurrencyFormatter.format(1000)      // "¥1,000"
- *   CurrencyFormatter.format(1234567)   // "¥1,234,567"
- *   CurrencyFormatter.format(0)         // "¥0"
- *   CurrencyFormatter.format(null)      // "¥0"
- */
-class CurrencyFormatter {
-  /**
-   * 数値を日本円形式にフォーマット
-   *
-   * @param {number|null|undefined} amount - フォーマットする金額
-   * @return {string} フォーマット済み通貨文字列（例: "¥1,000"）
-   */
-  static format(amount) {
-    return new Intl.NumberFormat('ja-JP', {
-      style: 'currency',
-      currency: 'JPY',
-      minimumFractionDigits: 0
-    }).format(amount || 0)
-  }
-}
+  const CurrencyFormatter = {
+    /**
+     * 数値を日本円フォーマットに変換
+     *
+     * @param {number|string} amount - フォーマットする金額
+     * @returns {string} フォーマット済み文字列（例: "¥1,000"）
+     */
+    format: function(amount) {
+      const numAmount = typeof amount === 'string' ? parseInt(amount, 10) : amount;
 
-export default CurrencyFormatter
+      // NaNの場合は0として処理
+      const validAmount = isNaN(numAmount) ? 0 : numAmount;
+
+      // Intl.NumberFormatを使用して日本円フォーマット
+      const formatter = new Intl.NumberFormat('ja-JP', {
+        style: 'currency',
+        currency: 'JPY',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      });
+
+      return formatter.format(validAmount);
+    },
+
+    /**
+     * ¥記号なしの数値フォーマット（カンマ区切りのみ）
+     *
+     * @param {number|string} amount - フォーマットする金額
+     * @returns {string} フォーマット済み文字列（例: "1,000"）
+     */
+    formatWithoutSymbol: function(amount) {
+      const numAmount = typeof amount === 'string' ? parseInt(amount, 10) : amount;
+      const validAmount = isNaN(numAmount) ? 0 : numAmount;
+
+      return validAmount.toLocaleString('ja-JP');
+    }
+  };
+
+  // グローバルスコープに公開
+  window.CurrencyFormatter = CurrencyFormatter;
+
+})();

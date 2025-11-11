@@ -129,7 +129,7 @@ class Resources::Plan < ApplicationRecord
     plan_products.includes(product: { product_materials: [:material, :unit] }).each do |plan_product|
       plan_product.material_requirements.each do |material_data|
         material_id = material_data[:material_id]
-        material = Material.find(material_id)
+        material = Resources::Material.find(material_id)
         material_name = material_data[:material_name]
 
         if materials_hash[material_name]
@@ -209,7 +209,7 @@ class Resources::Plan < ApplicationRecord
         is_grouped: material.order_group_name.present?
       }
     end.sort_by do |m|
-      material = Material.find(m[:material_id])
+      material = Resources::Material.find(m[:material_id])
       [material.display_order || 999_999, m[:material_name]]
     end
   end
