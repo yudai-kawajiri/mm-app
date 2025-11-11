@@ -132,6 +132,6 @@ class DailyDataService
   def daily_plan(date)
     plan_schedules_list = @plan_schedules || []
     plan_schedules = plan_schedules_list.select { |ps| ps.scheduled_date == date }
-    plan_schedules.sum { |ps| ps.planned_revenue || 0 }
+    plan_schedules.sum { |ps| ps.snapshot_total_cost || 0 }
   end
 end

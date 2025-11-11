@@ -231,6 +231,21 @@ class Planning::PlanSchedule < ApplicationRecord
       }
     end
   end
+  # スナップショットの商品データを配列で返す（JSON用）
+  def snapshot_products_for_json
+    return [] unless has_snapshot?
+
+    plan_products_snapshot['products']
+  end
+
+  # スナップショットの合計金額を取得
+  # スナップショットがあればその合計金額を、なければ planned_revenue を返す
+  def snapshot_total_cost
+    return planned_revenue unless plan_products_snapshot.present?
+    
+    plan_products_snapshot['total_cost'] || planned_revenue
+  end
+
 
   private
 
