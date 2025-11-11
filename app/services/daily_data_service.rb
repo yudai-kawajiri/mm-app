@@ -52,10 +52,10 @@ class DailyDataService
 
   # 月次予算を取得
   #
-  # @return [MonthlyBudget, nil] 月次予算
+  # @return [Management::MonthlyBudget, nil] 月次予算
   def find_budget
     budget_month = Date.new(@year, @month, 1)
-    MonthlyBudget.find_by(
+    Management::MonthlyBudget.find_by(
       user: @user,
       budget_month: budget_month
     )

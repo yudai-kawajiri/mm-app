@@ -6,7 +6,7 @@
 # 数値管理カレンダーのデータ構築を処理するサービスクラス
 #
 # @description
-#   指定された年月の日別データ、予算、目標、達成率を計算し、
+#   指定された年月の日別データ、予算、目標、達成率、計画スケジュールを計算し、
 #   カレンダー表示用のデータ構造を構築します。
 #
 # @usage
@@ -18,6 +18,7 @@
 #   - 月間カレンダーデータの生成（1日〜末日）
 #   - 日別売上実績の集計
 #   - 日別予算・目標の取得
+#   - 日別計画スケジュールの取得
 #   - 日次・月次達成率の計算
 #   - 月次予測データの統合
 #
@@ -51,16 +52,19 @@ class CalendarDataBuilderService
   #   - actual: 実績売上
   #   - budget: 予算
   #   - target: 目標
+  #   - planned: 計画高
+  #   - plan_schedules: 計画スケジュール配列
   #   - achievement_rate: 達成率（%）
+  #   - diff: 予算差
   #   - is_today: 今日かどうか
   #   - is_future: 未来の日付かどうか
-  # @option return [MonthlyBudget, nil] :monthly_budget 月次予算オブジェクト
-  # @option return [Hash] :daily_targets 日別目標のハッシュ（日付 => DailyTarget）
+  # @option return [Management::MonthlyBudget, nil] :monthly_budget 月次予算オブジェクト
+  # @option return [Hash] :daily_targets 日別目標のハッシュ（日付 => Management::DailyTarget）
   #
   # @example
   #   data = service.build
   #   data[:daily_data].each do |day|
-  #     puts "#{day[:date]}: #{day[:actual]}円 (#{day[:achievement_rate]}%)"
+  #     puts "#{day[:date]}: 実績#{day[:actual]}円 計画#{day[:planned]}円 (#{day[:achievement_rate]}%)"
   #   end
   #
   def build
@@ -79,26 +83,29 @@ class CalendarDataBuilderService
   # @return [Array<Hash>] 1日〜末日までの日別データ
   #
   # @note
-  #   - DailyDataServiceで実績データを取得
+  #   - DailyDataServiceで実績・計画データを取得
+  #   - 計画スケジュールを追加
   #   - 予算・目標と結合して達成率を計算
   #   - 今日・未来フラグを付与
   #
   def build_daily_array
-    daily_data_hash = fetch_daily_data_hash
-    monthly_budget = fetch_monthly_budget
-    daily_targets_hash = fetch_daily_targets_hash
+    daily_data_service = DailyDataService.new(@user, @year, @month)
+    daily_data_list = daily_data_service.call
+    plan_schedules_hash = fetch_plan_schedules_hash
 
-    (@start_date..@end_date).map do |date|
-      actual = daily_data_hash[date]&.dig(:actual) || 0
-      budget = calculate_daily_budget(date, monthly_budget)
-      target = daily_targets_hash[date]&.target || 0
+    daily_data_list.map do |day_data|
+      date = day_data[:date]
+      day_schedules = plan_schedules_hash[date] || []
 
       {
         date: date,
-        actual: actual,
-        budget: budget,
-        target: target,
-        achievement_rate: calculate_achievement_rate(actual, budget),
+        actual: day_data[:actual] || 0,
+        budget: day_data[:target] || 0,
+        target: day_data[:target] || 0,
+        planned: day_data[:plan] || 0,
+        plan_schedules: day_schedules,
+        achievement_rate: day_data[:achievement_rate],
+        diff: day_data[:diff] || 0,
         is_today: date == Date.today,
         is_future: date > Date.today
       }
@@ -106,79 +113,59 @@ class CalendarDataBuilderService
   end
 
   #
-  # DailyDataServiceから日別実績データを取得
-  #
-  # @return [Hash] 日付をキーとする実績データのハッシュ
-  #
-  # @note
-  #   DailyDataService.call(user, year, month) の戻り値を利用
-  #
-  def fetch_daily_data_hash
-    DailyDataService.call(@user, @year, @month)
-  end
-
-  #
   # 月次予算を取得
   #
-  # @return [MonthlyBudget, nil] 該当月の予算オブジェクト
+  # @return [Management::MonthlyBudget, nil] 該当月の予算オブジェクト
   #
   # @note
-  #   存在しない場合はnilを返す
+  #   Management名前空間に対応
+  #   budget_monthカラムを使用
   #
   def fetch_monthly_budget
-    MonthlyBudget.find_by(
+    Management::MonthlyBudget.find_by(
       user: @user,
-      year: @year,
-      month: @month
+      budget_month: Date.new(@year, @month, 1)
     )
   end
 
   #
   # 日別目標をハッシュで取得
   #
-  # @return [Hash] 日付をキーとするDailyTargetのハッシュ
-  #
-  # @example
-  #   { Date.new(2024,11,1) => #<DailyTarget:0x...>, ... }
-  #
-  def fetch_daily_targets_hash
-    DailyTarget
-      .where(user: @user, date: @start_date..@end_date)
-      .index_by(&:date)
-  end
-
-  #
-  # 日別予算を計算
-  #
-  # @param date [Date] 対象日
-  # @param monthly_budget [MonthlyBudget, nil] 月次予算
-  # @return [Integer] 日別予算（円）
+  # @return [Hash] 日（1-31）をキーとするDailyTargetのハッシュ
   #
   # @note
-  #   月次予算が存在する場合は月の日数で均等割り
-  #   存在しない場合は0を返す
+  #   Management名前空間に対応
+  #   target_dateカラムを使用
   #
-  def calculate_daily_budget(date, monthly_budget)
-    return 0 unless monthly_budget&.budget
-
-    (monthly_budget.budget.to_f / @end_date.day).round
+  # @example
+  #   { 1 => #<Management::DailyTarget:0x...>, 2 => ... }
+  #
+  def fetch_daily_targets_hash
+    Management::DailyTarget
+      .where(user: @user, target_date: @start_date..@end_date)
+      .index_by { |dt| dt.target_date.day }
   end
 
   #
-  # 達成率を計算
+  # 計画スケジュールをハッシュで取得
   #
-  # @param actual [Numeric] 実績値
-  # @param budget [Numeric] 予算値
-  # @return [Float, nil] 達成率（%）、予算が0の場合はnil
+  # @return [Hash] 日付をキーとする計画スケジュール配列のハッシュ
+  #
+  # @note
+  #   Planning::PlanScheduleから該当月のデータを取得
+  #   planとcategoryをeager loadで効率化
   #
   # @example
-  #   calculate_achievement_rate(8000, 10000)  # => 80.0
-  #   calculate_achievement_rate(12000, 10000) # => 120.0
-  #   calculate_achievement_rate(5000, 0)      # => nil
+  #   {
+  #     Date.new(2024,11,1) => [#<Planning::PlanSchedule:0x...>],
+  #     Date.new(2024,11,2) => [#<Planning::PlanSchedule:0x...>],
+  #     ...
+  #   }
   #
-  def calculate_achievement_rate(actual, budget)
-    return nil if budget.zero?
-
-    ((actual.to_f / budget) * 100).round(1)
+  def fetch_plan_schedules_hash
+    Planning::PlanSchedule
+      .where(user: @user, scheduled_date: @start_date..@end_date)
+      .includes(plan: :category)
+      .group_by(&:scheduled_date)
   end
 end

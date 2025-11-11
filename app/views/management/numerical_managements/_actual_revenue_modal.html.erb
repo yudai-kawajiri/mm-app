@@ -1,39 +1,42 @@
 <%#
   機能: 実績入力モーダル
+
+  JavaScript機能:
+  - initializeActualRevenueModal: Bootstrap 5モーダルイベントでデータをセット
+  - フォームaction属性を動的に変更して各日の実績入力に対応
 %>
 
-<div class="modal fade" id="editActualRevenueModal" tabindex="-1" aria-labelledby="editActualRevenueModalLabel" aria-hidden="true">
+<div class="modal fade" id="actualRevenueModal" tabindex="-1" aria-labelledby="actualRevenueModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editActualRevenueModalLabel"><%= t('numerical_managements.modals.actual_revenue_entry.title') %></h5>
+        <h5 class="modal-title" id="actualRevenueModalLabel"><%= t('numerical_managements.modals.actual_revenue_entry.title') %></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <%= form_with model: Planning::PlanSchedule.new,
-                    url: update_actual_revenue_management_plan_schedule_path(0),
+                    url: actual_revenue_management_plan_schedule_path(0),
                     method: :patch,
                     local: true,
-                    id: "editActualRevenueForm" do |f| %>
+                    id: "actualRevenueForm" do |f| %>
 
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.labels.target_date') %></label>
-            <input type="text" class="form-control-plaintext" id="editActualDate" readonly>
+            <input type="text" class="form-control-plaintext" id="actualRevenueDate" readonly>
           </div>
 
           <div class="mb-3">
             <%= f.label :actual_revenue, t('numerical_managements.modals.labels.actual_revenue_yen'), class: "form-label" %>
             <%= f.text_field :actual_revenue,
-            class: "form-control",
-            required: true,
-            placeholder: t('numerical_managements.placeholders.actual_revenue_amount'),
-            id: "editActualRevenue",
-            inputmode: "numeric",
-            data: {
-              controller: 'number-input',
-              action: 'input->number-input#handleInput paste->number-input#handlePaste'
-            } %>
+              class: "form-control",
+              required: true,
+              id: "actualRevenueInput",
+              inputmode: "numeric",
+              data: {
+                controller: 'number-input',
+                action: 'input->number-input#handleInput paste->number-input#handlePaste'
+              } %>
           </div>
 
           <div class="alert alert-info" role="alert">

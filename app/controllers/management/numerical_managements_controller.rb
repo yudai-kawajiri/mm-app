@@ -1,52 +1,37 @@
 # frozen_string_literal: true
 
-# NumericalManagementsController
-#
-# 数値管理機能を提供するコントローラー
-#
-# 機能:
-#   - 月次予算、日別目標、売上実績の管理
-#   - カレンダー形式での表示と一括更新機能
-#   - 月次予測データの表示
-#   - 達成率の可視化
-#   - 数値入力のサニタイズ処理（NumericSanitizer）
-#
-# ルート:
-#   GET    /numerical_managements          #index   - 月選択画面
-#   GET    /numerical_managements/calendar #calendar - カレンダー表示
-#   PATCH  /numerical_managements/:id      #update_daily_target - 日別目標更新
-#   POST   /numerical_managements/bulk_update #bulk_update - 一括更新
+# 数値管理機能のコントローラー
 class Management::NumericalManagementsController < ApplicationController
   include NumericSanitizer
 
-  # 認証必須
   before_action :authenticate_user!
 
-  # 月選択画面
-  #
-  # 数値管理のトップページ
-  # 月を選択してカレンダー表示に遷移
-  #
-  # @return [void]
   def index
-    @selected_date = Date.current
+    year = params[:year].to_i
+    month = params[:month].to_i
+    year = Date.current.year if year.zero? || year < 2000 || year > 2100
+    month = Date.current.month if month.zero? || month < 1 || month > 12
+    @selected_date = Date.new(year, month, 1)
 
-    @forecast_data = {
-      target_amount: 0,
-      actual_amount: 0,
-      achievement_rate: 0
-    }
-    @monthly_budget = nil
-    @daily_data = []
-    @daily_targets = {}
+    @monthly_budget = current_user.monthly_budgets.find_or_initialize_by(
+      budget_month: @selected_date.beginning_of_month
+    )
+
+    calendar_data = CalendarDataBuilderService.new(current_user, year, month).build
+    @daily_data = calendar_data[:daily_data]
+    @daily_targets = calendar_data[:daily_targets]
+
+    @forecast_data = NumericalForecastService.new(
+      user: current_user,
+      year: year,
+      month: month
+    ).calculate
+
+    @plans_by_category = current_user.plans
+                                     .includes(:category)
+                                     .group_by { |plan| plan.category.name }
   end
 
-  # カレンダー表示
-  #
-  # 指定された年月のカレンダーを表示
-  # 日別の売上実績、予算、目標、達成率を一覧表示
-  #
-  # @return [void]
   def calendar
     @year = params[:year]&.to_i || Date.today.year
     @month = params[:month]&.to_i || Date.today.month
@@ -59,77 +44,105 @@ class Management::NumericalManagementsController < ApplicationController
     @forecast = NumericalForecastService.call(current_user, @year, @month)
   end
 
-  # 日別目標を更新
-  #
-  # 特定の日の目標値を更新
-  # 既存レコードがない場合は新規作成
-  #
-  # @return [void]
   def update_daily_target
-    date = Date.parse(params[:daily_target][:date])
-    target_value = params[:daily_target][:target]
+    key = params.key?(:management_daily_target) ? :management_daily_target : :daily_target
+    date_param = params[key][:target_date] || params[key][:date]
+    target_param = params[key][:target_amount] || params[key][:target]
+
+    date = Date.parse(date_param)
+
+    monthly_budget = current_user.monthly_budgets.find_or_create_by!(
+      budget_month: date.beginning_of_month
+    ) do |budget|
+      budget.target_amount = 0
+    end
 
     daily_target = Management::DailyTarget.find_or_initialize_by(
       user: current_user,
-      date: date
+      monthly_budget: monthly_budget,
+      target_date: date
     )
 
     sanitized_value = sanitize_numeric_params(
-      { target: target_value },
-      with_comma: [:target]
-    )[:target]
+      { target_amount: target_param },
+      with_comma: [:target_amount]
+    )[:target_amount]
 
-    if daily_target.update(target: sanitized_value)
-      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
-                  notice: t('numerical_managements.messages.target_updated')
+    if daily_target.update(target_amount: sanitized_value)
+      redirect_to management_numerical_managements_path(month: date.strftime('%Y-%m')),
+                  notice: t('numerical_managements.messages.daily_target_updated'),
+                  turbo: false
     else
-      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
-                  alert: "更新に失敗しました: #{daily_target.errors.full_messages.join(', ')}"
+      redirect_to management_numerical_managements_path(month: date.strftime('%Y-%m')),
+                  alert: "更新に失敗しました: #{daily_target.errors.full_messages.join(', ')}",
+                  turbo: false
     end
+  rescue Date::Error
+    redirect_to management_numerical_managements_path,
+                alert: '日付の形式が正しくありません',
+                turbo: false
   end
 
-  # 一括更新
-  #
-  # 月次予算と複数の日別目標を一括で更新
-  # トランザクション内で実行され、一つでも失敗すると全体がロールバック
-  #
-  # @return [void]
   def bulk_update
     year = params[:year].to_i
     month = params[:month].to_i
+
+    if params[:daily_data].present?
+      converted_params = convert_daily_data_to_bulk_params(params[:daily_data])
+      params.merge!(converted_params)
+    end
 
     service = NumericalDataBulkUpdateService.new(current_user, sanitized_bulk_update_params)
 
     if service.call
       redirect_to management_numerical_managements_path(year: year, month: month),
-                  notice: t('numerical_managements.messages.data_updated')
+                  notice: t('numerical_managements.messages.data_updated'),
+                  turbo: false
     else
       redirect_to management_numerical_managements_path(year: year, month: month),
-                  alert: "更新に失敗しました: #{service.errors.join(', ')}"
+                  alert: service.errors.join(", "),
+                  turbo: false
     end
   end
 
   private
 
-  # 一括更新用のStrong Parameters
-  #
-  # @return [ActionController::Parameters]
+  def convert_daily_data_to_bulk_params(daily_data)
+    monthly_budgets = {}
+    daily_targets = {}
+    plan_schedule_actuals = {}
+
+    daily_data.each do |index, day_attrs|
+      if day_attrs[:target_id].present? && day_attrs[:target_amount].present?
+        daily_targets[day_attrs[:target_id]] = {
+          target_amount: day_attrs[:target_amount]
+        }
+      end
+
+      if day_attrs[:plan_schedule_id].present? && day_attrs[:actual_revenue].present?
+        plan_schedule_actuals[day_attrs[:plan_schedule_id]] = {
+          actual_revenue: day_attrs[:actual_revenue]
+        }
+      end
+    end
+
+    {
+      monthly_budgets: monthly_budgets,
+      daily_targets: daily_targets,
+      plan_schedule_actuals: plan_schedule_actuals
+    }
+  end
+
   def bulk_update_params
     params.permit(
       :year,
       :month,
-      monthly_budgets: [:budget],
-      daily_targets: [:target]
+      monthly_budgets: [:target_amount],
+      daily_targets: [:target_amount],
+      plan_schedule_actuals: [:actual_revenue]
     )
   end
 
-  # 数値パラメータのサニタイズ処理
-  #
-  # 対象フィールド:
-  #   - monthly_budgets[].budget: 月次予算（カンマ区切り対応）
-  #   - daily_targets[].target: 日別目標（カンマ区切り対応）
-  #
-  # @return [Hash]
   def sanitized_bulk_update_params
     params_hash = bulk_update_params.to_h
 
@@ -137,7 +150,7 @@ class Management::NumericalManagementsController < ApplicationController
       params_hash[:monthly_budgets].each do |_, budget_attrs|
         sanitize_numeric_params(
           budget_attrs,
-          with_comma: [:budget]
+          with_comma: [:target_amount]
         )
       end
     end
@@ -146,7 +159,16 @@ class Management::NumericalManagementsController < ApplicationController
       params_hash[:daily_targets].each do |_, target_attrs|
         sanitize_numeric_params(
           target_attrs,
-          with_comma: [:target]
+          with_comma: [:target_amount]
+        )
+      end
+    end
+
+    if params_hash[:plan_schedule_actuals].present?
+      params_hash[:plan_schedule_actuals].each do |_, actual_attrs|
+        sanitize_numeric_params(
+          actual_attrs,
+          with_comma: [:actual_revenue]
         )
       end
     end

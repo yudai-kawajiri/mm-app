@@ -46,7 +46,7 @@ Rails.application.routes.draw do
     # 計画スケジュール
     resources :plan_schedules, only: [ :create, :update, :destroy ] do
       member do
-        patch :update_actual_revenue  # 実績入力
+        patch :actual_revenue  # ← update_ を削除
       end
     end
   end
@@ -78,20 +78,19 @@ Rails.application.routes.draw do
       end
 
       member do
-        delete :purge_image  # 画像削除
-        post :copy           # 複製
+        delete :purge_image
+        post :copy
       end
 
-      # 製品-材料の関連管理
       resources :product_materials, only: [ :index, :edit, :update ]
     end
 
     # 計画
     resources :plans do
       member do
-        patch :update_status  # ステータス更新
-        post :copy            # 複製
-        get :print            # 印刷用ページ
+        patch :update_status
+        post :copy
+        get :print
       end
     end
   end
@@ -101,24 +100,21 @@ Rails.application.routes.draw do
   # ====================
   namespace :api do
     namespace :v1 do
-      # 製品API
       resources :products, only: [ :index, :show ] do
         member do
-          get :fetch_plan_details  # 計画用の製品詳細を取得
+          get :fetch_plan_details
         end
       end
 
-      # 材料API
       resources :materials, only: [ :index, :show ] do
         member do
-          get :fetch_product_unit_data  # 製品単位データを取得
+          get :fetch_product_unit_data
         end
       end
 
-      # 計画API
       resources :plans, only: [ :index, :show ] do
         member do
-          get :fetch_revenue  # 売上データを取得
+          get :fetch_revenue
         end
       end
     end
