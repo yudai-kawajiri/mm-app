@@ -1,0 +1,37 @@
+<%#
+  ソート選択フォーム
+
+  使用例:
+    <%= render 'shared/sort_form',
+        url: resources_products_path,
+        sort_options: [
+          ['表示順', 'display_order'],
+          ['名前順', 'name']
+        ],
+        default: 'display_order',
+        preserve_params: [:category_id, :q]
+    %>
+
+  パラメータ:
+    - url: フォーム送信先URL
+    - sort_options: ソートオプションの配列 [[ラベル, 値], ...]
+    - default: デフォルトのソート値
+    - preserve_params: 保持するパラメータのキー配列（任意）
+%>
+<div class="mb-3">
+  <%= form_with url: url, method: :get, local: true, class: 'row g-2 align-items-end' do |f| %>
+    <div class="col-auto">
+      <%= f.label :sort_by, t('common.sort_by'), class: 'form-label' %>
+      <%= f.select :sort_by,
+            options_for_select(sort_options, params[:sort_by] || default),
+            {},
+            class: 'form-select',
+            onchange: 'this.form.submit()' %>
+    </div>
+    <% if local_assigns[:preserve_params].present? %>
+      <% preserve_params.each do |param_key| %>
+        <%= f.hidden_field param_key, value: params[param_key] if params[param_key].present? %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
