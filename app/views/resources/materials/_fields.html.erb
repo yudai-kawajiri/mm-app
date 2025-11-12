@@ -15,6 +15,7 @@
   <div class="col-md-6">
     <%= form_group_lg(f, :category_id,
         field_type: :collection_select,
+        collection: Resources::Category.where(category_type: :material).order(:name),
         select_options: { include_blank: t('helpers.prompt.select') }
     ) %>
   </div>
@@ -23,7 +24,11 @@
 <div class="row">
   <div class="col-md-6">
     <div class="form-group mb-4">
-      <%= f.label :default_unit_weight, Resources::Material.human_attribute_name(:default_unit_weight), class: 'form-label h5' %>
+      <label class="form-label h5 text-muted mb-2">
+        <%= Resources::Material.human_attribute_name(:default_unit_weight) %>
+        <small class="text-muted">商品1個あたりの使用量</small>
+      </label>
+
       <%= f.text_field :default_unit_weight,
           class: 'form-control form-control-lg',
           data: {
@@ -38,12 +43,19 @@
   </div>
 
   <div class="col-md-6">
-    <%= form_group_lg(f, :unit_for_product_id,
-        field_type: :collection_select,
-        collection: current_user.units.where(category: :production),
-        label: Resources::Material.human_attribute_name(:unit_for_product),
-        select_options: { include_blank: t('helpers.prompt.select') }
-    ) %>
+    <div class="form-group mb-4">
+      <label class="form-label h5 text-muted mb-2">
+        <%= Resources::Material.human_attribute_name(:unit_for_product) %>
+        <small class="text-muted">製造時の計量単位</small>
+      </label>
+
+      <%= f.collection_select :unit_for_product_id,
+          current_user.units.where(category: :production),
+          :id,
+          :name,
+          { include_blank: t('helpers.prompt.select') },
+          { class: 'form-select form-select-lg' } %>
+    </div>
   </div>
 </div>
 
@@ -91,12 +103,19 @@
 
 <div class="row">
   <div class="col-md-6">
-    <%= form_group_lg(f, :production_unit_id,
-        field_type: :collection_select,
-        collection: current_user.units.where(category: :manufacturing),
-        label: Resources::Material.human_attribute_name(:production_unit),
-        select_options: { include_blank: t('helpers.prompt.select') }
-    ) %>
+    <div class="form-group mb-4">
+      <label class="form-label h5 text-muted mb-2">
+        <%= Resources::Material.human_attribute_name(:production_unit) %>
+        <small class="text-muted">原材料の管理単位</small>
+      </label>
+
+      <%= f.collection_select :production_unit_id,
+          current_user.units.where(category: :manufacturing),
+          :id,
+          :name,
+          { include_blank: t('helpers.prompt.select') },
+          { class: 'form-select form-select-lg' } %>
+    </div>
   </div>
   <div class="col-md-6">
     <%= form_group_lg(f, :order_group_id,
