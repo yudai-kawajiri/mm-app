@@ -52,6 +52,6 @@ class Resources::Unit < ApplicationRecord
   # @param category [String, Symbol, nil] カテゴリー名
   # @return [ActiveRecord::Relation] 絞り込み結果
   scope :filter_by_category, lambda { |category|
-    where(category: category) if category.present? && Unit.categories.key?(category.to_s)
+    where(category: category) if category.present? && categories.key?(category.to_s)
   }
 end

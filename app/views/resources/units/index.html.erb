@@ -2,6 +2,8 @@
   機能: 単位一覧画面
   - 全単位の一覧表示
   - カテゴリによる検索機能
+  - ソート機能（名前順、カテゴリー順、登録順）
+  - 検索とソートを横並びで統合
 %>
 <%= content_for(:title, t('units.index.title')) %>
 
@@ -13,18 +15,26 @@
     is_show_page: false,
     new_path: new_resources_unit_path %>
 
-<%= render 'shared/components/resource_list',
-    resources: @units,
-    resource_class: Resources::Unit,
-    search_target: :category,
-    icon_mode: true,
+<div>
+  <%= render 'shared/components/resource_list',
+      resources: @units,
+      resource_class: Resources::Unit,
+      search_target: :category,
+      sort_options: [
+        [t('units.index.sort_options.name'), 'name'],
+        [t('units.index.sort_options.category'), 'category'],
+        [t('units.index.sort_options.created_at'), 'created_at']
+      ],
+      sort_placeholder: t('units.index.sort_placeholder'),
+      icon_mode: true,
 
-    columns: [
-      { header: :name, data: :name },
-      { header: :category,
-        data: Proc.new { |unit| translate_enum_value(unit, :category) }
-      }
-    ]
-%>
+      columns: [
+        { header: :name, data: :name },
+        { header: :category,
+          data: Proc.new { |unit| translate_enum_value(unit, :category) }
+        }
+      ]
+  %>
 
-<%= paginate @units, theme: 'bootstrap-5' %>
+  <%= paginate @units, theme: 'bootstrap-5' %>
+</div>

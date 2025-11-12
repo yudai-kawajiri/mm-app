@@ -7,7 +7,6 @@
 # 機能:
 #   - 単位の一覧表示（検索・カテゴリフィルタ・ページネーション・ソート機能）
 #   - 単位の作成・編集・削除
-#   - カテゴリ別フィルタリング（production, ordering, manufacturing）
 class Resources::UnitsController < AuthenticatedController
   include SortableController
 
@@ -28,7 +27,24 @@ class Resources::UnitsController < AuthenticatedController
   #
   # @return [void]
   def index
-    sorted_index(Resources::Unit, default: 'name')
+    # 基本クエリ
+    @units = Resources::Unit.all
+
+    # ソート適用
+    @units = apply_sort(@units, default: 'name')
+
+    # カテゴリーフィルタリング
+    if params[:category].present?
+      @units = @units.filter_by_category(params[:category])
+    end
+
+    # 名前検索（直接実装）
+    if params[:q].present?
+      @units = @units.where("name LIKE ?", "%#{params[:q]}%")
+    end
+
+    # ページネーション
+    @units = @units.page(params[:page])
   end
 
   # 新規単位作成フォーム
@@ -43,7 +59,7 @@ class Resources::UnitsController < AuthenticatedController
   # @return [void]
   def create
     @unit = current_user.units.build(unit_params)
-    respond_to_save(@unit, success_path: @unit)
+    respond_to_save(@unit, success_path: resources_units_path)
   end
 
   # 単位詳細
@@ -61,7 +77,7 @@ class Resources::UnitsController < AuthenticatedController
   # @return [void]
   def update
     @unit.assign_attributes(unit_params)
-    respond_to_save(@unit, success_path: @unit)
+    respond_to_save(@unit, success_path: resources_units_path)
   end
 
   # 単位を削除
