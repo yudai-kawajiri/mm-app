@@ -30,7 +30,8 @@
             data: {
               controller: 'number-input',
               'number-input-no-comma': 'true',
-              action: 'input->number-input#handleInput paste->number-input#handlePaste',
+              'number-input-decimal-field': 'true',
+              action: 'input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
               'form-validation-target': 'field'
             }
         %>
@@ -84,7 +85,8 @@
             data: {
               controller: 'number-input',
               'number-input-no-comma': 'true',
-              action: 'input->number-input#handleInput paste->number-input#handlePaste'
+              'number-input-decimal-field': 'true',
+              action: 'input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur'
             }
           %>
         </div>
@@ -97,7 +99,8 @@
             data: {
               controller: 'number-input',
               'number-input-no-comma': 'true',
-              action: 'input->number-input#handleInput paste->number-input#handlePaste'
+              'number-input-integer-only': 'true',
+              action: 'input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus'
             }
           %>
         </div>

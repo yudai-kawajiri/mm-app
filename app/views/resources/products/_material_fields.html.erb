@@ -57,8 +57,9 @@
       data: {
         controller: 'number-input',
         'number-input-no-comma': 'true',
+        'number-input-decimal-field': 'true',
         'resources--product-material--material-target': 'quantityInput',
-        action: 'input->number-input#handleInput input->resources--product-material--material#syncQuantityToOtherTabs paste->number-input#handlePaste',
+        action: 'input->number-input#handleInput input->resources--product-material--material#syncQuantityToOtherTabs paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
         'unique-id': unique_id
       } %>
   </td>
@@ -71,8 +72,9 @@
       data: {
         controller: 'number-input',
         'number-input-no-comma': 'true',
+        'number-input-decimal-field': 'true',
         'resources--product-material--material-target': 'unitWeightInput',
-        action: 'input->number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->number-input#handlePaste',
+        action: 'input->number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
         'unique-id': unique_id
       } %>
   </td>
