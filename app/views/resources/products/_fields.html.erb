@@ -32,7 +32,8 @@
                           wrapper_class: 'mb-3',
                           collection: @product_categories,
                           value_method: :id,
-                          text_method: :name) %>
+                          text_method: :name,
+                          select_options: { include_blank: t('helpers.prompt.select')}) %>
       </div>
 
       <div class="col-md-6">

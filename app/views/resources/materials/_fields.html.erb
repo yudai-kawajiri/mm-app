@@ -15,7 +15,7 @@
   <div class="col-md-6">
     <%= form_group_lg(f, :category_id,
         field_type: :collection_select,
-        collection: @material_categories
+        select_options: { include_blank: t('helpers.prompt.select') }
     ) %>
   </div>
 </div>
@@ -41,7 +41,8 @@
       <%= form_group_lg(f, :unit_for_product_id,
           field_type: :collection_select,
           collection: current_user.units.where(category: :production),
-          label: Resources::Material.human_attribute_name(:unit_for_product)
+          label: Resources::Material.human_attribute_name(:unit_for_product),
+          select_options: { include_blank: t('helpers.prompt.select') }
       ) %>
     </div>
   </div>
@@ -107,7 +108,8 @@
       <%= form_group_lg(f, :unit_for_order_id,
           field_type: :collection_select,
           collection: current_user.units.where(category: :ordering),
-          label: Resources::Material.human_attribute_name(:unit_for_order)
+          label: Resources::Material.human_attribute_name(:unit_for_order),
+          select_options: { include_blank: t('helpers.prompt.select') }
       ) %>
     </div>
   </div>
