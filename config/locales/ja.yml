@@ -92,6 +92,7 @@ ja:
     clear: "クリア"
     action: "アクション"
     cancel: "キャンセル"
+    category: "カテゴリー"
     close: "閉じる"
     create: "登録"
     update: "更新"
@@ -99,6 +100,8 @@ ja:
     saving: "保存中..."
     destroy: "削除"
     edit: "編集"
+    name: "名前"
+    sort_by: "ソート"
     show: "詳細"
     back: "戻る"
     copy: "コピー"
@@ -129,8 +132,8 @@ ja:
   # 検索
   search:
     placeholders:
-      select_type: "種別を選択"
-      select_category: "カテゴリーを選択"
+      select_type: "種別を選択してください"
+      select_category: "カテゴリーを選択してください"
       enter_name: "名前を入力"
 
   # ヘルパー

@@ -5,6 +5,11 @@ ja:
       title: "単位登録"
     index:
       title: "単位一覧"
+      sort_placeholder: "ソートを選択してください"
+      sort_options:
+        name: "名前順"
+        category: "カテゴリ順"
+        created_at: "作成順"
     show:
       title: "%{name} - 単位詳細"
     edit:
