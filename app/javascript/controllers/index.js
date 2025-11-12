@@ -24,7 +24,6 @@ import ResourcesPlanProductSyncController from "controllers/resources/plan-produ
 import ResourcesProductMaterialMaterialController from "controllers/resources/product-material/material_controller"
 
 // Material Controllers
-import MeasurementTypeController from "controllers/input/measurement_type_controller"
 import OrderGroupController from "controllers/management/order_group_controller"
 
 // UI Enhancement Controllers
@@ -54,9 +53,6 @@ application.register("character-counter", CharacterCounterController)
 application.register("form-validation", FormValidationController)
 application.register("number-input", NumberInputController)
 application.register("image-preview", ImagePreviewController)
-application.register("measurement-type", MeasurementTypeController)
 application.register("order-group", OrderGroupController)
 application.register("plan-assignment", PlanAssignmentController)
 application.register("sortable-table", SortableTableController)
-
-console.log('✅ Stimulus controllers registered:', application.router.modulesByIdentifier.size)

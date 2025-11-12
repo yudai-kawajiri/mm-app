@@ -1,7 +1,7 @@
 <%#
   機能: 原材料フォームフィールド
   - 原材料の全入力フィールド
-  - 計測方法切り替え（重量/個数ベース）
+  - 計測方法選択（重量/個数ベース）
   - 新規作成・編集画面で使用
 
   必須引数:
@@ -20,101 +20,72 @@
   </div>
 </div>
 
-<div data-controller="measurement-type">
-  <div class="row">
-    <div class="col-md-6">
-      <div class="form-group mb-4">
-        <%= f.label :default_unit_weight, Resources::Material.human_attribute_name(:default_unit_weight), class: 'form-label h5' %>
-        <%= f.text_field :default_unit_weight,
-            class: 'form-control form-control-lg',
-            data: {
-              controller: 'number-input',
-              'number-input-no-comma': 'true',
-              'number-input-decimal-field': 'true',
-              action: 'input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
-              'form-validation-target': 'field'
-            }
-        %>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <%= form_group_lg(f, :unit_for_product_id,
-          field_type: :collection_select,
-          collection: current_user.units.where(category: :production),
-          label: Resources::Material.human_attribute_name(:unit_for_product),
-          select_options: { include_blank: t('helpers.prompt.select') }
-      ) %>
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group mb-4">
+      <%= f.label :default_unit_weight, Resources::Material.human_attribute_name(:default_unit_weight), class: 'form-label h5' %>
+      <%= f.text_field :default_unit_weight,
+          class: 'form-control form-control-lg',
+          data: {
+            controller: 'number-input',
+            'number-input-no-comma': 'true',
+            'number-input-decimal-field': 'true',
+            action: 'input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
+            'form-validation-target': 'field'
+          }
+      %>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-6">
+  <div class="col-md-6">
+    <%= form_group_lg(f, :unit_for_product_id,
+        field_type: :collection_select,
+        collection: current_user.units.where(category: :production),
+        label: Resources::Material.human_attribute_name(:unit_for_product),
+        select_options: { include_blank: t('helpers.prompt.select') }
+    ) %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group mb-4">
       <div class="d-flex align-items-center gap-3 mb-2">
         <label class="form-label mb-0" style="font-size: 1.25rem; font-weight: 400;">
-          <span data-measurement-type-target="weightLabel" style="<%= 'display: none;' if f.object.measurement_type == 'count' %>">
-            <%= t('materials.attributes.unit_weight_for_order_label') %>
-          </span>
-          <span data-measurement-type-target="countLabel" style="<%= 'display: none;' unless f.object.measurement_type == 'count' %>">
-            <%= t('materials.attributes.pieces_per_order_unit_label') %>
-          </span>
+          <%= Resources::Material.human_attribute_name(:unit_weight_for_order) %>
         </label>
         <div class="form-check">
           <%= f.radio_button :measurement_type, 'weight',
               checked: f.object.measurement_type != 'count',
-              class: 'form-check-input',
-              data: {
-                action: 'change->measurement-type#toggleFields'
-              } %>
+              class: 'form-check-input' %>
           <%= f.label :measurement_type_weight, t('materials.measurement_types.weight'), class: 'form-check-label' %>
         </div>
         <div class="form-check">
           <%= f.radio_button :measurement_type, 'count',
-              class: 'form-check-input',
-              data: {
-                action: 'change->measurement-type#toggleFields'
-              } %>
+              class: 'form-check-input' %>
           <%= f.label :measurement_type_count, t('materials.measurement_types.count'), class: 'form-check-label' %>
         </div>
       </div>
 
-      <div data-measurement-type-target="weightFields" style="<%= 'display: none;' if f.object.measurement_type == 'count' %>">
-        <div class="mb-4">
-          <%= f.text_field :unit_weight_for_order,
-            class: 'form-control form-control-lg',
-            data: {
-              controller: 'number-input',
-              'number-input-no-comma': 'true',
-              'number-input-decimal-field': 'true',
-              action: 'input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur'
-            }
-          %>
-        </div>
-      </div>
-
-      <div data-measurement-type-target="countFields" style="<%= 'display: none;' unless f.object.measurement_type == 'count' %>">
-        <div class="mb-4">
-          <%= f.text_field :pieces_per_order_unit,
-            class: 'form-control form-control-lg',
-            data: {
-              controller: 'number-input',
-              'number-input-no-comma': 'true',
-              'number-input-integer-only': 'true',
-              action: 'input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus'
-            }
-          %>
-        </div>
-      </div>
+      <%= f.text_field :unit_weight_for_order,
+        class: 'form-control form-control-lg',
+        data: {
+          controller: 'number-input',
+          'number-input-no-comma': 'true',
+          'number-input-decimal-field': 'true',
+          action: 'input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur'
+        }
+      %>
     </div>
+  </div>
 
-    <div class="col-md-6">
-      <%= form_group_lg(f, :unit_for_order_id,
-          field_type: :collection_select,
-          collection: current_user.units.where(category: :ordering),
-          label: Resources::Material.human_attribute_name(:unit_for_order),
-          select_options: { include_blank: t('helpers.prompt.select') }
-      ) %>
-    </div>
+  <div class="col-md-6">
+    <%= form_group_lg(f, :unit_for_order_id,
+        field_type: :collection_select,
+        collection: current_user.units.where(category: :ordering),
+        label: Resources::Material.human_attribute_name(:unit_for_order),
+        select_options: { include_blank: t('helpers.prompt.select') }
+    ) %>
   </div>
 </div>
 

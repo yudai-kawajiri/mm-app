@@ -22,7 +22,6 @@ pin "controllers/ui/image_preview_controller", to: "controllers/ui/image_preview
 
 # Input Controllers
 pin "controllers/input/character_counter_controller", to: "controllers/input/character_counter_controller.js"
-pin "controllers/input/measurement_type_controller", to: "controllers/input/measurement_type_controller.js"
 pin "controllers/input/number_input_controller", to: "controllers/input/number_input_controller.js"
 
 # Management Controllers
