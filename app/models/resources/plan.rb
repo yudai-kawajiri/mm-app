@@ -15,6 +15,10 @@ class Resources::Plan < ApplicationRecord
   # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
+  include NestedAttributeTranslatable
+
+  nested_attribute_translation :plan_products, 'Planning::PlanProduct'
+
 
   # 関連付け
   belongs_to :category, class_name: 'Resources::Category'

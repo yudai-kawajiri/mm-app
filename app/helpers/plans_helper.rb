@@ -46,7 +46,7 @@ module PlansHelper
     end
 
     # ステータスの日本語表示（i18n対応）
-    status_text = t("activerecord.enums.plan.status.#{plan.status}")
+    status_text = t("activerecord.enums.resources/plan.status.#{plan.status}")
 
     content_tag(:div, class: "d-flex align-items-center") do
       # ステータスバッジ
@@ -64,7 +64,7 @@ module PlansHelper
 
         # ドロップダウンメニュー項目（すべてのステータスを選択可能）
         menu_items = Resources::Plan.statuses.keys.map do |status_key|
-          status_label = t("activerecord.enums.plan.status.#{status_key}")
+          status_label = t("activerecord.enums.resources/plan.status.#{status_key}")
           content_tag(:li) do
             button_to status_label,
               update_status_resources_plan_path(plan, status: status_key),

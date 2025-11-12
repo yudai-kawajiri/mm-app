@@ -67,15 +67,23 @@ ja:
         unit: "¥"
         format: "%u%n"
 
+  # 共通フラッシュメッセージ（統一テンプレート）
   flash_messages:
     create:
-      success: "%{resource} 「%{name}」を登録しました"
+      success: "%{resource}を登録しました"
       failure: "%{resource}の登録に失敗しました"
     update:
-      success: "%{resource} 「%{name}」を更新しました"
+      success: "%{resource}を更新しました"
       failure: "%{resource}の更新に失敗しました"
     destroy:
-      success: "%{resource} 「%{name}」を削除しました"
+      success: "%{resource}を削除しました"
+      failure: "%{resource}の削除に失敗しました"
+    save:
+      success: "%{resource}を保存しました"
+      failure: "%{resource}の保存に失敗しました"
+    copy:
+      success: "%{resource}をコピーしました"
+      failure: "%{resource}のコピーに失敗しました"
     not_authorized: "この操作を実行する権限がありません"
 
   # 共通翻訳
@@ -84,421 +92,54 @@ ja:
     clear: "クリア"
     action: "アクション"
     cancel: "キャンセル"
+    close: "閉じる"
     create: "登録"
-    created: "登録"
     update: "更新"
-    updated: "更新"
     save: "保存"
     saving: "保存中..."
+    destroy: "削除"
+    edit: "編集"
+    show: "詳細"
+    back: "戻る"
+    copy: "コピー"
+    print: "印刷"
+    print_action: "印刷する"
     record: "レコード"
     change: "変更"
     uncategorized: "未分類"
     not_set: "未設定"
     calculation_unavailable: "計算不可"
-    print: "印刷"
-    print_action: "印刷する"
     save_order: "並び順を保存"
-    actions:
-      reorder: "並び替え"
-    copy: "コピー"
-    close: "閉じる"
     reorder_mode: "並び替えモード"
-    save_order: "並び順を保存"
     year_suffix: "年"
     month_suffix: "月"
+    actions:
+      reorder: "並び替え"
 
   labels:
     date: "日付"
 
-  dashboard:
-    menu:
-      title: "メニュー"
-      dashboard: "ダッシュボード"
-      category_management: "カテゴリー管理"
-      category_list: "カテゴリー一覧"
-      new_category: "カテゴリー登録"
-      material_management: "原材料管理"
-      unit_management: "単位管理"
-      order_group_management: "発注グループ管理"
-      material_list: "原材料一覧"
-      new_material: "原材料登録"
-      product_management: "商品管理"
-      product_list: "商品一覧"
-      new_product: "商品登録"
-      plan_management: "製造計画管理"
-      plan_list: "製造計画一覧"
-      new_plan: "製造計画登録"
-      numerical_management: "数値管理"
-      numerical_dashboard: "売上予算ダッシュボード"
-      account_settings: "アカウント設定"
-      admin_management: "管理者機能"
-      user_management: "ユーザー管理"
-      system_logs: "システムログ"
-
-    welcome_message: "ようこそ！ %{name} さんのダッシュボード"
-    display_month_label: "表示月："
-    display_button: "表示"
-    cumulative_trend_title: "の累計推移"
-    weather:
-      title: "週間天気予報"
-      rain_alert: "雨注意"
-      conditions:
-        clear: "晴れ"
-        clouds: "曇り"
-        rain: "雨"
-        drizzle: "霧雨"
-        thunderstorm: "雷雨"
-        snow: "雪"
-        mist: "霧"
-
-    kpi:
-      monthly_target: "月間売上予算"
-      monthly_actual: "月間売上実績"
-      achievement_rate: "月間売上達成率"
-      remaining_target: "残りの売上予算"
-      target_achieved: "売上予算達成"
-    chart:
-      budget_trend: "売上予算推移（過去6ヶ月）"
-
-  # 単位
-  units:
-    new:
-      title: "単位登録"
-    index:
-      title: "単位一覧"
-    show:
-      title: "%{name} - 単位詳細"
-    edit:
-      title: "%{name} - 単位編集"
-
-  # カテゴリー
-  categories:
-    new:
-      title: "カテゴリー登録"
-    index:
-      title: "カテゴリー一覧"
-    show:
-      title: "%{name} - カテゴリー詳細"
-    edit:
-      title: "%{name} - カテゴリー編集"
-
-  # 原材料
-  materials:
-    new:
-      title: "原材料登録"
-    index:
-      title: "原材料一覧"
-    show:
-      title: "%{name} - 原材料詳細"
-    edit:
-      title: "%{name} - 原材料編集"
-    attributes:
-      default_order_quantity: "基本発注量/発注入数"
-      measurement_type: "計測方法"
-      unit_weight_for_order_label: "基本発注量"
-      pieces_per_order_unit_label: "基本発注入数"
-    measurement_types:
-      weight: "重量ベース"
-      count: "個数ベース"
-    order_group_methods:
-      existing: "既存から選択"
-      new: "新規登録"
-    placeholders:
-      select_order_group: "選択してください"
-      new_order_group: "商品ごとに違う規格で使用する場合に入力してください"
-      order_group: "選択してください"
-
-  material_order_groups:
-    index:
-      title: "発注グループ管理"
-      unused: "未使用"
-    new:
-      title: "発注グループ新規登録"
-    edit:
-      title: "%{name} - 編集"
-    show:
-      title: "%{name} - 詳細"
-      materials_using_this_group: "このグループを使用している原材料"
-      materials_count: "%{count}件の原材料"
-      no_materials: "このグループを使用している原材料はありません"
-    form:
-      name_placeholder: "例: 生まぐろ、冷凍まぐろ"
-      name_help: "同じグループに設定された原材料は、発注時にまとめて計算されます。"
-      clear: "解除"
-      delete: "削除"
-      clear_group: "グループ解除"
-      delete_group: "グループ削除"
-      destroyed: "発注グループを削除しました"
-      errors:
-        not_found: "発注グループが見つかりません"
-        has_materials: "このグループは%{count}件の原材料で使用されているため削除できません"
-
-  # 商品
-  products:
-    new:
-      title: "商品登録"
-    index:
-      title: "商品一覧"
-    show:
-      title: "%{name} - 商品詳細"
-    edit:
-      title: "%{name} - 商品編集"
-    placeholder:
-      item_number: "4桁で入力してください"
-    image_help:
-      select: "JPG、PNG、GIF形式の画像を選択してください"
-      change: "画像を変更する場合は新しいファイルを選択してください"
-      no_image: "画像未選択"
-    product_material_fields:
-      material_name_prompt: "原材料名"
-      unit_weight_placeholder: "分量"
-      unit_weight: "商品単位分量"
-      unit_prompt: "単位"
-      delete_button: "削除"
-      no_materials_set: "原材料はまだ設定されていません"
-    category_selector:
-      prompt: "カテゴリを選択"
-      add_button: "カテゴリタブを追加"
-    tab_all: "全て"
-    table_headers:
-      material_name: "原材料名"
-      quantity: "数量"
-      unit_weight: "分量"
-      unit: "単位"
-    add_material_button: "原材料を追加"
-    messages:
-      copy_success: "商品「%{original_name}」をコピーしました（新規商品名: %{new_name}）。品番「%{item_number}」は仮の値です。編集画面で変更してください"
-      copy_failed: "商品のコピーに失敗しました: %{errors}"
-
-  # 製造計画
-  plans:
-    new:
-      title: "製造計画登録"
-    index:
-      title: "製造計画一覧"
-    show:
-      title: "%{name} - 製造計画詳細"
-    edit:
-      title: "%{name} - 製造計画編集"
-    category_total_label: "カテゴリ合計"
-    total_price_label: "総合計"
-    plan_product_subtotal: "小計"
-    category_selector:
-      prompt: "カテゴリを選択"
-      add_button: "カテゴリタブを追加"
-    tab_all: "全て"
-    table_headers:
-      product_name: "商品名"
-      quantity: "数量"
-      price: "売価"
-      subtotal: "小計"
-    print:
-      page1_title: "① 製造計画書（商品一覧）"
-      page2_title: "② 原材料管理表（発注・使用）"
-      plan_name: "計画名"
-      scheduled_date: "実施日"
-      budget: "予算"
-      planned_total: "計画高"
-      achievement_rate: "達成率"
-      image: "画像"
-      product_total: "商品合計金額"
-      item_number: "品番"
-      product_name: "商品名"
-      production_count: "製造数"
-      unit_price: "単価"
-      subtotal: "小計"
-      count_unit: "個"
-      no_image: "画像なし"
-      no_products: "商品が登録されていません"
-      material_name: "原材料名"
-      product_usage: "商品での使用数量"
-      total_usage: "合計使用量"
-      order_unit: "発注単位"
-      order_quantity: "発注数量"
-      no_materials: "原材料が登録されていません"
-    add_product_button: "商品を追加"
-    messages:
-      status_updated: "計画「%{name}」のステータスを「%{status}」に変更しました"
-      copy_success: "計画「%{original_name}」をコピーしました（新規計画名: %{new_name}）"
-      copy_failed: "計画のコピーに失敗しました: %{error}"
-      copy_failed_duplicate: "計画名が重複しています。別の名前を試してください"
-      no_products_set: "商品はまだ設定されていません"
-    errors:
-      duplicate_name: "は既に同じカテゴリ内に存在します"
-      duplicate_product: "同じ商品を複数回追加することはできません"
-
-  # 計画スケジュール
-  plan_schedules:
-    messages:
-      assigned: "%{date}を登録しました"
-      updated: "%{date}を更新しました"
-      plan_assigned: "計画を登録しました"
-      plan_updated: "計画を更新しました"
-      plan_schedule_saved: "%{date}の計画を%{action}"
-      plan_schedule_save_failed: "計画の保存に失敗しました: %{errors}"
-      plan_schedule_updated_with_date: "%{date}の計画を更新しました"
-      plan_schedule_update_failed: "計画の更新に失敗しました: %{errors}"
-
-  # 数値管理（売上予算管理）
-  numerical_managements:
-    index:
-      title: "売上予算ダッシュボード"
-      monthly_budget_card: "月間売上予算"
-      monthly_planned_revenue: "月間計画売上"
-      cumulative_actual: "累計売上実績"
-      budget_achievement: "予算達成率"
-      target_amount_subtitle: "今月の予算額"
-      planned_total_subtitle: "今月の計画合計"
-      actual_until_yesterday: "昨日までの実績"
-      achievement_as_of_yesterday: "昨日時点の達成率"
-      month_end_forecast: "月末予測"
-      forecast_revenue: "予測売上"
-      forecast_diff: "予測差"
-      achievement_rate: "達成率"
-      required_additional: "必要追加額"
-      gap_analysis: "ギャップ分析"
-      remaining_days: "残り日数"
-      recommended_daily_target: "推奨日次目標"
-      daily_required: "1日あたり必要額"
-      action_plan: "アクションプラン"
-      daily_target_diff: "予算との差"
-      alert_action_needed_html: "残り<strong>%{days}日</strong>で<strong>%{amount}</strong>の追加が必要です。<br>1日あたり<strong>%{daily}</strong>を目指しましょう"
-      alert_on_track: "予算達成に向けて順調です！"
-      daily_details: "日別詳細"
-      set_budget: "予算設定"
-      delete_budget: "予算削除"
-      target_month: "対象月"
-      display: "表示"
-      days_suffix: "日"
-      alert_remaining: "残り%{days}日で予算を達成するには、"
-      alert_daily: "1日あたり%{amount}の追加が必要です"
-      alert_add: "追加で%{amount}の売上が必要です"
-    table_headers:
-      budget: "予算"
-      actual: "実績"
-      planned: "計画高"
-      achievement_rate: "達成率"
-      budget_diff: "予算差"
-    bulk_edit:
-      toggle_edit_mode: "一括編集モード"
-      toggle_normal_mode: "通常表示"
-      monthly_budget_label: "月間予算:"
-      daily_target_sum: "日別予算合計:"
-      budget_diff_label: "予算過不足:"
-      bulk_save: "一括保存"
-      excess: "超過"
-      shortage: "不足"
-    labels:
-      cumulative: "累計:"
-    actions:
-      edit_target: "予算編集"
-      add_plan: "計画登録"
-      edit_plan: "計画編集"
-      input_actual: "実績入力"
-      print_plan: "計画を印刷"
-      select_plan_to_print: "印刷する計画を選択"
-    modals:
-      monthly_budget_edit:
-        title: "月間予算編集"
-        info: "月間予算を入力してください"
-      budget_setting:
-        title: "予算設定"
-      daily_target_edit:
-        title: "日別予算編集"
-        info: "この日の予算金額を入力してください"
-      actual_revenue_entry:
-        title: "実績入力"
-        info: "この日の実績売上を入力してください"
-      assign_plan:
-        title: "計画登録"
-        edit_title: "計画編集"
-        planned_revenue_help: "計画を選択後に自動で入力されます"
-        title: "実績入力"
-        title: "計画登録"
-        edit_title: "計画編集"
-        planned_revenue_help: "計画を選択後に自動で入力されます"
-        info: "この日の実績売上を入力してください"
-        planned_revenue_help: "計画を選択後に自動で入力されます"
-      labels:
-        target_month: "対象月"
-        target_date: "対象日"
-        monthly_budget_yen: "月間予算（円）"
-        daily_target_yen: "日別予算（円）"
-        actual_revenue_yen: "実績売上（円）"
-        planned_revenue_yen: "計画高（円）"
-        note: "備考"
-        optional: "（任意）"
-        category: "カテゴリ"
-        plan_select: "計画選択"
-        product_quantity_adjustment: "商品数量調整"
-        planned_revenue: "計画高"
-      fields:
-        monthly_budget: "月間予算"
-        daily_target: "日別予算"
-      prompts:
-        select_category: "選択してください"
-        select_plan: "選択してください"
-        select_category_first: "まずカテゴリを選択してください"
-        select_plan_after_category: "選択してください（カテゴリ選択後に選択可能）"
-      confirm:
-        delete: "本当に削除しますか？"
-      actions:
-        cancel: "キャンセル"
-        create: "登録"
-        update: "更新"
-        close: "閉じる"
-    messages:
-      budget_created: "月間予算を登録しました"
-      budget_updated: "月間予算を更新しました"
-      budget_update_failed: "月間予算の更新に失敗しました"
-      budget_deleted: "月間予算を削除しました"
-      budget_delete_failed: "月間予算の削除に失敗しました"
-      budget_not_set: "この月の予算が設定されていません"
-      daily_target_saved: "%{date}の予算を%{action}しました"
-      daily_target_save_failed: "予算の保存に失敗しました: %{errors}"
-      daily_target_updated: "日別予算を更新しました"
-      daily_target_updated_with_date: "%{date}の予算を更新しました"
-      data_updated: "日別詳細を更新しました"
-      daily_target_update_failed: "予算の更新に失敗しました: %{errors}"
-      daily_target_deleted: "日別予算を削除しました"
-      daily_target_delete_failed: "日別予算の削除に失敗しました"
-      actual_updated: "実績を更新しました"
-      actual_update_failed: "実績の更新に失敗しました"
-      actual_deleted: "実績を削除しました"
-      actual_delete_failed: "実績の削除に失敗しました"
-      plan_assigned: "計画を登録しました"
-      plan_assign_failed: "計画の登録に失敗しました"
-      plan_unassigned: "計画を削除しました"
-      plan_unassign_failed: "計画の削除に失敗しました"
-      plan_not_found: "計画が見つかりません"
-      actual_revenue_updated: "実績売上を更新しました"
-      actual_revenue_update_failed: "実績売上の更新に失敗しました"
-      bulk_update_success: "%{count}件のデータを更新しました"
-      bulk_update_partial: "%{success}件成功、%{error}件失敗しました"
-      budget_not_set: 月次予算が設定されていません。先に予算設定を行ってください。
-      budget_mismatch: 日別予算の合計（%{total}）が月次予算（%{budget}）と一致しません。
-      daily_details_updated: "日別詳細を更新しました"
-
+  # フォーム共通
   forms:
     titles:
       basic_info: "基本情報"
       plan_product: "製造商品"
       product_material: "商品原材料"
 
+  # 検索
   search:
     placeholders:
       select_type: "種別を選択"
       select_category: "カテゴリーを選択"
       enter_name: "名前を入力"
 
+  # ヘルパー
   helpers:
     no_setting: "未設定"
     prompt:
       select: "選択してください"
-      category_select: "カテゴリを選択してください"
     submit:
       create: "登録"
-      edit: "編集"
       update: "更新"
     select:
       prompt: "選択してください"
@@ -508,8 +149,7 @@ ja:
       hint: "最大%{max}文字"
     confirm:
       destroy: "本当にこの%{resource}を削除してもよろしいですか？"
-      copy: "この項目をコピーしますか？"
-      copy_resource: "この%{resource}をコピーしますか？"
+      copy: "この%{resource}をコピーしますか？"
     link:
       back: "戻る"
       edit: "編集"
@@ -519,7 +159,6 @@ ja:
       cancel: "キャンセル"
       copy: "コピー"
       back_to_dashboard: "ダッシュボードへ戻る"
-      add_material: "原材料を追加"
       add_item: "+ %{resource}を登録"
       delete_image: "画像削除"
       cancel_new_image: "選択をキャンセル"
@@ -529,6 +168,7 @@ ja:
       user:
         remember_me: "ログイン情報を記憶する"
 
+  # エラーメッセージ
   errors:
     template:
       header:
@@ -536,19 +176,24 @@ ja:
         other: "%{count}件のエラーが発生したため、%{model}を保存できませんでした"
       body: "以下の項目を確認してください:"
     messages:
+      budget_created: "予算を設定しました"
+      budget_create_failed: "予算の設定に失敗しました"
       not_saved:
         one: "%{resource}の保存に失敗しました"
         other: "%{count}件のエラーが発生したため、%{resource}の保存に失敗しました"
       blank: "を入力してください"
       required: "を入力してください"
       not_a_number: "は数値で入力してください"
-      greater_than: "%{count} より大きい値を入力してください"
+      greater_than: "%{count}より大きい値を入力してください"
+      greater_than_or_equal_to: "は%{count}以上の値にしてください"
+      less_than: "は%{count}より小さい値にしてください"
+      less_than_or_equal_to: "は%{count}以下の値にしてください"
       too_long:
         one: "は%{count}文字以内で入力してください"
         other: "は%{count}文字以内で入力してください"
       too_short:
-        one: "%{count} 文字以上で入力してください"
-        other: "%{count} 文字以上で入力してください"
+        one: "%{count}文字以上で入力してください"
+        other: "%{count}文字以上で入力してください"
       taken: "は既に使用されています"
       confirmation: "と%{attribute}の入力が一致しません"
       invalid: "が正しくありません"
@@ -556,321 +201,13 @@ ja:
       restrict_dependent_destroy:
         has_many: "%{record}で使用しているため、この%{model}を削除できません"
 
-  devise:
-    sessions:
-      new:
-        title: "ログイン"
-        submit: "ログイン"
-        email_placeholder: "example@sushi-manage.com"
-        password_placeholder: "パスワードを入力"
-      signed_in: "ログインしました"
-      signed_out: "ログアウトしました"
-      sign_in: "ログイン"
-      sign_out: "ログアウト"
-    confirmations:
-      confirmed: "アカウントを認証しました"
-      new:
-        title: "確認メール再送信"
-        description: "アカウント確認のメールを再送信します"
-        email_placeholder: "example@sushi-manage.com"
-        email_help: "登録時に使用したメールアドレスを入力してください"
-        submit: "確認メールを再送信"
-    failure:
-      unauthenticated: "アカウント登録もしくはログインが必要です"
-      invalid: "メールアドレスまたはパスワードが違います"
-      not_found_in_database: "メールアドレスまたはパスワードが違います"
-      already_authenticated: "既にログインしています"
-      user:
-        already_authenticated: "既にログインしています"
-    registrations:
-      new:
-        title: "新規登録"
-      edit:
-        title: "アカウント編集"
-        email_placeholder: "example@sushi-manage.com"
-        unhappy: "アカウントの使用をやめる場合"
-        cancel_my_account: "アカウントを削除する"
-        cancel_confirm: "本当にアカウントを削除してもよろしいですか？この操作は取り消せません"
-        password_placeholder: "変更しない場合は空欄"
-        password_help: "空白の場合は変更しません"
-        current_password_help: "変更を確定するには現在のパスワードが必要です"
-      signed_up: "アカウント登録が完了しました"
-      pending_reconfirmation: "現在、%{unconfirmed_email} の確認待ちです"
-      user:
-        updated: "アカウント情報を更新しました"
-        destroyed: "アカウントを削除しました"
-    shared:
-      minimum_password_length: "%{count}文字以上で入力してください"
-      links:
-        sign_up: "新規登録"
-        sign_in: "ログイン画面に戻る"
-        forgot_your_password: "パスワードを忘れた方"
-        didn_t_receive_confirmation_instructions: "確認メールが届いていませんか？"
-        didn_t_receive_unlock_instructions: "ロック解除の手順が届いていませんか？"
-    passwords:
-      send_instructions: "パスワード再設定のメールを送信しました"
-      updated: "パスワードを更新しました"
-      new:
-        title: "パスワードを忘れた方"
-        submit: "パスワード再設定のメールを送信"
-        description: "登録したメールアドレスにパスワード再設定のリンクをお送りします"
-        email_placeholder: "example@sushi-manage.com"
-        email_help: "登録時に使用したメールアドレスを入力してください"
-      edit:
-        title: "パスワード変更"
-        submit: "パスワード変更"
-        description: "新しいパスワードを設定してください"
-        new_password: "新しいパスワード"
-        new_password_confirmation: "新しいパスワード（確認）"
-    unlocks:
-      new:
-        title: "アカウントロック解除"
-        email: "メールアドレス"
-        email_placeholder: "example@sushi-manage.com"
-        email_hint: "登録時に使用したメールアドレスを入力してください"
-        submit: "ロック解除のメールを送信"
-        back_to_login: "ログイン画面に戻る"
-    mailer:
-      confirmation_instructions:
-        greeting: "ようこそ、%{name}さん！"
-        instruction: "以下のリンクをクリックして、メールアドレスの確認を完了してください:"
-        action: "メールアドレスを確認する"
-      email_changed:
-        greeting: "こんにちは、%{name}さん！"
-        message: "メールアドレスが変更されたことをお知らせします。"
-        message_unconfirmed: "メールアドレスが%{email}に変更されました。現在確認待ちです。"
-        message_confirmed: "メールアドレスが%{email}に変更されました。"
-      password_change:
-        greeting: "こんにちは、%{name}さん！"
-        message: "パスワードが変更されたことをお知らせします。"
-      reset_password_instructions:
-        subject: "【製造管理システム】パスワード再設定のご案内"
-        greeting: "こんにちは %{name} さん！"
-        action: "パスワードの変更"
-        instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください。"
-        instruction_2: "このメールに心当たりがない場合は、無視して構いません。"
-        instruction_3: "パスワードは、上記のリンクをクリックして新しいパスワードを登録するまで変更されません。"
-      unlock_instructions:
-        greeting: "こんにちは、%{name}さん！"
-        message: "ログイン試行回数が上限に達したため、アカウントがロックされました。"
-        instruction: "以下のリンクをクリックしてアカウントのロックを解除してください:"
-        action: "アカウントのロックを解除する"
-
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              not_found: "メールアドレスが見つかりません"
-        product:
-          attributes:
-            item_number:
-              too_long: "は4文字以内で入力してください"
-            name:
-              blank: "を入力してください"
-              taken: "は既に使用されています"
-            category_id:
-              blank: "を選択してください"
-            price:
-              blank: "を入力してください"
-              not_a_number: "は数値で入力してください"
-              greater_than: "は0より大きい値を入力してください"
-            status:
-              blank: "を選択してください"
-        product_material:
-          attributes:
-            material_id:
-              already_registered: "は既に登録されています"
-    models:
-      user: "アカウント"
-      category: "カテゴリー"
-      "resources/category": "カテゴリー"
-      unit: "単位"
-      "resources/unit": "単位"
-      material_order_group: "発注グループ"
-      "resources/material_order_group": "発注グループ"
-      material: "原材料"
-      "resources/material": "原材料"
-      product: "商品"
-      "planning/product_material": "商品原材料"
-      "resources/product": "商品"
-      plan: "製造計画"
-      "resources/plan": "製造計画"
-      "planning/plan_schedule": "計画スケジュール"
-      "planning/daily_target": "日別予算"
-      "planning/actual_revenue": "実績売上"
-      "management/monthly_budget": "月間予算"
-    attributes:
-      user:
-        email: "メールアドレス"
-        password: "パスワード"
-        name: "名前"
-        password_confirmation: "パスワード（確認）"
-        current_password: "現在のパスワード"
-      category:
-        name: "カテゴリー名"
-        category_type: "種別"
-        description: "説明"
-        materials: "原材料"
-        products: "商品"
-        plans: "製造計画"
-      "resources/category":
-        name: "カテゴリー名"
-        category_type: "種別"
-        description: "説明"
-        materials: "原材料"
-        products: "商品"
-        plans: "製造計画"
-      unit:
-        name: "単位名"
-        category: "カテゴリー"
-        description: "説明"
-        materials_as_product_unit: "原材料（使用単位）"
-        materials_as_order_unit: "原材料（発注単位）"
-      "resources/unit":
-        name: "単位名"
-        category: "カテゴリー"
-        description: "説明"
-        materials_as_product_unit: "原材料（使用単位）"
-        materials_as_order_unit: "原材料（発注単位）"
-      material_order_group:
-        name: "グループ名"
-        materials_count: "使用原材料"
-      "resources/material_order_group":
-        name: "グループ名"
-        materials_count: "使用原材料"
-      material:
-        name: "原材料名"
-        category: "カテゴリー"
-        category_id: "カテゴリー"
-        default_unit_weight: "基本使用量"
-        unit_for_product: "使用単位"
-        unit_weight_for_order: "基本発注量"
-        pieces_per_order_unit: "基本発注入数"
-        default_order_quantity: "基本発注量/発注入数"
-        unit_for_order: "発注単位"
-        order_group: "発注グループ"
-        order_group_id: "発注グループ"
-        new_order_group_name: "新発注グループ"
-        production_unit: "製造単位"
-        description: "説明"
-      "resources/material":
-        name: "原材料名"
-        category: "カテゴリー"
-        category_id: "カテゴリー"
-        default_unit_weight: "基本使用量"
-        unit_for_product: "使用単位"
-        unit_weight_for_order: "基本発注量"
-        pieces_per_order_unit: "基本発注入数"
-        default_order_quantity: "基本発注量/発注入数"
-        unit_for_order: "発注単位"
-        order_group: "発注グループ"
-        order_group_id: "発注グループ"
-        new_order_group_name: "新発注グループ"
-        production_unit: "製造単位"
-        description: "説明"
-      product:
-        name: "商品名"
-        item_number: "品番"
-        price: "売価"
-        category_id: "カテゴリー"
-        category: "カテゴリー"
-        image: "画像"
-        status: "ステータス"
-        description: "説明"
-      "resources/product":
-        name: "商品名"
-        item_number: "品番"
-        price: "売価"
-        category_id: "カテゴリー"
-        category: "カテゴリー"
-        image: "画像"
-        status: "ステータス"
-        description: "説明"
-        product_materials_quantity: "数量"
-        product_materials_unit_weight: "分量"
-      "planning/product_material":
-        material_id: "原材料"
-        unit_id: "単位"
-        quantity: "数量"
-        unit_weight: "分量"
-      plan:
-        name: "計画名"
-        category_id: "カテゴリー"
-        status: "ステータス"
-        description: "説明"
-      "resources/plan":
-        name: "計画名"
-        category_id: "カテゴリー"
-        status: "ステータス"
-        description: "説明"
-      plan_product:
-        production_count: "数量"
-      "planning/plan_schedule":
-        scheduled_date: "実施日"
-        plan_id: "製造計画"
-        note: "備考"
-      "planning/daily_target":
-        target_date: "対象日"
-        target_amount: "予算額"
-        note: "備考"
-      "planning/actual_revenue":
-        revenue_date: "実績日"
-        amount: "売上額"
-        note: "備考"
-      "management/monthly_budget":
-        target_month: "対象月"
-        target_amount: "予算額"
-    enums:
-      category:
-        category_type:
-          material: "原材料"
-          product: "商品"
-          plan: "計画"
-      "resources/category":
-        category_type:
-          material: "原材料"
-          product: "商品"
-          plan: "計画"
-      unit:
-        category:
-          production: "使用単位"
-          ordering: "発注単位"
-          manufacturing: "製造単位"
-      "resources/unit":
-        category:
-          production: "使用単位"
-          ordering: "発注単位"
-          manufacturing: "製造単位"
-      product:
-        status:
-          draft: "下書き"
-          selling: "販売中"
-          discontinued: "販売中止"
-      "resources/product":
-        status:
-          draft: "下書き"
-          selling: "販売中"
-          discontinued: "販売中止"
-      plan:
-        status:
-          draft: "下書き"
-          active: "実施中"
-          completed: "完了"
-      "resources/plan":
-        status:
-          draft: "下書き"
-          active: "実施中"
-          completed: "完了"
-
   # API エラーメッセージ
   api:
     errors:
       unauthorized: "認証が必要です"
       plan_not_found: "計画が見つかりません"
       plan_schedule_not_found: "計画スケジュールが見つかりません"
-      daily_target_not_found: "日別が予算見つかりません、またはアクセスが拒否されました"
+      daily_target_not_found: "日別予算が見つかりません、またはアクセスが拒否されました"
       product_not_found: "商品が見つかりません、またはアクセスが拒否されました"
       material_not_found: "原材料が見つかりません、またはアクセスが拒否されました"
       server_error: "サーバーエラーが発生しました"
@@ -878,55 +215,6 @@ ja:
       invalid_parameters: "パラメータが不正です"
       invalid_status: "無効なステータスです"
       missing_required_info: "必要な情報が不足しています"
-
-  # 管理者機能
-  admin:
-    users:
-      index:
-        title: "ユーザー管理"
-        table_headers:
-          name: "名前"
-          email: "メールアドレス"
-          role: "権限"
-          registered_date: "登録日"
-          actions: "操作"
-        role_badges:
-          admin: "管理者"
-          staff: "スタッフ"
-        actions:
-          delete: "削除"
-          self: "（自分）"
-        confirm:
-          delete: "%{name}のアカウントを削除してもよろしいですか？\nこの操作は取り消せません"
-        empty_message: "ユーザーが登録されていません"
-      messages:
-        cannot_delete_self: "自分自身は削除できません"
-        user_deleted: "%{name}のアカウントを削除しました"
-    system_logs:
-      index:
-        title: "システムログ"
-        model: "モデル"
-        user: "ユーザー"
-        date_from: "開始日"
-        date_to: "終了日"
-        filter: "絞り込み"
-        datetime: "日時"
-        action: "アクション"
-        record_id: "レコードID"
-        detail: "詳細"
-        no_detail: "詳細なし"
-        deleted_record: "（削除済み）"
-        no_logs: "ログが見つかりませんでした"
-        unknown_user: "不明なユーザー"
-        system: "システム"
-      events:
-        create: "登録"
-        update: "更新"
-        destroy: "削除"
-      auto_delete:
-        no_logs_to_delete: "%{retention_days}日より古いログは見つかりませんでした"
-        success: "%{deleted_count}件のシステムログを削除しました（%{retention_days}日より古いログ、%{cutoff_date}以前）"
-      deleted_record: "削除済みレコード"
 
   # Stimulus Controller メッセージ
   sortable_table:

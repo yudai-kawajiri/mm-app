@@ -1,0 +1,52 @@
+ja:
+  dashboard:
+    menu:
+      title: "メニュー"
+      dashboard: "ダッシュボード"
+      category_management: "カテゴリー管理"
+      category_list: "カテゴリー一覧"
+      new_category: "カテゴリー登録"
+      material_management: "原材料管理"
+      unit_management: "単位管理"
+      order_group_management: "発注グループ管理"
+      material_list: "原材料一覧"
+      new_material: "原材料登録"
+      product_management: "商品管理"
+      product_list: "商品一覧"
+      new_product: "商品登録"
+      plan_management: "製造計画管理"
+      plan_list: "製造計画一覧"
+      new_plan: "製造計画登録"
+      numerical_management: "数値管理"
+      numerical_dashboard: "売上予算ダッシュボード"
+      account_settings: "アカウント設定"
+      admin_management: "管理者機能"
+      user_management: "ユーザー管理"
+      system_logs: "システムログ"
+
+    welcome_message: "ようこそ！ %{name} さんのダッシュボード"
+    display_month_label: "表示月："
+    display_button: "表示"
+    cumulative_trend_title: "の累計推移"
+
+    weather:
+      title: "週間天気予報"
+      rain_alert: "雨注意"
+      conditions:
+        clear: "晴れ"
+        clouds: "曇り"
+        rain: "雨"
+        drizzle: "霧雨"
+        thunderstorm: "雷雨"
+        snow: "雪"
+        mist: "霧"
+
+    kpi:
+      monthly_target: "月間売上予算"
+      monthly_actual: "月間売上実績"
+      achievement_rate: "月間売上達成率"
+      remaining_target: "残りの売上予算"
+      target_achieved: "売上予算達成"
+
+    chart:
+      budget_trend: "売上予算推移（過去6ヶ月）"

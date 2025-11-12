@@ -1,0 +1,155 @@
+ja:
+  # 製造計画
+  plans:
+    new:
+      title: "製造計画登録"
+    index:
+      title: "製造計画一覧"
+    show:
+      title: "%{name} - 製造計画詳細"
+    edit:
+      title: "%{name} - 製造計画編集"
+    category_total_label: "カテゴリ合計"
+    total_price_label: "総合計"
+    plan_product_subtotal: "小計"
+    category_selector:
+      prompt: "カテゴリを選択"
+      add_button: "カテゴリタブを追加"
+    tab_all: "全て"
+    table_headers:
+      product_name: "商品名"
+      quantity: "数量"
+      price: "売価"
+      subtotal: "小計"
+    print:
+      page1_title: "① 製造計画書（商品一覧）"
+      page2_title: "② 原材料管理表（発注・使用）"
+      plan_name: "計画名"
+      scheduled_date: "実施日"
+      budget: "予算"
+      planned_total: "計画高"
+      achievement_rate: "達成率"
+      image: "画像"
+      product_total: "商品合計金額"
+      item_number: "品番"
+      product_name: "商品名"
+      production_count: "製造数"
+      unit_price: "単価"
+      subtotal: "小計"
+      count_unit: "個"
+      no_image: "画像なし"
+      no_products: "商品が登録されていません"
+      material_name: "原材料名"
+      product_usage: "商品での使用数量"
+      total_usage: "合計使用量"
+      order_unit: "発注単位"
+      order_quantity: "発注数量"
+      no_materials: "原材料が登録されていません"
+    add_product_button: "商品を追加"
+    errors:
+      duplicate_name: "は既に同じカテゴリ内に存在します"
+      duplicate_product: "同じ商品を複数回追加することはできません"
+
+  # 計画スケジュール（個別メッセージは不要、flash_messagesを使用）
+  plan_schedules: {}
+
+  # 数値管理（売上予算管理）
+  numerical_managements:
+    index:
+      title: "売上予算ダッシュボード"
+      monthly_budget_card: "月間売上予算"
+      monthly_planned_revenue: "月間計画売上"
+      cumulative_actual: "累計売上実績"
+      budget_achievement: "予算達成率"
+      target_amount_subtitle: "今月の予算額"
+      planned_total_subtitle: "今月の計画合計"
+      actual_until_yesterday: "昨日までの実績"
+      achievement_as_of_yesterday: "昨日時点の達成率"
+      month_end_forecast: "月末予測"
+      forecast_revenue: "予測売上"
+      forecast_diff: "予測差"
+      achievement_rate: "達成率"
+      required_additional: "必要追加額"
+      gap_analysis: "ギャップ分析"
+      remaining_days: "残り日数"
+      recommended_daily_target: "推奨日次目標"
+      daily_required: "1日あたり必要額"
+      action_plan: "アクションプラン"
+      daily_target_diff: "予算との差"
+      alert_action_needed_html: "残り<strong>%{days}日</strong>で<strong>%{amount}</strong>の追加が必要です。<br>1日あたり<strong>%{daily}</strong>を目指しましょう"
+      alert_on_track: "予算達成に向けて順調です！"
+      daily_details: "日別詳細"
+      set_budget: "予算設定"
+      delete_budget: "予算削除"
+      target_month: "対象月"
+      display: "表示"
+      days_suffix: "日"
+      alert_remaining: "残り%{days}日で予算を達成するには、"
+      alert_daily: "1日あたり%{amount}の追加が必要です"
+      alert_add: "追加で%{amount}の売上が必要です"
+    table_headers:
+      budget: "予算"
+      actual: "実績"
+      planned: "計画高"
+      achievement_rate: "達成率"
+      budget_diff: "予算差"
+    bulk_edit:
+      toggle_edit_mode: "一括編集モード"
+      toggle_normal_mode: "通常表示"
+      monthly_budget_label: "月間予算:"
+      daily_target_sum: "日別予算合計:"
+      budget_diff_label: "予算過不足:"
+      bulk_save: "一括保存"
+      excess: "超過"
+      shortage: "不足"
+    labels:
+      cumulative: "累計:"
+    actions:
+      edit_target: "予算編集"
+      add_plan: "計画登録"
+      edit_plan: "計画編集"
+      input_actual: "実績入力"
+      print_plan: "計画を印刷"
+      select_plan_to_print: "印刷する計画を選択"
+    modals:
+      monthly_budget_edit:
+        title: "月間予算編集"
+        info: "月間予算を入力してください"
+      budget_setting:
+        title: "予算設定"
+      daily_target_edit:
+        title: "日別予算編集"
+        info: "この日の予算金額を入力してください"
+      actual_revenue_entry:
+        title: "実績入力"
+        info: "この日の実績売上を入力してください"
+      assign_plan:
+        title: "計画登録"
+        edit_title: "計画編集"
+        planned_revenue_help: "計画を選択後に自動で入力されます"
+      labels:
+        target_month: "対象月"
+        target_date: "対象日"
+        monthly_budget_yen: "月間予算（円）"
+        daily_target_yen: "日別予算（円）"
+        actual_revenue_yen: "実績売上（円）"
+        planned_revenue_yen: "計画高（円）"
+        note: "備考"
+        optional: "（任意）"
+        category: "カテゴリ"
+        plan_select: "計画選択"
+        product_quantity_adjustment: "商品数量調整"
+        planned_revenue: "計画高"
+      fields:
+        monthly_budget: "月間予算"
+        daily_target: "日別予算"
+      prompts:
+        select_plan_after_category: "選択してください（カテゴリ選択後に選択可能）"
+      confirm:
+        delete: "本当に削除しますか？"
+      actions:
+        create: "登録"
+        update: "更新"
+    errors:
+      budget_not_set: "月次予算が設定されていません。先に予算設定を行ってください。"
+      budget_mismatch: "日別予算の合計（%{total}）が月次予算（%{budget}）と一致しません。"
