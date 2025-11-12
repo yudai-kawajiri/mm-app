@@ -40,9 +40,6 @@ import PlanAssignmentController from "controllers/management/plan_assignment_con
 //  Sortable Table Controller（ドラッグ&ドロップ並び替え）
 import SortableTableController from "controllers/ui/sortable_table_controller"
 
-// Budget Chart Controller（予算グラフ表示）
-import BudgetChartController from "controllers/charts/budget_chart_controller"
-
 // 手動登録
 application.register("form--nested-form", FormNestedFormController)
 application.register("form--nested-form-item", FormNestedFormItemController)
@@ -59,12 +56,7 @@ application.register("number-input", NumberInputController)
 application.register("image-preview", ImagePreviewController)
 application.register("measurement-type", MeasurementTypeController)
 application.register("order-group", OrderGroupController)
-
-// 計画割り当てController登録
 application.register("plan-assignment", PlanAssignmentController)
-
-// Sortable Table Controller登録（ドラッグ&ドロップ並び替え）
 application.register("sortable-table", SortableTableController)
 
-// Budget Chart Controller登録（予算グラフ表示）
-application.register("budget-chart", BudgetChartController)
+console.log('✅ Stimulus controllers registered:', application.router.modulesByIdentifier.size)

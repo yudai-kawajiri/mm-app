@@ -25,9 +25,6 @@ pin "controllers/input/character_counter_controller", to: "controllers/input/cha
 pin "controllers/input/measurement_type_controller", to: "controllers/input/measurement_type_controller.js"
 pin "controllers/input/number_input_controller", to: "controllers/input/number_input_controller.js"
 
-# Chart Controllers
-pin "controllers/charts/budget_chart_controller", to: "controllers/charts/budget_chart_controller.js"
-
 # Management Controllers
 pin "controllers/management/order_group_controller", to: "controllers/management/order_group_controller.js"
 pin "controllers/management/plan_assignment_controller", to: "controllers/management/plan_assignment_controller.js"

@@ -1,3 +1,5 @@
+<%# DEBUG: @product_categories = <%= @product_categories.inspect %>
+<%# DEBUG: @product_categories.count = <%= @product_categories&.count %>
 <%#
   機能: 製造計画商品フォームフィールド（複雑版）
   - カテゴリタブによる商品管理
@@ -75,7 +77,7 @@
             <%= category.name %>
             <span class="position-absolute top-50 end-0 translate-middle-y pe-2"
                   style="cursor: pointer; font-weight: bold; color: #dc3545;"
-                  data-action="click->tabs--category-tabs#removeTab"
+                  data-action="click->tabs--category-tabs#deleteTab"
                   data-category-id="<%= category.id %>">
               ×
             </span>
@@ -150,7 +152,7 @@
           CATEGORY_NAME_PLACEHOLDER
           <span class="position-absolute top-50 end-0 translate-middle-y pe-2"
                 style="cursor: pointer; font-weight: bold; color: #dc3545;"
-                data-action="click->tabs--category-tabs#removeTab"
+                data-action="click->tabs--category-tabs#deleteTab"
                 data-category-id="CATEGORY_ID_PLACEHOLDER">
             ×
           </span>
