@@ -150,9 +150,15 @@ export default class extends Controller {
    *
    * @description
    *   指定されたカテゴリIDのタブ内からターゲットコンテナを探します。
+   *   両方のIDパターン（nav-X と category-pane-X）に対応。
    */
   findTargetContainer(categoryId) {
-    const tabPane = document.querySelector(`#nav-${categoryId}`)
+    // 両方のIDパターンに対応
+    let tabPane = document.querySelector(`#nav-${categoryId}`)
+    if (!tabPane) {
+      tabPane = document.querySelector(`#category-pane-${categoryId}`)
+    }
+
     if (!tabPane) {
       Logger.warn(`Tab pane not found for category: ${categoryId}`)
       return null

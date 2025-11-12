@@ -57,8 +57,9 @@
       data: {
         controller: 'number-input',
         'number-input-no-comma': 'true',
+        'number-input-decimal-field': 'true',
         'resources--product-material--material-target': 'quantityInput',
-        action: 'input->number-input#handleInput input->resources--product-material--material#syncQuantityToOtherTabs paste->number-input#handlePaste',
+        action: 'input->number-input#handleInput input->resources--product-material--material#syncQuantityToOtherTabs paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
         'unique-id': unique_id
       } %>
   </td>
@@ -71,15 +72,16 @@
       data: {
         controller: 'number-input',
         'number-input-no-comma': 'true',
+        'number-input-decimal-field': 'true',
         'resources--product-material--material-target': 'unitWeightInput',
-        action: 'input->number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->number-input#handlePaste',
+        action: 'input->number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
         'unique-id': unique_id
       } %>
   </td>
 
   <td>
     <span data-resources--product-material--material-target="unitDisplay" class="fw-bold">
-      <%= f.object.material&.production_unit&.name || t('helpers.no_setting') %>
+      <%= f.object.material&.unit_for_product&.name || t('helpers.no_setting') %>
     </span>
   </td>
 

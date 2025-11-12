@@ -59,7 +59,7 @@
 
   <td style="width: 20%;" class="text-end fw-bold">
     <span data-resources--plan-product--row-target="subtotal">
-      <%= format_currency(f.object.subtotal_calculated_for_view rescue 0) %>
+      <%= format_currency(f.object.try(:subtotal_calculated_for_view) || 0) %>
     </span>
   </td>
 

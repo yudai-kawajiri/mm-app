@@ -19,7 +19,7 @@ import { Controller } from "@hotwired/stimulus"
  *   <%= f.text_field :price,
  *       data: {
  *         controller: "number-input",
- *         action: "input->number-input#handleInput paste->number-input#handlePaste"
+ *         action: "input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur"
  *       }
  *   %>
  *
@@ -28,7 +28,25 @@ import { Controller } from "@hotwired/stimulus"
  *       data: {
  *         controller: "number-input",
  *         number_input_no_comma: "true",
- *         action: "input->number-input#handleInput paste->number-input#handlePaste"
+ *         action: "input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur"
+ *       }
+ *   %>
+ *
+ *   <!-- 整数のみ（小数点禁止） -->
+ *   <%= f.text_field :pieces,
+ *       data: {
+ *         controller: "number-input",
+ *         number_input_integer_only: "true",
+ *         action: "input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus"
+ *       }
+ *   %>
+ *
+ *   <!-- 小数点フィールド（.0形式を維持） -->
+ *   <%= f.text_field :weight,
+ *       data: {
+ *         controller: "number-input",
+ *         number_input_decimal_field: "true",
+ *         action: "input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur"
  *       }
  *   %>
  *
@@ -44,6 +62,9 @@ import { Controller } from "@hotwired/stimulus"
  *   - カーソル位置の保持
  *   - フォーム送信前のカンマ自動削除 + 数値型変換
  *   - マイナス記号対応
+ *   - フォーカス時の「0」「0.0」自動選択
+ *   - 整数のみモード（小数点禁止）
+ *   - 小数点フィールドモード（.0形式を維持）
  */
 export default class extends Controller {
   /**
@@ -57,6 +78,8 @@ export default class extends Controller {
     this.isUpdating = false
     this.isComposing = false  // IME変換中フラグ
     this.noComma = this.element.dataset.numberInputNoComma === 'true'  // カンマなしモード
+    this.integerOnly = this.element.dataset.numberInputIntegerOnly === 'true'  // 整数のみモード
+    this.decimalField = this.element.dataset.numberInputDecimalField === 'true'  // 小数点フィールドモード
 
     // type="number"の場合はsetSelectionRangeが使えない
     this.isNumberType = this.element.type === 'number'
@@ -82,12 +105,101 @@ export default class extends Controller {
     }
 
     // 初期値をフォーマット（既存データや編集時）
-    if (this.element.value && !this.noComma) {
-      // 既に数値が入っている場合はカンマ付きに変換
-      const initialValue = this.element.value.replace(/,/g, '') // カンマを削除
-      if (initialValue && /^-?\d+(\.\d+)?$/.test(initialValue)) {
-        // 純粋な数値の場合のみフォーマット
-        this.element.value = this.formatNumber(initialValue)
+    if (this.element.value) {
+      this.formatInitialValue()
+    }
+  }
+
+  /**
+   * 初期値をフォーマット
+   *
+   * @description
+   *   既存データや編集時の初期値をフォーマットします。
+   */
+  formatInitialValue() {
+    let value = this.element.value.replace(/,/g, '')
+
+    // 数値でない場合は何もしない
+    if (!/^-?\d+(\.\d+)?$/.test(value)) {
+      return
+    }
+
+    const numValue = parseFloat(value)
+
+    // 整数のみモードの場合は小数点以下を切り捨て
+    if (this.integerOnly) {
+      this.element.value = Math.floor(numValue).toString()
+      return
+    }
+
+    // 小数点フィールドモードの場合は.0形式を維持
+    if (this.decimalField) {
+      // 整数の場合は.0を追加
+      if (Number.isInteger(numValue)) {
+        this.element.value = numValue.toFixed(1)
+      } else {
+        this.element.value = value
+      }
+      return
+    }
+
+    // カンマありモードの場合はカンマを挿入
+    if (!this.noComma && Number.isInteger(numValue)) {
+      this.element.value = this.formatNumber(value)
+    }
+  }
+
+  /**
+   * focus イベント時の処理
+   *
+   * @param {Event} event - focus イベント
+   *
+   * @description
+   *   「0」または「0.0」の場合、フォーカス時に全選択します。
+   *   次に数字を入力すると自動的に上書きされます。
+   */
+  handleFocus(event) {
+    const input = event.target
+    const value = input.value.replace(/,/g, '').trim()
+
+    // 「0」または「0.0」の場合は全選択
+    if (value === '0' || value === '0.0' || value === '0.00') {
+      if (!this.isNumberType) {
+        input.select()
+      }
+    }
+  }
+
+  /**
+   * blur イベント時の処理
+   *
+   * @param {Event} event - blur イベント
+   *
+   * @description
+   *   小数点フィールドの場合、入力完了時に.0形式に変換します。
+   */
+  handleBlur(event) {
+    const input = event.target
+
+    // 小数点フィールドモードでない場合は何もしない
+    if (!this.decimalField) {
+      return
+    }
+
+    const value = input.value.replace(/,/g, '').trim()
+
+    // 空欄の場合は何もしない
+    if (value === '' || value === '-') {
+      return
+    }
+
+    // 数値に変換
+    const numValue = parseFloat(value)
+
+    // NaNでない場合は.0形式に変換
+    if (!isNaN(numValue)) {
+      if (Number.isInteger(numValue)) {
+        input.value = numValue.toFixed(1)
       }
     }
   }
@@ -160,13 +272,17 @@ export default class extends Controller {
       .replace(/\s/g, '')          // 半角スペース削除
       .replace(/　/g, '')          // 全角スペース削除
 
-    // マイナス記号と小数点以外の非数値文字を削除
-    cleanValue = cleanValue.replace(/[^\d.-]/g, '')
+    // マイナス記号と小数点以外の非数値文字を削除（整数のみモードでは小数点も削除）
+    if (this.integerOnly) {
+      cleanValue = cleanValue.replace(/[^\d-]/g, '')
+    } else {
+      cleanValue = cleanValue.replace(/[^\d.-]/g, '')
+    }
 
     // 空文字列でない場合は数値型に変換
     if (cleanValue !== '') {
-      // parseFloatで数値に変換（小数点対応）
-      const numericValue = parseFloat(cleanValue)
+      // 整数のみモードの場合はparseIntで変換
+      const numericValue = this.integerOnly ? parseInt(cleanValue, 10) : parseFloat(cleanValue)
 
       // NaNでない場合のみ設定
       if (!isNaN(numericValue)) {
@@ -187,7 +303,7 @@ export default class extends Controller {
    *   入力値を以下の順で処理：
    *   1. 全角数字→半角数字
    *   2. 全角マイナス記号→半角マイナス記号
-   *   3. 全角小数点→半角小数点
+   *   3. 全角小数点→半角小数点（整数のみモードでは削除）
    *   4. **全角・半角スペースを削除**
    *   5. カンマ削除
    *   6. 数値以外の文字削除
@@ -201,28 +317,35 @@ export default class extends Controller {
     // type="number"の場合はsetSelectionRangeが使えないのでカーソル位置を取得しない
     const cursorPosition = this.isNumberType ? null : input.selectionStart
 
-    // 全角数字、マイナス記号、小数点を半角に変換
+    // 全角数字、マイナス記号を半角に変換
     let convertedValue = originalValue
       .replace(/[０-９]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0xFEE0))
       .replace(/[ー−]/g, '-')
-      .replace(/[。．]/g, '.')
       .replace(/\s/g, '')          // ★ 半角スペース削除
       .replace(/　/g, '')          // ★ 全角スペース削除
+
+    // 整数のみモードの場合は小数点を削除
+    if (this.integerOnly) {
+      convertedValue = convertedValue.replace(/[。．.]/g, '')
+    } else {
+      convertedValue = convertedValue.replace(/[。．]/g, '.')
+    }
 
     // カンマを削除して数値のみを抽出
     const withoutCommas = convertedValue.replace(/,/g, '')
 
-    // 数値、マイナス記号、小数点のみ許可
-    const cleanValue = withoutCommas.replace(/[^\d.-]/g, '')
+    // 数値、マイナス記号、小数点のみ許可（整数のみモードでは小数点を除外）
+    const allowedChars = this.integerOnly ? /[^\d-]/g : /[^\d.-]/g
+    const cleanValue = withoutCommas.replace(allowedChars, '')
 
     // マイナス記号は先頭のみ許可
     const hasNegative = cleanValue.startsWith('-')
     const withoutNegative = cleanValue.replace(/-/g, '')
 
-    // 小数点の処理
-    const parts = withoutNegative.split('.')
+    // 小数点の処理（整数のみモードでない場合）
+    const parts = this.integerOnly ? [withoutNegative] : withoutNegative.split('.')
     const integerPart = parts[0] || ''
-    const decimalPart = parts.length > 1 ? '.' + parts[1] : ''
+    const decimalPart = !this.integerOnly && parts.length > 1 ? '.' + parts[1] : ''
 
     // 空の場合
     if (integerPart === '' && decimalPart === '') {

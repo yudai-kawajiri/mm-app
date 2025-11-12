@@ -1,5 +1,5 @@
 <%# 製造計画フォーム（新規・編集共通） %>
 <%= form_with model: plan, html: { id: 'plan_form' }, data: { controller: 'form-submit' } do |f| %>
   <%# 既存の優れた2カラムフォームコンポーネントを使用 %>
-  <%= render 'shared/forms/resource_two_column_form', f: f, basic_fields: 'plans/fields', detail_fields: 'plans/products_fields', resource_name: 'plans', custom_right_title: t('forms.titles.plan_product') %>
+  <%= render 'shared/forms/resource_two_column_form', f: f, basic_fields: 'resources/plans/fields', detail_fields: 'resources/plans/products_fields', resource_name: 'plans' %>
 <% end %>

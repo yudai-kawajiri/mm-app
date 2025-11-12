@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_11_083036) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_12_035106) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -43,7 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_083036) do
   end
 
   create_table "categories", force: :cascade do |t|
-    t.integer "category_type", default: 0, null: false
+    t.integer "category_type"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
@@ -79,7 +79,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_083036) do
   create_table "materials", force: :cascade do |t|
     t.bigint "category_id", null: false
     t.datetime "created_at", null: false
-    t.decimal "default_unit_weight", precision: 10, scale: 3, default: "0.0", comment: "デフォルトの1単位あたり重量（g）"
+    t.decimal "default_unit_weight", precision: 10, scale: 3, comment: "デフォルトの1単位あたり重量（g）"
     t.text "description"
     t.integer "display_order"
     t.string "measurement_type", default: "weight", null: false
@@ -161,7 +161,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_083036) do
     t.bigint "product_id", null: false
     t.decimal "quantity", null: false
     t.bigint "unit_id", null: false
-    t.decimal "unit_weight", precision: 10, scale: 3, default: "0.0", null: false
+    t.decimal "unit_weight", precision: 10, scale: 3, null: false
     t.datetime "updated_at", null: false
     t.index ["material_id"], name: "index_product_materials_on_material_id"
     t.index ["product_id", "material_id"], name: "index_product_materials_on_product_id_and_material_id", unique: true
@@ -177,7 +177,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_083036) do
     t.string "item_number", null: false
     t.string "name", null: false
     t.integer "price", null: false
-    t.integer "status", default: 0, null: false
+    t.integer "status"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["category_id"], name: "index_products_on_category_id"
@@ -187,7 +187,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_083036) do
   end
 
   create_table "units", force: :cascade do |t|
-    t.integer "category", default: 0, null: false
+    t.integer "category"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
