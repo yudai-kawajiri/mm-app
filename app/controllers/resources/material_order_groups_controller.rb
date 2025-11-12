@@ -5,12 +5,20 @@
 # 材料発注グループのCRUD操作を管理
 #
 # 機能:
-#   - 発注グループの一覧表示（全ユーザー共有）
+#   - 発注グループの一覧表示（全ユーザー共有・ソート機能）
 #   - 発注グループの作成・編集・削除
 #   - グループ削除時の材料への影響（dependent: :nullify）
 class Resources::MaterialOrderGroupsController < AuthenticatedController
+  include SortableController
+
   # 検索パラメータの定義
-  define_search_params :q
+  define_search_params :q, :sort_by
+
+  # ソートオプションの定義
+  define_sort_options(
+    name: -> { order(:name) },
+    created_at: -> { order(created_at: :desc) }
+  )
 
   # リソース検索
   find_resource :material_order_group, only: [:show, :edit, :update, :destroy]
@@ -21,12 +29,12 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   #
   # @return [void]
   def index
-    @material_order_groups = apply_pagination(
-      Resources::MaterialOrderGroup.includes(:materials)
-                        .ordered_by_name
-                        .search_and_filter(search_params)
+    sorted_index(
+      Resources::MaterialOrderGroup,
+      default: 'name',
+      scope: :ordered_by_name,
+      includes: :materials
     )
-    set_search_term_for_view
   end
 
   # 新規発注グループ作成フォーム

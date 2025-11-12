@@ -5,12 +5,21 @@
 # 単位（Unit）のCRUD操作を管理
 #
 # 機能:
-#   - 単位の一覧表示（検索・カテゴリフィルタ・ページネーション）
+#   - 単位の一覧表示（検索・カテゴリフィルタ・ページネーション・ソート機能）
 #   - 単位の作成・編集・削除
 #   - カテゴリ別フィルタリング（production, ordering, manufacturing）
 class Resources::UnitsController < AuthenticatedController
+  include SortableController
+
   # 検索パラメータの定義
-  define_search_params :q, :category
+  define_search_params :q, :category, :sort_by
+
+  # ソートオプションの定義
+  define_sort_options(
+    name: -> { order(:name) },
+    category: -> { order(:category, :name) },
+    created_at: -> { order(created_at: :desc) }
+  )
 
   # リソース検索（show, edit, update, destroy）
   find_resource :unit, only: [:show, :edit, :update, :destroy]
@@ -19,12 +28,7 @@ class Resources::UnitsController < AuthenticatedController
   #
   # @return [void]
   def index
-    @units = apply_pagination(
-      Resources::Unit.for_index
-          .search_and_filter(search_params)
-          .filter_by_category(search_params[:category])
-    )
-    set_search_term_for_view
+    sorted_index(Resources::Unit, default: 'name')
   end
 
   # 新規単位作成フォーム

@@ -5,7 +5,7 @@
 # 製品のCRUD操作を管理
 #
 # 機能:
-#   - 製品の一覧表示（検索・カテゴリフィルタ・ページネーション）
+#   - 製品の一覧表示（検索・カテゴリフィルタ・ページネーション・ソート機能）
 #   - 製品の作成・編集・削除
 #   - 画像アップロード（ImageUploadService使用）
 #   - 製品コピー機能（材料構成も複製）
@@ -14,9 +14,19 @@
 #   - 数値入力のサニタイズ処理（NumericSanitizer）
 class Resources::ProductsController < AuthenticatedController
   include NumericSanitizer
+  include SortableController
 
   # 検索パラメータの定義
-  define_search_params :q, :category_id
+  define_search_params :q, :category_id, :sort_by
+
+  # ソートオプションの定義
+  define_sort_options(
+    display_order: -> { ordered },
+    created_at: -> { order(created_at: :desc) },
+    name: -> { order(:name) },
+    category: -> { joins(:category).order('categories.name', :name) },
+    updated_at: -> { order(updated_at: :desc) }
+  )
 
   # リソース検索
   find_resource :product, only: [:show, :edit, :update, :destroy, :purge_image, :copy]
@@ -29,11 +39,8 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [void]
   def index
-    @products = apply_pagination(
-      Resources::Product.includes(:category).search_and_filter(search_params).ordered
-    )
+    sorted_index(Resources::Product, default: 'display_order', includes: :category)
     @search_categories = @product_categories
-    set_search_term_for_view
   end
 
   # 新規製品作成フォーム

@@ -5,7 +5,7 @@
 # 計画のCRUD操作を管理
 #
 # 機能:
-#   - 計画の一覧表示（検索・カテゴリフィルタ・ページネーション）
+#   - 計画の一覧表示（検索・カテゴリフィルタ・ページネーション・ソート機能）
 #   - 計画の作成・編集・削除
 #   - ステータス管理（draft, active, completed）
 #   - 計画コピー機能（商品構成も複製）
@@ -14,9 +14,18 @@
 #   - 数値入力のサニタイズ処理（NumericSanitizer）
 class Resources::PlansController < AuthenticatedController
   include NumericSanitizer
+  include SortableController
 
   # 検索パラメータの定義
-  define_search_params :q, :category_id
+  define_search_params :q, :category_id, :sort_by
+
+  # ソートオプションの定義
+  define_sort_options(
+    name: -> { order(:name) },
+    status: -> { order(:status, :name) },
+    category: -> { joins(:category).order('categories.name', :name) },
+    updated_at: -> { order(updated_at: :desc) }
+  )
 
   # リソース検索
   find_resource :plan, only: [:show, :edit, :update, :destroy, :update_status, :copy, :print]
@@ -30,10 +39,8 @@ class Resources::PlansController < AuthenticatedController
   #
   # @return [void]
   def index
-    @plans = apply_pagination(
-      Resources::Plan.for_index.search_and_filter(search_params)
-    )
-    set_search_term_for_view
+    sorted_index(Resources::Plan, default: 'name')
+    @search_categories = @plan_categories
   end
 
   # 新規計画作成フォーム
@@ -150,8 +157,7 @@ class Resources::PlansController < AuthenticatedController
   # 材料集計、予算、達成率を表示
   #
   # @return [void]
-
-    def print
+  def print
     @scheduled_date = params[:date]&.to_date || @plan.plan_schedules.order(:scheduled_date).first&.scheduled_date
 
     # その日の plan_schedule を取得
@@ -207,7 +213,7 @@ class Resources::PlansController < AuthenticatedController
     Rails.logger.info "Materials Summary Count: #{@materials_summary.count}"
   end
 
-    private
+  private
 
   # Strong Parameters
   #

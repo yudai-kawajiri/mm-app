@@ -5,12 +5,21 @@
 # カテゴリーのCRUD操作を管理
 #
 # 機能:
-#   - カテゴリーの一覧表示（検索・種別フィルタ・ページネーション）
+#   - カテゴリーの一覧表示（検索・種別フィルタ・ページネーション・ソート機能）
 #   - カテゴリーの作成・編集・削除
 #   - 種別による分類（material, product, plan）
 class Resources::CategoriesController < AuthenticatedController
+  include SortableController
+
   # 検索パラメータの定義
-  define_search_params :q, :category_type
+  define_search_params :q, :category_type, :sort_by
+
+  # ソートオプションの定義
+  define_sort_options(
+    name: -> { order(:name) },
+    category_type: -> { order(:category_type, :name) },
+    created_at: -> { order(created_at: :desc) }
+  )
 
   # リソース検索
   find_resource :category, only: [:show, :edit, :update, :destroy]
@@ -19,10 +28,7 @@ class Resources::CategoriesController < AuthenticatedController
   #
   # @return [void]
   def index
-    @categories = apply_pagination(
-      Resources::Category.for_index.search_and_filter(search_params)
-    )
-    set_search_term_for_view
+    sorted_index(Resources::Category, default: 'name')
   end
 
   # 新規カテゴリー作成フォーム

@@ -5,16 +5,25 @@
 # 材料のCRUD操作を管理
 #
 # 機能:
-#   - 材料の一覧表示（検索・カテゴリフィルタ・ページネーション）
+#   - 材料の一覧表示（検索・カテゴリフィルタ・ページネーション・ソート機能）
 #   - 材料の作成・編集・削除
 #   - 表示順の並び替え（drag & drop）
 #   - 計測方法の管理（重量ベース・個数ベース）
 #   - 数値入力のサニタイズ処理（NumericSanitizer）
 class Resources::MaterialsController < AuthenticatedController
   include NumericSanitizer
+  include SortableController
 
   # 検索パラメータの定義
-  define_search_params :q, :category_id
+  define_search_params :q, :category_id, :sort_by
+
+  # ソートオプションの定義
+  define_sort_options(
+    display_order: -> { ordered },
+    name: -> { order(:name) },
+    category: -> { joins(:category).order('categories.name', :name) },
+    order_group: -> { left_joins(:order_group).order('material_order_groups.name', :name) }
+  )
 
   # カテゴリロード
   before_action -> { load_categories_for("material", as: :material) }, only: [:index, :new, :edit, :create, :update]
@@ -26,13 +35,12 @@ class Resources::MaterialsController < AuthenticatedController
   #
   # @return [void]
   def index
-    @materials = apply_pagination(
-      Resources::Material.includes(:category, :unit_for_product, :unit_for_order, :production_unit, :order_group)
-              .search_and_filter(search_params)
-              .ordered
+    sorted_index(
+      Resources::Material,
+      default: 'display_order',
+      includes: [:category, :unit_for_product, :unit_for_order, :production_unit, :order_group]
     )
     @search_categories = @material_categories
-    set_search_term_for_view
   end
 
   # 材料詳細
