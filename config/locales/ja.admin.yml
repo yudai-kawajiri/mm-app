@@ -1,0 +1,48 @@
+ja:
+  admin:
+    users:
+      index:
+        title: "ユーザー管理"
+        table_headers:
+          name: "名前"
+          email: "メールアドレス"
+          role: "権限"
+          registered_date: "登録日"
+          actions: "操作"
+        role_badges:
+          admin: "管理者"
+          staff: "スタッフ"
+        actions:
+          delete: "削除"
+          self: "（自分）"
+        confirm:
+          delete: "%{name}のアカウントを削除してもよろしいですか？\nこの操作は取り消せません"
+        empty_message: "ユーザーが登録されていません"
+      messages:
+        cannot_delete_self: "自分自身は削除できません"
+
+    system_logs:
+      index:
+        title: "システムログ"
+        model: "モデル"
+        user: "ユーザー"
+        date_from: "開始日"
+        date_to: "終了日"
+        filter: "絞り込み"
+        datetime: "日時"
+        action: "アクション"
+        record_id: "レコードID"
+        detail: "詳細"
+        no_detail: "詳細なし"
+        deleted_record: "（削除済み）"
+        no_logs: "ログが見つかりませんでした"
+        unknown_user: "不明なユーザー"
+        system: "システム"
+      events:
+        create: "登録"
+        update: "更新"
+        destroy: "削除"
+      auto_delete:
+        no_logs_to_delete: "%{retention_days}日より古いログは見つかりませんでした"
+        success: "%{deleted_count}件のシステムログを削除しました（%{retention_days}日より古いログ、%{cutoff_date}以前）"
+      deleted_record: "削除済みレコード"
