@@ -331,11 +331,18 @@ export default class extends Controller {
       `tbody[data-category-id="0"]`
     )
 
+    // 5. ALLタブ用に別のユニークIDを生成（重複を防ぐ）
     if (allTbody) {
-      allTbody.insertAdjacentHTML('beforeend', templateHtml)
-      Logger.log(`Initial form row also added to ALL tab`)
-    } else {
-      Logger.warn(`ALL tab tbody not found`)
+      // 新しいユニークIDを生成
+      const allTabUniqueId = `${timestamp}_${Math.random().toString(36).substr(2, 9)}_all`
+      let allTabTemplateHtml = template.innerHTML.replace(/NEW_RECORD/g, allTabUniqueId)
+
+      allTabTemplateHtml = allTabTemplateHtml.replace(
+        /<tr([^>]*)>/,
+        `<tr$1 data-category-id="${categoryId}" data-initial-row="true" data-unique-id="${allTabUniqueId}">`
+      )
+
+      allTbody.insertAdjacentHTML('beforeend', allTabTemplateHtml)
     }
   }
 

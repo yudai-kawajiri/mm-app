@@ -22,6 +22,10 @@ class Resources::Plan < ApplicationRecord
   accepts_nested_attributes_for :plan_products,
                                 allow_destroy: true,
                                 reject_if: :reject_plan_products
+
+  # 保存前コールバック（重複商品を除外）
+  before_save :reject_duplicate_plan_products
+
   has_many :plan_schedules, class_name: 'Planning::PlanSchedule', dependent: :destroy
 
   # 計画のステータス定義
@@ -215,6 +219,22 @@ class Resources::Plan < ApplicationRecord
   end
 
   private
+
+  # 重複した商品を削除（カテゴリタブとALLタブで同じ商品が追加された場合）
+  def reject_duplicate_plan_products
+    grouped = plan_products.reject(&:marked_for_destruction?).group_by(&:product_id)
+
+    grouped.each do |product_id, items|
+      next if items.size <= 1
+
+      Rails.logger.warn "⚠️ Duplicate plan_product detected: product_id=#{product_id}, count=#{items.size}"
+
+      items[1..].each do |duplicate|
+        Rails.logger.warn "  → Removing duplicate: id=#{duplicate.id || 'new'}"
+        duplicate.mark_for_destruction
+      end
+    end
+  end
 
   # product_id と production_count の両方が空の場合にレコードを無視
   def reject_plan_products(attributes)

@@ -207,25 +207,35 @@ class Resources::PlansController < AuthenticatedController
     Rails.logger.info "Materials Summary Count: #{@materials_summary.count}"
   end
 
-  private
+    private
 
   # Strong Parameters
   #
   # @return [ActionController::Parameters]
   def plan_params
-    params.require(:resources_plan).permit(
+    permitted = params.require(:resources_plan).permit(
       :category_id,
       :user_id,
       :name,
       :description,
-      :status,
-      plan_products_attributes: [
-        :id,
-        :_destroy,
-        :product_id,
-        :production_count
-      ]
+      :status
     )
+
+    # plan_products_attributes を手動で処理
+    if params[:resources_plan][:plan_products_attributes].present?
+      products_attrs = {}
+      params[:resources_plan][:plan_products_attributes].each do |key, attrs|
+        products_attrs[key] = attrs.permit(
+          :id,
+          :_destroy,
+          :product_id,
+          :production_count
+        )
+      end
+      permitted[:plan_products_attributes] = products_attrs
+    end
+
+    permitted
   end
 
   # 数値パラメータのサニタイズ処理
@@ -233,13 +243,14 @@ class Resources::PlansController < AuthenticatedController
   # 対象フィールド:
   #   - plan_products[].production_count: 製造数（整数のみ）
   #
-  # @return [ActionController::Parameters]
+  # @return [Hash]
   def sanitized_plan_params
-    params_hash = plan_params
+    # 完全にハッシュに変換
+    params_hash = plan_params.to_h.deep_symbolize_keys
 
     if params_hash[:plan_products_attributes].present?
-      params_hash[:plan_products_attributes].each do |_, product_attrs|
-        next if product_attrs[:_destroy] == '1'
+      params_hash[:plan_products_attributes] = params_hash[:plan_products_attributes].transform_values do |product_attrs|
+        next product_attrs if product_attrs[:_destroy] == '1'
 
         sanitize_numeric_params(
           product_attrs,

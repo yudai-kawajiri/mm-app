@@ -192,27 +192,37 @@ class Resources::ProductsController < AuthenticatedController
 
   private
 
-  # Strong Parameters
+    # Strong Parameters
   #
   # @return [ActionController::Parameters]
   def product_params
-    params.require(:resources_product).permit(
+    permitted = params.require(:resources_product).permit(
       :name,
       :item_number,
       :price,
       :status,
       :description,
       :category_id,
-      :image,
-      product_materials_attributes: [
-        :id,
-        :material_id,
-        :unit_id,
-        :quantity,
-        :unit_weight,
-        :_destroy
-      ]
+      :image
     )
+
+    # product_materials_attributes を手動で処理
+    if params[:resources_product][:product_materials_attributes].present?
+      materials_attrs = {}
+      params[:resources_product][:product_materials_attributes].each do |key, attrs|
+        materials_attrs[key] = attrs.permit(
+          :id,
+          :material_id,
+          :unit_id,
+          :quantity,
+          :unit_weight,
+          :_destroy
+        )
+      end
+      permitted[:product_materials_attributes] = materials_attrs
+    end
+
+    permitted
   end
 
   # 数値パラメータのサニタイズ処理
