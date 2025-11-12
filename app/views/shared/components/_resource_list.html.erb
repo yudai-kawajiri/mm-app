@@ -18,6 +18,8 @@
   - copy_url_method: コピーURL生成メソッド名 (デフォルト: なし)
   - show_print: 印刷ボタン表示 (デフォルト: false)
   - print_url_method: 印刷URL生成メソッド名 (デフォルト: なし)
+  - sort_options: ソートオプションの配列 (デフォルト: なし)
+  - sort_placeholder: ソートプレースホルダー (デフォルト: なし)
 %>
 <% search_target = local_assigns[:search_target] %>
 <% resource_class = local_assigns[:resource_class] %>
@@ -27,8 +29,10 @@
 <% show_print = local_assigns.fetch(:show_print, false) %>
 <% print_url_method = local_assigns[:print_url_method] %>
 <% icon_mode = local_assigns.fetch(:icon_mode, false) %>
+<% sort_options = local_assigns[:sort_options] %>
+<% sort_placeholder = local_assigns[:sort_placeholder] %>
 
-<% if search_target.present? %>
+<% if search_target.present? || sort_options.present? %>
   <%# 名前空間付きルートに対応 %>
   <%
     route_key = resource_class.model_name.route_key
@@ -38,7 +42,9 @@
       form_path: form_path,
       search_target: search_target,
       search_categories: search_categories,
-      resource_class: resource_class %>
+      resource_class: resource_class,
+      sort_options: sort_options,
+      sort_placeholder: sort_placeholder %>
 <% end %>
 
 <table class="table mt-4">
@@ -59,7 +65,17 @@
       <tr data-id="<%= resource.id %>">
         <% columns.each do |col| %>
           <td>
-            <%= render_resource_data(resource, col) %>
+            <%
+              data_value = col[:data]
+              if data_value.is_a?(Proc)
+                output = data_value.call(resource)
+              elsif data_value.is_a?(Symbol) || data_value.is_a?(String)
+                output = resource.public_send(data_value)
+              else
+                output = data_value
+              end
+            %>
+            <%= output %>
           </td>
         <% end %>
         <td>
