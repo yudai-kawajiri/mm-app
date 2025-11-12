@@ -97,12 +97,8 @@ ja:
         image: "画像"
         status: "ステータス"
         description: "説明"
-        # ネストされた属性の翻訳（階層構造）
-        product_materials:
-          material_id: "原材料"
-          quantity: "数量"
-          unit_id: "単位"
-          unit_weight: "分量"
+        product_materials_quantity: "数量"
+        product_materials_unit_weight: "分量"
 
       "planning/product_material":
         material_id: "原材料"

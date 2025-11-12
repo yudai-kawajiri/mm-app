@@ -15,6 +15,10 @@ class Resources::Product < ApplicationRecord
   # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
+  include NestedAttributeTranslatable
+
+  # ネストされた属性の翻訳設定
+  nested_attribute_translation :product_materials, 'Planning::ProductMaterial'
 
   # 製品のステータス定義
   enum :status, { draft: 0, selling: 1, discontinued: 2 }
