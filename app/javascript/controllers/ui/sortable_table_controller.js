@@ -34,6 +34,9 @@ import i18n from "controllers/i18n"
  *       キャンセル
  *     </button>
  *
+ *     <!-- ソート選択フォーム -->
+ *     <div data-sortable-table-target="sortForm">...</div>
+ *
  *     <!-- テーブル -->
  *     <table>
  *       <tbody>
@@ -49,6 +52,7 @@ import i18n from "controllers/i18n"
  *   toggleBtn - 並び替えモード切り替えボタン
  *   saveBtn - 保存ボタン
  *   cancelBtn - キャンセルボタン
+ *   sortForm - ソート選択フォーム（並び替えモード中は無効化）
  *
  * @values
  *   reorderPath {String} - 並び替え保存用のAPI URL
@@ -59,12 +63,13 @@ import i18n from "controllers/i18n"
  *   - 並び替えモード切り替え
  *   - サーバーへの並び替え保存（Ajax）
  *   - キャンセル機能（ページリロード）
+ *   - 並び替えモード中はソートプルダウンを無効化
  *
  * @requires sortablejs - ドラッグ&ドロップライブラリ
  * @requires i18n.js - 翻訳機能
  */
 export default class extends Controller {
-  static targets = ["toggleBtn", "saveBtn", "cancelBtn"]
+  static targets = ["toggleBtn", "saveBtn", "cancelBtn", "sortForm"]
   static values = {
     reorderPath: String,
     paramName: String
@@ -94,12 +99,23 @@ export default class extends Controller {
    *   - 通常ボタンを非表示、保存・キャンセルボタンを表示
    *   - ドラッグハンドルを表示
    *   - アクションボタンを非表示
+   *   - ソートプルダウンを無効化
    *   - Sortable.js を有効化
    */
   toggleReorderMode() {
     this.toggleBtnTarget.classList.add('d-none')
     this.saveBtnTarget.classList.remove('d-none')
     this.cancelBtnTarget.classList.remove('d-none')
+
+    // ソートフォームを無効化（存在する場合のみ）
+    if (this.hasSortFormTarget) {
+      this.sortFormTarget.style.opacity = '0.5'
+      this.sortFormTarget.style.pointerEvents = 'none'
+      const select = this.sortFormTarget.querySelector('select')
+      if (select) {
+        select.disabled = true
+      }
+    }
 
     // ドラッグハンドルを表示
     document.querySelectorAll('.drag-handle').forEach(el => {
