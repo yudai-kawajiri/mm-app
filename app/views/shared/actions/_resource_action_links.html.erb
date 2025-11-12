@@ -50,7 +50,7 @@
       <%= button_to copy_url,
           method: :post,
           class: 'btn btn-sm btn-secondary me-1',
-          data: { confirm: t('helpers.confirm.copy_resource', resource: resource_name) },
+          data: { turbo_confirm: t('helpers.confirm.copy_resource', resource: resource_name) },
           title: t('helpers.link.copy') do %>
         <i class="bi bi-files"></i>
       <% end %>
@@ -69,8 +69,8 @@
     <%# 5. 削除リンク（アイコン） %>
     <%= link_to resource,
         data: {
-          "turbo-method": "delete",
-          "turbo-confirm": t('helpers.confirm.destroy', resource: resource_name)
+          turbo_method: :delete,
+          turbo_confirm: t('helpers.confirm.destroy', resource: resource_name)
         },
         class: 'btn btn-sm btn-danger',
         title: t('helpers.link.destroy') do %>

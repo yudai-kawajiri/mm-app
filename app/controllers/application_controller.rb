@@ -16,6 +16,9 @@ class ApplicationController < ActionController::Base
   # Devise利用時のストロングパラメータ設定
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  before_action :redirect_if_authenticated, if: -> { devise_controller? && action_name == 'new' && controller_name == 'sessions' }
+
+
   protected
 
   # Deviseのパラメータを許可
@@ -66,5 +69,15 @@ class ApplicationController < ActionController::Base
   # @return [Integer, nil] 変更者のユーザーID（未認証時はnil）
   def user_for_paper_trail
     user_signed_in? ? current_user.id : nil
+  end
+
+  private
+
+  # ログイン済みユーザーがログイン画面にアクセスした場合のリダイレクト
+  def redirect_if_authenticated
+    return unless user_signed_in?
+
+    flash[:notice] = t('devise.failure.already_authenticated')
+    redirect_to authenticated_root_path
   end
 end
