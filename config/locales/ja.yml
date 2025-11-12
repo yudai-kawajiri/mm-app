@@ -176,6 +176,8 @@ ja:
         other: "%{count}件のエラーが発生したため、%{model}を保存できませんでした"
       body: "以下の項目を確認してください:"
     messages:
+      budget_created: "予算を設定しました"
+      budget_create_failed: "予算の設定に失敗しました"
       not_saved:
         one: "%{resource}の保存に失敗しました"
         other: "%{count}件のエラーが発生したため、%{resource}の保存に失敗しました"
