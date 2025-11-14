@@ -55,8 +55,11 @@ class Resources::Product < ApplicationRecord
   # 表示順でソート
   scope :ordered, -> { order(:display_order, :id) }
 
+  scope :ordered, -> { order(display_order: :asc, id: :asc) }
+
   # 空の原材料レコードを除外
   before_validation :reject_blank_product_materials
+
 
   # 重複した原材料を除外
   before_save :reject_duplicate_product_materials

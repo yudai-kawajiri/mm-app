@@ -3,6 +3,7 @@
   機能:
   - リソースの検索・絞り込みフォーム
   - カテゴリー絞り込み + 名前検索
+  - ソート機能を統合（横並びレイアウト）
   - クリアボタン付き
 
   必須引数:
@@ -12,15 +13,29 @@
   - search_target: 検索対象フィールド (:category_type, :category, :category_id)
   - search_categories: カテゴリー一覧（search_target が :category_id の場合）
   - resource_class: リソースクラス（enum翻訳用）
+  - sort_options: ソートオプションの配列（オプション）
+  - sort_placeholder: ソートプレースホルダー（オプション）
 %>
-<%= form_with url: form_path,
-                    method: :get,
-                    local: true,
-                    class: "mb-3" do |f| %>
+<%= form_with url: form_path, method: :get, local: true, html: { class: "mb-3" } do |f| %>
 
-  <div class="d-flex flex-row align-items-center">
+  <div class="d-flex flex-row align-items-end">
+    <%# ソートフォーム（オプション） %>
+    <% if local_assigns[:sort_options].present? %>
+      <div class="p-1 me-3" style="min-width: 250px;">
+        <label class="form-label mb-1 small text-muted"><%= t('common.sort_by') %></label>
+        <%= f.select :sort_by,
+              options_for_select(
+                sort_options,
+                params[:sort_by]
+              ),
+              { include_blank: t('helpers.select.prompt') },
+              { class: "form-select", onchange: "this.form.submit()" } %>
+      </div>
+    <% end %>
+
     <% if defined?(search_target) && search_target %>
-      <div class="p-1 me-3"  style="min-width: 200px;">
+      <div class="p-1 me-3"  style="min-width: 250px;">
+        <label class="form-label mb-1 small text-muted"><%= t('common.category') %></label>
         <% if search_target == :category_type %>
           <%# リソースクラスを取得（デフォルトは Resources::Category） %>
           <% resource_class_for_enum = local_assigns[:resource_class] || Resources::Category %>
@@ -31,8 +46,8 @@
                 },
                 params[:category_type]
               ),
-              { include_blank: t('search.placeholders.select_type') },
-              { class: "form-control custom-select" } %>
+              { include_blank: t('helpers.select.prompt') },
+              { class: "form-select", onchange: "this.form.submit()" } %>
 
         <% elsif search_target == :category %>
           <%# Unitの場合 %>
@@ -43,8 +58,8 @@
                 },
                 params[:category]
               ),
-              { include_blank: t('search.placeholders.select_type') },
-              { class: "form-control custom-select" } %>
+              { include_blank: t('helpers.select.prompt') },
+              { class: "form-select", onchange: "this.form.submit()" } %>
 
         <% elsif search_target == :category_id %>
           <% search_categories = local_assigns[:search_categories] %>
@@ -55,13 +70,14 @@
               :name,
               params[:category_id]
             ),
-            { include_blank: t('search.placeholders.select_category') },
-            { class: "form-control custom-select" } %>
+            { include_blank: t('helpers.select.prompt') },
+            { class: "form-select", onchange: "this.form.submit()" } %>
         <% end %>
       </div>
     <% end %>
 
     <div class="p-1" style="min-width: 300px;">
+      <label class="form-label mb-1 small text-muted"><%= t('common.name') %></label>
       <div class="input-group">
         <%= f.text_field :q,
           value: params[:q],
@@ -69,7 +85,7 @@
           placeholder: t('search.placeholders.enter_name') %>
         <div class="input-group-append" >
           <%= f.submit t('common.search'), class: "btn btn-primary" %>
-          <% if params[:q].present? || params[:category_type].present? || params[:category_id].present? || params[:category].present? %>
+          <% if params[:q].present? || params[:category_type].present? || params[:category_id].present? || params[:category].present? || params[:sort_by].present? %>
             <%= link_to t('common.clear'), form_path,  class: "btn btn-outline-secondary" %>
           <% end %>
         </div>

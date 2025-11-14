@@ -2,46 +2,50 @@
 
 # MaterialOrderGroupsController
 #
-# 材料発注グループのCRUD操作を管理
+# 発注グループ（MaterialOrderGroup）のCRUD操作を管理
 #
 # 機能:
-#   - 発注グループの一覧表示（全ユーザー共有）
+#   - 発注グループの一覧表示（検索・ページネーション・ソート機能）
 #   - 発注グループの作成・編集・削除
-#   - グループ削除時の材料への影響（dependent: :nullify）
 class Resources::MaterialOrderGroupsController < AuthenticatedController
-  # 検索パラメータの定義
-  define_search_params :q
+  include SortableController
 
-  # リソース検索
+  # 検索パラメータの定義
+  define_search_params :q, :sort_by
+
+  # ソートオプションの定義
+  define_sort_options(
+    name: -> { order(:name) },
+    created_at: -> { order(created_at: :desc) }
+  )
+
+  # リソース検索（show, edit, update, destroy）
   find_resource :material_order_group, only: [:show, :edit, :update, :destroy]
 
   # 発注グループ一覧
   #
-  # 全ユーザーのグループを表示（ログインユーザーなら誰でも閲覧可能）
-  #
   # @return [void]
   def index
-    @material_order_groups = apply_pagination(
-      Resources::MaterialOrderGroup.includes(:materials)
-                        .ordered_by_name
-                        .search_and_filter(search_params)
+    sorted_index(
+      Resources::MaterialOrderGroup,
+      default: 'name',
+      scope: :all,
+      includes: [:materials]
     )
-    set_search_term_for_view
   end
 
   # 新規発注グループ作成フォーム
   #
   # @return [void]
   def new
-    @material_order_group = Resources::MaterialOrderGroup.new
+    @material_order_group = current_user.material_order_groups.build
   end
 
   # 発注グループを作成
   #
   # @return [void]
   def create
-    @material_order_group = Resources::MaterialOrderGroup.new(material_order_group_params)
-    @material_order_group.user = current_user
+    @material_order_group = current_user.material_order_groups.build(material_order_group_params)
     respond_to_save(@material_order_group, success_path: resources_material_order_groups_path)
   end
 
@@ -65,11 +69,9 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
 
   # 発注グループを削除
   #
-  # dependent: :nullify により、紐付いている原材料のorder_group_idがnullになる
-  #
   # @return [void]
   def destroy
-    respond_to_destroy(@material_order_group, success_path: resources_material_order_groups_path)
+    respond_to_destroy(@material_order_group, success_path: resources_material_order_groups_url)
   end
 
   private
@@ -78,6 +80,6 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   #
   # @return [ActionController::Parameters]
   def material_order_group_params
-    params.require(:resources_material_order_group).permit(:name)
+    params.require(:resources_material_order_group).permit(:name, :description)
   end
 end

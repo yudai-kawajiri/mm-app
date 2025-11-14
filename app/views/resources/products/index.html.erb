@@ -2,7 +2,7 @@
   機能: 商品一覧画面
   - 全商品の一覧表示
   - カテゴリ検索機能
-  - ドラッグ&ドロップ並び替え機能
+  - ソート機能（名前順、カテゴリー順、登録順）
   - コピー機能
 %>
 <%= content_for(:title, t('products.index.title')) %>
@@ -15,28 +15,33 @@
     is_show_page: false,
     new_path: new_resources_product_path %>
 
-<div data-controller="sortable-table"
-      data-sortable-table-reorder-path-value="<%= reorder_resources_products_path %>"
-      data-sortable-table-param-name-value="product_ids">
-
-  <%= render 'shared/sortable_buttons' %>
-
-  <%= render('shared/components/resource_list',
+<div>
+  <%= render 'shared/components/resource_list',
       resources: @products,
       resource_class: Resources::Product,
       search_target: :category_id,
       search_categories: @product_categories,
+      sort_options: [
+        [t('products.index.sort_options.name'), 'name'],
+        [t('products.index.sort_options.category'), 'category'],
+        [t('products.index.sort_options.created_at'), 'created_at']
+      ],
+      sort_placeholder: t('products.index.sort_placeholder'),
       show_copy: true,
       copy_url_method: :copy_resources_product_path,
       icon_mode: true,
 
       columns: [
-        { header: '',
+        {
+          header: :image,
           data: Proc.new { |product|
-            content_tag(:span, '☰', class: 'drag-handle d-none', style: 'cursor: move; font-size: 1.2em; color: #999;')
+            if product.image.attached?
+              image_tag(product.image.variant(resize_to_limit: [50, 50]), class: 'img-thumbnail')
+            else
+              content_tag(:span, t('products.image_help.no_image'), class: 'text-muted')
+            end
           }
         },
-        { header: :image, data: :image },
         { header: :name, data: :name },
         { header: :category_id,
           data: Proc.new { |product| product.category&.name }
@@ -46,9 +51,8 @@
         { header: :status,
           data: Proc.new { |product| translate_enum_value(product, :status) }
         }
-      ],
-      tbody_data: { sortable_table_target: 'tbody' }
-  ) %>
+      ]
+  %>
 
   <%= paginate @products, theme: 'bootstrap-5' %>
 </div>

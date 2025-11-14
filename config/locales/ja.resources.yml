@@ -5,6 +5,11 @@ ja:
       title: "単位登録"
     index:
       title: "単位一覧"
+      sort_placeholder: "並び順を選択"
+      sort_options:
+        name: "名前順"
+        category: "カテゴリ順"
+        created_at: "登録順"
     show:
       title: "%{name} - 単位詳細"
     edit:
@@ -16,6 +21,11 @@ ja:
       title: "カテゴリー登録"
     index:
       title: "カテゴリー一覧"
+      sort_placeholder: "並び順を選択"
+      sort_options:
+        name: "名前順"
+        category_type: "種別順"
+        created_at: "登録順"
     show:
       title: "%{name} - カテゴリー詳細"
     edit:
@@ -27,6 +37,12 @@ ja:
       title: "原材料登録"
     index:
       title: "原材料一覧"
+      sort_placeholder: "並び順を選択"
+      sort_options:
+        name: "名前順"
+        category: "カテゴリ順"
+        order_group: "発注グループ順"
+        created_at: "登録順"
     show:
       title: "%{name} - 原材料詳細"
     edit:
@@ -47,18 +63,22 @@ ja:
 
   # 発注グループ
   material_order_groups:
+    new:
+      title: "発注グループ新規登録"
     index:
       title: "発注グループ管理"
       unused: "未使用"
-    new:
-      title: "発注グループ新規登録"
-    edit:
-      title: "%{name} - 編集"
+      sort_placeholder: "並び順を選択"
+      sort_options:
+        name: "名前順"
+        created_at: "登録順"
     show:
       title: "%{name} - 詳細"
       materials_using_this_group: "このグループを使用している原材料"
       materials_count: "%{count}件の原材料"
       no_materials: "このグループを使用している原材料はありません"
+    edit:
+      title: "%{name} - 編集"
     form:
       name_placeholder: "例: 生まぐろ、冷凍まぐろ"
       name_help: "同じグループに設定された原材料は、発注時にまとめて計算されます。"
@@ -75,10 +95,18 @@ ja:
       title: "商品登録"
     index:
       title: "商品一覧"
+      sort_placeholder: "並び順を選択"
+      sort_options:
+        name: "名前順"
+        category: "カテゴリ順"
+        created_at: "登録順"
     show:
       title: "%{name} - 商品詳細"
     edit:
       title: "%{name} - 商品編集"
+    copy:
+      success: "商品をコピーしました"
+      failure: "商品のコピーに失敗しました"
     placeholder:
       item_number: "4桁で入力してください"
     image_help:
@@ -102,3 +130,22 @@ ja:
       unit_weight: "分量"
       unit: "単位"
     add_material_button: "原材料を追加"
+
+  # 計画
+  plans:
+    new:
+      title: "計画登録"
+    index:
+      title: "製造計画一覧"
+      sort_placeholder: "並び順を選択"
+      sort_options:
+        name: "名前順"
+        status: "ステータス順"
+        category: "カテゴリ順"
+    show:
+      title: "%{name} - 計画詳細"
+    edit:
+      title: "%{name} - 計画編集"
+    copy:
+      success: "計画をコピーしました"
+      failure: "計画のコピーに失敗しました"
