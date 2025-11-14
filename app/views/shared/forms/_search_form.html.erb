@@ -25,11 +25,11 @@
         <label class="form-label mb-1 small text-muted"><%= t('common.sort_by') %></label>
         <%= f.select :sort_by,
               options_for_select(
-                [[t('helpers.select.prompt'), '']] + sort_options,
+                sort_options,
                 params[:sort_by]
               ),
-              {},
-              { class: "form-control custom-select", onchange: "this.form.submit()" } %>
+              { include_blank: t('helpers.select.prompt') },
+              { class: "form-select", onchange: "this.form.submit()" } %>
       </div>
     <% end %>
 
@@ -47,7 +47,7 @@
                 params[:category_type]
               ),
               { include_blank: t('helpers.select.prompt') },
-              { class: "form-control custom-select", onchange: "this.form.submit()" } %>
+              { class: "form-select", onchange: "this.form.submit()" } %>
 
         <% elsif search_target == :category %>
           <%# Unitの場合 %>
@@ -59,7 +59,7 @@
                 params[:category]
               ),
               { include_blank: t('helpers.select.prompt') },
-              { class: "form-control custom-select", onchange: "this.form.submit()" } %>
+              { class: "form-select", onchange: "this.form.submit()" } %>
 
         <% elsif search_target == :category_id %>
           <% search_categories = local_assigns[:search_categories] %>
@@ -71,7 +71,7 @@
               params[:category_id]
             ),
             { include_blank: t('helpers.select.prompt') },
-            { class: "form-control custom-select", onchange: "this.form.submit()" } %>
+            { class: "form-select", onchange: "this.form.submit()" } %>
         <% end %>
       </div>
     <% end %>

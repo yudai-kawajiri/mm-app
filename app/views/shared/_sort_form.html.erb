@@ -12,26 +12,22 @@
         preserve_params: [:category_id, :q]
     %>
 
-  パラメータ:
+<%# パラメータ:
     - url: フォーム送信先URL
     - sort_options: ソートオプションの配列 [[ラベル, 値], ...]
     - default: デフォルトのソート値
     - preserve_params: 保持するパラメータのキー配列（任意）
 %>
-<div class="mb-3">
-  <%= form_with url: url, method: :get, local: true, class: 'row g-2 align-items-end' do |f| %>
-    <div class="col-auto">
-      <%= f.label :sort_by, t('common.sort_by'), class: 'form-label' %>
-      <%= f.select :sort_by,
-            options_for_select(sort_options, params[:sort_by] || default),
-            {},
-            class: 'form-select',
-            onchange: 'this.form.submit()' %>
-    </div>
-    <% if local_assigns[:preserve_params].present? %>
-      <% preserve_params.each do |param_key| %>
-        <%= f.hidden_field param_key, value: params[param_key] if params[param_key].present? %>
-      <% end %>
+<%= form_with url: url, method: :get, local: true, class: 'd-inline-block me-3' do |f| %>
+  <%= f.select :sort_by,
+        options_for_select([[local_assigns[:sort_placeholder] || t('common.sort_placeholder'), '']] + sort_options, params[:sort_by]),
+        {},
+        class: 'form-select',
+        style: 'width: auto;',
+        onchange: 'if(this.value) this.form.submit()' %>
+  <% if local_assigns[:preserve_params].present? %>
+    <% preserve_params.each do |param_key| %>
+      <%= f.hidden_field param_key, value: params[param_key] if params[param_key].present? %>
     <% end %>
   <% end %>
-</div>
+<% end %>
