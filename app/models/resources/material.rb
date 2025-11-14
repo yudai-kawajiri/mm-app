@@ -54,6 +54,8 @@ class Resources::Material < ApplicationRecord
   # 表示順でソート
   scope :ordered, -> { order(:display_order, :id) }
 
+  scope :ordered, -> { order(display_order: :asc, id: :asc) }
+
   # 表示順を更新
   #
   # @param material_ids [Array<Integer>] 材料IDの配列（並び順）
