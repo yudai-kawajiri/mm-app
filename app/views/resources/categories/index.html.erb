@@ -2,6 +2,8 @@
   機能: カテゴリー一覧画面
   - 全カテゴリーの一覧表示
   - カテゴリー種別による検索機能
+  - ソート機能（名前順、種別順、登録順）
+  - 検索とソートを横並びで統合
 %>
 <%= content_for(:title, t('categories.index.title')) %>
 
@@ -13,18 +15,26 @@
     is_show_page: false,
     new_path: new_resources_category_path %>
 
-<%= render 'shared/components/resource_list',
-    resources: @categories,
-    resource_class: Resources::Category,
-    search_target: :category_type,
-    icon_mode: true,
+<div>
+  <%= render 'shared/components/resource_list',
+      resources: @categories,
+      resource_class: Resources::Category,
+      search_target: :category_type,
+      sort_options: [
+        [t('categories.index.sort_options.name'), 'name'],
+        [t('categories.index.sort_options.category_type'), 'category_type'],
+        [t('categories.index.sort_options.created_at'), 'created_at']
+      ],
+      sort_placeholder: t('categories.index.sort_placeholder'),
+      icon_mode: true,
 
-    columns: [
-      { header: :name, data: :name },
-      { header: :category_type,
-        data: Proc.new { |category| translate_enum_value(category, :category_type) }
-      }
-    ]
-%>
+      columns: [
+        { header: :name, data: :name },
+        { header: :category_type,
+          data: Proc.new { |category| translate_enum_value(category, :category_type) }
+        }
+      ]
+  %>
 
-<%= paginate @categories, theme: 'bootstrap-5' %>
+  <%= paginate @categories, theme: 'bootstrap-5' %>
+</div>

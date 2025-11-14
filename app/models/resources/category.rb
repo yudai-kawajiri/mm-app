@@ -35,4 +35,7 @@ class Resources::Category < ApplicationRecord
 
   # 名前の昇順で取得
   scope :for_index, -> { order(name: :asc) }
+  scope :for_materials, -> { where(category_type: :material) }
+  scope :for_products, -> { where(category_type: :product) }
+  scope :for_plans, -> { where(category_type: :plan) }
 end
