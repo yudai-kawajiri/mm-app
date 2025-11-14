@@ -16,10 +16,9 @@ class Resources::ProductsController < AuthenticatedController
 
   # ソートオプションの定義
   define_sort_options(
-    display_order: -> { ordered },
-    created_at: -> { order(created_at: :desc) },
     name: -> { order(:name) },
     category: -> { joins(:category).order('categories.name', :name) },
+    created_at: -> { order(created_at: :desc) }
   )
 
   # リソース検索（show, edit, update, destroy, copy）
@@ -43,7 +42,7 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def new
     @product = current_user.products.build
-    @product.product_materials.build
+    @material_categories = current_user.categories.for_materials
   end
 
   # 商品を作成
@@ -62,7 +61,9 @@ class Resources::ProductsController < AuthenticatedController
   # 商品編集フォーム
   #
   # @return [void]
-  def edit; end
+  def edit
+    @material_categories = current_user.categories.for_materials  # ← 追加
+  end
 
   # 商品を更新
   #
@@ -99,7 +100,7 @@ class Resources::ProductsController < AuthenticatedController
   # Strong Parameters
   #
   # @return [ActionController::Parameters]
-  def product_params
+  def material_params
     params.require(:resources_product).permit(
       :name,
       :category_id,

@@ -116,6 +116,9 @@ ja:
     reorder_mode: "並び替えモード"
     year_suffix: "年"
     month_suffix: "月"
+    suffix:
+      year: "年"
+      month: "月"
     actions:
       reorder: "並び替え"
 

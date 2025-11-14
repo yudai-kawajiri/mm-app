@@ -19,7 +19,6 @@ class Resources::PlansController < AuthenticatedController
     name: -> { order(:name) },
     status: -> { order(:status, :name) },
     category: -> { joins(:category).order('categories.name', :name) }
-    # updated_at: 削除
   )
 
   # リソース検索（show, edit, update, destroy, copy, print）
@@ -43,7 +42,8 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def new
     @plan = current_user.plans.build
-    @plan.plan_products.build
+    @plan_categories = current_user.categories.for_plans        # ← 追加
+    @product_categories = current_user.categories.for_products
   end
 
   # 計画を作成
@@ -57,12 +57,18 @@ class Resources::PlansController < AuthenticatedController
   # 計画詳細
   #
   # @return [void]
-  def show; end
+  def show
+    @plan_products = @plan.plan_products.includes(:product)
+    @product_categories = current_user.categories.for_products
+  end
 
   # 計画編集フォーム
   #
   # @return [void]
-  def edit; end
+  def edit
+    @plan_categories = current_user.categories.for_plans        # ← 追加
+    @product_categories = current_user.categories.for_products
+  end
 
   # 計画を更新
   #

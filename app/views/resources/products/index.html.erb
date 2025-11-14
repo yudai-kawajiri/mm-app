@@ -2,7 +2,7 @@
   機能: 商品一覧画面
   - 全商品の一覧表示
   - カテゴリ検索機能
-  - ソート機能（名前順、カテゴリー順、登録順、更新順）
+  - ソート機能（名前順、カテゴリー順、登録順）
   - コピー機能
 %>
 <%= content_for(:title, t('products.index.title')) %>
@@ -32,7 +32,16 @@
       icon_mode: true,
 
       columns: [
-        { header: :image, data: :image },
+        {
+          header: :image,
+          data: Proc.new { |product|
+            if product.image.attached?
+              image_tag(product.image.variant(resize_to_limit: [50, 50]), class: 'img-thumbnail')
+            else
+              content_tag(:span, t('products.image_help.no_image'), class: 'text-muted')
+            end
+          }
+        },
         { header: :name, data: :name },
         { header: :category_id,
           data: Proc.new { |product| product.category&.name }
