@@ -16,6 +16,7 @@ class Resources::ProductsController < AuthenticatedController
 
   # ソートオプションの定義
   define_sort_options(
+    display_order: -> { ordered },
     name: -> { order(:name) },
     category: -> { joins(:category).order('categories.name', :name) },
     created_at: -> { order(created_at: :desc) }
@@ -93,6 +94,19 @@ class Resources::ProductsController < AuthenticatedController
       redirect_to resources_products_path,
                   alert: t('products.copy.failure')
     end
+  end
+
+  # 並び替え順序を保存
+  #
+  # @return [void]
+  def reorder
+    params[:product_ids].each_with_index do |id, index|
+      current_user.products.find(id).update(display_order: index + 1)
+    end
+
+    head :ok
+  rescue ActiveRecord::RecordNotFound
+    head :not_found
   end
 
   private
