@@ -14,7 +14,11 @@
     <h1 class="mb-0"><%= title %></h1>
 
     <%# アクションボタン群 %>
-    <div class="ms-auto">
+    <div class="ms-auto d-flex gap-3 align-items-center">
+      <% if sortable %>
+        <%= render 'shared/components/sortable_buttons' %>
+      <% end %>
+
       <%= render 'shared/actions/resource_header_actions',
           resource: resource,
           is_form_page: is_form_page,
@@ -24,10 +28,4 @@
       %>
     </div>
   </div>
-
-  <% if sortable %>
-    <div class="mt-3">
-      <%= render 'shared/components/sortable_buttons' %>
-    </div>
-  <% end %>
 </div>
