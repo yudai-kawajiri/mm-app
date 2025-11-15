@@ -53,8 +53,6 @@ class Resources::Product < ApplicationRecord
   scope :for_index, -> { includes(:category).order(created_at: :desc) }
 
   # 表示順でソート
-  scope :ordered, -> { order(:display_order, :id) }
-
   scope :ordered, -> { order(display_order: :asc, id: :asc) }
 
   # 空の原材料レコードを除外
