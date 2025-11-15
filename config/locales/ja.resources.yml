@@ -7,6 +7,7 @@ ja:
       title: "単位一覧"
       sort_placeholder: "並び順を選択"
       sort_options:
+        display_order: "印刷順"
         name: "名前順"
         category: "カテゴリ順"
         created_at: "登録順"
@@ -39,6 +40,7 @@ ja:
       title: "原材料一覧"
       sort_placeholder: "並び順を選択"
       sort_options:
+        display_order: "印刷順"
         name: "名前順"
         category: "カテゴリ順"
         order_group: "発注グループ順"

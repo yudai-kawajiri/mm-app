@@ -120,7 +120,9 @@ ja:
       year: "年"
       month: "月"
     actions:
-      reorder: "並び替え"
+      reorder_print_order: "印刷順を並び替え"
+    save_order: "並び順を保存"
+    cancel: "キャンセル"
 
   labels:
     date: "日付"
