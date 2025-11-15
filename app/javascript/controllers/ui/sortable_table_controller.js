@@ -103,6 +103,7 @@ export default class extends Controller {
    *   - Sortable.js を有効化
    */
   toggleReorderMode() {
+    this.sortTableByDisplayOrder()
     this.toggleBtnTarget.classList.add('d-none')
     this.saveBtnTarget.classList.remove('d-none')
     this.cancelBtnTarget.classList.remove('d-none')
@@ -118,12 +119,12 @@ export default class extends Controller {
     }
 
     // ドラッグハンドルを表示
-    document.querySelectorAll('.drag-handle').forEach(el => {
+    this.element.querySelectorAll('.drag-handle').forEach(el => {
       el.classList.remove('d-none')
     })
 
     // アクションボタンを非表示
-    document.querySelectorAll('td:last-child').forEach(el => {
+    this.tbodyTarget.querySelectorAll('td:last-child').forEach(el => {
       el.style.display = 'none'
     })
 
@@ -211,5 +212,21 @@ export default class extends Controller {
       console.error('Fetch error:', error)
       alert(i18n.t('sortable_table.error', { message: error.message }))
     })
+  }
+
+  /**
+  * display_order順にテーブルを並び替え
+  */
+  sortTableByDisplayOrder() {
+    const DEFAULT_DISPLAY_ORDER = 999999
+    const rows = Array.from(this.tbodyTarget.querySelectorAll('tr'))
+
+    rows.sort((a, b) => {
+      const orderA = parseInt(a.dataset.displayOrder) || DEFAULT_DISPLAY_ORDER
+      const orderB = parseInt(b.dataset.displayOrder) || DEFAULT_DISPLAY_ORDER
+      return orderA - orderB
+    })
+
+    rows.forEach(row => this.tbodyTarget.appendChild(row))
   }
 }
