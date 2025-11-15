@@ -32,7 +32,7 @@ class Resources::PlansController < AuthenticatedController
       Resources::Plan,
       default: 'name',
       scope: :all,
-      includes: [:category, :plan_products]
+      includes: [:category]
     )
     @plan_categories = current_user.categories.for_plans
   end
@@ -42,7 +42,7 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def new
     @plan = current_user.plans.build
-    @plan_categories = current_user.categories.for_plans        # ← 追加
+    @plan_categories = current_user.categories.for_plans
     @product_categories = current_user.categories.for_products
   end
 
@@ -66,7 +66,7 @@ class Resources::PlansController < AuthenticatedController
   #
   # @return [void]
   def edit
-    @plan_categories = current_user.categories.for_plans        # ← 追加
+    @plan_categories = current_user.categories.for_plans
     @product_categories = current_user.categories.for_products
   end
 
@@ -100,11 +100,59 @@ class Resources::PlansController < AuthenticatedController
     end
   end
 
-  # 計画を印刷
+  # 印刷画面を表示
   #
   # @return [void]
   def print
-    # 印刷処理の実装
+    # 計画に関連する情報を取得
+    plan_schedule = @plan.plan_schedules.order(scheduled_date: :desc).first
+    @scheduled_date = plan_schedule&.scheduled_date
+
+    # 月間予算から情報を取得
+    if @scheduled_date
+      monthly_budget = Management::MonthlyBudget
+                        .where(user_id: current_user.id)
+                        .where('budget_month = ?', @scheduled_date.beginning_of_month)
+                        .first
+      @budget = monthly_budget&.target_amount || 0
+    else
+      @budget = 0
+    end
+
+    # 製品一覧を製品マスタの display_order 順に取得
+    @plan_products_for_print = @plan.plan_products
+                                    .includes(product: [:category, { image_attachment: :blob }])
+                                    .joins(:product)
+                                    .order('products.display_order ASC, products.id ASC')
+                                    .map do |pp|
+      {
+        product: pp.product,
+        production_count: pp.production_count,
+        price: pp.product.price,
+        subtotal: pp.production_count * pp.product.price
+      }
+    end
+
+    # 商品合計金額を計算（これを計画高として表示）
+    @planned_revenue = @plan_products_for_print.sum { |item| item[:subtotal] }
+    @total_product_cost = @planned_revenue
+
+    # 達成率の計算
+    @achievement_rate = if @budget > 0
+                          ((@planned_revenue.to_f / @budget) * 100).round(1)
+                        else
+                          0
+                        end
+
+    # 原材料サマリーを取得（display_order 順）
+    @materials_summary = @plan.calculate_materials_summary
+                              .sort_by do |material_data|
+                                material = Resources::Material.find(material_data[:material_id])
+                                [material.display_order || 999999, material.id]
+                              end
+
+    # 印刷レイアウトを使用
+    render layout: 'print'
   end
 
   private
@@ -121,7 +169,7 @@ class Resources::PlansController < AuthenticatedController
       plan_products_attributes: [
         :id,
         :product_id,
-        :quantity,
+        :production_count,
         :display_order,
         :_destroy
       ]
