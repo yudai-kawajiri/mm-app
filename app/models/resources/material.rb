@@ -52,8 +52,6 @@ class Resources::Material < ApplicationRecord
   scope :for_index, -> { includes(:category, :unit_for_product, :unit_for_order).order(created_at: :desc) }
 
   # 表示順でソート
-  scope :ordered, -> { order(:display_order, :id) }
-
   scope :ordered, -> { order(display_order: :asc, id: :asc) }
 
   # 表示順を更新
