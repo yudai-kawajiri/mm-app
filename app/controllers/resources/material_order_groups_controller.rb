@@ -80,13 +80,12 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   # @return [void]
   def copy
     copied = @material_order_group.create_copy(user: current_user)
-    redirect_to resources_material_order_groups_path, notice: t('material_order_groups.messages.copy_success',
-                                                                  original_name: @material_order_group.name,
-                                                                  new_name: copied.name)
+    redirect_to resources_material_order_groups_path, notice: t('flash_messages.copy.success',
+                                                                  resource: @material_order_group.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "MaterialOrderGroup copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_material_order_groups_path, alert: t('material_order_groups.messages.copy_failed',
-                                                                 error: e.record.errors.full_messages.join(', '))
+    redirect_to resources_material_order_groups_path, alert: t('flash_messages.copy.failure',
+                                                                resource: @material_order_group.class.model_name.human)
   end
 
   private
