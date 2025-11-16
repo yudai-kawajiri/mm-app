@@ -13,6 +13,12 @@
 #   - 目標・実績・計画・予測・達成率を計算
 #   - N+1問題対策（事前ロード）
 class DailyDataService
+  # パーセント計算用の係数
+  PERCENTAGE_MULTIPLIER = 100
+
+  # 達成率の小数点以下桁数
+  ACHIEVEMENT_RATE_PRECISION = 1
+
   attr_reader :user, :year, :month
 
   # @param user [User] 対象ユーザー
@@ -92,7 +98,7 @@ class DailyDataService
     plan = daily_plan(date)
     forecast = actual.positive? ? actual : plan
     diff = forecast - target
-    achievement_rate = target.positive? ? (forecast / target * 100).round(1) : 0
+    achievement_rate = calculate_achievement_rate(forecast, target)
 
     {
       date: date,
@@ -103,6 +109,22 @@ class DailyDataService
       diff: diff,
       achievement_rate: achievement_rate
     }
+  end
+
+  #
+  # 達成率を計算
+  #
+  # @param forecast [Integer] 予測値（実績または計画）
+  # @param target [Integer] 目標値
+  # @return [Float] 達成率（%、小数点第1位まで）
+  #
+  # @note
+  #   目標が0の場合は0%を返す（ゼロ除算対策）
+  #
+  def calculate_achievement_rate(forecast, target)
+    return 0 if target.zero?
+
+    (forecast.to_f / target * PERCENTAGE_MULTIPLIER).round(ACHIEVEMENT_RATE_PRECISION)
   end
 
   # 日別目標を取得（メモリ上検索）
