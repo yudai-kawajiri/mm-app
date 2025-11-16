@@ -45,7 +45,9 @@ class Resources::Unit < ApplicationRecord
   validates :category, presence: true
 
   # 名前順で取得
-  scope :for_index, -> { order(name: :asc) }
+  scope :for_index, -> { order(created_at: :desc) }
+
+  scope :ordered, -> { order(:name) }
 
   # カテゴリーで絞り込み
   #

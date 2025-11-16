@@ -44,8 +44,11 @@ class Resources::Plan < ApplicationRecord
   validates :category_id, presence: true
   validates :status, presence: true
 
-  # インデックス表示用（N+1問題対策と並び替え）
+  # 一覧画面用：登録順（新しい順）
   scope :for_index, -> { includes(:category).order(created_at: :desc) }
+
+  # セレクトボックス用：名前順
+  scope :ordered, -> { order(:name) }
 
   # 実施中の計画を取得
   scope :active_plans, -> { where(status: :active) }

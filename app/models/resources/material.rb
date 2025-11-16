@@ -48,11 +48,11 @@ class Resources::Material < ApplicationRecord
             numericality: { greater_than: 0, only_integer: true },
             if: :count_based?
 
-  # インデックス表示用（N+1問題対策と並び替え）
+  # 一覧画面用：登録順（新しい順）
   scope :for_index, -> { includes(:category, :unit_for_product, :unit_for_order).order(created_at: :desc) }
 
-  # 表示順でソート
-  scope :ordered, -> { order(display_order: :asc, id: :asc) }
+  # セレクトボックス用：名前順
+  scope :ordered, -> { order(:name) }
 
   # 表示順を更新
   #

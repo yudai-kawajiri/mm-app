@@ -22,9 +22,9 @@ class Resources::MaterialOrderGroup < ApplicationRecord
   # バリデーション
   validates :name, presence: true, uniqueness: true
 
-  # 名前順で取得
-  scope :ordered_by_name, -> { order(:name) }
+  # セレクトボックス用：名前順
+  scope :ordered, -> { order(:name) }
 
-  # インデックス表示用（N+1問題対策）
-  scope :for_index, -> { includes(:materials).order(:name) }
+  # 一覧画面用：登録順（新しい順）
+  scope :for_index, -> { includes(:materials).order(created_at: :desc) }
 end
