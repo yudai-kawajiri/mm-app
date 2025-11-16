@@ -17,7 +17,13 @@
 #   - Base64プレビューデータ生成
 #   - クリーンアップ処理
 class ImageUploadService
+  # 一時ファイル保存ディレクトリ
   TEMP_DIR = Rails.root.join('tmp', 'pending_images').freeze
+
+  # セッションキー
+  SESSION_KEY_IMAGE_KEY = :pending_image_key
+  SESSION_KEY_FILENAME = :pending_image_filename
+  SESSION_KEY_CONTENT_TYPE = :pending_image_content_type
 
   attr_reader :session
 
@@ -59,8 +65,8 @@ class ImageUploadService
 
     product.image.attach(
       io: io,
-      filename: session[:pending_image_filename],
-      content_type: session[:pending_image_content_type]
+      filename: session[SESSION_KEY_FILENAME],
+      content_type: session[SESSION_KEY_CONTENT_TYPE]
     )
 
     true
@@ -79,7 +85,7 @@ class ImageUploadService
 
     {
       data: Base64.strict_encode64(File.read(temp_path)),
-      content_type: session[:pending_image_content_type]
+      content_type: session[SESSION_KEY_CONTENT_TYPE]
     }
   rescue StandardError => e
     Rails.logger.error "Failed to generate image preview: #{e.message}"
@@ -102,16 +108,16 @@ class ImageUploadService
   #
   # @return [void]
   def clear_session
-    session[:pending_image_key] = nil
-    session[:pending_image_filename] = nil
-    session[:pending_image_content_type] = nil
+    session[SESSION_KEY_IMAGE_KEY] = nil
+    session[SESSION_KEY_FILENAME] = nil
+    session[SESSION_KEY_CONTENT_TYPE] = nil
   end
 
   # 一時画像が存在するかチェック
   #
   # @return [Boolean]
   def pending_image?
-    session[:pending_image_key].present?
+    session[SESSION_KEY_IMAGE_KEY].present?
   end
 
   private
@@ -131,17 +137,17 @@ class ImageUploadService
     uploaded_file.rewind
 
     # セッションにメタデータを保存
-    session[:pending_image_key] = temp_key
-    session[:pending_image_filename] = uploaded_file.original_filename
-    session[:pending_image_content_type] = uploaded_file.content_type
+    session[SESSION_KEY_IMAGE_KEY] = temp_key
+    session[SESSION_KEY_FILENAME] = uploaded_file.original_filename
+    session[SESSION_KEY_CONTENT_TYPE] = uploaded_file.content_type
   end
 
   # 一時ファイルのパスを構築
   #
   # @return [Pathname] 一時ファイルパス
   def build_temp_path
-    temp_key = session[:pending_image_key]
-    filename = session[:pending_image_filename]
+    temp_key = session[SESSION_KEY_IMAGE_KEY]
+    filename = session[SESSION_KEY_FILENAME]
     TEMP_DIR.join("#{temp_key}_#{filename}")
   end
 end
