@@ -15,6 +15,9 @@ ja:
       title: "%{name} - 単位詳細"
     edit:
       title: "%{name} - 単位編集"
+    messages:
+      copy_success: "単位「%{original_name}」を「%{new_name}」としてコピーしました"
+      copy_failed: "単位のコピーに失敗しました: %{error}"
 
   # カテゴリー
   categories:
@@ -31,6 +34,9 @@ ja:
       title: "%{name} - カテゴリー詳細"
     edit:
       title: "%{name} - カテゴリー編集"
+    messages:
+      copy_success: "カテゴリー「%{original_name}」を「%{new_name}」としてコピーしました"
+      copy_failed: "カテゴリーのコピーに失敗しました: %{error}"
 
   # 原材料
   materials:
@@ -62,6 +68,9 @@ ja:
       new: "新規登録"
     placeholders:
       new_order_group: "商品ごとに違う規格で使用する場合に入力してください"
+    messages:
+      copy_success: "原材料「%{original_name}」を「%{new_name}」としてコピーしました"
+      copy_failed: "原材料のコピーに失敗しました: %{error}"
 
   # 発注グループ
   material_order_groups:
@@ -90,6 +99,9 @@ ja:
     errors:
       not_found: "発注グループが見つかりません"
       has_materials: "このグループは%{count}件の原材料で使用されているため削除できません"
+    messages:
+      copy_success: "発注グループ「%{original_name}」を「%{new_name}」としてコピーしました"
+      copy_failed: "発注グループのコピーに失敗しました: %{error}"
 
   # 商品
   products:
@@ -106,9 +118,6 @@ ja:
       title: "%{name} - 商品詳細"
     edit:
       title: "%{name} - 商品編集"
-    copy:
-      success: "商品をコピーしました"
-      failure: "商品のコピーに失敗しました"
     placeholder:
       item_number: "4桁で入力してください"
     image_help:
@@ -132,6 +141,10 @@ ja:
       unit_weight: "分量"
       unit: "単位"
     add_material_button: "原材料を追加"
+    messages:
+      copy_success: "商品「%{original_name}」を「%{new_name}」としてコピーしました"
+      copy_failed: "商品のコピーに失敗しました: %{error}"
+      image_deleted: "画像を削除しました"
 
   # 計画
   plans:
@@ -148,6 +161,7 @@ ja:
       title: "%{name} - 計画詳細"
     edit:
       title: "%{name} - 計画編集"
-    copy:
-      success: "計画をコピーしました"
-      failure: "計画のコピーに失敗しました"
+    messages:
+      copy_success: "計画「%{original_name}」を「%{new_name}」としてコピーしました"
+      copy_failed: "計画のコピーに失敗しました: %{error}"
+      copy_failed_duplicate: "計画のコピーに失敗しました: 名前が重複しています"

@@ -7,6 +7,7 @@
 # 機能:
 #   - 原材料の一覧表示（検索・カテゴリフィルタ・ページネーション・ソート機能）
 #   - 原材料の作成・編集・削除
+#   - 原材料のコピー
 class Resources::MaterialsController < AuthenticatedController
   include SortableController
 
@@ -22,8 +23,8 @@ class Resources::MaterialsController < AuthenticatedController
     created_at: -> { order(created_at: :desc) }
   )
 
-  # リソース検索（show, edit, update, destroy）
-  find_resource :material, only: [:show, :edit, :update, :destroy]
+  # リソース検索（show, edit, update, destroy, copy）
+  find_resource :material, only: [:show, :edit, :update, :destroy, :copy]
 
   # 原材料一覧
   #
@@ -78,7 +79,21 @@ class Resources::MaterialsController < AuthenticatedController
     respond_to_destroy(@material, success_path: resources_materials_url)
   end
 
-   # 並び替え順序を保存
+  # 原材料をコピー
+  #
+  # @return [void]
+  def copy
+    copied = @material.create_copy(user: current_user)
+    redirect_to resources_materials_path, notice: t('materials.messages.copy_success',
+                                                     original_name: @material.name,
+                                                     new_name: copied.name)
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.error "Material copy failed: #{e.record.errors.full_messages.join(', ')}"
+    redirect_to resources_materials_path, alert: t('materials.messages.copy_failed',
+                                                    error: e.record.errors.full_messages.join(', '))
+  end
+
+  # 並び替え順序を保存
   #
   # @return [void]
   def reorder

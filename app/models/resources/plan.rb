@@ -16,9 +16,9 @@ class Resources::Plan < ApplicationRecord
   include NameSearchable
   include UserAssociatable
   include NestedAttributeTranslatable
+  include Copyable
 
   nested_attribute_translation :plan_products, 'Planning::PlanProduct'
-
 
   # 関連付け
   belongs_to :category, class_name: 'Resources::Category'
@@ -63,6 +63,17 @@ class Resources::Plan < ApplicationRecord
   scope :filter_by_category_id, lambda { |category_id|
     where(category_id: category_id) if category_id.present?
   }
+
+  # Copyable設定
+  copyable_config(
+    name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
+    uniqueness_scope: :category_id,
+    uniqueness_check_attributes: [:name],
+    associations_to_copy: [:plan_products],
+    additional_attributes: {
+      status: 'draft'
+    }
+  )
 
   # 予定売上を計算
   #

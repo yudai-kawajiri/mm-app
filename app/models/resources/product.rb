@@ -16,6 +16,7 @@ class Resources::Product < ApplicationRecord
   include NameSearchable
   include UserAssociatable
   include NestedAttributeTranslatable
+  include Copyable
 
   # ネストされた属性の翻訳設定
   nested_attribute_translation :product_materials, 'Planning::ProductMaterial'
@@ -58,7 +59,6 @@ class Resources::Product < ApplicationRecord
   # 空の原材料レコードを除外
   before_validation :reject_blank_product_materials
 
-
   # 重複した原材料を除外
   before_save :reject_duplicate_product_materials
 
@@ -71,6 +71,18 @@ class Resources::Product < ApplicationRecord
       where(id: product_id).update_all(display_order: index + 1)
     end
   end
+
+  # Copyable設定
+  copyable_config(
+    name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
+    uniqueness_scope: :category_id,
+    uniqueness_check_attributes: [:name],
+    associations_to_copy: [:product_materials],
+    additional_attributes: {
+      item_number: :generate_unique_item_number,
+      status: 'draft'
+    }
+  )
 
   private
 
@@ -105,5 +117,17 @@ class Resources::Product < ApplicationRecord
   # 画像削除チェックボックスがオンか確認
   def remove_image_checked?
     remove_image.present? && remove_image != "0"
+  end
+
+  # 一意な品番を生成
+  def generate_unique_item_number
+    base_number = item_number
+    counter = 1
+
+    loop do
+      new_number = format('%04d', base_number.to_i + counter)
+      break new_number unless self.class.exists?(item_number: new_number, category_id: category_id)
+      counter += 1
+    end
   end
 end
