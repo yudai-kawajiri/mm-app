@@ -49,6 +49,8 @@ ja:
     errors:
       duplicate_name: "は既に同じカテゴリ内に存在します"
       duplicate_product: "同じ商品を複数回追加することはできません"
+    messages:
+      status_updated: "計画「%{name}」のステータスを「%{status}」に変更しました"
 
   # 商品原材料（ProductMaterial）
   product_material:
