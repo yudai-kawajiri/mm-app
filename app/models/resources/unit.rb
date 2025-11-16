@@ -20,6 +20,7 @@ class Resources::Unit < ApplicationRecord
   # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
+  include Copyable
 
   # 単位のカテゴリー定義
   enum :category, { production: 0, ordering: 1, manufacturing: 2 }
@@ -56,4 +57,11 @@ class Resources::Unit < ApplicationRecord
   scope :filter_by_category, lambda { |category|
     where(category: category) if category.present? && categories.key?(category.to_s)
   }
+
+  # Copyable設定
+  copyable_config(
+    name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
+    uniqueness_scope: :category,
+    uniqueness_check_attributes: [:name]
+  )
 end

@@ -20,6 +20,7 @@ class Resources::Category < ApplicationRecord
   # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
+  include Copyable
 
   # カテゴリー種別の定義（データベースには0, 1, 2として保存）
   enum :category_type, { material: 0, product: 1, plan: 2 }
@@ -43,4 +44,11 @@ class Resources::Category < ApplicationRecord
   scope :for_materials, -> { where(category_type: :material) }
   scope :for_products, -> { where(category_type: :product) }
   scope :for_plans, -> { where(category_type: :plan) }
+
+  # Copyable設定
+  copyable_config(
+    name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
+    uniqueness_scope: :category_type,
+    uniqueness_check_attributes: [:name]
+  )
 end

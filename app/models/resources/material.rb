@@ -15,6 +15,7 @@ class Resources::Material < ApplicationRecord
   # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
+  include Copyable
 
   # 関連付け
   belongs_to :category, class_name: 'Resources::Category'
@@ -100,4 +101,12 @@ class Resources::Material < ApplicationRecord
   def order_group_name
     order_group&.name
   end
+
+  # Copyable設定
+  # 注意: product_materialsはコピーしない（独立したマスタデータのため）
+  copyable_config(
+    name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
+    uniqueness_scope: :category_id,
+    uniqueness_check_attributes: [:name]
+  )
 end

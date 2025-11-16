@@ -15,6 +15,7 @@ class Resources::MaterialOrderGroup < ApplicationRecord
   # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
+  include Copyable
 
   # 関連付け
   has_many :materials, class_name: 'Resources::Material', foreign_key: :order_group_id, dependent: :restrict_with_error
@@ -27,4 +28,10 @@ class Resources::MaterialOrderGroup < ApplicationRecord
 
   # 一覧画面用：登録順（新しい順）
   scope :for_index, -> { includes(:materials).order(created_at: :desc) }
+
+  # Copyable設定
+  copyable_config(
+    name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
+    uniqueness_scope: :name
+  )
 end
