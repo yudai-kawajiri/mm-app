@@ -44,8 +44,11 @@ class Resources::Plan < ApplicationRecord
   validates :category_id, presence: true
   validates :status, presence: true
 
-  # インデックス表示用（N+1問題対策と並び替え）
+  # 一覧画面用：登録順（新しい順）
   scope :for_index, -> { includes(:category).order(created_at: :desc) }
+
+  # セレクトボックス用：名前順
+  scope :ordered, -> { order(:name) }
 
   # 実施中の計画を取得
   scope :active_plans, -> { where(status: :active) }
@@ -220,6 +223,59 @@ class Resources::Plan < ApplicationRecord
       material = Resources::Material.find(m[:material_id])
       [material.display_order || 999_999, m[:material_name]]
     end
+  end
+
+  # 原材料サマリーを計算
+  #
+  # @return [Array<Hash>] 原材料ごとの使用量サマリー
+  def calculate_materials_summary
+    # 計画に含まれる全製品の原材料を集計
+    material_totals = Hash.new { |h, k| h[k] = { total_quantity: 0, products: [] } }
+
+    plan_products.includes(product: { product_materials: :material }).each do |pp|
+      pp.product.product_materials.each do |pm|
+        material = pm.material
+        quantity = pm.quantity * pp.production_count
+
+        material_totals[material.id][:material_id] = material.id
+        material_totals[material.id][:material_name] = material.name
+        material_totals[material.id][:total_quantity] += quantity
+        material_totals[material.id][:order_group_name] = material.order_group&.name
+        material_totals[material.id][:order_unit_name] = material.unit_for_order&.name
+        material_totals[material.id][:products] << {
+          product_name: pp.product.name,
+          quantity: quantity
+        }
+
+        # 重量ベースの場合の計算
+        if material.weight_based?
+          weight = quantity * (material.default_unit_weight || 0)
+          material_totals[material.id][:total_weight] = weight
+          material_totals[material.id][:weight_per_product] = material.default_unit_weight
+
+          # 発注数量の計算
+          if material.unit_weight_for_order && material.unit_weight_for_order > 0
+            required_units = (weight.to_f / material.unit_weight_for_order).ceil
+            material_totals[material.id][:required_order_quantity] = required_units
+          else
+            material_totals[material.id][:required_order_quantity] = 0
+          end
+        # 個数ベースの場合の計算
+        elsif material.count_based?
+          material_totals[material.id][:total_weight] = 0
+
+          # 発注数量の計算
+          if material.pieces_per_order_unit && material.pieces_per_order_unit > 0
+            required_units = (quantity.to_f / material.pieces_per_order_unit).ceil
+            material_totals[material.id][:required_order_quantity] = required_units
+          else
+            material_totals[material.id][:required_order_quantity] = 0
+          end
+        end
+      end
+    end
+
+    material_totals.values
   end
 
   private

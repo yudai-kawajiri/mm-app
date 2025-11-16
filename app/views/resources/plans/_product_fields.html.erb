@@ -28,7 +28,7 @@
     <% current_category_id = f.object.product&.category_id || local_assigns[:category_id] %>
     <% products = current_category_id ? Resources::Product.where(category_id: current_category_id) : Resources::Product.all %>
     <%= f.collection_select(:product_id, products, :id, :name,
-        { include_blank: t('helpers.select.prompt') },
+        { include_blank: t('helpers.prompt.select') },
         { class: 'form-select form-select-sm',
           data: {
             action: 'change->resources--plan-product--row#updateProduct change->resources--plan-product--sync#syncProductToOtherTabs',

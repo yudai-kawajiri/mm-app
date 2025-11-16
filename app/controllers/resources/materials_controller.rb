@@ -15,6 +15,7 @@ class Resources::MaterialsController < AuthenticatedController
 
   # ソートオプションの定義
   define_sort_options(
+    display_order: -> { order(:display_order) },
     name: -> { order(:name) },
     category: -> { joins(:category).order('categories.name', :name) },
     order_group: -> { left_joins(:order_group).order('material_order_groups.name', :name) },
@@ -75,6 +76,19 @@ class Resources::MaterialsController < AuthenticatedController
   # @return [void]
   def destroy
     respond_to_destroy(@material, success_path: resources_materials_url)
+  end
+
+   # 並び替え順序を保存
+  #
+  # @return [void]
+  def reorder
+    params[:material].each_with_index do |id, index|
+      current_user.materials.find(id).update(display_order: index + 1)
+    end
+
+    head :ok
+  rescue ActiveRecord::RecordNotFound
+    head :not_found
   end
 
   private

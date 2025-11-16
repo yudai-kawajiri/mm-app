@@ -19,7 +19,7 @@
 
     <div class="mb-4">
       <%= f.label :password, class: "form-label h5" %><br />
-      <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
+      <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: 6) %>
 
     </div>
 

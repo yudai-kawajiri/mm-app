@@ -32,9 +32,9 @@ class Resources::PlansController < AuthenticatedController
       Resources::Plan,
       default: 'name',
       scope: :all,
-      includes: [:category, :plan_products]
+      includes: [:category]
     )
-    @plan_categories = current_user.categories.for_plans
+    @plan_categories = current_user.categories.for_plans.ordered
   end
 
   # 新規計画作成フォーム
@@ -42,8 +42,8 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def new
     @plan = current_user.plans.build
-    @plan_categories = current_user.categories.for_plans        # ← 追加
-    @product_categories = current_user.categories.for_products
+    @plan_categories = current_user.categories.for_plans.ordered
+    @product_categories = current_user.categories.for_products.ordered
   end
 
   # 計画を作成
@@ -51,6 +51,11 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def create
     @plan = current_user.plans.build(plan_params)
+
+    # エラー時のrender用に変数を事前設定
+    @plan_categories = current_user.categories.for_plans.ordered
+    @product_categories = current_user.categories.for_products.ordered
+
     respond_to_save(@plan, success_path: @plan)
   end
 
@@ -59,15 +64,15 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def show
     @plan_products = @plan.plan_products.includes(:product)
-    @product_categories = current_user.categories.for_products
+    @product_categories = current_user.categories.for_products.ordered
   end
 
   # 計画編集フォーム
   #
   # @return [void]
   def edit
-    @plan_categories = current_user.categories.for_plans        # ← 追加
-    @product_categories = current_user.categories.for_products
+    @plan_categories = current_user.categories.for_plans.ordered
+    @product_categories = current_user.categories.for_products.ordered
   end
 
   # 計画を更新
@@ -75,6 +80,11 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def update
     @plan.assign_attributes(plan_params)
+
+    # エラー時のrender用に変数を事前設定
+    @plan_categories = current_user.categories.for_plans.ordered
+    @product_categories = current_user.categories.for_products.ordered
+
     respond_to_save(@plan, success_path: @plan)
   end
 
@@ -89,22 +99,97 @@ class Resources::PlansController < AuthenticatedController
   #
   # @return [void]
   def copy
-    new_plan = @plan.deep_copy
+    original_plan = @plan
+    base_name = original_plan.name
+    copy_count = 1
+    new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
 
-    if new_plan.save
-      redirect_to edit_resources_plan_path(new_plan),
-                  notice: t('plans.copy.success')
-    else
-      redirect_to resources_plans_path,
-                  alert: t('plans.copy.failure')
+    while Resources::Plan.exists?(name: new_name, category_id: original_plan.category_id, user_id: current_user.id)
+      copy_count += 1
+      new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
     end
+
+    new_plan = original_plan.dup
+    new_plan.name = new_name
+    new_plan.status = :draft
+    new_plan.user_id = current_user.id
+
+    ActiveRecord::Base.transaction do
+      new_plan.save!
+
+      original_plan.plan_products.each do |plan_product|
+        new_plan.plan_products.create!(
+          product_id: plan_product.product_id,
+          production_count: plan_product.production_count
+        )
+      end
+    end
+
+    redirect_to resources_plans_path, notice: t('plans.messages.copy_success',
+                                      original_name: original_plan.name,
+                                      new_name: new_plan.name)
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.error "Plan copy failed: #{e.record.errors.full_messages.join(', ')}"
+    redirect_to resources_plans_path, alert: t('plans.messages.copy_failed',
+                                    error: e.record.errors.full_messages.join(', '))
+  rescue ActiveRecord::RecordNotUnique => e
+    Rails.logger.error "Plan copy failed (duplicate): #{e.message}"
+    redirect_to resources_plans_path, alert: t('plans.messages.copy_failed_duplicate')
   end
 
-  # 計画を印刷
+  # 印刷画面を表示
   #
   # @return [void]
   def print
-    # 印刷処理の実装
+    # 計画に関連する情報を取得
+    plan_schedule = @plan.plan_schedules.order(scheduled_date: :desc).first
+    @scheduled_date = plan_schedule&.scheduled_date
+
+    # 月間予算から情報を取得
+    if @scheduled_date
+      monthly_budget = Management::MonthlyBudget
+                        .where(user_id: current_user.id)
+                        .where('budget_month = ?', @scheduled_date.beginning_of_month)
+                        .first
+      @budget = monthly_budget&.target_amount || 0
+    else
+      @budget = 0
+    end
+
+    # 製品一覧を製品マスタの display_order 順に取得
+    @plan_products_for_print = @plan.plan_products
+                                    .includes(product: [:category, { image_attachment: :blob }])
+                                    .joins(:product)
+                                    .order('products.display_order ASC, products.id ASC')
+                                    .map do |pp|
+      {
+        product: pp.product,
+        production_count: pp.production_count,
+        price: pp.product.price,
+        subtotal: pp.production_count * pp.product.price
+      }
+    end
+
+    # 商品合計金額を計算（これを計画高として表示）
+    @planned_revenue = @plan_products_for_print.sum { |item| item[:subtotal] }
+    @total_product_cost = @planned_revenue
+
+    # 達成率の計算
+    @achievement_rate = if @budget > 0
+                          ((@planned_revenue.to_f / @budget) * 100).round(1)
+                        else
+                          0
+                        end
+
+    # 原材料サマリーを取得（display_order 順）
+    @materials_summary = @plan.calculate_materials_summary
+                              .sort_by do |material_data|
+                                material = Resources::Material.find(material_data[:material_id])
+                                [material.display_order || 999999, material.id]
+                              end
+
+    # 印刷レイアウトを使用
+    render layout: 'print'
   end
 
   private
@@ -121,7 +206,7 @@ class Resources::PlansController < AuthenticatedController
       plan_products_attributes: [
         :id,
         :product_id,
-        :quantity,
+        :production_count,
         :display_order,
         :_destroy
       ]

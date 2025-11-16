@@ -8,7 +8,7 @@
 <%= render "devise/shared/auth_card_frame" do %>
   <div class="mb-4 text-center">
     <h3 class="fw-bold text-primary mb-2">
-      <i class="bi bi-lock-fill me-2"></i><%= t('devise.passwords.edit.title') %>
+      <%= t('devise.passwords.edit.title') %>
     </h3>
     <p class="text-muted mb-0"><%= t('devise.passwords.edit.description') %></p>
   </div>
@@ -20,24 +20,24 @@
 
     <div class="mb-3">
       <%= f.label :password, class: 'form-label fw-bold' do %>
-        <i class="bi bi-lock me-1"></i><%= t('devise.passwords.edit.new_password') %>
+        <%= t('devise.passwords.edit.new_password') %>
       <% end %>
       <%= f.password_field :password,
           autofocus: true,
           autocomplete: "new-password",
           class: 'form-control form-control-lg',
-          placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length),
+          placeholder: t('devise.shared.minimum_password_length', count: 6),
           required: true %>
     </div>
 
     <div class="mb-4">
       <%= f.label :password_confirmation, class: 'form-label fw-bold' do %>
-        <i class="bi bi-lock-fill me-1"></i><%= t('devise.passwords.edit.new_password_confirmation') %>
+        <%= t('devise.passwords.edit.new_password_confirmation') %>
       <% end %>
       <%= f.password_field :password_confirmation,
           autocomplete: "new-password",
           class: 'form-control form-control-lg',
-          placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length),
+          placeholder: t('devise.shared.minimum_password_length', count: 6),
           required: true %>
     </div>
 

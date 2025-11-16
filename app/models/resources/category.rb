@@ -33,8 +33,13 @@ class Resources::Category < ApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :category_type }
   validates :category_type, presence: true
 
-  # 名前の昇順で取得
-  scope :for_index, -> { order(name: :asc) }
+  # 一覧画面用：登録順（新しい順）
+  scope :for_index, -> { order(created_at: :desc) }
+
+  # セレクトボックス用：名前順
+  scope :ordered, -> { order(:name) }
+
+  # カテゴリータイプで絞り込み
   scope :for_materials, -> { where(category_type: :material) }
   scope :for_products, -> { where(category_type: :product) }
   scope :for_plans, -> { where(category_type: :plan) }

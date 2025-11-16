@@ -7,20 +7,20 @@
   Stimulusコントローラー:
   - sortable-table: ドラッグ&ドロップによる並び替え制御
 %>
-<div class="mb-3">
+<div class="d-flex gap-2">
   <button data-sortable-table-target="toggleBtn"
           data-action="click->sortable-table#toggleReorderMode"
-          class="btn btn-secondary">
-    <%= t('common.actions.reorder') %>
+          class="btn btn-sm btn-secondary">
+    <%= local_assigns[:button_text] || t('common.actions.reorder_print_order') %>
   </button>
   <button data-sortable-table-target="saveBtn"
           data-action="click->sortable-table#save"
-          class="btn btn-success d-none">
+          class="btn btn-sm btn-success d-none">
     <%= t('common.save_order') %>
   </button>
   <button data-sortable-table-target="cancelBtn"
           data-action="click->sortable-table#cancel"
-          class="btn btn-outline-secondary d-none">
+          class="btn btn-sm btn-outline-secondary d-none">
     <%= t('common.cancel') %>
   </button>
 </div>

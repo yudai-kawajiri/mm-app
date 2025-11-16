@@ -41,7 +41,7 @@
             <select class="form-select"
                     id="assignPlanCategory"
                     onchange="handleCategoryChange(this)">
-              <option value=""><%= t('numerical_managements.modals.prompts.select_category') %></option>
+              <option value=""><%= t('helpers.prompt.select') %></option>
               <% if @plans_by_category.present? %>
                 <% @plans_by_category.keys.sort.each do |category_name| %>
                   <option value="<%= category_name %>"><%= category_name %></option>
@@ -105,7 +105,7 @@ window.assignPlanI18n = {
   updateLabel: '<%= j t("common.update") %>',
   editTitle: '<%= j t('numerical_managements.modals.assign_plan.edit_title') %>',
   addTitle: '<%= j t('numerical_managements.modals.assign_plan.title') %>',
-  selectPlanPrompt: '<%= j t('numerical_managements.modals.prompts.select_plan') %>',
+  selectPlaceholder: '<%= j t('helpers.prompt.select') %>',
   selectPlanAfterCategory: '<%= j t('numerical_managements.modals.prompts.select_plan_after_category') %>'
 };
 
@@ -240,7 +240,7 @@ function handleCategoryChange(select) {
     return;
   }
 
-  planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanPrompt}</option>`;
+  planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlaceholder}</option>`;
 
   const plans = window.plansByCategory[category];
 

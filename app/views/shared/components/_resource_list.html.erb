@@ -20,6 +20,7 @@
   - print_url_method: 印刷URL生成メソッド名 (デフォルト: なし)
   - sort_options: ソートオプションの配列 (デフォルト: なし)
   - sort_placeholder: ソートプレースホルダー (デフォルト: なし)
+  - sortable: ドラッグ&ドロップ並び替え機能 (デフォルト: false)
 %>
 <% search_target = local_assigns[:search_target] %>
 <% resource_class = local_assigns[:resource_class] %>
@@ -29,27 +30,32 @@
 <% show_print = local_assigns.fetch(:show_print, false) %>
 <% print_url_method = local_assigns[:print_url_method] %>
 <% icon_mode = local_assigns.fetch(:icon_mode, false) %>
+<% sortable = local_assigns.fetch(:sortable, false) %>
 <% sort_options = local_assigns[:sort_options] %>
 <% sort_placeholder = local_assigns[:sort_placeholder] %>
 
 <% if search_target.present? || sort_options.present? %>
-  <%# 名前空間付きルートに対応 %>
-  <%
-    route_key = resource_class.model_name.route_key
-    form_path = send("#{route_key}_path")
-  %>
-  <%= render 'shared/forms/search_form',
-      form_path: form_path,
-      search_target: search_target,
-      search_categories: search_categories,
-      resource_class: resource_class,
-      sort_options: sort_options,
-      sort_placeholder: sort_placeholder %>
+  <div <%= 'data-sortable-table-target="sortForm"' if sortable %>>
+    <%
+      route_key = resource_class.model_name.route_key
+      form_path = send("#{route_key}_path")
+    %>
+    <%= render 'shared/forms/search_form',
+        form_path: form_path,
+        search_target: search_target,
+        search_categories: search_categories,
+        resource_class: resource_class,
+        sort_options: sort_options,
+        sort_placeholder: sort_placeholder %>
+  </div>
 <% end %>
 
 <table class="table mt-4">
   <thead class="table-light">
     <tr>
+      <% if sortable %>
+        <th class="d-none" style="width: 50px;">☰</th>
+      <% end %>
       <% columns.each do |col| %>
         <th>
           <% if col[:header].present? %>
@@ -62,7 +68,11 @@
   </thead>
   <tbody>
     <% resources.each do |resource| %>
-      <tr data-id="<%= resource.id %>">
+      <tr data-id="<%= resource.id %>"<%= " data-display-order=\"#{resource.display_order || 999999}\"".html_safe if sortable && resource.respond_to?(:display_order) %>>
+        <% if sortable %>
+          <td class="drag-handle d-none text-center" style="cursor: move;">☰</td>
+        <% end %>
+
         <% columns.each do |col| %>
           <td>
             <%
@@ -78,6 +88,7 @@
             <%= output %>
           </td>
         <% end %>
+
         <td>
           <%= render 'shared/actions/resource_action_links',
               resource: resource,

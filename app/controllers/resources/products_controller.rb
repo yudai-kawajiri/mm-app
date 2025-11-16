@@ -16,6 +16,7 @@ class Resources::ProductsController < AuthenticatedController
 
   # ソートオプションの定義
   define_sort_options(
+    display_order: -> { ordered },
     name: -> { order(:name) },
     category: -> { joins(:category).order('categories.name', :name) },
     created_at: -> { order(created_at: :desc) }
@@ -34,7 +35,7 @@ class Resources::ProductsController < AuthenticatedController
       scope: :all,
       includes: [:category, :product_materials]
     )
-    @product_categories = current_user.categories.for_products
+    @product_categories = current_user.categories.for_products.ordered
   end
 
   # 新規商品作成フォーム
@@ -42,6 +43,7 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def new
     @product = current_user.products.build
+    @product_categories = current_user.categories.for_products.ordered
     @material_categories = current_user.categories.for_materials
   end
 
@@ -50,6 +52,11 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def create
     @product = current_user.products.build(product_params)
+
+    # エラー時のrender用に変数を事前設定
+    @product_categories = current_user.categories.for_products.ordered
+    @material_categories = current_user.categories.for_materials
+
     respond_to_save(@product, success_path: @product)
   end
 
@@ -62,7 +69,8 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [void]
   def edit
-    @material_categories = current_user.categories.for_materials  # ← 追加
+    @product_categories = current_user.categories.for_products.ordered
+    @material_categories = current_user.categories.for_materials
   end
 
   # 商品を更新
@@ -70,6 +78,11 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def update
     @product.assign_attributes(product_params)
+
+    # エラー時のrender用に変数を事前設定
+    @product_categories = current_user.categories.for_products.ordered
+    @material_categories = current_user.categories.for_materials
+
     respond_to_save(@product, success_path: @product)
   end
 
@@ -95,12 +108,25 @@ class Resources::ProductsController < AuthenticatedController
     end
   end
 
+  # 並び替え順序を保存
+  #
+  # @return [void]
+  def reorder
+    params[:product_ids].each_with_index do |id, index|
+      current_user.products.find(id).update(display_order: index + 1)
+    end
+
+    head :ok
+  rescue ActiveRecord::RecordNotFound
+    head :not_found
+  end
+
   private
 
   # Strong Parameters
   #
   # @return [ActionController::Parameters]
-  def material_params
+  def product_params
     params.require(:resources_product).permit(
       :name,
       :category_id,
@@ -109,6 +135,7 @@ class Resources::ProductsController < AuthenticatedController
       :status,
       :image,
       :note,
+      :description,
       product_materials_attributes: [
         :id,
         :material_id,

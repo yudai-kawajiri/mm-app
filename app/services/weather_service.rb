@@ -66,6 +66,7 @@ class WeatherService
 
     daily_forecasts.map do |date, forecasts|
       representative = forecasts.min_by { |f| (f['dt_txt'].include?('12:00') ? 0 : 1) }
+      icon_code = representative.dig('weather', 0, 'icon')
 
       {
         date: Date.parse(date),
@@ -73,7 +74,7 @@ class WeatherService
         temp_min: forecasts.map { |f| f.dig('main', 'temp_min') }.min.round,
         weather: representative.dig('weather', 0, 'main'),
         weather_description: representative.dig('weather', 0, 'description'),
-        icon: representative.dig('weather', 0, 'icon'),
+        icon: icon_code&.gsub('n', 'd'),
         pop: (representative.dig('pop') || 0) * 100,
         is_rainy: rainy?(representative)
       }

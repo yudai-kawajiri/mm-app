@@ -2,31 +2,38 @@
   機能: 商品一覧画面
   - 全商品の一覧表示
   - カテゴリ検索機能
-  - ソート機能（名前順、カテゴリー順、登録順）
+  - ソート機能（名前順、カテゴリー順、登録順、印刷順）
+  - ドラッグ&ドロップによる並び替え機能
   - コピー機能
 %>
 <%= content_for(:title, t('products.index.title')) %>
 
-<%= render 'shared/layouts/header_with_actions',
-    title: t('products.index.title'),
-    resource: nil,
-    is_index_page: true,
-    is_form_page: false,
-    is_show_page: false,
-    new_path: new_resources_product_path %>
+<div data-controller="sortable-table"
+     data-sortable-table-reorder-path-value="<%= reorder_resources_products_path %>"
+     data-sortable-table-param-name-value="product_ids">
 
-<div>
+  <%= render 'shared/layouts/header_with_actions',
+      title: t('products.index.title'),
+      resource: nil,
+      is_index_page: true,
+      is_form_page: false,
+      is_show_page: false,
+      new_path: new_resources_product_path,
+      sortable: true %>
+
   <%= render 'shared/components/resource_list',
       resources: @products,
       resource_class: Resources::Product,
       search_target: :category_id,
       search_categories: @product_categories,
       sort_options: [
+        [t('products.index.sort_options.display_order'), 'display_order'],
         [t('products.index.sort_options.name'), 'name'],
         [t('products.index.sort_options.category'), 'category'],
         [t('products.index.sort_options.created_at'), 'created_at']
       ],
       sort_placeholder: t('products.index.sort_placeholder'),
+      sortable: true,
       show_copy: true,
       copy_url_method: :copy_resources_product_path,
       icon_mode: true,

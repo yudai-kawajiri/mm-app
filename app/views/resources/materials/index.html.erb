@@ -3,25 +3,31 @@
   - 全原材料の一覧表示
   - カテゴリ検索機能
   - ソート機能（名前順、カテゴリー順、発注グループ順、登録順）
+  - ドラッグ&ドロップ並び替え機能
   - 計測方法に応じた発注量表示
 %>
 <%= content_for(:title, t('materials.index.title')) %>
 
-<%= render 'shared/layouts/header_with_actions',
-    title: t('materials.index.title'),
-    resource: nil,
-    is_index_page: true,
-    is_form_page: false,
-    is_show_page: false,
-    new_path: new_resources_material_path %>
+<div data-controller="sortable-table"
+     data-sortable-table-reorder-path-value="<%= reorder_resources_materials_path %>"
+     data-sortable-table-param-name-value="material">
 
-<div>
+  <%= render 'shared/layouts/header_with_actions',
+      title: t('materials.index.title'),
+      resource: nil,
+      is_index_page: true,
+      is_form_page: false,
+      is_show_page: false,
+      new_path: new_resources_material_path,
+      sortable: true %>
+
   <%= render 'shared/components/resource_list',
       resources: @materials,
       resource_class: Resources::Material,
       search_target: :category_id,
       search_categories: @material_categories,
       sort_options: [
+        [t('materials.index.sort_options.display_order'), 'display_order'],
         [t('materials.index.sort_options.name'), 'name'],
         [t('materials.index.sort_options.category'), 'category'],
         [t('materials.index.sort_options.order_group'), 'order_group'],
@@ -29,6 +35,7 @@
       ],
       sort_placeholder: t('materials.index.sort_placeholder'),
       icon_mode: true,
+      sortable: true,
 
       columns: [
         { header: :name, data: :name },

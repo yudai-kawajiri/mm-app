@@ -112,6 +112,7 @@ ja:
     uncategorized: "未分類"
     not_set: "未設定"
     calculation_unavailable: "計算不可"
+    count_suffix: "件"
     save_order: "並び順を保存"
     reorder_mode: "並び替えモード"
     year_suffix: "年"
@@ -120,7 +121,9 @@ ja:
       year: "年"
       month: "月"
     actions:
-      reorder: "並び替え"
+      reorder_print_order: "印刷順を並び替え"
+    save_order: "並び順を保存"
+    cancel: "キャンセル"
 
   labels:
     date: "日付"
@@ -135,8 +138,6 @@ ja:
   # 検索
   search:
     placeholders:
-      select_type: "種別を選択してください"
-      select_category: "カテゴリーを選択してください"
       enter_name: "名前を入力"
 
   # ヘルパー
@@ -147,8 +148,6 @@ ja:
     submit:
       create: "登録"
       update: "更新"
-    select:
-      prompt: "選択してください"
     links:
       destroy: "削除"
     character_counter:
