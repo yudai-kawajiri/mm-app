@@ -89,15 +89,42 @@ class Resources::PlansController < AuthenticatedController
   #
   # @return [void]
   def copy
-    new_plan = @plan.deep_copy
+    original_plan = @plan
+    base_name = original_plan.name
+    copy_count = 1
+    new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
 
-    if new_plan.save
-      redirect_to edit_resources_plan_path(new_plan),
-                  notice: t('plans.copy.success')
-    else
-      redirect_to resources_plans_path,
-                  alert: t('plans.copy.failure')
+    while Resources::Plan.exists?(name: new_name, category_id: original_plan.category_id, user_id: current_user.id)
+      copy_count += 1
+      new_name = "#{base_name} (#{I18n.t('common.copy')}#{copy_count})"
     end
+
+    new_plan = original_plan.dup
+    new_plan.name = new_name
+    new_plan.status = :draft
+    new_plan.user_id = current_user.id
+
+    ActiveRecord::Base.transaction do
+      new_plan.save!
+
+      original_plan.plan_products.each do |plan_product|
+        new_plan.plan_products.create!(
+          product_id: plan_product.product_id,
+          production_count: plan_product.production_count
+        )
+      end
+    end
+
+    redirect_to resources_plans_path, notice: t('plans.messages.copy_success',
+                                      original_name: original_plan.name,
+                                      new_name: new_plan.name)
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.error "Plan copy failed: #{e.record.errors.full_messages.join(', ')}"
+    redirect_to resources_plans_path, alert: t('plans.messages.copy_failed',
+                                    error: e.record.errors.full_messages.join(', '))
+  rescue ActiveRecord::RecordNotUnique => e
+    Rails.logger.error "Plan copy failed (duplicate): #{e.message}"
+    redirect_to resources_plans_path, alert: t('plans.messages.copy_failed_duplicate')
   end
 
   # 印刷画面を表示
