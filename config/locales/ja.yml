@@ -152,6 +152,7 @@ ja:
       destroy: "削除"
     character_counter:
       hint: "最大%{max}文字"
+      hint: "%{current} / %{max} 文字（残り %{remaining} 文字）"
     confirm:
       destroy: "本当にこの%{resource}を削除してもよろしいですか？"
       copy: "この%{resource}をコピーしますか？"

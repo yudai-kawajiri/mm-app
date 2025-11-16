@@ -473,14 +473,17 @@ module ApplicationHelper
 
       # 文字数カウンター表示
       counter_html = if character_counter && max_length
-        content_tag(:div, class: "form-text text-end") do
-          concat content_tag(:span, "0", data: { character_counter_target: "count" })
-          concat " / "
-          concat max_length.to_s
-          concat " 文字 （残り "
-          concat content_tag(:span, max_length.to_s, class: "text-muted", data: { character_counter_target: "remaining" })
-          concat " 文字）"
-        end
+      content_tag(:div, class: "form-text text-end") do
+        current = content_tag(:span, "0", data: { character_counter_target: "count" })
+        remaining = content_tag(:span, max_length.to_s, class: "text-muted", data: { character_counter_target: "remaining" })
+
+        t('helpers.character_counter.hint',
+          current: current,
+          max: max_length,
+          remaining: remaining
+        ).html_safe
+      end
+
       else
         "".html_safe
       end
