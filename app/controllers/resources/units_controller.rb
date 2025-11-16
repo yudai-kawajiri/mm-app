@@ -7,6 +7,7 @@
 # 機能:
 #   - 単位の一覧表示（検索・カテゴリフィルタ・ページネーション・ソート機能）
 #   - 単位の作成・編集・削除
+#   - 単位のコピー
 class Resources::UnitsController < AuthenticatedController
   include SortableController
 
@@ -20,8 +21,8 @@ class Resources::UnitsController < AuthenticatedController
     created_at: -> { order(created_at: :desc) }
   )
 
-  # リソース検索（show, edit, update, destroy）
-  find_resource :unit, only: [:show, :edit, :update, :destroy]
+  # リソース検索（show, edit, update, destroy, copy）
+  find_resource :unit, only: [:show, :edit, :update, :destroy, :copy]
 
   # 単位一覧
   #
@@ -85,6 +86,20 @@ class Resources::UnitsController < AuthenticatedController
   # @return [void]
   def destroy
     respond_to_destroy(@unit, success_path: resources_units_url)
+  end
+
+  # 単位をコピー
+  #
+  # @return [void]
+  def copy
+    copied = @unit.create_copy(user: current_user)
+    redirect_to resources_units_path, notice: t('units.messages.copy_success',
+                                                  original_name: @unit.name,
+                                                  new_name: copied.name)
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.error "Unit copy failed: #{e.record.errors.full_messages.join(', ')}"
+    redirect_to resources_units_path, alert: t('units.messages.copy_failed',
+                                                 error: e.record.errors.full_messages.join(', '))
   end
 
   private

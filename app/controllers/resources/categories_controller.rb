@@ -7,6 +7,7 @@
 # 機能:
 #   - カテゴリーの一覧表示（検索・タイプフィルタ・ページネーション・ソート機能）
 #   - カテゴリーの作成・編集・削除
+#   - カテゴリーのコピー
 class Resources::CategoriesController < AuthenticatedController
   include SortableController
 
@@ -20,8 +21,8 @@ class Resources::CategoriesController < AuthenticatedController
     created_at: -> { order(created_at: :desc) }
   )
 
-  # リソース検索（show, edit, update, destroy）
-  find_resource :category, only: [:show, :edit, :update, :destroy]
+  # リソース検索（show, edit, update, destroy, copy）
+  find_resource :category, only: [:show, :edit, :update, :destroy, :copy]
 
   # カテゴリー一覧
   #
@@ -85,6 +86,20 @@ class Resources::CategoriesController < AuthenticatedController
   # @return [void]
   def destroy
     respond_to_destroy(@category, success_path: resources_categories_url)
+  end
+
+  # カテゴリーをコピー
+  #
+  # @return [void]
+  def copy
+    copied = @category.create_copy(user: current_user)
+    redirect_to resources_categories_path, notice: t('categories.messages.copy_success',
+                                                      original_name: @category.name,
+                                                      new_name: copied.name)
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.error "Category copy failed: #{e.record.errors.full_messages.join(', ')}"
+    redirect_to resources_categories_path, alert: t('categories.messages.copy_failed',
+                                                     error: e.record.errors.full_messages.join(', '))
   end
 
   private

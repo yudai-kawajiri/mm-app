@@ -7,6 +7,7 @@
 # 機能:
 #   - 発注グループの一覧表示（検索・ページネーション・ソート機能）
 #   - 発注グループの作成・編集・削除
+#   - 発注グループのコピー
 class Resources::MaterialOrderGroupsController < AuthenticatedController
   include SortableController
 
@@ -19,8 +20,8 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
     created_at: -> { order(created_at: :desc) }
   )
 
-  # リソース検索（show, edit, update, destroy）
-  find_resource :material_order_group, only: [:show, :edit, :update, :destroy]
+  # リソース検索（show, edit, update, destroy, copy）
+  find_resource :material_order_group, only: [:show, :edit, :update, :destroy, :copy]
 
   # 発注グループ一覧
   #
@@ -72,6 +73,20 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   # @return [void]
   def destroy
     respond_to_destroy(@material_order_group, success_path: resources_material_order_groups_url)
+  end
+
+  # 発注グループをコピー
+  #
+  # @return [void]
+  def copy
+    copied = @material_order_group.create_copy(user: current_user)
+    redirect_to resources_material_order_groups_path, notice: t('material_order_groups.messages.copy_success',
+                                                                  original_name: @material_order_group.name,
+                                                                  new_name: copied.name)
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.error "MaterialOrderGroup copy failed: #{e.record.errors.full_messages.join(', ')}"
+    redirect_to resources_material_order_groups_path, alert: t('material_order_groups.messages.copy_failed',
+                                                                 error: e.record.errors.full_messages.join(', '))
   end
 
   private
