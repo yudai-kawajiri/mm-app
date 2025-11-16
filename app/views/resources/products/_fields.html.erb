@@ -7,6 +7,11 @@
 
   必須引数:
   - f: FormBuilder - フォームビルダーオブジェクト
+
+  修正内容:
+  - ステータスとカテゴリーの順序を入れ替え
+  - ステータス: 左カラムの3番目（売価の次）
+  - カテゴリー: 右カラムの1番目（最初）
 %>
 <div class="card mb-3">
   <div class="card-header bg-light">
@@ -14,9 +19,12 @@
   </div>
   <div class="card-body">
     <div class="row g-3">
+      <!-- 左カラム -->
       <div class="col-md-6">
+        <!-- 1. 商品名 -->
         <%= form_group_lg(f, :name, wrapper_class: 'mb-3') %>
 
+        <!-- 2. 売価 -->
         <%= form_group_lg(f, :price,
                           wrapper_class: 'mb-3',
                           field_type: :text_field,
@@ -27,6 +35,18 @@
                             action: 'input->number-input#handleInput paste->number-input#handlePaste'
                           }) %>
 
+        <!-- 3. ステータス（ここに移動） -->
+        <%= form_group_lg(f, :status,
+                          field_type: :select,
+                          wrapper_class: 'mb-3',
+                          choices: Resources::Product.statuses.keys.map { |status| [t("activerecord.enums.resources/product.status.#{status}"), status] },
+                          select_options: { include_blank: t('helpers.prompt.select') })
+                          %>
+      </div>
+
+      <!-- 右カラム -->
+      <div class="col-md-6">
+        <!-- 1. カテゴリー（ここに移動） -->
         <%= form_group_lg(f, :category_id,
                           field_type: :collection_select,
                           wrapper_class: 'mb-3',
@@ -34,16 +54,8 @@
                           value_method: :id,
                           text_method: :name,
                           select_options: { include_blank: t('helpers.prompt.select')}) %>
-      </div>
 
-      <div class="col-md-6">
-        <%= form_group_lg(f, :status,
-                          field_type: :select,
-                          wrapper_class: 'mb-3',
-                          choices: Resources::Product.statuses.keys.map { |status| [t("activerecord.enums.resources/product.status.#{status}"), status] },
-                          select_options: { include_blank: t('helpers.prompt.select') })
-                          %>
-
+        <!-- 2. 品番 -->
         <%= form_group_lg(f, :item_number,
                           wrapper_class: 'mb-3',
                           placeholder: t('products.placeholder.item_number'),
@@ -53,6 +65,7 @@
                             action: 'input->number-input#handleInput paste->number-input#handlePaste'
                           }) %>
 
+        <!-- 3. 画像 -->
         <div class="mb-3" data-controller="image-preview">
           <%= form_label_lg(f, :image) %>
 
@@ -127,7 +140,7 @@
             <% end %>
 
             <button type="button"
-                    data-image-preview-target="cancelButton"
+                    data-image_preview_target="cancelButton"
                     data-action="click->image-preview#cancelNewImage"
                     class="btn btn-sm btn-outline-danger"
                     style="display: none;">
@@ -138,6 +151,7 @@
       </div>
     </div>
 
+    <!-- 説明欄（全幅） -->
     <div class="row mt-3">
       <div class="col-md-12">
         <div class="mb-3">

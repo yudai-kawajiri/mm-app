@@ -43,6 +43,7 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def new
     @product = current_user.products.build
+    @product_categories = current_user.categories.for_products
     @material_categories = current_user.categories.for_materials
   end
 
@@ -51,6 +52,11 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def create
     @product = current_user.products.build(product_params)
+
+    # エラー時のrender用に変数を事前設定
+    @product_categories = current_user.categories.for_products
+    @material_categories = current_user.categories.for_materials
+
     respond_to_save(@product, success_path: @product)
   end
 
@@ -63,7 +69,8 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [void]
   def edit
-    @material_categories = current_user.categories.for_materials  # ← 追加
+    @product_categories = current_user.categories.for_products
+    @material_categories = current_user.categories.for_materials
   end
 
   # 商品を更新
@@ -71,6 +78,11 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def update
     @product.assign_attributes(product_params)
+
+    # エラー時のrender用に変数を事前設定
+    @product_categories = current_user.categories.for_products
+    @material_categories = current_user.categories.for_materials
+
     respond_to_save(@product, success_path: @product)
   end
 
@@ -114,7 +126,7 @@ class Resources::ProductsController < AuthenticatedController
   # Strong Parameters
   #
   # @return [ActionController::Parameters]
-  def material_params
+  def product_params
     params.require(:resources_product).permit(
       :name,
       :category_id,
@@ -123,6 +135,7 @@ class Resources::ProductsController < AuthenticatedController
       :status,
       :image,
       :note,
+      :description,
       product_materials_attributes: [
         :id,
         :material_id,
