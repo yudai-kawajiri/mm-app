@@ -138,8 +138,6 @@ ja:
   # 検索
   search:
     placeholders:
-      select_type: "種別を選択してください"
-      select_category: "カテゴリーを選択してください"
       enter_name: "名前を入力"
 
   # ヘルパー
@@ -150,8 +148,6 @@ ja:
     submit:
       create: "登録"
       update: "更新"
-    select:
-      prompt: "選択してください"
     links:
       destroy: "削除"
     character_counter:
