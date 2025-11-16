@@ -39,10 +39,18 @@ class Planning::ProductMaterial < ApplicationRecord
     case material.order_conversion_type
     when :pieces
       # 個数ベース（例: トレイ 8枚使用 ÷ 50枚/箱 = 0.16箱 → 1箱）
-      (quantity.to_f / material.pieces_per_order_unit).ceil
+      if material.pieces_per_order_unit&.positive?
+        (quantity.to_f / material.pieces_per_order_unit).ceil
+      else
+        0
+      end
     when :weight
       # 重量ベース（例: まぐろ 96g ÷ 1000g/パック = 0.096パック → 1パック）
-      (total_weight / material.unit_weight_for_order).ceil
+      if material.unit_weight_for_order&.positive?
+        (total_weight / material.unit_weight_for_order).ceil
+      else
+        0
+      end
     else
       0
     end
@@ -68,9 +76,16 @@ class Planning::ProductMaterial < ApplicationRecord
   def order_quantity_detail
     case material.order_conversion_type
     when :pieces
-      "#{quantity}#{unit.name} → #{required_order_quantity}#{order_unit_name}"
+      I18n.t('planning.product_material.order_quantity_detail.pieces',
+             quantity: quantity,
+             unit: unit.name,
+             order_quantity: required_order_quantity,
+             order_unit: order_unit_name)
     when :weight
-      "#{total_weight.round(1)}g → #{required_order_quantity}#{order_unit_name}"
+      I18n.t('planning.product_material.order_quantity_detail.weight',
+             weight: total_weight.round(1),
+             order_quantity: required_order_quantity,
+             order_unit: order_unit_name)
     else
       I18n.t('common.calculation_unavailable')
     end

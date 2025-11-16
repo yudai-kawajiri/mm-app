@@ -185,13 +185,13 @@ class Planning::PlanSchedule < ApplicationRecord
   def create_snapshot_from_products(products_hash)
     # ActionController::Parameters を安全に変換
     hash = case products_hash
-           when ActionController::Parameters
-             products_hash.to_unsafe_h
-           when Hash
-             products_hash
-           else
-             products_hash.to_h
-           end
+            when ActionController::Parameters
+              products_hash.to_unsafe_h
+            when Hash
+              products_hash
+            else
+              products_hash.to_h
+            end
 
     products_data = hash.map do |product_id, production_count|
       { product_id: product_id.to_i, production_count: production_count.to_i }

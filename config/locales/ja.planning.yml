@@ -50,6 +50,12 @@ ja:
       duplicate_name: "は既に同じカテゴリ内に存在します"
       duplicate_product: "同じ商品を複数回追加することはできません"
 
+  # 商品原材料（ProductMaterial）
+  product_material:
+    order_quantity_detail:
+      pieces: "%{quantity}%{unit} → %{order_quantity}%{order_unit}"
+      weight: "%{weight}g → %{order_quantity}%{order_unit}"
+
   # 計画スケジュール（個別メッセージは不要、flash_messagesを使用）
   plan_schedules: {}
 
