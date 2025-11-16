@@ -31,7 +31,6 @@ class Resources::MaterialOrderGroup < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
     uniqueness_scope: :name
   )
 end

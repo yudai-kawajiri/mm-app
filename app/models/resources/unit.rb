@@ -27,19 +27,19 @@ class Resources::Unit < ApplicationRecord
 
   # 関連付け（この単位を参照している材料がある場合は削除を制限）
   has_many :materials_as_product_unit,
-           class_name: "Material",
-           foreign_key: "unit_for_product_id",
-           dependent: :restrict_with_error
+            class_name: "Material",
+            foreign_key: "unit_for_product_id",
+            dependent: :restrict_with_error
 
   has_many :materials_as_order_unit,
-           class_name: "Material",
-           foreign_key: "unit_for_order_id",
-           dependent: :restrict_with_error
+            class_name: "Material",
+            foreign_key: "unit_for_order_id",
+            dependent: :restrict_with_error
 
   has_many :materials_as_production_unit,
-           class_name: "Material",
-           foreign_key: "production_unit_id",
-           dependent: :restrict_with_error
+            class_name: "Material",
+            foreign_key: "production_unit_id",
+            dependent: :restrict_with_error
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category }
@@ -60,7 +60,6 @@ class Resources::Unit < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
     uniqueness_scope: :category,
     uniqueness_check_attributes: [:name]
   )
