@@ -235,3 +235,7 @@ ja:
         daily_target_save_failed: "日別目標 %{date}: %{errors}"
         invalid_date: "日別目標: 無効な日付 %{date}"
         plan_schedule_update_failed: "計画スケジュールID %{id}: %{errors}"
+    weather:
+      errors:
+        api_error: "天気予報API エラー: %{code} - %{body}"
+        service_error: "天気予報サービス エラー: %{message}"
