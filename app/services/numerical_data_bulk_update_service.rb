@@ -39,7 +39,9 @@ class NumericalDataBulkUpdateService
       next unless budget
 
       unless budget.update(target_amount: strip_commas(attributes[:target_amount]))
-        @errors << "月次予算ID #{id}: #{budget.errors.full_messages.join(', ')}"
+        @errors << I18n.t('services.numerical_data_bulk_update.errors.monthly_budget_update_failed',
+                          id: id,
+                          errors: budget.errors.full_messages.join(', '))
       end
     end
   end
@@ -60,7 +62,9 @@ class NumericalDataBulkUpdateService
         target = Management::DailyTarget.find_by(id: key)
         if target
           unless target.update(target_amount: target_amount)
-            @errors << "日別目標ID #{key}: #{target.errors.full_messages.join(', ')}"
+            @errors << I18n.t('services.numerical_data_bulk_update.errors.daily_target_update_failed',
+                              id: key,
+                              errors: target.errors.full_messages.join(', '))
           end
         end
       else
@@ -79,11 +83,14 @@ class NumericalDataBulkUpdateService
         )
 
         unless target.update(target_amount: target_amount)
-          @errors << "日別目標 #{target_date}: #{target.errors.full_messages.join(', ')}"
+          @errors << I18n.t('services.numerical_data_bulk_update.errors.daily_target_save_failed',
+                            date: target_date,
+                            errors: target.errors.full_messages.join(', '))
         end
       end
     rescue Date::Error
-      @errors << "日別目標: 無効な日付 #{attributes[:target_date]}"
+      @errors << I18n.t('services.numerical_data_bulk_update.errors.invalid_date',
+                        date: attributes[:target_date])
     end
   end
 
@@ -98,7 +105,9 @@ class NumericalDataBulkUpdateService
       next unless schedule
 
       unless schedule.update(actual_revenue: strip_commas(attributes[:actual_revenue]))
-        @errors << "計画スケジュールID #{id}: #{schedule.errors.full_messages.join(', ')}"
+        @errors << I18n.t('services.numerical_data_bulk_update.errors.plan_schedule_update_failed',
+                          id: id,
+                          errors: schedule.errors.full_messages.join(', '))
       end
     end
   end

@@ -151,7 +151,6 @@ ja:
     links:
       destroy: "削除"
     character_counter:
-      hint: "最大%{max}文字"
       hint: "%{current} / %{max} 文字（残り %{remaining} 文字）"
     confirm:
       destroy: "本当にこの%{resource}を削除してもよろしいですか？"
@@ -226,3 +225,13 @@ ja:
   sortable_table:
     saved: "並び替えを保存しました"
     save_failed: "並び替えの保存に失敗しました"
+
+  # サービスクラスのメッセージ  ← ここに追加
+  services:
+    numerical_data_bulk_update:
+      errors:
+        monthly_budget_update_failed: "月次予算ID %{id}: %{errors}"
+        daily_target_update_failed: "日別目標ID %{id}: %{errors}"
+        daily_target_save_failed: "日別目標 %{date}: %{errors}"
+        invalid_date: "日別目標: 無効な日付 %{date}"
+        plan_schedule_update_failed: "計画スケジュールID %{id}: %{errors}"
