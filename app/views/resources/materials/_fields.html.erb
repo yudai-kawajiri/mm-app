@@ -15,7 +15,7 @@
   <div class="col-md-6">
     <%= form_group_lg(f, :category_id,
         field_type: :collection_select,
-        collection: Resources::Category.where(category_type: :material).order(:name),
+        collection: Resources::Category.where(category_type: :material).ordered,
         select_options: { include_blank: t('helpers.prompt.select') }
     ) %>
   </div>
@@ -50,7 +50,7 @@
       </label>
 
       <%= f.collection_select :unit_for_product_id,
-          current_user.units.where(category: :production),
+          current_user.units.where(category: :production).ordered,
           :id,
           :name,
           { include_blank: t('helpers.prompt.select') },
@@ -94,7 +94,7 @@
   <div class="col-md-6">
     <%= form_group_lg(f, :unit_for_order_id,
         field_type: :collection_select,
-        collection: current_user.units.where(category: :ordering),
+        collection: current_user.units.where(category: :ordering).ordered,
         label: Resources::Material.human_attribute_name(:unit_for_order),
         select_options: { include_blank: t('helpers.prompt.select') }
     ) %>
@@ -110,7 +110,7 @@
       </label>
 
       <%= f.collection_select :production_unit_id,
-          current_user.units.where(category: :manufacturing),
+          current_user.units.where(category: :manufacturing).ordered,
           :id,
           :name,
           { include_blank: t('helpers.prompt.select') },
@@ -120,7 +120,7 @@
   <div class="col-md-6">
     <%= form_group_lg(f, :order_group_id,
         field_type: :collection_select,
-        collection: Resources::MaterialOrderGroup.ordered_by_name
+        collection: Resources::MaterialOrderGroup.ordered
     ) %>
   </div>
 </div>
