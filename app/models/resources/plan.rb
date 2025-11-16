@@ -9,6 +9,10 @@
 #   Plan.active_plans
 #   plan.expected_revenue
 class Resources::Plan < ApplicationRecord
+  # 定数
+  WEEKDAY_RANGE = (1..5).freeze                    # 平日の範囲（月曜〜金曜）
+  DEFAULT_DISPLAY_ORDER = 999_999                  # 表示順が未設定の場合のデフォルト値
+
   # 変更履歴の記録
   has_paper_trail
 
@@ -66,12 +70,11 @@ class Resources::Plan < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
     uniqueness_scope: :category_id,
     uniqueness_check_attributes: [:name],
     associations_to_copy: [:plan_products],
     additional_attributes: {
-      status: 'draft'
+      status: :draft
     }
   )
 
@@ -124,7 +127,7 @@ class Resources::Plan < ApplicationRecord
   # @param note [String, nil] メモ
   # @return [Array<PlanSchedule>] 作成されたスケジュールの配列
   def add_weekday_schedules(start_date, end_date, note: nil)
-    dates = (start_date..end_date).select { |d| d.wday.between?(1, 5) }
+    dates = (start_date..end_date).select { |d| WEEKDAY_RANGE.cover?(d.wday) }
     add_schedules(dates, note: note)
   end
 
@@ -232,7 +235,7 @@ class Resources::Plan < ApplicationRecord
       }
     end.sort_by do |m|
       material = Resources::Material.find(m[:material_id])
-      [material.display_order || 999_999, m[:material_name]]
+      [material.display_order || DEFAULT_DISPLAY_ORDER, m[:material_name]]
     end
   end
 
@@ -298,7 +301,7 @@ class Resources::Plan < ApplicationRecord
     grouped.each do |product_id, items|
       next if items.size <= 1
 
-      Rails.logger.warn "⚠️ Duplicate plan_product detected: product_id=#{product_id}, count=#{items.size}"
+      Rails.logger.warn " Duplicate plan_product detected: product_id=#{product_id}, count=#{items.size}"
 
       items[1..].each do |duplicate|
         Rails.logger.warn "  → Removing duplicate: id=#{duplicate.id || 'new'}"
