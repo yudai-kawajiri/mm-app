@@ -56,20 +56,36 @@ Rails.application.routes.draw do
   # ====================
   namespace :resources do
     # カテゴリ
-    resources :categories
+    resources :categories do
+      member do
+        post :copy
+      end
+    end
 
     # 単位
-    resources :units
+    resources :units do
+      member do
+        post :copy
+      end
+    end
 
     # 材料
     resources :materials do
       collection do
         post :reorder
       end
+
+      member do
+        post :copy
+      end
     end
 
     # 発注グループ
-    resources :material_order_groups
+    resources :material_order_groups do
+      member do
+        post :copy
+      end
+    end
 
     # 製品
     resources :products do
