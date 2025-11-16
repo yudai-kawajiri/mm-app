@@ -15,6 +15,14 @@
 #   - i18n対応のステータス表示
 #
 module PlansHelper
+  # ステータスとバッジカラーのマッピング
+  PLAN_STATUS_BADGE_COLORS = {
+    'draft' => 'bg-secondary',
+    'active' => 'bg-success',
+    'completed' => 'bg-primary',
+    'cancelled' => 'bg-danger'
+  }.freeze
+
   #
   # 計画のステータス表示（バッジ + 変更ドロップダウン）
   #
@@ -36,14 +44,8 @@ module PlansHelper
   #   #    </div>
   #
   def render_plan_status_with_action(plan)
-    # バッジの色を決定
-    status_badge_class = case plan.status
-    when "draft" then "bg-secondary"
-    when "active" then "bg-success"
-    when "completed" then "bg-primary"
-    when "cancelled" then "bg-danger"
-    else "bg-secondary"
-    end
+    # バッジの色を決定（定数から取得、デフォルトはbg-secondary）
+    status_badge_class = PLAN_STATUS_BADGE_COLORS.fetch(plan.status, 'bg-secondary')
 
     # ステータスの日本語表示（i18n対応）
     status_text = t("activerecord.enums.resources/plan.status.#{plan.status}")
@@ -70,7 +72,7 @@ module PlansHelper
               update_status_resources_plan_path(plan, status: status_key),
               method: :patch,
               class: "dropdown-item border-0 bg-transparent text-start w-100 p-2",
-              form: { style: "display: inline; margin: 0;" }
+              form: { class: "d-inline" }
           end
         end.join.html_safe
 
