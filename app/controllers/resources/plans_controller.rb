@@ -34,7 +34,7 @@ class Resources::PlansController < AuthenticatedController
       scope: :all,
       includes: [:category]
     )
-    @plan_categories = current_user.categories.for_plans
+    @plan_categories = current_user.categories.for_plans.ordered
   end
 
   # 新規計画作成フォーム
@@ -42,8 +42,8 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def new
     @plan = current_user.plans.build
-    @plan_categories = current_user.categories.for_plans
-    @product_categories = current_user.categories.for_products
+    @plan_categories = current_user.categories.for_plans.ordered
+    @product_categories = current_user.categories.for_products.ordered
   end
 
   # 計画を作成
@@ -51,6 +51,11 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def create
     @plan = current_user.plans.build(plan_params)
+
+    # エラー時のrender用に変数を事前設定
+    @plan_categories = current_user.categories.for_plans.ordered
+    @product_categories = current_user.categories.for_products.ordered
+
     respond_to_save(@plan, success_path: @plan)
   end
 
@@ -59,15 +64,15 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def show
     @plan_products = @plan.plan_products.includes(:product)
-    @product_categories = current_user.categories.for_products
+    @product_categories = current_user.categories.for_products.ordered
   end
 
   # 計画編集フォーム
   #
   # @return [void]
   def edit
-    @plan_categories = current_user.categories.for_plans
-    @product_categories = current_user.categories.for_products
+    @plan_categories = current_user.categories.for_plans.ordered
+    @product_categories = current_user.categories.for_products.ordered
   end
 
   # 計画を更新
@@ -75,6 +80,11 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def update
     @plan.assign_attributes(plan_params)
+
+    # エラー時のrender用に変数を事前設定
+    @plan_categories = current_user.categories.for_plans.ordered
+    @product_categories = current_user.categories.for_products.ordered
+
     respond_to_save(@plan, success_path: @plan)
   end
 

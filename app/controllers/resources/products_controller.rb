@@ -35,7 +35,7 @@ class Resources::ProductsController < AuthenticatedController
       scope: :all,
       includes: [:category, :product_materials]
     )
-    @product_categories = current_user.categories.for_products
+    @product_categories = current_user.categories.for_products.ordered
   end
 
   # 新規商品作成フォーム
@@ -43,7 +43,7 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def new
     @product = current_user.products.build
-    @product_categories = current_user.categories.for_products
+    @product_categories = current_user.categories.for_products.ordered
     @material_categories = current_user.categories.for_materials
   end
 
@@ -54,7 +54,7 @@ class Resources::ProductsController < AuthenticatedController
     @product = current_user.products.build(product_params)
 
     # エラー時のrender用に変数を事前設定
-    @product_categories = current_user.categories.for_products
+    @product_categories = current_user.categories.for_products.ordered
     @material_categories = current_user.categories.for_materials
 
     respond_to_save(@product, success_path: @product)
@@ -69,7 +69,7 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [void]
   def edit
-    @product_categories = current_user.categories.for_products
+    @product_categories = current_user.categories.for_products.ordered
     @material_categories = current_user.categories.for_materials
   end
 
@@ -80,7 +80,7 @@ class Resources::ProductsController < AuthenticatedController
     @product.assign_attributes(product_params)
 
     # エラー時のrender用に変数を事前設定
-    @product_categories = current_user.categories.for_products
+    @product_categories = current_user.categories.for_products.ordered
     @material_categories = current_user.categories.for_materials
 
     respond_to_save(@product, success_path: @product)
