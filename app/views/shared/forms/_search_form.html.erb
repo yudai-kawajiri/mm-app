@@ -28,7 +28,7 @@
                 sort_options,
                 params[:sort_by]
               ),
-              { include_blank: t('helpers.select.prompt') },
+              { include_blank: t('helpers.prompt.select') },
               { class: "form-select", onchange: "this.form.submit()" } %>
       </div>
     <% end %>
@@ -46,7 +46,7 @@
                 },
                 params[:category_type]
               ),
-              { include_blank: t('helpers.select.prompt') },
+              { include_blank: t('helpers.prompt.select') },
               { class: "form-select", onchange: "this.form.submit()" } %>
 
         <% elsif search_target == :category %>
@@ -58,7 +58,7 @@
                 },
                 params[:category]
               ),
-              { include_blank: t('helpers.select.prompt') },
+              { include_blank: t('helpers.prompt.select') },
               { class: "form-select", onchange: "this.form.submit()" } %>
 
         <% elsif search_target == :category_id %>
@@ -70,7 +70,7 @@
               :name,
               params[:category_id]
             ),
-            { include_blank: t('helpers.select.prompt') },
+            { include_blank: t('helpers.prompt.select') },
             { class: "form-select", onchange: "this.form.submit()" } %>
         <% end %>
       </div>
