@@ -125,6 +125,9 @@ ja:
     save_order: "並び順を保存"
     cancel: "キャンセル"
 
+  totals:
+    category: "カテゴリ合計"
+
   labels:
     date: "日付"
 
