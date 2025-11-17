@@ -239,3 +239,8 @@ ja:
       errors:
         api_error: "天気予報API エラー: %{code} - %{body}"
         service_error: "天気予報サービス エラー: %{message}"
+
+  # 共通コンポーネント
+  components:
+    category_tabs:
+      confirm_delete: "このカテゴリタブを削除しますか？"

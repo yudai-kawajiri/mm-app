@@ -38,7 +38,8 @@ const i18n = {
       'sortable_table.saved': '並び替えを保存しました',
       'sortable_table.save_failed': '並び替えの保存に失敗しました（ステータス: %{status}）',
       'sortable_table.error': 'エラーが発生しました: %{message}',
-      'sortable_table.csrf_token_not_found': 'CSRFトークンが見つかりません'
+      'sortable_table.csrf_token_not_found': 'CSRFトークンが見つかりません',
+      'components.category_tabs.confirm_delete': 'このカテゴリタブを削除しますか？'
     }
 
     const message = translations[key] || key

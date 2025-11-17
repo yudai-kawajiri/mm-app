@@ -1,5 +1,22 @@
 import { Controller } from "@hotwired/stimulus"
 import Logger from "utils/logger"
+import i18n from "controllers/i18n"
+
+// 定数定義
+const CSS_CLASSES = {
+  TAB_WITH_CLOSE: 'category-tab-with-close',
+  CLOSE_BUTTON: 'category-tab-close-button'
+}
+
+const DELAY_MS = {
+  INITIAL_FORM_ROW: 100
+}
+
+const DEFAULT_CATEGORY_ID = '0'
+
+const I18N_KEYS = {
+  CONFIRM_DELETE: 'components.category_tabs.confirm_delete'
+}
 
 /**
  * カテゴリタブコントローラー
@@ -135,7 +152,7 @@ export default class extends Controller {
 
   toggleButton() {
     if (!this.hasCategorySelectorTarget || !this.hasShowButtonTarget) return
-    const isSelected = this.categorySelectorTarget.value && this.categorySelectorTarget.value !== '0'
+    const isSelected = this.categorySelectorTarget.value && this.categorySelectorTarget.value !== DEFAULT_CATEGORY_ID
     this.showButtonTarget.disabled = !isSelected
   }
 
@@ -154,7 +171,7 @@ export default class extends Controller {
   showSelectedTab() {
     if (!this.hasCategorySelectorTarget) return
     const categoryId = String(this.categorySelectorTarget.value)
-    if (!categoryId || categoryId === '0') return
+    if (!categoryId || categoryId === DEFAULT_CATEGORY_ID) return
 
     const existingTab = this.tabNavTarget.querySelector(`[data-category-id="${categoryId}"]`)
     if (existingTab) {
@@ -200,7 +217,7 @@ export default class extends Controller {
     const tabPane = this.addTabPane(categoryId, categoryName)
 
     if (tabItem && tabPane) {
-      const allTabButton = this.tabNavTarget.querySelector('[data-category-id="0"]')
+      const allTabButton = this.tabNavTarget.querySelector(`[data-category-id="${DEFAULT_CATEGORY_ID}"]`)
       const allTabLi = allTabButton ? allTabButton.closest('li') || allTabButton.parentElement : null
 
       if (allTabLi) {
@@ -228,7 +245,7 @@ export default class extends Controller {
     const paneId = `category-pane-${categoryId}`
 
     li.innerHTML = `
-      <button class="nav-link position-relative"
+      <button class="nav-link position-relative ${CSS_CLASSES.TAB_WITH_CLOSE}"
               id="${tabId}"
               data-bs-toggle="tab"
               data-bs-target="#${paneId}"
@@ -236,8 +253,7 @@ export default class extends Controller {
               type="button"
               role="tab"
               aria-controls="${paneId}"
-              aria-selected="false"
-              style="padding-right: 2.5rem;">
+              aria-selected="false">
         ${this.escapeHtml(categoryName)}
         <span class="position-absolute top-50 end-0 translate-middle-y pe-2"
               style="cursor: pointer; font-weight: bold; color: #dc3545; z-index: 10;"
@@ -267,7 +283,7 @@ export default class extends Controller {
       Logger.log(`Attempting to add initial form row for category ID: ${categoryId}`)
       setTimeout(() => {
         this.addInitialFormRow(categoryId)
-      }, 100)
+      }, DELAY_MS.INITIAL_FORM_ROW)
 
       return tabPane
     }
@@ -328,7 +344,7 @@ export default class extends Controller {
 
     // 5. ALLタブ（category_id="0"）のtbodyにも同じ行を追加
     const allTbody = this.contentContainerTarget.querySelector(
-      `tbody[data-category-id="0"]`
+      `tbody[data-category-id="${DEFAULT_CATEGORY_ID}"]`
     )
 
     if (allTbody) {
@@ -438,14 +454,15 @@ export default class extends Controller {
       return
     }
 
-    // 確認ダイアログ
-    if (!confirm('このカテゴリタブを削除しますか？')) {
+    // 確認ダイアログ（i18n対応）
+    const confirmMessage = i18n.t(I18N_KEYS.CONFIRM_DELETE)
+    if (!confirm(confirmMessage)) {
       return
     }
 
     // 1. 該当カテゴリのフォーム行をALLタブから削除
     const allTbody = this.contentContainerTarget.querySelector(
-      'tbody[data-category-id="0"]'
+      `tbody[data-category-id="${DEFAULT_CATEGORY_ID}"]`
     )
 
     if (allTbody) {
@@ -471,7 +488,7 @@ export default class extends Controller {
 
       // 削除するタブがアクティブな場合、ALLタブをアクティブ化
       if (tabButton.classList.contains('active')) {
-        const allTab = this.tabNavTarget.querySelector('[data-category-id="0"]')
+        const allTab = this.tabNavTarget.querySelector(`[data-category-id="${DEFAULT_CATEGORY_ID}"]`)
         if (allTab) {
           const tab = new bootstrap.Tab(allTab)
           tab.show()
@@ -487,7 +504,7 @@ export default class extends Controller {
       tabPane.remove()
     }
 
-    // 4. セレクター内のカテゴリオプションを再有効化（★修正箇所）
+    // 4. セレクター内のカテゴリオプションを再有効化
     this.enableCategoryInSelector(categoryId)
 
     // 5. モーダル内のカテゴリアイテムを有効化
@@ -532,7 +549,7 @@ export default class extends Controller {
   }
 
   /**
-   * セレクター内のカテゴリオプションを再有効化（★新規メソッド）
+   * セレクター内のカテゴリオプションを再有効化
    * タブ削除時に呼び出され、該当カテゴリを再選択可能にする
    * @param {string} categoryId - 再有効化するカテゴリID
    */
