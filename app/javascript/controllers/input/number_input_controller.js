@@ -55,7 +55,7 @@
 // - 小数点フィールドモード（.0形式を維持）
 
 import { Controller } from "@hotwired/stimulus"
-import Logger from "../../utils/logger"
+import Logger from "utils/logger"
 
 // 定数定義
 const DATA_ATTRIBUTES = {

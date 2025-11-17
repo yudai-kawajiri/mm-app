@@ -53,7 +53,7 @@
 
 import { Controller } from "@hotwired/stimulus"
 import i18n from "controllers/i18n"
-import Logger from "../utils/logger"
+import Logger from "utils/logger"
 
 // 定数定義
 const GLOBAL_DATA = {

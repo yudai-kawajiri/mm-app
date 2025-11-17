@@ -18,7 +18,7 @@
 // - ページロード時に初期状態を設定
 
 import { Controller } from "@hotwired/stimulus"
-import Logger from "../../utils/logger"
+import Logger from "utils/logger"
 
 // 定数定義
 const MEASUREMENT_TYPE = {
