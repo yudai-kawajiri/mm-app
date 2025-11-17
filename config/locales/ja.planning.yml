@@ -49,6 +49,7 @@ ja:
     errors:
       duplicate_name: "は既に同じカテゴリ内に存在します"
       duplicate_product: "同じ商品を複数回追加することはできません"
+      product_fetch_failed: "商品情報の取得に失敗しました。ページを再読み込みしてください。"
     messages:
       status_updated: "計画「%{name}」のステータスを「%{status}」に変更しました"
 
