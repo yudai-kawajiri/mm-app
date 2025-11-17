@@ -1,72 +1,106 @@
-/**
- * @file resources/plan-product/totals_controller.js
- * 製造計画の商品行における総合計・カテゴリ別合計管理コントローラー
- *
- * @module Controllers/Resources/PlanProduct
- */
+// Plan Product Totals Controller
+//
+// 製造計画の商品行の総合計・カテゴリ別合計を管理する親コントローラー
+//
+// 責務:
+// - 全商品行の総合計金額計算
+// - カテゴリ別合計金額計算
+// - 合計表示要素の更新
+// - 子コントローラー（商品行・タブ）からの再計算イベント処理
+//
+// データフロー:
+// 1. 商品行の数量・原価が変更される
+// 2. row_controller が小計を計算し、親（このコントローラー）に通知
+// 3. recalculate() が全行を再集計
+// 4. 合計表示要素を更新
+//
+// Targets:
+// - grandTotal: 総合計表示要素
+// - categoryTotal: カテゴリ別合計表示要素
+// - totalContainer: 合計コンテナ要素
 
 import { Controller } from "@hotwired/stimulus"
 import Logger from "utils/logger"
 
-/**
- * Plan-Product Totals Controller
- *
- * 製造計画の商品行の総合計・カテゴリ別合計を管理する親コントローラー。
- * 各カテゴリタブ配下の商品行から小計を収集し、全体の合計金額を計算・表示する。
- *
- * 責務:
- * - 全商品行の総合計金額計算
- * - カテゴリ別合計金額計算
- * - 合計表示要素の更新
- * - 子コントローラー（商品行・タブ）からの再計算イベント処理
- *
- * データフロー:
- * 1. 商品行の数量・原価が変更される
- * 2. row_controller が小計を計算し、親（このコントローラー）に通知
- * 3. recalculate() が全行を再集計
- * 4. 合計表示要素を更新
- *
- * @extends Controller
- */
+// 定数定義
+const DELAY_MS = {
+  RECALCULATION: 100,
+  INITIAL_CALCULATION: 200
+}
+
+const SELECTOR = {
+  ALL_TAB_PANE: '#nav-0',
+  PRODUCT_ROWS: 'tr[data-controller~="resources--plan-product--row"]',
+  DESTROY_INPUT: '[data-form--nested-form-item-target="destroy"]'
+}
+
+const CONTROLLER_IDENTIFIER = {
+  ROW: 'resources--plan-product--row'
+}
+
+const METHOD_NAME = {
+  GET_CURRENT_VALUES: 'getCurrentValues'
+}
+
+const DATA_ATTRIBUTE = {
+  CATEGORY_ID: 'categoryId'
+}
+
+const DISPLAY_STYLE = {
+  NONE: 'none'
+}
+
+const TEMPLATE_MARKER = {
+  NEW_RECORD: 'NEW_RECORD'
+}
+
+const DESTROY_FLAG = {
+  TRUE: '1'
+}
+
+const DEFAULT_VALUE = {
+  ZERO: 0
+}
+
+const LOG_MESSAGES = {
+  CONTROLLER_CONNECTED: 'Plan product totals controller connected (parent mode)',
+  RECALCULATE_TRIGGERED: (eventType) => `Recalculate triggered: ${eventType}`,
+  ALREADY_UPDATING: 'Already updating totals, skipping',
+  STARTING_UPDATE: '============ Starting totals update ============',
+  ALL_TAB_NOT_FOUND: 'ALL tab not found',
+  SCANNING_ROWS: (count) => `Scanning ${count} rows in ALL tab`,
+  ROW_SKIPPED_TEMPLATE: (index) => `  Row ${index}: Skipped (template)`,
+  ROW_SKIPPED_DESTRUCTION: (index) => `  Row ${index}: Skipped (marked for destruction)`,
+  ROW_SKIPPED_HIDDEN: (index) => `  Row ${index}: Skipped (hidden)`,
+  ROW_VALUES: (index, quantity, price, subtotal, categoryId) => `  Row ${index}: quantity=${quantity}, price=${price}, subtotal=${subtotal}, category=${categoryId}`,
+  ROW_CONTROLLER_NOT_FOUND: (index) => `  Row ${index}: Controller not found or invalid`,
+  GRAND_TOTAL: (formattedTotal, count) => `Grand total: ${formattedTotal} (from ${count} rows)`,
+  CATEGORY_TOTALS: 'Category totals:',
+  UPDATE_COMPLETE: '============ Totals update complete ============',
+  GRAND_TOTAL_UPDATED: (formattedTotal) => `Grand total display updated: ${formattedTotal}`,
+  GRAND_TOTAL_TARGET_NOT_FOUND: 'Grand total target not found',
+  CATEGORY_TOTAL_UPDATED: (categoryId, formattedTotal) => `Category ${categoryId} total updated: ${formattedTotal}`
+}
+
 export default class extends Controller {
   static targets = ["grandTotal", "categoryTotal", "totalContainer"]
-
-  /**
-   * 遅延時間定数: 再計算処理の遅延（ミリ秒）
-   *
-   * 短時間に複数の変更が発生した場合、最後の変更から指定時間後に
-   * 再計算を実行することで、不要な中間計算を防ぐ。
-   */
-  static RECALCULATION_DELAY_MS = 100
-
-  /**
-   * 遅延時間定数: 初期計算処理の遅延（ミリ秒）
-   *
-   * コントローラー接続直後の初期計算を遅延させる時間。
-   * DOM構築完了後に確実に計算が実行されるよう、待機時間を設ける。
-   */
-  static INITIAL_CALCULATION_DELAY_MS = 200
 
   // ============================================================
   // 初期化
   // ============================================================
 
-  /**
-   * コントローラー接続時の初期化処理
-   */
+  // コントローラー接続時の初期化処理
   connect() {
-    Logger.log('Plan product totals controller connected (parent mode)')
+    Logger.log(LOG_MESSAGES.CONTROLLER_CONNECTED)
 
     // 計算中フラグの初期化
     this.isUpdatingTotals = false
 
     // 初期計算（遅延させて確実に実行）
-    setTimeout(() => this.updateTotals(), this.constructor.INITIAL_CALCULATION_DELAY_MS)
+    setTimeout(() => this.updateTotals(), DELAY_MS.INITIAL_CALCULATION)
   }
 
-  /**
-   * コントローラー切断時のクリーンアップ
-   */
+  // コントローラー切断時のクリーンアップ
   disconnect() {
     if (this.updateTimeout) {
       clearTimeout(this.updateTimeout)
@@ -77,133 +111,121 @@ export default class extends Controller {
   // 合計更新
   // ============================================================
 
-  /**
-   * 再計算を実行（子コントローラーやタブコントローラーから呼ばれる）
-   *
-   * @param {Event} event - カスタムイベントオブジェクト（オプション）
-   */
+  // 再計算を実行（子コントローラーやタブコントローラーから呼ばれる）
   recalculate(event) {
-    Logger.log(`Recalculate triggered: ${event?.type}`)
+    Logger.log(LOG_MESSAGES.RECALCULATE_TRIGGERED(event?.type))
 
     // 短い遅延で実行（連続呼び出しを防ぐ）
     clearTimeout(this.updateTimeout)
-    this.updateTimeout = setTimeout(() => this.updateTotals(), this.constructor.RECALCULATION_DELAY_MS)
+    this.updateTimeout = setTimeout(() => this.updateTotals(), DELAY_MS.RECALCULATION)
   }
 
-  /**
-   * 総合計とカテゴリ合計を更新
-   *
-   * ALLタブ内の全商品行を走査し、子コントローラーから値を取得して集計。
-   * カテゴリ別合計と総合計を算出し、対応する表示要素を更新する。
-   */
+  // 総合計とカテゴリ合計を更新
+  // ALLタブ内の全商品行を走査し、子コントローラーから値を取得して集計
+  // カテゴリ別合計と総合計を算出し、対応する表示要素を更新する
   updateTotals() {
     // 既に更新中なら無視
     if (this.isUpdatingTotals) {
-      Logger.log('Already updating totals, skipping')
+      Logger.log(LOG_MESSAGES.ALREADY_UPDATING)
       return
     }
 
     this.isUpdatingTotals = true
-    Logger.log('============ Starting totals update ============')
+    Logger.log(LOG_MESSAGES.STARTING_UPDATE)
 
-    const allTabPane = document.querySelector('#nav-0')
+    const allTabPane = document.querySelector(SELECTOR.ALL_TAB_PANE)
     if (!allTabPane) {
-      Logger.warn('ALL tab not found')
+      Logger.warn(LOG_MESSAGES.ALL_TAB_NOT_FOUND)
       this.isUpdatingTotals = false
       return
     }
 
-    let grandTotal = 0
+    let grandTotal = DEFAULT_VALUE.ZERO
     let categoryTotals = {}
-    let rowCount = 0
+    let rowCount = DEFAULT_VALUE.ZERO
 
-    const productRows = allTabPane.querySelectorAll('tr[data-controller~="resources--plan-product--row"]')
-    Logger.log(`Scanning ${productRows.length} rows in ALL tab`)
+    const productRows = allTabPane.querySelectorAll(SELECTOR.PRODUCT_ROWS)
+    Logger.log(LOG_MESSAGES.SCANNING_ROWS(productRows.length))
 
     productRows.forEach((row, index) => {
       // テンプレート行はスキップ
-      if (row.outerHTML.includes('NEW_RECORD')) {
-        Logger.log(`  Row ${index}: Skipped (template)`)
+      if (row.outerHTML.includes(TEMPLATE_MARKER.NEW_RECORD)) {
+        Logger.log(LOG_MESSAGES.ROW_SKIPPED_TEMPLATE(index))
         return
       }
 
       // 削除済み行はスキップ
-      const destroyInput = row.querySelector('[data-form--nested-form-item-target="destroy"]')
-      if (destroyInput && destroyInput.value === '1') {
-        Logger.log(`  Row ${index}: Skipped (marked for destruction)`)
+      const destroyInput = row.querySelector(SELECTOR.DESTROY_INPUT)
+      if (destroyInput && destroyInput.value === DESTROY_FLAG.TRUE) {
+        Logger.log(LOG_MESSAGES.ROW_SKIPPED_DESTRUCTION(index))
         return
       }
 
       // 非表示行はスキップ
-      if (row.style.display === 'none') {
-        Logger.log(`  Row ${index}: Skipped (hidden)`)
+      if (row.style.display === DISPLAY_STYLE.NONE) {
+        Logger.log(LOG_MESSAGES.ROW_SKIPPED_HIDDEN(index))
         return
       }
 
       const childController = this.application.getControllerForElementAndIdentifier(
         row,
-        'resources--plan-product--row'
+        CONTROLLER_IDENTIFIER.ROW
       )
 
-      if (childController && typeof childController.getCurrentValues === 'function') {
-        const values = childController.getCurrentValues()
+      if (childController && typeof childController[METHOD_NAME.GET_CURRENT_VALUES] === 'function') {
+        const values = childController[METHOD_NAME.GET_CURRENT_VALUES]()
 
         Logger.log(
-          `  Row ${index}: quantity=${values.quantity}, price=${values.price}, subtotal=${values.subtotal}, category=${values.categoryId}`
+          LOG_MESSAGES.ROW_VALUES(index, values.quantity, values.price, values.subtotal, values.categoryId)
         )
 
         // 小計が0より大きい場合のみ集計
-        if (values.subtotal > 0) {
+        if (values.subtotal > DEFAULT_VALUE.ZERO) {
           grandTotal += values.subtotal
           rowCount++
 
           // カテゴリ別集計（カテゴリIDが有効な場合）
-          if (values.categoryId && values.categoryId !== 0) {
+          if (values.categoryId && values.categoryId !== DEFAULT_VALUE.ZERO) {
             if (!categoryTotals[values.categoryId]) {
-              categoryTotals[values.categoryId] = 0
+              categoryTotals[values.categoryId] = DEFAULT_VALUE.ZERO
             }
             categoryTotals[values.categoryId] += values.subtotal
           }
         }
       } else {
-        Logger.warn(`  Row ${index}: Controller not found or invalid`)
+        Logger.warn(LOG_MESSAGES.ROW_CONTROLLER_NOT_FOUND(index))
       }
     })
 
-    Logger.log(`Grand total: ${CurrencyFormatter.format(grandTotal)} (from ${rowCount} rows)`)
-    Logger.log(`Category totals:`, categoryTotals)
+    Logger.log(LOG_MESSAGES.GRAND_TOTAL(CurrencyFormatter.format(grandTotal), rowCount))
+    Logger.log(LOG_MESSAGES.CATEGORY_TOTALS, categoryTotals)
 
     this.updateDisplay(grandTotal, categoryTotals)
 
-    Logger.log('============ Totals update complete ============')
+    Logger.log(LOG_MESSAGES.UPDATE_COMPLETE)
 
     // フラグを解除
     this.isUpdatingTotals = false
   }
 
-  /**
-   * 表示を更新
-   *
-   * @param {number} grandTotal - 総合計金額
-   * @param {Object} categoryTotals - カテゴリIDをキー、合計金額を値とするオブジェクト
-   * @private
-   */
+  // 表示を更新
+  // 総合計金額とカテゴリ別合計金額を表示要素に反映する
   updateDisplay(grandTotal, categoryTotals) {
     // 総合計の更新
     if (this.hasGrandTotalTarget) {
       this.grandTotalTarget.textContent = CurrencyFormatter.format(grandTotal)
-      Logger.log(`Grand total display updated: ${CurrencyFormatter.format(grandTotal)}`)
+      Logger.log(LOG_MESSAGES.GRAND_TOTAL_UPDATED(CurrencyFormatter.format(grandTotal)))
     } else {
-      Logger.warn('Grand total target not found')
+      Logger.warn(LOG_MESSAGES.GRAND_TOTAL_TARGET_NOT_FOUND)
     }
 
     // カテゴリ別合計の更新
     if (this.hasCategoryTotalTarget) {
       this.categoryTotalTargets.forEach(target => {
-        const categoryId = target.dataset.categoryId
-        const total = categoryTotals[categoryId] || 0
+        const categoryId = target.dataset[DATA_ATTRIBUTE.CATEGORY_ID]
+        const total = categoryTotals[categoryId] || DEFAULT_VALUE.ZERO
         target.textContent = CurrencyFormatter.format(total)
-        Logger.log(`Category ${categoryId} total updated: ${CurrencyFormatter.format(total)}`)
+        Logger.log(LOG_MESSAGES.CATEGORY_TOTAL_UPDATED(categoryId, CurrencyFormatter.format(total)))
       })
     }
   }
