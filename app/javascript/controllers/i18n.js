@@ -1,30 +1,22 @@
-/**
- * @file i18n.js
- * フロントエンド国際化対応
- *
- * @module Controllers
- */
-
-/**
- * 簡易的なi18n翻訳関数
- *
- * @description
- *   JavaScriptから翻訳キーに基づいてメッセージを取得します。
- *   翻訳データは data-i18n 属性または window.I18n から取得します。
- *
- * @example
- *   import i18n from "./i18n"
- *   const message = i18n.t('products.confirm_delete_image')
- */
+// i18n
+//
+// フロントエンド国際化対応
+//
+// 使用例:
+//   import i18n from "./i18n"
+//   const message = i18n.t('products.confirm_delete_image')
+//
+// 機能:
+// - JavaScriptから翻訳キーに基づいてメッセージを取得
+// - 翻訳データは window.I18n → data-i18n 属性 → フォールバック翻訳 の順で取得
+// - フォールバック翻訳により、window.I18n が利用できない環境でも動作保証
 
 const i18n = {
-  /**
-   * 翻訳キーからメッセージを取得
-   *
-   * @param {string} key - 翻訳キー（例: 'products.confirm_delete_image'）
-   * @param {object} options - 補間用のオプション（例: { status: 500 }）
-   * @returns {string} 翻訳されたメッセージ、または元のキー
-   */
+  // 翻訳キーからメッセージを取得
+  //
+  // @param {string} key - 翻訳キー（例: 'products.confirm_delete_image'）
+  // @param {object} options - 補間用のオプション（例: { status: 500 }）
+  // @return {string} 翻訳されたメッセージ、または元のキー
   t(key, options = {}) {
     // window.I18n が利用可能な場合（rails-i18n-jsなど）
     if (typeof window.I18n !== 'undefined' && window.I18n.t) {
@@ -38,6 +30,7 @@ const i18n = {
     }
 
     // フォールバック翻訳（日本語デフォルト）
+    // window.I18n が利用できない環境での最終的なフォールバック
     const translations = {
       'products.confirm_delete_image': '画像を削除しますか？',
       'products.image_deleted': '画像を削除しました',
@@ -52,13 +45,11 @@ const i18n = {
     return this.interpolate(message, options)
   },
 
-  /**
-   * メッセージ内の変数を補間
-   *
-   * @param {string} message - 翻訳メッセージ
-   * @param {object} options - 補間用の変数
-   * @returns {string} 補間されたメッセージ
-   */
+  // メッセージ内の変数を補間
+  //
+  // @param {string} message - 翻訳メッセージ
+  // @param {object} options - 補間用の変数
+  // @return {string} 補間されたメッセージ
   interpolate(message, options) {
     return message.replace(/%\{(\w+)\}/g, (match, key) => {
       return options[key] !== undefined ? options[key] : match
