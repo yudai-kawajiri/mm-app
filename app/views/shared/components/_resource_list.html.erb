@@ -1,28 +1,4 @@
 <%# リソース一覧テーブル %>
-<%#
-  機能:
-  - リソース一覧をテーブル形式で表示
-  - 検索フォーム、アクションリンク付き
-  - デフォルトでコピー機能が有効
-
-  必須引数:
-  - resources: 表示するリソースのコレクション
-  - columns: 表示カラム定義の配列
-  - resource_class: リソースのクラス
-
-  オプション引数:
-  - search_target: 検索対象フィールド (デフォルト: なし)
-  - search_categories: 検索カテゴリ (デフォルト: なし)
-  - new_path: 新規作成パス (デフォルト: なし)
-  - icon_mode: アイコンモード (デフォルト: false)
-  - show_copy: コピーボタン表示 (デフォルト: true)
-  - copy_url_method: コピーURL生成メソッド名 (デフォルト: 自動生成)
-  - show_print: 印刷ボタン表示 (デフォルト: false)
-  - print_url_method: 印刷URL生成メソッド名 (デフォルト: なし)
-  - sort_options: ソートオプションの配列 (デフォルト: なし)
-  - sort_placeholder: ソートプレースホルダー (デフォルト: なし)
-  - sortable: ドラッグ&ドロップ並び替え機能 (デフォルト: false)
-%>
 <% search_target = local_assigns[:search_target] %>
 <% resource_class = local_assigns[:resource_class] %>
 <% search_categories = local_assigns[:search_categories] %>
@@ -35,7 +11,6 @@
 <% sort_options = local_assigns[:sort_options] %>
 <% sort_placeholder = local_assigns[:sort_placeholder] %>
 
-<%# copy_url_method を自動生成（指定がない場合） %>
 <% if copy_url_method.blank? && show_copy %>
   <% copy_url_method = "copy_#{resource_class.model_name.route_key.singularize}_path".to_sym %>
 <% end %>

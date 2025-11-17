@@ -1,12 +1,4 @@
 <%# 説明コンテンツ表示 %>
-<%#
-  機能:
-  - テキストコンテンツを表示
-  - 未設定時は「未設定」メッセージを中央表示
-
-  必須引数:
-  - content: 表示するテキストコンテンツ
-%>
 <% content = local_assigns[:content] %>
 
 <% if content.present? %>

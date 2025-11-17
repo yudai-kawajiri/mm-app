@@ -1,31 +1,10 @@
 <%# リソースヘッダーアクション %>
-<%#
-  機能:
-  - ページ種別（フォーム / 詳細 / 一覧）に応じたアクションボタンを表示
-  - フォーム画面: ヘッダーの登録/更新ボタン
-  - 詳細画面: 戻る・編集・削除ボタン
-  - 一覧画面: 新規作成ボタン
-
-  必須引数:
-  - is_form_page: フォーム画面かどうか
-  - is_show_page: 詳細画面かどうか
-  - is_index_page: 一覧画面かどうか
-
-  オプション引数:
-  - resource: リソースインスタンス（詳細画面で必要）
-  - new_path: 新規作成パス（一覧画面で必要）
-%>
 <% if is_form_page %>
-  <!-- ========================================
-      フォーム画面（新規作成・編集）
-      ======================================== -->
 
-  <!-- 戻るボタン -->
   <%= render 'shared/actions/back_link',
               url: :back,
               custom_class: 'me-2' %>
 
-  <!-- 登録/更新ボタン -->
   <% if params[:action] == 'new' || params[:action] == 'create' %>
     <%= button_tag type: 'button',
                     class: 'btn btn-sm btn-primary',
@@ -43,49 +22,35 @@
   <% end %>
 
   <script>
-  // Turbo対応: DOMContentLoadedとturbo:loadの両方に対応
   function initializeHeaderButton() {
     const headerBtn = document.getElementById('header_register_button');
 
     if (!headerBtn) {
-      console.warn('WARNING: Header register button not found');
       return;
     }
 
-    // 既存のイベントリスナーを削除（重複登録防止）
     const newHeaderBtn = headerBtn.cloneNode(true);
     headerBtn.parentNode.replaceChild(newHeaderBtn, headerBtn);
 
     newHeaderBtn.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('INFO: Header button clicked');
-      console.log('Current action:', '<%= params[:action] %>');
 
-      // 複数のフォームIDを試す
       const form = document.getElementById('plan_form') ||
                     document.getElementById('product_form') ||
                     document.querySelector('form');
 
-      console.log('Form found:', form);
-
       if (form) {
-        // submitボタンを探す（複数のIDを試す）
         let submitBtn = document.getElementById('plan_submit_button') ||
                         document.getElementById('product_submit_button') ||
                         form.querySelector('input[type=submit]');
 
-        console.log('Submit button found:', submitBtn);
-
         if (submitBtn) {
-          console.log('SUCCESS: Clicking submit button');
           submitBtn.click();
         } else {
-          console.log('WARNING: No submit button, using form.requestSubmit()');
           try {
             if (typeof form.requestSubmit === 'function') {
               form.requestSubmit();
             } else {
-              console.log('WARNING: requestSubmit not supported, using form.submit()');
               form.submit();
             }
           } catch (error) {
@@ -97,59 +62,42 @@
         console.error('ERROR: Form not found');
       }
     });
-
-    console.log('SUCCESS: Header button initialized');
   }
 
-  // DOMContentLoaded（Turbo無効時）
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeHeaderButton);
   } else {
     initializeHeaderButton();
   }
 
-  // turbo:load（Turbo有効時のページ遷移）
   document.addEventListener('turbo:load', initializeHeaderButton);
   </script>
 
 <% elsif is_show_page %>
-  <!-- ========================================
-      詳細画面
-      ======================================== -->
 
-  <!-- 戻るボタン（一覧に戻る） -->
   <%
-    # リソースから一覧画面のパスを動的に生成
     index_path = polymorphic_path(resource.class)
   %>
   <%= render 'shared/actions/back_link',
               url: index_path,
               custom_class: 'me-2' %>
 
-  <!-- 編集ボタン -->
   <%= render 'shared/actions/edit_link',
               url: edit_polymorphic_path(resource),
               custom_class: 'me-2' %>
 
-  <!-- 削除ボタン -->
   <%= render 'shared/actions/delete_link',
               url: resource,
               resource_name: resource.class.model_name.human %>
 
 <% elsif is_index_page %>
-  <!-- ========================================
-      一覧画面
-      ======================================== -->
 
-  <!-- 新規作成ボタン -->
   <% if new_path.present? %>
     <%= render 'shared/actions/new_link',
                 url: new_path,
                 custom_class: 'btn-sm' %>
   <% else %>
-    <!-- new_pathが渡されていない場合のフォールバック -->
     <%
-      # resourceからパスを推測
       if defined?(resource) && resource
         resource_name = resource.class.model_name.singular_route_key.to_sym
         fallback_new_path = polymorphic_path([:new, resource_name])

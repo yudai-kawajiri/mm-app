@@ -1,14 +1,4 @@
 <%# アカウント確認メール %>
-<%#
-  機能:
-  - 新規登録時に送信されるアカウント確認メール
-  - 確認リンクをクリックしてアカウントを有効化
-
-  変数:
-  - @email: 登録メールアドレス
-  - @resource: ユーザーリソース
-  - @token: 確認トークン
-%>
 <p><%= t('devise.mailer.confirmation_instructions.greeting', email: @email) %></p>
 
 <p><%= t('devise.mailer.confirmation_instructions.instruction') %></p>

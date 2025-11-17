@@ -1,8 +1,4 @@
-<%#
-  機能: Devise共通リンク集
-  - 各認証画面間の遷移リンクを条件付きで表示
-  - 現在のページに応じて適切なリンクを出し分け
-%>
+<%# Devise共通リンク集 %>
 <%- if controller_name != 'sessions' %>
   <%= link_to t("devise.shared.links.sign_in"), new_session_path(resource_name), class: "text-decoration-none" %><br />
 <% end %>

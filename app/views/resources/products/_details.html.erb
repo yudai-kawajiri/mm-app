@@ -1,13 +1,4 @@
-<%#
-  機能: 商品詳細表示パーシャル
-  - 商品名、カテゴリ、売価、品番、ステータス、画像、説明を表示
-  - 詳細画面で使用
-
-  必須引数:
-  - product: Product - 表示対象の商品
-  または
-  - resource: Product - 表示対象の商品（代替引数）
-%>
+<%# 商品詳細表示 %>
 <% product = local_assigns[:product] || local_assigns[:resource] %>
 <% product_class = product.class %>
 <% no_setting = t('helpers.no_setting') %>

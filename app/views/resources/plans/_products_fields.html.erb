@@ -1,16 +1,4 @@
-<%# DEBUG: @product_categories = <%= @product_categories.inspect %>
-<%# DEBUG: @product_categories.count = <%= @product_categories&.count %>
-<%#
-  機能: 製造計画商品フォームフィールド（複雑版）
-  - カテゴリタブによる商品管理
-  - 動的なタブ追加・削除機能
-  - カテゴリ別合計・総合計の自動計算
-  - Stimulus Controllerによる高度なインタラクション
-  - 新規作成・編集画面の右カラムで使用
-
-  必須引数:
-  - f: FormBuilder - planのフォームビルダー
-%>
+<%# 製造計画商品フォームフィールド %> 
 <div class="card mb-3">
   <div class="card-header bg-light">
     <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i><%= t('forms.titles.plan_product') %></h5>

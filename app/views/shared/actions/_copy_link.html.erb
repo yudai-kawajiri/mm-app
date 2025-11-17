@@ -1,13 +1,4 @@
-<%# app/views/shared/actions/_ink.html.erb %>
-<%# コピーボタン（button_to形式） %>
-<%#
-  必須引数:
-  - url: コピー先のパス
-
-  オプション引数:
-  - custom_class: 追加のCSSクラス
-  - confirm_message: 確認ダイアログのメッセージ（デフォルト: i18n翻訳）
-%>
+<%# コピーボタン %>
 <% custom_class = local_assigns.fetch(:custom_class, '') %>
 <% confirm_message = local_assigns.fetch(:confirm_message, t('helpers.confirm.copy')) %>
 

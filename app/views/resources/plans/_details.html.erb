@@ -1,13 +1,4 @@
-<%#
-  機能: 製造計画詳細表示パーシャル
-  - 計画名、カテゴリ、ステータス、説明を表示
-  - 詳細画面の左カラムで使用
-
-  必須引数:
-  - plan: Plan - 表示対象の製造計画
-  または
-  - resource: Plan - 表示対象の製造計画（代替引数）
-%>
+<%# 製造計画詳細表示 %>
 <% plan = local_assigns[:plan] || local_assigns[:resource] %>
 <% plan_class = plan.class %>
 <% no_setting = t('helpers.no_setting') %>

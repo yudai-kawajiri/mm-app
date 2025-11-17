@@ -1,15 +1,4 @@
-<%# 統一されたフラッシュメッセージコンポーネント %>
-<%#
-  機能:
-  - flash[:notice], flash[:alert], flash[:error] を自動表示
-  - Bootstrap Alert コンポーネントを使用
-  - 自動非表示機能（flash_controller.js）
-
-  表示時間（flash_controller.js で定義）:
-  - notice: 5秒後に自動非表示
-  - alert: 7秒後に自動非表示
-  - error: 手動で閉じるまで表示
-%>
+<%# フラッシュメッセージ %>
 <div class="flash-messages-container">
   <% if flash[:notice] %>
     <div class="alert alert-success alert-dismissible fade show"

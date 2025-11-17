@@ -1,20 +1,4 @@
-<%#
-  機能: ダッシュボードサイドバーナビゲーション
-
-  主要機能:
-  - 階層メニュー（サブメニュー対応）
-  - アコーディオン展開/折りたたみ
-  - アクティブリンクハイライト
-  - アカウント設定・ログアウトリンク
-
-  Helper連携:
-  - sidebar_menu_items: メニュー項目配列を取得
-  - sidebar_link_active?: リンクがアクティブか判定
-  - sidebar_link_class: リンクのCSSクラスを返す
-  - sidebar_submenu_link_class: サブメニューリンクのCSSクラスを返す
-  - submenu_indicator: サブメニューのインジケータを返す
-%>
-
+<%# ダッシュボードサイドバーナビゲーション %>
 <div class="col-md-3 bg-light border-end p-4">
   <h2><%= t('dashboard.menu.title') %></h2>
   <div class="list-group" id="sidebar-accordion">
@@ -25,20 +9,20 @@
         <% is_active = sidebar_link_active?(item) %>
 
         <a href="#"
-           class="list-group-item list-group-item-action <%= 'active' if is_active %>"
-           data-bs-toggle="collapse"
-           data-bs-target="#<%= collapse_id %>"
-           role="button"
-           aria-expanded="<%= is_active %>"
-           aria-controls="<%= collapse_id %>"
-           onclick="event.preventDefault();">
+            class="list-group-item list-group-item-action <%= 'active' if is_active %>"
+            data-bs-toggle="collapse"
+            data-bs-target="#<%= collapse_id %>"
+            role="button"
+            aria-expanded="<%= is_active %>"
+            aria-controls="<%= collapse_id %>"
+            onclick="event.preventDefault();">
           <%= item[:name] %>
           <i class="bi bi-chevron-down float-end"></i>
         </a>
 
         <div class="collapse <%= 'show' if is_active %>"
-             id="<%= collapse_id %>"
-             data-bs-parent="#sidebar-accordion">
+              id="<%= collapse_id %>"
+              data-bs-parent="#sidebar-accordion">
           <% item[:submenu].each do |sub_item| %>
             <%= link_to sub_item[:path],
                 class: sidebar_submenu_link_class(sub_item[:path]) do %>

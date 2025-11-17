@@ -1,16 +1,4 @@
-<%#
-  機能: 商品原材料行パーシャル
-  - 1つの原材料行を表示（テーブル行形式）
-  - 原材料選択、数量入力、商品単位重量入力、単位表示、削除ボタン
-  - Stimulus Controllerで単位自動更新・タブ間同期処理
-  - フォーム新規作成・編集画面で使用
-
-  必須引数:
-  - f: FormBuilder - product_materialsのフォームビルダー
-
-  オプション引数:
-  - category_id: Integer - カテゴリID（原材料フィルタリング用）
-%>
+<%# 商品原材料行 %>
 <%
   unique_id = f.object.persisted? ? "existing_#{f.object.id}" : "new_#{f.object.object_id}"
   category_id ||= local_assigns[:category_id] || f.object.material&.category_id || 0

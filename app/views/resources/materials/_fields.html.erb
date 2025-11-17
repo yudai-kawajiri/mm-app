@@ -1,12 +1,4 @@
-<%#
-  機能: 原材料フォームフィールド
-  - 原材料の全入力フィールド
-  - 計測方法選択（重量/個数ベース）
-  - 新規作成・編集画面で使用
-
-  必須引数:
-  - f: FormBuilder - フォームビルダーオブジェクト
-%>
+<%# 原材料フォームフィールド %>
 <div class="row">
   <div class="col-md-6">
     <%= form_group_lg(f, :name) %>
@@ -26,7 +18,7 @@
     <div class="form-group mb-4">
       <label class="form-label h5 text-muted mb-2">
         <%= Resources::Material.human_attribute_name(:default_unit_weight) %>
-        <small class="text-muted">商品1個あたりの使用量</small>
+        <small class="text-muted"><%= t('materials.form.default_unit_weight_help') %></small>
       </label>
 
       <%= f.text_field :default_unit_weight,
@@ -46,7 +38,7 @@
     <div class="form-group mb-4">
       <label class="form-label h5 text-muted mb-2">
         <%= Resources::Material.human_attribute_name(:unit_for_product) %>
-        <small class="text-muted">製造時の計量単位</small>
+        <small class="text-muted"><%= t('materials.form.unit_for_product_help') %></small>
       </label>
 
       <%= f.collection_select :unit_for_product_id,
@@ -106,7 +98,7 @@
     <div class="form-group mb-4">
       <label class="form-label h5 text-muted mb-2">
         <%= Resources::Material.human_attribute_name(:production_unit) %>
-        <small class="text-muted">原材料の管理単位</small>
+        <small class="text-muted"><%= t('materials.form.production_unit_help') %></small>
       </label>
 
       <%= f.collection_select :production_unit_id,

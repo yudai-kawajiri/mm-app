@@ -1,23 +1,4 @@
-<%#
-  ソート選択フォーム
-
-  使用例:
-    <%= render 'shared/sort_form',
-        url: resources_products_path,
-        sort_options: [
-          ['表示順', 'display_order'],
-          ['名前順', 'name']
-        ],
-        default: 'display_order',
-        preserve_params: [:category_id, :q]
-    %>
-
-<%# パラメータ:
-    - url: フォーム送信先URL
-    - sort_options: ソートオプションの配列 [[ラベル, 値], ...]
-    - default: デフォルトのソート値
-    - preserve_params: 保持するパラメータのキー配列（任意）
-%>
+<%# ソート選択フォーム %>
 <%= form_with url: url, method: :get, local: true, class: 'd-inline-block me-3' do |f| %>
   <%= f.select :sort_by,
         options_for_select([[local_assigns[:sort_placeholder] || t('common.sort_placeholder'), '']] + sort_options, params[:sort_by]),

@@ -1,12 +1,4 @@
-<%# エラーメッセージ表示 %>
-<%#
-  機能:
-  - リソースのバリデーションエラーを表示
-  - Bootstrap Alertコンポーネントを使用
-
-  必須引数:
-  - resource: バリデーション対象のリソース
-%>
+<%# リソースのバリデーションエラー表示 %>
 <% if resource.errors.any? %>
   <div class="alert alert-danger alert-dismissible fade show" role="alert">
     <h5 class="alert-heading">

@@ -1,7 +1,6 @@
-<%# 必須引数: url %>
+<%# キャンセルリンク %>
 <% url = local_assigns[:url] %>
 
-<%# オプション引数: label, class %>
 <% label = local_assigns.fetch(:label, t('helpers.link.cancel')) %>
 <% css_class = local_assigns.fetch(:class, 'btn btn-secondary') %>
 

@@ -1,20 +1,4 @@
 <%# リソース詳細アクションボタン %>
-<%#
-  機能:
-  - 詳細画面の標準アクションボタン（戻る・編集・削除）を表示
-  - 追加アクション（印刷など）にも対応
-
-  必須引数:
-  - resource: 対象リソース
-
-  オプション引数:
-  - additional_actions: 追加アクション配列 (デフォルト: [])
-    - path: リンク先URL
-    - label: ラベル
-    - icon: Bootstrapアイコンクラス
-    - class: CSSクラス
-    - target: リンクターゲット
-%>
 <% resource = local_assigns[:resource] %>
 <% additional_actions = local_assigns.fetch(:additional_actions, []) %>
 

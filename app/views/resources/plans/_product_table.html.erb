@@ -1,11 +1,4 @@
-<%#
-  機能: 製造計画商品一覧テーブル（読み取り専用）
-  - 商品名、数量、売価、小計を表示
-  - 詳細画面のタブコンテンツで使用
-
-  必須引数:
-  - plan_products: Array<PlanProduct> - 表示対象の商品配列
-%>
+<%# 製造計画商品一覧テーブル %>
 <% plan_products = local_assigns[:plan_products] %>
 
 <% if plan_products.present? %>

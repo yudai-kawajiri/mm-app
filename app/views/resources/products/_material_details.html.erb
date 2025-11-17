@@ -1,11 +1,4 @@
-<%#
-  機能: 商品原材料詳細表示パーシャル（読み取り専用）
-  - 原材料名、数量、商品単位重量、単位を表示
-  - 詳細画面で使用
-
-  必須引数:
-  - product: Product - 表示対象の商品オブジェクト
-%>
+<%# 商品原材料詳細表示 %>
 <% product = local_assigns[:product] %>
 <% product_materials = product.product_materials.includes(:material, :unit).order(:id) if product.present? %>
 

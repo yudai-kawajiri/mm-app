@@ -18,6 +18,7 @@ ja:
     messages:
       copy_success: "単位「%{original_name}」を「%{new_name}」としてコピーしました"
       copy_failed: "単位のコピーに失敗しました: %{error}"
+    gram: "g"
 
   # カテゴリー
   categories:
@@ -55,6 +56,10 @@ ja:
       title: "%{name} - 原材料詳細"
     edit:
       title: "%{name} - 原材料編集"
+    form:
+      default_unit_weight_help: "商品1個あたりの使用量"
+      unit_for_product_help: "製造時の計量単位"
+      production_unit_help: "原材料の管理単位"
     attributes:
       default_order_quantity: "基本発注量/発注入数"
       measurement_type: "計測方法"
@@ -161,6 +166,9 @@ ja:
       title: "%{name} - 計画詳細"
     edit:
       title: "%{name} - 計画編集"
+    grand_total: "総合計"
+    tab_all: "全て"
+    tab_total: "カテゴリ合計"
     messages:
       copy_success: "計画「%{original_name}」を「%{new_name}」としてコピーしました"
       copy_failed: "計画のコピーに失敗しました: %{error}"

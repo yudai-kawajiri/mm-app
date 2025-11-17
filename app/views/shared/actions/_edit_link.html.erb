@@ -1,14 +1,4 @@
 <%# 編集リンク %>
-<%#
-  機能:
-  - リソース編集ページへのリンクボタンを表示
-
-  必須引数:
-  - url: 編集ページのURL
-
-  オプション引数:
-  - custom_class: 追加CSSクラス (デフォルト: なし)
-%>
 <% custom_class = local_assigns[:custom_class] %>
 <% default_class = "btn btn-sm btn-outline-secondary" %>
 <% final_class = [default_class, custom_class].compact.join(' ') %>

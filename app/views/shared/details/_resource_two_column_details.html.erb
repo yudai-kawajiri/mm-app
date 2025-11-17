@@ -1,29 +1,14 @@
 <%# 2カラムレイアウト詳細画面 %>
-<%#
-  機能:
-  - フォームのレイアウトに合わせた2カラム詳細表示
-  - 右コンテンツがない場合は1カラム表示
-
-  必須引数:
-  - resource: 表示対象のリソース
-
-  オプション引数:
-  - content_left_title: 左カラムのタイトル
-  - content_right_title: 右カラムのタイトル
-%>
 <% resource = local_assigns[:resource] %>
 <% content_left_title = local_assigns[:content_left_title] %>
 <% content_right_title = local_assigns[:content_right_title] %>
 
-<%# 全体ラッパー（フォームの基準に合わせる） %>
 <div class="container-fluid px-4" style="margin-top: 30px;">
   <div class="row d-flex align-items-stretch" style="min-height: calc(100vh - 200px);">
 
-    <%# 右コンテンツの有無を判定し、左カラム幅を動的に設定 %>
     <% has_right_content = content_for?(:content_right) %>
     <% left_column_width = has_right_content ? 'col-md-6' : 'col-md-12' %>
 
-    <%# 左カラムの枠 %>
     <div class="<%= left_column_width %> mb-3 mb-md-0 d-flex">
       <div class="card p-4 w-100 d-flex flex-column shadow-sm">
 
@@ -37,7 +22,6 @@
       </div>
     </div>
 
-    <%# 右カラムの枠 %>
     <% if has_right_content %>
       <div class="col-md-6 d-flex">
         <div class="card p-4 w-100 d-flex flex-column shadow-sm">

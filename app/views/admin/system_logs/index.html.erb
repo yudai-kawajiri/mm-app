@@ -1,15 +1,4 @@
-<%# システムログ一覧 %>
-<%#
-  機能:
-  - PaperTrailのバージョン履歴を表示
-  - モデル・ユーザー・日付範囲でフィルタリング
-  - イベントタイプ別にバッジ表示
-
-  インスタンス変数:
-  - @versions: バージョン履歴のコレクション（ページネーション済み）
-  - @model_types: フィルタ用のモデルタイプ配列
-  - @users: フィルタ用のユーザー一覧
-%>
+<%# システムログ一覧（PaperTrailバージョン履歴） %>
 <%= content_for :title, t('admin.system_logs.index.title') %>
 
 <div class="container-fluid py-4">

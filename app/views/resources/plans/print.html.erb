@@ -1,17 +1,11 @@
-<%#
-  機能: 製造計画印刷画面
-  - 2ページ構成の印刷レイアウト
-  - 1ページ目: 商品一覧（画像・品番・数量・単価・小計）
-  - 2ページ目: 原材料管理表（発注数量計算）
-  - A4サイズ対応
-%>
+<%# 製造計画印刷画面 %>
 <% content_for :title, @plan&.name || t('activerecord.models.plan') %>
 
 <div class="print-header">
   <h2><%= t('plans.print.page1_title') %></h2>
   <div class="print-header-info">
     <strong><%= t('plans.print.plan_name') %>:</strong> <%= @plan.name %> |
-    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || t('helpers.no_setting') %> |
+    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date ? l(@scheduled_date, format: :long) : t('helpers.no_setting') %> |
     <strong><%= t('plans.print.budget') %>:</strong> ¥<%= number_with_delimiter(@budget.to_i) %> |
     <strong><%= t('plans.print.planned_total') %>:</strong> ¥<%= number_with_delimiter(@planned_revenue.to_i) %> |
     <strong><%= t('plans.print.achievement_rate') %>:</strong> <%= @achievement_rate %>%
@@ -79,7 +73,7 @@
   <h2><%= t('plans.print.page2_title') %></h2>
   <div class="print-header-info">
     <strong><%= t('plans.print.plan_name') %>:</strong> <%= @plan.name %> |
-    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date&.strftime('%Y年%m月%d日') || t('helpers.no_setting') %>
+    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date ? l(@scheduled_date, format: :long) : t('helpers.no_setting') %>
   </div>
 </div>
 
@@ -113,7 +107,7 @@
             if measurement_type == 'count'
               order_unit_detail = "1#{order_unit_name} = #{material.pieces_per_order_unit}#{material.unit_for_product&.name || t('plans.print.count_unit')}"
             elsif measurement_type == 'weight'
-              order_unit_detail = "1#{order_unit_name} = #{material.unit_weight_for_order}g"
+              order_unit_detail = "1#{order_unit_name} = #{material.unit_weight_for_order}#{t('units.gram')}"
             else
               order_unit_detail = t('helpers.no_setting')
             end
