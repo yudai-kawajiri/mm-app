@@ -1,16 +1,4 @@
 <%# 削除リンク %>
-<%#
-  機能:
-  - リソース削除用のリンクボタンを表示
-  - Turbo DELETEメソッドと確認ダイアログ付き
-
-  必須引数:
-  - url: 削除リクエストのURL
-  - resource_name: 削除対象リソースの名前（確認メッセージ用）
-
-  オプション引数:
-  - custom_class: 追加CSSクラス (デフォルト: なし)
-%>
 <% custom_class = local_assigns[:custom_class] %>
 <% default_class = "btn btn-danger btn-sm" %>
 <% final_class = [default_class, custom_class].compact.join(' ') %>

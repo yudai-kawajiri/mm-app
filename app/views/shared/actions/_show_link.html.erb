@@ -1,14 +1,4 @@
 <%# 詳細リンク %>
-<%#
-  機能:
-  - リソース詳細ページへのリンクボタンを表示
-
-  必須引数:
-  - url: 詳細ページのURL
-
-  オプション引数:
-  - custom_class: 追加CSSクラス (デフォルト: なし)
-%>
 <% custom_class = local_assigns[:custom_class] %>
 <% default_class = "btn btn-sm btn-outline-primary" %>
 <% final_class = [default_class, custom_class].compact.join(' ') %>

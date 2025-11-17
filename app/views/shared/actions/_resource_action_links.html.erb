@@ -1,21 +1,4 @@
 <%# リソースアクションリンク %>
-<%#
-  機能:
-  - 詳細・編集・コピー・印刷・削除のアクションリンクを表示
-  - icon_mode で表示形式を切り替え（アイコンのみ / テキスト付き）
-
-  必須引数:
-  - resource: リソースインスタンス
-  - resource_name: リソース名（人間が読める形式）
-
-  オプション引数:
-  - show_link: 詳細リンクを表示するか（デフォルト: true）
-  - show_print: 印刷リンクを表示するか（デフォルト: false）
-  - print_url: 印刷用URL
-  - show_copy: コピーリンクを表示するか（デフォルト: false）
-  - copy_url: コピー先URL
-  - icon_mode: アイコンモードで表示するか（デフォルト: false）
-%>
 <% show_link = local_assigns.fetch(:show_link, true) %>
 <% show_print = local_assigns.fetch(:show_print, false) %>
 <% print_url = local_assigns[:print_url] %>
@@ -27,9 +10,7 @@
 
 <div class="d-flex">
   <% if icon_mode %>
-    <%# アイコンモード %>
 
-    <%# 1. 詳細リンク（アイコン） %>
     <% if show_link %>
       <%= link_to resource,
           class: 'btn btn-sm btn-outline-primary me-1',
@@ -38,14 +19,12 @@
       <% end %>
     <% end %>
 
-    <%# 2. 編集リンク（アイコン） %>
     <%= link_to url_for([:edit, resource]),
         class: 'btn btn-sm btn-outline-secondary me-1',
         title: t('helpers.link.edit') do %>
       <i class="bi bi-pencil"></i>
     <% end %>
 
-    <%# 3. コピーリンク（アイコン・オプション） %>
     <% if show_copy && copy_url.present? %>
       <%= button_to copy_url,
           method: :post,
@@ -56,7 +35,6 @@
       <% end %>
     <% end %>
 
-    <%# 4. 印刷リンク（アイコン・オプション） %>
     <% if show_print && print_url.present? %>
       <%= link_to print_url,
           class: 'btn btn-sm btn-light me-1',
@@ -66,7 +44,6 @@
       <% end %>
     <% end %>
 
-    <%# 5. 削除リンク（アイコン） %>
     <%= link_to resource,
         data: {
           turbo_method: :delete,
@@ -78,21 +55,17 @@
     <% end %>
 
   <% else %>
-    <%# テキストモード（既存） %>
 
-    <%# 1. 詳細リンク %>
     <% if show_link %>
       <%= render 'shared/actions/show_link',
           url: resource,
           custom_class: 'me-2' %>
     <% end %>
 
-    <%# 2. 編集リンク %>
     <%= render 'shared/actions/edit_link',
         url: url_for([:edit, resource]),
         custom_class: 'me-2' %>
 
-    <%# 3. コピーリンク（オプション） %>
     <% if show_copy && copy_url.present? %>
       <%= render 'shared/actions/copy_link',
           url: copy_url,
@@ -100,7 +73,6 @@
           confirm_message: t('helpers.confirm.copy', resource: resource_name) %>
     <% end %>
 
-    <%# 4. 削除リンク %>
     <%= render 'shared/actions/delete_link',
         url: resource,
         resource_name: resource_name

@@ -1,14 +1,4 @@
 <%# 新規作成リンク %>
-<%#
-  機能:
-  - リソース新規作成ページへのリンクボタンを表示
-
-  必須引数:
-  - url: 新規作成ページのURL
-
-  オプション引数:
-  - custom_class: 追加CSSクラス (デフォルト: なし)
-%>
 <% custom_class = local_assigns[:custom_class] %>
 <% default_class = "btn btn-primary" %>
 <% final_class = [default_class, custom_class].compact.join(' ') %>

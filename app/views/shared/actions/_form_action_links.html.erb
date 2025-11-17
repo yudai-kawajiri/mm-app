@@ -1,16 +1,4 @@
 <%# フォームアクションボタン %>
-<%#
-  機能:
-  - キャンセルと送信ボタンを表示
-  - 編集時は詳細へ、新規作成時は一覧へ戻る
-
-  必須引数:
-  - f: フォームビルダー
-  - resource: 対象リソース
-
-  オプション引数:
-  - back_url: 戻り先URL (デフォルト: 自動判定)
-%>
 <% f = local_assigns[:f] %>
 <% resource = local_assigns[:resource] %>
 <% back_url = local_assigns[:back_url] %>
