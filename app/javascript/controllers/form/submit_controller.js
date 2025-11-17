@@ -1,66 +1,37 @@
-/**
- * @file form/submit_controller.js
- * フォーム送信時の重複行無効化処理
- *
- * @module Controllers/Form
- */
+// Form Submit Controller
+//
+// フォーム送信時の重複行無効化処理
+//
+// 使用例:
+//   <form data-controller="form--submit">
+//     <tr data-unique-id="123">...</tr>
+//     <tr data-unique-id="123">...</tr> <!-- 重複：無効化される -->
+//   </form>
+//
+// 機能:
+// - 重複行の自動検出
+// - 2つ目以降の行のフィールド無効化
+// - _destroy=1の行はスキップ
+// - hiddenフィールドは無効化しない
 
 import { Controller } from "@hotwired/stimulus"
 import Logger from "utils/logger"
 
-/**
- * Form Submit Controller
- *
- * @description
- *   フォーム送信時の重複行無効化コントローラー。
- *   同じunique-idを持つ行が複数ある場合、2つ目以降を無効化して
- *   サーバーに送信されないようにします。
- *
- * @example HTML での使用
- *   <form data-controller="form--submit">
- *     <!-- ネストフォームフィールド -->
- *     <tr data-unique-id="123">...</tr>
- *     <tr data-unique-id="123">...</tr> <!-- 重複：無効化される -->
- *   </form>
- *
- * @features
- *   - 重複行の自動検出
- *   - 2つ目以降の行のフィールド無効化
- *   - _destroy=1 の行はスキップ
- *   - hidden フィールドは無効化しない
- *
- * @requires utils/logger - ログ出力ユーティリティ
- */
+const DESTROY_FLAG_VALUE = '1'
+const FIRST_ROW_INDEX = 1
+
 export default class extends Controller {
-  /**
-   * コントローラー接続時の処理
-   *
-   * @description
-   *   フォーム要素に submit イベントリスナーを登録
-   */
+  // コントローラー接続時の処理
+  // フォームにsubmitイベントリスナーを登録
   connect() {
     Logger.log("Form submit controller connected")
 
-    // フォーム要素を取得
     const form = this.element
-
-    // submit イベントをリッスン
     form.addEventListener('submit', this.handleSubmit.bind(this))
   }
 
-  /**
-   * フォーム送信時の処理
-   *
-   * @param {Event} event - submit イベント
-   * @return {boolean} 送信を続行する場合 true
-   *
-   * @description
-   *   以下の処理を実行：
-   *   1. すべてのネストフォーム行を取得
-   *   2. unique-id ごとにグループ化
-   *   3. 重複がある場合、2つ目以降の行のフィールドを無効化
-   *   4. _destroy=1 の行はスキップ
-   */
+  // フォーム送信時の処理
+  // unique-idごとにグループ化し、重複がある場合は2つ目以降を無効化
   handleSubmit(event) {
     Logger.log("Form submitting, removing duplicates...")
 
@@ -72,7 +43,7 @@ export default class extends Controller {
       return true
     }
 
-    // unique_id ごとにグループ化
+    // unique_idごとにグループ化
     const rowsByUniqueId = new Map()
 
     allRows.forEach(row => {
@@ -80,9 +51,9 @@ export default class extends Controller {
 
       if (!uniqueId) return
 
-      // _destroy=1 の行はスキップ
+      // _destroy=1の行はスキップ
       const destroyInput = row.querySelector('[data-form--nested-form-item-target="destroy"]')
-      if (destroyInput && destroyInput.value === '1') {
+      if (destroyInput && destroyInput.value === DESTROY_FLAG_VALUE) {
         return
       }
 
@@ -97,11 +68,11 @@ export default class extends Controller {
     let duplicatesFound = 0
 
     rowsByUniqueId.forEach((rows, uniqueId) => {
-      if (rows.length > 1) {
+      if (rows.length > FIRST_ROW_INDEX) {
         Logger.log(`Found ${rows.length} duplicates for ${uniqueId}`)
 
         // 最初の1つを残し、残りを無効化
-        for (let i = 1; i < rows.length; i++) {
+        for (let i = FIRST_ROW_INDEX; i < rows.length; i++) {
           const row = rows[i]
 
           // この行の全てのinput/select/textareaを無効化（hidden以外）
@@ -122,19 +93,11 @@ export default class extends Controller {
       Logger.log("No duplicates found")
     }
 
-    // フォーム送信を続行
     return true
   }
 
-  /**
-   * handleSubmit のエイリアス
-   *
-   * @param {Event} event - submit イベント
-   * @return {boolean} 送信を続行する場合 true
-   *
-   * @description
-   *   HTML から呼ばれる disableSubmit メソッド
-   */
+  // handleSubmitのエイリアス
+  // HTMLから呼ばれるdisableSubmitメソッド
   disableSubmit(event) {
     return this.handleSubmit(event)
   }
