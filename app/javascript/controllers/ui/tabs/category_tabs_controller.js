@@ -3,7 +3,7 @@ import Logger from "utils/logger"
 
 /**
  * カテゴリタブコントローラー
- * 製造計画の商品管理におけるカテゴリタブの動的な追加・削除を制御
+ * 製造計画の商品管理と商品原材料管理におけるカテゴリタブの動的な追加・削除を制御
  */
 export default class extends Controller {
   static targets = [
@@ -139,6 +139,7 @@ export default class extends Controller {
     this.showButtonTarget.disabled = !isSelected
   }
 
+  // セレクター内の既存カテゴリオプションを無効化
   disableExistingCategoryOptions() {
     if (!this.hasTabNavTarget || !this.hasCategorySelectorTarget) return
     const existingTabs = this.tabNavTarget.querySelectorAll('[data-category-id]')
@@ -274,10 +275,10 @@ export default class extends Controller {
   }
 
   /**
- * 新規追加されたカテゴリタブに初期フォーム行を1つ追加
- * ★修正: 製造計画（product_fields）と商品原材料（material_fields）の両方に対応
- * @param {string} categoryId - カテゴリID
- */
+   * 新規追加されたカテゴリタブに初期フォーム行を1つ追加
+   * 製造計画（product_fields）と商品原材料（material_fields）の両方に対応
+   * @param {string} categoryId - カテゴリID
+   */
   addInitialFormRow(categoryId) {
     Logger.log(`addInitialFormRow called for category ID: ${categoryId}`)
 
@@ -315,8 +316,7 @@ export default class extends Controller {
     const uniqueId = `${timestamp}_${Math.random().toString(36).substr(2, 9)}`
     let templateHtml = template.innerHTML.replace(/NEW_RECORD/g, uniqueId)
 
-    // ★重要: <tr>タグにdata-category-id属性とdata-initial-row属性を追加
-    // これにより、タブ削除時にどの行を削除すべきか判定できる
+    // <tr>タグにdata-category-id属性とdata-initial-row属性を追加
     templateHtml = templateHtml.replace(
       /<tr([^>]*)>/,
       `<tr$1 data-category-id="${categoryId}" data-initial-row="true">`
@@ -331,7 +331,6 @@ export default class extends Controller {
       `tbody[data-category-id="0"]`
     )
 
-    // 5. ALLタブ用に別のユニークIDを生成（重複を防ぐ）
     if (allTbody) {
       // 新しいユニークIDを生成
       const allTabUniqueId = `${timestamp}_${Math.random().toString(36).substr(2, 9)}_all`
@@ -425,7 +424,9 @@ export default class extends Controller {
 
   /**
    * タブを削除
-   * ★修正: カテゴリタブとALLタブの両方からフォーム行を削除
+   * カテゴリタブとALLタブの両方からフォーム行を削除し、
+   * セレクターとモーダルのカテゴリを再有効化
+   * @param {Event} event - クリックイベント
    */
   deleteTab(event) {
     // イベントから削除ボタンの要素を取得
@@ -486,7 +487,10 @@ export default class extends Controller {
       tabPane.remove()
     }
 
-    // 4. モーダル内のカテゴリアイテムを有効化
+    // 4. セレクター内のカテゴリオプションを再有効化（★修正箇所）
+    this.enableCategoryInSelector(categoryId)
+
+    // 5. モーダル内のカテゴリアイテムを有効化
     this.enableCategoryInModal(categoryId)
 
     Logger.log(`Category tab deleted: ${categoryId}`)
@@ -524,6 +528,26 @@ export default class extends Controller {
       categoryItem.classList.remove('disabled', 'text-muted')
       categoryItem.style.pointerEvents = ''
       categoryItem.style.opacity = ''
+    }
+  }
+
+  /**
+   * セレクター内のカテゴリオプションを再有効化（★新規メソッド）
+   * タブ削除時に呼び出され、該当カテゴリを再選択可能にする
+   * @param {string} categoryId - 再有効化するカテゴリID
+   */
+  enableCategoryInSelector(categoryId) {
+    if (!this.hasCategorySelectorTarget) return
+
+    const option = Array.from(this.categorySelectorTarget.options).find(
+      opt => opt.value === categoryId
+    )
+
+    if (option) {
+      option.disabled = false
+      Logger.log(`Category option re-enabled in selector: ${categoryId}`)
+    } else {
+      Logger.warn(`Category option not found in selector: ${categoryId}`)
     }
   }
 
