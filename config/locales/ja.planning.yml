@@ -58,6 +58,8 @@ ja:
     order_quantity_detail:
       pieces: "%{quantity}%{unit} → %{order_quantity}%{order_unit}"
       weight: "%{weight}g → %{order_quantity}%{order_unit}"
+      errors:
+        unit_fetch_failed: "単位データの取得に失敗しました"
 
   # 計画スケジュール（個別メッセージは不要、flash_messagesを使用）
   plan_schedules: {}
