@@ -1,23 +1,8 @@
 <%# リソース2カラムフォーム %>
-<%#
-  機能:
-  - 基本情報と詳細情報を2カラムレイアウトで表示
-  - エラーメッセージとアクションボタン付き
-
-  必須引数:
-  - f: フォームビルダー
-  - basic_fields: 基本情報フィールドのブロック
-  - detail_fields: 詳細情報フィールドのブロック
-
-  オプション引数:
-  - custom_right_title: 右カラムのカスタムタイトル (デフォルト: なし)
-%>
 <% custom_right_title = local_assigns[:custom_right_title] %>
 
-<%# エラーメッセージ表示 %>
 <%= render 'shared/forms/error_messages', resource: f.object %>
 
-<%# レイアウトラッパーを呼び出し %>
 <%= render 'shared/layouts/resource_layout_wrapper',
   f: f,
   basic_fields: basic_fields,
@@ -26,5 +11,4 @@
   content_right_title: custom_right_title
 %>
 
-<%# フォームアクションボタン %>
 <%= render 'shared/actions/form_action_links', f: f, resource: f.object %>

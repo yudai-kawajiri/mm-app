@@ -1,25 +1,7 @@
 <%# 検索フォーム %>
-<%#
-  機能:
-  - リソースの検索・絞り込みフォーム
-  - カテゴリー絞り込み + 名前検索
-  - ソート機能を統合（横並びレイアウト）
-  - クリアボタン付き
-
-  必須引数:
-  - form_path: フォーム送信先のパス
-
-  オプション引数:
-  - search_target: 検索対象フィールド (:category_type, :category, :category_id)
-  - search_categories: カテゴリー一覧（search_target が :category_id の場合）
-  - resource_class: リソースクラス（enum翻訳用）
-  - sort_options: ソートオプションの配列（オプション）
-  - sort_placeholder: ソートプレースホルダー（オプション）
-%>
 <%= form_with url: form_path, method: :get, local: true, html: { class: "mb-3" } do |f| %>
 
   <div class="d-flex flex-row align-items-end">
-    <%# ソートフォーム（オプション） %>
     <% if local_assigns[:sort_options].present? %>
       <div class="p-1 me-3" style="min-width: 250px;">
         <label class="form-label mb-1 small text-muted"><%= t('common.sort_by') %></label>
@@ -37,7 +19,6 @@
       <div class="p-1 me-3"  style="min-width: 250px;">
         <label class="form-label mb-1 small text-muted"><%= t('common.category') %></label>
         <% if search_target == :category_type %>
-          <%# リソースクラスを取得（デフォルトは Resources::Category） %>
           <% resource_class_for_enum = local_assigns[:resource_class] || Resources::Category %>
           <%= f.select :category_type,
               options_for_select(
@@ -50,7 +31,6 @@
               { class: "form-select", onchange: "this.form.submit()" } %>
 
         <% elsif search_target == :category %>
-          <%# Unitの場合 %>
           <%= f.select :category,
               options_for_select(
                 Resources::Unit.categories.keys.map { |k|

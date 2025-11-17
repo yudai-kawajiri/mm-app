@@ -1,17 +1,4 @@
 <%# プラン商品アイテムフォーム %>
-<%#
-  機能:
-  - プラン内の商品選択・数量入力フォーム
-  - 原価×数量の小計計算
-  - Stimulusコントローラーで動的計算
-
-  必須引数:
-  - f: フォームビルダー（nested_fields_for）
-
-  Stimulusコントローラー:
-  - product-plan-item: 商品選択、数量変更、小計計算
-  - nested-form-item: フォーム項目の削除
-%>
 <div class="row align-items-center mb-2 p-2 border-bottom"
       data-controller="product-plan-item nested-form-item"
       data-product-plan-item-cost-value="<%= f.object.cost.to_f || 0.0 %>"
