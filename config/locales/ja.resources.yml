@@ -166,6 +166,9 @@ ja:
       title: "%{name} - 計画詳細"
     edit:
       title: "%{name} - 計画編集"
+    grand_total: "総合計"
+    tab_all: "全て"
+    tab_total: "カテゴリ合計"
     messages:
       copy_success: "計画「%{original_name}」を「%{new_name}」としてコピーしました"
       copy_failed: "計画のコピーに失敗しました: %{error}"

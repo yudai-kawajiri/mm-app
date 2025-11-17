@@ -1,16 +1,4 @@
-<%#
-  機能: 製造計画商品行パーシャル
-  - 1つの商品行を表示（テーブル行形式）
-  - 商品選択、数量入力、価格・小計表示、削除ボタン
-  - Stimulus Controllerで動的計算・同期処理
-  - フォーム新規作成・編集画面で使用
-
-  必須引数:
-  - f: FormBuilder - plan_productsのフォームビルダー
-
-  オプション引数:
-  - category_id: Integer - カテゴリID（商品フィルタリング用）
-%>
+<%# 製造計画商品行 %>
 <% row_unique_id = f.object.persisted? ? "row_#{f.object.id}" : "row_#{Time.now.to_i}_#{rand(1000)}"%>
 
 <tr data-controller="resources--plan-product--row resources--plan-product--sync form--nested-form-item"
