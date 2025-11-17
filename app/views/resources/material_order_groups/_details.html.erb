@@ -1,11 +1,4 @@
-<%#
-  機能: 発注グループ詳細表示パーシャル
-  - グループ名と使用している原材料一覧を表示
-  - 詳細画面で使用
-
-  必須引数:
-  - material_order_group: Resources::MaterialOrderGroup - 表示対象の発注グループ
-%>
+<%# 発注グループ詳細表示 %>
 <% material_order_group = local_assigns[:material_order_group] %>
 <% group_class = material_order_group.class %>
 
