@@ -1,14 +1,4 @@
-<%#
-  機能: 計画割当モーダル（新規作成・編集・商品数量調整）
-
-  JavaScript機能:
-  - setAssignPlanModalData: 新規/編集モードの切り替え
-  - handleCategoryChange: カテゴリ選択時に計画リストを動的に追加
-  - handlePlanChange: 計画選択時に商品リスト表示
-  - updateTotalCost: 商品数量変更時に合計金額を再計算（CurrencyFormatter使用）
-%>
-
-<!-- CurrencyFormatterの読み込み -->
+<%# 計画割当モーダル %>
 <script src="<%= asset_path('utils/currency_formatter.js') %>"></script>
 
 <div class="modal fade"
@@ -62,12 +52,10 @@
             </select>
           </div>
 
-          <!-- 商品数量調整セクション -->
           <div id="productsAdjustSection" style="display: none;">
             <hr>
             <h6 class="mb-3"><%= t('numerical_managements.modals.labels.product_quantity_adjustment') %></h6>
             <div id="productsContainer" class="mb-3">
-              <!-- 商品リストが動的に挿入される -->
             </div>
             <div class="alert alert-info mb-0">
               <strong><%= t('numerical_managements.modals.labels.planned_revenue') %>:</strong>
@@ -85,7 +73,6 @@
 </div>
 
 <script>
-// 計画データをグローバル変数に保存
 window.plansByCategory = <%= raw @plans_by_category.transform_values { |plans|
   plans.map { |p| {
     id: p.id,
@@ -109,12 +96,8 @@ window.assignPlanI18n = {
   selectPlanAfterCategory: '<%= j t('numerical_managements.modals.prompts.select_plan_after_category') %>'
 };
 
-// 現在選択されている計画の商品データ
 window.currentPlanProducts = [];
 
-/**
- * モーダルにデータをセット
- */
 function setAssignPlanModalData(button) {
   const scheduleId = button.getAttribute('data-schedule-id');
   const planId = button.getAttribute('data-plan-id');
@@ -130,13 +113,11 @@ function setAssignPlanModalData(button) {
   const modalTitle = document.getElementById('assignPlanModalLabel');
   const submitBtn = document.getElementById('assignPlanSubmitBtn');
 
-  // 商品セクションをリセット
   document.getElementById('productsAdjustSection').style.display = 'none';
   document.getElementById('productsContainer').innerHTML = '';
   window.currentPlanProducts = [];
 
   if (scheduleId) {
-    // 編集モード
     modalTitle.textContent = window.assignPlanI18n.editTitle;
     submitBtn.value = window.assignPlanI18n.updateLabel;
     form.action = '/management/plan_schedules/' + scheduleId;
@@ -150,7 +131,6 @@ function setAssignPlanModalData(button) {
     }
     methodInput.value = 'patch';
 
-    // CSRFトークンを確実に含める（編集モード）
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     let tokenInput = form.querySelector('input[name="authenticity_token"]');
 
@@ -171,7 +151,6 @@ function setAssignPlanModalData(button) {
           document.getElementById('assignPlanSelect').value = planId;
           handlePlanChange(document.getElementById('assignPlanSelect'));
 
-          // スナップショットから調整済み数量を適用
           const snapshotData = button.getAttribute('data-snapshot');
           if (snapshotData && snapshotData !== 'null' && snapshotData !== 'undefined') {
             setTimeout(() => {
@@ -191,7 +170,6 @@ function setAssignPlanModalData(button) {
 
     document.getElementById('plannedRevenue').value = plannedRevenue || 0;
   } else {
-    // 新規作成モード
     modalTitle.textContent = window.assignPlanI18n.addTitle;
     submitBtn.value = window.assignPlanI18n.createLabel;
     form.action = '/management/plan_schedules';
@@ -201,7 +179,6 @@ function setAssignPlanModalData(button) {
       methodInput.remove();
     }
 
-    // CSRFトークンを確実に含める（新規作成モード）
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     let tokenInput = form.querySelector('input[name="authenticity_token"]');
 
@@ -221,14 +198,10 @@ function setAssignPlanModalData(button) {
   }
 }
 
-/**
- * カテゴリ選択時の処理
- */
 function handleCategoryChange(select) {
   const category = select.value;
   const planSelect = document.getElementById('assignPlanSelect');
 
-  // 商品セクションを非表示
   document.getElementById('productsAdjustSection').style.display = 'none';
   document.getElementById('productsContainer').innerHTML = '';
   window.currentPlanProducts = [];
@@ -261,9 +234,6 @@ function handleCategoryChange(select) {
   planSelect.disabled = false;
 }
 
-/**
- * 計画選択時の処理（商品リスト表示）
- */
 function handlePlanChange(select) {
   const selectedOption = select.selectedOptions[0];
 
@@ -280,9 +250,6 @@ function handlePlanChange(select) {
   }
 }
 
-/**
- * 商品リストを表示（CurrencyFormatterで通貨フォーマット統一）
- */
 function displayProducts(products) {
   const container = document.getElementById('productsContainer');
   container.innerHTML = '';
@@ -322,43 +289,31 @@ function displayProducts(products) {
   updateTotalCost();
 }
 
-/**
- * スナップショットの数量を商品入力フィールドに適用
- */
 function applySnapshotToProducts(snapshotProducts) {
   if (!snapshotProducts || !Array.isArray(snapshotProducts)) {
     console.log('スナップショットデータが無効です');
     return;
   }
 
-  console.log('スナップショットを適用:', snapshotProducts);
-
   snapshotProducts.forEach(sp => {
     const input = document.querySelector(`input[data-product-id="${sp.product_id}"]`);
     if (input) {
       input.value = sp.production_count;
-      console.log(`商品ID ${sp.product_id} の数量を ${sp.production_count} に設定`);
     }
   });
 
-  // 合計金額を再計算
   updateTotalCost();
 }
 
-/**
- * 合計金額を再計算（CurrencyFormatterで統一的な通貨表示）
- */
 function updateTotalCost() {
   let total = 0;
 
-  // 各商品の小計を更新
   document.querySelectorAll('#productsContainer input[type="number"]').forEach(input => {
     const count = parseInt(input.value) || 0;
     const price = parseInt(input.dataset.price) || 0;
     const productId = input.dataset.productId;
     const subtotal = count * price;
 
-    // 小計表示を更新
     const subtotalElement = document.querySelector(`[data-subtotal="${productId}"]`);
     if (subtotalElement) {
       subtotalElement.textContent = CurrencyFormatter.format(subtotal);
@@ -367,7 +322,6 @@ function updateTotalCost() {
     total += subtotal;
   });
 
-  // 合計金額表示を更新（CurrencyFormatterで統一）
   document.getElementById('totalCostDisplay').textContent = CurrencyFormatter.format(total);
   document.getElementById('plannedRevenue').value = total;
 }
