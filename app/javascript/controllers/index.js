@@ -1,9 +1,7 @@
-/**
- * @file index.js
- * Stimulus コントローラーの一括登録
- *
- * @module Controllers
- */
+// Stimulus コントローラーの一括登録
+//
+// すべてのStimulusコントローラーをインポートし、アプリケーションに登録する
+// コントローラー名は data-controller 属性で使用される識別子
 
 import { application } from "controllers/application"
 
@@ -12,8 +10,13 @@ import FormNestedFormController from "controllers/form/nested_form_controller"
 import FormNestedFormItemController from "controllers/form/nested_form_item_controller"
 import FormSubmitController from "controllers/form/submit_controller"
 
-// Tabs Controllers
-import TabsCategoryTabsController from "controllers/ui/tabs/category_tabs_controller"
+// Input Controllers
+import CharacterCounterController from "controllers/input/character_counter_controller"
+import NumberInputController from "controllers/input/number_input_controller"
+
+// Management Controllers
+import OrderGroupController from "controllers/management/order_group_controller"
+import PlanAssignmentController from "controllers/management/plan_assignment_controller"
 
 // Resources - Plan Product Controllers
 import ResourcesPlanProductRowController from "controllers/resources/plan-product/row_controller"
@@ -23,36 +26,76 @@ import ResourcesPlanProductSyncController from "controllers/resources/plan-produ
 // Resources - Product Material Controllers
 import ResourcesProductMaterialMaterialController from "controllers/resources/product-material/material_controller"
 
-// Material Controllers
-import OrderGroupController from "controllers/management/order_group_controller"
-
-// UI Enhancement Controllers
-import FlashController from "controllers/ui/flash_controller"
-import CharacterCounterController from "controllers/input/character_counter_controller"
+// UI Controllers
+import FlashController from "controllers/flash_controller"
 import FormValidationController from "controllers/form_validation_controller"
-import NumberInputController from "controllers/input/number_input_controller"
-import ImagePreviewController from "controllers/ui/image_preview_controller"
+import ImagePreviewController from "controllers/image_preview_controller"
+import SortableTableController from "controllers/sortable_table_controller"
 
-// 計画割り当てController
-import PlanAssignmentController from "controllers/management/plan_assignment_controller"
+// UI - Tabs Controllers
+import TabsCategoryTabsController from "controllers/ui/tabs/category_tabs_controller"
 
-//  Sortable Table Controller（ドラッグ&ドロップ並び替え）
-import SortableTableController from "controllers/ui/sortable_table_controller"
+// コントローラー名定数
+// data-controller 属性で使用される識別子
+const CONTROLLER_NAMES = {
+  // Form
+  FORM_NESTED_FORM: 'form--nested-form',
+  FORM_NESTED_FORM_ITEM: 'form--nested-form-item',
+  FORM_SUBMIT: 'form--submit',
 
-// 手動登録
-application.register("form--nested-form", FormNestedFormController)
-application.register("form--nested-form-item", FormNestedFormItemController)
-application.register("form--submit", FormSubmitController)
-application.register("tabs--category-tabs", TabsCategoryTabsController)
-application.register("resources--plan-product--row", ResourcesPlanProductRowController)
-application.register("resources--plan-product--totals", ResourcesPlanProductTotalsController)
-application.register("resources--plan-product--sync", ResourcesPlanProductSyncController)
-application.register("resources--product-material--material", ResourcesProductMaterialMaterialController)
-application.register("flash", FlashController)
-application.register("character-counter", CharacterCounterController)
-application.register("form-validation", FormValidationController)
-application.register("number-input", NumberInputController)
-application.register("image-preview", ImagePreviewController)
-application.register("order-group", OrderGroupController)
-application.register("plan-assignment", PlanAssignmentController)
-application.register("sortable-table", SortableTableController)
+  // Input
+  CHARACTER_COUNTER: 'character-counter',
+  NUMBER_INPUT: 'number-input',
+
+  // Management
+  ORDER_GROUP: 'order-group',
+  PLAN_ASSIGNMENT: 'plan-assignment',
+
+  // Resources - Plan Product
+  RESOURCES_PLAN_PRODUCT_ROW: 'resources--plan-product--row',
+  RESOURCES_PLAN_PRODUCT_TOTALS: 'resources--plan-product--totals',
+  RESOURCES_PLAN_PRODUCT_SYNC: 'resources--plan-product--sync',
+
+  // Resources - Product Material
+  RESOURCES_PRODUCT_MATERIAL_MATERIAL: 'resources--product-material--material',
+
+  // UI
+  FLASH: 'flash',
+  FORM_VALIDATION: 'form-validation',
+  IMAGE_PREVIEW: 'image-preview',
+  SORTABLE_TABLE: 'sortable-table',
+
+  // UI - Tabs
+  TABS_CATEGORY_TABS: 'tabs--category-tabs'
+}
+
+// コントローラー登録
+// Form Controllers
+application.register(CONTROLLER_NAMES.FORM_NESTED_FORM, FormNestedFormController)
+application.register(CONTROLLER_NAMES.FORM_NESTED_FORM_ITEM, FormNestedFormItemController)
+application.register(CONTROLLER_NAMES.FORM_SUBMIT, FormSubmitController)
+
+// Input Controllers
+application.register(CONTROLLER_NAMES.CHARACTER_COUNTER, CharacterCounterController)
+application.register(CONTROLLER_NAMES.NUMBER_INPUT, NumberInputController)
+
+// Management Controllers
+application.register(CONTROLLER_NAMES.ORDER_GROUP, OrderGroupController)
+application.register(CONTROLLER_NAMES.PLAN_ASSIGNMENT, PlanAssignmentController)
+
+// Resources - Plan Product Controllers
+application.register(CONTROLLER_NAMES.RESOURCES_PLAN_PRODUCT_ROW, ResourcesPlanProductRowController)
+application.register(CONTROLLER_NAMES.RESOURCES_PLAN_PRODUCT_TOTALS, ResourcesPlanProductTotalsController)
+application.register(CONTROLLER_NAMES.RESOURCES_PLAN_PRODUCT_SYNC, ResourcesPlanProductSyncController)
+
+// Resources - Product Material Controllers
+application.register(CONTROLLER_NAMES.RESOURCES_PRODUCT_MATERIAL_MATERIAL, ResourcesProductMaterialMaterialController)
+
+// UI Controllers
+application.register(CONTROLLER_NAMES.FLASH, FlashController)
+application.register(CONTROLLER_NAMES.FORM_VALIDATION, FormValidationController)
+application.register(CONTROLLER_NAMES.IMAGE_PREVIEW, ImagePreviewController)
+application.register(CONTROLLER_NAMES.SORTABLE_TABLE, SortableTableController)
+
+// UI - Tabs Controllers
+application.register(CONTROLLER_NAMES.TABS_CATEGORY_TABS, TabsCategoryTabsController)
