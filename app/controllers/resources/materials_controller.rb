@@ -84,13 +84,12 @@ class Resources::MaterialsController < AuthenticatedController
   # @return [void]
   def copy
     copied = @material.create_copy(user: current_user)
-    redirect_to resources_materials_path, notice: t('materials.messages.copy_success',
-                                                     original_name: @material.name,
-                                                     new_name: copied.name)
+    redirect_to resources_materials_path, notice: t('flash_messages.copy.success',
+                                                    resource: @material.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Material copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_materials_path, alert: t('materials.messages.copy_failed',
-                                                    error: e.record.errors.full_messages.join(', '))
+    redirect_to resources_materials_path, alert: t('flash_messages.copy.failure',
+                                                    resource: @material.class.model_name.human)
   end
 
   # 並び替え順序を保存

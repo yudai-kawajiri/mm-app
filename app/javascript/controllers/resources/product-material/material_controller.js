@@ -1,36 +1,102 @@
-/**
- * @file resources/product-material/material_controller.js
- * 商品原材料フォームにおける原材料選択時の単位情報取得・表示コントローラー
- *
- * @module Controllers/Resources/ProductMaterial
- */
+// Product Material Material Controller
+//
+// 商品原材料フォームにおける原材料選択時の単位情報取得・表示コントローラー
+//
+// 責務:
+// - 原材料選択時の単位情報API取得
+// - 単位表示フィールドの更新
+// - デフォルト単位重量の自動設定
+// - タブ間の原材料選択同期（複数タブで同じ原材料を編集時）
+// - エラーハンドリング（API失敗時のフォールバック）
+//
+// データフロー:
+// 1. ユーザーが原材料セレクトボックスを変更
+// 2. updateUnit() が発火
+// 3. GET /api/v1/materials/:id/fetch_product_unit_data でJSON取得
+// 4. 単位情報（unit_id, unit_name, default_unit_weight）を表示フィールドに反映
+// 5. 同期イベントを他タブの同じ原材料行に送信
+//
+// Targets:
+// - materialSelect: 原材料セレクトボックス
+// - unitDisplay: 単位表示要素
+// - quantityInput: 数量入力フィールド
+// - unitWeightInput: 単位重量入力フィールド
+// - unitIdInput: 単位ID hidden フィールド
+//
+// 翻訳キー:
+// - product_material.errors.unit_fetch_failed: 単位データ取得失敗メッセージ
 
 import { Controller } from "@hotwired/stimulus"
+import i18n from "controllers/i18n"
 import Logger from "utils/logger"
 
-/**
- * Product-Material Material Controller
- *
- * 商品原材料フォームにおける原材料選択時の単位情報取得・表示コントローラー。
- * 原材料のセレクトボックス変更時、サーバーAPIから単位情報を取得し、
- * 対応する表示フィールドを動的に更新する。
- *
- * 責務:
- * - 原材料選択時の単位情報API取得
- * - 単位表示フィールドの更新
- * - デフォルト単位重量の自動設定
- * - タブ間の原材料選択同期（複数タブで同じ原材料を編集時）
- * - エラーハンドリング（API失敗時のフォールバック）
- *
- * データフロー:
- * 1. ユーザーが原材料セレクトボックスを変更
- * 2. updateUnit() が発火
- * 3. GET /api/v1/materials/:id/fetch_product_unit_data でJSON取得
- * 4. 単位情報（unit_id, unit_name, default_unit_weight）を表示フィールドに反映
- * 5. 同期イベントを他タブの同じ原材料行に送信
- *
- * @extends Controller
- */
+// 定数定義
+const API_ENDPOINT = {
+  MATERIAL_UNIT_DATA: (materialId) => `/api/v1/materials/${materialId}/fetch_product_unit_data`
+}
+
+const HTTP_HEADERS = {
+  ACCEPT: 'application/json',
+  X_REQUESTED_WITH: 'XMLHttpRequest'
+}
+
+const DATA_ATTRIBUTE = {
+  UNIQUE_ID: 'uniqueId'
+}
+
+const SELECTOR = {
+  ROW_BY_UNIQUE_ID: (uniqueId) => `tr[data-unique-id="${uniqueId}"]`,
+  MATERIAL_SELECT: '[data-resources--product-material--material-target="materialSelect"]',
+  QUANTITY_INPUT: '[data-resources--product-material--material-target="quantityInput"]',
+  UNIT_WEIGHT_INPUT: '[data-resources--product-material--material-target="unitWeightInput"]'
+}
+
+const EVENT_TYPE = {
+  CHANGE: 'change',
+  INPUT: 'input'
+}
+
+const EVENT_OPTIONS = {
+  BUBBLES: { bubbles: true }
+}
+
+const DEFAULT_TEXT = {
+  UNIT_NOT_SET: '未設定',
+  UNIT_ERROR: 'エラー'
+}
+
+const DEFAULT_VALUE = {
+  ZERO: 0,
+  EMPTY_STRING: ''
+}
+
+const I18N_KEYS = {
+  UNIT_FETCH_FAILED: 'product_material.errors.unit_fetch_failed'
+}
+
+const LOG_MESSAGES = {
+  CONTROLLER_CONNECTED: 'Material controller connected',
+  HAS_MATERIAL_SELECT: '  Has materialSelect:',
+  HAS_UNIT_DISPLAY: '  Has unitDisplay:',
+  HAS_UNIT_ID_INPUT: '  Has unitIdInput:',
+  HAS_UNIT_WEIGHT_INPUT: '  Has unitWeightInput:',
+  EXISTING_MATERIAL_DETECTED: 'Existing material detected:',
+  NO_MATERIAL_SELECTED: 'No material selected yet',
+  MATERIAL_CHANGED: 'Material changed:',
+  FETCHING_UNIT_DATA: 'Fetching unit data for material:',
+  FETCH_ERROR: 'Fetch error:',
+  RECEIVED_UNIT_DATA: 'Received unit data:',
+  UPDATED_UNIT_ID: (oldValue, newValue) => `Updated unit_id: ${oldValue} → ${newValue}`,
+  SET_UNIT_NAME: 'Set unit_name:',
+  SET_DEFAULT_UNIT_WEIGHT: 'Set default_unit_weight:',
+  KEEPING_EXISTING_UNIT_WEIGHT: 'Keeping existing unit_weight:',
+  UNIT_UPDATED: (unitName) => `Unit updated: ${unitName}`,
+  UNIT_RESET: 'Unit reset to default',
+  SYNCING_MATERIAL: (materialId, uniqueId) => `Syncing material ${materialId} for ${uniqueId}`,
+  SYNCING_QUANTITY: (quantity, uniqueId) => `Syncing quantity ${quantity} for ${uniqueId}`,
+  SYNCING_UNIT_WEIGHT: (unitWeight, uniqueId) => `Syncing unit_weight ${unitWeight} for ${uniqueId}`
+}
+
 export default class extends Controller {
   static targets = ["materialSelect", "unitDisplay", "quantityInput", "unitWeightInput", "unitIdInput"]
 
@@ -38,25 +104,22 @@ export default class extends Controller {
   // 初期化
   // ============================================================
 
-  /**
-   * コントローラー接続時の初期化処理
-   *
-   * 既に原材料が選択されている場合（編集時）、単位情報を取得する。
-   */
+  // コントローラー接続時の初期化処理
+  // 既に原材料が選択されている場合（編集時）、単位情報を取得する
   connect() {
-    console.log('Material controller connected')
-    console.log('  Has materialSelect:', this.hasMaterialSelectTarget)
-    console.log('  Has unitDisplay:', this.hasUnitDisplayTarget)
-    console.log('  Has unitIdInput:', this.hasUnitIdInputTarget)
-    console.log('  Has unitWeightInput:', this.hasUnitWeightInputTarget)
+    Logger.log(LOG_MESSAGES.CONTROLLER_CONNECTED)
+    Logger.log(LOG_MESSAGES.HAS_MATERIAL_SELECT, this.hasMaterialSelectTarget)
+    Logger.log(LOG_MESSAGES.HAS_UNIT_DISPLAY, this.hasUnitDisplayTarget)
+    Logger.log(LOG_MESSAGES.HAS_UNIT_ID_INPUT, this.hasUnitIdInputTarget)
+    Logger.log(LOG_MESSAGES.HAS_UNIT_WEIGHT_INPUT, this.hasUnitWeightInputTarget)
 
     // 既に原材料が選択されている場合（編集時）、単位情報を取得
     if (this.hasMaterialSelectTarget && this.materialSelectTarget.value) {
       const materialId = this.materialSelectTarget.value
-      console.log('Existing material detected:', materialId)
+      Logger.log(LOG_MESSAGES.EXISTING_MATERIAL_DETECTED, materialId)
       this.fetchUnitData(materialId)
     } else {
-      console.log('No material selected yet')
+      Logger.log(LOG_MESSAGES.NO_MATERIAL_SELECTED)
     }
   }
 
@@ -64,17 +127,12 @@ export default class extends Controller {
   // 原材料選択時の処理
   // ============================================================
 
-  /**
-   * 原材料選択変更時の処理
-   *
-   * セレクトボックスで原材料が選択されたとき、APIから単位情報を取得し、
-   * 関連するフィールドを更新する。空値の場合は表示をリセットする。
-   *
-   * @param {Event} event - changeイベントオブジェクト
-   */
+  // 原材料選択変更時の処理
+  // セレクトボックスで原材料が選択されたとき、APIから単位情報を取得し、
+  // 関連するフィールドを更新する。空値の場合は表示をリセットする
   updateUnit(event) {
     const materialId = event.target.value
-    console.log('Material changed:', materialId)
+    Logger.log(LOG_MESSAGES.MATERIAL_CHANGED, materialId)
 
     if (!materialId) {
       this.resetUnit()
@@ -84,21 +142,15 @@ export default class extends Controller {
     this.fetchUnitData(materialId)
   }
 
-  /**
-   * APIから原材料の単位情報を取得
-   *
-   * @param {string} materialId - 原材料ID
-   * @private
-   * @async
-   */
+  // APIから原材料の単位情報を取得
   async fetchUnitData(materialId) {
     try {
-      console.log('Fetching unit data for material:', materialId)
+      Logger.log(LOG_MESSAGES.FETCHING_UNIT_DATA, materialId)
 
-      const response = await fetch(`/api/v1/materials/${materialId}/fetch_product_unit_data`, {
+      const response = await fetch(API_ENDPOINT.MATERIAL_UNIT_DATA(materialId), {
         headers: {
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
+          'Accept': HTTP_HEADERS.ACCEPT,
+          'X-Requested-With': HTTP_HEADERS.X_REQUESTED_WITH
         }
       })
 
@@ -110,35 +162,27 @@ export default class extends Controller {
 
       this.updateUnitDisplay(data)
     } catch (error) {
-      Logger.error("単位データの取得に失敗しました:", error)
-      console.error('Fetch error:', error)
+      Logger.error(i18n.t(I18N_KEYS.UNIT_FETCH_FAILED), error)
+      Logger.log(LOG_MESSAGES.FETCH_ERROR, error)
       this.resetUnit()
     }
   }
 
-  /**
-   * 単位情報を表示フィールドに反映
-   *
-   * @param {Object} data - APIレスポンスデータ
-   * @param {string} data.unit_id - 単位ID
-   * @param {string} data.unit_name - 単位名（例: "kg", "個"）
-   * @param {number} data.default_unit_weight - デフォルト単位重量
-   * @private
-   */
+  // 単位情報を表示フィールドに反映
   updateUnitDisplay(data) {
-    console.log('Received unit data:', data)
+    Logger.log(LOG_MESSAGES.RECEIVED_UNIT_DATA, data)
 
     // unit_id を hidden field に設定
     if (this.hasUnitIdInputTarget) {
       const oldValue = this.unitIdInputTarget.value
-      this.unitIdInputTarget.value = data.unit_id || ""
-      console.log('Updated unit_id:', oldValue, '→', data.unit_id)
+      this.unitIdInputTarget.value = data.unit_id || DEFAULT_VALUE.EMPTY_STRING
+      Logger.log(LOG_MESSAGES.UPDATED_UNIT_ID(oldValue, data.unit_id))
     }
 
     // unit_name を表示
     if (this.hasUnitDisplayTarget) {
-      this.unitDisplayTarget.textContent = data.unit_name || "未設定"
-      console.log('Set unit_name:', data.unit_name)
+      this.unitDisplayTarget.textContent = data.unit_name || DEFAULT_TEXT.UNIT_NOT_SET
+      Logger.log(LOG_MESSAGES.SET_UNIT_NAME, data.unit_name)
     }
 
     // default_unit_weight を入力フィールドに自動設定（編集時は上書きしない）
@@ -146,50 +190,40 @@ export default class extends Controller {
       const currentValue = this.unitWeightInputTarget.value
 
       // 値が空欄または0の場合のみデフォルト値を設定
-      if (!currentValue || parseFloat(currentValue) === 0) {
-        this.unitWeightInputTarget.value = data.default_unit_weight || 0
-        console.log('Set default_unit_weight:', data.default_unit_weight)
+      if (!currentValue || parseFloat(currentValue) === DEFAULT_VALUE.ZERO) {
+        this.unitWeightInputTarget.value = data.default_unit_weight || DEFAULT_VALUE.ZERO
+        Logger.log(LOG_MESSAGES.SET_DEFAULT_UNIT_WEIGHT, data.default_unit_weight)
       } else {
-        console.log('Keeping existing unit_weight:', currentValue)
+        Logger.log(LOG_MESSAGES.KEEPING_EXISTING_UNIT_WEIGHT, currentValue)
       }
     }
 
-    Logger.log(`Unit updated: ${data.unit_name}`)
+    Logger.log(LOG_MESSAGES.UNIT_UPDATED(data.unit_name))
   }
 
-  /**
-   * 単位情報をリセット
-   *
-   * 全ての単位関連フィールドを初期状態に戻す。
-   *
-   * @private
-   */
+  // 単位情報をリセット
+  // 全ての単位関連フィールドを初期状態に戻す
   resetUnit() {
     if (this.hasUnitDisplayTarget) {
-      this.unitDisplayTarget.textContent = "未設定"
+      this.unitDisplayTarget.textContent = DEFAULT_TEXT.UNIT_NOT_SET
     }
 
     if (this.hasUnitIdInputTarget) {
-      this.unitIdInputTarget.value = ""
+      this.unitIdInputTarget.value = DEFAULT_VALUE.EMPTY_STRING
     }
 
     if (this.hasUnitWeightInputTarget) {
-      this.unitWeightInputTarget.value = ""
+      this.unitWeightInputTarget.value = DEFAULT_VALUE.EMPTY_STRING
     }
 
-    console.log('Unit reset to default')
+    Logger.log(LOG_MESSAGES.UNIT_RESET)
   }
 
-  /**
-   * エラー表示を設定
-   *
-   * API取得失敗時にエラー状態を表示する。
-   *
-   * @private
-   */
+  // エラー表示を設定
+  // API取得失敗時にエラー状態を表示する
   setError() {
     if (this.hasUnitDisplayTarget) {
-      this.unitDisplayTarget.textContent = "エラー"
+      this.unitDisplayTarget.textContent = DEFAULT_TEXT.UNIT_ERROR
     }
   }
 
@@ -197,73 +231,58 @@ export default class extends Controller {
   // タブ間同期
   // ============================================================
 
-  /**
-   * 原材料選択を他のタブに同期
-   *
-   * 複数のカテゴリタブで同じ原材料行を使用している場合、
-   * 一方のタブで選択された原材料を他方にも反映する。
-   *
-   * @param {Event} event - changeイベントオブジェクト
-   */
+  // 原材料選択を他のタブに同期
+  // 複数のカテゴリタブで同じ原材料行を使用している場合、
+  // 一方のタブで選択された原材料を他方にも反映する
   syncMaterialToOtherTabs(event) {
-    const uniqueId = event.target.dataset.uniqueId
+    const uniqueId = event.target.dataset[DATA_ATTRIBUTE.UNIQUE_ID]
     const selectedMaterialId = event.target.value
 
-    Logger.log(`Syncing material ${selectedMaterialId} for ${uniqueId}`)
+    Logger.log(LOG_MESSAGES.SYNCING_MATERIAL(selectedMaterialId, uniqueId))
 
     // 同じunique-idを持つ他のタブの原材料選択を更新
-    document.querySelectorAll(`tr[data-unique-id="${uniqueId}"]`).forEach(row => {
+    document.querySelectorAll(SELECTOR.ROW_BY_UNIQUE_ID(uniqueId)).forEach(row => {
       if (row === this.element) return // 自分自身はスキップ
 
-      const select = row.querySelector('[data-resources--product-material--material-target="materialSelect"]')
+      const select = row.querySelector(SELECTOR.MATERIAL_SELECT)
       if (select && select.value !== selectedMaterialId) {
         select.value = selectedMaterialId
         // change イベントを発火して updateUnit を呼び出す
-        select.dispatchEvent(new Event('change', { bubbles: true }))
+        select.dispatchEvent(new Event(EVENT_TYPE.CHANGE, EVENT_OPTIONS.BUBBLES))
       }
     })
   }
 
-  /**
-   * 数量を他のタブに同期
-   *
-   * 同じ原材料行の数量入力を全タブに同期する。
-   *
-   * @param {Event} event - inputイベントオブジェクト
-   */
+  // 数量を他のタブに同期
+  // 同じ原材料行の数量入力を全タブに同期する
   syncQuantityToOtherTabs(event) {
-    const uniqueId = event.target.dataset.uniqueId
+    const uniqueId = event.target.dataset[DATA_ATTRIBUTE.UNIQUE_ID]
     const quantity = event.target.value
 
-    Logger.log(`Syncing quantity ${quantity} for ${uniqueId}`)
+    Logger.log(LOG_MESSAGES.SYNCING_QUANTITY(quantity, uniqueId))
 
-    document.querySelectorAll(`tr[data-unique-id="${uniqueId}"]`).forEach(row => {
+    document.querySelectorAll(SELECTOR.ROW_BY_UNIQUE_ID(uniqueId)).forEach(row => {
       if (row === this.element) return
 
-      const input = row.querySelector('[data-resources--product-material--material-target="quantityInput"]')
+      const input = row.querySelector(SELECTOR.QUANTITY_INPUT)
       if (input && input.value !== quantity) {
         input.value = quantity
       }
     })
   }
 
-  /**
-   * 単位重量を他のタブに同期
-   *
-   * 同じ原材料行の単位重量入力を全タブに同期する。
-   *
-   * @param {Event} event - inputイベントオブジェクト
-   */
+  // 単位重量を他のタブに同期
+  // 同じ原材料行の単位重量入力を全タブに同期する
   syncUnitWeightToOtherTabs(event) {
-    const uniqueId = event.target.dataset.uniqueId
+    const uniqueId = event.target.dataset[DATA_ATTRIBUTE.UNIQUE_ID]
     const unitWeight = event.target.value
 
-    Logger.log(`Syncing unit_weight ${unitWeight} for ${uniqueId}`)
+    Logger.log(LOG_MESSAGES.SYNCING_UNIT_WEIGHT(unitWeight, uniqueId))
 
-    document.querySelectorAll(`tr[data-unique-id="${uniqueId}"]`).forEach(row => {
+    document.querySelectorAll(SELECTOR.ROW_BY_UNIQUE_ID(uniqueId)).forEach(row => {
       if (row === this.element) return
 
-      const input = row.querySelector('[data-resources--product-material--material-target="unitWeightInput"]')
+      const input = row.querySelector(SELECTOR.UNIT_WEIGHT_INPUT)
       if (input && input.value !== unitWeight) {
         input.value = unitWeight
       }

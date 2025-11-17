@@ -3,15 +3,15 @@
 // テキストエリアの文字数カウントと色分け表示
 //
 // 使用例:
-//   <div data-controller="input--character-counter" data-input--character-counter-max-value="500">
+//   <div data-controller="character-counter" data-character-counter-max-value="500">
 //     <textarea
-//       data-input--character-counter-target="input"
-//       data-action="input->input--character-counter#updateCount"
+//       data-character-counter-target="input"
+//       data-action="input->character-counter#updateCount"
 //       maxlength="500"
 //     ></textarea>
 //     <div class="form-text">
-//       <span data-input--character-counter-target="count">0</span> / 500 文字
-//       （残り <span data-input--character-counter-target="remaining">500</span> 文字）
+//       <span data-character-counter-target="count">0</span> / 500 文字
+//       （残り <span data-character-counter-target="remaining">500</span> 文字）
 //     </div>
 //   </div>
 //

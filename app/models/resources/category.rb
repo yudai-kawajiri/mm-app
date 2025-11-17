@@ -47,7 +47,6 @@ class Resources::Category < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
     uniqueness_scope: :category_type,
     uniqueness_check_attributes: [:name]
   )

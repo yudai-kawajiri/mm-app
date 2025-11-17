@@ -98,13 +98,12 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def copy
     copied = @product.create_copy(user: current_user)
-    redirect_to edit_resources_product_path(copied), notice: t('products.messages.copy_success',
-                                                                original_name: @product.name,
-                                                                new_name: copied.name)
+    redirect_to edit_resources_product_path(copied), notice: t('flash_messages.copy.success',
+                                                                resource: @product.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Product copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_products_path, alert: t('products.messages.copy_failed',
-                                                   error: e.record.errors.full_messages.join(', '))
+    redirect_to resources_products_path, alert: t('flash_messages.copy.failure',
+                                                  resource: @product.class.model_name.human)
   end
 
   # 並び替え順序を保存

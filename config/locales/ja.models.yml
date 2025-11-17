@@ -1,5 +1,8 @@
 ja:
   activerecord:
+    concerns:
+      copyable:
+        copy_name_format: "%{name} (コピー%{count})"
     errors:
       models:
         user:
@@ -21,6 +24,8 @@ ja:
               greater_than: "は0より大きい値を入力してください"
             status:
               blank: "を選択してください"
+        "resources/product":
+          item_number_exceeded: "品番が上限を超えました。これ以上コピーできません。"
         product_material:
           attributes:
             material_id:

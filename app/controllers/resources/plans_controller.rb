@@ -22,7 +22,7 @@ class Resources::PlansController < AuthenticatedController
   )
 
   # リソース検索（show, edit, update, destroy, copy, print）
-  find_resource :plan, only: [:show, :edit, :update, :destroy, :copy, :print]
+  find_resource :plan, only: [:show, :edit, :update, :destroy, :copy, :print, :update_status]
 
   # 計画一覧
   #
@@ -100,13 +100,28 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def copy
     copied = @plan.create_copy(user: current_user)
-    redirect_to resources_plans_path, notice: t('plans.messages.copy_success',
-                                                 original_name: @plan.name,
-                                                 new_name: copied.name)
+    redirect_to resources_plans_path, notice: t('flash_messages.copy.success',
+                                                resource: @plan.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Plan copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_plans_path, alert: t('plans.messages.copy_failed',
-                                                error: e.record.errors.full_messages.join(', '))
+    redirect_to resources_plans_path, alert: t('flash_messages.copy.failure',
+                                                resource: @plan.class.model_name.human)
+  end
+
+  # 計画のステータスを更新
+  #
+  # @return [void]
+  def update_status
+    if @plan.update(status: params[:status])
+      redirect_to resources_plans_path,
+                  notice: t('plans.messages.status_updated',
+                            name: @plan.name,
+                            status: t("activerecord.enums.resources/plan.status.#{@plan.status}"))
+    else
+      redirect_to resources_plans_path,
+                  alert: t('flash_messages.update.failure',
+                          resource: @plan.class.model_name.human)
+    end
   end
 
   # 印刷画面を表示

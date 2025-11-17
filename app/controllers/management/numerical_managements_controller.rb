@@ -75,13 +75,13 @@ class Management::NumericalManagementsController < ApplicationController
                   turbo: false
     else
       redirect_to management_numerical_managements_path(month: date.strftime('%Y-%m')),
-                  alert: "更新に失敗しました: #{daily_target.errors.full_messages.join(', ')}",
-                  turbo: false
+            alert: t('numerical_managements.messages.daily_target_update_failed', errors: daily_target.errors.full_messages.join(', ')),
+            turbo: false
     end
   rescue Date::Error
     redirect_to management_numerical_managements_path,
-                alert: '日付の形式が正しくありません',
-                turbo: false
+            alert: t('api.errors.invalid_date'),
+            turbo: false
   end
 
   def bulk_update
@@ -97,7 +97,7 @@ class Management::NumericalManagementsController < ApplicationController
 
     if service.call
       redirect_to management_numerical_managements_path(year: year, month: month),
-                  notice: t('numerical_managements.messages.data_updated'),
+                  notice: t('numerical_managements.messages.bulk_update_success', count: params[:daily_data]&.size || 0),
                   turbo: false
     else
       redirect_to management_numerical_managements_path(year: year, month: month),

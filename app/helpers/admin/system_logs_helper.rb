@@ -15,9 +15,14 @@
 #   - Bootstrap対応のバッジ生成
 #   - エラーハンドリング
 #   - i18n対応
+#   - 複数属性対応の柔軟な詳細情報取得
 #
 module Admin
   module SystemLogsHelper
+    # 詳細情報取得時に使用する属性の優先順位
+    DETAIL_ATTRIBUTES = %i[name title email code].freeze
+    DETAIL_ATTRIBUTES_HASH = %w[name title email code].freeze
+
     # ============================================================
     # イベント表示
     # ============================================================
@@ -80,12 +85,13 @@ module Admin
     # バージョン履歴からレコードの詳細情報を取得
     #
     # @param version [PaperTrail::Version] バージョンオブジェクト
-    # @return [String] 詳細情報（name, email, または「詳細なし」）
+    # @return [String] 詳細情報（name, title, email, code のいずれか、または「詳細なし」）
     #
     # @note
     #   - 作成イベント: 現在のレコードから取得
     #   - 更新・削除イベント: objectフィールドから取得
     #   - エラー時は「詳細なし」を返す
+    #   - 属性の優先順位: name > title > email > code
     #
     # @example
     #   system_log_detail(version)
@@ -112,11 +118,20 @@ module Admin
     # @param version [PaperTrail::Version] バージョンオブジェクト
     # @return [String] 詳細情報
     #
+    # @note
+    #   DETAIL_ATTRIBUTES定数で定義された属性を優先順位順に取得します
+    #
     def fetch_detail_from_current_record(version)
       record = version.item_type.constantize.find_by(id: version.item_id)
       return t('admin.system_logs.index.deleted_record') if record.nil?
 
-      record.name || record.email || t('admin.system_logs.index.no_detail')
+      # 優先順位付きで属性を取得
+      DETAIL_ATTRIBUTES.each do |attr|
+        value = record.try(attr)
+        return value if value.present?
+      end
+
+      t('admin.system_logs.index.no_detail')
     end
 
     #
@@ -125,9 +140,19 @@ module Admin
     # @param version [PaperTrail::Version] バージョンオブジェクト
     # @return [String] 詳細情報
     #
+    # @note
+    #   DETAIL_ATTRIBUTES_HASH定数で定義された属性を優先順位順に取得します
+    #
     def fetch_detail_from_object(version)
       obj = YAML.unsafe_load(version.object)
-      obj['name'] || obj['email'] || t('admin.system_logs.index.no_detail')
+
+      # 優先順位付きで属性を取得
+      DETAIL_ATTRIBUTES_HASH.each do |attr|
+        value = obj[attr]
+        return value if value.present?
+      end
+
+      t('admin.system_logs.index.no_detail')
     end
   end
 end

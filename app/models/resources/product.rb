@@ -9,6 +9,11 @@
 #   Product.search_by_name("まぐろ")
 #   product.materials
 class Resources::Product < ApplicationRecord
+  # 品番の定数
+  ITEM_NUMBER_MIN = 1                              # 最小品番（0001）
+  ITEM_NUMBER_DIGITS = 4                           # 品番の桁数
+  ITEM_NUMBER_MAX = 10**ITEM_NUMBER_DIGITS - 1    # 最大品番（9999）
+
   # 変更履歴の記録
   has_paper_trail
 
@@ -46,7 +51,7 @@ class Resources::Product < ApplicationRecord
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_id }
   validates :price, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :item_number, presence: true, length: { maximum: 4 }, uniqueness: { scope: :category_id }
+  validates :item_number, presence: true, length: { maximum: ITEM_NUMBER_DIGITS }, uniqueness: { scope: :category_id }
   validates :category_id, presence: true
   validates :status, presence: true
 
@@ -74,13 +79,12 @@ class Resources::Product < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
     uniqueness_scope: :category_id,
     uniqueness_check_attributes: [:name],
     associations_to_copy: [:product_materials],
     additional_attributes: {
       item_number: :generate_unique_item_number,
-      status: 'draft'
+      status: :draft
     }
   )
 
@@ -100,7 +104,7 @@ class Resources::Product < ApplicationRecord
     grouped.each do |material_id, items|
       next if items.size <= 1
 
-      Rails.logger.warn "⚠️ Duplicate product_material detected: material_id=#{material_id}, count=#{items.size}"
+      Rails.logger.warn "Duplicate product_material detected: material_id=#{material_id}, count=#{items.size}"
 
       items[1..].each do |duplicate|
         Rails.logger.warn "  → Removing duplicate: id=#{duplicate.id || 'new'}"
@@ -120,13 +124,31 @@ class Resources::Product < ApplicationRecord
   end
 
   # 一意な品番を生成
+  #
+  # コピー時に使用される。元の品番に1ずつ加算して、
+  # 既存の品番と重複しない新しい品番を生成する。
+  #
+  # @return [String] 一意な品番（4桁ゼロパディング）
+  # @raise [StandardError] 品番が上限（9999）を超えた場合
   def generate_unique_item_number
-    base_number = item_number
+    base_number = item_number.to_i
     counter = 1
 
     loop do
-      new_number = format('%04d', base_number.to_i + counter)
-      break new_number unless self.class.exists?(item_number: new_number, category_id: category_id)
+      new_number_int = base_number + counter
+
+      # 品番が最大値を超えたらエラー
+      if new_number_int > ITEM_NUMBER_MAX
+        raise StandardError,
+              I18n.t('activerecord.errors.models.resources/product.item_number_exceeded')
+      end
+
+      new_number = format("%0#{ITEM_NUMBER_DIGITS}d", new_number_int)
+      break new_number unless self.class.exists?(
+        item_number: new_number,
+        category_id: category_id
+      )
+
       counter += 1
     end
   end
