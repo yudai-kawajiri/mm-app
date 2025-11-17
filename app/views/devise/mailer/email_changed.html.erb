@@ -1,13 +1,4 @@
 <%# メールアドレス変更通知 %>
-<%#
-  機能:
-  - メールアドレス変更時に送信される通知メール
-  - 変更前のメールアドレスに送信
-
-  変数:
-  - @email: 変更前のメールアドレス
-  - @resource: ユーザーリソース
-%>
 <p><%= t('devise.mailer.email_changed.greeting', email: @email) %></p>
 
 <% if @resource.try(:unconfirmed_email?) %>

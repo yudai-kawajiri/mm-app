@@ -1,16 +1,4 @@
 <%# アカウントロック解除メール %>
-<%#
-  機能:
-  - 複数回のログイン失敗後に送信されるロック解除メール
-  - 解除リンクをクリックしてアカウントのロックを解除
-
-  変数:
-  - @resource: ユーザーリソース
-  - @token: ロック解除トークン
-
-  注意:
-  - 現在このアプリではアカウントロック機能は使用していません
-%>
 <p><%= t('devise.mailer.unlock_instructions.greeting', email: @resource.email) %></p>
 
 <p><%= t('devise.mailer.unlock_instructions.message') %></p>
