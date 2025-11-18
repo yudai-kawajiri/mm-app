@@ -60,7 +60,7 @@ class Resources::CategoriesController < AuthenticatedController
   # @return [void]
   def create
     @category = current_user.categories.build(category_params)
-    respond_to_save(@category, success_path: resources_categories_path)
+    respond_to_save(@category)
   end
 
   # カテゴリー詳細
@@ -78,7 +78,7 @@ class Resources::CategoriesController < AuthenticatedController
   # @return [void]
   def update
     @category.assign_attributes(category_params)
-    respond_to_save(@category, success_path: resources_categories_path)
+    respond_to_save(@category)
   end
 
   # カテゴリーを削除

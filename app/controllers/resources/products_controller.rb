@@ -57,7 +57,7 @@ class Resources::ProductsController < AuthenticatedController
     @product_categories = current_user.categories.for_products.ordered
     @material_categories = current_user.categories.for_materials
 
-    respond_to_save(@product, success_path: @product)
+    respond_to_save(@product)
   end
 
   # 商品詳細
@@ -83,7 +83,7 @@ class Resources::ProductsController < AuthenticatedController
     @product_categories = current_user.categories.for_products.ordered
     @material_categories = current_user.categories.for_materials
 
-    respond_to_save(@product, success_path: @product)
+    respond_to_save(@product)
   end
 
   # 商品を削除

@@ -47,7 +47,7 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   # @return [void]
   def create
     @material_order_group = current_user.material_order_groups.build(material_order_group_params)
-    respond_to_save(@material_order_group, success_path: resources_material_order_groups_path)
+    respond_to_save(@material_order_group)
   end
 
   # 発注グループ詳細
@@ -65,7 +65,7 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   # @return [void]
   def update
     @material_order_group.assign_attributes(material_order_group_params)
-    respond_to_save(@material_order_group, success_path: resources_material_order_groups_path)
+    respond_to_save(@material_order_group)
   end
 
   # 発注グループを削除

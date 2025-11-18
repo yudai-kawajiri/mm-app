@@ -51,7 +51,7 @@ class Resources::MaterialsController < AuthenticatedController
   # @return [void]
   def create
     @material = current_user.materials.build(material_params)
-    respond_to_save(@material, success_path: @material)
+    respond_to_save(@material)
   end
 
   # 原材料詳細
@@ -69,7 +69,7 @@ class Resources::MaterialsController < AuthenticatedController
   # @return [void]
   def update
     @material.assign_attributes(material_params)
-    respond_to_save(@material, success_path: @material)
+    respond_to_save(@material)
   end
 
   # 原材料を削除

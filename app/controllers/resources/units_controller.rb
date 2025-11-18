@@ -60,7 +60,7 @@ class Resources::UnitsController < AuthenticatedController
   # @return [void]
   def create
     @unit = current_user.units.build(unit_params)
-    respond_to_save(@unit, success_path: resources_units_path)
+    respond_to_save(@unit)
   end
 
   # 単位詳細
@@ -78,7 +78,7 @@ class Resources::UnitsController < AuthenticatedController
   # @return [void]
   def update
     @unit.assign_attributes(unit_params)
-    respond_to_save(@unit, success_path: resources_units_path)
+    respond_to_save(@unit)
   end
 
   # 単位を削除

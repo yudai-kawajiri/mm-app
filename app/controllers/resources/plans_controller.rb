@@ -56,7 +56,7 @@ class Resources::PlansController < AuthenticatedController
     @plan_categories = current_user.categories.for_plans.ordered
     @product_categories = current_user.categories.for_products.ordered
 
-    respond_to_save(@plan, success_path: @plan)
+    respond_to_save(@plan)
   end
 
   # 計画詳細
@@ -85,7 +85,7 @@ class Resources::PlansController < AuthenticatedController
     @plan_categories = current_user.categories.for_plans.ordered
     @product_categories = current_user.categories.for_products.ordered
 
-    respond_to_save(@plan, success_path: @plan)
+    respond_to_save(@plan)
   end
 
   # 計画を削除
