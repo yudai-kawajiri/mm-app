@@ -1,34 +1,42 @@
-<%# 製造計画基本情報フォームフィールド %>
+<%# 計画基本情報フォームフィールド %>
 <div class="card mb-3">
   <div class="card-header bg-light">
     <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i><%= t('forms.titles.basic_info') %></h5>
   </div>
   <div class="card-body">
     <div class="row g-3">
+      <%# 1段目：計画名、読み仮名 %>
       <div class="col-md-6">
-        <%= form_group_lg(f, :name) %>
-        <%= form_group_lg(f, :status,
-                          field_type: :select,
-                          choices: Resources::Plan.statuses.keys.map { |status| [t("activerecord.enums.resources/plan.status.#{status}"), status] },
-                          select_options: {
-                            include_blank: t('helpers.prompt.select'),
-                            selected: f.object.new_record? ? nil : f.object.status
-                          }) %>
+        <%= form_group_lg(f, :name, wrapper_class: 'mb-0') %>
       </div>
 
+      <div class="col-md-6">
+        <%= form_group_lg(f, :reading, wrapper_class: 'mb-0') %>
+      </div>
+
+      <%# 2段目：カテゴリ、ステータス %>
       <div class="col-md-6">
         <%= form_group_lg(f, :category_id,
-                        field_type: :collection_select,
-                        wrapper_class: 'mb-3',
-                        collection: @plan_categories,
-                        value_method: :id,
-                        text_method: :name) %>
+                          field_type: :collection_select,
+                          wrapper_class: 'mb-0',
+                          collection: @plan_categories,
+                          value_method: :id,
+                          text_method: :name,
+                          select_options: { include_blank: t('helpers.prompt.select')}) %>
       </div>
-    </div>
 
-    <div class="row mt-3">
-      <div class="col-md-12">
-        <div class="mb-3">
+      <div class="col-md-6">
+        <%= form_group_lg(f, :status,
+                          field_type: :select,
+                          wrapper_class: 'mb-0',
+                          choices: Resources::Plan.statuses.keys.map { |status| [t("activerecord.enums.resources/plan.status.#{status}"), status] },
+                          select_options: { include_blank: t('helpers.prompt.select') })
+                          %>
+      </div>
+
+      <%# 3段目：説明（全幅） %>
+      <div class="col-12">
+        <div class="mb-0">
           <%= form_label_lg(f, :description) %>
           <%= f.text_area :description,
               class: "form-control",
@@ -39,7 +47,8 @@
                 character_counter_target: "input",
                 character_counter_max_value: 1000,
                 character_counter_warning_value: 20,
-                character_counter_danger_value: 10
+                character_counter_danger_value: 10,
+                action: "input->character-counter#updateCount"
               } %>
           <div class="form-text d-flex justify-content-between align-items-center mt-1">
             <span data-character-counter-target="counter" class="badge bg-secondary"></span>

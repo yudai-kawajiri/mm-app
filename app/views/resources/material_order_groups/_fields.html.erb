@@ -1,9 +1,14 @@
 <%# 発注グループフォームフィールド %>
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-6">
     <%= form_group_lg(f, :name) %>
+  </div>
+  <div class="col-md-6">
+    <%= form_group_lg(f, :reading, label: "読み仮名") %>
+  </div>
+</div>
+
     <div class="form-text mt-2">
       <%= t('material_order_groups.form.name_help') %>
     </div>
-  </div>
-</div>
+

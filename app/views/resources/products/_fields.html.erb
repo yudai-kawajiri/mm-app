@@ -5,11 +5,29 @@
   </div>
   <div class="card-body">
     <div class="row g-3">
+      <%# 1段目：商品名、読み仮名 %>
       <div class="col-md-6">
-        <%= form_group_lg(f, :name, wrapper_class: 'mb-3') %>
+        <%= form_group_lg(f, :name, wrapper_class: 'mb-0') %>
+      </div>
 
+      <div class="col-md-6">
+        <%= form_group_lg(f, :reading, wrapper_class: 'mb-0') %>
+      </div>
+
+      <%# 2段目：カテゴリ、売価 %>
+      <div class="col-md-6">
+        <%= form_group_lg(f, :category_id,
+                          field_type: :collection_select,
+                          wrapper_class: 'mb-0',
+                          collection: @product_categories,
+                          value_method: :id,
+                          text_method: :name,
+                          select_options: { include_blank: t('helpers.prompt.select')}) %>
+      </div>
+
+      <div class="col-md-6">
         <%= form_group_lg(f, :price,
-                          wrapper_class: 'mb-3',
+                          wrapper_class: 'mb-0',
                           field_type: :text_field,
                           prefix: t('number.currency.format.unit'),
                           inputmode: 'numeric',
@@ -17,34 +35,35 @@
                             controller: 'number-input',
                             action: 'input->number-input#handleInput paste->number-input#handlePaste'
                           }) %>
+      </div>
 
-        <%= form_group_lg(f, :status,
-                          field_type: :select,
-                          wrapper_class: 'mb-3',
-                          choices: Resources::Product.statuses.keys.map { |status| [t("activerecord.enums.resources/product.status.#{status}"), status] },
-                          select_options: { include_blank: t('helpers.prompt.select') })
-                          %>
+      <%# 3段目：品番・ステータス（縦積み）、画像 %>
+      <div class="col-md-6">
+        <div class="row g-3">
+          <div class="col-12">
+            <%= form_group_lg(f, :item_number,
+                              wrapper_class: 'mb-0',
+                              placeholder: t('products.placeholder.item_number'),
+                              data: {
+                                controller: 'number-input',
+                                number_input_no_comma: 'true',
+                                action: 'input->number-input#handleInput paste->number-input#handlePaste'
+                              }) %>
+          </div>
+
+          <div class="col-12">
+            <%= form_group_lg(f, :status,
+                              field_type: :select,
+                              wrapper_class: 'mb-0',
+                              choices: Resources::Product.statuses.keys.map { |status| [t("activerecord.enums.resources/product.status.#{status}"), status] },
+                              select_options: { include_blank: t('helpers.prompt.select') })
+                              %>
+          </div>
+        </div>
       </div>
 
       <div class="col-md-6">
-        <%= form_group_lg(f, :category_id,
-                          field_type: :collection_select,
-                          wrapper_class: 'mb-3',
-                          collection: @product_categories,
-                          value_method: :id,
-                          text_method: :name,
-                          select_options: { include_blank: t('helpers.prompt.select')}) %>
-
-        <%= form_group_lg(f, :item_number,
-                          wrapper_class: 'mb-3',
-                          placeholder: t('products.placeholder.item_number'),
-                          data: {
-                            controller: 'number-input',
-                            number_input_no_comma: 'true',
-                            action: 'input->number-input#handleInput paste->number-input#handlePaste'
-                          }) %>
-
-        <div class="mb-3" data-controller="image-preview">
+        <div class="mb-0" data-controller="image-preview">
           <%= form_label_lg(f, :image) %>
 
           <%= f.file_field :image,
@@ -127,11 +146,10 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="row mt-3">
-      <div class="col-md-12">
-        <div class="mb-3">
+      <%# 4段目：説明（全幅） %>
+      <div class="col-12">
+        <div class="mb-0">
           <%= form_label_lg(f, :description) %>
           <%= f.text_area :description,
               class: "form-control",

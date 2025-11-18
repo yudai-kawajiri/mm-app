@@ -1,10 +1,14 @@
 <%# 原材料フォームフィールド %>
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-4">
     <%= form_group_lg(f, :name) %>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-4">
+    <%= form_group_lg(f, :reading, label: "読み仮名") %>
+  </div>
+
+  <div class="col-md-4">
     <%= form_group_lg(f, :category_id,
         field_type: :collection_select,
         collection: Resources::Category.where(category_type: :material).ordered,
