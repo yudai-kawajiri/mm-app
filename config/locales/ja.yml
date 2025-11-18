@@ -189,6 +189,7 @@ ja:
       not_saved:
         one: "%{resource}の保存に失敗しました"
         other: "%{count}件のエラーが発生したため、%{resource}の保存に失敗しました"
+      hiragana_only: "はひらがなのみで入力してください"
       blank: "を入力してください"
       required: "を入力してください"
       not_a_number: "は数値で入力してください"
