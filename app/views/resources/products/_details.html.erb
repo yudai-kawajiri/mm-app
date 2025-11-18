@@ -1,4 +1,3 @@
-<%# 商品詳細表示 %>
 <% product = local_assigns[:product] || local_assigns[:resource] %>
 <% product_class = product.class %>
 <% no_setting = t('helpers.no_setting') %>
@@ -15,15 +14,22 @@
 
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
-      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:category_id) %></label>
+      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:reading) %></label>
       <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-        <%= product.category&.name || no_setting %>
+        <%= product.reading %>
       </div>
     </div>
   </div>
-</div>
 
-<div class="row">
+  <div class="col-md-6">
+    <div class="mb-3 border-bottom py-3">
+      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:category_id) %></label>
+      <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+        <%= product.category.name %>
+      </div>
+    </div>
+  </div>
+
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
       <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:price) %></label>
@@ -34,28 +40,30 @@
   </div>
 
   <div class="col-md-6">
-    <div class="mb-3 border-bottom py-3">
-      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:item_number) %></label>
-      <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-        <%= product.item_number.presence || no_setting %>
+    <div class="row g-3">
+      <div class="col-12">
+        <div class="mb-3 border-bottom py-3">
+          <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:item_number) %></label>
+          <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+            <%= product.item_number.presence || no_setting %>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
 
-<div class="row">
-  <div class="col-md-6">
-    <div class="mb-3 border-bottom py-3">
-      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:status) %></label>
-      <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-        <%= t("activerecord.enums.product.status.#{product.status}") %>
+      <div class="col-12">
+        <div class="mb-3 border-bottom py-3">
+          <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:status) %></label>
+          <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+            <%= t("activerecord.enums.resources/product.status.#{product.status}") %>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="col-md-6">
     <div class="mb-3">
-      <label class="form-label mb-0" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:image) %></label>
+      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= product_class.human_attribute_name(:image) %></label>
       <div class="p-2 border rounded bg-light d-flex align-items-center justify-content-center"
           style="height: 150px; overflow: hidden;">
         <% if product.image.attached? %>

@@ -4,7 +4,7 @@
 
 <div class="pt-1">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
         <label class="form-label mb-0" style="font-size: 1.0em;"><%= group_class.human_attribute_name(:name) %></label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
@@ -12,8 +12,17 @@
         </div>
       </div>
     </div>
+
+  <div class="col-md-6">
+        <div class="mb-3 border-bottom py-3">
+          <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= group_class.human_attribute_name(:reading) %></label>
+          <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+            <%= material_order_group.reading %>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
 <div class="mt-4">
   <h6 class="form-label text-muted" style="font-size: 1.1em;"><%= t('material_order_groups.show.materials_using_this_group') %></h6>

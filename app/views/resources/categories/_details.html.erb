@@ -15,6 +15,15 @@
 
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= category_class.human_attribute_name(:reading) %></label>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= category.reading %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
         <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= category_class.human_attribute_name(:category_type) %></label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
           <%= I18n.t("activerecord.enums.resources/category.category_type.#{category.category_type}") %>
