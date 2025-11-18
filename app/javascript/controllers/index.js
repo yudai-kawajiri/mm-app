@@ -27,10 +27,10 @@ import ResourcesPlanProductSyncController from "controllers/resources/plan-produ
 import ResourcesProductMaterialMaterialController from "controllers/resources/product-material/material_controller"
 
 // UI Controllers
-import FlashController from "controllers/flash_controller"
+import FlashController from "controllers/ui/flash_controller"
 import FormValidationController from "controllers/form_validation_controller"
-import ImagePreviewController from "controllers/image_preview_controller"
-import SortableTableController from "controllers/sortable_table_controller"
+import ImagePreviewController from "controllers/ui/image_preview_controller"
+import SortableTableController from "controllers/ui/sortable_table_controller"
 
 // UI - Tabs Controllers
 import TabsCategoryTabsController from "controllers/ui/tabs/category_tabs_controller"
@@ -44,8 +44,8 @@ const CONTROLLER_NAMES = {
   FORM_SUBMIT: 'form--submit',
 
   // Input
-  CHARACTER_COUNTER: 'character-counter',
-  NUMBER_INPUT: 'number-input',
+  CHARACTER_COUNTER: 'input--character-counter',
+  NUMBER_INPUT: 'input--number-input',
 
   // Management
   ORDER_GROUP: 'order-group',

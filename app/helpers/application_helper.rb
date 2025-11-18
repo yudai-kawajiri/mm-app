@@ -420,17 +420,17 @@ module ApplicationHelper
     # 文字数カウンター用の設定
     if character_counter && max_length
       options[:maxlength] = max_length
-      options[:data][:character_counter_target] = "input"
+      options[:data][:"input--character-counter-target" ] = "input"
       existing_action = options[:data][:action]
-      counter_action = "input->character-counter#updateCount"
+      counter_action = "input->input--character-counter#updateCount"
       options[:data][:action] = existing_action ? "#{existing_action} #{counter_action}" : counter_action
     end
 
     # ラッパーの data 属性
     wrapper_data = {}
     if character_counter && max_length
-      wrapper_data[:controller] = "character-counter"
-      wrapper_data[:character_counter_max_value] = max_length
+      wrapper_data[:controller] = "input--character-counter"
+      wrapper_data[:"input--character-counter-max-value"] = max_length
     end
 
     content_tag(:div, class: wrapper_class, data: wrapper_data) do
@@ -473,9 +473,9 @@ module ApplicationHelper
 
       # 文字数カウンター表示
       counter_html = if character_counter && max_length
-      content_tag(:div, class: "form-text text-end") do
-        current = content_tag(:span, "0", data: { character_counter_target: "count" })
-        remaining = content_tag(:span, max_length.to_s, class: "text-muted", data: { character_counter_target: "remaining" })
+        content_tag(:div, class: "form-text text-end") do
+          current = content_tag(:span, "0", data: { "input--character-counter-target": "count" })
+          remaining = content_tag(:span, max_length.to_s, class: "text-muted", data: { "input--character-counter-target": "remaining" })
 
         t('helpers.character_counter.hint',
           current: current,
