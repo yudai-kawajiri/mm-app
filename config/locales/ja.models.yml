@@ -151,9 +151,9 @@ ja:
     enums:
       "resources/category":
         category_type:
-          material: "原材料用"
-          product: "商品用"
-          plan: "計画用"
+          material: "原材料"
+          product: "商品"
+          plan: "計画"
 
       "resources/unit":
         category:
