@@ -21,6 +21,7 @@ class Resources::Category < ApplicationRecord
   include NameSearchable
   include UserAssociatable
   include Copyable
+  include HasReading
 
   # カテゴリー種別の定義（データベースには0, 1, 2として保存）
   enum :category_type, { material: 0, product: 1, plan: 2 }

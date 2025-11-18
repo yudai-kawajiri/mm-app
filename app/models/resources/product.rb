@@ -22,6 +22,7 @@ class Resources::Product < ApplicationRecord
   include UserAssociatable
   include NestedAttributeTranslatable
   include Copyable
+  include HasReading
 
   # ネストされた属性の翻訳設定
   nested_attribute_translation :product_materials, 'Planning::ProductMaterial'
