@@ -16,8 +16,8 @@ class Resources::CategoriesController < AuthenticatedController
 
   # ソートオプションの定義
   define_sort_options(
-    name: -> { order(:name) },
-    category_type: -> { order(:category_type, :name) },
+    name: -> { order(:reading) },
+    category_type: -> { order(:category_type, :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
@@ -108,6 +108,6 @@ class Resources::CategoriesController < AuthenticatedController
   #
   # @return [ActionController::Parameters]
   def category_params
-    params.require(:resources_category).permit(:name, :category_type, :description)
+    params.require(:resources_category).permit(:name, :reading, :category_type, :description)
   end
 end

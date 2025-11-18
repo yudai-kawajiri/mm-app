@@ -17,8 +17,8 @@ class Resources::PlansController < AuthenticatedController
   # ソートオプションの定義
   define_sort_options(
     name: -> { order(:name) },
-    status: -> { order(:status, :name) },
-    category: -> { joins(:category).order('categories.name', :name) }
+    status: -> { order(:status, :reading) },
+    category: -> { joins(:category).order('categories.reading', :reading) }
   )
 
   # リソース検索（show, edit, update, destroy, copy, print）
@@ -187,6 +187,7 @@ class Resources::PlansController < AuthenticatedController
   def plan_params
     params.require(:resources_plan).permit(
       :name,
+      :reading,
       :category_id,
       :status,
       :note,

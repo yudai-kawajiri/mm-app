@@ -16,7 +16,7 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
 
   # ソートオプションの定義
   define_sort_options(
-    name: -> { order(:name) },
+    name: -> { order(:reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
@@ -94,6 +94,6 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   #
   # @return [ActionController::Parameters]
   def material_order_group_params
-    params.require(:resources_material_order_group).permit(:name, :description)
+    params.require(:resources_material_order_group).permit(:name, :reading, :description)
   end
 end

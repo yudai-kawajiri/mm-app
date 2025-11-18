@@ -17,8 +17,8 @@ class Resources::ProductsController < AuthenticatedController
   # ソートオプションの定義
   define_sort_options(
     display_order: -> { ordered },
-    name: -> { order(:name) },
-    category: -> { joins(:category).order('categories.name', :name) },
+    name: -> { order(:reading) },
+    category: -> { joins(:category).order('categories.reading', :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
@@ -135,6 +135,7 @@ class Resources::ProductsController < AuthenticatedController
   def product_params
     params.require(:resources_product).permit(
       :name,
+      :reading,
       :category_id,
       :item_number,
       :price,

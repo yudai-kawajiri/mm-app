@@ -17,9 +17,9 @@ class Resources::MaterialsController < AuthenticatedController
   # ソートオプションの定義
   define_sort_options(
     display_order: -> { order(:display_order) },
-    name: -> { order(:name) },
-    category: -> { joins(:category).order('categories.name', :name) },
-    order_group: -> { left_joins(:order_group).order('material_order_groups.name', :name) },
+    name: -> { order(:reading) },
+    category: -> { joins(:category).order('categories.reading', :reading) },
+    order_group: -> { left_joins(:order_group).order('material_order_groups.reading', :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
@@ -113,6 +113,7 @@ class Resources::MaterialsController < AuthenticatedController
   def material_params
     params.require(:resources_material).permit(
       :name,
+      :reading,
       :category_id,
       :unit_for_product_id,
       :default_unit_weight,
