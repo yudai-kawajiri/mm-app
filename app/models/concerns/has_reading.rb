@@ -5,7 +5,7 @@ module HasReading
   included do
     validates :reading,
               format: {
-                with: /\A[ぁ-ん]*\z/,
+                with: /\A[ぁ-んー]*\z/,
                 message: :hiragana_only
               },
               allow_blank: true
