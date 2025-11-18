@@ -80,7 +80,7 @@ ja:
   # 発注グループ
   material_order_groups:
     new:
-      title: "発注グループ新規登録"
+      title: "発注グループ登録"
     index:
       title: "発注グループ管理"
       unused: "未使用"
