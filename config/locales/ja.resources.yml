@@ -57,9 +57,9 @@ ja:
     edit:
       title: "%{name} - 原材料編集"
     form:
-      default_unit_weight_help: "商品1個あたりの使用量"
-      unit_for_product_help: "製造時の計量単位"
-      production_unit_help: "原材料の管理単位"
+      default_unit_weight_help: "（商品1個あたりの使用量）"
+      unit_for_product_help: "（製造時の計量単位）"
+      production_unit_help: "（原材料の管理単位）"
     attributes:
       default_order_quantity: "基本発注量/発注入数"
       measurement_type: "計測方法"
