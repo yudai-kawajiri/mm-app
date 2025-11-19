@@ -32,9 +32,9 @@
         min: 0,
         placeholder: t('activerecord.attributes.planning/plan_product.production_count'),
         data: {
-          controller: 'number-input',
+          controller: 'input--number-input' ,
           'resources--plan-product--row-target': 'productionCount',
-          action: 'input->number-input#handleInput input->resources--plan-product--row#calculate input->resources--plan-product--sync#syncQuantityToOtherTabs paste->number-input#handlePaste',
+          action: 'input->input--number-input#handleInput input->resources--plan-product--row#calculate input->resources--plan-product--sync#syncQuantityToOtherTabs paste->number-input#handlePaste',
           'row-unique-id': row_unique_id
         } %>
   </td>

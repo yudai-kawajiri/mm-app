@@ -43,11 +43,11 @@
       inputmode: 'decimal',
       placeholder: t('helpers.forms.quantity_placeholder'),
       data: {
-        controller: 'number-input',
+        controller: 'input--number-input',
         'number-input-no-comma': 'true',
         'number-input-decimal-field': 'true',
         'resources--product-material--material-target': 'quantityInput',
-        action: 'input->number-input#handleInput input->resources--product-material--material#syncQuantityToOtherTabs paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
+        action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur',
         'unique-id': unique_id
       } %>
   </td>
@@ -58,11 +58,11 @@
       inputmode: 'decimal',
       placeholder: t('products.product_material_fields.unit_weight_placeholder'),
       data: {
-        controller: 'number-input',
+        controller: 'input--number-input',
         'number-input-no-comma': 'true',
         'number-input-decimal-field': 'true',
         'resources--product-material--material-target': 'unitWeightInput',
-        action: 'input->number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
+        action: 'input->input--number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
         'unique-id': unique_id
       } %>
   </td>

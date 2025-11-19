@@ -32,8 +32,8 @@
                           prefix: t('number.currency.format.unit'),
                           inputmode: 'numeric',
                           data: {
-                            controller: 'number-input',
-                            action: 'input->number-input#handleInput paste->number-input#handlePaste'
+                            controller: 'input--number-input' ,
+                            action: 'input->input--number-input#handleInput paste->number-input#handlePaste'
                           }) %>
       </div>
 
@@ -45,9 +45,9 @@
                               wrapper_class: 'mb-0',
                               placeholder: t('products.placeholder.item_number'),
                               data: {
-                                controller: 'number-input',
+                                controller: 'input--number-input' ,
                                 number_input_no_comma: 'true',
-                                action: 'input->number-input#handleInput paste->number-input#handlePaste'
+                                action: 'input->input--number-input#handleInput paste->number-input#handlePaste'
                               }) %>
           </div>
 
