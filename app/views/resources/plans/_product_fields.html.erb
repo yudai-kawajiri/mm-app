@@ -27,16 +27,18 @@
   </td>
 
   <td style="width: 15%;">
-    <%= f.number_field :production_count,
-        class: 'form-control form-control-sm',
-        min: 0,
-        placeholder: t('activerecord.attributes.planning/plan_product.production_count'),
-        data: {
-          controller: 'input--number-input' ,
-          'resources--plan-product--row-target': 'productionCount',
-          action: 'input->input--number-input#handleInput input->resources--plan-product--row#calculate input->resources--plan-product--sync#syncQuantityToOtherTabs paste->number-input#handlePaste',
-          'row-unique-id': row_unique_id
-        } %>
+    <%= f.text_field :production_count,
+      class: 'form-control form-control-sm',
+      inputmode: 'numeric',
+      placeholder: t('activerecord.attributes.planning/plan_product.production_count'),
+      data: {
+        controller: 'input--number-input',
+        'number-input-no-comma': 'true',
+        'number-input-integer-only': 'true',
+        'resources--plan-product--row-target': 'productionCount',
+        'row-unique-id': row_unique_id,
+        action: 'input->resources--plan-product--row#calculate input->resources--plan-product--sync#syncQuantityToOtherTabs'
+      } %>
   </td>
 
   <td style="width: 20%;" class="text-end">

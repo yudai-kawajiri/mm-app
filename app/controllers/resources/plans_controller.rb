@@ -192,13 +192,33 @@ class Resources::PlansController < AuthenticatedController
       :category_id,
       :status,
       :note
-      ).tap do |whitelisted|
+    ).tap do |whitelisted|
       # ネストされた属性（ハッシュ形式）を手動で処理
       # 文字列キー（"0", "new_1763555897631"など）を許可するため
       products = params[:resources_plan][:plan_products_attributes]
       if products.present?
-        whitelisted[:plan_products_attributes] = products.permit!.to_h
+        # 全て許可した後、production_count を整数型に変換
+        whitelisted[:plan_products_attributes] = products.permit!.to_h.transform_values do |attrs|
+          if attrs['production_count'].present?
+            attrs['production_count'] = normalize_number_param(attrs['production_count'])
+          end
+          attrs
+        end
       end
     end
+  end
+
+  # パラメータの数値を正規化して整数に変換
+  #
+  # @param value [String, Numeric] 変換する値
+  # @return [Integer] 正規化された整数
+  def normalize_number_param(value)
+    return value.to_i if value.is_a?(Numeric)
+
+    # 全角→半角、カンマ・スペース・小数点削除
+    cleaned = value.to_s.tr('０-９', '0-9').tr('ー−', '-').gsub(/[,\s　．。.]/, '')
+    return nil if cleaned.blank?
+
+    cleaned.to_i
   end
 end
