@@ -135,7 +135,7 @@ ja:
       unit_weight: "商品単位分量"
       unit_prompt: "単位"
       delete_button: "削除"
-      no_materials_set: "原材料はまだ設定されていません"
+      no_materials_set: "原材料が設定されていません"
     category_selector:
       prompt: "カテゴリを選択"
       add_button: "カテゴリタブを追加"
@@ -169,7 +169,10 @@ ja:
     grand_total: "総合計"
     tab_all: "全て"
     tab_total: "カテゴリ合計"
+    actions:
+      preview: "プレビュー"
     messages:
       copy_success: "計画「%{original_name}」を「%{new_name}」としてコピーしました"
       copy_failed: "計画のコピーに失敗しました: %{error}"
       copy_failed_duplicate: "計画のコピーに失敗しました: 名前が重複しています"
+      no_products_set: "商品が設定されていません"
