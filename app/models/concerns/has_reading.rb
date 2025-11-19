@@ -4,10 +4,11 @@ module HasReading
 
   included do
     validates :reading,
+              presence: true,
               format: {
                 with: /\A[ぁ-んー]*\z/,
                 message: :hiragana_only
               },
-              allow_blank: true
+              uniqueness: { scope: :category_id }
   end
 end
