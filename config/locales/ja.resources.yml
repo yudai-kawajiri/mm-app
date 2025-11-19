@@ -7,7 +7,6 @@ ja:
       title: "単位一覧"
       sort_placeholder: "並び順を選択"
       sort_options:
-        display_order: "印刷順"
         name: "名前順"
         category: "カテゴリ順"
         created_at: "登録順"
@@ -118,6 +117,7 @@ ja:
       sort_options:
         name: "名前順"
         category: "カテゴリ順"
+        display_order: "印刷順"
         created_at: "登録順"
     show:
       title: "%{name} - 商品詳細"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_18_055629) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_19_035227) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -85,7 +85,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_18_055629) do
     t.datetime "created_at", null: false
     t.decimal "default_unit_weight", precision: 10, scale: 3, comment: "デフォルトの1単位あたり重量（g）"
     t.text "description"
-    t.integer "display_order"
+    t.integer "display_order", default: 999999
     t.string "measurement_type", default: "weight", null: false
     t.string "name", null: false
     t.bigint "order_group_id"
@@ -167,7 +167,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_18_055629) do
     t.datetime "created_at", null: false
     t.bigint "material_id", null: false
     t.bigint "product_id", null: false
-    t.decimal "quantity", null: false
+    t.decimal "quantity", precision: 10, scale: 3, null: false
     t.bigint "unit_id", null: false
     t.decimal "unit_weight", precision: 10, scale: 3, null: false
     t.datetime "updated_at", null: false
@@ -181,7 +181,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_18_055629) do
     t.bigint "category_id", null: false
     t.datetime "created_at", null: false
     t.text "description"
-    t.integer "display_order"
+    t.integer "display_order", default: 999999
     t.string "item_number", null: false
     t.string "name", null: false
     t.integer "price", null: false

@@ -147,6 +147,8 @@ class Resources::ProductsController < AuthenticatedController
         :id,
         :material_id,
         :quantity,
+        :unit_weight,
+        :unit_id,
         :_destroy
       ]
     )
