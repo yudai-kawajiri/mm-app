@@ -20,7 +20,7 @@
 
   <%= f.hidden_field :_destroy, value: f.object.marked_for_destruction? ? 1 : 0,
                   data: { 'form--nested-form-item-target': 'destroy' } %>
-  <%= f.hidden_field :id %>
+  <%= f.hidden_field :id if f.object.persisted? %>
   <%= f.hidden_field :unit_id,
                     value: f.object.unit_id || f.object.material&.unit_for_product_id,
                     data: { 'resources--product-material--material-target': 'unitIdInput' } %>

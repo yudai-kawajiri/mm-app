@@ -142,15 +142,14 @@ class Resources::ProductsController < AuthenticatedController
       :status,
       :image,
       :note,
-      :description,
-      product_materials_attributes: [
-        :id,
-        :material_id,
-        :quantity,
-        :unit_weight,
-        :unit_id,
-        :_destroy
-      ]
-    )
+      :description
+    ).tap do |whitelisted|
+      # ネストされた属性（ハッシュ形式）を手動で処理
+      # 文字列キー（"0", "new_1763555897631"など）を許可するため
+      materials = params[:resources_product][:product_materials_attributes]
+      if materials.present?
+        whitelisted[:product_materials_attributes] = materials.permit!.to_h
+      end
+    end
   end
 end

@@ -243,6 +243,7 @@ export default class extends Controller {
     Logger.log(LOG_MESSAGES.CONTROLLER_CONNECTED)
     this.initializeEventListeners()
     this.activateFirstTab()
+    this.disableExistingCategoryOptions()
   }
 
   // イベントリスナーの初期化
@@ -535,7 +536,7 @@ export default class extends Controller {
 
     // 3. 一意のIDを生成してテンプレートを展開
     const timestamp = new Date().getTime()
-    const uniqueId = `${timestamp}_${Math.random().toString(36).substr(SUBSTRING_START.RANDOM_ID, SUBSTRING_START.RANDOM_LENGTH)}`
+    const uniqueId = `new_${timestamp}`
     let templateHtml = template.innerHTML.replace(new RegExp(TEMPLATE_PLACEHOLDER.NEW_RECORD, 'g'), uniqueId)
 
     // <tr>タグにdata-category-id属性とdata-initial-row属性を追加
@@ -553,10 +554,10 @@ export default class extends Controller {
       SELECTOR.TBODY_BY_CATEGORY_ID(DEFAULT_CATEGORY_ID)
     )
 
-    if (allTbody) {
-      // 新しいユニークIDを生成
-      const allTabUniqueId = `${timestamp}_${Math.random().toString(36).substr(SUBSTRING_START.RANDOM_ID, SUBSTRING_START.RANDOM_LENGTH)}_all`
-      let allTabTemplateHtml = template.innerHTML.replace(new RegExp(TEMPLATE_PLACEHOLDER.NEW_RECORD, 'g'), allTabUniqueId)
+  if (allTbody) {
+    // 新しいユニークIDを生成
+    const allTabUniqueId = `new_${timestamp}_all`
+    let allTabTemplateHtml = template.innerHTML.replace(new RegExp(TEMPLATE_PLACEHOLDER.NEW_RECORD, 'g'), allTabUniqueId)
 
       allTabTemplateHtml = allTabTemplateHtml.replace(
         REGEX.TR_TAG,
