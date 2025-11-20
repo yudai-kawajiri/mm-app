@@ -170,7 +170,7 @@ ja:
     tab_all: "全て"
     tab_total: "カテゴリ合計"
     actions:
-      preview: "プレビュー"
+      preview: "印刷プレビュー"
     messages:
       copy_success: "計画「%{original_name}」を「%{new_name}」としてコピーしました"
       copy_failed: "計画のコピーに失敗しました: %{error}"
