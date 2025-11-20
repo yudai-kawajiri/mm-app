@@ -197,6 +197,7 @@ ja:
       actual_revenue_updated: "実績売上を更新しました"
       actual_revenue_update_failed: "実績売上の更新に失敗しました"
       daily_details_updated: "日別詳細を更新しました"
+      budget_exceeded: "日別予算の合計（%{total}）が月間予算（%{budget}）を超過しています。予算内に収めてください。"
     errors:
       budget_not_set: "月次予算が設定されていません。先に予算設定を行ってください。"
       budget_mismatch: "日別予算の合計（%{total}）が月次予算（%{budget}）と一致しません。"
