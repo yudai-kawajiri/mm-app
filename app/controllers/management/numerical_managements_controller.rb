@@ -80,8 +80,8 @@ class Management::NumericalManagementsController < ApplicationController
       if new_total > monthly_budget.target_amount
         redirect_to management_numerical_managements_path(year: date.year, month: date.month),
                     alert: t('numerical_managements.messages.budget_exceeded',
-                            budget: number_to_currency(monthly_budget.target_amount, unit: '¥', precision: 0),
-                            total: number_to_currency(new_total, unit: '¥', precision: 0)),
+                            budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
+                            total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(new_total)}"),
                     turbo: false
         return
       end
@@ -246,8 +246,8 @@ class Management::NumericalManagementsController < ApplicationController
       {
         exceeded: true,
         message: t('numerical_managements.messages.budget_exceeded',
-                  budget: number_to_currency(monthly_budget.target_amount, unit: '¥', precision: 0),
-                  total: number_to_currency(total_daily_target, unit: '¥', precision: 0))
+                  budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
+                  total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(total_daily_target)}")
       }
     else
       { exceeded: false }

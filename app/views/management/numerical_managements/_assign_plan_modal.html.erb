@@ -1,6 +1,4 @@
 <%# 計画割当モーダル %>
-<script src="<%= asset_path('utils/currency_formatter.js') %>"></script>
-
 <div class="modal fade"
       id="assignPlanModal"
       tabindex="-1"
@@ -70,7 +68,7 @@
           <%= f.hidden_field :planned_revenue, id: "plannedRevenue" %>
 
           <div class="alert alert-info mb-3"
-                data-management--assign-plan-info-target="infoAlert">
+               data-management--assign-plan-info-target="infoAlert">
             <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.assign_plan.info') %>
           </div>
         </div>

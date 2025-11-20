@@ -83,7 +83,8 @@ const CurrencyFormatter = {
   }
 }
 
-// グローバルスコープにも公開（レガシー互換性のため）
+// グローバルスコープに公開（レガシー互換性のため）
 window.CurrencyFormatter = CurrencyFormatter
 
+// ES6モジュールとしてもエクスポート
 export default CurrencyFormatter
