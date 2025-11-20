@@ -97,7 +97,7 @@ class Management::NumericalManagementsController < ApplicationController
 
     if service.call
       redirect_to management_numerical_managements_path(year: year, month: month),
-                  notice: t('numerical_managements.messages.bulk_update_success', count: params[:daily_data]&.size || 0),
+                  notice: t('numerical_managements.messages.daily_details_updated'),
                   turbo: false
     else
       redirect_to management_numerical_managements_path(year: year, month: month),
