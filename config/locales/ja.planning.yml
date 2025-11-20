@@ -161,6 +161,7 @@ ja:
         daily_target: "日別予算"
       prompts:
         select_plan_after_category: "選択してください（カテゴリ選択後に選択可能）"
+        no_available_plans: "選択可能な計画がありません（全てステータスが「完了」です）"
       confirm:
         delete: "本当に削除しますか？"
       actions:

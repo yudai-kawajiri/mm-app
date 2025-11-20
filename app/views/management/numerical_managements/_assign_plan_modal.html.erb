@@ -73,6 +73,7 @@ window.plansByCategory = <%= raw @plans_by_category.transform_values { |plans|
   plans.map { |p| {
     id: p.id,
     name: p.name,
+    status: p.status,
     expected_revenue: p.expected_revenue,
     plan_products: p.plan_products.map { |pp| {
       product_id: pp.product_id,
@@ -89,12 +90,12 @@ window.assignPlanI18n = {
   editTitle: '<%= j t('numerical_managements.modals.assign_plan.edit_title') %>',
   addTitle: '<%= j t('numerical_managements.modals.assign_plan.title') %>',
   selectPlaceholder: '<%= j t('helpers.prompt.select') %>',
-  selectPlanAfterCategory: '<%= j t('numerical_managements.modals.prompts.select_plan_after_category') %>'
+  selectPlanAfterCategory: '<%= j t('numerical_managements.modals.prompts.select_plan_after_category') %>',
+  noAvailablePlans: '<%= j t('numerical_managements.modals.prompts.no_available_plans') %>'
 };
 
 window.currentPlanProducts = [];
 
-// ⭐ イベントリスナーを使った実装（インラインイベントハンドラを削除）
 document.addEventListener('DOMContentLoaded', function() {
   // カテゴリ選択のイベントリスナー
   const categorySelect = document.getElementById('assignPlanCategory');
@@ -254,7 +255,16 @@ function handleCategoryChange(select) {
     return;
   }
 
-  plans.forEach(plan => {
+  // 完了ステータスの計画を除外
+  const availablePlans = plans.filter(plan => plan.status !== 'completed');
+
+  if (availablePlans.length === 0) {
+    planSelect.innerHTML = `<option value="">${window.assignPlanI18n.noAvailablePlans}</option>`;
+    planSelect.disabled = true;
+    return;
+  }
+
+  availablePlans.forEach(plan => {
     const option = document.createElement('option');
     option.value = plan.id;
     option.textContent = plan.name;
