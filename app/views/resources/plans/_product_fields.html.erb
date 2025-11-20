@@ -5,7 +5,8 @@
     data-plan-product-price-value="<%= f.object.product&.price.to_f || 0.0 %>"
     data-plan-product-category-id-value="<%= f.object.product&.category_id || local_assigns[:category_id] || 0 %>"
     data-row-unique-id="<%= row_unique_id %>"
-    data-category-id="<%= local_assigns[:category_id] || f.object.product&.category_id || 0 %>">
+    data-category-id="<%= local_assigns[:category_id] || f.object.product&.category_id || 0 %>"
+    data-product-id="<%= f.object.product_id %>">
 
   <%= f.hidden_field :_destroy,
       value: f.object.marked_for_destruction? ? 1 : 0,
