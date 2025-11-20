@@ -16,7 +16,7 @@
       <% product_materials.each do |pm| %>
         <tr class="border-bottom">
           <td><%= pm.material.name %></td>
-          <td class="text-end"><%= number_with_precision(pm.quantity, precision: 0) %></td>
+          <td class="text-end"><%= number_with_precision(pm.quantity, precision: 1) %></td>
           <td class="text-end"><%= number_with_precision(pm.unit_weight, precision: 1) %></td>
           <td class="text-start"><%= pm.unit.name %></td>
         </tr>

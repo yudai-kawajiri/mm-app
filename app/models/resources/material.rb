@@ -16,6 +16,7 @@ class Resources::Material < ApplicationRecord
   include NameSearchable
   include UserAssociatable
   include Copyable
+  include HasReading
 
   # 関連付け
   belongs_to :category, class_name: 'Resources::Category'

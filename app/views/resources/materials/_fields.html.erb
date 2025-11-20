@@ -1,10 +1,14 @@
 <%# 原材料フォームフィールド %>
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-4">
     <%= form_group_lg(f, :name) %>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-4">
+    <%= form_group_lg(f, :reading) %>
+  </div>
+
+  <div class="col-md-4">
     <%= form_group_lg(f, :category_id,
         field_type: :collection_select,
         collection: Resources::Category.where(category_type: :material).ordered,
@@ -24,10 +28,10 @@
       <%= f.text_field :default_unit_weight,
           class: 'form-control form-control-lg',
           data: {
-            controller: 'number-input',
+            controller: 'input--number-input' ,
             'number-input-no-comma': 'true',
             'number-input-decimal-field': 'true',
-            action: 'input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
+            action: 'input->input--number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
             'form-validation-target': 'field'
           }
       %>
@@ -74,10 +78,10 @@
       <%= f.text_field :unit_weight_for_order,
         class: 'form-control form-control-lg',
         data: {
-          controller: 'number-input',
+          controller: 'input--number-input' ,
           'number-input-no-comma': 'true',
           'number-input-decimal-field': 'true',
-          action: 'input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur'
+          action: 'input->input--number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur'
         }
       %>
     </div>

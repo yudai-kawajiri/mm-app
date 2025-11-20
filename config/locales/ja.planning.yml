@@ -62,7 +62,12 @@ ja:
         unit_fetch_failed: "単位データの取得に失敗しました"
 
   # 計画スケジュール（個別メッセージは不要、flash_messagesを使用）
-  plan_schedules: {}
+  plan_schedules:
+    messages:
+      plan_assigned: "計画を登録しました"
+      plan_updated: "計画を更新しました"
+      plan_schedule_save_failed: "計画の保存に失敗しました: %{errors}"
+      plan_schedule_update_failed: "計画の更新に失敗しました: %{errors}"
 
   # 数値管理（売上予算管理）
   numerical_managements:
@@ -128,6 +133,7 @@ ja:
         info: "月間予算を入力してください"
       budget_setting:
         title: "予算設定"
+        info: "この月の予算金額を入力してください"
       daily_target_edit:
         title: "日別予算編集"
         info: "この日の予算金額を入力してください"
@@ -137,6 +143,9 @@ ja:
       assign_plan:
         title: "計画登録"
         edit_title: "計画編集"
+        planned_revenue_help: "計画を選択後に自動で入力されます"
+        info: "カテゴリと計画を選択してください。商品数量は必要に応じて調整できます"
+        alert_plan_unavailable: "この計画は現在選択できません。計画が完了または削除された可能性があります。"  # ← 追加
         planned_revenue_help: "計画を選択後に自動で入力されます"
       labels:
         target_month: "対象月"
@@ -156,6 +165,7 @@ ja:
         daily_target: "日別予算"
       prompts:
         select_plan_after_category: "選択してください（カテゴリ選択後に選択可能）"
+        no_available_plans: "選択可能な計画がありません（全てステータスが「完了」です）"
       confirm:
         delete: "本当に削除しますか？"
       actions:
@@ -186,9 +196,8 @@ ja:
       plan_not_found: "計画が見つかりません"
       actual_revenue_updated: "実績売上を更新しました"
       actual_revenue_update_failed: "実績売上の更新に失敗しました"
-      bulk_update_success: "%{count}件のデータを更新しました"
-      bulk_update_partial: "%{success}件成功、%{error}件失敗しました"
       daily_details_updated: "日別詳細を更新しました"
+      budget_exceeded: "日別予算の合計（%{total}）が月間予算（%{budget}）を超過しています。予算内に収めてください。"
     errors:
       budget_not_set: "月次予算が設定されていません。先に予算設定を行ってください。"
       budget_mismatch: "日別予算の合計（%{total}）が月次予算（%{budget}）と一致しません。"

@@ -1,39 +1,7 @@
-// Category Tabs Controller
-//
-// 製造計画の商品管理と商品原材料管理におけるカテゴリタブの動的な追加・削除を制御するStimulusコントローラー
-//
-// 機能:
-// - カテゴリタブの動的追加・削除
-// - タブ切り替え制御
-// - 初期フォーム行の自動追加
-// - タブ間のフォーム行同期
-// - モーダルとセレクターの状態管理
-//
-// Targets:
-// - tabNav: タブナビゲーション
-// - contentContainer: タブコンテンツコンテナ
-// - allTab: ALLタブ
-// - categoryPaneTemplate: カテゴリペインテンプレート
-// - addCategoryModal: カテゴリ追加モーダル
-// - tab: タブ要素
-// - category: カテゴリ要素
-// - categorySelector: カテゴリセレクター
-// - showButton: 表示ボタン
-// - categoryTemplate: カテゴリテンプレート
-//
-// Values:
-// - categoriesData: カテゴリデータオブジェクト
-// - categoryId: カテゴリID（デフォルト: 0）
-//
-// 翻訳キー:
-// - components.category_tabs.confirm_delete: タブ削除確認メッセージ
-
 import { Controller } from "@hotwired/stimulus"
 import i18n from "controllers/i18n"
 import Logger from "utils/logger"
 
-
-// 定数定義
 const CSS_CLASSES = {
   TAB_WITH_CLOSE: 'category-tab-with-close',
   CLOSE_BUTTON: 'category-tab-close-button',
@@ -92,7 +60,9 @@ const DATA_ATTRIBUTE = {
   CATEGORY_NAME: 'data-category-name',
   TEMPLATE_ID: 'data-template-id',
   UNIQUE_ID: 'data-unique-id',
-  INITIAL_ROW: 'data-initial-row'
+  ROW_UNIQUE_ID: 'data-row-unique-id',
+  INITIAL_ROW: 'data-initial-row',
+  PRODUCT_ID: 'data-product-id'
 }
 
 const DATA_VALUE = {
@@ -230,7 +200,8 @@ export default class extends Controller {
     "category",
     "categorySelector",
     "showButton",
-    "categoryTemplate"
+    "categoryTemplate",
+    "categoryButtons"
   ]
 
   static values = {
@@ -238,14 +209,13 @@ export default class extends Controller {
     categoryId: { type: Number, default: 0 }
   }
 
-  // コントローラー接続時の初期化処理
   connect() {
     Logger.log(LOG_MESSAGES.CONTROLLER_CONNECTED)
     this.initializeEventListeners()
     this.activateFirstTab()
+    this.disableExistingCategoryOptions()
   }
 
-  // イベントリスナーの初期化
   initializeEventListeners() {
     this.element.addEventListener('click', (e) => {
       const tabButton = e.target.closest(SELECTOR.BS_TAB_TOGGLE)
@@ -276,40 +246,45 @@ export default class extends Controller {
     }
   }
 
-  // タブクリック時の処理
   handleTabClick(event, tabButton) {
     event.preventDefault()
-    const tab = new bootstrap.Tab(tabButton)
-    tab.show()
-    this.updateActiveTab(tabButton)
-  }
 
-  // アクティブタブの更新
-  updateActiveTab(activeButton) {
     this.tabNavTarget.querySelectorAll(SELECTOR.NAV_LINK).forEach(tab => {
       tab.classList.remove(CSS_CLASSES.ACTIVE)
       tab.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.FALSE)
     })
 
-    activeButton.classList.add(CSS_CLASSES.ACTIVE)
-    activeButton.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.TRUE)
-  }
+    this.contentContainerTarget.querySelectorAll(SELECTOR.TAB_PANE).forEach(pane => {
+      pane.classList.remove(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
+    })
 
-  // 最初のタブをアクティブ化
-  activateFirstTab() {
-    const firstTab = this.tabNavTarget.querySelector(SELECTOR.NAV_LINK)
-    if (firstTab) {
-      const tab = new bootstrap.Tab(firstTab)
-      tab.show()
+    tabButton.classList.add(CSS_CLASSES.ACTIVE)
+    tabButton.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.TRUE)
+
+    const targetPaneId = tabButton.getAttribute('aria-controls')
+    if (targetPaneId) {
+      const targetPane = document.getElementById(targetPaneId)
+      if (targetPane) {
+        targetPane.classList.add(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
+      }
     }
   }
 
-  // カテゴリID値変更時の処理
+  updateActiveTab(activeButton) {
+    // Handled in handleTabClick
+  }
+
+  activateFirstTab() {
+    const firstTab = this.tabNavTarget.querySelector(SELECTOR.NAV_LINK)
+    if (firstTab) {
+      firstTab.click()
+    }
+  }
+
   categoryIdValueChanged() {
     this.updateTabs()
   }
 
-  // タブの更新
   updateTabs() {
     const selectedCategoryId = this.categoryIdValue
     Logger.log(LOG_MESSAGES.UPDATING_TABS(selectedCategoryId))
@@ -353,14 +328,12 @@ export default class extends Controller {
     }
   }
 
-  // ボタンの表示/非表示を切り替え
   toggleButton() {
     if (!this.hasCategorySelectorTarget || !this.hasShowButtonTarget) return
     const isSelected = this.categorySelectorTarget.value && this.categorySelectorTarget.value !== DEFAULT_CATEGORY_ID
     this.showButtonTarget[HTML_ATTRIBUTE.DISABLED] = !isSelected
   }
 
-  // セレクター内の既存カテゴリオプションを無効化
   disableExistingCategoryOptions() {
     if (!this.hasTabNavTarget || !this.hasCategorySelectorTarget) return
     const existingTabs = this.tabNavTarget.querySelectorAll(SELECTOR.CATEGORY_ITEM)
@@ -372,7 +345,6 @@ export default class extends Controller {
     })
   }
 
-  // 選択されたタブを表示
   showSelectedTab() {
     if (!this.hasCategorySelectorTarget) return
     const categoryId = String(this.categorySelectorTarget.value)
@@ -403,7 +375,6 @@ export default class extends Controller {
     }
   }
 
-  // カテゴリタブを追加
   addCategoryTab(categoryId, categoryName) {
     if (!categoryId || !categoryName) {
       Logger.warn(LOG_MESSAGES.INVALID_CATEGORY_DATA)
@@ -413,8 +384,7 @@ export default class extends Controller {
     const existingTab = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(categoryId))
     if (existingTab) {
       Logger.warn(LOG_MESSAGES.CATEGORY_TAB_ALREADY_EXISTS(categoryId))
-      const tab = new bootstrap.Tab(existingTab)
-      tab.show()
+      existingTab.click()
       this.closeModal()
       return
     }
@@ -433,8 +403,7 @@ export default class extends Controller {
       }
 
       const newTabButton = tabItem.querySelector(SELECTOR.NAV_LINK)
-      const tab = new bootstrap.Tab(newTabButton)
-      tab.show()
+      newTabButton.click()
 
       Logger.log(LOG_MESSAGES.CATEGORY_TAB_ADDED(categoryName, categoryId))
       this.closeModal()
@@ -442,7 +411,6 @@ export default class extends Controller {
     }
   }
 
-  // タブアイテムを作成
   createTabItem(categoryId, categoryName) {
     const li = document.createElement(HTML_ELEMENT.LI)
     li.className = CSS_CLASSES.NAV_ITEM
@@ -460,7 +428,8 @@ export default class extends Controller {
               ${HTML_ATTRIBUTE.TYPE}="${BUTTON_TYPE.BUTTON}"
               ${HTML_ATTRIBUTE.ROLE}="${ROLE_VALUE.TAB}"
               ${HTML_ATTRIBUTE.ARIA_CONTROLS}="${paneId}"
-              ${HTML_ATTRIBUTE.ARIA_SELECTED}="${ARIA_VALUE.FALSE}">
+              ${HTML_ATTRIBUTE.ARIA_SELECTED}="${ARIA_VALUE.FALSE}"
+              style="padding-right: 2.5rem;">
         ${this.escapeHtml(categoryName)}
         <span class="${CSS_CLASSES.POSITION_ABSOLUTE} ${CSS_CLASSES.TOP_50} ${CSS_CLASSES.END_0} ${CSS_CLASSES.TRANSLATE_MIDDLE_Y} ${CSS_CLASSES.PE_2}"
               style="${STYLE_PROPERTY.CURSOR}: ${STYLE_VALUE.CURSOR_POINTER}; ${STYLE_PROPERTY.FONT_WEIGHT}: ${STYLE_VALUE.FONT_WEIGHT_BOLD}; ${STYLE_PROPERTY.COLOR}: ${STYLE_VALUE.COLOR_DANGER}; ${STYLE_PROPERTY.Z_INDEX}: ${STYLE_VALUE.Z_INDEX_10};"
@@ -475,7 +444,6 @@ export default class extends Controller {
     return li
   }
 
-  // タブペインを追加
   addTabPane(categoryId, categoryName) {
     if (!categoryId || !categoryName) {
       Logger.warn(LOG_MESSAGES.INVALID_CATEGORY_ID)
@@ -498,12 +466,9 @@ export default class extends Controller {
     return null
   }
 
-  // 新規追加されたカテゴリタブに初期フォーム行を1つ追加
-  // 製造計画（product_fields）と商品原材料（material_fields）の両方に対応
   addInitialFormRow(categoryId) {
     Logger.log(LOG_MESSAGES.ADDING_INITIAL_FORM_ROW(categoryId))
 
-    // 1. 新しいカテゴリタブのtbodyに追加
     const categoryTbody = this.contentContainerTarget.querySelector(
       SELECTOR.TBODY_BY_CATEGORY_ID(categoryId)
     )
@@ -515,11 +480,9 @@ export default class extends Controller {
 
     Logger.log(LOG_MESSAGES.TBODY_FOUND(categoryId))
 
-    // 2. テンプレートを取得（製造計画と商品の両方に対応）
     let templateId = TEMPLATE_ID.PRODUCT_FIELDS(categoryId)
     let template = document.getElementById(templateId)
 
-    // 製造計画のテンプレートが見つからない場合、商品原材料のテンプレートを試す
     if (!template) {
       templateId = TEMPLATE_ID.MATERIAL_FIELDS(categoryId)
       template = document.getElementById(templateId)
@@ -532,30 +495,27 @@ export default class extends Controller {
 
     Logger.log(LOG_MESSAGES.TEMPLATE_FOUND(templateId))
 
-    // 3. 一意のIDを生成してテンプレートを展開
     const timestamp = new Date().getTime()
-    const uniqueId = `${timestamp}_${Math.random().toString(36).substr(SUBSTRING_START.RANDOM_ID, SUBSTRING_START.RANDOM_LENGTH)}`
+    const uniqueId = `new_${timestamp}`
     let templateHtml = template.innerHTML.replace(new RegExp(TEMPLATE_PLACEHOLDER.NEW_RECORD, 'g'), uniqueId)
 
-    // <tr>タグにdata-category-id属性とdata-initial-row属性を追加
     templateHtml = templateHtml.replace(
       REGEX.TR_TAG,
       `<tr$1 ${DATA_ATTRIBUTE.CATEGORY_ID}="${categoryId}" ${DATA_ATTRIBUTE.INITIAL_ROW}="${ARIA_VALUE.TRUE}">`
     )
 
-    // 4. カテゴリタブのtbodyに追加
     categoryTbody.insertAdjacentHTML(INSERT_POSITION.BEFORE_END, templateHtml)
     Logger.log(LOG_MESSAGES.INITIAL_FORM_ROW_ADDED(categoryId))
 
-    // 5. ALLタブ（category_id="0"）のtbodyにも同じ行を追加
-    const allTbody = this.contentContainerTarget.querySelector(
+    const allTbody = document.querySelector(
       SELECTOR.TBODY_BY_CATEGORY_ID(DEFAULT_CATEGORY_ID)
     )
 
     if (allTbody) {
-      // 新しいユニークIDを生成
-      const allTabUniqueId = `${timestamp}_${Math.random().toString(36).substr(SUBSTRING_START.RANDOM_ID, SUBSTRING_START.RANDOM_LENGTH)}_all`
+      const allTabUniqueId = `new_${timestamp}_all`
       let allTabTemplateHtml = template.innerHTML.replace(new RegExp(TEMPLATE_PLACEHOLDER.NEW_RECORD, 'g'), allTabUniqueId)
+
+      allTabTemplateHtml = allTabTemplateHtml.replace(/data-category-id="[^"]*"/g, '')
 
       allTabTemplateHtml = allTabTemplateHtml.replace(
         REGEX.TR_TAG,
@@ -563,10 +523,14 @@ export default class extends Controller {
       )
 
       allTbody.insertAdjacentHTML(INSERT_POSITION.BEFORE_END, allTabTemplateHtml)
+
+      const addedRow = allTbody.querySelector(`tr[${DATA_ATTRIBUTE.UNIQUE_ID}="${allTabUniqueId}"]`)
+      if (addedRow) {
+        Logger.log(`Added row to ALL tab with category-id: ${addedRow.getAttribute('data-category-id')}`)
+      }
     }
   }
 
-  // テンプレートから要素を作成
   createElementFromTemplate(template, categoryId, categoryName) {
     if (!template || !template.content) {
       Logger.warn(LOG_MESSAGES.INVALID_TEMPLATE)
@@ -591,13 +555,11 @@ export default class extends Controller {
       categoryNameElement.textContent = categoryName
     }
 
-    // すべての CATEGORY_ID_PLACEHOLDER を実際のカテゴリIDに置換
     const elementsWithPlaceholder = element.querySelectorAll(SELECTOR.CATEGORY_BY_ID(TEMPLATE_PLACEHOLDER.CATEGORY_ID))
     elementsWithPlaceholder.forEach(el => {
       el.setAttribute(DATA_ATTRIBUTE.CATEGORY_ID, categoryId)
     })
 
-    // data-template-id の CATEGORY_ID_PLACEHOLDER も置換
     const elementsWithTemplateId = element.querySelectorAll(SELECTOR.TEMPLATE_ID)
     elementsWithTemplateId.forEach(el => {
       const templateId = el.getAttribute(DATA_ATTRIBUTE.TEMPLATE_ID)
@@ -622,7 +584,6 @@ export default class extends Controller {
     return element
   }
 
-  // タブを切り替え
   switchToTab(categoryId) {
     if (!this.hasTabNavTarget || !this.hasContentContainerTarget) return
 
@@ -645,79 +606,219 @@ export default class extends Controller {
     }
   }
 
-  // タブを削除
-  // カテゴリタブとALLタブの両方からフォーム行を削除し、
-  // セレクターとモーダルのカテゴリを再有効化
   deleteTab(event) {
-    // イベントから削除ボタンの要素を取得
-    const deleteButton = event.currentTarget
-    const categoryId = deleteButton.dataset.categoryId
+    event.preventDefault()
+    event.stopPropagation()
+    event.stopImmediatePropagation()
+
+    const button = event.currentTarget
+    const categoryId = String(button.dataset.categoryId)
 
     if (!categoryId) {
       Logger.warn(LOG_MESSAGES.INVALID_CATEGORY_ID_FOR_DELETION)
       return
     }
 
-    // 確認ダイアログ（i18n対応）
     const confirmMessage = i18n.t(I18N_KEYS.CONFIRM_DELETE)
     if (!confirm(confirmMessage)) {
       return
     }
 
-    // 1. 該当カテゴリのフォーム行をALLタブから削除
-    const allTbody = this.contentContainerTarget.querySelector(
-      SELECTOR.TBODY_BY_CATEGORY_ID(DEFAULT_CATEGORY_ID)
-    )
+    window._deletingCategory = true
 
-    if (allTbody) {
-      // data-category-id属性で該当カテゴリの行を検索して削除
-      const categoryRows = allTbody.querySelectorAll(
-        SELECTOR.TR_BY_CATEGORY_ID(categoryId)
-      )
+    try {
+      Logger.log(`=== Deleting category ${categoryId} ===`)
 
-      if (categoryRows.length > 0) {
-        categoryRows.forEach(row => {
-          Logger.log(LOG_MESSAGES.REMOVING_PRODUCT_ROW(categoryId))
-          row.remove()
-        })
-      } else {
-        Logger.warn(LOG_MESSAGES.NO_ROWS_FOUND_IN_ALL_TAB(categoryId))
+      // カテゴリタブのペインを探す
+      let tabPane = document.getElementById(`nav-${categoryId}`)
+      if (!tabPane) {
+        tabPane = document.getElementById(`category-pane-${categoryId}`)
       }
-    }
-
-    // 2. タブボタンを削除
-    const tabButton = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(categoryId))
-    if (tabButton) {
-      const parentLi = tabButton.closest(SELECTOR.CLOSEST_LI) || tabButton.parentElement
-
-      // 削除するタブがアクティブな場合、ALLタブをアクティブ化
-      if (tabButton.classList.contains(CSS_CLASSES.ACTIVE)) {
-        const allTab = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(DEFAULT_CATEGORY_ID))
-        if (allTab) {
-          const tab = new bootstrap.Tab(allTab)
-          tab.show()
+      if (!tabPane) {
+        const tabButton = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(categoryId))
+        if (tabButton) {
+          const paneId = tabButton.getAttribute(HTML_ATTRIBUTE.ARIA_CONTROLS)
+          if (paneId) {
+            tabPane = document.getElementById(paneId)
+          }
         }
       }
 
-      parentLi.remove()
+      // カテゴリタブ内の行を処理（新規追加データ用）
+      if (tabPane) {
+        const categoryTbody = tabPane.querySelector(HTML_ELEMENT.TBODY)
+        if (categoryTbody) {
+          const allRows = Array.from(categoryTbody.querySelectorAll(HTML_ELEMENT.TR))
+          Logger.log(`Deleting ${allRows.length} rows from category ${categoryId}`)
+
+          allRows.forEach((row) => {
+            let destroyInput = row.querySelector('input[name*="[_destroy]"]')
+            if (!destroyInput) {
+              // _destroyフィールドがない場合は作成
+              const idInput = row.querySelector('input[name*="[id]"]')
+              if (idInput && idInput.name) {
+                const destroyName = idInput.name.replace('[id]', '[_destroy]')
+                destroyInput = document.createElement('input')
+                destroyInput.type = 'hidden'
+                destroyInput.name = destroyName
+                destroyInput.value = '1'
+                row.appendChild(destroyInput)
+                Logger.log(`Created _destroy field: ${destroyName}`)
+              }
+            } else {
+              destroyInput.value = '1'
+            }
+            row.classList.add('d-none')
+            // idと_destroy以外をdisabledにする（idはフォーム送信に必要）
+            row.querySelectorAll('input:not([name*="[_destroy]"]):not([name*="[id]"]), select, textarea').forEach(field => {
+              field.disabled = true
+            })
+          })
+        }
+      }
+
+      // ALLタブ内の行を処理（既存データ + 新規追加データ）
+      const allTbody = document.querySelector('tbody[data-category-id="0"]')
+
+      if (allTbody) {
+        // data-category-id で検索（新規追加データ）
+        const allRows = Array.from(allTbody.querySelectorAll('tr[data-category-id]'))
+        const foundRows = allRows.filter(row => {
+          const rowCategoryId = String(row.getAttribute('data-category-id'))
+          return rowCategoryId === categoryId
+        })
+
+        Logger.log(`Found ${foundRows.length} rows in ALL tab with data-category-id="${categoryId}"`)
+
+        foundRows.forEach((row) => {
+          const destroyInput = row.querySelector('input[name*="[_destroy]"]')
+          if (destroyInput) {
+            destroyInput.value = '1'
+          }
+          row.classList.add('d-none')
+          row.querySelectorAll('input:not([name*="[_destroy]"]):not([name*="[id]"]), select, textarea').forEach(field => {
+            field.disabled = true
+          })
+        })
+
+        // 既存データの処理：現在表示されているカテゴリタブと同じIDを持つ行を検索
+        if (tabPane) {
+          const categoryTbody = tabPane.querySelector(HTML_ELEMENT.TBODY)
+          if (categoryTbody) {
+            // カテゴリタブ内に表示されていた行のIDを収集（material_idまたはproduct_id）
+            const displayedRows = Array.from(categoryTbody.querySelectorAll(HTML_ELEMENT.TR))
+            displayedRows.forEach(catRow => {
+              // 商品原材料の場合：material_id
+              let itemSelect = catRow.querySelector('select[name*="[material_id]"]')
+              let itemIdName = 'material_id'
+
+              // 製造計画の場合：product_id
+              if (!itemSelect) {
+                itemSelect = catRow.querySelector('select[name*="[product_id]"]')
+                itemIdName = 'product_id'
+              }
+
+              if (itemSelect && itemSelect.value) {
+                const itemId = itemSelect.value
+                // ALLタブから同じIDを持つ行を検索
+                const allRowsToDelete = Array.from(allTbody.querySelectorAll('tr')).filter(allRow => {
+                  const allItemSelect = allRow.querySelector(`select[name*="[${itemIdName}]"]`)
+                  return allItemSelect && allItemSelect.value === itemId
+                })
+
+                Logger.log(`Found ${allRowsToDelete.length} existing data rows in ALL tab with ${itemIdName}="${itemId}"`)
+
+                allRowsToDelete.forEach((row) => {
+                  let destroyInput = row.querySelector('input[name*="[_destroy]"]')
+                  if (!destroyInput) {
+                    // _destroyフィールドがない場合は作成
+                    const idInput = row.querySelector('input[name*="[id]"]')
+                    if (idInput && idInput.name) {
+                      const destroyName = idInput.name.replace('[id]', '[_destroy]')
+                      destroyInput = document.createElement('input')
+                      destroyInput.type = 'hidden'
+                      destroyInput.name = destroyName
+                      destroyInput.value = '1'
+                      row.appendChild(destroyInput)
+                      Logger.log(`Created _destroy field for existing data: ${destroyName}`)
+                    }
+                  } else {
+                    destroyInput.value = '1'
+                  }
+                  row.classList.add('d-none')
+                  // idと_destroy以外をdisabledにする（idはフォーム送信に必要）
+                  row.querySelectorAll('input:not([name*="[_destroy]"]):not([name*="[id]"]), select, textarea').forEach(field => {
+                    field.disabled = true
+                  })
+                })
+              }
+            })
+          }
+        }
+      }
+
+      // 合計再計算
+      const totalsController = this.application.getControllerForElementAndIdentifier(
+        document.querySelector('[data-controller*="form--totals"]'),
+        'form--totals'
+      )
+      if (totalsController) {
+        totalsController.recalculateTotals()
+      }
+
+      // アクティブタブの切り替え
+      const tabButton = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(categoryId))
+      const isActiveTab = tabButton && tabButton.classList.contains(CSS_CLASSES.ACTIVE)
+
+      if (isActiveTab) {
+        const allTab = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(DEFAULT_CATEGORY_ID))
+        const allPane = document.getElementById('nav-0')
+
+        if (allTab && allPane) {
+          this.tabNavTarget.querySelectorAll(SELECTOR.NAV_LINK).forEach(tab => {
+            tab.classList.remove(CSS_CLASSES.ACTIVE)
+            tab.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.FALSE)
+          })
+
+          this.contentContainerTarget.querySelectorAll(SELECTOR.TAB_PANE).forEach(pane => {
+            pane.classList.remove(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
+          })
+
+          allTab.classList.add(CSS_CLASSES.ACTIVE)
+          allTab.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.TRUE)
+          allPane.classList.add(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
+        }
+      }
+
+      // タブボタンとペインを削除
+      if (tabButton) {
+        const tabButtonLi = tabButton.closest('li')
+
+        if (tabButtonLi) {
+          tabButtonLi.remove()
+        } else {
+          tabButton.remove()
+          const closeButton = this.tabNavTarget.querySelector(`span[data-category-id="${categoryId}"]`)
+          if (closeButton) {
+            closeButton.remove()
+          }
+        }
+      }
+
+      if (tabPane) {
+        tabPane.remove()
+      }
+
+      this.enableCategoryInSelector(categoryId)
+      this.enableCategoryInModal(categoryId)
+
+      Logger.log(LOG_MESSAGES.CATEGORY_TAB_DELETED(categoryId))
+
+    } finally {
+      delete window._deletingCategory
     }
-
-    // 3. タブペインを削除
-    const tabPane = this.contentContainerTarget.querySelector(SELECTOR.PANE_BY_ID(categoryId))
-    if (tabPane) {
-      tabPane.remove()
-    }
-
-    // 4. セレクター内のカテゴリオプションを再有効化
-    this.enableCategoryInSelector(categoryId)
-
-    // 5. モーダル内のカテゴリアイテムを有効化
-    this.enableCategoryInModal(categoryId)
-
-    Logger.log(LOG_MESSAGES.CATEGORY_TAB_DELETED(categoryId))
   }
 
-  // モーダルを閉じる
   closeModal() {
     if (this.hasAddCategoryModalTarget) {
       const modal = bootstrap.Modal.getInstance(this.addCategoryModalTarget)
@@ -727,7 +828,6 @@ export default class extends Controller {
     }
   }
 
-  // モーダル内のカテゴリを無効化
   disableCategoryInModal(categoryId) {
     if (!this.hasAddCategoryModalTarget) return
 
@@ -741,7 +841,6 @@ export default class extends Controller {
     }
   }
 
-  // モーダル内のカテゴリを有効化
   enableCategoryInModal(categoryId) {
     if (!this.hasAddCategoryModalTarget) return
 
@@ -755,8 +854,6 @@ export default class extends Controller {
     }
   }
 
-  // セレクター内のカテゴリオプションを再有効化
-  // タブ削除時に呼び出され、該当カテゴリを再選択可能にする
   enableCategoryInSelector(categoryId) {
     if (!this.hasCategorySelectorTarget) return
 
@@ -772,12 +869,10 @@ export default class extends Controller {
     }
   }
 
-  // HTMLエスケープ処理
   escapeHtml(text) {
     return text.replace(REGEX.HTML_ESCAPE, m => HTML_ESCAPE_MAP[m])
   }
 
-  // コントローラー切断時の処理
   disconnect() {
     Logger.log(LOG_MESSAGES.CONTROLLER_DISCONNECTED)
   }

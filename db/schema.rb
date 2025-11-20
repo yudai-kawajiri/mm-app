@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_15_113853) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_19_162230) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -47,9 +47,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_113853) do
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
+    t.string "reading"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["name", "category_type"], name: "index_categories_on_name_and_category_type", unique: true
+    t.index ["reading"], name: "index_categories_on_reading"
     t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
@@ -70,9 +72,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_113853) do
   create_table "material_order_groups", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
+    t.string "reading"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["name"], name: "index_material_order_groups_on_name", unique: true
+    t.index ["reading"], name: "index_material_order_groups_on_reading"
     t.index ["user_id"], name: "index_material_order_groups_on_user_id"
   end
 
@@ -81,13 +85,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_113853) do
     t.datetime "created_at", null: false
     t.decimal "default_unit_weight", precision: 10, scale: 3, comment: "デフォルトの1単位あたり重量（g）"
     t.text "description"
-    t.integer "display_order", default: 999999
+    t.integer "display_order"
     t.string "measurement_type", default: "weight", null: false
     t.string "name", null: false
     t.bigint "order_group_id"
     t.string "order_group_name"
     t.integer "pieces_per_order_unit", comment: "1発注単位あたりの個数（トレイなど）"
     t.bigint "production_unit_id"
+    t.string "reading"
     t.bigint "unit_for_order_id", null: false
     t.bigint "unit_for_product_id", null: false
     t.decimal "unit_weight_for_order", precision: 10, scale: 3
@@ -98,6 +103,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_113853) do
     t.index ["name", "category_id"], name: "index_materials_on_name_and_category_id", unique: true
     t.index ["order_group_id"], name: "index_materials_on_order_group_id"
     t.index ["production_unit_id"], name: "index_materials_on_production_unit_id"
+    t.index ["reading"], name: "index_materials_on_reading"
     t.index ["unit_for_order_id"], name: "index_materials_on_unit_for_order_id"
     t.index ["unit_for_product_id"], name: "index_materials_on_unit_for_product_id"
     t.index ["user_id"], name: "index_materials_on_user_id"
@@ -147,11 +153,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_113853) do
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
-    t.integer "status", default: 0, null: false
+    t.string "reading"
+    t.integer "status"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["category_id"], name: "index_plans_on_category_id"
     t.index ["name", "category_id"], name: "index_plans_on_name_and_category_id", unique: true
+    t.index ["reading"], name: "index_plans_on_reading"
     t.index ["user_id"], name: "index_plans_on_user_id"
   end
 
@@ -159,7 +167,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_113853) do
     t.datetime "created_at", null: false
     t.bigint "material_id", null: false
     t.bigint "product_id", null: false
-    t.decimal "quantity", null: false
+    t.decimal "quantity", precision: 10, scale: 3, null: false
     t.bigint "unit_id", null: false
     t.decimal "unit_weight", precision: 10, scale: 3, null: false
     t.datetime "updated_at", null: false
@@ -173,16 +181,18 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_113853) do
     t.bigint "category_id", null: false
     t.datetime "created_at", null: false
     t.text "description"
-    t.integer "display_order", default: 999999
+    t.integer "display_order"
     t.string "item_number", null: false
     t.string "name", null: false
     t.integer "price", null: false
+    t.string "reading"
     t.integer "status"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["item_number", "category_id"], name: "index_products_on_item_number_and_category_id", unique: true
     t.index ["name", "category_id"], name: "index_products_on_name_and_category_id", unique: true
+    t.index ["reading"], name: "index_products_on_reading"
     t.index ["user_id"], name: "index_products_on_user_id"
   end
 
@@ -191,9 +201,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_113853) do
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
+    t.string "reading"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["name", "category"], name: "index_units_on_name_and_category", unique: true
+    t.index ["reading"], name: "index_units_on_reading"
     t.index ["user_id"], name: "index_units_on_user_id"
   end
 

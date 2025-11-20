@@ -1,11 +1,11 @@
 <%# 計画割当モーダル %>
-<script src="<%= asset_path('utils/currency_formatter.js') %>"></script>
-
 <div class="modal fade"
       id="assignPlanModal"
       tabindex="-1"
       aria-labelledby="assignPlanModalLabel"
-      aria-hidden="true">
+      aria-hidden="true"
+      data-controller="management--assign-plan-info"
+      data-action="show.bs.modal->management--assign-plan-info#showModal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <%= form_with model: Planning::PlanSchedule.new,
@@ -30,7 +30,8 @@
             <label class="form-label"><%= t('numerical_managements.modals.labels.category') %></label>
             <select class="form-select"
                     id="assignPlanCategory"
-                    onchange="handleCategoryChange(this)">
+                    required
+                    data-action="change->management--assign-plan-info#handleCategoryChange">
               <option value=""><%= t('helpers.prompt.select') %></option>
               <% if @plans_by_category.present? %>
                 <% @plans_by_category.keys.sort.each do |category_name| %>
@@ -45,9 +46,10 @@
             <select name="plan_schedule[plan_id]"
                     class="form-select"
                     id="assignPlanSelect"
-                    onchange="handlePlanChange(this)"
                     disabled
-                    required>
+                    required
+                    data-management--assign-plan-info-target="planSelect"
+                    data-action="change->management--assign-plan-info#handlePlanChange">
               <option value=""><%= t('numerical_managements.modals.prompts.select_plan_after_category') %></option>
             </select>
           </div>
@@ -62,7 +64,15 @@
               <span id="totalCostDisplay"></span>
             </div>
           </div>
+
+          <%= f.hidden_field :planned_revenue, id: "plannedRevenue" %>
+
+          <div class="alert alert-info mb-3"
+               data-management--assign-plan-info-target="infoAlert">
+            <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.assign_plan.info') %>
+          </div>
         </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common.cancel') %></button>
           <%= f.submit t('common.create'), id: 'assignPlanSubmitBtn', class: "btn btn-primary", data: { disable_with: t('common.saving') } %>
@@ -77,6 +87,7 @@ window.plansByCategory = <%= raw @plans_by_category.transform_values { |plans|
   plans.map { |p| {
     id: p.id,
     name: p.name,
+    status: p.status,
     expected_revenue: p.expected_revenue,
     plan_products: p.plan_products.map { |pp| {
       product_id: pp.product_id,
@@ -93,10 +104,29 @@ window.assignPlanI18n = {
   editTitle: '<%= j t('numerical_managements.modals.assign_plan.edit_title') %>',
   addTitle: '<%= j t('numerical_managements.modals.assign_plan.title') %>',
   selectPlaceholder: '<%= j t('helpers.prompt.select') %>',
-  selectPlanAfterCategory: '<%= j t('numerical_managements.modals.prompts.select_plan_after_category') %>'
+  selectPlanAfterCategory: '<%= j t('numerical_managements.modals.prompts.select_plan_after_category') %>',
+  noAvailablePlans: '<%= j t('numerical_managements.modals.prompts.no_available_plans') %>',
+  alertPlanUnavailable: '<%= j t('numerical_managements.modals.assign_plan.alert_plan_unavailable') %>'
 };
 
 window.currentPlanProducts = [];
+
+// イベントリスナーをバインド
+document.addEventListener('DOMContentLoaded', function() {
+  const categorySelect = document.getElementById('assignPlanCategory');
+  if (categorySelect) {
+    categorySelect.addEventListener('change', function() {
+      handleCategoryChange(this);
+    });
+  }
+
+  const planSelect = document.getElementById('assignPlanSelect');
+  if (planSelect) {
+    planSelect.addEventListener('change', function() {
+      handlePlanChange(this);
+    });
+  }
+});
 
 function setAssignPlanModalData(button) {
   const scheduleId = button.getAttribute('data-schedule-id');
@@ -143,15 +173,22 @@ function setAssignPlanModalData(button) {
     tokenInput.value = csrfToken;
 
     if (categoryName) {
-      document.getElementById('assignPlanCategory').value = categoryName;
-      handleCategoryChange(document.getElementById('assignPlanCategory'));
+      const categorySelect = document.getElementById('assignPlanCategory');
+      categorySelect.value = categoryName;
+      handleCategoryChange(categorySelect);
 
       setTimeout(() => {
         if (planId) {
-          document.getElementById('assignPlanSelect').value = planId;
-          handlePlanChange(document.getElementById('assignPlanSelect'));
+          const planSelect = document.getElementById('assignPlanSelect');
+          planSelect.value = planId;
 
-          const snapshotData = button.getAttribute('data-snapshot');
+          // 計画が選択できない場合（完了または削除された）のチェック
+          if (!planSelect.value || planSelect.value === '') {
+            alert(window.assignPlanI18n.alertPlanUnavailable);
+          } else {
+            handlePlanChange(planSelect);
+
+            const snapshotData = button.getAttribute('data-snapshot');
           if (snapshotData && snapshotData !== 'null' && snapshotData !== 'undefined') {
             setTimeout(() => {
               try {
@@ -163,12 +200,16 @@ function setAssignPlanModalData(button) {
                 console.error('スナップショット解析エラー:', e);
               }
             }, 150);
+            }
           }
         }
       }, 50);
     }
 
-    document.getElementById('plannedRevenue').value = plannedRevenue || 0;
+    const plannedRevenueField = document.getElementById('plannedRevenue');
+    if (plannedRevenueField) {
+      plannedRevenueField.value = plannedRevenue || 0;
+    }
   } else {
     modalTitle.textContent = window.assignPlanI18n.addTitle;
     submitBtn.value = window.assignPlanI18n.createLabel;
@@ -190,11 +231,13 @@ function setAssignPlanModalData(button) {
     }
     tokenInput.value = csrfToken;
 
-    document.getElementById('assignPlanCategory').value = '';
+    const categorySelectClear = document.getElementById('assignPlanCategory');
+    if (categorySelectClear) categorySelectClear.value = '';
     const planSelect = document.getElementById('assignPlanSelect');
     planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanAfterCategory}</option>`;
     planSelect.disabled = true;
-    document.getElementById('plannedRevenue').value = '';
+    const plannedRevenueFieldClear = document.getElementById('plannedRevenue');
+    if (plannedRevenueFieldClear) plannedRevenueFieldClear.value = '';
   }
 }
 
@@ -209,7 +252,8 @@ function handleCategoryChange(select) {
   if (!category) {
     planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanAfterCategory}</option>`;
     planSelect.disabled = true;
-    document.getElementById('plannedRevenue').value = '';
+    const plannedRevenueFieldEmpty = document.getElementById('plannedRevenue');
+    if (plannedRevenueFieldEmpty) plannedRevenueFieldEmpty.value = '';
     return;
   }
 
@@ -222,7 +266,16 @@ function handleCategoryChange(select) {
     return;
   }
 
-  plans.forEach(plan => {
+  // 完了ステータスの計画を除外
+  const availablePlans = plans.filter(plan => plan.status !== 'completed');
+
+  if (availablePlans.length === 0) {
+    planSelect.innerHTML = `<option value="">${window.assignPlanI18n.noAvailablePlans}</option>`;
+    planSelect.disabled = true;
+    return;
+  }
+
+  availablePlans.forEach(plan => {
     const option = document.createElement('option');
     option.value = plan.id;
     option.textContent = plan.name;
@@ -245,7 +298,8 @@ function handlePlanChange(select) {
   } else {
     document.getElementById('productsAdjustSection').style.display = 'none';
     document.getElementById('productsContainer').innerHTML = '';
-    document.getElementById('plannedRevenue').value = '';
+    const plannedRevenueFieldReset = document.getElementById('plannedRevenue');
+    if (plannedRevenueFieldReset) plannedRevenueFieldReset.value = '';
     window.currentPlanProducts = [];
   }
 }
@@ -275,14 +329,19 @@ function displayProducts(products) {
                value="${product.production_count}"
                min="0"
                data-price="${product.price}"
-               data-product-id="${product.product_id}"
-               onchange="updateTotalCost()">
+               data-product-id="${product.product_id}">
       </div>
       <div class="col-md-3 text-end">
         <small class="text-muted" data-subtotal="${product.product_id}">${CurrencyFormatter.format(subtotal)}</small>
       </div>
     `;
     container.appendChild(row);
+
+    // イベントリスナーをバインド
+    const input = row.querySelector('input[type="number"]');
+    if (input) {
+      input.addEventListener('change', updateTotalCost);
+    }
   });
 
   document.getElementById('productsAdjustSection').style.display = 'block';
@@ -291,9 +350,9 @@ function displayProducts(products) {
 
 function applySnapshotToProducts(snapshotProducts) {
   if (!snapshotProducts || !Array.isArray(snapshotProducts)) {
-    console.log('スナップショットデータが無効です');
     return;
   }
+
 
   snapshotProducts.forEach(sp => {
     const input = document.querySelector(`input[data-product-id="${sp.product_id}"]`);
@@ -322,7 +381,14 @@ function updateTotalCost() {
     total += subtotal;
   });
 
-  document.getElementById('totalCostDisplay').textContent = CurrencyFormatter.format(total);
-  document.getElementById('plannedRevenue').value = total;
+  const totalDisplay = document.getElementById('totalCostDisplay');
+  if (totalDisplay) {
+    totalDisplay.textContent = CurrencyFormatter.format(total);
+  }
+
+  const plannedRevenueField = document.getElementById('plannedRevenue');
+  if (plannedRevenueField) {
+    plannedRevenueField.value = total;
+  }
 }
 </script>

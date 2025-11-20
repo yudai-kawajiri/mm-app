@@ -44,12 +44,11 @@
       <% end %>
     <% end %>
 
-    <%= link_to resource,
-        data: {
-          turbo_method: :delete,
-          turbo_confirm: t('helpers.confirm.destroy', resource: resource_name)
-        },
+    <%= button_to resource,
+        method: :delete,
+        data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource_name) },
         class: 'btn btn-sm btn-danger',
+        form: { style: 'display: inline-block;' },
         title: t('helpers.link.destroy') do %>
       <i class="bi bi-trash"></i>
     <% end %>

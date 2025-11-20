@@ -22,6 +22,7 @@ class Resources::Product < ApplicationRecord
   include UserAssociatable
   include NestedAttributeTranslatable
   include Copyable
+  include HasReading
 
   # ネストされた属性の翻訳設定
   nested_attribute_translation :product_materials, 'Planning::ProductMaterial'
@@ -37,7 +38,9 @@ class Resources::Product < ApplicationRecord
   has_many :plans, through: :plan_products, class_name: 'Resources::Plan', dependent: :restrict_with_error
 
   # ネストされたフォームから product_materials を受け入れる
-  accepts_nested_attributes_for :product_materials, allow_destroy: true
+  accepts_nested_attributes_for :product_materials,
+  reject_if: :should_reject_product_material?,
+  allow_destroy: true
 
   # 画像アップロード機能
   has_one_attached :image
@@ -60,9 +63,6 @@ class Resources::Product < ApplicationRecord
 
   # セレクトボックス用：名前順
   scope :ordered, -> { order(:name) }
-
-  # 空の原材料レコードを除外
-  before_validation :reject_blank_product_materials
 
   # 重複した原材料を除外
   before_save :reject_duplicate_product_materials
@@ -90,11 +90,8 @@ class Resources::Product < ApplicationRecord
 
   private
 
-  # material_id が空の原材料を削除マーク
-  def reject_blank_product_materials
-    product_materials.each do |pm|
-      pm.mark_for_destruction if pm.material_id.blank?
-    end
+  def should_reject_product_material?(attributes)
+    attributes['material_id'].blank?
   end
 
   # 重複した原材料を除外（最初の1つを残す）

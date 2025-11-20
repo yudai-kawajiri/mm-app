@@ -55,9 +55,8 @@ class Api::V1::MaterialsController < AuthenticatedController
     Rails.logger.info "  unit_for_product: #{@material.unit_for_product.inspect}"
     Rails.logger.info "  unit_for_product_id: #{unit_id}"
 
-    # デフォルト重量を取得（小数点を整数化: 12.0 → 12）
+    # デフォルト重量を取得
     default_unit_weight = @material.default_unit_weight || 0
-    default_unit_weight = default_unit_weight.to_i if default_unit_weight == default_unit_weight.to_i
 
     Rails.logger.info "Returning: unit_id=#{unit_id}, unit_name=#{unit_name}, default_unit_weight=#{default_unit_weight}"
 

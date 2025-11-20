@@ -19,6 +19,7 @@
 import "@hotwired/turbo-rails"
 import { Application } from "@hotwired/stimulus"
 import Logger from "utils/logger"
+import CurrencyFormatter from "utils/currency_formatter"
 
 // グローバルオブジェクト名
 const GLOBAL_OBJECT = {
@@ -45,6 +46,8 @@ application.debug = DEBUG_CONFIG.ENABLED
 // デバッグ用: ブラウザコンソールからStimulusにアクセス可能
 window[GLOBAL_OBJECT.STIMULUS] = application
 Logger.log(LOG_MESSAGES.DEBUG_MODE_ENABLED)
+
+window.CurrencyFormatter = CurrencyFormatter
 
 export { application }
 

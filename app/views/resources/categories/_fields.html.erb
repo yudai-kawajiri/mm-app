@@ -1,9 +1,14 @@
 <%# カテゴリーフォームフィールド %>
-
 <div class="row">
   <div class="col-md-6">
     <%= form_group_lg(f, :name) %>
   </div>
+  <div class="col-md-6">
+    <%= form_group_lg(f, :reading) %>
+  </div>
+</div>
+
+<div class="row">
   <div class="col-md-6">
     <%= form_group_lg(f, :category_type,
         field_type: :select,

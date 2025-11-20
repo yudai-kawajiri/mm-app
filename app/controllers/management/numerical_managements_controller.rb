@@ -27,10 +27,9 @@ class Management::NumericalManagementsController < ApplicationController
       month: month
     ).calculate
 
-    # ★★★ 修正: plan_products をプリロード ★★★
     @plans_by_category = current_user.plans
-                                     .includes(:category, plan_products: :product)
-                                     .group_by { |plan| plan.category.name }
+                                      .includes(:category, plan_products: :product)
+                                      .group_by { |plan| plan.category.name }
   end
 
   def calendar
@@ -69,17 +68,39 @@ class Management::NumericalManagementsController < ApplicationController
       with_comma: [:target_amount]
     )[:target_amount]
 
+    # 予算超過チェック
+    if monthly_budget.target_amount > 0
+      # 現在の日別予算の合計を計算（更新対象を除く）
+      current_total = monthly_budget.daily_targets
+                                    .where.not(id: daily_target.id)
+                                    .sum(:target_amount)
+
+      new_total = current_total + sanitized_value.to_i
+
+      if new_total > monthly_budget.target_amount
+        redirect_to management_numerical_managements_path(year: date.year, month: date.month),
+                    alert: t('numerical_managements.messages.budget_exceeded',
+                            budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
+                            total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(new_total)}"),
+                    turbo: false
+        return
+      end
+    end
+
     if daily_target.update(target_amount: sanitized_value)
-      redirect_to management_numerical_managements_path(month: date.strftime('%Y-%m')),
+      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
                   notice: t('numerical_managements.messages.daily_target_updated'),
                   turbo: false
     else
-      redirect_to management_numerical_managements_path(month: date.strftime('%Y-%m')),
+      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
             alert: t('numerical_managements.messages.daily_target_update_failed', errors: daily_target.errors.full_messages.join(', ')),
             turbo: false
     end
   rescue Date::Error
-    redirect_to management_numerical_managements_path,
+    redirect_to management_numerical_managements_path(
+      year: Date.current.year,
+      month: Date.current.month
+    ),
             alert: t('api.errors.invalid_date'),
             turbo: false
   end
@@ -93,11 +114,20 @@ class Management::NumericalManagementsController < ApplicationController
       params.merge!(converted_params)
     end
 
+    # 予算超過チェック（一括更新前）
+    budget_check_result = check_budget_before_bulk_update(year, month, sanitized_bulk_update_params)
+    if budget_check_result[:exceeded]
+      redirect_to management_numerical_managements_path(year: year, month: month),
+                  alert: budget_check_result[:message],
+                  turbo: false
+      return
+    end
+
     service = NumericalDataBulkUpdateService.new(current_user, sanitized_bulk_update_params)
 
     if service.call
       redirect_to management_numerical_managements_path(year: year, month: month),
-                  notice: t('numerical_managements.messages.bulk_update_success', count: params[:daily_data]&.size || 0),
+                  notice: t('numerical_managements.messages.daily_details_updated'),
                   turbo: false
     else
       redirect_to management_numerical_managements_path(year: year, month: month),
@@ -190,5 +220,37 @@ class Management::NumericalManagementsController < ApplicationController
     end
 
     params_hash
+  end
+
+  # 一括更新前の予算超過チェック
+  def check_budget_before_bulk_update(year, month, params_hash)
+    selected_date = Date.new(year, month, 1)
+    monthly_budget = current_user.monthly_budgets.find_by(
+      budget_month: selected_date.beginning_of_month
+    )
+
+    # 月間予算が設定されていない場合はチェックしない
+    return { exceeded: false } unless monthly_budget&.target_amount&.positive?
+
+    # 日別予算の合計を計算
+    daily_targets_hash = params_hash[:daily_targets] || {}
+    total_daily_target = 0
+
+    daily_targets_hash.each do |key, target_attrs|
+      target_amount = target_attrs[:target_amount].to_s.gsub(',', '').to_i
+      total_daily_target += target_amount if target_amount > 0
+    end
+
+    # 予算を超えているかチェック
+    if total_daily_target > monthly_budget.target_amount
+      {
+        exceeded: true,
+        message: t('numerical_managements.messages.budget_exceeded',
+                  budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
+                  total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(total_daily_target)}")
+      }
+    else
+      { exceeded: false }
+    end
   end
 end

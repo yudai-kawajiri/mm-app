@@ -78,6 +78,9 @@
               show_copy: show_copy,
               copy_url: show_copy && copy_url_method.present? ?
               send(copy_url_method, resource) : nil,
+              show_print: show_print,
+              print_url: show_print && print_url_method.present? ?
+              send(print_url_method, resource) : nil,
               icon_mode: icon_mode
           %>
         </td>

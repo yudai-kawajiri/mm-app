@@ -20,7 +20,7 @@
 
   <%= f.hidden_field :_destroy, value: f.object.marked_for_destruction? ? 1 : 0,
                   data: { 'form--nested-form-item-target': 'destroy' } %>
-  <%= f.hidden_field :id %>
+  <%= f.hidden_field :id if f.object.persisted? %>
   <%= f.hidden_field :unit_id,
                     value: f.object.unit_id || f.object.material&.unit_for_product_id,
                     data: { 'resources--product-material--material-target': 'unitIdInput' } %>
@@ -43,11 +43,11 @@
       inputmode: 'decimal',
       placeholder: t('helpers.forms.quantity_placeholder'),
       data: {
-        controller: 'number-input',
+        controller: 'input--number-input',
         'number-input-no-comma': 'true',
         'number-input-decimal-field': 'true',
         'resources--product-material--material-target': 'quantityInput',
-        action: 'input->number-input#handleInput input->resources--product-material--material#syncQuantityToOtherTabs paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
+        action: 'input->input--number-input#handleInput input->resources--product-material--material#syncQuantityToOtherTabs paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur',
         'unique-id': unique_id
       } %>
   </td>
@@ -58,11 +58,11 @@
       inputmode: 'decimal',
       placeholder: t('products.product_material_fields.unit_weight_placeholder'),
       data: {
-        controller: 'number-input',
+        controller: 'input--number-input',
         'number-input-no-comma': 'true',
         'number-input-decimal-field': 'true',
         'resources--product-material--material-target': 'unitWeightInput',
-        action: 'input->number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
+        action: 'input->input--number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
         'unique-id': unique_id
       } %>
   </td>

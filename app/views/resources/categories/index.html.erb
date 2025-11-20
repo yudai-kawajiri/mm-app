@@ -10,6 +10,16 @@
     new_path: new_resources_category_path %>
 
 <div>
+  <%
+    name_with_reading = Proc.new do |category|
+      if category.reading.present?
+        "#{category.name} <span class='text-muted small'>（#{category.reading}）</span>".html_safe
+      else
+        category.name
+      end
+    end
+  %>
+
   <%= render 'shared/components/resource_list',
       resources: @categories,
       resource_class: Resources::Category,
@@ -23,7 +33,7 @@
       icon_mode: true,
 
       columns: [
-        { header: :name, data: :name },
+        { header: :name, data: name_with_reading },
         { header: :category_type,
           data: Proc.new { |category| translate_enum_value(category, :category_type) }
         }

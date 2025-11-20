@@ -21,6 +21,7 @@ class Resources::Unit < ApplicationRecord
   include NameSearchable
   include UserAssociatable
   include Copyable
+  include HasReading
 
   # 単位のカテゴリー定義
   enum :category, { production: 0, ordering: 1, manufacturing: 2 }

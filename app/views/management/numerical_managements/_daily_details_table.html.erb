@@ -400,24 +400,4 @@ function setActualModalData(button) {
     form.action = `/management/plan_schedules/${scheduleId}`;
   }
 }
-
-function setAssignPlanModalData(button) {
-  const date = button.getAttribute('data-date');
-  const dateDisplay = button.getAttribute('data-date-display');
-  const scheduleId = button.getAttribute('data-schedule-id');
-  const plannedRevenue = button.getAttribute('data-planned-revenue');
-
-  const form = document.getElementById('assignPlanForm');
-  document.getElementById('assignPlanDate').value = dateDisplay || '';
-  document.getElementById('scheduledDateHidden').value = date || '';
-  document.getElementById('plannedRevenue').value = plannedRevenue || '0';
-
-  if (scheduleId) {
-    form.action = `/management/plan_schedules/${scheduleId}`;
-    form.method = 'patch';
-  } else {
-    form.action = '/management/plan_schedules';
-    form.method = 'post';
-  }
-}
 </script>

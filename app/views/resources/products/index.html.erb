@@ -14,6 +14,16 @@
       new_path: new_resources_product_path,
       sortable: true %>
 
+  <%
+    name_with_reading = Proc.new do |product|
+      if product.reading.present?
+        "#{product.name} <span class='text-muted small'>（#{product.reading}）</span>".html_safe
+      else
+        product.name
+      end
+    end
+  %>
+
   <%= render 'shared/components/resource_list',
       resources: @products,
       resource_class: Resources::Product,
@@ -40,7 +50,7 @@
             end
           }
         },
-        { header: :name, data: :name },
+        { header: :name, data: name_with_reading },
         { header: :category_id,
           data: Proc.new { |product| product.category&.name }
         },

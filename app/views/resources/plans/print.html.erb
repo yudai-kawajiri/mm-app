@@ -5,10 +5,10 @@
   <h2><%= t('plans.print.page1_title') %></h2>
   <div class="print-header-info">
     <strong><%= t('plans.print.plan_name') %>:</strong> <%= @plan.name %> |
-    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date ? l(@scheduled_date, format: :long) : t('helpers.no_setting') %> |
-    <strong><%= t('plans.print.budget') %>:</strong> ¥<%= number_with_delimiter(@budget.to_i) %> |
+    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date ? l(@scheduled_date, format: :long) : '-' %> |
+    <strong><%= t('plans.print.budget') %>:</strong> <%= @budget ? "¥#{number_with_delimiter(@budget.to_i)}" : '-' %> |
     <strong><%= t('plans.print.planned_total') %>:</strong> ¥<%= number_with_delimiter(@planned_revenue.to_i) %> |
-    <strong><%= t('plans.print.achievement_rate') %>:</strong> <%= @achievement_rate %>%
+    <strong><%= t('plans.print.achievement_rate') %>:</strong> <%= @achievement_rate ? "#{@achievement_rate}%" : '-' %>
   </div>
 </div>
 
@@ -73,7 +73,7 @@
   <h2><%= t('plans.print.page2_title') %></h2>
   <div class="print-header-info">
     <strong><%= t('plans.print.plan_name') %>:</strong> <%= @plan.name %> |
-    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date ? l(@scheduled_date, format: :long) : t('helpers.no_setting') %>
+    <strong><%= t('plans.print.scheduled_date') %>:</strong> <%= @scheduled_date ? l(@scheduled_date, format: :long) : '-' %>
   </div>
 </div>
 

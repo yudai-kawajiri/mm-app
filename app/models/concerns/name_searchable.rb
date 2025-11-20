@@ -20,7 +20,7 @@ module NameSearchable
     # @return [ActiveRecord::Relation] 検索結果
     scope :search_by_name, lambda { |name|
       if name.present?
-        where("name ILIKE ?", "%#{sanitize_sql_like(name)}%")
+        where("#{table_name}.name ILIKE ?", "%#{sanitize_sql_like(name)}%")
       else
         all
       end

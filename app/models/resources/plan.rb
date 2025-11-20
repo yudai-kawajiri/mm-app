@@ -21,6 +21,7 @@ class Resources::Plan < ApplicationRecord
   include UserAssociatable
   include NestedAttributeTranslatable
   include Copyable
+  include HasReading
 
   nested_attribute_translation :plan_products, 'Planning::PlanProduct'
 

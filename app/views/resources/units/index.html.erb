@@ -10,6 +10,16 @@
     new_path: new_resources_unit_path %>
 
 <div>
+  <%
+    name_with_reading = Proc.new do |unit|
+      if unit.reading.present?
+        "#{unit.name} <span class='text-muted small'>（#{unit.reading}）</span>".html_safe
+      else
+        unit.name
+      end
+    end
+  %>
+
   <%= render 'shared/components/resource_list',
       resources: @units,
       resource_class: Resources::Unit,
@@ -23,7 +33,7 @@
       icon_mode: true,
 
       columns: [
-        { header: :name, data: :name },
+        { header: :name, data: name_with_reading },
         { header: :category,
           data: Proc.new { |unit| translate_enum_value(unit, :category) }
         }

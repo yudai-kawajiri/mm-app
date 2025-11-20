@@ -4,6 +4,12 @@
     <%= form_group_lg(f, :name) %>
   </div>
   <div class="col-md-6">
+    <%= form_group_lg(f, :reading) %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
     <%= form_group_lg(f, :category,
         field_type: :select,
         choices: Resources::Unit.categories.keys.map { |k| [I18n.t("activerecord.enums.resources/unit.category.#{k}"), k] },

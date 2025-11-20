@@ -7,7 +7,6 @@ ja:
       title: "単位一覧"
       sort_placeholder: "並び順を選択"
       sort_options:
-        display_order: "印刷順"
         name: "名前順"
         category: "カテゴリ順"
         created_at: "登録順"
@@ -57,9 +56,9 @@ ja:
     edit:
       title: "%{name} - 原材料編集"
     form:
-      default_unit_weight_help: "商品1個あたりの使用量"
-      unit_for_product_help: "製造時の計量単位"
-      production_unit_help: "原材料の管理単位"
+      default_unit_weight_help: "（商品1個あたりの使用量）"
+      unit_for_product_help: "（製造時の計量単位）"
+      production_unit_help: "（原材料の管理単位）"
     attributes:
       default_order_quantity: "基本発注量/発注入数"
       measurement_type: "計測方法"
@@ -80,7 +79,7 @@ ja:
   # 発注グループ
   material_order_groups:
     new:
-      title: "発注グループ新規登録"
+      title: "発注グループ登録"
     index:
       title: "発注グループ管理"
       unused: "未使用"
@@ -118,6 +117,7 @@ ja:
       sort_options:
         name: "名前順"
         category: "カテゴリ順"
+        display_order: "印刷順"
         created_at: "登録順"
     show:
       title: "%{name} - 商品詳細"
@@ -135,7 +135,7 @@ ja:
       unit_weight: "商品単位分量"
       unit_prompt: "単位"
       delete_button: "削除"
-      no_materials_set: "原材料はまだ設定されていません"
+      no_materials_set: "原材料が設定されていません"
     category_selector:
       prompt: "カテゴリを選択"
       add_button: "カテゴリタブを追加"
@@ -169,7 +169,10 @@ ja:
     grand_total: "総合計"
     tab_all: "全て"
     tab_total: "カテゴリ合計"
+    actions:
+      preview: "印刷プレビュー"
     messages:
       copy_success: "計画「%{original_name}」を「%{new_name}」としてコピーしました"
       copy_failed: "計画のコピーに失敗しました: %{error}"
       copy_failed_duplicate: "計画のコピーに失敗しました: 名前が重複しています"
+      no_products_set: "商品が設定されていません"

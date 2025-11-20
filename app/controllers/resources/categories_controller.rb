@@ -16,8 +16,8 @@ class Resources::CategoriesController < AuthenticatedController
 
   # ソートオプションの定義
   define_sort_options(
-    name: -> { order(:name) },
-    category_type: -> { order(:category_type, :name) },
+    name: -> { order(:reading) },
+    category_type: -> { order(:category_type, :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
@@ -60,7 +60,7 @@ class Resources::CategoriesController < AuthenticatedController
   # @return [void]
   def create
     @category = current_user.categories.build(category_params)
-    respond_to_save(@category, success_path: resources_categories_path)
+    respond_to_save(@category)
   end
 
   # カテゴリー詳細
@@ -78,7 +78,7 @@ class Resources::CategoriesController < AuthenticatedController
   # @return [void]
   def update
     @category.assign_attributes(category_params)
-    respond_to_save(@category, success_path: resources_categories_path)
+    respond_to_save(@category)
   end
 
   # カテゴリーを削除
@@ -108,6 +108,6 @@ class Resources::CategoriesController < AuthenticatedController
   #
   # @return [ActionController::Parameters]
   def category_params
-    params.require(:resources_category).permit(:name, :category_type, :description)
+    params.require(:resources_category).permit(:name, :reading, :category_type, :description)
   end
 end

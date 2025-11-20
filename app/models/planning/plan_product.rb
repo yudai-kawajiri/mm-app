@@ -16,8 +16,11 @@ class Planning::PlanProduct < ApplicationRecord
   belongs_to :product, class_name: 'Resources::Product'
 
   # バリデーション
-  validates :production_count, presence: true, numericality: { greater_than: 0 }
+  validates :production_count, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :product_id, uniqueness: { scope: :plan_id }
+
+  # 保存前に数値フィールドを正規化（全角→半角変換）
+  before_save :normalize_numeric_fields
 
   # この商品で使う原材料の必要量を計算
   #
@@ -37,5 +40,28 @@ class Planning::PlanProduct < ApplicationRecord
         unit_name: pm.unit.name
       }
     end
+  end
+
+  private
+
+  # 数値フィールドを正規化（全角→半角、カンマ・スペース削除）
+  def normalize_numeric_fields
+    self.production_count = normalize_number(production_count) if production_count.present?
+  end
+
+  # 数値を正規化して数値型に変換
+  #
+  # @param value [String, Numeric] 変換する値
+  # @return [Numeric] 正規化された数値
+  def normalize_number(value)
+    return value.to_i if value.is_a?(Numeric)  # ← .to_i に変更
+
+    # 全角→半角、カンマ削除、スペース削除、小数点削除
+    cleaned = value.to_s
+      .tr('０-９', '0-9')
+      .tr('ー−', '-')
+      .gsub(/[,\s　．。.]/, '')  # ← 小数点も削除
+
+    cleaned.to_i  # ← 最後も .to_i
   end
 end

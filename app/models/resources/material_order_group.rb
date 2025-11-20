@@ -16,6 +16,7 @@ class Resources::MaterialOrderGroup < ApplicationRecord
   include NameSearchable
   include UserAssociatable
   include Copyable
+  include HasReading
 
   # 関連付け
   has_many :materials, class_name: 'Resources::Material', foreign_key: :order_group_id, dependent: :restrict_with_error

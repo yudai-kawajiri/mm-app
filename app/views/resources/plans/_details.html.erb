@@ -1,4 +1,3 @@
-<%# 製造計画詳細表示 %>
 <% plan = local_assigns[:plan] || local_assigns[:resource] %>
 <% plan_class = plan.class %>
 <% no_setting = t('helpers.no_setting') %>
@@ -15,15 +14,22 @@
 
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
-      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:category_id) %></label>
+      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:reading) %></label>
       <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-        <%= plan.category&.name || no_setting %>
+        <%= plan.reading %>
       </div>
     </div>
   </div>
-</div>
 
-<div class="row">
+  <div class="col-md-6">
+    <div class="mb-3 border-bottom py-3">
+      <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:category_id) %></label>
+      <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+        <%= plan.category.name %>
+      </div>
+    </div>
+  </div>
+
   <div class="col-md-6">
     <div class="mb-3 border-bottom py-3">
       <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= plan_class.human_attribute_name(:status) %></label>

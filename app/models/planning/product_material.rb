@@ -23,6 +23,9 @@ class Planning::ProductMaterial < ApplicationRecord
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :unit_weight, presence: true, numericality: { greater_than: 0 }
 
+  # 保存前に数値フィールドを正規化（全角→半角変換）
+  before_save :normalize_numeric_fields
+
   # この商品材料の総重量を計算
   #
   # @return [Float] 総重量
@@ -89,5 +92,31 @@ class Planning::ProductMaterial < ApplicationRecord
     else
       I18n.t('common.calculation_unavailable')
     end
+  end
+
+  private
+
+  # 数値フィールドを正規化（全角→半角、カンマ・スペース削除）
+  def normalize_numeric_fields
+    self.quantity = normalize_number(quantity) if quantity.present?
+    self.unit_weight = normalize_number(unit_weight) if unit_weight.present?
+  end
+
+  # 数値を正規化して数値型に変換
+  #
+  # @param value [String, Numeric] 変換する値
+  # @return [Numeric] 正規化された数値
+  def normalize_number(value)
+    return value if value.is_a?(Numeric)
+
+    # 全角→半角、カンマ削除、スペース削除
+    cleaned = value.to_s
+      .tr('０-９', '0-9')
+      .tr('ー−', '-')
+      .tr('。．', '.')
+      .gsub(/[,\s　]/, '')
+
+    # 小数点があればFloatに、なければIntegerに変換
+    cleaned.include?('.') ? cleaned.to_f : cleaned.to_i
   end
 end

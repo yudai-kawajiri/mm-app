@@ -16,8 +16,8 @@ class Resources::UnitsController < AuthenticatedController
 
   # ソートオプションの定義
   define_sort_options(
-    name: -> { order(:name) },
-    category: -> { order(:category, :name) },
+    name: -> { order(:reading) },
+    category: -> { order(:category, :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
@@ -60,7 +60,7 @@ class Resources::UnitsController < AuthenticatedController
   # @return [void]
   def create
     @unit = current_user.units.build(unit_params)
-    respond_to_save(@unit, success_path: resources_units_path)
+    respond_to_save(@unit)
   end
 
   # 単位詳細
@@ -78,7 +78,7 @@ class Resources::UnitsController < AuthenticatedController
   # @return [void]
   def update
     @unit.assign_attributes(unit_params)
-    respond_to_save(@unit, success_path: resources_units_path)
+    respond_to_save(@unit)
   end
 
   # 単位を削除
@@ -107,6 +107,6 @@ class Resources::UnitsController < AuthenticatedController
   #
   # @return [ActionController::Parameters]
   def unit_params
-    params.require(:resources_unit).permit(:name, :category, :description)
+    params.require(:resources_unit).permit(:name, :reading, :category, :description)
   end
 end

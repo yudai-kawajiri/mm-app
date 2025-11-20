@@ -14,6 +14,16 @@
       new_path: new_resources_material_path,
       sortable: true %>
 
+  <%
+    name_with_reading = Proc.new do |material|
+      if material.reading.present?
+        "#{material.name} <span class='text-muted small'>（#{material.reading}）</span>".html_safe
+      else
+        material.name
+      end
+    end
+  %>
+
   <%= render 'shared/components/resource_list',
       resources: @materials,
       resource_class: Resources::Material,
@@ -21,7 +31,7 @@
       search_categories: @material_categories,
       sort_options: [
         [t('materials.index.sort_options.display_order'), 'display_order'],
-        [t('materials.index.sort_options.name'), 'name'],
+        [t('materials.index.sort_options.name'), 'reading'],
         [t('materials.index.sort_options.category'), 'category'],
         [t('materials.index.sort_options.order_group'), 'order_group'],
         [t('materials.index.sort_options.created_at'), 'created_at']
@@ -31,7 +41,7 @@
       sortable: true,
 
       columns: [
-        { header: :name, data: :name },
+        { header: :name, data: name_with_reading },
         { header: :category,
           data: Proc.new { |material| material.category&.name || '-' }
         },

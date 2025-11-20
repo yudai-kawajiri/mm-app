@@ -17,8 +17,8 @@ class Resources::ProductsController < AuthenticatedController
   # ソートオプションの定義
   define_sort_options(
     display_order: -> { ordered },
-    name: -> { order(:name) },
-    category: -> { joins(:category).order('categories.name', :name) },
+    name: -> { order(:reading) },
+    category: -> { joins(:category).order('categories.reading', :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
@@ -57,7 +57,7 @@ class Resources::ProductsController < AuthenticatedController
     @product_categories = current_user.categories.for_products.ordered
     @material_categories = current_user.categories.for_materials
 
-    respond_to_save(@product, success_path: @product)
+    respond_to_save(@product)
   end
 
   # 商品詳細
@@ -83,7 +83,7 @@ class Resources::ProductsController < AuthenticatedController
     @product_categories = current_user.categories.for_products.ordered
     @material_categories = current_user.categories.for_materials
 
-    respond_to_save(@product, success_path: @product)
+    respond_to_save(@product)
   end
 
   # 商品を削除
@@ -135,19 +135,21 @@ class Resources::ProductsController < AuthenticatedController
   def product_params
     params.require(:resources_product).permit(
       :name,
+      :reading,
       :category_id,
       :item_number,
       :price,
       :status,
       :image,
       :note,
-      :description,
-      product_materials_attributes: [
-        :id,
-        :material_id,
-        :quantity,
-        :_destroy
-      ]
-    )
+      :description
+    ).tap do |whitelisted|
+      # ネストされた属性（ハッシュ形式）を手動で処理
+      # 文字列キー（"0", "new_1763555897631"など）を許可するため
+      materials = params[:resources_product][:product_materials_attributes]
+      if materials.present?
+        whitelisted[:product_materials_attributes] = materials.permit!.to_h
+      end
+    end
   end
 end

@@ -10,6 +10,16 @@
     new_path: new_resources_material_order_group_path %>
 
 <div>
+  <%
+    name_with_reading = Proc.new do |group|
+      if group.reading.present?
+        "#{group.name} <span class='text-muted small'>（#{group.reading}）</span>".html_safe
+      else
+        group.name
+      end
+    end
+  %>
+
   <%= render 'shared/components/resource_list',
       resources: @material_order_groups,
       resource_class: Resources::MaterialOrderGroup,
@@ -22,7 +32,7 @@
       icon_mode: true,
 
       columns: [
-        { header: :name, data: :name },
+        { header: :name, data: name_with_reading },
         {
           header: :materials_count,
           data: Proc.new { |group|
