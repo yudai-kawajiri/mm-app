@@ -133,6 +133,7 @@ ja:
         info: "月間予算を入力してください"
       budget_setting:
         title: "予算設定"
+        info: "この月の予算金額を入力してください"
       daily_target_edit:
         title: "日別予算編集"
         info: "この日の予算金額を入力してください"
@@ -142,6 +143,9 @@ ja:
       assign_plan:
         title: "計画登録"
         edit_title: "計画編集"
+        planned_revenue_help: "計画を選択後に自動で入力されます"
+        info: "カテゴリと計画を選択してください。商品数量は必要に応じて調整できます"
+        alert_plan_unavailable: "この計画は現在選択できません。計画が完了または削除された可能性があります。"  # ← 追加
         planned_revenue_help: "計画を選択後に自動で入力されます"
       labels:
         target_month: "対象月"

@@ -17,6 +17,7 @@ import NumberInputController from "controllers/input/number_input_controller"
 // Management Controllers
 import OrderGroupController from "controllers/management/order_group_controller"
 import PlanAssignmentController from "controllers/management/plan_assignment_controller"
+import AssignPlanInfoController from "controllers/management/assign_plan_info_controller"
 
 // Resources - Plan Product Controllers
 import ResourcesPlanProductRowController from "controllers/resources/plan-product/row_controller"
@@ -50,6 +51,7 @@ const CONTROLLER_NAMES = {
   // Management
   ORDER_GROUP: 'order-group',
   PLAN_ASSIGNMENT: 'plan-assignment',
+  ASSIGN_PLAN_INFO: 'management--assign-plan-info',
 
   // Resources - Plan Product
   RESOURCES_PLAN_PRODUCT_ROW: 'resources--plan-product--row',
@@ -82,6 +84,7 @@ application.register(CONTROLLER_NAMES.NUMBER_INPUT, NumberInputController)
 // Management Controllers
 application.register(CONTROLLER_NAMES.ORDER_GROUP, OrderGroupController)
 application.register(CONTROLLER_NAMES.PLAN_ASSIGNMENT, PlanAssignmentController)
+application.register(CONTROLLER_NAMES.ASSIGN_PLAN_INFO, AssignPlanInfoController)
 
 // Resources - Plan Product Controllers
 application.register(CONTROLLER_NAMES.RESOURCES_PLAN_PRODUCT_ROW, ResourcesPlanProductRowController)
