@@ -70,11 +70,11 @@ class Management::NumericalManagementsController < ApplicationController
     )[:target_amount]
 
     if daily_target.update(target_amount: sanitized_value)
-      redirect_to management_numerical_managements_path(month: date.strftime('%Y-%m')),
+      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
                   notice: t('numerical_managements.messages.daily_target_updated'),
                   turbo: false
     else
-      redirect_to management_numerical_managements_path(month: date.strftime('%Y-%m')),
+      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
             alert: t('numerical_managements.messages.daily_target_update_failed', errors: daily_target.errors.full_messages.join(', ')),
             turbo: false
     end

@@ -32,7 +32,7 @@ class Management::MonthlyBudgetsController < ApplicationController
       redirect_to management_numerical_managements_path(year: budget_month.year, month: budget_month.month),
             notice: t("numerical_managements.messages.budget_created")
     else
-      redirect_to management_numerical_managements_path(month: budget_month.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(year: budget_month.year, month: budget_month.month),
                   alert: t("numerical_managements.messages.budget_create_failed")
     end
   end
@@ -45,7 +45,7 @@ class Management::MonthlyBudgetsController < ApplicationController
       redirect_to management_numerical_managements_path(year: @monthly_budget.budget_month.year, month: @monthly_budget.budget_month.month),
             notice: t("numerical_managements.messages.budget_updated")
     else
-      redirect_to management_numerical_managements_path(month: @monthly_budget.budget_month.strftime("%Y-%m")),
+      redirect_to management_numerical_managements_path(year: @monthly_budget.budget_month.year, month: @monthly_budget.budget_month.month),
                   alert: t("numerical_managements.messages.budget_update_failed")
     end
   end
@@ -77,7 +77,7 @@ class Management::MonthlyBudgetsController < ApplicationController
     end
   rescue ActiveRecord::RecordNotDestroyed, ActiveRecord::RecordInvalid => e
     Rails.logger.error "Monthly budget deletion failed: #{e.message}"
-    redirect_to management_numerical_managements_path(month: budget_month.strftime("%Y-%m")),
+    redirect_to management_numerical_managements_path(year: budget_month.year, month: budget_month.month),
                 alert: t("numerical_managements.messages.budget_delete_failed")
   end
   private

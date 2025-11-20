@@ -62,7 +62,12 @@ ja:
         unit_fetch_failed: "単位データの取得に失敗しました"
 
   # 計画スケジュール（個別メッセージは不要、flash_messagesを使用）
-  plan_schedules: {}
+  plan_schedules:
+    messages:
+      plan_assigned: "計画を登録しました"
+      plan_updated: "計画を更新しました"
+      plan_schedule_save_failed: "計画の保存に失敗しました: %{errors}"
+      plan_schedule_update_failed: "計画の更新に失敗しました: %{errors}"
 
   # 数値管理（売上予算管理）
   numerical_managements:
