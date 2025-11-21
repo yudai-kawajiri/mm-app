@@ -22,9 +22,22 @@ test:
   ctype: C.UTF-8
 
 production:
-  <<: *default
-  # DATABASE_URLが設定されている場合は優先
-  url: <%= ENV['DATABASE_URL'] %>
-  database: <%= ENV.fetch("DATABASE_NAME", "mm_app_production") %>
-  collation: C.UTF-8
-  ctype: C.UTF-8
+  primary:
+    <<: *default
+    # DATABASE_URLが設定されている場合は優先
+    url: <%= ENV['DATABASE_URL'] %>
+    database: <%= ENV.fetch("DATABASE_NAME", "mm_app_production") %>
+    collation: C.UTF-8
+    ctype: C.UTF-8
+  cache:
+    <<: *default
+    database: mm_app_production_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    database: mm_app_production_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: mm_app_production_cable
+    migrations_paths: db/cable_migrate

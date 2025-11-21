@@ -7,9 +7,14 @@
 # Ignore bundler config.
 /.bundle
 
-# Ignore all environment files.
+# Ignore all environment files (機密情報を含むため)
 /.env
-\n# .env.exampleはコミット対象に含める
+/.env.local
+/.env.*.local
+/.env.production
+/.env.development
+
+# .env.exampleはコミット対象に含める
 !/.env.example
 
 # Ignore all logfiles and tempfiles.
@@ -34,7 +39,9 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+/config/credentials/*.key
 
+# Ignore assets builds
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
@@ -42,4 +49,6 @@
 
 # SimpleCovのカバレッジレポート
 /coverage/
+
+# バックアップファイル
 *.backup

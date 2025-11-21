@@ -11,10 +11,10 @@ Rails.application.configure do
   config.consider_all_requests_local = false
 
   # SSL終端リバースプロキシを前提
-  config.assume_ssl = true
+  config.assume_ssl = false
 
   # HTTPSを強制（HSTS、セキュアCookie有効化）
-  config.force_ssl = ENV.fetch("RAILS_FORCE_SSL", "true") == "true"
+  config.force_ssl = false
 
   # DNSリバインディング攻撃対策
   allowed_hosts = ENV.fetch("ALLOWED_HOSTS", "").split(",").map(&:strip)
