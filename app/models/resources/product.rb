@@ -64,6 +64,9 @@ class Resources::Product < ApplicationRecord
   # セレクトボックス用：名前順
   scope :ordered, -> { order(:name) }
 
+  # 印刷順でソート（display_order順、nullは最後）
+  scope :by_display_order, -> { order(Arel.sql('display_order IS NULL, display_order ASC, name ASC')) }
+
   # 重複した原材料を除外
   before_save :reject_duplicate_product_materials
 
@@ -80,7 +83,7 @@ class Resources::Product < ApplicationRecord
   # Copyable設定
   copyable_config(
     uniqueness_scope: :category_id,
-    uniqueness_check_attributes: [:name],
+    uniqueness_check_attributes: [:name, :reading],
     associations_to_copy: [:product_materials],
     additional_attributes: {
       item_number: :generate_unique_item_number,

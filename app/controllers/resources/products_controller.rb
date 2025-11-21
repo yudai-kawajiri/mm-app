@@ -16,7 +16,7 @@ class Resources::ProductsController < AuthenticatedController
 
   # ソートオプションの定義
   define_sort_options(
-    display_order: -> { ordered },
+    display_order: -> { by_display_order },
     name: -> { order(:reading) },
     category: -> { joins(:category).order('categories.reading', :reading) },
     created_at: -> { order(created_at: :desc) }
@@ -98,7 +98,7 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def copy
     copied = @product.create_copy(user: current_user)
-    redirect_to edit_resources_product_path(copied), notice: t('flash_messages.copy.success',
+      redirect_to resources_products_path, notice: t('flash_messages.copy.success',
                                                                 resource: @product.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Product copy failed: #{e.record.errors.full_messages.join(', ')}"
