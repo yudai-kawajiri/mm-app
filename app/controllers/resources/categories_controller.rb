@@ -41,7 +41,7 @@ class Resources::CategoriesController < AuthenticatedController
 
     # 名前検索
     if params[:q].present?
-      @categories = @categories.where("name LIKE ?", "%#{params[:q]}%")
+      @categories = @categories.search_by_name(params[:q])
     end
 
     # ページネーション
