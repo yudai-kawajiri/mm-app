@@ -94,6 +94,7 @@ Rails.application.routes.draw do
       end
 
       member do
+        patch :update_status
         delete :purge_image
         post :copy
       end

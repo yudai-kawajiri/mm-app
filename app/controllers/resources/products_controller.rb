@@ -23,7 +23,7 @@ class Resources::ProductsController < AuthenticatedController
   )
 
   # リソース検索（show, edit, update, destroy, copy）
-  find_resource :product, only: [:show, :edit, :update, :destroy, :copy, :purge_image]
+  find_resource :product, only: [:show, :edit, :update, :destroy, :copy, :purge_image, :update_status]
 
   # 商品一覧
   #
@@ -104,6 +104,22 @@ class Resources::ProductsController < AuthenticatedController
     Rails.logger.error "Product copy failed: #{e.record.errors.full_messages.join(', ')}"
     redirect_to resources_products_path, alert: t('flash_messages.copy.failure',
                                                   resource: @product.class.model_name.human)
+  end
+
+  # 商品のステータスを更新
+  #
+  # @return [void]
+  def update_status
+    if @product.update(status: params[:status])
+      redirect_to resources_products_path,
+                  notice: t('products.messages.status_updated',
+                            name: @product.name,
+                            status: t("activerecord.enums.resources/product.status.#{@product.status}"))
+    else
+      redirect_to resources_products_path,
+                  alert: t('flash_messages.update.failure',
+                          resource: @product.class.model_name.human)
+    end
   end
 
   # 並び替え順序を保存
