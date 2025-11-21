@@ -497,7 +497,7 @@ module ApplicationHelper
 
       # エラーメッセージ
       error_html = if form.object.errors[attribute].any?
-        content_tag(:div, form.object.errors[attribute].first, class: "invalid-feedback d-block")
+        content_tag(:div, form.object.errors[attribute].first, class: "invalid-feedback")
       else
         "".html_safe
       end
