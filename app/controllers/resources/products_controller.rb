@@ -23,7 +23,7 @@ class Resources::ProductsController < AuthenticatedController
   )
 
   # リソース検索（show, edit, update, destroy, copy）
-  find_resource :product, only: [:show, :edit, :update, :destroy, :copy]
+  find_resource :product, only: [:show, :edit, :update, :destroy, :copy, :purge_image]
 
   # 商品一覧
   #

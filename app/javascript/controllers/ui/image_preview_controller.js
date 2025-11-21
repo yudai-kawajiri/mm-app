@@ -157,7 +157,7 @@ export default class extends Controller {
           this.currentImageContainerTarget.style.display = DISPLAY_STYLE.NONE
         }
         if (this.hasCancelButtonTarget) {
-          this.cancelButtonTarget.style.display = DISPLAY_STYLE.INLINE_BLOCK
+          this.cancelButtonTarget.style.display = DISPLAY_STYLE.BLOCK
         }
       }
       reader.readAsDataURL(file)
