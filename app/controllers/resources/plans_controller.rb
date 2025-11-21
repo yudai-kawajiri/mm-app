@@ -219,17 +219,21 @@ class Resources::PlansController < AuthenticatedController
       # 文字列キー（"0", "new_1763555897631"など）を許可するため
       products = params[:resources_plan][:plan_products_attributes]
       if products.present?
-        # 全て許可した後、production_count を整数型に変換
-        whitelisted[:plan_products_attributes] = products.permit!.to_h.transform_values do |attrs|
-          # production_countを整数型に変換
+        # 空の商品を除外（product_idまたはproduction_countが空の場合）
+        filtered_products = products.permit!.to_h.reject do |_key, attrs|
+          # _destroyフラグが立っている場合は除外しない（削除処理として必要）
+          next false if attrs['_destroy'].to_s == '1' || attrs['_destroy'].to_s == 'true'
+
+          # product_idとproduction_countの両方が空の場合は除外
+          attrs['product_id'].blank? && attrs['production_count'].blank?
+        end
+
+        # production_countを整数型に変換
+        whitelisted[:plan_products_attributes] = filtered_products.transform_values do |attrs|
           if attrs['production_count'].present?
             attrs['production_count'] = normalize_number_param(attrs['production_count'])
           end
-
-          # ⭐ 重要：idと_destroyを明示的に保持
-          # idがないと既存レコードの更新ができない
-          # _destroyがないと削除フラグが無視される
-          attrs.slice('id', 'product_id', 'production_count', '_destroy')
+          attrs
         end
       end
     end
