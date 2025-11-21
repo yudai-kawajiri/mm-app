@@ -149,29 +149,13 @@
 
       <%# 4段目：説明（全幅） %>
       <div class="col-12">
-        <div class="mb-0">
-          <%= form_label_lg(f, :description) %>
-          <%= f.text_area :description,
-              class: "form-control",
-              rows: 4,
-              maxlength: 1000,
-              data: {
-                controller: "character-counter",
-                character_counter_target: "input",
-                character_counter_max_value: 1000,
-                character_counter_warning_value: 20,
-                character_counter_danger_value: 10,
-                action: "input->character-counter#updateCount"
-              } %>
-          <div class="form-text d-flex justify-content-between align-items-center mt-1">
-            <span data-character-counter-target="counter" class="badge bg-secondary"></span>
-          </div>
-          <% if f.object.errors[:description].any? %>
-            <div class="invalid-feedback d-block">
-              <%= f.object.errors[:description].first %>
-            </div>
-          <% end %>
-        </div>
+        <%= form_group_lg(f, :description,
+            field_type: :text_area,
+            wrapper_class: 'mb-0',
+            rows: 4,
+            character_counter: true,
+            max_length: 1000
+        ) %>
       </div>
     </div>
   </div>
