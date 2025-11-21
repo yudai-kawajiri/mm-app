@@ -149,7 +149,7 @@ class Resources::ProductsController < AuthenticatedController
       materials = params[:resources_product][:product_materials_attributes]
       if materials.present?
         # 数量が空または0のレコードを除外
-        filtered_materials = materials.to_h.reject do |_key, attrs|
+        filtered_materials = materials.permit!.to_h.reject do |_key, attrs|
           attrs[:quantity].blank? || attrs[:quantity].to_f.zero?
         end
         whitelisted[:product_materials_attributes] = filtered_materials
