@@ -148,7 +148,11 @@ class Resources::ProductsController < AuthenticatedController
       # 文字列キー（"0", "new_1763555897631"など）を許可するため
       materials = params[:resources_product][:product_materials_attributes]
       if materials.present?
-        whitelisted[:product_materials_attributes] = materials.permit!.to_h
+        # 数量が空または0のレコードを除外
+        filtered_materials = materials.to_h.reject do |_key, attrs|
+          attrs[:quantity].blank? || attrs[:quantity].to_f.zero?
+        end
+        whitelisted[:product_materials_attributes] = filtered_materials
       end
     end
   end
