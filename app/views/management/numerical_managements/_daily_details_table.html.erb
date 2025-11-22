@@ -1,4 +1,4 @@
-<%# 日別明細テーブル（一括編集機能付き） %>
+<%# 日別明細テーブル(一括編集機能付き) %>
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
     <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
@@ -149,7 +149,7 @@
                               data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
                               data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
                               data-plan-schedule-id="<%= first_schedule.id %>"
-                              data-actual-revenue="<%= first_schedule.actual_revenue || 0 %>"
+                              data-actual-revenue="<%= (first_schedule.actual_revenue || 0).to_i %>"
                               onclick="setActualModalData(this)"
                               title="<%= t('numerical_managements.actions.input_actual') %>">
                         <i class="bi bi-currency-yen"></i>
@@ -265,8 +265,9 @@ function setupNumericInput(input) {
     e.target.value = rawValue;
 
     setTimeout(function() {
-      e.target.select();
-    }, 10);
+      const len = e.target.value.length;
+      e.target.setSelectionRange(len, len);
+    }, 0);
   });
 
   input.addEventListener('input', function(e) {
@@ -290,7 +291,10 @@ function setupNumericInput(input) {
   });
 
   function processInput(input) {
-    let value = input.value;
+    const originalValue = input.value;
+    const originalCursorPos = input.selectionStart;
+
+    let value = originalValue;
 
     value = value.replace(/[０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
@@ -303,10 +307,25 @@ function setupNumericInput(input) {
     }
 
     if (input.value !== value) {
-      const cursorPos = input.selectionStart;
+      let digitsBeforeCursor = 0;
+      for (let i = 0; i < originalCursorPos && i < originalValue.length; i++) {
+        if (/\d/.test(originalValue[i])) {
+          digitsBeforeCursor++;
+        }
+      }
+
       input.value = value;
 
-      const newPos = Math.min(cursorPos, value.length);
+      let newPos = 0;
+      let digitCount = 0;
+      for (let i = 0; i < value.length; i++) {
+        if (digitCount >= digitsBeforeCursor) {
+          break;
+        }
+        newPos++;
+        digitCount++;
+      }
+
       input.setSelectionRange(newPos, newPos);
     }
 
@@ -416,19 +435,19 @@ document.getElementById('bulkEditForm').addEventListener('submit', function(e) {
 function setEditModalData(button) {
   const date = button.getAttribute('data-date');
   const dateDisplay = button.getAttribute('data-date-display');
-  const targetId = button.getAttribute('data-target-id');
   const targetAmount = button.getAttribute('data-target-amount');
 
-  const form = document.getElementById('editDailyTargetForm');
-  document.getElementById('editTargetDate').value = dateDisplay || '';
-  document.getElementById('editTargetDateHidden').value = date || '';
-  document.getElementById('editTargetAmount').value = targetAmount || '0';
+  const numValue = parseInt(targetAmount, 10) || 0;
 
-  if (targetId) {
-    form.action = '/management/daily_targets/' + targetId;
-  } else {
-    form.action = '/management/daily_targets';
-    form.method = 'post';
+  document.getElementById('editTargetDate').value = dateDisplay || '';
+
+  const input = document.getElementById('editTargetAmount');
+  input.dataset.rawValue = numValue.toString();
+  input.value = numValue.toLocaleString();
+
+  const form = document.getElementById('editTargetForm');
+  if (form && date) {
+    form.action = '/management/numerical_managements/' + date + '/update_daily_target';
   }
 }
 
@@ -438,13 +457,42 @@ function setActualModalData(button) {
   const scheduleId = button.getAttribute('data-plan-schedule-id');
   const actualRevenue = button.getAttribute('data-actual-revenue');
 
-  const form = document.getElementById('editActualRevenueForm');
-  document.getElementById('editActualDate').value = dateDisplay || '';
-  document.getElementById('editActualDateHidden').value = date || '';
-  document.getElementById('editActualRevenue').value = actualRevenue || '0';
+  document.getElementById('actualRevenueDate').value = dateDisplay || '';
 
-  if (scheduleId) {
-    form.action = '/management/plan_schedules/' + scheduleId;
+  const numValue = parseInt(actualRevenue, 10) || 0;
+  const input = document.getElementById('actualRevenueInput');
+  input.dataset.rawValue = numValue.toString();
+  input.value = numValue.toLocaleString();
+
+  const form = document.getElementById('actualRevenueForm');
+  if (form && scheduleId) {
+    form.action = '/management/plan_schedules/' + scheduleId + '/actual_revenue';
   }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  // 日別予算編集モーダル
+  const editTargetInput = document.getElementById('editTargetAmount');
+  if (editTargetInput) {
+    setupNumericInput(editTargetInput);
+  }
+
+  // 実績入力モーダル
+  const actualRevenueInput = document.getElementById('actualRevenueInput');
+  if (actualRevenueInput) {
+    setupNumericInput(actualRevenueInput);
+  }
+
+  // 月間予算編集モーダル
+  const editMonthlyBudgetInput = document.getElementById('editMonthlyBudgetAmount');
+  if (editMonthlyBudgetInput) {
+    setupNumericInput(editMonthlyBudgetInput);
+  }
+
+  // 月間予算新規作成モーダル
+  const newMonthlyBudgetInput = document.getElementById('newMonthlyBudgetAmount');
+  if (newMonthlyBudgetInput) {
+    setupNumericInput(newMonthlyBudgetInput);
+  }
+});
 </script>
