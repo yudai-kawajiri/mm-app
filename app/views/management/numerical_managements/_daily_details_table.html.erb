@@ -1,4 +1,4 @@
-<%# 日別明細テーブル(一括編集機能付き) %>
+Copy<%# 日別明細テーブル(一括編集機能付き) %>
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
     <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
@@ -397,9 +397,124 @@ function toggleBulkEditMode() {
 
 function calculateDailyTargetSum() {
   let sum = 0;
+  let cumulativeTarget = 0;
+  let cumulativePlanned = 0;
+  let cumulativeActual = 0;
+
   document.querySelectorAll('.bulk-edit-target').forEach(function(input) {
     const value = parseInt(input.dataset.rawValue, 10) || 0;
     sum += value;
+    cumulativeTarget += value;
+
+    const currentRow = input.closest('tr');
+    if (currentRow) {
+      // 計画高を取得（3列目）
+      const plannedCell = currentRow.querySelector('td:nth-child(3)');
+      const plannedValue = plannedCell ? parseInt(plannedCell.textContent.replace(/[^0-9]/g, ''), 10) || 0 : 0;
+      cumulativePlanned += plannedValue;
+
+      // 実績を取得（4列目 - 一括編集モードでは入力フィールド）
+      const actualCell = currentRow.querySelector('td:nth-child(4)');
+      let actualValue = 0;
+      if (actualCell) {
+        const actualInput = actualCell.querySelector('.numeric-input');
+        if (actualInput && !actualInput.disabled) {
+          actualValue = parseInt(actualInput.dataset.rawValue, 10) || 0;
+        } else {
+          // 通常モード表示から取得
+          const displaySpan = actualCell.querySelector('.normal-mode-display');
+          if (displaySpan) {
+            actualValue = parseInt(displaySpan.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+          }
+        }
+      }
+      cumulativeActual += actualValue;
+
+      // 累計行を取得して更新
+      const cumulativeRow = currentRow.nextElementSibling;
+
+      if (cumulativeRow && cumulativeRow.classList.contains('table-light')) {
+        // 1. 予算の累計（1列目）
+        const cumulativeTargetCell = cumulativeRow.querySelector('td:nth-child(1)');
+        if (cumulativeTargetCell) {
+          const labelElement = cumulativeTargetCell.querySelector('small.text-muted');
+          if (labelElement) {
+            cumulativeTargetCell.innerHTML = '';
+            cumulativeTargetCell.appendChild(labelElement.cloneNode(true));
+            cumulativeTargetCell.appendChild(document.createTextNode(' ¥' + cumulativeTarget.toLocaleString()));
+          }
+        }
+
+        // 2. 計画高の累計（2列目）
+        const cumulativePlannedCell = cumulativeRow.querySelector('td:nth-child(2)');
+        if (cumulativePlannedCell) {
+          const labelElement = cumulativePlannedCell.querySelector('small.text-muted');
+          if (labelElement) {
+            cumulativePlannedCell.innerHTML = '';
+            cumulativePlannedCell.appendChild(labelElement.cloneNode(true));
+            cumulativePlannedCell.appendChild(document.createTextNode(' ¥' + cumulativePlanned.toLocaleString()));
+          }
+        }
+
+        // 3. 実績の累計（3列目）
+        const cumulativeActualCell = cumulativeRow.querySelector('td:nth-child(3)');
+        if (cumulativeActualCell) {
+          const labelElement = cumulativeActualCell.querySelector('small.text-muted');
+          if (labelElement) {
+            cumulativeActualCell.innerHTML = '';
+            cumulativeActualCell.appendChild(labelElement.cloneNode(true));
+            cumulativeActualCell.appendChild(document.createTextNode(' ¥' + cumulativeActual.toLocaleString()));
+          }
+        }
+
+        // 4. 達成率の累計（4列目）
+        const cumulativeRateCell = cumulativeRow.querySelector('td:nth-child(4)');
+        if (cumulativeRateCell) {
+          const labelElement = cumulativeRateCell.querySelector('small.text-muted');
+          let rate = 0;
+          if (cumulativeTarget > 0) {
+            rate = (cumulativeActual / cumulativeTarget) * 100;
+          }
+
+          if (labelElement) {
+            const rateSpan = cumulativeRateCell.querySelector('span');
+            if (rateSpan) {
+              // 色のクラスを更新
+              rateSpan.className = '';
+              if (rate >= 100) {
+                rateSpan.classList.add('text-success');
+              } else if (rate >= 80) {
+                rateSpan.classList.add('text-warning');
+              } else {
+                rateSpan.classList.add('text-danger');
+              }
+              rateSpan.textContent = rate.toFixed(1) + '%';
+            }
+          }
+        }
+
+        // 5. 予算差の累計（5列目）
+        const cumulativeDiffCell = cumulativeRow.querySelector('td:nth-child(5)');
+        if (cumulativeDiffCell) {
+          const labelElement = cumulativeDiffCell.querySelector('small.text-muted');
+          const diff = cumulativeActual - cumulativeTarget;
+
+          if (labelElement) {
+            cumulativeDiffCell.innerHTML = '';
+            cumulativeDiffCell.appendChild(labelElement.cloneNode(true));
+            cumulativeDiffCell.appendChild(document.createTextNode(' ¥' + diff.toLocaleString()));
+
+            // 色のクラスを更新
+            cumulativeDiffCell.className = 'text-end';
+            if (diff >= 0) {
+              cumulativeDiffCell.classList.add('text-success');
+            } else {
+              cumulativeDiffCell.classList.add('text-danger');
+            }
+          }
+        }
+      }
+    }
   });
 
   const diff = sum - window.monthlyBudget;

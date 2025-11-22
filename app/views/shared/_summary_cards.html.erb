@@ -48,7 +48,7 @@
         <h6 class="card-title text-warning mb-2">
           <i class="bi bi-speedometer2"></i> <%= t('numerical_managements.index.budget_achievement') %>
         </h6>
-        <% achievement = forecast_data[:budget_achievement_rate] || 0 %>
+        <% achievement = forecast_data[:achievement_rate] || 0 %>
         <p class="h4 mb-0 <%= achievement_rate_color_class(achievement) %>">
           <%= number_to_percentage(achievement, precision: 1) %>
         </p>
