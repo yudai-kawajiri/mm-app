@@ -144,28 +144,30 @@ class Management::NumericalManagementsController < ApplicationController
       plan_schedule_actuals = {}
 
       daily_data.each do |index, day_attrs|
-        # 日別目標の処理（target_amountが0以外の場合のみ）
         target_amount = day_attrs[:target_amount].to_i
-        if target_amount > 0
-          if day_attrs[:target_id].present?
-            # 既存の日別目標を更新
-            daily_targets[day_attrs[:target_id]] = {
-              target_amount: day_attrs[:target_amount],
-              target_date: day_attrs[:date]
-            }
-          else
-            # 新規作成の場合は日付をキーにする
-            daily_targets[day_attrs[:date]] = {
-              target_amount: day_attrs[:target_amount],
-              target_date: day_attrs[:date]
-            }
-          end
+        target_id = day_attrs[:target_id].to_s.strip
+
+        # 既存IDがある場合は0でも更新、ない場合は1以上のみ新規作成
+        if target_id.present? && target_id != ""
+          # 既存の日別目標を更新（0を許可）
+          daily_targets[target_id] = {
+            target_amount: target_amount,
+            target_date: day_attrs[:date]
+          }
+        elsif target_amount > 0
+          # 新規作成は1以上のみ（0のデータは作らない）
+          daily_targets[day_attrs[:date]] = {
+            target_amount: target_amount,
+            target_date: day_attrs[:date]
+          }
         end
 
         # 実績の処理
-        if day_attrs[:plan_schedule_id].present? && day_attrs[:actual_revenue].present?
-          plan_schedule_actuals[day_attrs[:plan_schedule_id]] = {
-            actual_revenue: day_attrs[:actual_revenue]
+        plan_schedule_id = day_attrs[:plan_schedule_id].to_s.strip
+        if plan_schedule_id.present? && plan_schedule_id != "" && day_attrs[:actual_revenue].present?
+          actual_revenue = day_attrs[:actual_revenue].to_i
+          plan_schedule_actuals[plan_schedule_id] = {
+            actual_revenue: actual_revenue
           }
         end
       end
@@ -176,7 +178,6 @@ class Management::NumericalManagementsController < ApplicationController
         plan_schedule_actuals: plan_schedule_actuals
       }
     end
-
 
   def bulk_update_params
     params.permit(

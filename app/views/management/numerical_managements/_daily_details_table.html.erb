@@ -63,10 +63,11 @@
                   </span>
                   <div class="bulk-edit-input" style="display: none;">
                     <%= text_field_tag "daily_data[#{index}][target_amount]",
-                                       number_with_delimiter(day[:target].to_i),
-                                       class: "form-control form-control-sm text-end bulk-edit-target numeric-input",
-                                       data: { original: day[:target].to_i },
-                                       placeholder: "0" %>
+                              number_with_delimiter(day[:target].to_i),
+                              class: "form-control form-control-sm text-end bulk-edit-target numeric-input",
+                              data: { original: day[:target].to_i },
+                              placeholder: "0",
+                              inputmode: "numeric" %>
                     <%= hidden_field_tag "daily_data[#{index}][date]", day[:date].strftime('%Y-%m-%d') %>
                     <%= hidden_field_tag "daily_data[#{index}][target_id]", target_id %>
                   </div>
@@ -83,10 +84,11 @@
                   <div class="bulk-edit-input" style="display: none;">
                     <% first_schedule = day[:plan_schedules].first %>
                     <%= text_field_tag "daily_data[#{index}][actual_revenue]",
-                                       number_with_delimiter((first_schedule&.actual_revenue || 0).to_i),
-                                       class: "form-control form-control-sm text-end numeric-input",
-                                       disabled: day[:plan_schedules].empty?,
-                                       placeholder: "0" %>
+                              number_with_delimiter((first_schedule&.actual_revenue || 0).to_i),
+                              class: "form-control form-control-sm text-end numeric-input",
+                              disabled: day[:plan_schedules].empty?,
+                              placeholder: "0",
+                              inputmode: "numeric" %>
                     <%= hidden_field_tag "daily_data[#{index}][plan_schedule_id]", first_schedule&.id %>
                   </div>
                 </td>
@@ -244,54 +246,76 @@ window.isEditMode = false;
 window.monthlyBudget = <%= @monthly_budget&.target_amount || 0 %>;
 
 function setupNumericInput(input) {
-  // 初期値を設定（カンマを除去した生の数値）
+  let isComposing = false;
+
   const initialValue = input.value.replace(/,/g, '');
   input.dataset.rawValue = initialValue || '0';
 
-  // 入力中はカンマなしで表示、フォーカスアウト時にフォーマット
+  input.addEventListener('compositionstart', function() {
+    isComposing = true;
+  });
+
+  input.addEventListener('compositionend', function(e) {
+    isComposing = false;
+    processInput(e.target);
+  });
+
   input.addEventListener('focus', function(e) {
-    // フォーカス時：カンマを削除して生の数値を表示
-    e.target.value = e.target.dataset.rawValue || '0';
-    if (e.target.value === '0') {
+    const rawValue = e.target.dataset.rawValue || '0';
+    e.target.value = rawValue;
+
+    setTimeout(function() {
       e.target.select();
-    }
+    }, 10);
   });
 
   input.addEventListener('input', function(e) {
-    // 入力中：数字のみを許可、rawValueを更新
-    let value = e.target.value;
+    if (isComposing) {
+      return;
+    }
 
-    // 全角数字を半角に変換
+    processInput(e.target);
+  });
+
+  input.addEventListener('blur', function(e) {
+    let rawValue = e.target.dataset.rawValue || '';
+
+    if (rawValue === '' || rawValue === '0') {
+      rawValue = '0';
+      e.target.dataset.rawValue = '0';
+    }
+
+    const numValue = parseInt(rawValue, 10) || 0;
+    e.target.value = numValue.toLocaleString();
+  });
+
+  function processInput(input) {
+    let value = input.value;
+
     value = value.replace(/[０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
     });
 
-    // 数字以外を削除
     value = value.replace(/[^\d]/g, '');
 
-    // 空の場合は0に設定
-    if (value === '') {
-      value = '0';
+    if (value.length > 1) {
+      value = value.replace(/^0+/, '');
     }
 
-    // rawValueを更新
-    e.target.dataset.rawValue = value;
+    if (input.value !== value) {
+      const cursorPos = input.selectionStart;
+      input.value = value;
 
-    // 入力中はカンマなしで表示
-    e.target.value = value;
+      const newPos = Math.min(cursorPos, value.length);
+      input.setSelectionRange(newPos, newPos);
+    }
 
-    // 日別目標の場合は合計を再計算
-    if (e.target.classList.contains('bulk-edit-target')) {
+    input.dataset.rawValue = value;
+
+    if (input.classList.contains('bulk-edit-target')) {
       calculateDailyTargetSum();
     }
-  });
-
-  input.addEventListener('blur', function(e) {
-    // フォーカスアウト時：カンマ区切りにフォーマット
-    const rawValue = e.target.dataset.rawValue || '0';
-    const numValue = parseInt(rawValue) || 0;
-    e.target.value = numValue.toLocaleString();
-  });
+  }
 }
 
 function toggleBulkEditMode() {
@@ -300,15 +324,32 @@ function toggleBulkEditMode() {
   if (window.isEditMode) {
     document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-eye"></i> <%= j t('numerical_managements.bulk_edit.toggle_normal_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'block';
-    document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'block');
-    document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.normal-mode-display').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.bulk-edit-input').forEach(function(el) {
+      el.style.display = 'block';
+    });
+    document.querySelectorAll('.bulk-edit-hidden').forEach(function(el) {
+      el.style.display = 'none';
+    });
     document.querySelector('.bulk-edit-actions').style.display = 'block';
 
-    // 入力フィールドの初期化
-    document.querySelectorAll('.numeric-input').forEach(input => {
-      const newInput = input.cloneNode(true);
+    document.querySelectorAll('.numeric-input').forEach(function(input) {
+      const newInput = document.createElement('input');
+      newInput.type = 'text';
+      newInput.value = input.value;
+      newInput.className = input.className;
+      newInput.name = input.name;
+      newInput.placeholder = input.placeholder || '';
+      newInput.disabled = input.disabled;
+
+      if (input.dataset.original) {
+        newInput.dataset.original = input.dataset.original;
+      }
+
       input.parentNode.replaceChild(newInput, input);
+
       setupNumericInput(newInput);
     });
 
@@ -316,14 +357,19 @@ function toggleBulkEditMode() {
   } else {
     document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-pencil-square"></i> <%= j t('numerical_managements.bulk_edit.toggle_edit_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'none';
-    document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'inline');
-    document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'table-cell');
+    document.querySelectorAll('.normal-mode-display').forEach(function(el) {
+      el.style.display = 'inline';
+    });
+    document.querySelectorAll('.bulk-edit-input').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.bulk-edit-hidden').forEach(function(el) {
+      el.style.display = 'table-cell';
+    });
     document.querySelector('.bulk-edit-actions').style.display = 'none';
 
-    // 元の値に戻す
-    document.querySelectorAll('.bulk-edit-target').forEach(input => {
-      const originalValue = parseInt(input.dataset.original) || 0;
+    document.querySelectorAll('.bulk-edit-target').forEach(function(input) {
+      const originalValue = parseInt(input.dataset.original, 10) || 0;
       input.dataset.rawValue = originalValue.toString();
       input.value = originalValue.toLocaleString();
     });
@@ -332,8 +378,8 @@ function toggleBulkEditMode() {
 
 function calculateDailyTargetSum() {
   let sum = 0;
-  document.querySelectorAll('.bulk-edit-target').forEach(input => {
-    const value = parseInt(input.dataset.rawValue) || 0;
+  document.querySelectorAll('.bulk-edit-target').forEach(function(input) {
+    const value = parseInt(input.dataset.rawValue, 10) || 0;
     sum += value;
   });
 
@@ -359,9 +405,8 @@ function calculateDailyTargetSum() {
   }
 }
 
-// フォーム送信時：rawValueを使用
 document.getElementById('bulkEditForm').addEventListener('submit', function(e) {
-  document.querySelectorAll('.numeric-input').forEach(input => {
+  document.querySelectorAll('.numeric-input').forEach(function(input) {
     if (!input.disabled && input.dataset.rawValue) {
       input.value = input.dataset.rawValue;
     }
@@ -380,7 +425,7 @@ function setEditModalData(button) {
   document.getElementById('editTargetAmount').value = targetAmount || '0';
 
   if (targetId) {
-    form.action = `/management/daily_targets/${targetId}`;
+    form.action = '/management/daily_targets/' + targetId;
   } else {
     form.action = '/management/daily_targets';
     form.method = 'post';
@@ -399,7 +444,7 @@ function setActualModalData(button) {
   document.getElementById('editActualRevenue').value = actualRevenue || '0';
 
   if (scheduleId) {
-    form.action = `/management/plan_schedules/${scheduleId}`;
+    form.action = '/management/plan_schedules/' + scheduleId;
   }
 }
 </script>

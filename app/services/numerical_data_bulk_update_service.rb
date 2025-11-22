@@ -54,11 +54,10 @@ class NumericalDataBulkUpdateService
 
     @params[:daily_targets].each do |key, attributes|
       target_amount = strip_commas(attributes[:target_amount])
-      next if target_amount.to_i.zero?
 
       # キーが数値ならID、日付文字列なら新規作成
       if key.to_s =~ /^\d+$/ && key.to_i > 0
-        # 既存レコードの更新
+        # 既存レコードの更新（0を許可）
         target = Management::DailyTarget.find_by(id: key)
         if target
           unless target.update(target_amount: target_amount)
@@ -68,6 +67,9 @@ class NumericalDataBulkUpdateService
           end
         end
       else
+        # 新規作成（0の場合はスキップ）
+        next if target_amount.to_i.zero?
+
         # 新規作成（キーは日付文字列）
         target_date = Date.parse(attributes[:target_date])
         monthly_budget = @user.monthly_budgets.find_or_create_by!(
