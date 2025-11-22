@@ -244,51 +244,54 @@ window.isEditMode = false;
 window.monthlyBudget = <%= @monthly_budget&.target_amount || 0 %>;
 
 function setupNumericInput(input) {
-  let isComposing = false;
+  // 初期値を設定（カンマを除去した生の数値）
+  const initialValue = input.value.replace(/,/g, '');
+  input.dataset.rawValue = initialValue || '0';
 
-  input.addEventListener('compositionstart', function() {
-    isComposing = true;
-  });
-
-  input.addEventListener('compositionend', function(e) {
-    isComposing = false;
-    formatNumericValue(e.target);
-  });
-
-  input.addEventListener('input', function(e) {
-    if (isComposing) return;
-    formatNumericValue(e.target);
-  });
-
-  input.addEventListener('blur', function(e) {
-    if (e.target.value === '') {
-      e.target.value = '0';
-    }
-  });
-
+  // 入力中はカンマなしで表示、フォーカスアウト時にフォーマット
   input.addEventListener('focus', function(e) {
+    // フォーカス時：カンマを削除して生の数値を表示
+    e.target.value = e.target.dataset.rawValue || '0';
     if (e.target.value === '0') {
       e.target.select();
     }
   });
-}
 
-function formatNumericValue(input) {
-  let value = input.value;
+  input.addEventListener('input', function(e) {
+    // 入力中：数字のみを許可、rawValueを更新
+    let value = e.target.value;
 
-  value = value.replace(/[０-９]/g, function(s) {
-    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    // 全角数字を半角に変換
+    value = value.replace(/[０-９]/g, function(s) {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    });
+
+    // 数字以外を削除
+    value = value.replace(/[^\d]/g, '');
+
+    // 空の場合は0に設定
+    if (value === '') {
+      value = '0';
+    }
+
+    // rawValueを更新
+    e.target.dataset.rawValue = value;
+
+    // 入力中はカンマなしで表示
+    e.target.value = value;
+
+    // 日別目標の場合は合計を再計算
+    if (e.target.classList.contains('bulk-edit-target')) {
+      calculateDailyTargetSum();
+    }
   });
 
-  value = value.replace(/[^\d]/g, '');
-
-  if (value === '') {
-    input.value = '';
-    return;
-  }
-
-  const numValue = parseInt(value) || 0;
-  input.value = numValue.toLocaleString();
+  input.addEventListener('blur', function(e) {
+    // フォーカスアウト時：カンマ区切りにフォーマット
+    const rawValue = e.target.dataset.rawValue || '0';
+    const numValue = parseInt(rawValue) || 0;
+    e.target.value = numValue.toLocaleString();
+  });
 }
 
 function toggleBulkEditMode() {
@@ -302,15 +305,11 @@ function toggleBulkEditMode() {
     document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'none');
     document.querySelector('.bulk-edit-actions').style.display = 'block';
 
+    // 入力フィールドの初期化
     document.querySelectorAll('.numeric-input').forEach(input => {
       const newInput = input.cloneNode(true);
       input.parentNode.replaceChild(newInput, input);
-
       setupNumericInput(newInput);
-
-      if (newInput.classList.contains('bulk-edit-target')) {
-        newInput.addEventListener('input', calculateDailyTargetSum);
-      }
     });
 
     calculateDailyTargetSum();
@@ -322,8 +321,10 @@ function toggleBulkEditMode() {
     document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'table-cell');
     document.querySelector('.bulk-edit-actions').style.display = 'none';
 
+    // 元の値に戻す
     document.querySelectorAll('.bulk-edit-target').forEach(input => {
       const originalValue = parseInt(input.dataset.original) || 0;
+      input.dataset.rawValue = originalValue.toString();
       input.value = originalValue.toLocaleString();
     });
   }
@@ -332,7 +333,7 @@ function toggleBulkEditMode() {
 function calculateDailyTargetSum() {
   let sum = 0;
   document.querySelectorAll('.bulk-edit-target').forEach(input => {
-    const value = parseInt(input.value.replace(/,/g, '')) || 0;
+    const value = parseInt(input.dataset.rawValue) || 0;
     sum += value;
   });
 
@@ -358,10 +359,11 @@ function calculateDailyTargetSum() {
   }
 }
 
+// フォーム送信時：rawValueを使用
 document.getElementById('bulkEditForm').addEventListener('submit', function(e) {
   document.querySelectorAll('.numeric-input').forEach(input => {
-    if (!input.disabled) {
-      input.value = input.value.replace(/,/g, '');
+    if (!input.disabled && input.dataset.rawValue) {
+      input.value = input.dataset.rawValue;
     }
   });
 });
