@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :category do
     sequence(:name) { |n| "カテゴリー#{n}" }
     category_type { :material }
-    description { "テスト用のカテゴリー説明" }
+    description { "テスト用のカテゴリー概要" }
     association :user
 
     trait :material do

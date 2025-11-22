@@ -37,7 +37,7 @@ module ApplicationHelper
   #   translate_enum_value(@plan, :status)
   #   # => "下書き" (for status: "draft")
   #
-  # @note
+  # @description
   #   翻訳キーは "activerecord.enums.モデル名.属性名.値" の形式
   #
   def translate_enum_value(record, attribute)
@@ -60,7 +60,7 @@ module ApplicationHelper
   # @option [String] :path メニューのパス
   # @option [Array<Hash>] :submenu サブメニュー項目（オプション）
   #
-  # @note
+  # @description
   #   - 管理者権限（admin）の場合のみ管理メニューが表示される
   #   - 各メニュー項目はi18nキー "dashboard.menu.*" で翻訳される
   #
@@ -138,7 +138,7 @@ module ApplicationHelper
   # @option item [Array<Hash>] :submenu サブメニュー項目
   # @return [Boolean] アクティブな場合true
   #
-  # @note
+  # @description
   #   - サブメニューがある場合、いずれかのサブメニューがアクティブならtrueを返す
   #   - サブメニューがない場合、自身のパスで判定
   #
@@ -212,7 +212,7 @@ module ApplicationHelper
   # @option column_definition [Symbol, Proc] :data データ取得方法
   # @return [String, ActiveSupport::SafeBuffer] 表示用HTML
   #
-  # @note
+  # @description
   #   以下の特殊カラムタイプに対応：
   #   - :image - Active Storageの画像サムネイル表示
   #   - :price - 通貨フォーマット表示
@@ -365,7 +365,7 @@ module ApplicationHelper
   # @yield ブロックが渡された場合はカスタムフィールドをレンダリング
   # @return [String] フォームグループHTML
   #
-  # @note
+  # @description
   #   - モデルのバリデーションから自動的に必須フィールドを判定
   #   - エラーがある場合は is-invalid クラスを自動追加
   #   - 文字数カウンターはStimulusコントローラー連携
@@ -532,7 +532,7 @@ module ApplicationHelper
   # @param achievement_rate [Numeric] 達成率（パーセント）
   # @return [String] Bootstrapカラークラス
   #
-  # @note
+  # @description
   #   閾値による判定ロジック：
   #   - 100%以上: text-success（緑）
   #   - 80%以上100%未満: text-warning（黄）

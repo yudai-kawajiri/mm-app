@@ -154,7 +154,7 @@ ja:
         daily_target_yen: "日別予算（円）"
         actual_revenue_yen: "実績売上（円）"
         planned_revenue_yen: "計画高（円）"
-        note: "備考"
+        description: "概要"
         optional: "（任意）"
         category: "カテゴリ"
         plan_select: "計画選択"

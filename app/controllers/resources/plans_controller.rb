@@ -213,7 +213,7 @@ class Resources::PlansController < AuthenticatedController
       :reading,
       :category_id,
       :status,
-      :note
+      :description
     ).tap do |whitelisted|
       # ネストされた属性（ハッシュ形式）を手動で処理
       # 文字列キー（"0", "new_1763555897631"など）を許可するため

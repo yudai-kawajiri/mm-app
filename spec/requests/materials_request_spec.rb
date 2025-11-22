@@ -100,7 +100,7 @@ RSpec.describe "Materials", type: :request do
               unit_for_order_id: unit.id,
               unit_weight_for_order: 1000,
               pieces_per_order_unit: 10,
-              description: 'テスト説明'
+              description: 'テスト概要'
             }
           }
         end
@@ -218,7 +218,7 @@ RSpec.describe "Materials", type: :request do
           {
             material: {
               name: '更新された材料名',
-              description: '更新された説明'
+              description: '更新された概要'
             }
           }
         end

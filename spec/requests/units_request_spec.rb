@@ -83,7 +83,7 @@ RSpec.describe "Units", type: :request do
             unit: {
               name: '新しい単位',
               category: 'production',
-              description: 'テスト説明'
+              description: 'テスト概要'
             }
           }
         end
@@ -196,7 +196,7 @@ RSpec.describe "Units", type: :request do
           {
             unit: {
               name: '更新された単位名',
-              description: '更新された説明'
+              description: '更新された概要'
             }
           }
         end

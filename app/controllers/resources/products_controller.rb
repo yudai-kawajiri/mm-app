@@ -157,7 +157,7 @@ class Resources::ProductsController < AuthenticatedController
       :price,
       :status,
       :image,
-      :note,
+      :description,
       :description
     ).tap do |whitelisted|
       # ネストされた属性（ハッシュ形式）を手動で処理

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_19_162230) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_22_034111) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -57,8 +57,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_19_162230) do
 
   create_table "daily_targets", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.text "description"
     t.bigint "monthly_budget_id", null: false
-    t.text "note"
     t.decimal "target_amount", precision: 12, scale: 2, null: false
     t.date "target_date", null: false
     t.datetime "updated_at", null: false
@@ -112,7 +112,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_19_162230) do
   create_table "monthly_budgets", force: :cascade do |t|
     t.date "budget_month", null: false, comment: "予算対象月（月初日を保存）"
     t.datetime "created_at", null: false
-    t.text "note", comment: "備考"
+    t.text "description", comment: "説明"
     t.decimal "target_amount", precision: 12, scale: 2, null: false, comment: "目標金額"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -134,7 +134,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_19_162230) do
   create_table "plan_schedules", force: :cascade do |t|
     t.decimal "actual_revenue", precision: 12, scale: 2, comment: "実績売上"
     t.datetime "created_at", null: false
-    t.text "note", comment: "備考"
+    t.text "description", comment: "説明"
     t.bigint "plan_id", null: false
     t.jsonb "plan_products_snapshot", default: {}, null: false, comment: "計画商品のスナップショット（日別調整用）"
     t.date "scheduled_date", null: false, comment: "スケジュール実施日"

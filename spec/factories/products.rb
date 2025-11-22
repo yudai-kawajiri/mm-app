@@ -8,7 +8,7 @@ FactoryBot.define do
     association :category, factory: :category, category_type: :product
     price { 1000 }
     status { :selling }
-    description { "テスト用の商品説明" }
+    description { "テスト用の商品概要" }
 
     trait :draft do
       status { :draft }

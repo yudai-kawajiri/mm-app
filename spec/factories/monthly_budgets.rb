@@ -5,7 +5,7 @@ FactoryBot.define do
     association :user
     budget_month { Date.current.beginning_of_month }
     target_amount { 1000000 }
-    note { "テスト用の予算メモ" }
+    description { "テスト用の予算メモ" }
 
     trait :this_month do
       budget_month { Date.current.beginning_of_month }

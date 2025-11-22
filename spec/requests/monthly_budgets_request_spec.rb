@@ -18,7 +18,7 @@ RSpec.describe "MonthlyBudgets", type: :request do
             month: month,
             monthly_budget: {
               target_amount: 300000,
-              note: 'テストノート'
+              description: 'テストノート'
             }
           }
         end
@@ -120,7 +120,7 @@ RSpec.describe "MonthlyBudgets", type: :request do
           {
             monthly_budget: {
               target_amount: 400000,
-              note: '更新されたノート'
+              description: '更新されたノート'
             }
           }
         end

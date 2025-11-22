@@ -109,7 +109,7 @@ RSpec.describe "Products", type: :request do
               price: 1000,
               status: 'selling',
               category_id: product_category.id,
-              description: 'テスト説明'
+              description: 'テスト概要'
             }
           }
         end
@@ -242,7 +242,7 @@ RSpec.describe "Products", type: :request do
           {
             product: {
               name: '更新された商品名',
-              description: '更新された説明'
+              description: '更新された概要'
             }
           }
         end

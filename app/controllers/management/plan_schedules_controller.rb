@@ -154,7 +154,7 @@ class Management::PlanSchedulesController < AuthenticatedController
   def plan_schedule_params
     # planning_plan_schedule でも plan_schedule でも受け付ける
     key = params.key?(:planning_plan_schedule) ? :planning_plan_schedule : :plan_schedule
-    params.require(key).permit(:scheduled_date, :plan_id, :actual_revenue, :note, products: {})
+    params.require(key).permit(:scheduled_date, :plan_id, :actual_revenue, :description, products: {})
   end
 
   #

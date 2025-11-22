@@ -93,7 +93,7 @@ class Management::MonthlyBudgetsController < ApplicationController
   #
   # @return [ActionController::Parameters]
   def monthly_budget_params
-    params.require(:monthly_budget).permit(:target_amount, :note)
+    params.require(:monthly_budget).permit(:target_amount, :description)
   end
 
   # サニタイズ済みパラメータ

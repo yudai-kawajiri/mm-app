@@ -9,6 +9,6 @@ FactoryBot.define do
     association :unit_for_order, factory: :unit, category: :ordering
     default_unit_weight { 100 }
     unit_weight_for_order { 1000 }
-    description { "テスト用の原材料説明" }
+    description { "テスト用の原材料概要" }
   end
 end

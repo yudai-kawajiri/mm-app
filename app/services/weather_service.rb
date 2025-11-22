@@ -62,13 +62,13 @@ class WeatherService
   # ダミーデータ用: 晴天時の天気タイプ
   DUMMY_CLEAR_WEATHER_TYPES = %w[Clear Clouds].freeze
 
-  # ダミーデータ用: 晴天時の天気説明
+  # ダミーデータ用: 晴天時の天気概要
   DUMMY_CLEAR_WEATHER_DESCRIPTIONS = %w[晴れ 曇り].freeze
 
   # ダミーデータ用: 雨天時の天気タイプ
   DUMMY_RAINY_WEATHER = 'Rain'
 
-  # ダミーデータ用: 雨天時の天気説明
+  # ダミーデータ用: 雨天時の天気概要
   DUMMY_RAINY_DESCRIPTION = '雨'
 
   # ダミーデータ用: 雨天時のアイコンID
@@ -103,7 +103,7 @@ class WeatherService
   #   - temp_max: 最高気温
   #   - temp_min: 最低気温
   #   - weather: 天気（英語）
-  #   - weather_description: 天気説明（日本語）
+  #   - weather_description: 天気概要（日本語）
   #   - icon: 天気アイコンID
   #   - pop: 降水確率（%）
   #   - is_rainy: 雨天フラグ

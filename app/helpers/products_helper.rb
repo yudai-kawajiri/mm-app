@@ -28,7 +28,7 @@ module ProductsHelper
   # @param product [Product] 商品オブジェクト
   # @return [String] ステータスバッジと変更ドロップダウンのHTML
   #
-  # @note
+  # @description
   #   ステータスごとに異なる色のバッジを表示：
   #   - draft（下書き）: グレー（bg-secondary）
   #   - active（販売中）: 緑（bg-success）
