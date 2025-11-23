@@ -1,50 +1,58 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
 @import "bootstrap/scss/bootstrap";
+
+// カスタム変数
+$hover-padding: 1.5rem;
+$hover-translate: 5px;
+$submenu-padding: 3rem;
+$submenu-border-width: 3px;
+$submenu-font-size: 0.9rem;
 
 // サイドバーのホバーエフェクト
 .list-group-item-action {
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: #e9ecef;
-    padding-left: 1.5rem;
-    transform: translateX(5px);
+    background-color: $gray-200;
+    padding-left: $hover-padding;
+    transform: translateX($hover-translate);
   }
 
   &.active {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    background-color: $primary;
+    border-color: $primary;
     font-weight: 600;
   }
 }
 
 // サブメニューのスタイル
-.list-group-item-action.ps-5 {
-  font-size: 0.9rem;
-  background-color: #f8f9fa;
-  border-left: 3px solid transparent;
-  padding-left: 3rem !important;
+.list-group .list-group-item-action.ps-5 {
+  font-size: $submenu-font-size;
+  background-color: $gray-100;
+  border-left: $submenu-border-width solid transparent;
+  padding-left: $submenu-padding;
   position: relative;
 
   &:hover {
-    border-left-color: #0d6efd;
-    background-color: #e9ecef;
-    transform: translateX(5px);
+    border-left-color: $primary;
+    background-color: $gray-200;
+    transform: translateX($hover-translate);
   }
 
   &.active {
-    background-color: #0d6efd !important;
-    color: #fff !important;
-    border-left-color: #0d6efd;
+    background-color: $primary;
+    color: $white;
+    border-left-color: $primary;
     font-weight: 500;
   }
 
-  // ← この部分を新しく追加
   .submenu-indicator {
-    color: #6c757d;
+    color: $text-muted;
     margin-right: 0.25rem;
   }
 
   &.active .submenu-indicator {
-    color: #fff;
+    color: $white;
   }
 }
