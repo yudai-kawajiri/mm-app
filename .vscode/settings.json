@@ -1,6 +1,30 @@
 {
   "cSpell.words": [
     "createuser",
-    "dearmor"
+    "dearmor",
+    "activerecord",
+    "activestorage",
+    "actioncable",
+    "actionmailer",
+    "actionpack",
+    "actionview",
+    "actiontext",
+    "activejob",
+    "activesupport",
+    "bundler",
+    "capybara",
+    "devise",
+    "gemfile",
+    "postgres",
+    "postgresql",
+    "psql",
+    "pundit",
+    "railties",
+    "rspec",
+    "rubocop",
+    "stimulus",
+    "tailwindcss",
+    "turbo",
+    "webpacker"
   ]
 }
