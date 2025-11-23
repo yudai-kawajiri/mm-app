@@ -61,42 +61,37 @@ class NumericalForecastService
     yesterday = today - 1.day
     past_end = [yesterday, end_date].min
 
-    # 今日から月末までの日付範囲
-    future_start = [today, start_date].max
-    future_end = end_date
-
     # データ取得
     target = budget.target_amount || 0
 
-    # 🆕 見切り率の取得
+    # 見切り率の取得
     forecast_discount_rate = budget.forecast_discount_rate || 0
     target_discount_rate = budget.target_discount_rate || 0
 
-    # 昨日までの実績（actual_revenue が入力されているもののみ）
-    actual = user.plan_schedules
-                  .where(scheduled_date: start_date..past_end)
-                  .where.not(actual_revenue: nil)
-                  .sum(:actual_revenue) || 0
-
-    # 今日から月末までの計画高
-    future_schedules = user.plan_schedules
-                            .includes(:plan)
-                            .where(scheduled_date: future_start..future_end)
-                            .where(actual_revenue: nil)
-
-    planned_amount_for_forecast = future_schedules.sum { |ps| ps.current_planned_revenue }
-
-    # 月全体の計画高（月間計画売上カード用）
+    # 月全体のスケジュールを取得
     all_schedules = user.plan_schedules
                         .includes(:plan)
                         .where(scheduled_date: start_date..end_date)
 
+    # 実績が入力されているものの合計
+    actual_confirmed = all_schedules
+                        .where.not(actual_revenue: nil)
+                        .where("actual_revenue > 0")
+                        .sum(:actual_revenue) || 0
+
+    # 実績未入力のスケジュールの計画高を集計
+    unconfirmed_schedules = all_schedules.select do |ps|
+      ps.actual_revenue.nil? || ps.actual_revenue.zero?
+    end
+    unconfirmed_planned_total = unconfirmed_schedules.sum { |ps| ps.current_planned_revenue }
+
+    # 月全体の計画高（月間計画売上カード用）
     total_planned_amount = all_schedules.sum { |ps| ps.current_planned_revenue }
 
-    # 🆕 月末予測売上 = 昨日までの実績 + 今日からの計画高 × (1 - 予測見切り率/100)
+    # 月末予測売上 = 確定実績 + 実績未入力の計画高 × (1 - 予測見切り率/100)
     discount_multiplier = 1 - (forecast_discount_rate / PERCENTAGE_MULTIPLIER)
-    adjusted_planned = (planned_amount_for_forecast * discount_multiplier).round(AMOUNT_PRECISION)
-    forecast = actual + adjusted_planned
+    adjusted_planned = (unconfirmed_planned_total * discount_multiplier).round(AMOUNT_PRECISION)
+    forecast = actual_confirmed + adjusted_planned
 
     # 予算差
     diff = forecast - target
@@ -110,7 +105,7 @@ class NumericalForecastService
                       .sum(:target_amount) || 0
 
     # 昨日までの日別予算達成率
-    daily_achievement_rate = past_target.positive? ? ((actual.to_f / past_target) * PERCENTAGE_MULTIPLIER).round(RATE_PRECISION) : 0.0
+    daily_achievement_rate = past_target.positive? ? ((actual_confirmed.to_f / past_target) * PERCENTAGE_MULTIPLIER).round(RATE_PRECISION) : 0.0
 
     # 残り日数（今日から月末まで）
     remaining_days = if today <= end_date && today >= start_date
@@ -122,7 +117,7 @@ class NumericalForecastService
     # 必要追加額（予算に達していない場合のみ）
     required_additional = diff < 0 ? diff.abs : 0
 
-    # 🆕 推奨日次目標 = (必要追加額 ÷ 残り日数) ÷ (1 - 目標見切り率/100)
+    # 推奨日次目標 = (必要追加額 ÷ 残り日数) ÷ (1 - 目標見切り率/100)
     daily_required = if remaining_days > 0 && required_additional > 0
                         target_discount_multiplier = 1 - (target_discount_rate / PERCENTAGE_MULTIPLIER)
                         if target_discount_multiplier > 0
@@ -142,7 +137,7 @@ class NumericalForecastService
                     else
                       0
                     end
-    current_daily_average = elapsed_days > 0 ? (actual.to_f / elapsed_days).round(AMOUNT_PRECISION) : 0
+    current_daily_average = elapsed_days > 0 ? (actual_confirmed.to_f / elapsed_days).round(AMOUNT_PRECISION) : 0
 
     # 目標との差（推奨日次目標 - 現在の1日平均）
     daily_target_diff = daily_required - current_daily_average
@@ -150,7 +145,7 @@ class NumericalForecastService
     {
       # 月末予測カード用
       target_amount: target,
-      actual_amount: actual,
+      actual_amount: actual_confirmed,
       planned_amount: total_planned_amount,
       forecast_amount: forecast,
       achievement_rate: forecast_achievement_rate,
