@@ -96,7 +96,7 @@ ja:
       forecast_discount_rate_hint: "予測売上計算に適用"
       target_discount_rate: "目標見切率"
       target_discount_rate_hint: "推奨日次追加額計算に適用"
-      update_discount_rates: "見切率を更新"
+      update_discount_rates: "設定"
       daily_target_diff: "予算差"
       alert_action_needed_html: "残り<strong>%{days}日</strong>で<strong>%{amount}</strong>の追加が必要です。<br>1日あたり<strong>%{daily}</strong>を目指しましょう"
       alert_on_track: "予算達成に向けて順調です！"
