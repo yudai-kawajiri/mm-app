@@ -1,6 +1,61 @@
-<%# 月末予測・アクションプランカード %>
+<%# 見切り率設定・月末予測・アクションプランカード %>
 <div class="row g-3 mb-3">
-  <div class="col-md-6">
+  <%# 🆕 見切り率設定カード %>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-header bg-warning text-dark py-2">
+        <h6 class="mb-0"><%= t('numerical_managements.index.discount_rate_settings') %></h6>
+      </div>
+      <div class="card-body py-2 px-3">
+        <%= form_with(
+          url: update_discount_rates_management_monthly_budget_path(@monthly_budget),
+          method: :patch,
+          data: {
+            controller: "management--discount-rate",
+            action: "ajax:success->management--discount-rate#handleSuccess ajax:error->management--discount-rate#handleError"
+          },
+          local: false
+        ) do |f| %>
+          <div class="mb-3">
+            <label class="form-label small mb-1"><%= t('numerical_managements.index.forecast_discount_rate') %></label>
+            <div class="input-group input-group-sm">
+              <%= f.number_field :forecast_discount_rate,
+                value: @monthly_budget&.forecast_discount_rate || 0,
+                class: "form-control",
+                step: 0.1,
+                min: 0,
+                max: 100,
+                data: { "management--discount-rate-target": "forecastInput" } %>
+              <span class="input-group-text">%</span>
+            </div>
+            <small class="text-muted"><%= t('numerical_managements.index.forecast_discount_rate_hint') %></small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small mb-1"><%= t('numerical_managements.index.target_discount_rate') %></label>
+            <div class="input-group input-group-sm">
+              <%= f.number_field :target_discount_rate,
+                value: @monthly_budget&.target_discount_rate || 0,
+                class: "form-control",
+                step: 0.1,
+                min: 0,
+                max: 100,
+                data: { "management--discount-rate-target": "targetInput" } %>
+              <span class="input-group-text">%</span>
+            </div>
+            <small class="text-muted"><%= t('numerical_managements.index.target_discount_rate_hint') %></small>
+          </div>
+
+          <div class="d-grid">
+            <%= f.submit t('numerical_managements.index.update_discount_rates'), class: "btn btn-warning btn-sm" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%# 月末予測カード %>
+  <div class="col-md-4">
     <div class="card h-100">
       <div class="card-header bg-primary text-white py-2">
         <h6 class="mb-0"><%= t('numerical_managements.index.month_end_forecast') %></h6>
@@ -32,7 +87,8 @@
     </div>
   </div>
 
-  <div class="col-md-6">
+  <%# アクションプランカード %>
+  <div class="col-md-4">
     <div class="card h-100">
       <div class="card-header bg-success text-white py-2">
         <h6 class="mb-0"><%= t('numerical_managements.index.action_plan') %></h6>

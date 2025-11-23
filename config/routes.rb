@@ -38,7 +38,11 @@ Rails.application.routes.draw do
     end
 
     # 月間予算
-    resources :monthly_budgets, only: [ :create, :update, :destroy ]
+    resources :monthly_budgets, only: [ :create, :update, :destroy ] do
+      member do
+        patch :update_discount_rates
+      end
+    end
 
     # 日別目標
     resources :daily_targets, only: [ :create, :update ]
