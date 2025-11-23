@@ -9,14 +9,14 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:16
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
-          POSTGRES_DB: sushi_management_test
+          POSTGRES_DB: mm_app_test
         ports:
           - 5432:5432
         options: >-
@@ -27,7 +27,7 @@ jobs:
 
     env:
       RAILS_ENV: test
-      DATABASE_URL: postgres://postgres:password@localhost:5432/sushi_management_test
+      DATABASE_URL: postgres://postgres:password@localhost:5432/mm_app_test
 
     steps:
       - name: Checkout code
@@ -36,7 +36,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3.0'
+          ruby-version-file: .ruby-version
           bundler-cache: true
 
       - name: Install dependencies
