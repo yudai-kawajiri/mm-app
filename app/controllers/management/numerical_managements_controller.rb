@@ -2,8 +2,8 @@
 
 # 数値管理機能のコントローラー
 class Management::NumericalManagementsController < ApplicationController
+  layout "authenticated_layout"
   include NumericSanitizer
-
   before_action :authenticate_user!
 
   def index
@@ -136,26 +136,6 @@ class Management::NumericalManagementsController < ApplicationController
     end
   end
 
-  # 見切り率を更新
-  def update_discount_rates
-    monthly_budget = current_user.monthly_budgets.find(params[:id])
-
-    if monthly_budget.update(discount_rate_params)
-      render json: {
-        success: true,
-        message: t("numerical_managements.messages.discount_rates_updated"),
-        forecast_discount_rate: monthly_budget.forecast_discount_rate,
-        target_discount_rate: monthly_budget.target_discount_rate
-      }
-    else
-      render json: {
-        success: false,
-        message: t("numerical_managements.messages.discount_rates_update_failed"),
-        errors: monthly_budget.errors.full_messages
-      }, status: :unprocessable_entity
-    end
-  end
-
   private
 
     def convert_daily_data_to_bulk_params(daily_data)
@@ -273,10 +253,5 @@ class Management::NumericalManagementsController < ApplicationController
     else
       { exceeded: false }
     end
-  end
-
-  # 見切り率用パラメータ
-  def discount_rate_params
-    params.require(:monthly_budget).permit(:forecast_discount_rate, :target_discount_rate)
   end
 end

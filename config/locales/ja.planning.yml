@@ -146,6 +146,13 @@ ja:
       actual_revenue_entry:
         title: "実績入力"
         info: "この日の実績売上を入力してください"
+      discount_rate_edit:
+        title: "見切率編集"
+        info: "見切率を入力してください"
+        forecast_label: "予測見切率（%）"
+        forecast_hint: "予測売上計算に適用されます"
+        target_label: "目標見切率（%）"
+        target_hint: "推奨日次目標計算に適用されます"
       assign_plan:
         title: "計画登録"
         edit_title: "計画編集"
@@ -209,3 +216,7 @@ ja:
     errors:
       budget_not_set: "月次予算が設定されていません。先に予算設定を行ってください。"
       budget_mismatch: "日別予算の合計（%{total}）が月次予算（%{budget}）と一致しません。"
+    monthly_budgets:
+      update_discount_rates:
+        success: "見切率を更新しました"
+        failure: "見切率の更新に失敗しました"
