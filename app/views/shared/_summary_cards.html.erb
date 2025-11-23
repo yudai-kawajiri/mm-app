@@ -4,7 +4,7 @@
     <div class="card border-primary">
       <div class="card-body p-3">
         <h6 class="card-title text-primary mb-2">
-          <i class="bi bi-calendar-check"></i> <%= t('numerical_managements.index.monthly_budget_card') %>
+          <%= t('numerical_managements.index.monthly_budget_card') %>
         </h6>
         <p class="h4 mb-0">
           <%= format_currency(forecast_data[:target_amount] || 0) %>
@@ -18,7 +18,7 @@
     <div class="card border-info">
       <div class="card-body p-3">
         <h6 class="card-title text-info mb-2">
-          <i class="bi bi-clipboard-check"></i> <%= t('numerical_managements.index.monthly_planned_revenue') %>
+          <%= t('numerical_managements.index.monthly_planned_revenue') %>
         </h6>
         <p class="h4 mb-0">
           <%= format_currency(forecast_data[:planned_amount] || 0) %>
@@ -32,7 +32,7 @@
     <div class="card border-success">
       <div class="card-body p-3">
         <h6 class="card-title text-success mb-2">
-          <i class="bi bi-graph-up-arrow"></i> <%= t('numerical_managements.index.cumulative_actual') %>
+          <%= t('numerical_managements.index.cumulative_actual') %>
         </h6>
         <p class="h4 mb-0">
           <%= format_currency(forecast_data[:actual_amount] || 0) %>
@@ -46,9 +46,9 @@
     <div class="card border-warning">
       <div class="card-body p-3">
         <h6 class="card-title text-warning mb-2">
-          <i class="bi bi-speedometer2"></i> <%= t('numerical_managements.index.budget_achievement') %>
+          <%= t('numerical_managements.index.budget_achievement') %>
         </h6>
-        <% achievement = forecast_data[:budget_achievement_rate] || 0 %>
+        <% achievement = forecast_data[:achievement_rate] || 0 %>
         <p class="h4 mb-0 <%= achievement_rate_color_class(achievement) %>">
           <%= number_to_percentage(achievement, precision: 1) %>
         </p>

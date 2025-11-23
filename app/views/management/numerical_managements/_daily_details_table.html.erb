@@ -1,4 +1,4 @@
-<%# 日別明細テーブル（一括編集機能付き） %>
+<%# 日別明細テーブル(一括編集機能付き) %>
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
     <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
@@ -10,18 +10,41 @@
   </div>
 
   <div id="bulkEditSummary" class="card-body bg-light border-bottom" style="display: none;">
+    <%
+      # 日別予算の合計を計算
+      daily_target_sum = daily_data.sum { |day| day[:target] || 0 }
+      # 月間予算との差分を計算
+      monthly_budget_amount = @monthly_budget&.target_amount || 0
+      budget_diff = monthly_budget_amount - daily_target_sum
+    %>
     <div class="row">
       <div class="col-md-4">
         <strong><%= t('numerical_managements.bulk_edit.monthly_budget_label') %></strong>
-        <span class="text-primary"><%= format_currency(@monthly_budget&.target_amount || 0) %></span>
+        <span class="text-primary"><%= format_currency(monthly_budget_amount) %></span>
       </div>
       <div class="col-md-4">
         <strong><%= t('numerical_managements.bulk_edit.daily_target_sum') %></strong>
-        <span id="dailyTargetSum" class="fw-bold">¥0</span>
+        <span id="dailyTargetSum" class="fw-bold"><%= format_currency(daily_target_sum) %></span>
       </div>
       <div class="col-md-4">
         <strong><%= t('numerical_managements.bulk_edit.budget_diff_label') %></strong>
-        <span id="budgetDiff" class="fw-bold">¥0</span>
+        <%
+          diff_class = if budget_diff > 0
+                        'fw-bold text-warning'
+                      elsif budget_diff < 0
+                        'fw-bold text-danger'
+                      else
+                        'fw-bold text-success'
+                      end
+          diff_text = if budget_diff > 0
+                        "-#{format_currency(budget_diff.abs)} #{t('numerical_managements.bulk_edit.shortage')}"
+                      elsif budget_diff < 0
+                        "+#{format_currency(budget_diff.abs)} #{t('numerical_managements.bulk_edit.excess')}"
+                      else
+                        format_currency(0)
+                      end
+        %>
+        <span id="budgetDiff" class="<%= diff_class %>"><%= diff_text %></span>
       </div>
     </div>
   </div>
@@ -63,10 +86,11 @@
                   </span>
                   <div class="bulk-edit-input" style="display: none;">
                     <%= text_field_tag "daily_data[#{index}][target_amount]",
-                                       number_with_delimiter(day[:target].to_i),
-                                       class: "form-control form-control-sm text-end bulk-edit-target numeric-input",
-                                       data: { original: day[:target].to_i },
-                                       placeholder: "0" %>
+                              number_with_delimiter(day[:target].to_i),
+                              class: "form-control form-control-sm text-end bulk-edit-target numeric-input",
+                              data: { original: day[:target].to_i },
+                              placeholder: "0",
+                              inputmode: "numeric" %>
                     <%= hidden_field_tag "daily_data[#{index}][date]", day[:date].strftime('%Y-%m-%d') %>
                     <%= hidden_field_tag "daily_data[#{index}][target_id]", target_id %>
                   </div>
@@ -83,10 +107,11 @@
                   <div class="bulk-edit-input" style="display: none;">
                     <% first_schedule = day[:plan_schedules].first %>
                     <%= text_field_tag "daily_data[#{index}][actual_revenue]",
-                                       number_with_delimiter((first_schedule&.actual_revenue || 0).to_i),
-                                       class: "form-control form-control-sm text-end numeric-input",
-                                       disabled: day[:plan_schedules].empty?,
-                                       placeholder: "0" %>
+                              number_with_delimiter((first_schedule&.actual_revenue || 0).to_i),
+                              class: "form-control form-control-sm text-end numeric-input",
+                              disabled: day[:plan_schedules].empty?,
+                              placeholder: "0",
+                              inputmode: "numeric" %>
                     <%= hidden_field_tag "daily_data[#{index}][plan_schedule_id]", first_schedule&.id %>
                   </div>
                 </td>
@@ -147,7 +172,7 @@
                               data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
                               data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
                               data-plan-schedule-id="<%= first_schedule.id %>"
-                              data-actual-revenue="<%= first_schedule.actual_revenue || 0 %>"
+                              data-actual-revenue="<%= (first_schedule.actual_revenue || 0).to_i %>"
                               onclick="setActualModalData(this)"
                               title="<%= t('numerical_managements.actions.input_actual') %>">
                         <i class="bi bi-currency-yen"></i>
@@ -246,49 +271,93 @@ window.monthlyBudget = <%= @monthly_budget&.target_amount || 0 %>;
 function setupNumericInput(input) {
   let isComposing = false;
 
+  const initialValue = input.value.replace(/,/g, '');
+  input.dataset.rawValue = initialValue || '0';
+
   input.addEventListener('compositionstart', function() {
     isComposing = true;
   });
 
   input.addEventListener('compositionend', function(e) {
     isComposing = false;
-    formatNumericValue(e.target);
-  });
-
-  input.addEventListener('input', function(e) {
-    if (isComposing) return;
-    formatNumericValue(e.target);
-  });
-
-  input.addEventListener('blur', function(e) {
-    if (e.target.value === '') {
-      e.target.value = '0';
-    }
+    processInput(e.target);
   });
 
   input.addEventListener('focus', function(e) {
-    if (e.target.value === '0') {
-      e.target.select();
+    const rawValue = e.target.dataset.rawValue || '0';
+    e.target.value = rawValue;
+
+    setTimeout(function() {
+      const len = e.target.value.length;
+      e.target.setSelectionRange(len, len);
+    }, 0);
+  });
+
+  input.addEventListener('input', function(e) {
+    if (isComposing) {
+      return;
     }
-  });
-}
 
-function formatNumericValue(input) {
-  let value = input.value;
-
-  value = value.replace(/[０-９]/g, function(s) {
-    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    processInput(e.target);
   });
 
-  value = value.replace(/[^\d]/g, '');
+  input.addEventListener('blur', function(e) {
+    let rawValue = e.target.dataset.rawValue || '';
 
-  if (value === '') {
-    input.value = '';
-    return;
+    if (rawValue === '' || rawValue === '0') {
+      rawValue = '0';
+      e.target.dataset.rawValue = '0';
+    }
+
+    const numValue = parseInt(rawValue, 10) || 0;
+    e.target.value = numValue.toLocaleString('ja-JP');
+  });
+
+  function processInput(input) {
+    const originalValue = input.value;
+    const originalCursorPos = input.selectionStart;
+
+    let value = originalValue;
+
+    value = value.replace(/[０-９]/g, function(s) {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    });
+
+    value = value.replace(/[^\d]/g, '');
+
+    if (value.length > 1) {
+      value = value.replace(/^0+/, '');
+    }
+
+    if (input.value !== value) {
+      let digitsBeforeCursor = 0;
+      for (let i = 0; i < originalCursorPos && i < originalValue.length; i++) {
+        if (/\d/.test(originalValue[i])) {
+          digitsBeforeCursor++;
+        }
+      }
+
+      input.value = value;
+
+      let newPos = 0;
+      let digitCount = 0;
+      for (let i = 0; i < value.length; i++) {
+        if (digitCount >= digitsBeforeCursor) {
+          break;
+        }
+        newPos++;
+        digitCount++;
+      }
+
+      input.setSelectionRange(newPos, newPos);
+    }
+
+    input.dataset.rawValue = value;
+
+    if (input.classList.contains('bulk-edit-target')) {
+      calculateDailyTargetSum();
+    }
   }
-
-  const numValue = parseInt(value) || 0;
-  input.value = numValue.toLocaleString();
 }
 
 function toggleBulkEditMode() {
@@ -297,33 +366,53 @@ function toggleBulkEditMode() {
   if (window.isEditMode) {
     document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-eye"></i> <%= j t('numerical_managements.bulk_edit.toggle_normal_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'block';
-    document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'block');
-    document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.normal-mode-display').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.bulk-edit-input').forEach(function(el) {
+      el.style.display = 'block';
+    });
+    document.querySelectorAll('.bulk-edit-hidden').forEach(function(el) {
+      el.style.display = 'none';
+    });
     document.querySelector('.bulk-edit-actions').style.display = 'block';
 
-    document.querySelectorAll('.numeric-input').forEach(input => {
-      const newInput = input.cloneNode(true);
+    document.querySelectorAll('.numeric-input').forEach(function(input) {
+      const newInput = document.createElement('input');
+      newInput.type = 'text';
+      newInput.value = input.value;
+      newInput.className = input.className;
+      newInput.name = input.name;
+      newInput.placeholder = input.placeholder || '';
+      newInput.disabled = input.disabled;
+
+      if (input.dataset.original) {
+        newInput.dataset.original = input.dataset.original;
+      }
+
       input.parentNode.replaceChild(newInput, input);
 
       setupNumericInput(newInput);
-
-      if (newInput.classList.contains('bulk-edit-target')) {
-        newInput.addEventListener('input', calculateDailyTargetSum);
-      }
     });
 
     calculateDailyTargetSum();
   } else {
     document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-pencil-square"></i> <%= j t('numerical_managements.bulk_edit.toggle_edit_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'none';
-    document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'inline');
-    document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'table-cell');
+    document.querySelectorAll('.normal-mode-display').forEach(function(el) {
+      el.style.display = 'inline';
+    });
+    document.querySelectorAll('.bulk-edit-input').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.bulk-edit-hidden').forEach(function(el) {
+      el.style.display = 'table-cell';
+    });
     document.querySelector('.bulk-edit-actions').style.display = 'none';
 
-    document.querySelectorAll('.bulk-edit-target').forEach(input => {
-      const originalValue = parseInt(input.dataset.original) || 0;
+    document.querySelectorAll('.bulk-edit-target').forEach(function(input) {
+      const originalValue = parseInt(input.dataset.original, 10) || 0;
+      input.dataset.rawValue = originalValue.toString();
       input.value = originalValue.toLocaleString();
     });
   }
@@ -331,24 +420,99 @@ function toggleBulkEditMode() {
 
 function calculateDailyTargetSum() {
   let sum = 0;
-  document.querySelectorAll('.bulk-edit-target').forEach(input => {
-    const value = parseInt(input.value.replace(/,/g, '')) || 0;
+  let cumulativeTarget = 0;
+  let cumulativePlanned = 0;
+  let cumulativeActual = 0;
+
+  document.querySelectorAll('.bulk-edit-target').forEach(function(input) {
+    const value = parseInt(input.dataset.rawValue, 10) || 0;
     sum += value;
+    cumulativeTarget += value;
+
+    const currentRow = input.closest('tr');
+    if (currentRow) {
+      const plannedCell = currentRow.querySelector('td:nth-child(3)');
+      const plannedValue = plannedCell ? parseInt(plannedCell.textContent.replace(/[^0-9]/g, ''), 10) || 0 : 0;
+      cumulativePlanned += plannedValue;
+
+      const actualCell = currentRow.querySelector('td:nth-child(4)');
+      let actualValue = 0;
+      if (actualCell) {
+        const actualInput = actualCell.querySelector('.numeric-input');
+        if (actualInput && !actualInput.disabled) {
+          actualValue = parseInt(actualInput.dataset.rawValue, 10) || 0;
+        } else {
+          const displaySpan = actualCell.querySelector('.normal-mode-display');
+          if (displaySpan) {
+            actualValue = parseInt(displaySpan.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+          }
+        }
+      }
+      cumulativeActual += actualValue;
+
+      const cumulativeRow = currentRow.nextElementSibling;
+
+      if (cumulativeRow && cumulativeRow.classList.contains('table-light')) {
+        updateCumulativeCell(cumulativeRow, 1, cumulativeTarget);
+        updateCumulativeCell(cumulativeRow, 2, cumulativePlanned);
+        updateCumulativeCell(cumulativeRow, 3, cumulativeActual);
+
+        const cumulativeRateCell = cumulativeRow.querySelector('td:nth-child(4)');
+        if (cumulativeRateCell) {
+          let rate = 0;
+          if (cumulativeTarget > 0) {
+            rate = (cumulativeActual / cumulativeTarget) * 100;
+          }
+
+          const rateSpan = cumulativeRateCell.querySelector('span');
+          if (rateSpan) {
+            rateSpan.className = '';
+            if (rate >= 100) {
+              rateSpan.classList.add('text-success');
+            } else if (rate >= 80) {
+              rateSpan.classList.add('text-warning');
+            } else {
+              rateSpan.classList.add('text-danger');
+            }
+            rateSpan.textContent = rate.toFixed(1) + '%';
+          }
+        }
+
+        const cumulativeDiffCell = cumulativeRow.querySelector('td:nth-child(5)');
+        if (cumulativeDiffCell) {
+          const diff = cumulativeActual - cumulativeTarget;
+          const labelElement = cumulativeDiffCell.querySelector('small.text-muted');
+
+          if (labelElement) {
+            cumulativeDiffCell.innerHTML = '';
+            cumulativeDiffCell.appendChild(labelElement.cloneNode(true));
+            cumulativeDiffCell.appendChild(document.createTextNode(' ¥' + diff.toLocaleString('ja-JP')));
+
+            cumulativeDiffCell.className = 'text-end';
+            if (diff >= 0) {
+              cumulativeDiffCell.classList.add('text-success');
+            } else {
+              cumulativeDiffCell.classList.add('text-danger');
+            }
+          }
+        }
+      }
+    }
   });
 
   const diff = sum - window.monthlyBudget;
 
-  document.getElementById('dailyTargetSum').textContent = '¥' + sum.toLocaleString();
+  document.getElementById('dailyTargetSum').textContent = '¥' + sum.toLocaleString('ja-JP');
 
   const diffElement = document.getElementById('budgetDiff');
   const saveButton = document.getElementById('bulkSaveButton');
 
   if (diff > 0) {
-    diffElement.textContent = '+¥' + diff.toLocaleString() + ' <%= j t('numerical_managements.bulk_edit.excess') %>';
+    diffElement.textContent = '+¥' + diff.toLocaleString('ja-JP') + ' <%= j t('numerical_managements.bulk_edit.excess') %>';
     diffElement.className = 'fw-bold text-danger';
     saveButton.disabled = true;
   } else if (diff < 0) {
-    diffElement.textContent = '-¥' + Math.abs(diff).toLocaleString() + ' <%= j t('numerical_managements.bulk_edit.shortage') %>';
+    diffElement.textContent = '-¥' + Math.abs(diff).toLocaleString('ja-JP') + ' <%= j t('numerical_managements.bulk_edit.shortage') %>';
     diffElement.className = 'fw-bold text-warning';
     saveButton.disabled = false;
   } else {
@@ -358,10 +522,94 @@ function calculateDailyTargetSum() {
   }
 }
 
+function updateCumulativeCell(row, columnIndex, value) {
+  const cell = row.querySelector('td:nth-child(' + columnIndex + ')');
+  if (cell) {
+    const labelElement = cell.querySelector('small.text-muted');
+    if (labelElement) {
+      cell.innerHTML = '';
+      cell.appendChild(labelElement.cloneNode(true));
+      cell.appendChild(document.createTextNode(' ¥' + value.toLocaleString('ja-JP')));
+    }
+  }
+}
+
+function initializeCumulativeValues() {
+  let cumulativeTarget = 0;
+  let cumulativePlanned = 0;
+  let cumulativeActual = 0;
+
+  document.querySelectorAll('tbody tr').forEach(function(row) {
+    const dateCell = row.querySelector('td[rowspan="2"]');
+    if (!dateCell) {
+      return;
+    }
+
+    const budgetCell = row.querySelector('td:nth-child(2) .normal-mode-display');
+    const budgetValue = budgetCell ? parseInt(budgetCell.textContent.replace(/[^0-9]/g, ''), 10) || 0 : 0;
+    cumulativeTarget += budgetValue;
+
+    const plannedCell = row.querySelector('td:nth-child(3)');
+    const plannedValue = plannedCell ? parseInt(plannedCell.textContent.replace(/[^0-9]/g, ''), 10) || 0 : 0;
+    cumulativePlanned += plannedValue;
+
+    const actualCell = row.querySelector('td:nth-child(4) .normal-mode-display');
+    const actualValue = actualCell ? parseInt(actualCell.textContent.replace(/[^0-9]/g, ''), 10) || 0 : 0;
+    cumulativeActual += actualValue;
+
+    const cumulativeRow = row.nextElementSibling;
+    if (cumulativeRow && cumulativeRow.classList.contains('table-light')) {
+      updateCumulativeCell(cumulativeRow, 1, cumulativeTarget);
+      updateCumulativeCell(cumulativeRow, 2, cumulativePlanned);
+      updateCumulativeCell(cumulativeRow, 3, cumulativeActual);
+
+      const cumulativeRateCell = cumulativeRow.querySelector('td:nth-child(4)');
+      if (cumulativeRateCell) {
+        let rate = 0;
+        if (cumulativeTarget > 0) {
+          rate = (cumulativeActual / cumulativeTarget) * 100;
+        }
+
+        const rateSpan = cumulativeRateCell.querySelector('span');
+        if (rateSpan) {
+          rateSpan.className = '';
+          if (rate >= 100) {
+            rateSpan.classList.add('text-success');
+          } else if (rate >= 80) {
+            rateSpan.classList.add('text-warning');
+          } else {
+            rateSpan.classList.add('text-danger');
+          }
+          rateSpan.textContent = rate.toFixed(1) + '%';
+        }
+      }
+
+      const cumulativeDiffCell = cumulativeRow.querySelector('td:nth-child(5)');
+      if (cumulativeDiffCell) {
+        const diff = cumulativeActual - cumulativeTarget;
+        const labelElement = cumulativeDiffCell.querySelector('small.text-muted');
+
+        if (labelElement) {
+          cumulativeDiffCell.innerHTML = '';
+          cumulativeDiffCell.appendChild(labelElement.cloneNode(true));
+          cumulativeDiffCell.appendChild(document.createTextNode(' ¥' + diff.toLocaleString('ja-JP')));
+
+          cumulativeDiffCell.className = 'text-end';
+          if (diff >= 0) {
+            cumulativeDiffCell.classList.add('text-success');
+          } else {
+            cumulativeDiffCell.classList.add('text-danger');
+          }
+        }
+      }
+    }
+  });
+}
+
 document.getElementById('bulkEditForm').addEventListener('submit', function(e) {
-  document.querySelectorAll('.numeric-input').forEach(input => {
-    if (!input.disabled) {
-      input.value = input.value.replace(/,/g, '');
+  document.querySelectorAll('.numeric-input').forEach(function(input) {
+    if (!input.disabled && input.dataset.rawValue) {
+      input.value = input.dataset.rawValue;
     }
   });
 });
@@ -369,19 +617,19 @@ document.getElementById('bulkEditForm').addEventListener('submit', function(e) {
 function setEditModalData(button) {
   const date = button.getAttribute('data-date');
   const dateDisplay = button.getAttribute('data-date-display');
-  const targetId = button.getAttribute('data-target-id');
   const targetAmount = button.getAttribute('data-target-amount');
 
-  const form = document.getElementById('editDailyTargetForm');
-  document.getElementById('editTargetDate').value = dateDisplay || '';
-  document.getElementById('editTargetDateHidden').value = date || '';
-  document.getElementById('editTargetAmount').value = targetAmount || '0';
+  const numValue = parseInt(targetAmount, 10) || 0;
 
-  if (targetId) {
-    form.action = `/management/daily_targets/${targetId}`;
-  } else {
-    form.action = '/management/daily_targets';
-    form.method = 'post';
+  document.getElementById('editTargetDate').value = dateDisplay || '';
+
+  const input = document.getElementById('editTargetAmount');
+  input.dataset.rawValue = numValue.toString();
+  input.value = numValue.toLocaleString('ja-JP');
+
+  const form = document.getElementById('editTargetForm');
+  if (form && date) {
+    form.action = '/management/numerical_managements/' + date + '/update_daily_target';
   }
 }
 
@@ -391,13 +639,40 @@ function setActualModalData(button) {
   const scheduleId = button.getAttribute('data-plan-schedule-id');
   const actualRevenue = button.getAttribute('data-actual-revenue');
 
-  const form = document.getElementById('editActualRevenueForm');
-  document.getElementById('editActualDate').value = dateDisplay || '';
-  document.getElementById('editActualDateHidden').value = date || '';
-  document.getElementById('editActualRevenue').value = actualRevenue || '0';
+  document.getElementById('actualRevenueDate').value = dateDisplay || '';
 
-  if (scheduleId) {
-    form.action = `/management/plan_schedules/${scheduleId}`;
+  const numValue = parseInt(actualRevenue, 10) || 0;
+  const input = document.getElementById('actualRevenueInput');
+  input.dataset.rawValue = numValue.toString();
+  input.value = numValue.toLocaleString('ja-JP');
+
+  const form = document.getElementById('actualRevenueForm');
+  if (form && scheduleId) {
+    form.action = '/management/plan_schedules/' + scheduleId + '/actual_revenue';
   }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  const editTargetInput = document.getElementById('editTargetAmount');
+  if (editTargetInput) {
+    setupNumericInput(editTargetInput);
+  }
+
+  const actualRevenueInput = document.getElementById('actualRevenueInput');
+  if (actualRevenueInput) {
+    setupNumericInput(actualRevenueInput);
+  }
+
+  const editMonthlyBudgetInput = document.getElementById('editMonthlyBudgetAmount');
+  if (editMonthlyBudgetInput) {
+    setupNumericInput(editMonthlyBudgetInput);
+  }
+
+  const newMonthlyBudgetInput = document.getElementById('newMonthlyBudgetAmount');
+  if (newMonthlyBudgetInput) {
+    setupNumericInput(newMonthlyBudgetInput);
+  }
+
+  initializeCumulativeValues();
+});
 </script>

@@ -8,7 +8,7 @@ FactoryBot.define do
     planned_revenue { 50000 }
     actual_revenue { nil }
     status { :scheduled }
-    note { "テスト用の計画スケジュールメモ" }
+    description { "テスト用の計画スケジュールメモ" }
 
     trait :scheduled do
       status { :scheduled }

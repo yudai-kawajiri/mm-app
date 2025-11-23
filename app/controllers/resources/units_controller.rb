@@ -41,7 +41,7 @@ class Resources::UnitsController < AuthenticatedController
 
     # 名前検索（直接実装）
     if params[:q].present?
-      @units = @units.where("name LIKE ?", "%#{params[:q]}%")
+      @units = @units.search_by_name(params[:q])
     end
 
     # ページネーション

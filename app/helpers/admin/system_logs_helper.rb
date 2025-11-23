@@ -62,7 +62,7 @@ module Admin
     # @param version [PaperTrail::Version] バージョンオブジェクト
     # @return [String] ユーザー名
     #
-    # @note
+    # @description
     #   - whodunnitがnilの場合は「システム」を返す
     #   - ユーザーが削除されている場合は「不明なユーザー」を返す
     #
@@ -87,7 +87,7 @@ module Admin
     # @param version [PaperTrail::Version] バージョンオブジェクト
     # @return [String] 詳細情報（name, title, email, code のいずれか、または「詳細なし」）
     #
-    # @note
+    # @description
     #   - 作成イベント: 現在のレコードから取得
     #   - 更新・削除イベント: objectフィールドから取得
     #   - エラー時は「詳細なし」を返す
@@ -118,7 +118,7 @@ module Admin
     # @param version [PaperTrail::Version] バージョンオブジェクト
     # @return [String] 詳細情報
     #
-    # @note
+    # @description
     #   DETAIL_ATTRIBUTES定数で定義された属性を優先順位順に取得します
     #
     def fetch_detail_from_current_record(version)
@@ -140,7 +140,7 @@ module Admin
     # @param version [PaperTrail::Version] バージョンオブジェクト
     # @return [String] 詳細情報
     #
-    # @note
+    # @description
     #   DETAIL_ATTRIBUTES_HASH定数で定義された属性を優先順位順に取得します
     #
     def fetch_detail_from_object(version)

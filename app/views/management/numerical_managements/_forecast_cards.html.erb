@@ -1,6 +1,40 @@
-<%# 月末予測・アクションプランカード %>
+<%# 見切り率設定・月末予測・アクションプランカード %>
 <div class="row g-3 mb-3">
-  <div class="col-md-6">
+  <%# 見切り率設定カード（表示のみ） %>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-header bg-warning text-dark py-2">
+        <h6 class="mb-0"><%= t('numerical_managements.index.discount_rate_settings') %></h6>
+      </div>
+      <div class="card-body py-2 px-3">
+        <table class="table table-sm table-borderless mb-2" style="font-size: 0.9rem;">
+          <tbody>
+            <tr>
+              <td class="py-1"><%= t('numerical_managements.index.forecast_discount_rate') %></td>
+              <td class="py-1 text-end fw-bold">
+                <%= number_to_percentage(@monthly_budget&.forecast_discount_rate || 0, precision: 1) %>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-1"><%= t('numerical_managements.index.target_discount_rate') %></td>
+              <td class="py-1 text-end fw-bold">
+                <%= number_to_percentage(@monthly_budget&.target_discount_rate || 0, precision: 1) %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="text-end">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#discountRateModal">
+            <%= t('numerical_managements.index.update_discount_rates') %>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# 月末予測カード %>
+  <div class="col-md-4">
     <div class="card h-100">
       <div class="card-header bg-primary text-white py-2">
         <h6 class="mb-0"><%= t('numerical_managements.index.month_end_forecast') %></h6>
@@ -32,7 +66,8 @@
     </div>
   </div>
 
-  <div class="col-md-6">
+  <%# アクションプランカード %>
+  <div class="col-md-4">
     <div class="card h-100">
       <div class="card-header bg-success text-white py-2">
         <h6 class="mb-0"><%= t('numerical_managements.index.action_plan') %></h6>

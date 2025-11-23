@@ -30,8 +30,7 @@
             <label class="form-label"><%= t('numerical_managements.modals.labels.category') %></label>
             <select class="form-select"
                     id="assignPlanCategory"
-                    required
-                    data-action="change->management--assign-plan-info#handleCategoryChange">
+                    required>
               <option value=""><%= t('helpers.prompt.select') %></option>
               <% if @plans_by_category.present? %>
                 <% @plans_by_category.keys.sort.each do |category_name| %>
@@ -48,8 +47,7 @@
                     id="assignPlanSelect"
                     disabled
                     required
-                    data-management--assign-plan-info-target="planSelect"
-                    data-action="change->management--assign-plan-info#handlePlanChange">
+                    data-management--assign-plan-info-target="planSelect">
               <option value=""><%= t('numerical_managements.modals.prompts.select_plan_after_category') %></option>
             </select>
           </div>
@@ -83,6 +81,7 @@
 </div>
 
 <script>
+// グローバル変数の初期化
 window.plansByCategory = <%= raw @plans_by_category.transform_values { |plans|
   plans.map { |p| {
     id: p.id,
@@ -111,22 +110,33 @@ window.assignPlanI18n = {
 
 window.currentPlanProducts = [];
 
-// イベントリスナーをバインド
-document.addEventListener('DOMContentLoaded', function() {
+// イベントリスナーの初期化（DOMContentLoadedとturbo:loadの両方に対応）
+function initAssignPlanModalListeners() {
   const categorySelect = document.getElementById('assignPlanCategory');
   if (categorySelect) {
-    categorySelect.addEventListener('change', function() {
+    // 既存のリスナーを削除してから追加（重複防止）
+    const newCategorySelect = categorySelect.cloneNode(true);
+    categorySelect.parentNode.replaceChild(newCategorySelect, categorySelect);
+
+    newCategorySelect.addEventListener('change', function() {
       handleCategoryChange(this);
     });
   }
 
   const planSelect = document.getElementById('assignPlanSelect');
   if (planSelect) {
-    planSelect.addEventListener('change', function() {
+    // 既存のリスナーを削除してから追加（重複防止）
+    const newPlanSelect = planSelect.cloneNode(true);
+    planSelect.parentNode.replaceChild(newPlanSelect, planSelect);
+
+    newPlanSelect.addEventListener('change', function() {
       handlePlanChange(this);
     });
   }
-});
+}
+
+document.addEventListener('DOMContentLoaded', initAssignPlanModalListeners);
+document.addEventListener('turbo:load', initAssignPlanModalListeners);
 
 function setAssignPlanModalData(button) {
   const scheduleId = button.getAttribute('data-schedule-id');
@@ -182,24 +192,23 @@ function setAssignPlanModalData(button) {
           const planSelect = document.getElementById('assignPlanSelect');
           planSelect.value = planId;
 
-          // 計画が選択できない場合（完了または削除された）のチェック
           if (!planSelect.value || planSelect.value === '') {
             alert(window.assignPlanI18n.alertPlanUnavailable);
           } else {
             handlePlanChange(planSelect);
 
             const snapshotData = button.getAttribute('data-snapshot');
-          if (snapshotData && snapshotData !== 'null' && snapshotData !== 'undefined') {
-            setTimeout(() => {
-              try {
-                const snapshot = JSON.parse(snapshotData);
-                if (snapshot && Array.isArray(snapshot)) {
-                  applySnapshotToProducts(snapshot);
+            if (snapshotData && snapshotData !== 'null' && snapshotData !== 'undefined') {
+              setTimeout(() => {
+                try {
+                  const snapshot = JSON.parse(snapshotData);
+                  if (snapshot && Array.isArray(snapshot)) {
+                    applySnapshotToProducts(snapshot);
+                  }
+                } catch (e) {
+                  console.error('スナップショット解析エラー:', e);
                 }
-              } catch (e) {
-                console.error('スナップショット解析エラー:', e);
-              }
-            }, 150);
+              }, 150);
             }
           }
         }
@@ -245,6 +254,8 @@ function handleCategoryChange(select) {
   const category = select.value;
   const planSelect = document.getElementById('assignPlanSelect');
 
+  console.log('handleCategoryChange called:', category); // デバッグ用
+
   document.getElementById('productsAdjustSection').style.display = 'none';
   document.getElementById('productsContainer').innerHTML = '';
   window.currentPlanProducts = [];
@@ -260,14 +271,15 @@ function handleCategoryChange(select) {
   planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlaceholder}</option>`;
 
   const plans = window.plansByCategory[category];
+  console.log('Plans found:', plans); // デバッグ用
 
   if (!plans || plans.length === 0) {
     planSelect.disabled = true;
     return;
   }
 
-  // 完了ステータスの計画を除外
   const availablePlans = plans.filter(plan => plan.status !== 'completed');
+  console.log('Available plans:', availablePlans); // デバッグ用
 
   if (availablePlans.length === 0) {
     planSelect.innerHTML = `<option value="">${window.assignPlanI18n.noAvailablePlans}</option>`;
@@ -285,6 +297,7 @@ function handleCategoryChange(select) {
   });
 
   planSelect.disabled = false;
+  console.log('Plan select enabled with', availablePlans.length, 'options'); // デバッグ用
 }
 
 function handlePlanChange(select) {
@@ -337,7 +350,6 @@ function displayProducts(products) {
     `;
     container.appendChild(row);
 
-    // イベントリスナーをバインド
     const input = row.querySelector('input[type="number"]');
     if (input) {
       input.addEventListener('change', updateTotalCost);
@@ -352,7 +364,6 @@ function applySnapshotToProducts(snapshotProducts) {
   if (!snapshotProducts || !Array.isArray(snapshotProducts)) {
     return;
   }
-
 
   snapshotProducts.forEach(sp => {
     const input = document.querySelector(`input[data-product-id="${sp.product_id}"]`);

@@ -5,7 +5,7 @@ class CreatePlanSchedules < ActiveRecord::Migration[8.1]
       t.date :scheduled_date, null: false, comment: 'スケジュール実施日'
       t.decimal :actual_revenue, precision: 12, scale: 2, comment: '実績売上'
       t.integer :status, default: 0, null: false, comment: 'ステータス'
-      t.text :note, comment: '備考'
+      t.text :description, comment: '概要'
 
       t.timestamps
     end

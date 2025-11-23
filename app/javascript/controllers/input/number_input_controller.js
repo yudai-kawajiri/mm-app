@@ -398,10 +398,10 @@ export default class extends Controller {
       for (let i = hasNegative ? 1 : 0; i < finalValue.length; i++) {
         if (REGEX.DIGIT.test(finalValue[i])) {
           digitsSeen++
-          if (digitsSeen >= digitsBeforeCursor) {
-            newCursorPos = i + 1
-            break
-          }
+        }
+        if (digitsSeen >= digitsBeforeCursor) {  // 数字のカウント後、毎回判定
+          newCursorPos = i + 1
+          break
         }
       }
 

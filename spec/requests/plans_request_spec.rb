@@ -102,7 +102,7 @@ RSpec.describe "Plans", type: :request do
               name: '新しい計画',
               category_id: plan_category.id,
               status: 'draft',
-              description: 'テスト説明'
+              description: 'テスト概要'
             }
           }
         end
@@ -230,7 +230,7 @@ RSpec.describe "Plans", type: :request do
           {
             plan: {
               name: '更新された計画名',
-              description: '更新された説明'
+              description: '更新された概要'
             }
           }
         end

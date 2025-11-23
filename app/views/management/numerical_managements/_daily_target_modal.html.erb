@@ -11,9 +11,7 @@
                     url: "#",
                     method: :patch,
                     local: true,
-                    id: "editDailyTargetForm" do |f| %>
-
-        <%= f.hidden_field :target_date, id: "editTargetDateHidden" %>
+                    id: "editTargetForm" do |f| %>
 
         <div class="modal-body">
           <div class="mb-3">
@@ -22,17 +20,12 @@
           </div>
 
           <div class="mb-3">
-            <%= f.label :target_amount, t('numerical_managements.modals.fields.daily_target'), class: "form-label" %>
+            <%= f.label :target_amount, t('numerical_managements.modals.labels.daily_target_yen'), class: "form-label" %>
             <%= f.text_field :target_amount,
-              class: "form-control",
+              class: "form-control daily-target-input",
               required: true,
-              placeholder: t('numerical_managements.placeholders.daily_target_amount'),
               id: "editTargetAmount",
-              inputmode: "numeric",
-              data: {
-                controller: 'input--number-input' ,
-                action: 'input->input--number-input#handleInput paste->number-input#handlePaste'
-              } %>
+              inputmode: "numeric" %>
           </div>
 
           <div class="alert alert-info" role="alert">

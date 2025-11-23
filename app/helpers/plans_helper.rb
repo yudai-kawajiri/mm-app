@@ -29,7 +29,7 @@ module PlansHelper
   # @param plan [Plan] 計画オブジェクト
   # @return [String] ステータスバッジと変更ドロップダウンのHTML
   #
-  # @note
+  # @description
   #   ステータスごとに異なる色のバッジを表示：
   #   - draft（下書き）: グレー（bg-secondary）
   #   - active（進行中）: 緑（bg-success）

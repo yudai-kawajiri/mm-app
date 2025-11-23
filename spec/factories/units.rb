@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :unit do
     sequence(:name) { |n| "単位#{n}" }
     category { :production }
-    description { "テスト用の単位説明" }
+    description { "テスト用の単位概要" }
     association :user
 
     trait :production do

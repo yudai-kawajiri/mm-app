@@ -123,7 +123,7 @@ class Resources::MaterialsController < AuthenticatedController
       :unit_for_order_id,
       :production_unit_id,
       :order_group_id,
-      :note
+      :description
     )
   end
 end

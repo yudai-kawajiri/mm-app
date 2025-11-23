@@ -3,33 +3,26 @@
 # NameSearchable
 #
 # 名前検索とカテゴリーフィルタリングの共通機能を提供するConcern
-#
-# 使用例:
-#   Product.search_by_name("マグロ")
-#   Material.filter_by_category_id(1)
-#   Plan.search_and_filter(name: "ランチ", category_id: 2)
-#
-# 使用モデル: Product, Material, Plan, Unit, Category など
 module NameSearchable
   extend ActiveSupport::Concern
 
   included do
-    # 名前による部分一致検索
-    #
-    # @param name [String, nil] 検索する名前（部分一致）
-    # @return [ActiveRecord::Relation] 検索結果
+    # 名前または読み仮名による部分一致検索
     scope :search_by_name, lambda { |name|
       if name.present?
-        where("#{table_name}.name ILIKE ?", "%#{sanitize_sql_like(name)}%")
+        # readingカラムがある場合は読み仮名も検索対象に含める
+        if column_names.include?('reading')
+          where("#{table_name}.name ILIKE ? OR #{table_name}.reading ILIKE ?", 
+                "%#{sanitize_sql_like(name)}%", 
+                "%#{sanitize_sql_like(name)}%")
+        else
+          where("#{table_name}.name ILIKE ?", "%#{sanitize_sql_like(name)}%")
+        end
       else
         all
       end
     }
 
-    # カテゴリーIDによる絞り込み
-    #
-    # @param category_id [Integer, String, nil] カテゴリーID
-    # @return [ActiveRecord::Relation] 絞り込み結果
     scope :filter_by_category_id, lambda { |category_id|
       if category_id.present?
         where(category_id: category_id)
@@ -38,24 +31,13 @@ module NameSearchable
       end
     }
 
-    # カテゴリー種別による絞り込み
-    #
-    # Categoryモデル自身の場合は直接category_typeカラムを使用
-    # 他のモデルの場合はcategoryリレーションを経由
-    #
-    # @param category_type [String, nil] カテゴリー種別
-    # @return [ActiveRecord::Relation] 絞り込み結果
     scope :filter_by_category_type, lambda { |category_type|
       if category_type.present?
-        # Categoryモデル自身かどうかをチェック
         if name == 'Resources::Category'
-          # Categoryモデルの場合は直接category_typeカラムで検索
           where(category_type: category_type)
         elsif reflect_on_association(:category)
-          # categoryリレーションが存在する場合のみjoin
           joins(:category).where(categories: { category_type: category_type })
         else
-          # categoryリレーションがない場合はそのまま返す
           all
         end
       else
@@ -63,21 +45,10 @@ module NameSearchable
       end
     }
 
-    # 名前とカテゴリーによる複合検索
-    #
-    # @param options [Hash] 検索条件のオプション
-    # @option options [String] :q 検索する名前（部分一致） - :nameのエイリアス
-    # @option options [String] :name 検索する名前（部分一致）
-    # @option options [Integer, String] :category_id カテゴリーID
-    # @option options [String] :category_type カテゴリー種別
-    # @return [ActiveRecord::Relation] 検索結果
     scope :search_and_filter, lambda { |options = {}|
       result = all
-
-      # :q と :name の両方をサポート（:q を優先）
       search_term = options[:q] || options[:name]
       result = result.search_by_name(search_term) if search_term.present?
-
       result = result.filter_by_category_id(options[:category_id]) if options[:category_id].present?
       result = result.filter_by_category_type(options[:category_type]) if options[:category_type].present?
       result

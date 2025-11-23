@@ -4,7 +4,7 @@ class CreateMonthlyBudgets < ActiveRecord::Migration[8.1]
       t.references :user, null: false, foreign_key: true
       t.date :budget_month, null: false, comment: '予算対象月（月初日を保存）'
       t.decimal :target_amount, precision: 12, scale: 2, null: false, comment: '目標金額'
-      t.text :note, comment: '備考'
+      t.text :description, comment: '概要'
 
       t.timestamps
     end

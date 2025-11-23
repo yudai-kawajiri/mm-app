@@ -16,14 +16,14 @@ class Resources::ProductsController < AuthenticatedController
 
   # ソートオプションの定義
   define_sort_options(
-    display_order: -> { ordered },
+    display_order: -> { by_display_order },
     name: -> { order(:reading) },
     category: -> { joins(:category).order('categories.reading', :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
   # リソース検索（show, edit, update, destroy, copy）
-  find_resource :product, only: [:show, :edit, :update, :destroy, :copy]
+  find_resource :product, only: [:show, :edit, :update, :destroy, :copy, :purge_image, :update_status]
 
   # 商品一覧
   #
@@ -98,12 +98,28 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def copy
     copied = @product.create_copy(user: current_user)
-    redirect_to edit_resources_product_path(copied), notice: t('flash_messages.copy.success',
+      redirect_to resources_products_path, notice: t('flash_messages.copy.success',
                                                                 resource: @product.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Product copy failed: #{e.record.errors.full_messages.join(', ')}"
     redirect_to resources_products_path, alert: t('flash_messages.copy.failure',
                                                   resource: @product.class.model_name.human)
+  end
+
+  # 商品のステータスを更新
+  #
+  # @return [void]
+  def update_status
+    if @product.update(status: params[:status])
+      redirect_to resources_products_path,
+                  notice: t('products.messages.status_updated',
+                            name: @product.name,
+                            status: t("activerecord.enums.resources/product.status.#{@product.status}"))
+    else
+      redirect_to resources_products_path,
+                  alert: t('flash_messages.update.failure',
+                          resource: @product.class.model_name.human)
+    end
   end
 
   # 並び替え順序を保存
@@ -141,14 +157,18 @@ class Resources::ProductsController < AuthenticatedController
       :price,
       :status,
       :image,
-      :note,
+      :description,
       :description
     ).tap do |whitelisted|
       # ネストされた属性（ハッシュ形式）を手動で処理
       # 文字列キー（"0", "new_1763555897631"など）を許可するため
       materials = params[:resources_product][:product_materials_attributes]
       if materials.present?
-        whitelisted[:product_materials_attributes] = materials.permit!.to_h
+        # 数量が空または0のレコードを除外
+        filtered_materials = materials.permit!.to_h.reject do |_key, attrs|
+          attrs[:quantity].blank? || attrs[:quantity].to_f.zero?
+        end
+        whitelisted[:product_materials_attributes] = filtered_materials
       end
     end
   end

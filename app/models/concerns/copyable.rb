@@ -81,9 +81,13 @@ module Copyable
     raise ArgumentError, 'user cannot be nil' if user.nil?
 
     ActiveRecord::Base.transaction do
-      new_name = generate_unique_name
+      unique_attrs = generate_unique_attributes
       new_record = dup
-      new_record.name = new_name
+
+      # 一意性チェック対象の属性を設定
+      unique_attrs.each do |attr, value|
+        new_record.send("#{attr}=", value)
+      end
 
       if new_record.respond_to?(:user_id=)
         new_record.user_id = user.id
@@ -111,45 +115,62 @@ module Copyable
 
   private
 
-  # 一意な名前を生成する
+  # 一意な属性値を生成する
   #
-  # 既存のレコードと重複しない名前を生成するため、
-  # "(コピー1)"、"(コピー2)" のように連番を付ける
+  # uniqueness_check_attributes で指定された属性すべてに対して
+  # ユニークな値を生成する
   #
-  # @return [String] 一意な名前
-  def generate_unique_name
-    base_name = name
+  # @return [Hash] 属性名と値のハッシュ
+  def generate_unique_attributes
     copy_count = 1
-    new_name = copy_config[:name_format].call(base_name, copy_count)
+    unique_attrs = {}
 
-    while name_exists?(new_name)
+    loop do
+      unique_attrs = {}
+
+      copy_config[:uniqueness_check_attributes].each do |attr|
+        unique_attrs[attr] = generate_copy_value(attr, send(attr), copy_count)
+      end
+
+      break unless attributes_exist?(unique_attrs)
       copy_count += 1
-      new_name = copy_config[:name_format].call(base_name, copy_count)
     end
 
-    new_name
+    unique_attrs
   end
 
-  # 指定された名前が既に存在するかチェック
+  # コピー用の値を生成
   #
-  # uniqueness_scope と uniqueness_check_attributes の設定に基づいて
-  # 既存レコードの存在をチェックする
-  #
-  # @param name [String] チェックする名前
-  # @return [Boolean] 存在する場合true
-  def name_exists?(name)
-    conditions = {}
-
-    copy_config[:uniqueness_check_attributes].each do |attr|
-      conditions[attr] = (attr == :name ? name : send(attr))
+  # @param attr [Symbol] 属性名
+  # @param original_value [String] 元の値
+  # @param copy_count [Integer] コピー番号
+  # @return [String] コピー用の値
+  def generate_copy_value(attr, original_value, copy_count)
+    case attr
+    when :name
+      copy_config[:name_format].call(original_value, copy_count)
+    when :reading
+      # 読み仮名には「こぴー」を繰り返し追加（数字は使えない）
+      "#{original_value}#{'こぴー' * copy_count}"
+    else
+      # その他の属性は元の値をそのまま使用
+      original_value
     end
+  end
+
+  # 指定された属性の組み合わせが既に存在するかチェック
+  #
+  # @param attributes [Hash] チェックする属性のハッシュ
+  # @return [Boolean] 存在する場合true
+  def attributes_exist?(attributes)
+    conditions = attributes.dup
 
     scope = copy_config[:uniqueness_scope]
     if scope.is_a?(Array)
       scope.each do |scope_attr|
         conditions[scope_attr] = send(scope_attr) if respond_to?(scope_attr)
       end
-    elsif scope.is_a?(Symbol) && scope != :name
+    elsif scope.is_a?(Symbol) && !attributes.key?(scope)
       conditions[scope] = send(scope) if respond_to?(scope)
     end
 

@@ -118,7 +118,7 @@ class DailyDataService
   # @param target [Integer] 目標値
   # @return [Float] 達成率（%、小数点第1位まで）
   #
-  # @note
+  # @description
   #   目標が0の場合は0%を返す（ゼロ除算対策）
   #
   def calculate_achievement_rate(forecast, target)

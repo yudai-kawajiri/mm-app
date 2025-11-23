@@ -49,6 +49,6 @@ class Resources::Category < ApplicationRecord
   # Copyable設定
   copyable_config(
     uniqueness_scope: :category_type,
-    uniqueness_check_attributes: [:name]
+    uniqueness_check_attributes: [:name, :reading]
   )
 end

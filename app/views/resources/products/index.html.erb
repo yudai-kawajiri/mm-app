@@ -44,7 +44,7 @@
           header: :image,
           data: Proc.new { |product|
             if product.image.attached?
-              image_tag(product.image.variant(resize_to_limit: [50, 50]), class: 'img-thumbnail')
+              image_tag(product.image, class: 'img-thumbnail', style: 'max-width: 50px; max-height: 50px; object-fit: contain;')
             else
               content_tag(:span, t('products.image_help.no_image'), class: 'text-muted')
             end
@@ -56,8 +56,8 @@
         },
         { header: :item_number, data: :item_number },
         { header: :price, data: :price },
-        { header: :status,
-          data: Proc.new { |product| translate_enum_value(product, :status) }
+              { header: :status,
+          data: Proc.new { |product| render_product_status_with_action(product) }
         }
       ]
   %>

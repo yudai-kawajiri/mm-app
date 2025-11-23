@@ -82,7 +82,7 @@ class CalendarDataBuilderService
   #
   # @return [Array<Hash>] 1日〜末日までの日別データ
   #
-  # @note
+  # @description
   #   - DailyDataServiceで実績・計画データを取得
   #   - 計画スケジュールを追加
   #   - 予算・目標と結合して達成率を計算
@@ -117,7 +117,7 @@ class CalendarDataBuilderService
   #
   # @return [Management::MonthlyBudget, nil] 該当月の予算オブジェクト
   #
-  # @note
+  # @description
   #   Management名前空間に対応
   #   budget_monthカラムを使用
   #
@@ -133,7 +133,7 @@ class CalendarDataBuilderService
   #
   # @return [Hash] 日（1-31）をキーとするDailyTargetのハッシュ
   #
-  # @note
+  # @description
   #   Management名前空間に対応
   #   target_dateカラムを使用
   #
@@ -151,7 +151,7 @@ class CalendarDataBuilderService
   #
   # @return [Hash] 日付をキーとする計画スケジュール配列のハッシュ
   #
-  # @note
+  # @description
   #   Planning::PlanScheduleから該当月のデータを取得
   #   planとcategoryをeager loadで効率化
   #

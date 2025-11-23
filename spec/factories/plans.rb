@@ -6,7 +6,7 @@ FactoryBot.define do
     association :user
     association :category, factory: :category, category_type: :plan
     status { :draft }
-    description { "テスト用の製造計画説明" }
+    description { "テスト用の製造計画概要" }
 
     trait :draft do
       status { :draft }

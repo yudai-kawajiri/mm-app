@@ -107,6 +107,6 @@ class Resources::Material < ApplicationRecord
   # 注意: product_materialsはコピーしない（独立したマスタデータのため）
   copyable_config(
     uniqueness_scope: :category_id,
-    uniqueness_check_attributes: [:name]
+    uniqueness_check_attributes: [:name, :reading]
   )
 end

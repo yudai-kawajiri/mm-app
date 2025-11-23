@@ -8,11 +8,12 @@
 #   - 月次予算の作成・更新
 #   - 月次予算の削除（日別目標・計画スケジュールも連動）
 #   - 実績入力済みスケジュールの保護
+#   - 見切り率の更新
 class Management::MonthlyBudgetsController < ApplicationController
   include NumericSanitizer
 
   before_action :authenticate_user!
-  before_action :set_monthly_budget, only: [:update, :destroy]
+  before_action :set_monthly_budget, only: [:update, :destroy, :update_discount_rates]
 
   # 月次予算を作成
   #
@@ -80,6 +81,33 @@ class Management::MonthlyBudgetsController < ApplicationController
     redirect_to management_numerical_managements_path(year: budget_month.year, month: budget_month.month),
                 alert: t("numerical_managements.messages.budget_delete_failed")
   end
+
+  # 見切り率を更新
+  def update_discount_rates
+    # NumericSanitizerを使って全角→半角変換 & サニタイズ
+    cleaned_params = sanitize_numeric_params(
+      discount_rate_params,
+      without_comma: [:forecast_discount_rate, :target_discount_rate]
+    )
+
+    # 空文字列やnilを0.0に変換
+    cleaned_params.transform_values! do |value|
+      value.present? ? value : 0.0
+    end
+
+    if @monthly_budget.update(cleaned_params)
+      redirect_to management_numerical_managements_path(
+        year: @monthly_budget.budget_month.year,
+        month: @monthly_budget.budget_month.month
+      ), notice: t('numerical_managements.messages.discount_rates_updated')
+    else
+      redirect_to management_numerical_managements_path(
+        year: @monthly_budget.budget_month.year,
+        month: @monthly_budget.budget_month.month
+      ), alert: @monthly_budget.errors.full_messages.join(', ')
+    end
+  end
+
   private
 
   # 月次予算を取得
@@ -93,18 +121,20 @@ class Management::MonthlyBudgetsController < ApplicationController
   #
   # @return [ActionController::Parameters]
   def monthly_budget_params
-    params.require(:monthly_budget).permit(:target_amount, :note)
+    params.require(:monthly_budget).permit(:target_amount, :description)
   end
 
   # サニタイズ済みパラメータ
-  #
-  # NumericSanitizerで全角→半角、カンマ削除、スペース削除
-  #
-  # @return [ActionController::Parameters]
   def sanitized_monthly_budget_params
     sanitize_numeric_params(
       monthly_budget_params,
       with_comma: [:target_amount]
     )
+  end
+
+  # 見切り率用パラメータ
+  def discount_rate_params
+    param_key = params.key?(:management_monthly_budget) ? :management_monthly_budget : :monthly_budget
+    params.require(param_key).permit(:forecast_discount_rate, :target_discount_rate)
   end
 end

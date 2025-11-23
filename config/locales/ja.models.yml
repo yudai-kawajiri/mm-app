@@ -59,7 +59,7 @@ ja:
         name: "カテゴリー名"
         reading: "読み仮名"
         category_type: "種別"
-        description: "説明"
+        description: "概要"
         materials: "原材料"
         products: "商品"
         plans: "製造計画"
@@ -68,7 +68,7 @@ ja:
         name: "単位名"
         reading: "読み仮名"
         category: "カテゴリー"
-        description: "説明"
+        description: "概要"
         materials_as_product_unit: "原材料（使用単位）"
         materials_as_order_unit: "原材料（発注単位）"
 
@@ -92,7 +92,7 @@ ja:
         order_group_id: "発注グループ"
         new_order_group_name: "新発注グループ"
         production_unit: "製造単位"
-        description: "説明"
+        description: "概要"
 
       "resources/product":
         name: "商品名"
@@ -103,7 +103,7 @@ ja:
         category: "カテゴリー"
         image: "画像"
         status: "ステータス"
-        description: "説明"
+        description: "概要"
         # ネストされた属性の翻訳（階層構造）
         product_materials:
           material_id: "原材料"
@@ -130,22 +130,22 @@ ja:
         reading: "読み仮名"
         category_id: "カテゴリー"
         status: "ステータス"
-        description: "説明"
+        description: "概要"
 
       "planning/plan_schedule":
         scheduled_date: "実施日"
         plan_id: "製造計画"
-        note: "備考"
+        description: "概要"
 
       "planning/daily_target":
         target_date: "対象日"
         target_amount: "予算額"
-        note: "備考"
+        description: "概要"
 
       "planning/actual_revenue":
         revenue_date: "実績日"
         amount: "売上額"
-        note: "備考"
+        description: "概要"
 
       "management/monthly_budget":
         target_month: "対象月"

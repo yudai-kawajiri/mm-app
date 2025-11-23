@@ -72,7 +72,7 @@ class Resources::Plan < ApplicationRecord
   # Copyable設定
   copyable_config(
     uniqueness_scope: :category_id,
-    uniqueness_check_attributes: [:name],
+    uniqueness_check_attributes: [:name, :reading],
     associations_to_copy: [:plan_products],
     additional_attributes: {
       status: :draft
@@ -102,21 +102,21 @@ class Resources::Plan < ApplicationRecord
   # 指定日にスケジュールを追加
   #
   # @param date [Date] 対象日
-  # @param note [String, nil] メモ
+  # @param description [String, nil] メモ
   # @return [PlanSchedule] 作成されたスケジュール
-  def add_schedule(date, note: nil)
-    plan_schedules.create(scheduled_date: date, note: note)
+  def add_schedule(date, description: nil)
+    plan_schedules.create(scheduled_date: date, description: description)
   end
 
   # 複数日にスケジュールを一括追加
   #
   # @param dates [Array<Date>] 対象日の配列
-  # @param note [String, nil] メモ
+  # @param description [String, nil] メモ
   # @return [Array<PlanSchedule>] 作成されたスケジュールの配列
-  def add_schedules(dates, note: nil)
+  def add_schedules(dates, description: nil)
     dates.map do |date|
       plan_schedules.find_or_create_by(scheduled_date: date) do |schedule|
-        schedule.note = note
+        schedule.description = description
       end
     end
   end
@@ -125,11 +125,11 @@ class Resources::Plan < ApplicationRecord
   #
   # @param start_date [Date] 開始日
   # @param end_date [Date] 終了日
-  # @param note [String, nil] メモ
+  # @param description [String, nil] メモ
   # @return [Array<PlanSchedule>] 作成されたスケジュールの配列
-  def add_weekday_schedules(start_date, end_date, note: nil)
+  def add_weekday_schedules(start_date, end_date, description: nil)
     dates = (start_date..end_date).select { |d| WEEKDAY_RANGE.cover?(d.wday) }
-    add_schedules(dates, note: note)
+    add_schedules(dates, description: description)
   end
 
   # スケジュールされている日数
