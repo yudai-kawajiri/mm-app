@@ -68,17 +68,21 @@ class NumericalForecastService
     # データ取得
     target = budget.target_amount || 0
 
+    # 🆕 見切り率の取得
+    forecast_discount_rate = budget.forecast_discount_rate || 0
+    target_discount_rate = budget.target_discount_rate || 0
+
     # 昨日までの実績（actual_revenue が入力されているもののみ）
     actual = user.plan_schedules
-                 .where(scheduled_date: start_date..past_end)
-                 .where.not(actual_revenue: nil)
-                 .sum(:actual_revenue) || 0
+                  .where(scheduled_date: start_date..past_end)
+                  .where.not(actual_revenue: nil)
+                  .sum(:actual_revenue) || 0
 
     # 今日から月末までの計画高
     future_schedules = user.plan_schedules
-                           .includes(:plan)
-                           .where(scheduled_date: future_start..future_end)
-                           .where(actual_revenue: nil)
+                            .includes(:plan)
+                            .where(scheduled_date: future_start..future_end)
+                            .where(actual_revenue: nil)
 
     planned_amount_for_forecast = future_schedules.sum { |ps| ps.current_planned_revenue }
 
@@ -89,8 +93,10 @@ class NumericalForecastService
 
     total_planned_amount = all_schedules.sum { |ps| ps.current_planned_revenue }
 
-    # 月末予測売上 = 昨日までの実績 + 今日からの計画高
-    forecast = actual + planned_amount_for_forecast
+    # 🆕 月末予測売上 = 昨日までの実績 + 今日からの計画高 × (1 - 予測見切り率/100)
+    discount_multiplier = 1 - (forecast_discount_rate / PERCENTAGE_MULTIPLIER)
+    adjusted_planned = (planned_amount_for_forecast * discount_multiplier).round(AMOUNT_PRECISION)
+    forecast = actual + adjusted_planned
 
     # 予算差
     diff = forecast - target
@@ -108,29 +114,34 @@ class NumericalForecastService
 
     # 残り日数（今日から月末まで）
     remaining_days = if today <= end_date && today >= start_date
-                       (end_date - today).to_i + 1
-                     else
-                       0
-                     end
+                        (end_date - today).to_i + 1
+                      else
+                        0
+                      end
 
     # 必要追加額（予算に達していない場合のみ）
     required_additional = diff < 0 ? diff.abs : 0
 
-    # 推奨日次目標（1日あたり必要額）
+    # 🆕 推奨日次目標 = (必要追加額 ÷ 残り日数) ÷ (1 - 目標見切り率/100)
     daily_required = if remaining_days > 0 && required_additional > 0
-                       (required_additional.to_f / remaining_days).round(AMOUNT_PRECISION)
-                     else
-                       0
-                     end
+                        target_discount_multiplier = 1 - (target_discount_rate / PERCENTAGE_MULTIPLIER)
+                        if target_discount_multiplier > 0
+                          ((required_additional.to_f / remaining_days) / target_discount_multiplier).round(AMOUNT_PRECISION)
+                        else
+                          0
+                        end
+                      else
+                        0
+                      end
 
     # 現在の1日平均実績
     elapsed_days = if today >= start_date && today <= end_date
-                     (today - start_date).to_i
-                   elsif today > end_date
-                     (end_date - start_date).to_i + 1
-                   else
-                     0
-                   end
+                      (today - start_date).to_i
+                    elsif today > end_date
+                      (end_date - start_date).to_i + 1
+                    else
+                      0
+                    end
     current_daily_average = elapsed_days > 0 ? (actual.to_f / elapsed_days).round(AMOUNT_PRECISION) : 0
 
     # 目標との差（推奨日次目標 - 現在の1日平均）
