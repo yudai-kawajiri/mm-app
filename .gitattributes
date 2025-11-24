@@ -1,9 +1,17 @@
-# See https://git-scm.com/docs/gitattributes for more about git attribute files.
+# テキストファイルの改行コードを自動検出してLFに正規化
+* text=auto
 
-# Mark the database schema as having been generated.
+# シェルスクリプトは強制的にLF
+*.sh text eol=lf
+
+# 自動生成ファイルをマーク（言語統計から除外）
 db/schema.rb linguist-generated
+Gemfile.lock linguist-generated
+yarn.lock linguist-generated
 
-# Mark any vendored files as having been vendored.
+# vendorディレクトリをマーク（サードパーティコード）
 vendor/* linguist-vendored
+
+# Rails credentials用のdiff設定
 config/credentials/*.yml.enc diff=rails_credentials
 config/credentials.yml.enc diff=rails_credentials
