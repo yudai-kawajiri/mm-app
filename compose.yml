@@ -4,7 +4,7 @@ services:
     restart: always
     environment:
       TZ: Asia/Tokyo
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       LANG: C.UTF-8
       LC_ALL: C.UTF-8
     volumes:
@@ -34,13 +34,10 @@ services:
       - .:/myapp
       - bundle_data:/usr/local/bundle:cached
       - node_modules:/myapp/node_modules
+    env_file:
+      - .env
     environment:
       TZ: Asia/Tokyo
-      DATABASE_HOST: db
-      DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: password
-      SMTP_ADDRESS: mailcatcher
-      SMTP_PORT: 1025
     ports:
       - "3000:3000"
     depends_on:
