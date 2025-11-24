@@ -1,153 +1,73 @@
 source "https://rubygems.org"
 
-# 主要グループ
-
-# Active Model has_secure_passwordを使用する場合に必要 (今回はDeviseを使用するためコメントアウト)
-# gem "bcrypt", "~> 3.1.7"
-
-# キャッシュを通じて起動時間を短縮（config/boot.rbで必要）
-gem "bootsnap", require: false
-
-# KaminariのBootstrap5対応ビューテンプレート [https://github.com/bootstrap-ruby/bootstrap_form]
-gem "bootstrap5-kaminari-views"
-
-# ネストフォーム機能を提供するGem
-gem "cocoon"
-
-# CSSのバンドルと処理を行う [https://github.com/rails/cssbundling-rails]
-gem "cssbundling-rails"
-
-# 認証機能（ログイン、ユーザー登録、パスワードリセットなど）のためのGem
-gem "devise"
-
-# イーナムの翻訳簡素化
-gem "enum_help"
-
-# Active Storageの画像変換機能（variants）を使用する場合に必要
-gem "image_processing", "~> 1.2"
-
-# JavaScript の管理
-gem "importmap-rails"
-
-# JSON APIを簡単に構築するためのGem [https://github.com/rails/jbuilder]
-gem "jbuilder"
-
-# cocoonはjQueryに依存するため、Rails 7/8環境で必要
-gem "jquery-rails"
-
-# JavaScriptのバンドルとトランスパイルを行う [https://github.com/rails/jsbundling-rails]
-gem "jsbundling-rails"
-
-# DockerコンテナとしてデプロイするためのGem [https://kamal-deploy.org]
-gem "kamal", require: false
-
-# ページネーション機能を提供するGem [https://github.com/kaminari/kaminari]
-gem "kaminari", "1.2.2"
-
-# MiniMagick本体のGemを追加
-# gem "mini_magick"
-
-# レコードの変更履歴を自動で記録し、ロールバックなどを可能にする
-gem 'paper_trail'
-
-# データベースとしてPostgreSQLを使用するためのGem
-gem "pg", "~> 1.1"
-
-# Railsのモダンなアセットパイプライン [https://github.com/rails/propshaft]
-gem "propshaft"
-
-# WebサーバーとしてPumaを使用
-gem "puma", ">= 5.0"
-
-# Railsのバージョン指定
+# === Core ===
 gem "rails", "~> 8.1.0"
-
-# Rails.cache, Active Job, Action Cableのためのデータベースバックアップアダプタ (Action Cable用)
-gem "solid_cable"
-
-# Rails.cache, Active Job, Action Cableのためのデータベースバックアップアダプタ (Cache用)
-gem "solid_cache"
-
-# Rails.cache, Active Job, Action Cableのためのデータベースバックアップアダプタ (Active Job/Queue用)
-gem "solid_queue"
-
-# HotwireのJavaScriptフレームワーク [https://stimulus.hotwired.dev]
-gem "stimulus-rails"
-
-# PumaにHTTPアセットキャッシング/圧縮機能などを追加 [https://github.com/basecamp/thruster/]
-gem "thruster", require: false
-
-# Hotwireのページ高速化ライブラリ [https://turbo.hotwired.dev]
-gem "turbo-rails"
-
-# WindowsやJRuby環境でタイムゾーン情報ファイルを提供
+gem "pg", "~> 1.1"
+gem "puma", ">= 5.0"
+gem "bootsnap", require: false
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
+# === Assets ===
+gem "propshaft"
+gem "cssbundling-rails"
+gem "importmap-rails"
 
-# --- 開発環境とテスト環境で必要なGem ---
+# === Hotwire ===
+gem "turbo-rails"
+gem "stimulus-rails"
+
+# === Rails 8 Solid系 ===
+gem "solid_cable"
+gem "solid_cache"
+gem "solid_queue"
+
+# === Authentication ===
+gem "devise", "~> 4.9"
+
+# === View Helpers ===
+gem "jbuilder"
+gem "kaminari", "~> 1.2.2"
+gem "bootstrap5-kaminari-views"
+gem "cocoon"
+gem "jquery-rails"
+
+# === Utilities ===
+gem "enum_help"
+gem "image_processing", "~> 1.2"
+gem "paper_trail", "~> 15.0"
+gem "thruster", require: false
+
+
 group :development, :test do
-  # セキュリティ脆弱性の静的解析ツール [https://brakemanscanner.org/]
   gem "brakeman", require: false
-
-  # 実行を停止し、変数の値を確認するための対話型デバッガ
   gem "byebug", platforms: [ :mri, :mingw, :x64_mingw ]
-
-  # デバッグに使用するGem [https://guides.rubyonrails.org/debugging_rails_applications.html]
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
-
-  # .envファイルから環境変数をロードし、APIキーなどの機密情報を安全に管理
   gem "dotenv-rails"
-
-  # テストデータ作成のためのファクトリ [https://github.com/thoughtbot/factory_bot]
   gem "factory_bot_rails"
-
-  # Fakerでダミーデータ生成 [https://github.com/faker-ruby/faker]
   gem "faker"
-
-  # OpenWeatherMap APIとの通信に使用
   gem "httparty"
-
-  # Railsのコントローラーテストのサポート機能を提供するGem
-  gem 'rails-controller-testing'
-
-  # RSpecテストフレームワーク [https://rspec.info/]
+  gem "rails-controller-testing"
   gem "rspec-rails", "~> 6.1.0"
-
-  # Rubyのコーディング規約チェック（RuboCop Rails Omakaseスタイル）
   gem "rubocop-rails-omakase", require: false
 end
 
 
-# --- 開発環境で必要なGem ---
 group :development do
-  # メール送信内容をブラウザで確認するGem
-  gem "mailcatcher"
-
-  # 例外ページでコンソールを使用可能にする [https://github.com/rails/web-console]
   gem "web-console"
-
-  # cron設定を簡単に管理するGem [https://github.com/javan/whenever]
   gem "whenever", require: false
+
+  # メール確認ツール（グローバルインストール推奨）
+  # インストール: gem install mailcatcher
+  # 起動: mailcatcher
+  # URL: http://localhost:1080
 end
 
 
-# --- テスト環境で必要なGem ---
 group :test do
-  # システムテスト（ブラウザ操作をシミュレーションするテスト）に使用
   gem "capybara"
-
-  # データベースクリーナー（テスト間でDBをクリーンに保つ）
   gem "database_cleaner-active_record"
-
-  # CI/CD用: テスト結果をJUnit形式で出力
-  gem 'rspec_junit_formatter'
-
-  # Capybaraがブラウザを操作するために使用するドライバー
+  gem "rspec_junit_formatter"
   gem "selenium-webdriver"
-
-  # テストカバレッジ測定ツール [https://github.com/simplecov-ruby/simplecov]
   gem "simplecov", require: false
-
-  # WebDriverの自動管理（Chrome/Firefoxドライバーの自動ダウンロード・更新）
   gem "webdrivers"
 end

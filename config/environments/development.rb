@@ -57,7 +57,7 @@ Rails.application.configure do
   # Action Mailer 設定
   # ====================
   # メール送信エラーを無視（開発環境では送信失敗してもエラーにしない）
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
 
   # テンプレート変更時のメーラーのキャッシングを行わない
   config.action_mailer.perform_caching = false
@@ -65,7 +65,10 @@ Rails.application.configure do
   # MailCatcher を使用してメールをキャプチャ
   # Docker環境: サービス名 "mailcatcher"、ポート 1025
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = { address: "mailcatcher", port: 1025 }
+  config.action_mailer.smtp_settings = {
+    address: ENV.fetch("MAILCATCHER_HOST", "localhost"),
+    port: ENV.fetch("MAILCATCHER_PORT", 1025).to_i
+  }
 
   # ====================
   # データベース設定
