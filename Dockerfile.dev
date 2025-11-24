@@ -1,43 +1,38 @@
-# Ruby のベースイメージを指定（Ruby 3.3.6がプリインストールされたLinux環境）
 FROM ruby:3.3.6
 
-# 環境変数の設定
-ENV LANG C.UTF-8
-ENV TZ Asia/Tokyo
+ENV LANG=C.UTF-8 \
+    TZ=Asia/Tokyo
 
-# 必要なパッケージのインストール（Node.js公式リポジトリの準備）
+# Node.js/Yarn公式リポジトリ追加
 RUN apt-get update -qq \
     && apt-get install -y ca-certificates curl gnupg \
     && mkdir -p /etc/apt/keyrings \
+    # Node.js 20
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-    && NODE_MAJOR=20 \
-    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
-    && wget --quiet -O - /tmp/pubkey.gpg https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+    # Yarn
+    && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarnkey.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | tee /etc/apt/sources.list.d/yarn.list
 
-# 開発に必要なパッケージを一括インストール
-# build-essential: C/C++コンパイラ（gem のネイティブ拡張ビルド用）
-# libpq-dev: PostgreSQL開発ライブラリ（pg gem用）
-# nodejs: JavaScript実行環境（Rails 7のJavaScript処理用）
-# yarn: JavaScript パッケージマネージャー
-# vim: テキストエディタ（コンテナ内でのファイル編集用）
+# 開発パッケージインストール
 RUN apt-get update -qq && apt-get install -y \
     build-essential \
     libpq-dev \
     nodejs \
     yarn \
-    vim
+    vim \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# アプリケーション用のディレクトリを作成
-RUN mkdir /myapp
-
-# 作業ディレクトリを /myapp に設定（以降のコマンドはここで実行される）
 WORKDIR /myapp
 
-# Ruby のパッケージマネージャー Bundler をインストール
-RUN gem install bundler
+# Gemfileを先にコピーしてbundle install（キャッシュ効率化）
+COPY Gemfile Gemfile.lock /myapp/
+RUN gem install bundler && bundle install
 
-# ホストマシンの全ファイルをコンテナの /myapp にコピー
-COPY . /myapp
-
+# package.jsonを先にコピーしてyarn install（キャッシュ効率化）
+COPY package.json yarn.lock /myapp/
 RUN yarn install --check-files
+
+# アプリケーションファイル全体をコピー
+COPY . /myapp
