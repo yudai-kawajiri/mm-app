@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe '単位管理', type: :system do
   let(:user) { create(:user) }
-  
+
   before do
     sign_in_as(user)
   end

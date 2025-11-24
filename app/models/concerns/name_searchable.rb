@@ -11,9 +11,9 @@ module NameSearchable
     scope :search_by_name, lambda { |name|
       if name.present?
         # readingカラムがある場合は読み仮名も検索対象に含める
-        if column_names.include?('reading')
-          where("#{table_name}.name ILIKE ? OR #{table_name}.reading ILIKE ?", 
-                "%#{sanitize_sql_like(name)}%", 
+        if column_names.include?("reading")
+          where("#{table_name}.name ILIKE ? OR #{table_name}.reading ILIKE ?",
+                "%#{sanitize_sql_like(name)}%",
                 "%#{sanitize_sql_like(name)}%")
         else
           where("#{table_name}.name ILIKE ?", "%#{sanitize_sql_like(name)}%")
@@ -33,7 +33,7 @@ module NameSearchable
 
     scope :filter_by_category_type, lambda { |category_type|
       if category_type.present?
-        if name == 'Resources::Category'
+        if name == "Resources::Category"
           where(category_type: category_type)
         elsif reflect_on_association(:category)
           joins(:category).where(categories: { category_type: category_type })

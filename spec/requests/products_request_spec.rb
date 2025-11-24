@@ -411,12 +411,12 @@ RSpec.describe "Products", type: :request do
       let(:product3) { create(:product, user: admin_user, category: product_category, display_order: 3) }
 
       it '正常にレスポンスを返すこと' do
-        post reorder_products_path, params: { product_ids: [product3.id, product1.id, product2.id] }
+        post reorder_products_path, params: { product_ids: [ product3.id, product1.id, product2.id ] }
         expect(response).to have_http_status(:ok)
       end
 
       it '並び順が更新されること' do
-        post reorder_products_path, params: { product_ids: [product3.id, product1.id, product2.id] }
+        post reorder_products_path, params: { product_ids: [ product3.id, product1.id, product2.id ] }
         expect(product3.reload.display_order).to eq(1)
         expect(product1.reload.display_order).to eq(2)
         expect(product2.reload.display_order).to eq(3)
@@ -425,7 +425,7 @@ RSpec.describe "Products", type: :request do
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        post reorder_products_path, params: { product_ids: [1, 2, 3] }
+        post reorder_products_path, params: { product_ids: [ 1, 2, 3 ] }
         expect(response).to redirect_to(new_user_session_path)
       end
     end

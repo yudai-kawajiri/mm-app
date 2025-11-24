@@ -23,11 +23,11 @@ class Resources::Plan < ApplicationRecord
   include Copyable
   include HasReading
 
-  nested_attribute_translation :plan_products, 'Planning::PlanProduct'
+  nested_attribute_translation :plan_products, "Planning::PlanProduct"
 
   # 関連付け
-  belongs_to :category, class_name: 'Resources::Category'
-  has_many :plan_products, class_name: 'Planning::PlanProduct', inverse_of: :plan, dependent: :destroy
+  belongs_to :category, class_name: "Resources::Category"
+  has_many :plan_products, class_name: "Planning::PlanProduct", inverse_of: :plan, dependent: :destroy
   accepts_nested_attributes_for :plan_products,
                                 allow_destroy: true,
                                 reject_if: :reject_plan_products
@@ -35,7 +35,7 @@ class Resources::Plan < ApplicationRecord
   # 保存前コールバック（重複商品を除外）
   before_save :reject_duplicate_plan_products
 
-  has_many :plan_schedules, class_name: 'Planning::PlanSchedule', dependent: :destroy
+  has_many :plan_schedules, class_name: "Planning::PlanSchedule", dependent: :destroy
 
   # 計画のステータス定義
   enum :status, {
@@ -59,7 +59,7 @@ class Resources::Plan < ApplicationRecord
   scope :active_plans, -> { where(status: :active) }
 
   # スケジュール可能な計画を取得（下書きまたは実施中）
-  scope :available_for_schedule, -> { where(status: [:draft, :active]) }
+  scope :available_for_schedule, -> { where(status: [ :draft, :active ]) }
 
   # カテゴリIDでの絞り込み
   #
@@ -72,8 +72,8 @@ class Resources::Plan < ApplicationRecord
   # Copyable設定
   copyable_config(
     uniqueness_scope: :category_id,
-    uniqueness_check_attributes: [:name, :reading],
-    associations_to_copy: [:plan_products],
+    uniqueness_check_attributes: [ :name, :reading ],
+    associations_to_copy: [ :plan_products ],
     additional_attributes: {
       status: :draft
     }
@@ -152,7 +152,7 @@ class Resources::Plan < ApplicationRecord
   def aggregated_material_requirements
     materials_hash = {}
 
-    plan_products.includes(product: { product_materials: [:material, :unit] }).each do |plan_product|
+    plan_products.includes(product: { product_materials: [ :material, :unit ] }).each do |plan_product|
       plan_product.material_requirements.each do |material_data|
         material_id = material_data[:material_id]
         material = Resources::Material.find(material_id)
@@ -211,15 +211,15 @@ class Resources::Plan < ApplicationRecord
 
       # グループ全体の発注量を計算（小数点表示）
       required_order_quantity = case group_data[:measurement_type]
-                                when 'count'
+      when "count"
                                   # 個数ベース: 合計個数 ÷ 1発注単位あたりの個数
                                   (group_data[:group_total_quantity].to_f / group_data[:pieces_per_order_unit]).round(2)
-                                when 'weight'
+      when "weight"
                                   # 重量ベース: 合計重量 ÷ 1発注単位あたりの重量
                                   (group_data[:group_total_weight].to_f / group_data[:unit_weight_for_order]).round(2)
-                                else
+      else
                                   0
-                                end
+      end
 
       {
         material_id: data[:material_id],
@@ -236,7 +236,7 @@ class Resources::Plan < ApplicationRecord
       }
     end.sort_by do |m|
       material = Resources::Material.find(m[:material_id])
-      [material.display_order || DEFAULT_DISPLAY_ORDER, m[:material_name]]
+      [ material.display_order || DEFAULT_DISPLAY_ORDER, m[:material_name] ]
     end
   end
 

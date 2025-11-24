@@ -9,7 +9,6 @@
 #   DailyTarget.for_month(2024, 12)
 #   DailyTarget.recent
 class Management::DailyTarget < ApplicationRecord
-
   # 変更履歴の記録
   has_paper_trail
 
@@ -17,7 +16,7 @@ class Management::DailyTarget < ApplicationRecord
   include UserAssociatable
 
   # 月次予算との関連
-  belongs_to :monthly_budget, class_name: 'Management::MonthlyBudget'
+  belongs_to :monthly_budget, class_name: "Management::MonthlyBudget"
 
   # バリデーション
   validates :target_date, presence: true, uniqueness: { scope: :monthly_budget_id }

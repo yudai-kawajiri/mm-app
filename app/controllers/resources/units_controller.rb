@@ -22,7 +22,7 @@ class Resources::UnitsController < AuthenticatedController
   )
 
   # リソース検索（show, edit, update, destroy, copy）
-  find_resource :unit, only: [:show, :edit, :update, :destroy, :copy]
+  find_resource :unit, only: [ :show, :edit, :update, :destroy, :copy ]
 
   # 単位一覧
   #
@@ -32,7 +32,7 @@ class Resources::UnitsController < AuthenticatedController
     @units = Resources::Unit.all
 
     # ソート適用
-    @units = apply_sort(@units, default: 'name')
+    @units = apply_sort(@units, default: "name")
 
     # カテゴリーフィルタリング
     if params[:category].present?
@@ -93,11 +93,11 @@ class Resources::UnitsController < AuthenticatedController
   # @return [void]
   def copy
     copied = @unit.create_copy(user: current_user)
-    redirect_to resources_units_path, notice: t('flash_messages.copy.success',
+    redirect_to resources_units_path, notice: t("flash_messages.copy.success",
                                                   resource: @unit.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Unit copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_units_path, alert: t('flash_messages.copy.failure',
+    redirect_to resources_units_path, alert: t("flash_messages.copy.failure",
                                                 resource: @unit.class.model_name.human)
   end
 

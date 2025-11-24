@@ -18,12 +18,12 @@ class Resources::ProductsController < AuthenticatedController
   define_sort_options(
     display_order: -> { by_display_order },
     name: -> { order(:reading) },
-    category: -> { joins(:category).order('categories.reading', :reading) },
+    category: -> { joins(:category).order("categories.reading", :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
   # リソース検索（show, edit, update, destroy, copy）
-  find_resource :product, only: [:show, :edit, :update, :destroy, :copy, :purge_image, :update_status]
+  find_resource :product, only: [ :show, :edit, :update, :destroy, :copy, :purge_image, :update_status ]
 
   # 商品一覧
   #
@@ -31,9 +31,9 @@ class Resources::ProductsController < AuthenticatedController
   def index
     sorted_index(
       Resources::Product,
-      default: 'name',
+      default: "name",
       scope: :all,
-      includes: [:category, :product_materials]
+      includes: [ :category, :product_materials ]
     )
     @product_categories = current_user.categories.for_products.ordered
   end
@@ -98,11 +98,11 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def copy
     copied = @product.create_copy(user: current_user)
-      redirect_to resources_products_path, notice: t('flash_messages.copy.success',
+      redirect_to resources_products_path, notice: t("flash_messages.copy.success",
                                                                 resource: @product.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Product copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_products_path, alert: t('flash_messages.copy.failure',
+    redirect_to resources_products_path, alert: t("flash_messages.copy.failure",
                                                   resource: @product.class.model_name.human)
   end
 
@@ -112,12 +112,12 @@ class Resources::ProductsController < AuthenticatedController
   def update_status
     if @product.update(status: params[:status])
       redirect_to resources_products_path,
-                  notice: t('products.messages.status_updated',
+                  notice: t("products.messages.status_updated",
                             name: @product.name,
                             status: t("activerecord.enums.resources/product.status.#{@product.status}"))
     else
       redirect_to resources_products_path,
-                  alert: t('flash_messages.update.failure',
+                  alert: t("flash_messages.update.failure",
                           resource: @product.class.model_name.human)
     end
   end
@@ -140,7 +140,7 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def purge_image
     @product.image.purge if @product.image.attached?
-    redirect_to edit_resources_product_path(@product), notice: t('products.messages.image_deleted')
+    redirect_to edit_resources_product_path(@product), notice: t("products.messages.image_deleted")
   end
 
   private

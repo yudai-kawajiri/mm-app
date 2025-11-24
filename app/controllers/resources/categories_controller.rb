@@ -22,7 +22,7 @@ class Resources::CategoriesController < AuthenticatedController
   )
 
   # リソース検索（show, edit, update, destroy, copy）
-  find_resource :category, only: [:show, :edit, :update, :destroy, :copy]
+  find_resource :category, only: [ :show, :edit, :update, :destroy, :copy ]
 
   # カテゴリー一覧
   #
@@ -32,7 +32,7 @@ class Resources::CategoriesController < AuthenticatedController
     @categories = Resources::Category.all
 
     # ソート適用
-    @categories = apply_sort(@categories, default: 'name')
+    @categories = apply_sort(@categories, default: "name")
 
     # カテゴリー種別フィルタリング
     if params[:category_type].present?
@@ -93,11 +93,11 @@ class Resources::CategoriesController < AuthenticatedController
   # @return [void]
   def copy
     copied = @category.create_copy(user: current_user)
-    redirect_to resources_categories_path, notice: t('flash_messages.copy.success',
+    redirect_to resources_categories_path, notice: t("flash_messages.copy.success",
                                                       resource: @category.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Category copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_categories_path, alert: t('flash_messages.copy.failure',
+    redirect_to resources_categories_path, alert: t("flash_messages.copy.failure",
                                                     resource: @category.class.model_name.human)
   end
 

@@ -18,12 +18,12 @@ class Resources::PlansController < AuthenticatedController
   define_sort_options(
     name: -> { order(:name) },
     status: -> { order(:status, :reading) },
-    category: -> { joins(:category).order('categories.reading', :reading) },
+    category: -> { joins(:category).order("categories.reading", :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
   # リソース検索（show, edit, update, destroy, copy, print）
-  find_resource :plan, only: [:show, :edit, :update, :destroy, :copy, :print, :update_status]
+  find_resource :plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ]
 
   # 計画一覧
   #
@@ -31,9 +31,9 @@ class Resources::PlansController < AuthenticatedController
   def index
     sorted_index(
       Resources::Plan,
-      default: 'name',
+      default: "name",
       scope: :all,
-      includes: [:category]
+      includes: [ :category ]
     )
     @plan_categories = current_user.categories.for_plans.ordered
   end
@@ -101,11 +101,11 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def copy
     copied = @plan.create_copy(user: current_user)
-    redirect_to resources_plans_path, notice: t('flash_messages.copy.success',
+    redirect_to resources_plans_path, notice: t("flash_messages.copy.success",
                                                 resource: @plan.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Plan copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_plans_path, alert: t('flash_messages.copy.failure',
+    redirect_to resources_plans_path, alert: t("flash_messages.copy.failure",
                                                 resource: @plan.class.model_name.human)
   end
 
@@ -115,12 +115,12 @@ class Resources::PlansController < AuthenticatedController
   def update_status
     if @plan.update(status: params[:status])
       redirect_to resources_plans_path,
-                  notice: t('plans.messages.status_updated',
+                  notice: t("plans.messages.status_updated",
                             name: @plan.name,
                             status: t("activerecord.enums.resources/plan.status.#{@plan.status}"))
     else
       redirect_to resources_plans_path,
-                  alert: t('flash_messages.update.failure',
+                  alert: t("flash_messages.update.failure",
                           resource: @plan.class.model_name.human)
     end
   end
@@ -130,7 +130,7 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def print
     # 印刷元を判別するパラメータ
-    from_daily = params[:from_daily] == 'true' || params[:date].present?
+    from_daily = params[:from_daily] == "true" || params[:date].present?
 
     # 日別詳細からの印刷の場合のみ、scheduled_date、budget、achievement_rateを設定
     if from_daily
@@ -146,7 +146,7 @@ class Resources::PlansController < AuthenticatedController
       if @scheduled_date
         monthly_budget = Management::MonthlyBudget
                           .where(user_id: current_user.id)
-                          .where('budget_month = ?', @scheduled_date.beginning_of_month)
+                          .where("budget_month = ?", @scheduled_date.beginning_of_month)
                           .first
         @budget = monthly_budget&.target_amount
       else
@@ -163,13 +163,13 @@ class Resources::PlansController < AuthenticatedController
     if from_daily && @plan_schedule&.has_snapshot?
       # 日別詳細から印刷：スナップショットを使用
       @plan_products_for_print = @plan_schedule.snapshot_products
-                                              .sort_by { |item| [item[:product].display_order || 999999, item[:product].id] }
+                                              .sort_by { |item| [ item[:product].display_order || 999999, item[:product].id ] }
     else
       # 計画詳細から印刷：Planマスタを使用
       @plan_products_for_print = @plan.plan_products
-                                      .includes(product: [:category, { image_attachment: :blob }])
+                                      .includes(product: [ :category, { image_attachment: :blob } ])
                                       .joins(:product)
-                                      .order('products.display_order ASC, products.id ASC')
+                                      .order("products.display_order ASC, products.id ASC")
                                       .map do |pp|
         {
           product: pp.product,
@@ -195,11 +195,11 @@ class Resources::PlansController < AuthenticatedController
     @materials_summary = @plan.calculate_materials_summary
                               .sort_by do |material_data|
                                 material = Resources::Material.find(material_data[:material_id])
-                                [material.display_order || 999999, material.id]
+                                [ material.display_order || 999999, material.id ]
                               end
 
     # 印刷レイアウトを使用
-    render layout: 'print'
+    render layout: "print"
   end
 
   private
@@ -222,16 +222,16 @@ class Resources::PlansController < AuthenticatedController
         # 空の商品を除外（product_idまたはproduction_countが空の場合）
         filtered_products = products.permit!.to_h.reject do |_key, attrs|
           # _destroyフラグが立っている場合は除外しない（削除処理として必要）
-          next false if attrs['_destroy'].to_s == '1' || attrs['_destroy'].to_s == 'true'
+          next false if attrs["_destroy"].to_s == "1" || attrs["_destroy"].to_s == "true"
 
           # product_idとproduction_countの両方が空の場合は除外
-          attrs['product_id'].blank? && attrs['production_count'].blank?
+          attrs["product_id"].blank? && attrs["production_count"].blank?
         end
 
         # production_countを整数型に変換
         whitelisted[:plan_products_attributes] = filtered_products.transform_values do |attrs|
-          if attrs['production_count'].present?
-            attrs['production_count'] = normalize_number_param(attrs['production_count'])
+          if attrs["production_count"].present?
+            attrs["production_count"] = normalize_number_param(attrs["production_count"])
           end
           attrs
         end
@@ -247,7 +247,7 @@ class Resources::PlansController < AuthenticatedController
     return value.to_i if value.is_a?(Numeric)
 
     # 全角→半角、カンマ・スペース・小数点削除
-    cleaned = value.to_s.tr('０-９', '0-9').tr('ー−', '-').gsub(/[,\s　．。.]/, '')
+    cleaned = value.to_s.tr("０-９", "0-9").tr("ー−", "-").gsub(/[,\s　．。.]/, "")
     return nil if cleaned.blank?
 
     cleaned.to_i

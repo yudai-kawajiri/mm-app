@@ -29,14 +29,14 @@ Rails.application.configure do
   }
 
   # 静的ファイルの配信を有効化（環境変数で制御）
-  config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
   # ファイルストレージ（本番環境ではS3推奨）
   config.active_storage.service = :local
 
   # 標準出力にログを出力（コンテナ対応）
   config.logger = ActiveSupport::TaggedLogging.logger(STDOUT)
-  config.log_tags = [:request_id]
+  config.log_tags = [ :request_id ]
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info").to_sym
 
   # ヘルスチェックのログを抑制
@@ -73,8 +73,8 @@ Rails.application.configure do
 
   # セキュリティヘッダー
   config.action_dispatch.default_headers = {
-    'X-Frame-Options' => 'SAMEORIGIN',
-    'X-XSS-Protection' => '1; mode=block',
-    'X-Content-Type-Options' => 'nosniff'
+    "X-Frame-Options" => "SAMEORIGIN",
+    "X-XSS-Protection" => "1; mode=block",
+    "X-Content-Type-Options" => "nosniff"
   }
 end

@@ -59,7 +59,7 @@ class NumericalForecastService
 
     # 昨日までの日付範囲（今日が月内の場合のみ）
     yesterday = today - 1.day
-    past_end = [yesterday, end_date].min
+    past_end = [ yesterday, end_date ].min
 
     # データ取得
     target = budget.target_amount || 0
@@ -110,9 +110,9 @@ class NumericalForecastService
     # 残り日数（今日から月末まで）
     remaining_days = if today <= end_date && today >= start_date
                         (end_date - today).to_i + 1
-                      else
+    else
                         0
-                      end
+    end
 
     # 必要追加額（予算に達していない場合のみ）
     required_additional = diff < 0 ? diff.abs : 0
@@ -125,18 +125,18 @@ class NumericalForecastService
                         else
                           0
                         end
-                      else
+    else
                         0
-                      end
+    end
 
     # 現在の1日平均実績
     elapsed_days = if today >= start_date && today <= end_date
                       (today - start_date).to_i
-                    elsif today > end_date
+    elsif today > end_date
                       (end_date - start_date).to_i + 1
-                    else
+    else
                       0
-                    end
+    end
     current_daily_average = elapsed_days > 0 ? (actual_confirmed.to_f / elapsed_days).round(AMOUNT_PRECISION) : 0
 
     # 目標との差（推奨日次目標 - 現在の1日平均）

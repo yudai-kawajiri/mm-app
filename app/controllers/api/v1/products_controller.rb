@@ -46,7 +46,7 @@ class Api::V1::ProductsController < AuthenticatedController
   rescue ActiveRecord::RecordNotFound => e
     # 商品が見つからない、または権限がない
     Rails.logger.error "ERROR: Resources::Product not found: #{params[:id]}"
-    render json: { error: I18n.t('api.errors.product_not_found') }, status: :not_found
+    render json: { error: I18n.t("api.errors.product_not_found") }, status: :not_found
   rescue StandardError => e
     # 予期しないエラー
     Rails.logger.error "ERROR: Unexpected error in fetch_plan_details:"

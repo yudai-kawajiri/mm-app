@@ -57,9 +57,9 @@ module NumericSanitizer
 
     working_hash = if params_hash.is_a?(ActionController::Parameters)
                      params_hash.to_unsafe_h
-                   else
+    else
                      params_hash.dup
-                   end
+    end
 
     with_comma.each do |field|
       if working_hash[field].present?
@@ -105,13 +105,13 @@ module NumericSanitizer
     return value if value.is_a?(Numeric)
 
     str = value.to_s
-    str = str.tr('０-９', '0-9')
-    str = str.gsub(/[\s　\t]+/, '')
-    str = str.delete(',')
+    str = str.tr("０-９", "0-9")
+    str = str.gsub(/[\s　\t]+/, "")
+    str = str.delete(",")
 
     return nil if str.blank?
 
-    if str.include?('.')
+    if str.include?(".")
       Float(str)
     else
       Integer(str)
@@ -147,13 +147,13 @@ module NumericSanitizer
     return value if value.is_a?(Numeric)
 
     str = value.to_s
-    str = str.tr('０-９', '0-9')
-    str = str.gsub(/[\s　\t]+/, '')
+    str = str.tr("０-９", "0-9")
+    str = str.gsub(/[\s　\t]+/, "")
 
     return nil if str.blank?
-    return nil if str.include?(',')
+    return nil if str.include?(",")
 
-    if str.include?('.')
+    if str.include?(".")
       Float(str)
     else
       Integer(str)

@@ -103,7 +103,7 @@ Rails.application.configure do
   # 現在は :unsafe_inline を使用しているため、Nonceは使用していないが、
   # 将来的にインラインコードを削除する際に有効化する
   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
-  config.content_security_policy_nonce_directives = %w(script-src style-src)
+  config.content_security_policy_nonce_directives = %w[script-src style-src]
 
   # ====================
   # レポート専用モード（段階的導入）

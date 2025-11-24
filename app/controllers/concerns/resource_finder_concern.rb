@@ -38,14 +38,14 @@ module ResourceFinderConcern
           # 例: Resources::ProductsController → Resources::Product
           controller_namespace = self.class.name.deconstantize
           model_name = resource_sym.to_s.classify
-          
+
           # 名前空間付きモデルクラス名を構築
           full_model_name = if controller_namespace.present?
             "#{controller_namespace}::#{model_name}"
           else
             model_name
           end
-          
+
           model_class = full_model_name.constantize
           instance_variable_set("@#{resource_sym}", model_class.find(params[:id]))
         rescue ActiveRecord::RecordNotFound

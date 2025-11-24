@@ -19,15 +19,15 @@ class Resources::Material < ApplicationRecord
   include HasReading
 
   # 関連付け
-  belongs_to :category, class_name: 'Resources::Category'
-  belongs_to :production_unit, class_name: 'Resources::Unit', optional: true
-  belongs_to :unit_for_product, class_name: 'Resources::Unit'
-  belongs_to :unit_for_order, class_name: 'Resources::Unit'
-  belongs_to :order_group, class_name: 'Resources::MaterialOrderGroup', optional: true
+  belongs_to :category, class_name: "Resources::Category"
+  belongs_to :production_unit, class_name: "Resources::Unit", optional: true
+  belongs_to :unit_for_product, class_name: "Resources::Unit"
+  belongs_to :unit_for_order, class_name: "Resources::Unit"
+  belongs_to :order_group, class_name: "Resources::MaterialOrderGroup", optional: true
 
   # 多対多の関連
-  has_many :product_materials, class_name: 'Planning::ProductMaterial', dependent: :destroy
-  has_many :products, through: :product_materials, class_name: 'Resources::Product', dependent: :restrict_with_error
+  has_many :product_materials, class_name: "Planning::ProductMaterial", dependent: :destroy
+  has_many :products, through: :product_materials, class_name: "Resources::Product", dependent: :restrict_with_error
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_id }
@@ -70,14 +70,14 @@ class Resources::Material < ApplicationRecord
   #
   # @return [Boolean]
   def weight_based?
-    measurement_type == 'weight'
+    measurement_type == "weight"
   end
 
   # 個数ベースかどうかを判定
   #
   # @return [Boolean]
   def count_based?
-    measurement_type == 'count'
+    measurement_type == "count"
   end
 
   # 発注単位の換算タイプを判定（後方互換性のため残す）
@@ -107,6 +107,6 @@ class Resources::Material < ApplicationRecord
   # 注意: product_materialsはコピーしない（独立したマスタデータのため）
   copyable_config(
     uniqueness_scope: :category_id,
-    uniqueness_check_attributes: [:name, :reading]
+    uniqueness_check_attributes: [ :name, :reading ]
   )
 end

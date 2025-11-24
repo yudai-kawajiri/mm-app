@@ -19,7 +19,7 @@ class Resources::MaterialOrderGroup < ApplicationRecord
   include HasReading
 
   # 関連付け
-  has_many :materials, class_name: 'Resources::Material', foreign_key: :order_group_id, dependent: :restrict_with_error
+  has_many :materials, class_name: "Resources::Material", foreign_key: :order_group_id, dependent: :restrict_with_error
 
   # バリデーション
   validates :name, presence: true, uniqueness: true

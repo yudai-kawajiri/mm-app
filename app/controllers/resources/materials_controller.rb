@@ -18,13 +18,13 @@ class Resources::MaterialsController < AuthenticatedController
   define_sort_options(
     display_order: -> { order(:display_order) },
     name: -> { order(:reading) },
-    category: -> { joins(:category).order('categories.reading', :reading) },
-    order_group: -> { left_joins(:order_group).order('material_order_groups.reading', :reading) },
+    category: -> { joins(:category).order("categories.reading", :reading) },
+    order_group: -> { left_joins(:order_group).order("material_order_groups.reading", :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
   # リソース検索（show, edit, update, destroy, copy）
-  find_resource :material, only: [:show, :edit, :update, :destroy, :copy]
+  find_resource :material, only: [ :show, :edit, :update, :destroy, :copy ]
 
   # 原材料一覧
   #
@@ -32,9 +32,9 @@ class Resources::MaterialsController < AuthenticatedController
   def index
     sorted_index(
       Resources::Material,
-      default: 'name',
+      default: "name",
       scope: :all,
-      includes: [:category, :unit_for_product, :unit_for_order, :production_unit, :order_group]
+      includes: [ :category, :unit_for_product, :unit_for_order, :production_unit, :order_group ]
     )
     @material_categories = current_user.categories.for_materials
   end
@@ -84,11 +84,11 @@ class Resources::MaterialsController < AuthenticatedController
   # @return [void]
   def copy
     copied = @material.create_copy(user: current_user)
-    redirect_to resources_materials_path, notice: t('flash_messages.copy.success',
+    redirect_to resources_materials_path, notice: t("flash_messages.copy.success",
                                                     resource: @material.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Material copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_materials_path, alert: t('flash_messages.copy.failure',
+    redirect_to resources_materials_path, alert: t("flash_messages.copy.failure",
                                                     resource: @material.class.model_name.human)
   end
 

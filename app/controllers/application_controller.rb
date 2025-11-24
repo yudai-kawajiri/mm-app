@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   # Devise利用時のストロングパラメータ設定
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-  before_action :redirect_if_authenticated, if: -> { devise_controller? && action_name == 'new' && controller_name == 'sessions' }
+  before_action :redirect_if_authenticated, if: -> { devise_controller? && action_name == "new" && controller_name == "sessions" }
 
 
   protected
@@ -28,10 +28,10 @@ class ApplicationController < ActionController::Base
   # @return [void]
   def configure_permitted_parameters
     # 新規登録時に name を許可
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [ :name ])
 
     # アカウント編集時に name を許可
-    devise_parameter_sanitizer.permit(:account_update, keys: [:name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [ :name ])
   end
 
   # ログイン成功後のリダイレクト先
@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   #   - "authenticated_layout": 認証済み時
   def layout_by_resource
     # 印刷アクション: 専用レイアウト
-    return 'print' if action_name == 'print'
+    return "print" if action_name == "print"
 
     # Deviseコントローラー + 未認証: 標準レイアウト
     if devise_controller? && !user_signed_in?
@@ -77,7 +77,7 @@ class ApplicationController < ActionController::Base
   def redirect_if_authenticated
     return unless user_signed_in?
 
-    flash[:notice] = t('devise.failure.already_authenticated')
+    flash[:notice] = t("devise.failure.already_authenticated")
     redirect_to authenticated_root_path
   end
 end

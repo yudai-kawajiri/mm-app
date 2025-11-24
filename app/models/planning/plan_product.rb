@@ -12,8 +12,8 @@ class Planning::PlanProduct < ApplicationRecord
   has_paper_trail
 
   # 関連付け
-  belongs_to :plan, class_name: 'Resources::Plan'
-  belongs_to :product, class_name: 'Resources::Product'
+  belongs_to :plan, class_name: "Resources::Plan"
+  belongs_to :product, class_name: "Resources::Product"
 
   # バリデーション
   validates :production_count, presence: true, numericality: { only_integer: true, greater_than: 0 }
@@ -58,9 +58,9 @@ class Planning::PlanProduct < ApplicationRecord
 
     # 全角→半角、カンマ削除、スペース削除、小数点削除
     cleaned = value.to_s
-      .tr('０-９', '0-9')
-      .tr('ー−', '-')
-      .gsub(/[,\s　．。.]/, '')  # ← 小数点も削除
+      .tr("０-９", "0-9")
+      .tr("ー−", "-")
+      .gsub(/[,\s　．。.]/, "")  # ← 小数点も削除
 
     cleaned.to_i  # ← 最後も .to_i
   end

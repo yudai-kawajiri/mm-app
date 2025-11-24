@@ -17,9 +17,9 @@
 module ProductsHelper
   # ステータスとバッジカラーのマッピング
   PRODUCT_STATUS_BADGE_COLORS = {
-    'draft' => 'bg-secondary',
-    'selling' => 'bg-success',
-    'discontinued' => 'bg-danger'
+    "draft" => "bg-secondary",
+    "selling" => "bg-success",
+    "discontinued" => "bg-danger"
   }.freeze
 
   #
@@ -43,7 +43,7 @@ module ProductsHelper
   #
   def render_product_status_with_action(product)
     # バッジの色を決定（定数から取得、デフォルトはbg-secondary）
-    status_badge_class = PRODUCT_STATUS_BADGE_COLORS.fetch(product.status, 'bg-secondary')
+    status_badge_class = PRODUCT_STATUS_BADGE_COLORS.fetch(product.status, "bg-secondary")
 
     # ステータスの日本語表示（i18n対応）
     status_text = t("activerecord.enums.resources/product.status.#{product.status}")
@@ -55,7 +55,7 @@ module ProductsHelper
       # ステータス変更ドロップダウン
       dropdown = content_tag(:div, class: "btn-group btn-group-sm ms-2", role: "group") do
         # ドロップダウントグルボタン
-        button = content_tag(:button, t('common.change'),
+        button = content_tag(:button, t("common.change"),
           type: "button",
           class: "btn btn-outline-secondary btn-sm dropdown-toggle",
           data: { bs_toggle: "dropdown" },

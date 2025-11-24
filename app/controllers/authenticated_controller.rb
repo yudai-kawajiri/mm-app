@@ -68,9 +68,9 @@ class AuthenticatedController < ApplicationController
   def load_categories_for(category_type, as: nil, scope: :current_user)
     categories = if scope == :current_user
                     current_user.categories.where(category_type: category_type)
-                  else
+    else
                     Resources::Category.where(category_type: category_type)
-                  end
+    end
     categories = categories.order(:name)
 
     # インスタンス変数名を決定
@@ -95,7 +95,7 @@ class AuthenticatedController < ApplicationController
   # @return [void]
   def require_admin
     unless current_user&.admin?
-      redirect_to root_path, alert: t('flash_messages.not_authorized')
+      redirect_to root_path, alert: t("flash_messages.not_authorized")
     end
   end
 end

@@ -13,7 +13,7 @@ class Management::MonthlyBudgetsController < ApplicationController
   include NumericSanitizer
 
   before_action :authenticate_user!
-  before_action :set_monthly_budget, only: [:update, :destroy, :update_discount_rates]
+  before_action :set_monthly_budget, only: [ :update, :destroy, :update_discount_rates ]
 
   # 月次予算を作成
   #
@@ -87,7 +87,7 @@ class Management::MonthlyBudgetsController < ApplicationController
     # NumericSanitizerを使って全角→半角変換 & サニタイズ
     cleaned_params = sanitize_numeric_params(
       discount_rate_params,
-      without_comma: [:forecast_discount_rate, :target_discount_rate]
+      without_comma: [ :forecast_discount_rate, :target_discount_rate ]
     )
 
     # 空文字列やnilを0.0に変換
@@ -99,12 +99,12 @@ class Management::MonthlyBudgetsController < ApplicationController
       redirect_to management_numerical_managements_path(
         year: @monthly_budget.budget_month.year,
         month: @monthly_budget.budget_month.month
-      ), notice: t('numerical_managements.messages.discount_rates_updated')
+      ), notice: t("numerical_managements.messages.discount_rates_updated")
     else
       redirect_to management_numerical_managements_path(
         year: @monthly_budget.budget_month.year,
         month: @monthly_budget.budget_month.month
-      ), alert: @monthly_budget.errors.full_messages.join(', ')
+      ), alert: @monthly_budget.errors.full_messages.join(", ")
     end
   end
 
@@ -128,7 +128,7 @@ class Management::MonthlyBudgetsController < ApplicationController
   def sanitized_monthly_budget_params
     sanitize_numeric_params(
       monthly_budget_params,
-      with_comma: [:target_amount]
+      with_comma: [ :target_amount ]
     )
   end
 
