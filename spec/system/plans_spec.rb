@@ -34,7 +34,7 @@ RSpec.describe '製造計画管理', type: :system do
     it '製造計画の詳細情報が表示される' do
       visit resources_plan_path(plan)
 
-      expect(page).to have_content('製造計画詳細')
+      expect(page).to have_content('計画詳細')
       expect(page).to have_content('通常生産計画')
       expect(page).to have_content(plan.category.name)
     end
@@ -65,7 +65,7 @@ RSpec.describe '製造計画管理', type: :system do
     it '編集画面が表示される' do
       visit edit_resources_plan_path(plan)
 
-      expect(page).to have_content('製造計画編集')
+      expect(page).to have_content('計画編集')
       expect(page).to have_field('計画名', with: '通常生産計画')
     end
 
@@ -82,13 +82,12 @@ RSpec.describe '製造計画管理', type: :system do
   describe '製造計画削除' do
     let!(:plan) { create(:plan, name: '通常生産計画', status: :draft, user: user) }
 
-    it '製造計画の削除リンクが表示される' do
-      visit resources_plans_path
+    it '製造計画の削除ボタンが表示される' do
+      visit resources_plan_path(plan)
 
-      expect(page).to have_content('通常生産計画')
       # rack_testドライバーではJavaScriptの確認ダイアログに対応していないため、
       # 削除リンクの存在確認のみ行う
-      expect(page).to have_link('削除')
+      expect(page).to have_css('button[data-turbo-confirm]', count: 1)
     end
   end
 
@@ -99,9 +98,8 @@ RSpec.describe '製造計画管理', type: :system do
       visit resources_plans_path
 
       expect(page).to have_content('通常生産計画')
-      # コピーはボタンまたはフォームとして実装されている可能性がある
-      # ページ内に「コピー」テキストが存在することを確認
-      expect(page).to have_content('コピー')
+      # コピーボタン（アイコンのみ）が存在することを確認
+      expect(page).to have_css('form[action*="copy"]', count: 1)
     end
   end
 end

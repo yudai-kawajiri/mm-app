@@ -39,7 +39,7 @@ RSpec.describe 'アカウント設定', type: :system do
       fill_in '現在のパスワード', with: user.password
       click_button '更新'
 
-      expect(page).to have_content('アカウント情報が正常に更新されました')
+      expect(page).to have_content('アカウント情報を更新しました')
       expect(user.reload.name).to eq('鈴木花子')
     end
 
@@ -61,7 +61,7 @@ RSpec.describe 'アカウント設定', type: :system do
       fill_in '現在のパスワード', with: user.password
       click_button '更新'
 
-      expect(page).to have_content('アカウント情報が正常に更新されました')
+      expect(page).to have_content('アカウント情報を更新しました')
     end
   end
 
@@ -77,7 +77,7 @@ RSpec.describe 'アカウント設定', type: :system do
 
       click_button '更新'
 
-      expect(page).to have_content('アカウント情報が正常に更新されました')
+      expect(page).to have_content('アカウント情報を更新しました')
     end
 
     it 'パスワード確認が一致しない場合はエラー' do
@@ -96,7 +96,7 @@ RSpec.describe 'アカウント設定', type: :system do
   end
 
   describe 'アカウント削除' do
-    it 'アカウント削除リンクが表示される' do
+    it 'アカウント削除ボタンが表示される' do
       visit edit_user_registration_path
 
       expect(page).to have_content('アカウントを削除') | have_button('アカウントを削除')

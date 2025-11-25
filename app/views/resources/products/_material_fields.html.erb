@@ -10,7 +10,7 @@
   end
 
   unit_weight = f.object.unit_weight
-  unit_weight_display = unit_weight && unit_weight > 0 ? (unit_weight.to_i == unit_weight ? unit_weight.to_i : unit_weight) : t('helpers.no_setting')
+  unit_weight && unit_weight > 0 ? (unit_weight.to_i == unit_weight ? unit_weight.to_i : unit_weight) : t('helpers.no_setting')
 %>
 
 <tr class="nested-fields"

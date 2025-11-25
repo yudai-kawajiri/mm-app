@@ -2,9 +2,7 @@ Rails.application.routes.draw do
   # ====================
   # 認証（Devise）
   # ====================
-  devise_for :users, controllers: {
-    registrations: "users/registrations"
-  }
+  devise_for :users, controllers: { registrations: "users/registrations" }
 
   # 認証済みユーザー
   authenticated :user do

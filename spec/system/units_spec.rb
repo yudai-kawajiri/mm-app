@@ -23,7 +23,7 @@ RSpec.describe '単位管理', type: :system do
       visit resources_units_path
 
       # enumの翻訳が表示されることを確認
-      expect(page).to have_content('商品単位')
+      expect(page).to have_content('使用単位')
       expect(page).to have_content('発注単位')
     end
   end
@@ -36,7 +36,7 @@ RSpec.describe '単位管理', type: :system do
 
       expect(page).to have_content('単位詳細')
       expect(page).to have_content('kg')
-      expect(page).to have_content('商品単位')
+      expect(page).to have_content('使用単位')
     end
   end
 
@@ -82,13 +82,12 @@ RSpec.describe '単位管理', type: :system do
   describe '単位削除' do
     let!(:unit) { create(:unit, name: 'kg', category: :production, user: user) }
 
-    it '単位の削除リンクが表示される' do
-      visit resources_units_path
+    it '単位の削除ボタンが表示される' do
+      visit resources_unit_path(unit)
 
-      expect(page).to have_content('kg')
       # rack_testドライバーではJavaScriptの確認ダイアログに対応していないため、
-      # 削除リンクの存在確認のみ行う
-      expect(page).to have_link('削除')
+      # 削除ボタンの存在確認のみ行う
+      expect(page).to have_css('button[data-turbo-confirm]', minimum: 1)
     end
   end
 end

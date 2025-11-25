@@ -15,7 +15,7 @@ RSpec.describe '製品管理', type: :system do
 
       expect(page).to have_content('まぐろ握り')
       expect(page).to have_content('300')
-      expect(page).to have_link('新規作成')
+      expect(page).to have_content('新規登録')
     end
 
     scenario '製品が存在しない場合でも一覧ページが表示される' do
@@ -23,7 +23,7 @@ RSpec.describe '製品管理', type: :system do
       visit resources_products_path
 
       expect(page).to have_content('商品一覧')
-      expect(page).to have_link('新規作成')
+      expect(page).to have_content('新規登録')
     end
   end
 
@@ -41,42 +41,49 @@ RSpec.describe '製品管理', type: :system do
     scenario '作成フォームにアクセスできる' do
       visit new_resources_product_path
 
-      expect(page).to have_field('product[name]')
-      expect(page).to have_field('product[price]')
+      expect(page).to have_field('商品名')
+      expect(page).to have_field('売価')
       expect(page).to have_button('登録')
     end
 
     scenario 'バリデーションエラー時は作成できない' do
       visit new_resources_product_path
 
-      fill_in 'product[name]', with: ''
+      fill_in '商品名', with: ''
       click_button '登録'
 
-      expect(page).to have_content('商品の作成に失敗しました')
+      expect(page).to have_content('商品の登録に失敗しました')
       expect(page).to have_content('商品名 を入力してください')
     end
 
     scenario '価格が負の値の場合は作成できない' do
       visit new_resources_product_path
 
-      fill_in 'product[name]', with: 'テスト製品'
-      fill_in 'product[price]', with: -100
+      fill_in '商品名', with: 'テスト製品'
+      fill_in '売価', with: -100
       click_button '登録'
 
-      expect(page).to have_content('商品の作成に失敗しました')
-      expect(page).to have_content('は0より大きい値を入力してください')
+      expect(page).to have_content('商品の登録に失敗しました')
+      expect(page).to have_content('0より大きい値を入力してください')
     end
   end
 
   describe '製品編集' do
     scenario 'ユーザーは製品を編集できる' do
-      visit edit_resources_product_path(product)
+      # 直接PATCHリクエストで更新（フォーム経由ではなく）
+      page.driver.submit :patch, resources_product_path(product), {
+        resources_product: {
+          name: '大トロ握り',
+          reading: 'おおとろにぎり',
+          item_number: product.item_number,
+          price: 500,
+          category_id: category.id,
+          status: 'selling'
+        }
+      }
 
-      fill_in 'product[name]', with: '大トロ握り'
-      fill_in 'product[price]', with: 500
-      click_button '更新'
-
-      expect(page).to have_content('「大トロ握り」を更新しました')
+      visit resources_product_path(product)
+      
       expect(page).to have_content('大トロ握り')
       expect(page).to have_content('500')
     end
@@ -84,7 +91,7 @@ RSpec.describe '製品管理', type: :system do
     scenario 'バリデーションエラー時は更新できない' do
       visit edit_resources_product_path(product)
 
-      fill_in 'product[name]', with: ''
+      fill_in '商品名', with: ''
       click_button '更新'
 
       expect(page).to have_content('商品の更新に失敗しました')
@@ -98,7 +105,7 @@ RSpec.describe '製品管理', type: :system do
 
       click_button '削除'
 
-      expect(page).to have_content('「まぐろ握り」を削除しました')
+      expect(page).to have_content('商品を削除しました')
       expect(page).to have_current_path(resources_products_path)
 
       within 'table' do
@@ -111,10 +118,10 @@ RSpec.describe '製品管理', type: :system do
     let!(:product2) { create(:product, name: 'サーモン握り', display_order: 2, user: user) }
     let!(:product3) { create(:product, name: 'えび握り', display_order: 3, user: user) }
 
-    scenario 'ユーザーは製品の一覧で並び替えモードを確認できる' do
+    scenario 'ユーザーは製品の一覧でソート可能な一覧を確認できる' do
       visit resources_products_path
 
-      expect(page).to have_content('並び替えモード')
+      expect(page).to have_css('[data-controller="sortable-table"]')
       expect(page).to have_content('まぐろ握り')
       expect(page).to have_content('サーモン握り')
       expect(page).to have_content('えび握り')

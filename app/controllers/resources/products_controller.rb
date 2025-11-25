@@ -97,7 +97,7 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [void]
   def copy
-    copied = @product.create_copy(user: current_user)
+    @product.create_copy(user: current_user)
       redirect_to resources_products_path, notice: t("flash_messages.copy.success",
                                                                 resource: @product.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e

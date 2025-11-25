@@ -13,7 +13,7 @@ RSpec.describe 'カテゴリ管理', type: :system do
       visit resources_categories_path
 
       expect(page).to have_content('テストカテゴリ')
-      expect(page).to have_link('新規作成')
+      expect(page).to have_content('新規登録')
     end
   end
 
@@ -31,20 +31,22 @@ RSpec.describe 'カテゴリ管理', type: :system do
     scenario 'ユーザーは新しいカテゴリを作成できる' do
       visit new_resources_category_path
 
-      fill_in 'category[name]', with: '新しいカテゴリ'
+      fill_in 'カテゴリー名', with: '新しいカテゴリ'
+      fill_in '読み仮名', with: 'あたらしいかてごりー'
+      select '原材料', from: '種別'
       click_button '登録'
 
-      expect(page).to have_content('「新しいカテゴリ」を作成しました')
+      expect(page).to have_content('カテゴリーを登録しました')
       expect(page).to have_content('新しいカテゴリ')
     end
 
     scenario 'バリデーションエラー時は作成できない' do
       visit new_resources_category_path
 
-      fill_in 'category[name]', with: ''
+      fill_in 'カテゴリー名', with: ''
       click_button '登録'
 
-      expect(page).to have_content('カテゴリーの作成に失敗しました')
+      expect(page).to have_content('カテゴリーの登録に失敗しました')
       expect(page).to have_content('カテゴリー名 を入力してください')
     end
   end
@@ -53,17 +55,17 @@ RSpec.describe 'カテゴリ管理', type: :system do
     scenario 'ユーザーはカテゴリを編集できる' do
       visit edit_resources_category_path(category)
 
-      fill_in 'category[name]', with: '更新されたカテゴリ'
+      fill_in 'カテゴリー名', with: '更新されたカテゴリ'
       click_button '更新'
 
-      expect(page).to have_content('「更新されたカテゴリ」を更新しました')
+      expect(page).to have_content('カテゴリーを更新しました')
       expect(page).to have_content('更新されたカテゴリ')
     end
 
     scenario 'バリデーションエラー時は更新できない' do
       visit edit_resources_category_path(category)
 
-      fill_in 'category[name]', with: ''
+      fill_in 'カテゴリー名', with: ''
       click_button '更新'
 
       expect(page).to have_content('カテゴリーの更新に失敗しました')
@@ -77,11 +79,9 @@ RSpec.describe 'カテゴリ管理', type: :system do
 
       click_button '削除'
 
-      expect(page).to have_content('「テストカテゴリ」を削除しました')
+      expect(page).to have_content('カテゴリーを削除しました')
       expect(page).to have_current_path(resources_categories_path)
 
-      # テーブル内に削除したカテゴリが存在しないことを確認
-      # フラッシュメッセージには含まれるが、テーブル内には存在しない
       within 'table' do
         expect(page).not_to have_content('テストカテゴリ')
       end

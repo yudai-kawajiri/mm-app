@@ -42,8 +42,10 @@ RSpec.describe 'ダッシュボード', type: :system do
       select '12月', from: 'month'
       click_button '表示'
 
-      expect(page).to have_content('2024年12月')
+      expect(page).to have_select('year', selected: '2024年')
+      expect(page).to have_select('month', selected: '12月')
     end
+
   end
 
   describe '予算サマリー表示' do

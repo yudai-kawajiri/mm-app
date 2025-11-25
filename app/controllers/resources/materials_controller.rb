@@ -83,7 +83,7 @@ class Resources::MaterialsController < AuthenticatedController
   #
   # @return [void]
   def copy
-    copied = @material.create_copy(user: current_user)
+    @material.create_copy(user: current_user)
     redirect_to resources_materials_path, notice: t("flash_messages.copy.success",
                                                     resource: @material.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e

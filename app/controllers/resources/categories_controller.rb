@@ -92,7 +92,7 @@ class Resources::CategoriesController < AuthenticatedController
   #
   # @return [void]
   def copy
-    copied = @category.create_copy(user: current_user)
+    @category.create_copy(user: current_user)
     redirect_to resources_categories_path, notice: t("flash_messages.copy.success",
                                                       resource: @category.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e

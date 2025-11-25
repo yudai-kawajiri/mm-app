@@ -100,7 +100,7 @@ class Resources::PlansController < AuthenticatedController
   #
   # @return [void]
   def copy
-    copied = @plan.create_copy(user: current_user)
+    @plan.create_copy(user: current_user)
     redirect_to resources_plans_path, notice: t("flash_messages.copy.success",
                                                 resource: @plan.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e

@@ -98,7 +98,7 @@ RSpec.describe '原材料管理', type: :system do
     let!(:material1) { create(:material, name: 'まぐろ', display_order: 1, user: user) }
     let!(:material2) { create(:material, name: 'サーモン', display_order: 2, user: user) }
 
-    it '並び替えボタンが表示される' do
+    it 'ソート可能な一覧が表示される' do
       visit resources_materials_path
 
       # Stimulus controllerのdata属性が存在することを確認

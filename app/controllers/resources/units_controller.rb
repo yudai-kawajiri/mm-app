@@ -92,7 +92,7 @@ class Resources::UnitsController < AuthenticatedController
   #
   # @return [void]
   def copy
-    copied = @unit.create_copy(user: current_user)
+    @unit.create_copy(user: current_user)
     redirect_to resources_units_path, notice: t("flash_messages.copy.success",
                                                   resource: @unit.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
