@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe DailyTarget, type: :model do
+RSpec.describe Management::DailyTarget, type: :model do
   describe 'バリデーション' do
     it '有効なファクトリを持つこと' do
       target = create(:daily_target)

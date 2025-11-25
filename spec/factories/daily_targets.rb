@@ -1,7 +1,7 @@
 # spec/factories/daily_targets.rb
 
 FactoryBot.define do
-  factory :daily_target do
+  factory :daily_target, class: 'Management::DailyTarget' do
     association :user
     association :monthly_budget
     target_date { Date.current }

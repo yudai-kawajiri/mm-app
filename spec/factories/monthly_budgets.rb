@@ -1,7 +1,7 @@
 # spec/factories/monthly_budgets.rb
 
 FactoryBot.define do
-  factory :monthly_budget do
+  factory :monthly_budget, class: 'Management::MonthlyBudget' do
     association :user
     budget_month { Date.current.beginning_of_month }
     target_amount { 1000000 }

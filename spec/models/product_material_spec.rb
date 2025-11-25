@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ProductMaterial, type: :model do
+RSpec.describe Planning::ProductMaterial, type: :model do
   describe 'バリデーション' do
     it '有効なファクトリを持つこと' do
       product_material = create(:product_material)

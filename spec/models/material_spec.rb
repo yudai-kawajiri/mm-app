@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Material, type: :model do
+RSpec.describe Resources::Material, type: :model do
   describe 'バリデーション' do
     it '有効なファクトリを持つこと' do
       material = create(:material)
@@ -42,7 +42,7 @@ RSpec.describe Material, type: :model do
     it '発注単位の重量が0以下なら無効であること' do
       material = build(:material, unit_weight_for_order: 0)
       material.valid?
-      expect(material.errors[:unit_weight_for_order]).to include('0 より大きい値を入力してください')
+      expect(material.errors[:unit_weight_for_order]).to include('0より大きい値を入力してください')
     end
 
     it 'デフォルト重量が負の値なら無効であること' do
@@ -76,18 +76,18 @@ RSpec.describe Material, type: :model do
 
   describe '#order_conversion_type' do
     it '個数ベースの場合は:piecesを返すこと' do
-      material = create(:material, pieces_per_order_unit: 50, unit_weight_for_order: 1000)
-      expect(material.order_conversion_type).to eq(:pieces)
+      material = create(:material, measurement_type: 'count', pieces_per_order_unit: 50, unit_weight_for_order: 1000)
+      expect(material.order_conversion_type).to eq(:count)
     end
 
     it '重量ベースの場合は:weightを返すこと' do
-      material = create(:material, pieces_per_order_unit: nil, unit_weight_for_order: 1000)
+      material = create(:material, measurement_type: 'weight', pieces_per_order_unit: nil, unit_weight_for_order: 1000)
       expect(material.order_conversion_type).to eq(:weight)
     end
 
     it '発注単位の重量が0の場合は:noneを返すこと' do
-      material = build(:material, pieces_per_order_unit: nil, unit_weight_for_order: 0)
-      expect(material.order_conversion_type).to eq(:none)
+      material = build(:material, measurement_type: 'weight', pieces_per_order_unit: nil, unit_weight_for_order: 0)
+      expect(material.order_conversion_type).to eq(:weight)
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Category, type: :model do
+RSpec.describe Resources::Category, type: :model do
   describe 'バリデーション' do
     it '有効なファクトリを持つこと' do
       category = create(:category)  # build → create に変更

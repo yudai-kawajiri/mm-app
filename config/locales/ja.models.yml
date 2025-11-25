@@ -4,6 +4,8 @@ ja:
       copyable:
         copy_name_format: "%{name} (コピー%{count})"
     errors:
+      messages:
+        record_invalid: "バリデーションに失敗しました: %{errors}"
       models:
         user:
           attributes:
