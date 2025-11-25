@@ -57,7 +57,7 @@ RSpec.describe '認証機能', type: :system do
 
   describe 'アクセス制限' do
     scenario '未ログインユーザーは保護されたページにアクセスできない' do
-      visit categories_path
+      visit resources_categories_path
 
       expect(current_path).to eq(new_user_session_path)
       expect(page).to have_content('アカウント登録もしくはログインが必要です')
@@ -65,9 +65,9 @@ RSpec.describe '認証機能', type: :system do
 
     scenario 'ログイン後は保護されたページにアクセスできる' do
       sign_in_as(user)
-      visit categories_path
+      visit resources_categories_path
 
-      expect(current_path).to eq(categories_path)
+      expect(current_path).to eq(resources_categories_path)
       expect(page).to have_http_status(:success)
     end
   end

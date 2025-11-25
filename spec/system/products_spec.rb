@@ -11,7 +11,7 @@ RSpec.describe '製品管理', type: :system do
 
   describe '製品一覧' do
     scenario 'ユーザーは自分の製品一覧を閲覧できる' do
-      visit products_path
+      visit resources_products_path
 
       expect(page).to have_content('まぐろ握り')
       expect(page).to have_content('300')
@@ -20,7 +20,7 @@ RSpec.describe '製品管理', type: :system do
 
     scenario '製品が存在しない場合でも一覧ページが表示される' do
       product.destroy
-      visit products_path
+      visit resources_products_path
 
       expect(page).to have_content('商品一覧')
       expect(page).to have_link('新規作成')
@@ -29,7 +29,7 @@ RSpec.describe '製品管理', type: :system do
 
   describe '製品詳細' do
     scenario 'ユーザーは製品の詳細を閲覧できる' do
-      visit product_path(product)
+      visit resources_product_path(product)
 
       expect(page).to have_content('まぐろ握り')
       expect(page).to have_content('300')
@@ -39,7 +39,7 @@ RSpec.describe '製品管理', type: :system do
 
   describe '製品作成' do
     scenario '作成フォームにアクセスできる' do
-      visit new_product_path
+      visit new_resources_product_path
 
       expect(page).to have_field('product[name]')
       expect(page).to have_field('product[price]')
@@ -47,7 +47,7 @@ RSpec.describe '製品管理', type: :system do
     end
 
     scenario 'バリデーションエラー時は作成できない' do
-      visit new_product_path
+      visit new_resources_product_path
 
       fill_in 'product[name]', with: ''
       click_button '登録'
@@ -57,7 +57,7 @@ RSpec.describe '製品管理', type: :system do
     end
 
     scenario '価格が負の値の場合は作成できない' do
-      visit new_product_path
+      visit new_resources_product_path
 
       fill_in 'product[name]', with: 'テスト製品'
       fill_in 'product[price]', with: -100
@@ -70,7 +70,7 @@ RSpec.describe '製品管理', type: :system do
 
   describe '製品編集' do
     scenario 'ユーザーは製品を編集できる' do
-      visit edit_product_path(product)
+      visit edit_resources_product_path(product)
 
       fill_in 'product[name]', with: '大トロ握り'
       fill_in 'product[price]', with: 500
@@ -82,7 +82,7 @@ RSpec.describe '製品管理', type: :system do
     end
 
     scenario 'バリデーションエラー時は更新できない' do
-      visit edit_product_path(product)
+      visit edit_resources_product_path(product)
 
       fill_in 'product[name]', with: ''
       click_button '更新'
@@ -94,12 +94,12 @@ RSpec.describe '製品管理', type: :system do
 
   describe '製品削除' do
     scenario 'ユーザーは製品を削除できる' do
-      visit product_path(product)
+      visit resources_product_path(product)
 
       click_button '削除'
 
       expect(page).to have_content('「まぐろ握り」を削除しました')
-      expect(page).to have_current_path(products_path)
+      expect(page).to have_current_path(resources_products_path)
 
       within 'table' do
         expect(page).not_to have_content('まぐろ握り')
@@ -112,7 +112,7 @@ RSpec.describe '製品管理', type: :system do
     let!(:product3) { create(:product, name: 'えび握り', display_order: 3, user: user) }
 
     scenario 'ユーザーは製品の一覧で並び替えモードを確認できる' do
-      visit products_path
+      visit resources_products_path
 
       expect(page).to have_content('並び替えモード')
       expect(page).to have_content('まぐろ握り')
