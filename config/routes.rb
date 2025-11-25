@@ -133,7 +133,7 @@ Rails.application.routes.draw do
 
       resources :plans, only: [ :index, :show ] do
         member do
-          get :fetch_revenue
+          get :revenue
         end
       end
     end

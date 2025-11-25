@@ -79,7 +79,7 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   #
   # @return [void]
   def copy
-    copied = @material_order_group.create_copy(user: current_user)
+    @material_order_group.create_copy(user: current_user)
     redirect_to resources_material_order_groups_path, notice: t("flash_messages.copy.success",
                                                                   resource: @material_order_group.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
