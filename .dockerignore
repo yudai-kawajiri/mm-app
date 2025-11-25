@@ -1,51 +1,50 @@
-# See https://docs.docker.com/engine/reference/builder/#dockerignore-file for more about ignoring files.
-
-# Ignore git directory.
+# Git関連
 /.git/
 /.gitignore
 
-# Ignore bundler config.
+# Bundler設定
 /.bundle
 
-# Ignore all environment files.
+# 環境変数ファイル
 /.env*
 
-# Ignore all default key files.
+# Rails暗号化キー
 /config/master.key
 /config/credentials/*.key
 
-# Ignore all logfiles and tempfiles.
+# ログ・一時ファイル
 /log/*
 /tmp/*
 !/log/.keep
 !/tmp/.keep
 
-# Ignore pidfiles, but keep the directory.
+# PIDファイル
 /tmp/pids/*
 !/tmp/pids/.keep
 
-# Ignore storage (uploaded files in development and any SQLite databases).
+# ストレージ（アップロードファイル）
 /storage/*
 !/storage/.keep
 /tmp/storage/*
 !/tmp/storage/.keep
 
-# Ignore assets.
+# アセット・依存パッケージ
 /node_modules/
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /public/assets
 
-# Ignore CI service files.
+# CI/CD関連
 /.github
 
-# Ignore Kamal files.
+# デプロイ設定（Kamal）
 /config/deploy*.yml
 /.kamal
 
-# Ignore development files
+# 開発環境専用
 /.devcontainer
 
-# Ignore Docker-related files
+# Docker関連ファイル
 /.dockerignore
 /Dockerfile*
+/compose.yml

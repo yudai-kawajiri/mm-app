@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe MonthlyBudget, type: :model do
+RSpec.describe Management::MonthlyBudget, type: :model do
   describe 'バリデーション' do
     it '有効なファクトリを持つこと' do
       budget = create(:monthly_budget)

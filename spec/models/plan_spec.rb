@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Plan, type: :model do
+RSpec.describe Resources::Plan, type: :model do
   describe 'バリデーション' do
     it '有効なファクトリを持つこと' do
       plan = create(:plan)

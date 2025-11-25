@@ -2,9 +2,7 @@ Rails.application.routes.draw do
   # ====================
   # 認証（Devise）
   # ====================
-  devise_for :users, controllers: {
-    registrations: "users/registrations"
-  }
+  devise_for :users, controllers: { registrations: "users/registrations" }
 
   # 認証済みユーザー
   authenticated :user do
@@ -22,7 +20,7 @@ Rails.application.routes.draw do
   # ====================
   namespace :admin do
     resources :users, only: [ :index, :destroy ]
-    resources :system_logs, only: [:index]
+    resources :system_logs, only: [ :index ]
   end
 
   # ====================
@@ -135,7 +133,7 @@ Rails.application.routes.draw do
 
       resources :plans, only: [ :index, :show ] do
         member do
-          get :fetch_revenue
+          get :revenue
         end
       end
     end

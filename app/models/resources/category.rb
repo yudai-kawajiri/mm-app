@@ -27,9 +27,9 @@ class Resources::Category < ApplicationRecord
   enum :category_type, { material: 0, product: 1, plan: 2 }
 
   # 関連付け（削除時は関連データの存在をチェック）
-  has_many :materials, class_name: 'Resources::Material', dependent: :restrict_with_error
-  has_many :products, class_name: 'Resources::Product', dependent: :restrict_with_error
-  has_many :plans, class_name: 'Resources::Plan', dependent: :restrict_with_error
+  has_many :materials, class_name: "Resources::Material", dependent: :restrict_with_error
+  has_many :products, class_name: "Resources::Product", dependent: :restrict_with_error
+  has_many :plans, class_name: "Resources::Plan", dependent: :restrict_with_error
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_type }
@@ -49,6 +49,6 @@ class Resources::Category < ApplicationRecord
   # Copyable設定
   copyable_config(
     uniqueness_scope: :category_type,
-    uniqueness_check_attributes: [:name, :reading]
+    uniqueness_check_attributes: [ :name, :reading ]
   )
 end

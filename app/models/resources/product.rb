@@ -25,17 +25,17 @@ class Resources::Product < ApplicationRecord
   include HasReading
 
   # ネストされた属性の翻訳設定
-  nested_attribute_translation :product_materials, 'Planning::ProductMaterial'
+  nested_attribute_translation :product_materials, "Planning::ProductMaterial"
 
   # 製品のステータス定義
   enum :status, { draft: 0, selling: 1, discontinued: 2 }
 
   # 関連付け
-  belongs_to :category, class_name: 'Resources::Category'
-  has_many :product_materials, class_name: 'Planning::ProductMaterial', dependent: :destroy
-  has_many :materials, through: :product_materials, class_name: 'Resources::Material'
-  has_many :plan_products, class_name: 'Planning::PlanProduct', dependent: :restrict_with_error
-  has_many :plans, through: :plan_products, class_name: 'Resources::Plan', dependent: :restrict_with_error
+  belongs_to :category, class_name: "Resources::Category"
+  has_many :product_materials, class_name: "Planning::ProductMaterial", dependent: :destroy
+  has_many :materials, through: :product_materials, class_name: "Resources::Material"
+  has_many :plan_products, class_name: "Planning::PlanProduct", dependent: :restrict_with_error
+  has_many :plans, through: :plan_products, class_name: "Resources::Plan", dependent: :restrict_with_error
 
   # ネストされたフォームから product_materials を受け入れる
   accepts_nested_attributes_for :product_materials,
@@ -65,7 +65,7 @@ class Resources::Product < ApplicationRecord
   scope :ordered, -> { order(:name) }
 
   # 印刷順でソート（display_order順、nullは最後）
-  scope :by_display_order, -> { order(Arel.sql('display_order IS NULL, display_order ASC, name ASC')) }
+  scope :by_display_order, -> { order(Arel.sql("display_order IS NULL, display_order ASC, name ASC")) }
 
   # 重複した原材料を除外
   before_save :reject_duplicate_product_materials
@@ -83,8 +83,8 @@ class Resources::Product < ApplicationRecord
   # Copyable設定
   copyable_config(
     uniqueness_scope: :category_id,
-    uniqueness_check_attributes: [:name, :reading],
-    associations_to_copy: [:product_materials],
+    uniqueness_check_attributes: [ :name, :reading ],
+    associations_to_copy: [ :product_materials ],
     additional_attributes: {
       item_number: :generate_unique_item_number,
       status: :draft
@@ -94,7 +94,7 @@ class Resources::Product < ApplicationRecord
   private
 
   def should_reject_product_material?(attributes)
-    attributes['material_id'].blank?
+    attributes["material_id"].blank?
   end
 
   # 重複した原材料を除外（最初の1つを残す）
@@ -140,7 +140,7 @@ class Resources::Product < ApplicationRecord
       # 品番が最大値を超えたらエラー
       if new_number_int > ITEM_NUMBER_MAX
         raise StandardError,
-              I18n.t('activerecord.errors.models.resources/product.item_number_exceeded')
+              I18n.t("activerecord.errors.models.resources/product.item_number_exceeded")
       end
 
       new_number = format("%0#{ITEM_NUMBER_DIGITS}d", new_number_int)

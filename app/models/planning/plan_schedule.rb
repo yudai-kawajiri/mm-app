@@ -9,7 +9,6 @@
 #   PlanSchedule.for_month(2024, 12)
 #   schedule.achievement_rate
 class Planning::PlanSchedule < ApplicationRecord
-
   # 変更履歴の記録
   has_paper_trail
 
@@ -17,7 +16,7 @@ class Planning::PlanSchedule < ApplicationRecord
   include UserAssociatable
 
   # 計画との関連
-  belongs_to :plan, class_name: 'Resources::Plan'
+  belongs_to :plan, class_name: "Resources::Plan"
 
   # バリデーション
   validates :scheduled_date, presence: true, uniqueness: { scope: :plan_id }
@@ -54,7 +53,7 @@ class Planning::PlanSchedule < ApplicationRecord
   # @return [Array<Hash>] 材料必要量の配列
   def self.material_requirements_for_date(user, date)
     schedules = where(user: user, scheduled_date: date)
-                .includes(plan: { plan_products: { product: { product_materials: [:material, :unit] } } })
+                .includes(plan: { plan_products: { product: { product_materials: [ :material, :unit ] } } })
 
     requirements = {}
 
@@ -70,7 +69,7 @@ class Planning::PlanSchedule < ApplicationRecord
           requirements[material_id][:plans] << schedule.plan.name
         else
           requirements[material_id] = req.dup
-          requirements[material_id][:plans] = [schedule.plan.name]
+          requirements[material_id][:plans] = [ schedule.plan.name ]
         end
       end
     end
@@ -152,7 +151,7 @@ class Planning::PlanSchedule < ApplicationRecord
   #
   # @return [Boolean]
   def has_snapshot?
-    plan_products_snapshot.present? && plan_products_snapshot['products'].present?
+    plan_products_snapshot.present? && plan_products_snapshot["products"].present?
   end
 
   # 商品構成スナップショットを更新
@@ -185,13 +184,13 @@ class Planning::PlanSchedule < ApplicationRecord
   def create_snapshot_from_products(products_hash)
     # ActionController::Parameters を安全に変換
     hash = case products_hash
-            when ActionController::Parameters
+    when ActionController::Parameters
               products_hash.to_unsafe_h
-            when Hash
+    when Hash
               products_hash
-            else
+    else
               products_hash.to_h
-            end
+    end
 
     products_data = hash.map do |product_id, production_count|
       { product_id: product_id.to_i, production_count: production_count.to_i }
@@ -206,13 +205,13 @@ class Planning::PlanSchedule < ApplicationRecord
   def snapshot_products
     return [] unless has_snapshot?
 
-    plan_products_snapshot['products'].map do |product_data|
-      product = Resources::Product.find(product_data['product_id'])
+    plan_products_snapshot["products"].map do |product_data|
+      product = Resources::Product.find(product_data["product_id"])
       {
         product: product,
-        production_count: product_data['production_count'],
-        price: product_data['price'],
-        subtotal: product_data['subtotal']
+        production_count: product_data["production_count"],
+        price: product_data["price"],
+        subtotal: product_data["subtotal"]
       }
     end
   end
@@ -221,14 +220,14 @@ class Planning::PlanSchedule < ApplicationRecord
   def snapshot_products_for_json
     return [] unless has_snapshot?
 
-    plan_products_snapshot['products']
+    plan_products_snapshot["products"]
   end
 
   # スナップショットの合計金額を取得
   #
   # @return [Integer] 合計金額
   def snapshot_total_cost
-    plan_products_snapshot.dig('total_cost') || 0
+    plan_products_snapshot.dig("total_cost") || 0
   end
 
   private
@@ -248,21 +247,21 @@ class Planning::PlanSchedule < ApplicationRecord
       subtotal = price * production_count
 
       products << {
-        'product_id' => product.id,
-        'name' => product.name,
-        'item_number' => product.item_number,
-        'production_count' => production_count,
-        'price' => price,
-        'subtotal' => subtotal
+        "product_id" => product.id,
+        "name" => product.name,
+        "item_number" => product.item_number,
+        "production_count" => production_count,
+        "price" => price,
+        "subtotal" => subtotal
       }
 
       total_cost += subtotal
     end
 
     {
-      'products' => products,
-      'total_cost' => total_cost,
-      'created_at' => Time.current.iso8601
+      "products" => products,
+      "total_cost" => total_cost,
+      "created_at" => Time.current.iso8601
     }
   end
 end

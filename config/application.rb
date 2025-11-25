@@ -24,7 +24,7 @@ module Myapp
     # locales 配下のすべての YAML ファイルを読み込み
     config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.yml")]
     # タイムゾーンを日本時間に設定
-    config.time_zone = 'Tokyo'
+    config.time_zone = "Tokyo"
 
     # ====================
     # Active Storage 設定

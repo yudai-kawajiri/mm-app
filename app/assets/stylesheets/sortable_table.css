@@ -1,8 +1,0 @@
-/* app/assets/stylesheets/sortable_table.css */
-.display-order-column {
-  display: none;
-}
-
-.reorder-mode .display-order-column {
-  display: table-cell;
-}

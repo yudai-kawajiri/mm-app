@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'アカウント設定', type: :system do
   let(:user) { create(:user, name: '山田太郎', email: 'test@example.com') }
-  
+
   before do
     sign_in_as(user)
   end
@@ -39,7 +39,7 @@ RSpec.describe 'アカウント設定', type: :system do
       fill_in '現在のパスワード', with: user.password
       click_button '更新'
 
-      expect(page).to have_content('アカウント情報が正常に更新されました')
+      expect(page).to have_content('アカウント情報を更新しました')
       expect(user.reload.name).to eq('鈴木花子')
     end
 
@@ -61,7 +61,7 @@ RSpec.describe 'アカウント設定', type: :system do
       fill_in '現在のパスワード', with: user.password
       click_button '更新'
 
-      expect(page).to have_content('アカウント情報が正常に更新されました')
+      expect(page).to have_content('アカウント情報を更新しました')
     end
   end
 
@@ -74,10 +74,10 @@ RSpec.describe 'アカウント設定', type: :system do
       password_fields[0].set('newpassword123')  # 新しいパスワード
       password_fields[1].set('newpassword123')  # 確認用
       password_fields[2].set(user.password)     # 現在のパスワード
-      
+
       click_button '更新'
 
-      expect(page).to have_content('アカウント情報が正常に更新されました')
+      expect(page).to have_content('アカウント情報を更新しました')
     end
 
     it 'パスワード確認が一致しない場合はエラー' do
@@ -88,7 +88,7 @@ RSpec.describe 'アカウント設定', type: :system do
       password_fields[0].set('newpassword123')  # 新しいパスワード
       password_fields[1].set('different123')    # 確認用（異なる値）
       password_fields[2].set(user.password)     # 現在のパスワード
-      
+
       click_button '更新'
 
       expect(page).to have_content('パスワード（確認） とパスワードの入力が一致しません')
@@ -96,7 +96,7 @@ RSpec.describe 'アカウント設定', type: :system do
   end
 
   describe 'アカウント削除' do
-    it 'アカウント削除リンクが表示される' do
+    it 'アカウント削除ボタンが表示される' do
       visit edit_user_registration_path
 
       expect(page).to have_content('アカウントを削除') | have_button('アカウントを削除')

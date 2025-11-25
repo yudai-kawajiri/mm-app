@@ -39,15 +39,15 @@ module Admin
     #
     def system_log_event_badge(event)
       badge_class, label_key = case event
-                               when 'create'
-                                 ['bg-success', 'admin.system_logs.events.create']
-                               when 'update'
-                                 ['bg-warning', 'admin.system_logs.events.update']
-                               when 'destroy'
-                                 ['bg-danger', 'admin.system_logs.events.destroy']
-                               else
-                                 ['bg-secondary', 'common.unknown']
-                               end
+      when "create"
+                                 [ "bg-success", "admin.system_logs.events.create" ]
+      when "update"
+                                 [ "bg-warning", "admin.system_logs.events.update" ]
+      when "destroy"
+                                 [ "bg-danger", "admin.system_logs.events.destroy" ]
+      else
+                                 [ "bg-secondary", "common.unknown" ]
+      end
 
       content_tag(:span, t(label_key), class: "badge #{badge_class}")
     end
@@ -71,10 +71,10 @@ module Admin
     #   # => "山田太郎"
     #
     def system_log_user_name(version)
-      return t('admin.system_logs.index.system') if version.whodunnit.blank?
+      return t("admin.system_logs.index.system") if version.whodunnit.blank?
 
       user = User.find_by(id: version.whodunnit.to_i)
-      user&.name || t('admin.system_logs.index.unknown_user')
+      user&.name || t("admin.system_logs.index.unknown_user")
     end
 
     # ============================================================
@@ -98,16 +98,16 @@ module Admin
     #   # => "商品A"
     #
     def system_log_detail(version)
-      if version.event == 'create'
+      if version.event == "create"
         fetch_detail_from_current_record(version)
       elsif version.object.present?
         fetch_detail_from_object(version)
       else
-        t('admin.system_logs.index.no_detail')
+        t("admin.system_logs.index.no_detail")
       end
     rescue StandardError => e
       Rails.logger.error("Failed to fetch system log detail: #{e.message}")
-      t('admin.system_logs.index.no_detail')
+      t("admin.system_logs.index.no_detail")
     end
 
     private
@@ -123,7 +123,7 @@ module Admin
     #
     def fetch_detail_from_current_record(version)
       record = version.item_type.constantize.find_by(id: version.item_id)
-      return t('admin.system_logs.index.deleted_record') if record.nil?
+      return t("admin.system_logs.index.deleted_record") if record.nil?
 
       # 優先順位付きで属性を取得
       DETAIL_ATTRIBUTES.each do |attr|
@@ -131,7 +131,7 @@ module Admin
         return value if value.present?
       end
 
-      t('admin.system_logs.index.no_detail')
+      t("admin.system_logs.index.no_detail")
     end
 
     #
@@ -152,7 +152,7 @@ module Admin
         return value if value.present?
       end
 
-      t('admin.system_logs.index.no_detail')
+      t("admin.system_logs.index.no_detail")
     end
   end
 end

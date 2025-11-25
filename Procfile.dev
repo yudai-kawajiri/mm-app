@@ -1,4 +1,4 @@
 # Webサーバーの起動設定
 web: env RUBY_DEBUG_OPEN=true bin/rails server -b 0.0.0.0 -p 3000
 # CSSのビルド設定
-css: yarn build:css --watch
+css: yarn build:css:watch

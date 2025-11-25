@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_22_034111) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_23_043452) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -59,7 +59,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_034111) do
     t.datetime "created_at", null: false
     t.text "description"
     t.bigint "monthly_budget_id", null: false
-    t.decimal "target_amount", precision: 12, scale: 2, null: false
+    t.bigint "target_amount", null: false, comment: "目標金額"
     t.date "target_date", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -113,7 +113,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_034111) do
     t.date "budget_month", null: false, comment: "予算対象月（月初日を保存）"
     t.datetime "created_at", null: false
     t.text "description", comment: "説明"
-    t.decimal "target_amount", precision: 12, scale: 2, null: false, comment: "目標金額"
+    t.decimal "forecast_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "予測見切り率（%）"
+    t.bigint "target_amount", null: false, comment: "目標金額"
+    t.decimal "target_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "目標見切り率（%）"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id", "budget_month"], name: "index_monthly_budgets_on_user_id_and_budget_month", unique: true
@@ -132,7 +134,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_22_034111) do
   end
 
   create_table "plan_schedules", force: :cascade do |t|
-    t.decimal "actual_revenue", precision: 12, scale: 2, comment: "実績売上"
+    t.bigint "actual_revenue", comment: "実績売上"
     t.datetime "created_at", null: false
     t.text "description", comment: "説明"
     t.bigint "plan_id", null: false

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe '原材料管理', type: :system do
   let(:user) { create(:user) }
-  
+
   before do
     sign_in_as(user)
   end
@@ -12,7 +12,7 @@ RSpec.describe '原材料管理', type: :system do
     let!(:material2) { create(:material, name: 'サーモン', display_order: 2, user: user) }
 
     it '原材料の一覧が表示される' do
-      visit materials_path
+      visit resources_materials_path
 
       expect(page).to have_content('原材料一覧')
       expect(page).to have_content('まぐろ')
@@ -20,7 +20,7 @@ RSpec.describe '原材料管理', type: :system do
     end
 
     it '原材料の単位とカテゴリが表示される' do
-      visit materials_path
+      visit resources_materials_path
 
       # テーブル内に単位とカテゴリが表示されることを確認
       expect(page).to have_content(material1.unit_for_product.name)
@@ -33,7 +33,7 @@ RSpec.describe '原材料管理', type: :system do
     let!(:material) { create(:material, name: 'まぐろ', user: user) }
 
     it '原材料の詳細情報が表示される' do
-      visit material_path(material)
+      visit resources_material_path(material)
 
       expect(page).to have_content('原材料詳細')
       expect(page).to have_content('まぐろ')
@@ -45,17 +45,17 @@ RSpec.describe '原材料管理', type: :system do
 
   describe '原材料作成' do
     it '新規作成画面が表示される' do
-      visit new_material_path
+      visit new_resources_material_path
 
       expect(page).to have_content('原材料登録')
       expect(page).to have_field('原材料名')
       expect(page).to have_content('カテゴリー')
-      expect(page).to have_content('デフォルト重量')
+      expect(page).to have_content('基本使用量')
       expect(page).to have_button('登録')
     end
 
     it 'バリデーションエラーが表示される' do
-      visit new_material_path
+      visit new_resources_material_path
 
       click_button '登録'
 
@@ -67,14 +67,14 @@ RSpec.describe '原材料管理', type: :system do
     let!(:material) { create(:material, name: 'まぐろ', user: user) }
 
     it '編集画面が表示される' do
-      visit edit_material_path(material)
+      visit edit_resources_material_path(material)
 
       expect(page).to have_content('原材料編集')
       expect(page).to have_field('原材料名', with: 'まぐろ')
     end
 
     it 'バリデーションエラーが表示される' do
-      visit edit_material_path(material)
+      visit edit_resources_material_path(material)
 
       fill_in '原材料名', with: ''
       click_button '更新'
@@ -86,13 +86,11 @@ RSpec.describe '原材料管理', type: :system do
   describe '原材料削除' do
     let!(:material) { create(:material, name: 'まぐろ', user: user) }
 
-    it '原材料の削除リンクが表示される' do
-      visit materials_path
+    it '原材料の削除ボタンが表示される' do
+      visit resources_material_path(material)
 
-      expect(page).to have_content('まぐろ')
-      # rack_testドライバーではJavaScriptの確認ダイアログに対応していないため、
-      # 削除リンクの存在確認のみ行う
-      expect(page).to have_link('削除')
+      # 削除ボタン（アイコンのみ）が存在することを確認
+      expect(page).to have_css('button[data-turbo-confirm]', count: 1)
     end
   end
 
@@ -100,12 +98,11 @@ RSpec.describe '原材料管理', type: :system do
     let!(:material1) { create(:material, name: 'まぐろ', display_order: 1, user: user) }
     let!(:material2) { create(:material, name: 'サーモン', display_order: 2, user: user) }
 
-    it '並び替えボタンが表示される' do
-      visit materials_path
+    it 'ソート可能な一覧が表示される' do
+      visit resources_materials_path
 
-      # Stimulus controllerによる並び替えボタンが存在することを確認
-      # rack_testドライバーではJavaScript非対応のため、ボタンの存在のみ確認
-      expect(page).to have_button('並び替えモード')
+      # Stimulus controllerのdata属性が存在することを確認
+      expect(page).to have_css('[data-controller="sortable-table"]')
     end
   end
 end

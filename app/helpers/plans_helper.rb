@@ -17,10 +17,10 @@
 module PlansHelper
   # ステータスとバッジカラーのマッピング
   PLAN_STATUS_BADGE_COLORS = {
-    'draft' => 'bg-secondary',
-    'active' => 'bg-success',
-    'completed' => 'bg-primary',
-    'cancelled' => 'bg-danger'
+    "draft" => "bg-secondary",
+    "active" => "bg-success",
+    "completed" => "bg-primary",
+    "cancelled" => "bg-danger"
   }.freeze
 
   #
@@ -45,7 +45,7 @@ module PlansHelper
   #
   def render_plan_status_with_action(plan)
     # バッジの色を決定（定数から取得、デフォルトはbg-secondary）
-    status_badge_class = PLAN_STATUS_BADGE_COLORS.fetch(plan.status, 'bg-secondary')
+    status_badge_class = PLAN_STATUS_BADGE_COLORS.fetch(plan.status, "bg-secondary")
 
     # ステータスの日本語表示（i18n対応）
     status_text = t("activerecord.enums.resources/plan.status.#{plan.status}")
@@ -57,7 +57,7 @@ module PlansHelper
       # ステータス変更ドロップダウン
       dropdown = content_tag(:div, class: "btn-group btn-group-sm ms-2", role: "group") do
         # ドロップダウントグルボタン
-        button = content_tag(:button, t('common.change'),
+        button = content_tag(:button, t("common.change"),
           type: "button",
           class: "btn btn-outline-secondary btn-sm dropdown-toggle",
           data: { bs_toggle: "dropdown" },

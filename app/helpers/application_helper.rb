@@ -234,7 +234,7 @@ module ApplicationHelper
     if data == :image
       # 画像カラムの処理
       if resource.image.attached?
-        image_tag resource.image.variant(resize_to_limit: [50, 50]), class: "img-thumbnail"
+        image_tag resource.image.variant(resize_to_limit: [ 50, 50 ]), class: "img-thumbnail"
       else
         "-"
       end
@@ -477,7 +477,7 @@ module ApplicationHelper
           current = content_tag(:span, "0", data: { "input--character-counter-target": "count" })
           remaining = content_tag(:span, max_length.to_s, class: "text-muted", data: { "input--character-counter-target": "remaining" })
 
-        t('helpers.character_counter.hint',
+        t("helpers.character_counter.hint",
           current: current,
           max: max_length,
           remaining: remaining
@@ -549,10 +549,10 @@ module ApplicationHelper
   #   # => "text-danger"
   #
   def achievement_rate_color_class(achievement_rate)
-    return 'text-success' if achievement_rate >= 100
-    return 'text-warning' if achievement_rate >= 80
+    return "text-success" if achievement_rate >= 100
+    return "text-warning" if achievement_rate >= 80
 
-    'text-danger'
+    "text-danger"
   end
 
   # ============================================================

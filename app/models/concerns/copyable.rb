@@ -31,16 +31,16 @@ module Copyable
     # 各モデルで copyable_config を使ってカスタマイズ可能
     class_attribute :copy_config, default: {
       name_format: lambda { |original_name, copy_count|
-        I18n.t('activerecord.concerns.copyable.copy_name_format',
+        I18n.t("activerecord.concerns.copyable.copy_name_format",
                 name: original_name,
                 count: copy_count)
       },
       uniqueness_scope: :name,
-      uniqueness_check_attributes: [:name],
+      uniqueness_check_attributes: [ :name ],
       associations_to_copy: [],
       association_copy_attributes: {},
       additional_attributes: {},
-      skip_attributes: [:created_at, :updated_at, :id]
+      skip_attributes: [ :created_at, :updated_at, :id ]
     }
   end
 
@@ -78,7 +78,7 @@ module Copyable
   #   product = Resources::Product.find(1)
   #   copied = product.create_copy(user: current_user)
   def create_copy(user:)
-    raise ArgumentError, 'user cannot be nil' if user.nil?
+    raise ArgumentError, "user cannot be nil" if user.nil?
 
     ActiveRecord::Base.transaction do
       unique_attrs = generate_unique_attributes
@@ -207,12 +207,12 @@ module Copyable
 
     copy_attributes = if association_copy_attrs[association_name].present?
                         association_copy_attrs[association_name]
-                      else
+    else
                         # デフォルト: すべての属性（id, timestamps, 外部キーを除く）
                         original_record.attributes.keys.map(&:to_sym) -
-                          [:id, :created_at, :updated_at] -
-                          [association_foreign_key(association_name)]
-                      end
+                          [ :id, :created_at, :updated_at ] -
+                          [ association_foreign_key(association_name) ]
+    end
 
     attributes = copy_attributes.index_with { |attr| original_record.send(attr) }
     new_record.send(association_name).create!(attributes)

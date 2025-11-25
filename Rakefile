@@ -1,5 +1,5 @@
-# Add your own tasks in files placed in lib/tasks ending in .rake,
-# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
+# 独自のタスクは、lib/tasks/ ディレクトリ内に配置し、ファイル名の末尾を .rake にすることで追加してください。
+# 例えば lib/tasks/capistrano.rake のようにすると、それらのタスクは自動的にRakeで利用可能になります。
 
 require_relative "config/application"
 

@@ -19,12 +19,12 @@ module Api
 
       rescue ActiveRecord::RecordNotFound
         Rails.logger.error "=== Plan not found: ID #{params[:id]} ==="
-        render json: { error: t('api.errors.plan_not_found') }, status: :not_found
+        render json: { error: t("api.errors.plan_not_found") }, status: :not_found
 
       rescue StandardError => e
         Rails.logger.error "=== API Error: #{e.class} - #{e.message} ==="
         Rails.logger.error "Backtrace:\n#{e.backtrace.join("\n")}"
-        render json: { error: t('api.errors.server_error') }, status: :internal_server_error
+        render json: { error: t("api.errors.server_error") }, status: :internal_server_error
       end
     end
   end

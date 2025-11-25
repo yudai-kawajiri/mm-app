@@ -33,7 +33,7 @@ class Management::PlanSchedulesController < AuthenticatedController
         year: scheduled_date.year,
         month: scheduled_date.month
       ),
-                  alert: I18n.t('api.errors.missing_required_info')
+                  alert: I18n.t("api.errors.missing_required_info")
       return
     end
 
@@ -58,7 +58,7 @@ class Management::PlanSchedulesController < AuthenticatedController
         @plan_schedule.create_snapshot_from_plan
       end
 
-      action = @plan_schedule.previously_new_record? ? I18n.t('numerical_managements.messages.plan_assigned') : I18n.t('numerical_managements.messages.plan_assigned')
+      action = @plan_schedule.previously_new_record? ? I18n.t("numerical_managements.messages.plan_assigned") : I18n.t("numerical_managements.messages.plan_assigned")
 
       redirect_to management_numerical_managements_path(
         year: scheduled_date.year,
@@ -69,7 +69,7 @@ class Management::PlanSchedulesController < AuthenticatedController
         year: scheduled_date.year,
         month: scheduled_date.month
       ),
-                  alert: I18n.t('flash_messages.plan_schedule.create.failure')
+                  alert: I18n.t("flash_messages.plan_schedule.create.failure")
     end
   end
 
@@ -104,13 +104,13 @@ class Management::PlanSchedulesController < AuthenticatedController
       redirect_to management_numerical_managements_path(
         year: scheduled_date.year,
         month: scheduled_date.month
-      ), notice: I18n.t('numerical_managements.messages.plan_assigned')
+      ), notice: I18n.t("numerical_managements.messages.plan_assigned")
     else
       redirect_to management_numerical_managements_path(
         year: scheduled_date.year,
         month: scheduled_date.month
       ),
-                  alert: I18n.t('flash_messages.plan_schedule.update.failure')
+                  alert: I18n.t("flash_messages.plan_schedule.update.failure")
     end
   end
 
@@ -167,7 +167,7 @@ class Management::PlanSchedulesController < AuthenticatedController
   def sanitized_plan_schedule_params
     sanitize_numeric_params(
       plan_schedule_params,
-      with_comma: [:actual_revenue]
+      with_comma: [ :actual_revenue ]
     )
   end
 
@@ -186,7 +186,7 @@ class Management::PlanSchedulesController < AuthenticatedController
       year: Date.current.year,
       month: Date.current.month
     ),
-                alert: I18n.t('api.errors.invalid_date')
+                alert: I18n.t("api.errors.invalid_date")
     nil
   end
 

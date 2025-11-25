@@ -1,8 +1,13 @@
 # spec/factories/categories.rb
 
 FactoryBot.define do
-  factory :category do
+  factory :category, class: 'Resources::Category' do
     sequence(:name) { |n| "カテゴリー#{n}" }
+    sequence(:reading) do |n|
+      hiragana_nums = %w[ぜろ いち に さん よん ご ろく なな はち きゅう]
+      digits = n.to_s.chars.map { |d| hiragana_nums[d.to_i] }
+      "かてごりー#{digits.join}"
+    end
     category_type { :material }
     description { "テスト用のカテゴリー概要" }
     association :user

@@ -43,13 +43,13 @@ class Admin::SystemLogsController < AuthenticatedController
     # 開始日でフィルタ
     if params[:date_from].present?
       date_from = Date.parse(params[:date_from])
-      @versions = @versions.where('created_at >= ?', date_from.beginning_of_day)
+      @versions = @versions.where("created_at >= ?", date_from.beginning_of_day)
     end
 
     # 終了日でフィルタ
     if params[:date_to].present?
       date_to = Date.parse(params[:date_to])
-      @versions = @versions.where('created_at <= ?', date_to.end_of_day)
+      @versions = @versions.where("created_at <= ?", date_to.end_of_day)
     end
 
     # ページネーション（1ページ50件）

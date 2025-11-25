@@ -1,0 +1,276 @@
+require 'rails_helper'
+
+RSpec.describe "Resources::MaterialOrderGroups", type: :request do
+  let(:user) { create(:user) }
+  let!(:material_order_group) { create(:material_order_group, user: user) }
+
+  describe 'GET /resources/material_order_groups' do
+    context 'ログインしている場合' do
+      before { sign_in user, scope: :user }
+
+      it '正常にレスポンスを返すこと' do
+        get resources_material_order_groups_path
+        expect(response).to have_http_status(:success)
+      end
+
+      it '@material_order_groupsに発注グループを割り当てること' do
+        get resources_material_order_groups_path
+        expect(assigns(:material_order_groups)).to include(material_order_group)
+      end
+
+      it 'indexテンプレートを表示すること' do
+        get resources_material_order_groups_path
+        expect(response).to render_template(:index)
+      end
+
+      context '検索パラメータがある場合' do
+        it 'qパラメータでリクエストが成功すること' do
+          get resources_material_order_groups_path, params: { q: 'テスト' }
+          expect(response).to have_http_status(:success)
+        end
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        get resources_material_order_groups_path
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'GET /resources/material_order_groups/:id' do
+    context 'ログインしている場合' do
+      before { sign_in user, scope: :user }
+
+      it '正常にレスポンスを返すこと' do
+        get resources_material_order_group_path(material_order_group)
+        expect(response).to have_http_status(:success)
+      end
+
+      it '@material_order_groupに発注グループを割り当てること' do
+        get resources_material_order_group_path(material_order_group)
+        expect(assigns(:material_order_group)).to eq(material_order_group)
+      end
+
+      it 'showテンプレートを表示すること' do
+        get resources_material_order_group_path(material_order_group)
+        expect(response).to render_template(:show)
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        get resources_material_order_group_path(material_order_group)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'GET /resources/material_order_groups/new' do
+    context 'ログインしている場合' do
+      before { sign_in user, scope: :user }
+
+      it '正常にレスポンスを返すこと' do
+        get new_resources_material_order_group_path
+        expect(response).to have_http_status(:success)
+      end
+
+      it '@material_order_groupに新しい発注グループを割り当てること' do
+        get new_resources_material_order_group_path
+        expect(assigns(:material_order_group)).to be_a_new(Resources::MaterialOrderGroup)
+      end
+
+      it 'newテンプレートを表示すること' do
+        get new_resources_material_order_group_path
+        expect(response).to render_template(:new)
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        get new_resources_material_order_group_path
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'POST /resources/material_order_groups' do
+    context 'ログインしている場合' do
+      before { sign_in user, scope: :user }
+
+      context '有効なパラメータの場合' do
+        let(:valid_attributes) { { name: '新しい発注グループ', reading: 'あたらしいはっちゅうぐるーぷ' } }
+
+        it '発注グループが作成されること' do
+          expect {
+            post resources_material_order_groups_path, params: { resources_material_order_group: valid_attributes }
+          }.to change(Resources::MaterialOrderGroup, :count).by(1)
+        end
+
+        it '作成された発注グループの詳細ページにリダイレクトされること' do
+          post resources_material_order_groups_path, params: { resources_material_order_group: valid_attributes }
+          expect(response).to redirect_to(resources_material_order_group_path(Resources::MaterialOrderGroup.last))
+        end
+
+        it '成功メッセージが表示されること' do
+          post resources_material_order_groups_path, params: { resources_material_order_group: valid_attributes }
+          expect(flash[:notice]).to be_present
+        end
+      end
+
+      context '無効なパラメータの場合' do
+        let(:invalid_attributes) { { name: '', reading: '' } }
+
+        it '発注グループが作成されないこと' do
+          expect {
+            post resources_material_order_groups_path, params: { resources_material_order_group: invalid_attributes }
+          }.not_to change(Resources::MaterialOrderGroup, :count)
+        end
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        post resources_material_order_groups_path, params: { resources_material_order_group: { name: 'テスト' } }
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'GET /resources/material_order_groups/:id/edit' do
+    context 'ログインしている場合' do
+      before { sign_in user, scope: :user }
+
+      it '正常にレスポンスを返すこと' do
+        get edit_resources_material_order_group_path(material_order_group)
+        expect(response).to have_http_status(:success)
+      end
+
+      it '@material_order_groupに発注グループを割り当てること' do
+        get edit_resources_material_order_group_path(material_order_group)
+        expect(assigns(:material_order_group)).to eq(material_order_group)
+      end
+
+      it 'editテンプレートを表示すること' do
+        get edit_resources_material_order_group_path(material_order_group)
+        expect(response).to render_template(:edit)
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        get edit_resources_material_order_group_path(material_order_group)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'PATCH /resources/material_order_groups/:id' do
+    context 'ログインしている場合' do
+      before { sign_in user, scope: :user }
+
+      context '有効なパラメータの場合' do
+        let(:new_attributes) { { name: '更新された発注グループ' } }
+
+        it '発注グループが更新されること' do
+          patch resources_material_order_group_path(material_order_group), params: { resources_material_order_group: new_attributes }
+          material_order_group.reload
+          expect(material_order_group.name).to eq('更新された発注グループ')
+        end
+
+        it '更新された発注グループの詳細ページにリダイレクトされること' do
+          patch resources_material_order_group_path(material_order_group), params: { resources_material_order_group: new_attributes }
+          expect(response).to redirect_to(resources_material_order_group_path(material_order_group))
+        end
+
+        it '成功メッセージが表示されること' do
+          patch resources_material_order_group_path(material_order_group), params: { resources_material_order_group: new_attributes }
+          expect(flash[:notice]).to be_present
+        end
+      end
+
+      context '無効なパラメータの場合' do
+        let(:invalid_attributes) { { name: '' } }
+
+        it '発注グループが更新されないこと' do
+          original_name = material_order_group.name
+          patch resources_material_order_group_path(material_order_group), params: { resources_material_order_group: invalid_attributes }
+          material_order_group.reload
+          expect(material_order_group.name).to eq(original_name)
+        end
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        patch resources_material_order_group_path(material_order_group), params: { resources_material_order_group: { name: '更新' } }
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'DELETE /resources/material_order_groups/:id' do
+    context 'ログインしている場合' do
+      before { sign_in user, scope: :user }
+
+      it '発注グループが削除されること' do
+        expect {
+          delete resources_material_order_group_path(material_order_group)
+        }.to change(Resources::MaterialOrderGroup, :count).by(-1)
+      end
+
+      it '発注グループ一覧にリダイレクトされること' do
+        delete resources_material_order_group_path(material_order_group)
+        expect(response).to redirect_to(resources_material_order_groups_path)
+      end
+
+      it '成功メッセージが表示されること' do
+        delete resources_material_order_group_path(material_order_group)
+        expect(flash[:notice]).to be_present
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        delete resources_material_order_group_path(material_order_group)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'POST /resources/material_order_groups/:id/copy' do
+    context 'ログインしている場合' do
+      before { sign_in user, scope: :user }
+
+      it '発注グループがコピーされること' do
+        expect {
+          post copy_resources_material_order_group_path(material_order_group)
+        }.to change(Resources::MaterialOrderGroup, :count).by(1)
+      end
+
+      it '発注グループ一覧にリダイレクトされること' do
+        post copy_resources_material_order_group_path(material_order_group)
+        expect(response).to redirect_to(resources_material_order_groups_path)
+      end
+
+      it '成功メッセージが表示されること' do
+        post copy_resources_material_order_group_path(material_order_group)
+        expect(flash[:notice]).to be_present
+      end
+
+      it 'コピーされた発注グループの名前に「コピー」が含まれること' do
+        post copy_resources_material_order_group_path(material_order_group)
+        copied_group = Resources::MaterialOrderGroup.last
+        expect(copied_group.name).to match(/コピー/)
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        post copy_resources_material_order_group_path(material_order_group)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+end

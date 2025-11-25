@@ -62,6 +62,6 @@ class Resources::Unit < ApplicationRecord
   # Copyable設定
   copyable_config(
     uniqueness_scope: :category,
-    uniqueness_check_attributes: [:name]
+    uniqueness_check_attributes: [ :name ]
   )
 end

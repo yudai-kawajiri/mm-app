@@ -31,7 +31,7 @@ RSpec.describe User, type: :model do
     it 'パスワードが6文字未満は無効であること' do
       user = build(:user, password: '12345', password_confirmation: '12345')
       user.valid?
-      expect(user.errors[:password]).to include('6 文字以上で入力してください') 
+      expect(user.errors[:password]).to include('6文字以上で入力してください')
     end
   end
 

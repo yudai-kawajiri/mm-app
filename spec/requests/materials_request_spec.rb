@@ -305,12 +305,12 @@ RSpec.describe "Materials", type: :request do
       let(:material3) { create(:material, user: admin_user, category: category, unit_for_product: unit, unit_for_order: unit, display_order: 3) }
 
       it '正常にレスポンスを返すこと' do
-        post reorder_materials_path, params: { material_ids: [material3.id, material1.id, material2.id] }
+        post reorder_materials_path, params: { material_ids: [ material3.id, material1.id, material2.id ] }
         expect(response).to have_http_status(:ok)
       end
 
       it '並び順が更新されること' do
-        post reorder_materials_path, params: { material_ids: [material3.id, material1.id, material2.id] }
+        post reorder_materials_path, params: { material_ids: [ material3.id, material1.id, material2.id ] }
         # display_orderは1から始まる
         expect(material3.reload.display_order).to eq(1)
         expect(material1.reload.display_order).to eq(2)
@@ -320,7 +320,7 @@ RSpec.describe "Materials", type: :request do
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        post reorder_materials_path, params: { material_ids: [1, 2, 3] }
+        post reorder_materials_path, params: { material_ids: [ 1, 2, 3 ] }
         expect(response).to redirect_to(new_user_session_path)
       end
     end

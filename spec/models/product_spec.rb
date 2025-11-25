@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Product, type: :model do
+RSpec.describe Resources::Product, type: :model do
   describe 'バリデーション' do
     it '有効なファクトリを持つこと' do
       product = create(:product)
@@ -12,13 +12,13 @@ RSpec.describe Product, type: :model do
     it '売価が0以下なら無効であること' do
       product = build(:product, price: 0)
       product.valid?
-      expect(product.errors[:price]).to include('は0より大きい値を入力してください')  # スペースなし
+      expect(product.errors[:price]).to include('0より大きい値を入力してください')  # スペースなし
     end
 
     it 'ステータスがなければ無効であること' do
       product = build(:product, status: nil)
       product.valid?
-      expect(product.errors[:status]).to include('を選択してください')
+      expect(product.errors[:status]).to include('を入力してください')
     end
 
     it '売価がなければ無効であること' do
@@ -30,7 +30,7 @@ RSpec.describe Product, type: :model do
     it '売価が0以下なら無効であること' do
       product = build(:product, price: 0)
       product.valid?
-      expect(product.errors[:price]).to include('は0より大きい値を入力してください')
+      expect(product.errors[:price]).to include('0より大きい値を入力してください')
     end
 
     it 'カテゴリがなければ無効であること' do
@@ -42,7 +42,7 @@ RSpec.describe Product, type: :model do
     it 'ステータスがなければ無効であること' do
       product = build(:product, status: nil)
       product.valid?
-      expect(product.errors[:status]).to include('を選択してください')
+      expect(product.errors[:status]).to include('を入力してください')
     end
   end
 

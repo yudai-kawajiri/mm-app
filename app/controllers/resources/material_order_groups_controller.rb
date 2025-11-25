@@ -21,7 +21,7 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   )
 
   # リソース検索（show, edit, update, destroy, copy）
-  find_resource :material_order_group, only: [:show, :edit, :update, :destroy, :copy]
+  find_resource :material_order_group, only: [ :show, :edit, :update, :destroy, :copy ]
 
   # 発注グループ一覧
   #
@@ -29,9 +29,9 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   def index
     sorted_index(
       Resources::MaterialOrderGroup,
-      default: 'name',
+      default: "name",
       scope: :all,
-      includes: [:materials]
+      includes: [ :materials ]
     )
   end
 
@@ -79,12 +79,12 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   #
   # @return [void]
   def copy
-    copied = @material_order_group.create_copy(user: current_user)
-    redirect_to resources_material_order_groups_path, notice: t('flash_messages.copy.success',
+    @material_order_group.create_copy(user: current_user)
+    redirect_to resources_material_order_groups_path, notice: t("flash_messages.copy.success",
                                                                   resource: @material_order_group.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "MaterialOrderGroup copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_material_order_groups_path, alert: t('flash_messages.copy.failure',
+    redirect_to resources_material_order_groups_path, alert: t("flash_messages.copy.failure",
                                                                 resource: @material_order_group.class.model_name.human)
   end
 

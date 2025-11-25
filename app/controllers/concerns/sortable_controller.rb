@@ -80,9 +80,9 @@ module SortableController
     # ベースクエリ構築
     base_query = if model_class.respond_to?(scope)
                    model_class.public_send(scope)
-                 else
+    else
                    model_class.all
-                 end
+    end
 
     # eager loading
     base_query = base_query.includes(includes) if includes.present?

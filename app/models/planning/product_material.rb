@@ -13,9 +13,9 @@ class Planning::ProductMaterial < ApplicationRecord
   has_paper_trail
 
   # 関連付け
-  belongs_to :product, class_name: 'Resources::Product'
-  belongs_to :material, class_name: 'Resources::Material'
-  belongs_to :unit, class_name: 'Resources::Unit'
+  belongs_to :product, class_name: "Resources::Product"
+  belongs_to :material, class_name: "Resources::Material"
+  belongs_to :unit, class_name: "Resources::Unit"
 
   # バリデーション
   validates :material_id, presence: true, uniqueness: { scope: :product_id, message: :already_registered }
@@ -63,7 +63,7 @@ class Planning::ProductMaterial < ApplicationRecord
   #
   # @return [String] 発注単位名
   def order_unit_name
-    material&.unit_for_order&.name || I18n.t('common.not_set')
+    material&.unit_for_order&.name || I18n.t("common.not_set")
   end
 
   # 表示用（例: "1 パック", "2 箱"）
@@ -79,18 +79,18 @@ class Planning::ProductMaterial < ApplicationRecord
   def order_quantity_detail
     case material.order_conversion_type
     when :pieces
-      I18n.t('planning.product_material.order_quantity_detail.pieces',
+      I18n.t("planning.product_material.order_quantity_detail.pieces",
              quantity: quantity,
              unit: unit.name,
              order_quantity: required_order_quantity,
              order_unit: order_unit_name)
     when :weight
-      I18n.t('planning.product_material.order_quantity_detail.weight',
+      I18n.t("planning.product_material.order_quantity_detail.weight",
              weight: total_weight.round(1),
              order_quantity: required_order_quantity,
              order_unit: order_unit_name)
     else
-      I18n.t('common.calculation_unavailable')
+      I18n.t("common.calculation_unavailable")
     end
   end
 
@@ -111,12 +111,12 @@ class Planning::ProductMaterial < ApplicationRecord
 
     # 全角→半角、カンマ削除、スペース削除
     cleaned = value.to_s
-      .tr('０-９', '0-9')
-      .tr('ー−', '-')
-      .tr('。．', '.')
-      .gsub(/[,\s　]/, '')
+      .tr("０-９", "0-9")
+      .tr("ー−", "-")
+      .tr("。．", ".")
+      .gsub(/[,\s　]/, "")
 
     # 小数点があればFloatに、なければIntegerに変換
-    cleaned.include?('.') ? cleaned.to_f : cleaned.to_i
+    cleaned.include?(".") ? cleaned.to_f : cleaned.to_i
   end
 end

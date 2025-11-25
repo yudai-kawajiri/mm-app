@@ -18,7 +18,7 @@
 #   - クリーンアップ処理
 class ImageUploadService
   # 一時ファイル保存ディレクトリ
-  TEMP_DIR = Rails.root.join('tmp', 'pending_images').freeze
+  TEMP_DIR = Rails.root.join("tmp", "pending_images").freeze
 
   # セッションキー
   SESSION_KEY_IMAGE_KEY = :pending_image_key
@@ -131,7 +131,7 @@ class ImageUploadService
     temp_path = TEMP_DIR.join("#{temp_key}_#{uploaded_file.original_filename}")
 
     FileUtils.mkdir_p(TEMP_DIR)
-    File.open(temp_path, 'wb') do |file|
+    File.open(temp_path, "wb") do |file|
       file.write(uploaded_file.read)
     end
     uploaded_file.rewind

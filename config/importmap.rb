@@ -48,8 +48,3 @@ pin "cocoon", to: "cocoon.js", preload: true
 
 # Sortable.js（ドラッグ&ドロップライブラリ）
 pin "sortablejs", to: "https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/+esm"
-
-# Chart.js
-pin "chart.js", to: "https://ga.jspm.io/npm:chart.js@4.5.1/dist/chart.js"
-pin "chart.js/auto", to: "https://ga.jspm.io/npm:chart.js@4.5.1/auto/auto.js"
-pin "@kurkle/color", to: "https://ga.jspm.io/npm:@kurkle/color@0.3.4/dist/color.esm.js"

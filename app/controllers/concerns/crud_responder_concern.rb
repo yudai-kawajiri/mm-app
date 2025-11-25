@@ -30,7 +30,7 @@ module CrudResponderConcern
   # @return [void]
   def respond_to_save(resource, success_path: resource)
     resource_name = resource.class.model_name.human
-    resource_display_name = resource.name.presence || I18n.t('common.record')
+    resource_display_name = resource.name.presence || I18n.t("common.record")
 
     if resource.save
       action = resource.previous_changes.key?("id") ? :create : :update
@@ -59,7 +59,7 @@ module CrudResponderConcern
   # @return [void]
   def respond_to_destroy(resource, success_path:, destroy_failure_path: success_path)
     resource_name = resource.class.model_name.human
-    resource_display_name = resource.name.presence || I18n.t('common.record')
+    resource_display_name = resource.name.presence || I18n.t("common.record")
 
     if resource.destroy
       flash[:notice] = t("flash_messages.destroy.success",

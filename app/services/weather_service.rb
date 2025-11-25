@@ -12,19 +12,19 @@
 #
 class WeatherService
   # OpenWeatherMap API のベースURL
-  BASE_URL = 'https://api.openweathermap.org/data/2.5/forecast'
+  BASE_URL = "https://api.openweathermap.org/data/2.5/forecast"
 
   # デフォルト都市名
-  DEFAULT_CITY = 'Tokyo'
+  DEFAULT_CITY = "Tokyo"
 
   # デフォルト国コード
-  DEFAULT_COUNTRY_CODE = 'JP'
+  DEFAULT_COUNTRY_CODE = "JP"
 
   # API温度単位（摂氏）
-  API_UNITS = 'metric'
+  API_UNITS = "metric"
 
   # API言語設定
-  API_LANGUAGE = 'ja'
+  API_LANGUAGE = "ja"
 
   # パーセント計算用の係数
   PERCENTAGE_MULTIPLIER = 100
@@ -36,13 +36,13 @@ class WeatherService
   FORECAST_RANGE = (0..6)
 
   # 代表時刻（正午）
-  REPRESENTATIVE_HOUR = '12:00'
+  REPRESENTATIVE_HOUR = "12:00"
 
   # 夜間アイコン識別子
-  NIGHT_ICON_SUFFIX = 'n'
+  NIGHT_ICON_SUFFIX = "n"
 
   # 昼間アイコン識別子
-  DAY_ICON_SUFFIX = 'd'
+  DAY_ICON_SUFFIX = "d"
 
   # 雨天判定用の天気タイプ
   RAINY_WEATHER_TYPES = %w[Rain Drizzle Thunderstorm].freeze
@@ -66,16 +66,16 @@ class WeatherService
   DUMMY_CLEAR_WEATHER_DESCRIPTIONS = %w[晴れ 曇り].freeze
 
   # ダミーデータ用: 雨天時の天気タイプ
-  DUMMY_RAINY_WEATHER = 'Rain'
+  DUMMY_RAINY_WEATHER = "Rain"
 
   # ダミーデータ用: 雨天時の天気概要
-  DUMMY_RAINY_DESCRIPTION = '雨'
+  DUMMY_RAINY_DESCRIPTION = "雨"
 
   # ダミーデータ用: 雨天時のアイコンID
-  DUMMY_RAINY_ICON = '10d'
+  DUMMY_RAINY_ICON = "10d"
 
   # ダミーデータ用: 晴天時のアイコンID
-  DUMMY_CLEAR_ICON = '01d'
+  DUMMY_CLEAR_ICON = "01d"
 
   # ダミーデータ用: 雨天時の降水確率範囲
   DUMMY_RAINY_POP_RANGE = (60..90)
@@ -84,7 +84,7 @@ class WeatherService
   DUMMY_CLEAR_POP_RANGE = (0..30)
 
   # ダミーデータ用: 雨天にする日のインデックス
-  DUMMY_RAINY_DAY_INDICES = [2, 5].freeze
+  DUMMY_RAINY_DAY_INDICES = [ 2, 5 ].freeze
 
   ##
   # @param city [String] 都市名
@@ -92,7 +92,7 @@ class WeatherService
   def initialize(city: DEFAULT_CITY, country_code: DEFAULT_COUNTRY_CODE)
     @city = city
     @country_code = country_code
-    @api_key = ENV['OPENWEATHER_API_KEY']
+    @api_key = ENV["OPENWEATHER_API_KEY"]
   end
 
   ##
@@ -120,11 +120,11 @@ class WeatherService
     if response.success?
       parse_forecast(response.parsed_response)
     else
-      Rails.logger.error(I18n.t('services.weather.errors.api_error', code: response.code, body: response.body))
+      Rails.logger.error(I18n.t("services.weather.errors.api_error", code: response.code, body: response.body))
       dummy_data
     end
   rescue StandardError => e
-    Rails.logger.error(I18n.t('services.weather.errors.service_error', message: e.message))
+    Rails.logger.error(I18n.t("services.weather.errors.service_error", message: e.message))
     dummy_data
   end
 
@@ -136,20 +136,20 @@ class WeatherService
   # @param data [Hash] APIレスポンスデータ
   # @return [Array<Hash>] 7日間の天気予報
   def parse_forecast(data)
-    daily_forecasts = group_by_date(data['list'])
+    daily_forecasts = group_by_date(data["list"])
 
     daily_forecasts.map do |date, forecasts|
-      representative = forecasts.min_by { |f| (f['dt_txt'].include?(REPRESENTATIVE_HOUR) ? PRIORITY_NOON : PRIORITY_OTHER) }
-      icon_code = representative.dig('weather', 0, 'icon')
+      representative = forecasts.min_by { |f| (f["dt_txt"].include?(REPRESENTATIVE_HOUR) ? PRIORITY_NOON : PRIORITY_OTHER) }
+      icon_code = representative.dig("weather", 0, "icon")
 
       {
         date: Date.parse(date),
-        temp_max: forecasts.map { |f| f.dig('main', 'temp_max') }.max.round,
-        temp_min: forecasts.map { |f| f.dig('main', 'temp_min') }.min.round,
-        weather: representative.dig('weather', 0, 'main'),
-        weather_description: representative.dig('weather', 0, 'description'),
+        temp_max: forecasts.map { |f| f.dig("main", "temp_max") }.max.round,
+        temp_min: forecasts.map { |f| f.dig("main", "temp_min") }.min.round,
+        weather: representative.dig("weather", 0, "main"),
+        weather_description: representative.dig("weather", 0, "description"),
         icon: icon_code&.gsub(NIGHT_ICON_SUFFIX, DAY_ICON_SUFFIX),
-        pop: (representative.dig('pop') || 0) * PERCENTAGE_MULTIPLIER,
+        pop: (representative.dig("pop") || 0) * PERCENTAGE_MULTIPLIER,
         is_rainy: rainy?(representative)
       }
     end.first(FORECAST_DAYS)
@@ -161,7 +161,7 @@ class WeatherService
   # @param list [Array<Hash>] 予報データリスト
   # @return [Hash] 日付をキーとしたグループ化データ
   def group_by_date(list)
-    list.group_by { |item| item['dt_txt'].split(' ').first }
+    list.group_by { |item| item["dt_txt"].split(" ").first }
   end
 
   ##
@@ -170,7 +170,7 @@ class WeatherService
   # @param forecast [Hash] 予報データ
   # @return [Boolean] 雨天の場合true
   def rainy?(forecast)
-    weather = forecast.dig('weather', 0, 'main')
+    weather = forecast.dig("weather", 0, "main")
     RAINY_WEATHER_TYPES.include?(weather)
   end
 
