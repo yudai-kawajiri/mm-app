@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: mm-app
+    env: ruby
+    buildCommand: bundle install; corepack enable; yarn install; bundle exec rails assets:precompile; bundle exec rails db:migrate RAILS_ENV=production
+    startCommand: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-deployment}
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_MASTER_KEY
+        sync: false
