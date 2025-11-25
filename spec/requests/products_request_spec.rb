@@ -64,7 +64,7 @@ RSpec.describe "Products", type: :request do
 
       it '@productに新しい商品を割り当てること' do
         get new_product_path
-        expect(assigns(:product)).to be_a_new(Product)
+        expect(assigns(:product)).to be_a_new(Resources::Product)
       end
 
       it '@product_categoriesにカテゴリを割り当てること' do
@@ -103,8 +103,9 @@ RSpec.describe "Products", type: :request do
       context '有効なパラメータの場合' do
         let(:valid_params) do
           {
-            product: {
+            resources_product: {
               name: '新しい商品',
+              reading: 'あたらしいしょうひん',
               item_number: 'P001',
               price: 1000,
               status: 'selling',
@@ -117,12 +118,12 @@ RSpec.describe "Products", type: :request do
         it '商品が作成されること' do
           expect {
             post products_path, params: valid_params
-          }.to change(Product, :count).by(1)
+          }.to change(Resources::Product, :count).by(1)
         end
 
         it '作成された商品の詳細ページにリダイレクトされること' do
           post products_path, params: valid_params
-          expect(response).to redirect_to(product_path(Product.last))
+          expect(response).to redirect_to(product_path(Resources::Product.last))
         end
 
         it '成功メッセージが表示されること' do
@@ -134,7 +135,7 @@ RSpec.describe "Products", type: :request do
       context '無効なパラメータの場合' do
         let(:invalid_params) do
           {
-            product: {
+            resources_product: {
               name: '',
               category_id: product_category.id
             }
@@ -144,7 +145,7 @@ RSpec.describe "Products", type: :request do
         it '商品が作成されないこと' do
           expect {
             post products_path, params: invalid_params
-          }.not_to change(Product, :count)
+          }.not_to change(Resources::Product, :count)
         end
 
         it 'newテンプレートを再表示すること' do
@@ -156,7 +157,7 @@ RSpec.describe "Products", type: :request do
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        post products_path, params: { product: { name: 'テスト' } }
+        post products_path, params: { resources_product: { name: 'テスト' } }
         expect(response).to redirect_to(new_user_session_path)
       end
     end
@@ -240,7 +241,7 @@ RSpec.describe "Products", type: :request do
       context '有効なパラメータの場合' do
         let(:valid_params) do
           {
-            product: {
+            resources_product: {
               name: '更新された商品名',
               description: '更新された概要'
             }
@@ -267,7 +268,7 @@ RSpec.describe "Products", type: :request do
       context '無効なパラメータの場合' do
         let(:invalid_params) do
           {
-            product: {
+            resources_product: {
               name: ''
             }
           }
@@ -289,7 +290,7 @@ RSpec.describe "Products", type: :request do
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        patch product_path(product), params: { product: { name: '更新' } }
+        patch product_path(product), params: { resources_product: { name: '更新' } }
         expect(response).to redirect_to(new_user_session_path)
       end
     end
@@ -303,12 +304,12 @@ RSpec.describe "Products", type: :request do
         product_to_delete = create(:product, user: admin_user, category: product_category)
         expect {
           delete product_path(product_to_delete)
-        }.to change(Product, :count).by(-1)
+        }.to change(Resources::Product, :count).by(-1)
       end
 
       it '商品一覧にリダイレクトされること' do
         delete product_path(product)
-        expect(response).to redirect_to(products_url)
+        expect(response).to redirect_to(resources_products_url)
       end
 
       it '成功メッセージが表示されること' do
@@ -374,7 +375,7 @@ RSpec.describe "Products", type: :request do
       it '商品がコピーされること' do
         expect {
           post copy_product_path(product)
-        }.to change(Product, :count).by(1)
+        }.to change(Resources::Product, :count).by(1)
       end
 
       it '商品一覧にリダイレクトされること' do
@@ -389,7 +390,7 @@ RSpec.describe "Products", type: :request do
 
       it 'コピーされた商品の名前に「コピー」が含まれること' do
         post copy_product_path(product)
-        copied_product = Product.last
+        copied_product = Resources::Product.last
         expect(copied_product.name).to include('コピー')
       end
     end
