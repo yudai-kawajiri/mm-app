@@ -1,15 +1,14 @@
 databases:
   - name: mm-app-db
-    databaseName: mm_app_production
-    user: mm_app
-    plan: free
+    databaseName: mm_app_db
+    user: mm_app_user
 
 services:
   - type: web
     name: mm-app
     env: ruby
     plan: free
-    buildCommand: bundle install && corepack enable && yarn install && bundle exec rails assets:precompile && bundle exec rails db:migrate RAILS_ENV=production
+    buildCommand: bundle install && corepack enable && yarn install && bundle exec rails assets:precompile && bundle exec rails db:migrate
     startCommand: bundle exec puma -C config/puma.rb
     envVars:
       - key: RAILS_ENV
