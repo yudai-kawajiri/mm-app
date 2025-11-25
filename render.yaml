@@ -1,11 +1,25 @@
+databases:
+  - name: mm-app-db
+    databaseName: mm_app_db
+    user: mm_app_user
+
 services:
   - type: web
     name: mm-app
     env: ruby
-    buildCommand: bundle install; corepack enable; yarn install; bundle exec rails assets:precompile; bundle exec rails db:migrate RAILS_ENV=production
-    startCommand: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-deployment}
+    plan: free
+    buildCommand: bundle install && corepack enable && yarn install && bundle exec rails assets:precompile && bundle exec rails db:migrate
+    startCommand: bundle exec puma -C config/puma.rb
     envVars:
       - key: RAILS_ENV
         value: production
       - key: RAILS_MASTER_KEY
         sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mm-app-db
+          property: connectionString
+      - key: RAILS_LOG_TO_STDOUT
+        value: enabled
+      - key: RAILS_SERVE_STATIC_FILES
+        value: enabled
