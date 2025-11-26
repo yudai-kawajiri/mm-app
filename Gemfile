@@ -47,7 +47,7 @@ group :development, :test do
   gem "faker"
   gem "httparty"
   gem "rails-controller-testing"
-  gem "rspec-rails", "~> 6.1.0"
+  gem "rspec-rails", "~> 8.0.2"
   gem "rubocop-rails-omakase", require: false
 end
 
