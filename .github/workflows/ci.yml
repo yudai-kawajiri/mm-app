@@ -62,14 +62,14 @@ jobs:
           echo "Coverage: $(grep -o 'Line Coverage: [0-9.]*%' coverage/.last_run.json | head -1 || echo 'N/A')"
 
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: test-results
           path: tmp/rspec.xml
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: coverage-report
