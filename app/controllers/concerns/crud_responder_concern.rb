@@ -3,21 +3,6 @@
 # CrudResponderConcern
 #
 # CRUDアクションの共通レスポンス処理を提供するConcern
-#
-# 使用例:
-#   class ProductsController < ApplicationController
-#     include CrudResponderConcern
-#
-#     def create
-#       @product = Product.new(product_params)
-#       respond_to_save(@product, success_path: products_path)
-#     end
-#   end
-#
-# 機能:
-#   - 保存成功/失敗のフラッシュメッセージ生成
-#   - リダイレクト/再レンダリングの統一処理
-#   - Turbo対応のステータスコード設定
 module CrudResponderConcern
   extend ActiveSupport::Concern
 
@@ -43,7 +28,8 @@ module CrudResponderConcern
     else
       action = resource.new_record? ? :create : :update
 
-      flash.now[:alert] = t("flash_messages.#{action}.failure",
+      # 作成・更新失敗 → エラー (赤)
+      flash.now[:error] = t("flash_messages.#{action}.failure",
                             resource: resource_name)
 
       # 失敗時: 422ステータスで new/edit を再レンダリング
@@ -68,7 +54,7 @@ module CrudResponderConcern
 
       redirect_to success_path, status: :see_other
     else
-      # 失敗時: 303ステータスでリダイレクト（Turbo環境でのFlash表示を保証）
+      # 削除失敗 (関連データ存在など) → 警告 (黄色)
       flash[:alert] = resource.errors.full_messages.to_sentence
       redirect_to destroy_failure_path, status: :see_other
     end
