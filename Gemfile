@@ -34,7 +34,7 @@ gem "jquery-rails"
 # === Utilities ===
 gem "enum_help"
 gem "image_processing", "~> 1.2"
-gem "paper_trail", "~> 15.0"
+gem "paper_trail", "~> 17.0"
 gem "thruster", require: false
 
 
