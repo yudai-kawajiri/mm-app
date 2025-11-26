@@ -1,10 +1,11 @@
-<%# ダッシュボードサイドバーナビゲーション %>
+<%# ダッシュボードサイドバーナビゲーション (3階層対応) %>
 <div class="col-md-3 bg-light border-end p-4">
   <h2><%= t('dashboard.menu.title') %></h2>
   <div class="list-group" id="sidebar-accordion">
 
     <% sidebar_menu_items.each_with_index do |item, index| %>
       <% if item[:submenu] %>
+        <%# 第1階層: 親メニュー %>
         <% collapse_id = "collapse-menu-#{index}" %>
         <% is_active = sidebar_link_active?(item) %>
 
@@ -23,14 +24,47 @@
         <div class="collapse <%= 'show' if is_active %>"
               id="<%= collapse_id %>"
               data-bs-parent="#sidebar-accordion">
-          <% item[:submenu].each do |sub_item| %>
-            <%= link_to sub_item[:path],
-                class: sidebar_submenu_link_class(sub_item[:path]) do %>
-              <%= submenu_indicator %><%= sub_item[:name] %>
+          
+          <% item[:submenu].each_with_index do |sub_item, sub_index| %>
+            <% if sub_item[:submenu] %>
+              <%# 第2階層: サブメニュー (さらに子がある場合) %>
+              <% sub_collapse_id = "collapse-submenu-#{index}-#{sub_index}" %>
+              <% sub_is_active = sub_item[:submenu].any? { |s| current_page?(s[:path]) } %>
+
+              <a href="#"
+                  class="list-group-item list-group-item-action ps-4 <%= 'active' if sub_is_active %>"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#<%= sub_collapse_id %>"
+                  role="button"
+                  aria-expanded="<%= sub_is_active %>"
+                  aria-controls="<%= sub_collapse_id %>"
+                  onclick="event.preventDefault();">
+                <%= submenu_indicator %><%= sub_item[:name] %>
+                <i class="bi bi-chevron-down float-end"></i>
+              </a>
+
+              <div class="collapse <%= 'show' if sub_is_active %>"
+                    id="<%= sub_collapse_id %>"
+                    data-bs-parent="#<%= collapse_id %>">
+                <% sub_item[:submenu].each do |third_item| %>
+                  <%# 第3階層: 孫メニュー（L字記号を追加） %>
+                  <%= link_to third_item[:path],
+                      class: "list-group-item list-group-item-action ps-5 #{sidebar_submenu_link_class(third_item[:path])}" do %>
+                    <span class="ms-3">└ <%= third_item[:name] %></span>
+                  <% end %>
+                <% end %>
+              </div>
+            <% else %>
+              <%# 第2階層: サブメニュー (子がない場合) %>
+              <%= link_to sub_item[:path],
+                  class: sidebar_submenu_link_class(sub_item[:path]) do %>
+                <%= submenu_indicator %><%= sub_item[:name] %>
+              <% end %>
             <% end %>
           <% end %>
         </div>
       <% else %>
+        <%# 第1階層: サブメニューなし %>
         <%= link_to item[:name], item[:path],
             class: sidebar_link_class(item[:path]) %>
       <% end %>
