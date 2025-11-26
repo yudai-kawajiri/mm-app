@@ -130,6 +130,7 @@ class Resources::ProductsController < AuthenticatedController
       current_user.products.find(id).update(display_order: index + 1)
     end
 
+    flash[:notice] = t("sortable_table.saved")
     head :ok
   rescue ActiveRecord::RecordNotFound
     head :not_found

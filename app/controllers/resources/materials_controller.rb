@@ -100,6 +100,7 @@ class Resources::MaterialsController < AuthenticatedController
       current_user.materials.find(id).update(display_order: index + 1)
     end
 
+    flash[:notice] = t("sortable_table.saved")
     head :ok
   rescue ActiveRecord::RecordNotFound
     head :not_found
