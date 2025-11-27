@@ -8,7 +8,7 @@
       </div>
 
       <%= form_with model: Management::DailyTarget.new,
-                    url: "#",
+                    url: update_daily_target_management_numerical_managements_path,
                     method: :patch,
                     local: true,
                     id: "editTargetForm" do |f| %>
