@@ -623,12 +623,16 @@ function setEditModalData(button) {
 
   document.getElementById('editTargetDate').value = dateDisplay || '';
 
+  // Set hidden fields for year, month, date
+  const dateParts = date.split("-");
+  document.getElementById("editTargetYear").value = dateParts[0] || "";
+  document.getElementById("editTargetMonth").value = dateParts[1] || "";
+  document.getElementById("editTargetDateValue").value = dateParts[2] || "";
+
   const input = document.getElementById('editTargetAmount');
   input.value = numValue.toLocaleString('ja-JP');
-
-  const form = document.getElementById('editTargetForm');
-  if (form && date) {
-    form.action = '/management/numerical_managements/' + date + '/update_daily_target';
+  input.value = numValue.toString();
+    form.action = '/management/numerical_managements/update_daily_target';
   }
 }
 
