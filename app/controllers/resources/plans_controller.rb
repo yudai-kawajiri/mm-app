@@ -177,6 +177,27 @@ class Resources::PlansController < AuthenticatedController
           subtotal: pp.production_count * pp.product.price
         }
       end
+
+    # 商品合計金額を計算（これを計画高として表示）
+    @planned_revenue = @plan_products_for_print.sum { |item| item[:subtotal] }
+    @total_product_cost = @planned_revenue
+
+    # 達成率の計算（日別詳細からの印刷の場合のみ）
+    if from_daily && @budget && @budget > 0
+      @achievement_rate = ((@planned_revenue.to_f / @budget) * 100).round(1)
+    else
+      @achievement_rate = nil
+    end
+
+    # 原材料サマリーを取得（display_order 順）
+    @materials_summary = @plan.calculate_materials_summary
+                              .sort_by do |material_data|
+                                material = Resources::Material.find(material_data[:material_id])
+                                [ material.display_order || 999999, material.id ]
+                              end
+
+    # 印刷レイアウトを使用
+    render layout: "print"
     end
   end
 
