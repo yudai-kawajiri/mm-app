@@ -59,6 +59,7 @@ class Management::NumericalManagementsController < ApplicationController
     daily_target.user_id = current_user.id
 
     if daily_target.save
+      logger.error("DailyTarget save failed: #{daily_target.errors.full_messages.join(", ")}")
       render json: { success: true, target_amount: daily_target.target_amount }
     else
       render json: { success: false, errors: daily_target.errors.full_messages }, status: :unprocessable_entity
