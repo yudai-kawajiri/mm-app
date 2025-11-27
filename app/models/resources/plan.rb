@@ -7,6 +7,10 @@
 # 使用例:
 #   Plan.create(name: "ランチセット", category_id: 1, status: :active)
 #   Plan.active_plans
+  # フォーム定数
+  DESCRIPTION_MAX_LENGTH = 500
+  DESCRIPTION_ROWS = 3
+
 #   plan.expected_revenue
 class Resources::Plan < ApplicationRecord
   # 定数
@@ -48,6 +52,7 @@ class Resources::Plan < ApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :category_id }
   validates :category_id, presence: true
   validates :status, presence: true
+  validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
   # 一覧画面用：登録順（新しい順）
   scope :for_index, -> { includes(:category).order(created_at: :desc) }

@@ -20,6 +20,10 @@ class Resources::Product < ApplicationRecord
   # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
+  # フォーム定数
+  DESCRIPTION_MAX_LENGTH = 500
+  DESCRIPTION_ROWS = 3
+
   include NestedAttributeTranslatable
   include Copyable
   include HasReading
@@ -57,6 +61,7 @@ class Resources::Product < ApplicationRecord
   validates :item_number, presence: true, length: { maximum: ITEM_NUMBER_DIGITS }, uniqueness: { scope: :category_id }
   validates :category_id, presence: true
   validates :status, presence: true
+  validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
   # 一覧画面用：登録順（新しい順）
   scope :for_index, -> { includes(:category).order(created_at: :desc) }

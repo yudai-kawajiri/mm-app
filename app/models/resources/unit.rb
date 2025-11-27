@@ -17,6 +17,10 @@ class Resources::Unit < ApplicationRecord
   # 変更履歴の記録
   has_paper_trail
 
+  # フォーム定数
+  DESCRIPTION_MAX_LENGTH = 500
+  DESCRIPTION_ROWS = 3
+
   # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
@@ -45,6 +49,7 @@ class Resources::Unit < ApplicationRecord
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category }
   validates :category, presence: true
+  validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
   # 名前順で取得
   scope :for_index, -> { order(created_at: :desc) }

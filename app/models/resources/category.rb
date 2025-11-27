@@ -26,6 +26,10 @@ class Resources::Category < ApplicationRecord
   # カテゴリー種別の定義（データベースには0, 1, 2として保存）
   enum :category_type, { material: 0, product: 1, plan: 2 }
 
+  # フォーム定数
+  DESCRIPTION_MAX_LENGTH = 500
+  DESCRIPTION_ROWS = 3
+
   # 関連付け（削除時は関連データの存在をチェック）
   has_many :materials, class_name: "Resources::Material", dependent: :restrict_with_error
   has_many :products, class_name: "Resources::Product", dependent: :restrict_with_error
@@ -34,6 +38,7 @@ class Resources::Category < ApplicationRecord
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_type }
   validates :category_type, presence: true
+  validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
   # 一覧画面用：登録順（新しい順）
   scope :for_index, -> { order(created_at: :desc) }

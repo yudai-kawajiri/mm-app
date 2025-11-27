@@ -19,6 +19,10 @@ class Resources::Material < ApplicationRecord
   include HasReading
 
   # 関連付け
+  # フォーム定数
+  DESCRIPTION_MAX_LENGTH = 500
+  DESCRIPTION_ROWS = 3
+
   belongs_to :category, class_name: "Resources::Category"
   belongs_to :production_unit, class_name: "Resources::Unit", optional: true
   belongs_to :unit_for_product, class_name: "Resources::Unit"
@@ -32,6 +36,7 @@ class Resources::Material < ApplicationRecord
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_id }
   validates :measurement_type, presence: true, inclusion: { in: %w[weight count] }
+  validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
   # 重量ベースの場合のバリデーション
   validates :unit_weight_for_order,

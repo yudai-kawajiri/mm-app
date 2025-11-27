@@ -143,6 +143,7 @@ ja:
         target_date: "対象日"
         target_amount: "予算額"
         description: "概要"
+        description: "概要"
 
       "planning/actual_revenue":
         revenue_date: "実績日"
@@ -152,6 +153,7 @@ ja:
       "management/monthly_budget":
         target_month: "対象月"
         target_amount: "予算額"
+        description: "概要"
 
     enums:
       "resources/category":

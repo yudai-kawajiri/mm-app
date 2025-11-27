@@ -18,9 +18,14 @@ class Management::MonthlyBudget < ApplicationRecord
   # 日別目標との関連
   has_many :daily_targets, dependent: :destroy
 
+  # フォーム定数
+  DESCRIPTION_MAX_LENGTH = 500
+  DESCRIPTION_ROWS = 3
+
   # バリデーション
   validates :budget_month, presence: true, uniqueness: { scope: :user_id }
   validates :target_amount, presence: true, numericality: { greater_than: 0 }
+  validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
   # 指定された年月の予算を取得（月初のデータのみを参照）
   #
