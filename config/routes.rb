@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     # 数値管理（ビュー専用）
     resources :numerical_managements, only: [ :index ] do
       collection do
-        post :bulk_update
+        patch :bulk_update
         patch :update_daily_target
       end
     end
@@ -48,7 +48,7 @@ Rails.application.routes.draw do
     # 計画スケジュール
     resources :plan_schedules, only: [ :create, :update, :destroy ] do
       member do
-        patch :actual_revenue  # ← update_ を削除
+        patch :actual_revenue
       end
     end
   end
