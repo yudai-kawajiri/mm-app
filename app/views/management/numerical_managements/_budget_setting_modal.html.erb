@@ -25,7 +25,10 @@
                       class: "form-control monthly-budget-input",
                       required: true,
                       id: "editMonthlyBudgetAmount",
-                      inputmode: "numeric",
+                      data: {
+                        controller: 'input--number-input',
+                        action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste'
+                      } %>
                       autocomplete: "off" %>
             </div>
 
@@ -60,12 +63,15 @@
               <label class="form-label"><%= t('numerical_managements.modals.labels.target_month') %></label>
               <input type="text" class="form-control-plaintext" value="<%= @selected_date.strftime('%Y年%m月') %>" readonly>
             </div>
-
-            <div class="mb-3">
-              <%= label_tag 'monthly_budget[target_amount]', t('numerical_managements.modals.fields.monthly_budget'), class: "form-label" %>
               <%= text_field_tag 'monthly_budget[target_amount]',
                 nil,
                 class: "form-control monthly-budget-input",
+                required: true,
+                id: "newMonthlyBudgetAmount",
+                data: {
+                  controller: 'input--number-input',
+                  action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste'
+                } %>
                 required: true,
                 id: "newMonthlyBudgetAmount",
                 inputmode: "numeric",
