@@ -10,6 +10,7 @@
       <%= form_with model: Planning::PlanSchedule.new,
                     url: actual_revenue_management_plan_schedule_path(0),
                     method: :patch,
+                    data: { turbo: false },
                     id: "actualRevenueForm" do |f| %>
 
         <div class="modal-body">
