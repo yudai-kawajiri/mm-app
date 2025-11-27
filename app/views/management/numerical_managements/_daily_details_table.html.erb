@@ -50,7 +50,7 @@
   </div>
 
   <div class="card-body p-0">
-    <%= form_with url: bulk_update_management_numerical_managements_path, method: :post, id: "bulkEditForm", local: true do |f| %>
+    <%= form_with url: bulk_update_management_numerical_managements_path, method: :post, id: "bulkEditForm" do |f| %>
       <%= hidden_field_tag :year, @selected_date.year %>
       <%= hidden_field_tag :month, @selected_date.month %>
 
@@ -87,8 +87,12 @@
                   <div class="bulk-edit-input" style="display: none;">
                     <%= text_field_tag "daily_data[#{index}][target_amount]",
                               number_with_delimiter(day[:target].to_i),
-                              class: "form-control form-control-sm text-end bulk-edit-target numeric-input",
-                              data: { original: day[:target].to_i },
+                              class: "form-control form-control-sm text-end bulk-edit-target",
+                              data: {
+                        controller: "input--number-input",
+                        action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur",
+                        original: day[:target].to_i
+                      },
                               placeholder: "0",
                               inputmode: "numeric" %>
                     <%= hidden_field_tag "daily_data[#{index}][date]", day[:date].strftime('%Y-%m-%d') %>
@@ -108,7 +112,11 @@
                     <% first_schedule = day[:plan_schedules].first %>
                     <%= text_field_tag "daily_data[#{index}][actual_revenue]",
                               number_with_delimiter((first_schedule&.actual_revenue || 0).to_i),
-                              class: "form-control form-control-sm text-end numeric-input",
+                              class: "form-control form-control-sm text-end",
+                              data: {
+                                controller: "input--number-input",
+                                action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur"
+                              },
                               disabled: day[:plan_schedules].empty?,
                               placeholder: "0",
                               inputmode: "numeric" %>
