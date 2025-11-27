@@ -14,6 +14,11 @@
                     id: "editTargetForm" do |f| %>
 
         <div class="modal-body">
+          <!-- Hidden fields for date parameters -->
+          <%= hidden_field_tag :year, '', id: 'editTargetYear' %>
+          <%= hidden_field_tag :month, '', id: 'editTargetMonth' %>
+          <%= hidden_field_tag :date, '', id: 'editTargetDateValue' %>
+
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.labels.target_date') %></label>
             <input type="text" class="form-control-plaintext" id="editTargetDate" readonly>
@@ -22,10 +27,13 @@
           <div class="mb-3">
             <%= f.label :target_amount, t('numerical_managements.modals.labels.daily_target_yen'), class: "form-label" %>
             <%= f.text_field :target_amount,
-              class: "form-control daily-target-input",
+              class: "form-control",
               required: true,
               id: "editTargetAmount",
-              inputmode: "numeric" %>
+              data: {
+                controller: 'input--number-input',
+                action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste'
+              } %>
           </div>
 
           <div class="alert alert-info" role="alert">
