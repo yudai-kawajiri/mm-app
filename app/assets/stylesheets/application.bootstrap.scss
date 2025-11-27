@@ -56,3 +56,59 @@ $submenu-font-size: 0.9rem;
     color: $white;
   }
 }
+
+/* ========================================
+   フラッシュメッセージ - サイドバーを避けてコンテンツエリアに表示
+   ======================================== */
+.flash-messages-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 25% !important;  /* col-md-3 = 25% */
+  right: 0 !important;
+  z-index: 10000 !important;
+  pointer-events: none;
+}
+
+.flash-messages-container .alert {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  animation: slideInDown 0.4s ease-out;
+  pointer-events: auto;
+  text-align: center;
+  padding: 1rem;
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 自動で消えるアニメーション */
+.alert[data-flash-type] {
+  animation: slideInDown 0.4s ease-out, fadeOutUp 0.5s ease-in 4.5s forwards;
+}
+
+@keyframes fadeOutUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+/* レスポンシブ: タブレット以下は全幅 */
+@media (max-width: 767px) {
+  .flash-messages-container {
+    left: 0 !important;
+  }
+}

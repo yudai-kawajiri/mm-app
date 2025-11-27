@@ -268,7 +268,6 @@ export default class extends Controller {
       Logger.log(LOG_MESSAGES.responseOk(response.ok))
 
       if (response.ok) {
-        alert(i18n.t(I18N_KEYS.SAVED))
         location.reload()
       } else {
         return response.text().then(text => {

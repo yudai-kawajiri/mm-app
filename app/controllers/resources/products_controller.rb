@@ -130,6 +130,7 @@ class Resources::ProductsController < AuthenticatedController
       current_user.products.find(id).update(display_order: index + 1)
     end
 
+    flash[:notice] = t("sortable_table.saved")
     head :ok
   rescue ActiveRecord::RecordNotFound
     head :not_found
@@ -140,7 +141,11 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def purge_image
     @product.image.purge if @product.image.attached?
-    redirect_to edit_resources_product_path(@product), notice: t("products.messages.image_deleted")
+    
+    respond_to do |format|
+      format.html { redirect_to edit_resources_product_path(@product), notice: t("products.messages.image_deleted") }
+      format.json { head :no_content }
+    end
   end
 
   private

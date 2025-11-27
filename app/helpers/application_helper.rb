@@ -82,10 +82,24 @@ module ApplicationHelper
       },
       {
         name: t("dashboard.menu.material_management"),
-        path: resources_units_path,
+        path: resources_materials_path,
         submenu: [
-          { name: t("dashboard.menu.unit_management"), path: resources_units_path },
-          { name: t("dashboard.menu.order_group_management"), path: resources_material_order_groups_path },
+          {
+            name: t("dashboard.menu.unit_management"),
+            path: resources_units_path,
+            submenu: [
+              { name: t("dashboard.menu.unit_list"), path: resources_units_path },
+              { name: t("dashboard.menu.new_unit"), path: new_resources_unit_path }
+            ]
+          },
+          {
+            name: t("dashboard.menu.order_group_management"),
+            path: resources_material_order_groups_path,
+            submenu: [
+              { name: t("dashboard.menu.order_group_list"), path: resources_material_order_groups_path },
+              { name: t("dashboard.menu.new_order_group"), path: new_resources_material_order_group_path }
+            ]
+          },
           { name: t("dashboard.menu.material_list"), path: resources_materials_path },
           { name: t("dashboard.menu.new_material"), path: new_resources_material_path }
         ]
@@ -147,16 +161,21 @@ module ApplicationHelper
   #
   def sidebar_link_active?(item)
     if item[:submenu]
-      # サブメニューのいずれかがアクティブか判定
-      item[:submenu].any? { |sub| current_page?(sub[:path]) }
+      # サブメニューのいずれかがアクティブか判定（3階層対応）
+      item[:submenu].any? do |sub|
+        if sub[:submenu]
+          # 第3階層をチェック
+          sub[:submenu].any? { |third| current_page?(third[:path]) }
+        else
+          current_page?(sub[:path])
+        end
+      end
     elsif item[:path]
-      # 自身のパスで判定
       current_page?(item[:path])
     else
       false
     end
   end
-
   #
   # サイドバーリンクのCSSクラスを返す
   #

@@ -106,7 +106,6 @@ class WeatherService
   #   - weather_description: 天気概要（日本語）
   #   - icon: 天気アイコンID
   #   - pop: 降水確率（%）
-  #   - is_rainy: 雨天フラグ
   def fetch_weekly_forecast
     return dummy_data if @api_key.blank?
 
@@ -150,7 +149,6 @@ class WeatherService
         weather_description: representative.dig("weather", 0, "description"),
         icon: icon_code&.gsub(NIGHT_ICON_SUFFIX, DAY_ICON_SUFFIX),
         pop: (representative.dig("pop") || 0) * PERCENTAGE_MULTIPLIER,
-        is_rainy: rainy?(representative)
       }
     end.first(FORECAST_DAYS)
   end
@@ -181,17 +179,15 @@ class WeatherService
   def dummy_data
     FORECAST_RANGE.map do |i|
       date = Date.current + i.days
-      is_rainy = DUMMY_RAINY_DAY_INDICES.include?(i)
 
       {
         date: date,
         temp_max: rand(DUMMY_TEMP_MAX_RANGE),
         temp_min: rand(DUMMY_TEMP_MIN_RANGE),
-        weather: is_rainy ? DUMMY_RAINY_WEATHER : DUMMY_CLEAR_WEATHER_TYPES.sample,
-        weather_description: is_rainy ? DUMMY_RAINY_DESCRIPTION : DUMMY_CLEAR_WEATHER_DESCRIPTIONS.sample,
-        icon: is_rainy ? DUMMY_RAINY_ICON : DUMMY_CLEAR_ICON,
-        pop: is_rainy ? rand(DUMMY_RAINY_POP_RANGE) : rand(DUMMY_CLEAR_POP_RANGE),
-        is_rainy: is_rainy
+        weather: DUMMY_CLEAR_WEATHER_TYPES.sample,
+        weather_description: DUMMY_CLEAR_WEATHER_DESCRIPTIONS.sample,
+        icon: DUMMY_CLEAR_ICON,
+        pop: rand(DUMMY_CLEAR_POP_RANGE),
       }
     end
   end

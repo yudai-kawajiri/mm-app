@@ -248,3 +248,33 @@ ja:
   components:
     category_tabs:
       confirm_delete: "このカテゴリタブを削除しますか？"
+
+  # ダッシュボード・サイドバーメニュー
+  dashboard:
+    menu:
+      title: "メニュー"
+      dashboard: "ダッシュボード"
+      category_management: "カテゴリ管理"
+      category_list: "カテゴリ一覧"
+      new_category: "カテゴリ登録"
+      material_management: "原材料管理"
+      unit_management: "単位管理"
+      unit_list: "単位一覧"
+      new_unit: "単位登録"
+      order_group_management: "発注グループ管理"
+      order_group_list: "発注グループ一覧"
+      new_order_group: "発注グループ登録"
+      material_list: "原材料一覧"
+      new_material: "原材料登録"
+      product_management: "商品管理"
+      product_list: "商品一覧"
+      new_product: "商品登録"
+      plan_management: "計画管理"
+      plan_list: "計画一覧"
+      new_plan: "計画登録"
+      numerical_management: "数値管理"
+      numerical_dashboard: "数値ダッシュボード"
+      admin_management: "管理者メニュー"
+      user_management: "ユーザー管理"
+      system_logs: "システムログ"
+      account_settings: "アカウント設定"

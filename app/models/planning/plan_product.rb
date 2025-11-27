@@ -18,7 +18,7 @@ class Planning::PlanProduct < ApplicationRecord
   # バリデーション
   validates :production_count, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :product_id, uniqueness: { scope: :plan_id }
-
+  validates :product_id, presence: true
   # 保存前に数値フィールドを正規化（全角→半角変換）
   before_save :normalize_numeric_fields
 

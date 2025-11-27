@@ -36,15 +36,8 @@
     <div class="row g-2">
       <% @weather_forecast.each do |weather| %>
         <div class="col">
-          <div class="card <%= weather[:is_rainy] ? 'border-warning' : 'border-light' %> text-center">
+          <div class="card border-light text-center">
             <div class="card-body p-2">
-              <% if weather[:is_rainy] %>
-                <div class="badge bg-warning text-dark mb-1">
-                  <i class="bi bi-exclamation-triangle"></i> <%= t('dashboard.weather.rain_alert') %>
-                </div>
-              <% end %>
-              <div class="text-muted small"><%= weather[:date].strftime('%-m/%-d') %></div>
-              <div class="text-muted small">(<%= I18n.l(weather[:date], format: '%a') %>)</div>
               <div class="my-2">
                 <img src="https://openweathermap.org/img/wn/<%= weather[:icon] %>@2x.png"
                       alt="<%= weather[:weather_description] %>"

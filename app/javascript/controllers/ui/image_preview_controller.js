@@ -244,6 +244,7 @@ export default class extends Controller {
         headers: {
           [HTTP_HEADERS.CSRF_TOKEN]: document.querySelector(SELECTOR.CSRF_TOKEN).content,
           [HTTP_HEADERS.ACCEPT]: HTTP_HEADERS.APPLICATION_JSON
+          , "X-Requested-With": "XMLHttpRequest"
         }
       })
 
@@ -264,7 +265,7 @@ export default class extends Controller {
         }
 
         // i18n対応の成功メッセージ
-        alert(i18n.t(I18N_KEYS.IMAGE_DELETED))
+        alert(i18n.t(I18N_KEYS.IMAGE_DELETED)); window.location.reload()
       } else {
         Logger.error(LOG_MESSAGES.deleteFailed(response.status))
         // i18n対応のエラーメッセージ
