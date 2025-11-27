@@ -25,9 +25,12 @@
                       class: "form-control monthly-budget-input",
                       required: true,
                       id: "editMonthlyBudgetAmount",
+                      inputmode: "numeric",
+                      autocomplete: "off",
                       data: {
                         controller: 'input--number-input',
-                        action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur'
+                        action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur',
+                        original_value: @monthly_budget.target_amount.to_i
                       } %>
             </div>
 
@@ -70,6 +73,8 @@
                 class: "form-control monthly-budget-input",
                 required: true,
                 id: "newMonthlyBudgetAmount",
+                inputmode: "numeric",
+                autocomplete: "off",
                 data: {
                   controller: 'input--number-input',
                   action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur'

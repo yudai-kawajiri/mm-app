@@ -680,4 +680,25 @@ document.addEventListener("DOMContentLoaded", function() {
   // 
   initializeCumulativeValues();
 });
+
+// 月間予算モーダル: キャンセル時のリセット処理
+document.addEventListener("DOMContentLoaded", function() {
+  const budgetModal = document.getElementById("budgetSettingModal");
+  
+  if (budgetModal) {
+    budgetModal.addEventListener("show.bs.modal", function() {
+      // 編集モード: 元の値を復元
+      const editInput = document.getElementById("editMonthlyBudgetAmount");
+      if (editInput && editInput.dataset.originalValue) {
+        editInput.value = editInput.dataset.originalValue;
+      }
+      
+      // 新規作成モード: フィールドをクリア
+      const newInput = document.getElementById("newMonthlyBudgetAmount");
+      if (newInput) {
+        newInput.value = "";
+      }
+    });
+  }
+});
 </script>
