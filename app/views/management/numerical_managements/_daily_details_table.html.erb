@@ -614,14 +614,15 @@ function initializeCumulativeValues() {
   });
 }
 
-document.getElementById('bulkEditForm').addEventListener('submit', function(e) {
-  document.querySelectorAll('.numeric-input').forEach(function(input) {
-    if (!input.disabled && input.dataset.rawValue) {
-      input.value = input.dataset.rawValue;
+document.getElementById("bulkEditForm").addEventListener("submit", function(e) {
+  // input--number-input コントローラーを持つ全ての input フィールドを処理
+  document.querySelectorAll("[data-controller*="input--number-input"]").forEach(function(input) {
+    if (!input.disabled && input.value) {
+      // カンマを削除して数値のみにする
+      input.value = input.value.replace(/,/g, "");
     }
   });
 });
-
 
 function setEditModalData(button) {
   const date = button.getAttribute("data-date");
