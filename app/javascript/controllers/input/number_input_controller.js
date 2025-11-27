@@ -221,16 +221,6 @@ export default class extends Controller {
     }
   }
 
-    const value = input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY).trim()
-
-    // 空欄の場合は何もしない
-    if (value === SPECIAL_VALUES.EMPTY || value === SPECIAL_VALUES.MINUS) {
-      return
-    }
-
-    // 数値に変換
-    const numValue = parseFloat(value)
-
     // NaNでない場合は.0形式に変換
     if (!isNaN(numValue)) {
       if (Number.isInteger(numValue)) {
