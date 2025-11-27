@@ -654,6 +654,13 @@ function setActualModalData(button) {
   const form = document.getElementById("actualRevenueForm");
   if (form && scheduleId) {
     form.action = "/management/plan_schedules/" + scheduleId + "/actual_revenue";
+    
+    // CSRFトークンを更新
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const tokenInput = form.querySelector('input[name="authenticity_token"]');
+    if (tokenInput) {
+      tokenInput.value = csrfToken;
+    }
   }
 }
 
