@@ -221,13 +221,6 @@ export default class extends Controller {
     }
   }
 
-    // NaNでない場合は.0形式に変換
-    if (!isNaN(numValue)) {
-      if (Number.isInteger(numValue)) {
-        input.value = numValue.toFixed(DECIMAL_PLACES.ONE)
-      }
-    }
-  }
 
   // input イベント時の処理
   // 全角→半角変換とカンマ挿入を実行
