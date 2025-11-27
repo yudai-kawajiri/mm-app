@@ -4,8 +4,7 @@
     <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
     <button type="button"
             class="btn btn-primary btn-sm"
-            id="bulkEditToggle"
-            onclick="toggleBulkEditMode()">
+            id="bulkEditToggleBtn">
       <i class="bi bi-pencil-square"></i> <%= t('numerical_managements.bulk_edit.toggle_edit_mode') %></button>
   </div>
 
@@ -260,7 +259,7 @@
 
       <div class="card-footer bulk-edit-actions" style="display: none;">
         <div class="d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-secondary" onclick="toggleBulkEditMode()">
+          <button type="button" class="btn btn-secondary" id="bulkEditCancelBtn">
             <i class="bi bi-x-lg"></i> <%= t('common.cancel') %>
           </button>
           <button type="submit" class="btn btn-success" id="bulkSaveButton">
@@ -735,5 +734,19 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 });
+// Turbo対応: ページ読み込み時とTurbo遷移後にイベントリスナーを再設定
+document.addEventListener("turbo:load", function() {
+  const toggleBtn = document.getElementById("bulkEditToggleBtn");
+  const cancelBtn = document.getElementById("bulkEditCancelBtn");
+  
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", toggleBulkEditMode);
+  }
+  
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", toggleBulkEditMode);
+  }
+});
+
 </script>
 
