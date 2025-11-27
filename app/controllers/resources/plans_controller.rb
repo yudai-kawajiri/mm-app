@@ -156,6 +156,27 @@ class Resources::PlansController < AuthenticatedController
       @plan_schedule = nil
       @scheduled_date = nil
       @budget = nil
+
+    end
+    # ⭐ 重要：印刷元によってデータソースを切り替え
+    if from_daily && @plan_schedule&.has_snapshot?
+      # 日別詳細から印刷：スナップショットを使用
+      @plan_products_for_print = @plan_schedule.snapshot_products
+                                              .sort_by { |item| [ item[:product].display_order || 999999, item[:product].id ] }
+    else
+      # 計画詳細から印刷：Planマスタを使用
+      @plan_products_for_print = @plan.plan_products
+                                      .includes(product: [ :category, { image_attachment: :blob } ])
+                                      .joins(:product)
+                                      .order("products.display_order ASC, products.id ASC")
+                                      .map do |pp|
+        {
+          product: pp.product,
+          production_count: pp.production_count,
+          price: pp.product.price,
+          subtotal: pp.production_count * pp.product.price
+        }
+      end
     end
   end
 
