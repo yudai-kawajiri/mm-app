@@ -371,7 +371,7 @@ function toggleBulkEditMode() {
   window.isEditMode = !window.isEditMode;
 
   if (window.isEditMode) {
-    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-eye"></i> <%= j t('numerical_managements.bulk_edit.toggle_normal_mode') %>';
+    document.getElementById('bulkEditToggleBtn').innerHTML = '<i class="bi bi-eye"></i> <%= j t('numerical_managements.bulk_edit.toggle_normal_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'block';
     document.querySelectorAll('.normal-mode-display').forEach(function(el) {
       el.style.display = 'none';
@@ -404,7 +404,7 @@ function toggleBulkEditMode() {
 
     calculateDailyTargetSum();
   } else {
-    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-pencil-square"></i> <%= j t('numerical_managements.bulk_edit.toggle_edit_mode') %>';
+    document.getElementById('bulkEditToggleBtn').innerHTML = '<i class="bi bi-pencil-square"></i> <%= j t('numerical_managements.bulk_edit.toggle_edit_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'none';
     document.querySelectorAll('.normal-mode-display').forEach(function(el) {
       el.style.display = 'inline';
