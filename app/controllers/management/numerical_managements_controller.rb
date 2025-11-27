@@ -55,7 +55,7 @@ class Management::NumericalManagementsController < ApplicationController
     )
 
     daily_target = monthly_budget.daily_targets.find_or_initialize_by(target_date: target_date)
-    daily_target.target_amount = sanitize_numeric(params[:target_amount])
+    daily_target.target_amount = sanitize_without_comma(params[:management_daily_target][:target_amount])
 
     if daily_target.save
       render json: { success: true, target_amount: daily_target.target_amount }
