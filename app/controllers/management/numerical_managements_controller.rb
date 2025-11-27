@@ -13,9 +13,11 @@ class Management::NumericalManagementsController < ApplicationController
     month = Date.current.month if month.zero? || month < 1 || month > 12
     @selected_date = Date.new(year, month, 1)
 
-    @monthly_budget = current_user.monthly_budgets.find_or_initialize_by(
+    @monthly_budget = current_user.monthly_budgets.find_or_create_by(
       budget_month: @selected_date.beginning_of_month
-    )
+    ) do |budget|
+      budget.target_amount ||= 0
+    end
 
     calendar_data = CalendarDataBuilderService.new(current_user, year, month).build
     @daily_data = calendar_data[:daily_data]
@@ -38,220 +40,55 @@ class Management::NumericalManagementsController < ApplicationController
 
     calendar_data = CalendarDataBuilderService.new(current_user, @year, @month).build
     @daily_data = calendar_data[:daily_data]
-    @monthly_budget = calendar_data[:monthly_budget]
-    @daily_targets = calendar_data[:daily_targets]
 
-    @forecast = NumericalForecastService.call(current_user, @year, @month)
+    render partial: "calendar", locals: { daily_data: @daily_data }
   end
 
   def update_daily_target
-    key = params.key?(:management_daily_target) ? :management_daily_target : :daily_target
-    date_param = params[key][:target_date] || params[key][:date]
-    target_param = params[key][:target_amount] || params[key][:target]
+    year = params[:year].to_i
+    month = params[:month].to_i
+    date = params[:date].to_i
 
-    date = Date.parse(date_param)
-
-    monthly_budget = current_user.monthly_budgets.find_or_create_by!(
-      budget_month: date.beginning_of_month
-    ) do |budget|
-      budget.target_amount = 0
-    end
-
-    daily_target = Management::DailyTarget.find_or_initialize_by(
-      user: current_user,
-      monthly_budget: monthly_budget,
-      target_date: date
+    target_date = Date.new(year, month, date)
+    monthly_budget = current_user.monthly_budgets.find_or_create_by(
+      budget_month: target_date.beginning_of_month
     )
 
-    sanitized_value = sanitize_numeric_params(
-      { target_amount: target_param },
-      with_comma: [ :target_amount ]
-    )[:target_amount]
+    daily_target = monthly_budget.daily_targets.find_or_initialize_by(target_date: target_date)
+    daily_target.target_amount = sanitize_numeric(params[:target_amount])
 
-    # 予算超過チェック
-    if monthly_budget.target_amount > 0
-      # 現在の日別予算の合計を計算（更新対象を除く）
-      current_total = monthly_budget.daily_targets
-                                    .where.not(id: daily_target.id)
-                                    .sum(:target_amount)
-
-      new_total = current_total + sanitized_value.to_i
-
-      if new_total > monthly_budget.target_amount
-        redirect_to management_numerical_managements_path(year: date.year, month: date.month),
-                    alert: t("numerical_managements.messages.budget_exceeded",
-                            budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
-                            total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(new_total)}"),
-                    turbo: false
-        return
-      end
-    end
-
-    if daily_target.update(target_amount: sanitized_value)
-      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
-                  notice: t("numerical_managements.messages.daily_target_updated"),
-                  turbo: false
+    if daily_target.save
+      render json: { success: true, target_amount: daily_target.target_amount }
     else
-      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
-            alert: t("numerical_managements.messages.daily_target_update_failed", errors: daily_target.errors.full_messages.join(", ")),
-            turbo: false
+      render json: { success: false, errors: daily_target.errors.full_messages }, status: :unprocessable_entity
     end
-  rescue Date::Error
-    redirect_to management_numerical_managements_path(
-      year: Date.current.year,
-      month: Date.current.month
-    ),
-            alert: t("api.errors.invalid_date"),
-            turbo: false
   end
 
   def bulk_update
-    year = params[:year].to_i
-    month = params[:month].to_i
-
-    if params[:daily_data].present?
-      converted_params = convert_daily_data_to_bulk_params(params[:daily_data])
-      params.merge!(converted_params)
-    end
-
-    # 予算超過チェック（一括更新前）
-    budget_check_result = check_budget_before_bulk_update(year, month, sanitized_bulk_update_params)
-    if budget_check_result[:exceeded]
-      redirect_to management_numerical_managements_path(year: year, month: month),
-                  alert: budget_check_result[:message],
-                  turbo: false
-      return
-    end
-
-    service = NumericalDataBulkUpdateService.new(current_user, sanitized_bulk_update_params)
-
-    if service.call
-      redirect_to management_numerical_managements_path(year: year, month: month),
-                  notice: t("numerical_managements.messages.daily_details_updated"),
-                  turbo: false
-    else
-      redirect_to management_numerical_managements_path(year: year, month: month),
-                  alert: service.errors.join(", "),
-                  turbo: false
-    end
-  end
-
-  private
-
-    def convert_daily_data_to_bulk_params(daily_data)
-      monthly_budgets = {}
-      daily_targets = {}
-      plan_schedule_actuals = {}
-
-      daily_data.each do |index, day_attrs|
-        target_amount = day_attrs[:target_amount].to_i
-        target_id = day_attrs[:target_id].to_s.strip
-
-        # 既存IDがある場合は0でも更新、ない場合は1以上のみ新規作成
-        if target_id.present? && target_id != ""
-          # 既存の日別目標を更新（0を許可）
-          daily_targets[target_id] = {
-            target_amount: target_amount,
-            target_date: day_attrs[:date]
-          }
-        elsif target_amount > 0
-          # 新規作成は1以上のみ（0のデータは作らない）
-          daily_targets[day_attrs[:date]] = {
-            target_amount: target_amount,
-            target_date: day_attrs[:date]
-          }
-        end
-
-        # 実績の処理
-        plan_schedule_id = day_attrs[:plan_schedule_id].to_s.strip
-        if plan_schedule_id.present? && plan_schedule_id != "" && day_attrs[:actual_revenue].present?
-          actual_revenue = day_attrs[:actual_revenue].to_i
-          plan_schedule_actuals[plan_schedule_id] = {
-            actual_revenue: actual_revenue
-          }
-        end
-      end
-
-      {
-        monthly_budgets: monthly_budgets,
-        daily_targets: daily_targets,
-        plan_schedule_actuals: plan_schedule_actuals
-      }
-    end
-
-  def bulk_update_params
-    params.permit(
-      :year,
-      :month,
-      monthly_budgets: {},
-      daily_targets: {},
-      plan_schedule_actuals: {},
-      daily_data: {}
-    )
-  end
-
-  def sanitized_bulk_update_params
-    params_hash = bulk_update_params.to_h
-
-    if params_hash[:monthly_budgets].present?
-      params_hash[:monthly_budgets].each do |_, budget_attrs|
-        sanitize_numeric_params(
-          budget_attrs,
-          with_comma: [ :target_amount ]
-        )
-      end
-    end
-
-    if params_hash[:daily_targets].present?
-      params_hash[:daily_targets].each do |_, target_attrs|
-        sanitize_numeric_params(
-          target_attrs,
-          with_comma: [ :target_amount ]
-        )
-      end
-    end
-
-    if params_hash[:plan_schedule_actuals].present?
-      params_hash[:plan_schedule_actuals].each do |_, actual_attrs|
-        sanitize_numeric_params(
-          actual_attrs,
-          with_comma: [ :actual_revenue ]
-        )
-      end
-    end
-
-    params_hash
-  end
-
-  # 一括更新前の予算超過チェック
-  def check_budget_before_bulk_update(year, month, params_hash)
-    selected_date = Date.new(year, month, 1)
-    monthly_budget = current_user.monthly_budgets.find_by(
-      budget_month: selected_date.beginning_of_month
+    monthly_budget = current_user.monthly_budgets.find_or_create_by(
+      budget_month: params[:budget_month]
     )
 
-    # 月間予算が設定されていない場合はチェックしない
-    return { exceeded: false } unless monthly_budget&.target_amount&.positive?
+    ActiveRecord::Base.transaction do
+      if params[:monthly_target].present?
+        monthly_budget.update!(target_amount: sanitize_numeric(params[:monthly_target]))
+      end
 
-    # 日別予算の合計を計算
-    daily_targets_hash = params_hash[:daily_targets] || {}
-    total_daily_target = 0
-
-    daily_targets_hash.each do |key, target_attrs|
-      target_amount = target_attrs[:target_amount].to_s.gsub(",", "").to_i
-      total_daily_target += target_amount if target_amount > 0
+      if params[:daily_targets].present?
+        params[:daily_targets].each do |date_str, amount|
+          target_date = Date.parse(date_str)
+          daily_target = monthly_budget.daily_targets.find_or_initialize_by(target_date: target_date)
+          daily_target.target_amount = sanitize_numeric(amount)
+          daily_target.save!
+        end
+      end
     end
 
-    # 予算を超えているかチェック
-    if total_daily_target > monthly_budget.target_amount
-      {
-        exceeded: true,
-        message: t("numerical_managements.messages.budget_exceeded",
-                  budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
-                  total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(total_daily_target)}")
-      }
-    else
-      { exceeded: false }
-    end
+    redirect_to management_numerical_managements_path(
+      year: monthly_budget.year,
+      month: monthly_budget.month
+    ), notice: t("numerical_managements.messages.bulk_update_success")
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to management_numerical_managements_path, alert: e.message
   end
 end

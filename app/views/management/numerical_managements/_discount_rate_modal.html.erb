@@ -1,66 +1,63 @@
 <%# 見切り率編集モーダル %>
-<div class="modal fade" id="discountRateModal" tabindex="-1" aria-labelledby="discountRateModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="discountRateModalLabel">
-          <%= t('numerical_managements.modals.discount_rate_edit.title') %>
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<% if @monthly_budget&.persisted? %>
+  <div class="modal fade" id="discountRateModal" tabindex="-1" aria-labelledby="discountRateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="discountRateModalLabel">
+            <%= t('numerical_managements.modals.discount_rate_edit.title') %>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <%= form_with(
+          model: [:management, @monthly_budget],
+          url: update_discount_rates_management_monthly_budget_path(@monthly_budget),
+          method: :patch,
+          data: { turbo: false }
+        ) do |f| %>
+          <div class="modal-body">
+            <div class="mb-3">
+              <%= f.label :forecast_discount_rate, t('numerical_managements.modals.discount_rate_edit.forecast_label'), class: 'form-label' %>
+              <%= f.text_field :forecast_discount_rate,
+                  value: @monthly_budget.forecast_discount_rate || 0,
+                  class: 'form-control',
+                  placeholder: '0.0',
+                  data: {
+                    controller: 'input--number-input',
+                    number_input_no_comma: 'true',
+                    action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste'
+                  } %>
+              <small class="form-text text-muted">
+                <%= t('numerical_managements.modals.discount_rate_edit.forecast_hint') %>
+              </small>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :target_discount_rate, t('numerical_managements.modals.discount_rate_edit.target_label'), class: 'form-label' %>
+              <%= f.text_field :target_discount_rate,
+                  value: @monthly_budget.target_discount_rate || 0,
+                  class: 'form-control',
+                  placeholder: '0.0',
+                  data: {
+                    controller: 'input--number-input',
+                    number_input_no_comma: 'true',
+                    action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste'
+                  } %>
+              <small class="form-text text-muted">
+                <%= t('numerical_managements.modals.discount_rate_edit.target_hint') %>
+              </small>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <%= t('common.cancel') %>
+            </button>
+            <%= f.submit t('numerical_managements.index.update_discount_rates'), class: 'btn btn-success' %>
+          </div>
+        <% end %>
       </div>
-
-      <%= form_with(
-        model: [:management, @monthly_budget],
-        url: update_discount_rates_management_monthly_budget_path(@monthly_budget),
-        method: :patch,
-        data: { turbo: false }
-      ) do |f| %>
-        <div class="modal-body">
-          <div class="mb-3">
-            <%= f.label :forecast_discount_rate,
-                        t('numerical_managements.modals.discount_rate_edit.forecast_label'),
-                        class: 'form-label' %>
-            <%= f.text_field :forecast_discount_rate,
-                            value: @monthly_budget&.forecast_discount_rate || 0,
-                            class: 'form-control',
-                            placeholder: '0.0',
-                            data: {
-                              controller: 'input--number-input',
-                              number_input_no_comma: 'true',
-                              action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste'
-                            } %>
-            <small class="form-text text-muted">
-              <%= t('numerical_managements.modals.discount_rate_edit.forecast_hint') %>
-            </small>
-          </div>
-
-          <div class="mb-3">
-            <%= f.label :target_discount_rate,
-                        t('numerical_managements.modals.discount_rate_edit.target_label'),
-                        class: 'form-label' %>
-            <%= f.text_field :target_discount_rate,
-                            value: @monthly_budget&.target_discount_rate || 0,
-                            class: 'form-control',
-                            placeholder: '0.0',
-                            data: {
-                              controller: 'input--number-input',
-                              number_input_no_comma: 'true',
-                              action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste'
-                            } %>
-            <small class="form-text text-muted">
-              <%= t('numerical_managements.modals.discount_rate_edit.target_hint') %>
-            </small>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            <%= t('common.cancel') %>
-          </button>
-          <%= f.submit t('numerical_managements.index.update_discount_rates'),
-                      class: 'btn btn-success' %>
-        </div>
-      <% end %>
     </div>
   </div>
-</div>
+<% end %>
