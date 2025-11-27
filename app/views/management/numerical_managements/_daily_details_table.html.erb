@@ -624,7 +624,6 @@ function setEditModalData(button) {
   document.getElementById('editTargetDate').value = dateDisplay || '';
 
   // Set hidden fields for year, month, date
-  const dateParts = date.split("-");
   document.getElementById("editTargetYear").value = dateParts[0] || "";
   document.getElementById("editTargetMonth").value = dateParts[1] || "";
   document.getElementById("editTargetDateValue").value = dateParts[2] || "";
