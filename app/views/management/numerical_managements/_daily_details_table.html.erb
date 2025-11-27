@@ -614,63 +614,66 @@ document.getElementById('bulkEditForm').addEventListener('submit', function(e) {
   });
 });
 
+
 function setEditModalData(button) {
-  const date = button.getAttribute('data-date');
-  const dateDisplay = button.getAttribute('data-date-display');
-  const targetAmount = button.getAttribute('data-target-amount');
+  const date = button.getAttribute("data-date");
+  const dateDisplay = button.getAttribute("data-date-display");
+  const targetAmount = button.getAttribute("data-target-amount");
 
   const numValue = parseInt(targetAmount, 10) || 0;
 
-  document.getElementById('editTargetDate').value = dateDisplay || '';
-
+  document.getElementById("editTargetDate").value = dateDisplay || "";
 
   const dateParts = date.split("-");
-  // Set hidden fields for year, month, date
   document.getElementById("editTargetYear").value = dateParts[0] || "";
   document.getElementById("editTargetMonth").value = dateParts[1] || "";
   document.getElementById("editTargetDateValue").value = dateParts[2] || "";
 
-  const input = document.getElementById('editTargetAmount');
+  const input = document.getElementById("editTargetAmount");
   input.value = numValue.toString();
-    form.action = '/management/numerical_managements/update_daily_target';
+
+  const form = document.getElementById("editTargetForm");
+  if (form) {
+    form.action = "/management/numerical_managements/update_daily_target";
   }
 }
 
-  const date = button.getAttribute('data-date');
-  const dateDisplay = button.getAttribute('data-date-display');
-  const scheduleId = button.getAttribute('data-plan-schedule-id');
-  const actualRevenue = button.getAttribute('data-actual-revenue');
+function setActualModalData(button) {
+  const date = button.getAttribute("data-date");
+  const dateDisplay = button.getAttribute("data-date-display");
+  const scheduleId = button.getAttribute("data-plan-schedule-id");
+  const actualRevenue = button.getAttribute("data-actual-revenue");
 
-  document.getElementById('actualRevenueDate').value = dateDisplay || '';
+  document.getElementById("actualRevenueDate").value = dateDisplay || "";
 
   const numValue = parseInt(actualRevenue, 10) || 0;
-  const input = document.getElementById('actualRevenueInput');
+  const input = document.getElementById("actualRevenueInput");
   input.value = numValue.toString();
   input.dataset.rawValue = numValue.toString();
 
-  const form = document.getElementById('actualRevenueForm');
+  const form = document.getElementById("actualRevenueForm");
   if (form && scheduleId) {
-    form.action = '/management/plan_schedules/' + scheduleId + '/actual_revenue';
+    form.action = "/management/plan_schedules/" + scheduleId + "/actual_revenue";
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  const editTargetInput = document.getElementById('editTargetAmount');
+document.addEventListener("DOMContentLoaded", function() {
+  const editTargetInput = document.getElementById("editTargetAmount");
   if (editTargetInput) {
     setupNumericInput(editTargetInput);
   }
 
-  const actualRevenueInput = document.getElementById('actualRevenueInput');
+  const actualRevenueInput = document.getElementById("actualRevenueInput");
   if (actualRevenueInput) {
     setupNumericInput(actualRevenueInput);
   }
 
-  const editMonthlyBudgetInput = document.getElementById('editMonthlyBudgetAmount');
+  const editMonthlyBudgetInput = document.getElementById("editMonthlyBudgetAmount");
   if (editMonthlyBudgetInput) {
     setupNumericInput(editMonthlyBudgetInput);
   }
 
-  const newMonthlyBudgetInput = document.getElementById('newMonthlyBudgetAmount');
+  const newMonthlyBudgetInput = document.getElementById("newMonthlyBudgetAmount");
   if (newMonthlyBudgetInput) {
     setupNumericInput(newMonthlyBudgetInput);
   }
