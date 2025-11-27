@@ -190,7 +190,7 @@ export default class extends Controller {
 
     // カンマありモードの場合はカンマを挿入
     if (!this.noComma && Number.isInteger(numValue)) {
-      this.element.value = this.formatNumber(value)
+      this.element.value = value
     }
   }
 
@@ -382,7 +382,7 @@ export default class extends Controller {
     }
 
     // カンマを挿入（3桁区切り）※カンマなしモードの場合はスキップ
-    const formatted = this.noComma ? integerPart : this.formatNumber(integerPart)
+    const formatted = integerPart
     const finalValue = (hasNegative ? SPECIAL_VALUES.MINUS : SPECIAL_VALUES.EMPTY) + formatted + decimalPart
 
     // 値が変わっていない場合は何もしない
