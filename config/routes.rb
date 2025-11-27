@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   # 数値管理（Management名前空間）
   # ====================
   namespace :management do
-    # 数値管理（ビュー専用）
+    # 数値管理
     resources :numerical_managements, only: [ :index ] do
       collection do
         patch :bulk_update
