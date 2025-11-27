@@ -310,7 +310,7 @@ function setupNumericInput(input) {
     }
 
     const numValue = parseInt(rawValue, 10) || 0;
-    e.target.value = numValue.toLocaleString('ja-JP');
+    e.target.value = rawValue;
   });
 
   function processInput(input) {
@@ -413,7 +413,7 @@ function toggleBulkEditMode() {
     document.querySelectorAll('.bulk-edit-target').forEach(function(input) {
       const originalValue = parseInt(input.dataset.original, 10) || 0;
       input.dataset.rawValue = originalValue.toString();
-      input.value = originalValue.toLocaleString();
+      input.value = originalValue.toString();
     });
   }
 }
