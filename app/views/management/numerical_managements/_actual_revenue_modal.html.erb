@@ -10,7 +10,6 @@
       <%= form_with model: Planning::PlanSchedule.new,
                     url: actual_revenue_management_plan_schedule_path(0),
                     method: :patch,
-                    local: true,
                     id: "actualRevenueForm" do |f| %>
 
         <div class="modal-body">
@@ -25,9 +24,11 @@
               class: "form-control actual-revenue-input",
               required: true,
               id: "actualRevenueInput",
+              inputmode: "numeric",
+              autocomplete: "off",
               data: {
                 controller: 'input--number-input',
-                action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste'
+                action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur'
               } %>
           </div>
 
