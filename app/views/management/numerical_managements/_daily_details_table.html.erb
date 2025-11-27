@@ -623,13 +623,15 @@ function setEditModalData(button) {
 
   document.getElementById('editTargetDate').value = dateDisplay || '';
 
+
+  const dateParts = date.split("-");
   // Set hidden fields for year, month, date
   document.getElementById("editTargetYear").value = dateParts[0] || "";
   document.getElementById("editTargetMonth").value = dateParts[1] || "";
   document.getElementById("editTargetDateValue").value = dateParts[2] || "";
 
   const input = document.getElementById('editTargetAmount');
-  input.value = numValue.toLocaleString('ja-JP');
+  input.value = numValue.toString();
     form.action = '/management/numerical_managements/update_daily_target';
   }
 }
@@ -643,8 +645,8 @@ function setEditModalData(button) {
 
   const numValue = parseInt(actualRevenue, 10) || 0;
   const input = document.getElementById('actualRevenueInput');
+  input.value = numValue.toString();
   input.dataset.rawValue = numValue.toString();
-  input.value = numValue.toLocaleString('ja-JP');
 
   const form = document.getElementById('actualRevenueForm');
   if (form && scheduleId) {
