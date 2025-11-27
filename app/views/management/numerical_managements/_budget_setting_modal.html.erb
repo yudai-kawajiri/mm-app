@@ -16,7 +16,7 @@
           <div class="modal-body">
             <div class="mb-3">
               <label class="form-label"><%= t('numerical_managements.modals.labels.target_month') %></label>
-              <input type="text" class="form-control-plaintext" value="<%= @selected_date.strftime('%Y年%m月') %>" readonly>
+              <input type="text" class="form-control-plaintext" value="<%= l(@selected_date, format: :year_month) %>" readonly>
             </div>
 
             <div class="mb-3">
@@ -36,8 +36,19 @@
             </div>
 
             <div class="mb-3">
-              <%= f.label :description, t('numerical_managements.modals.labels.description'), class: "form-label" %>
-              <%= f.text_area :description, class: "form-control", rows: 3 %>
+              <%= f.label :description, t('activerecord.attributes.management/monthly_budget.description'), class: "form-label" %>
+              <div data-controller="input--character-counter" data-input--character-counter-max-value="<%= Management::MonthlyBudget::DESCRIPTION_MAX_LENGTH %>">
+                <%= f.text_area :description,
+                      class: "form-control",
+                      rows: Management::MonthlyBudget::DESCRIPTION_ROWS,
+                      maxlength: Management::MonthlyBudget::DESCRIPTION_MAX_LENGTH,
+                      data: { input__character_counter_target: "input" } %>
+                <div class="form-text text-end">
+                  <span data-input--character-counter-target="count">0</span> /
+                  <span data-input--character-counter-target="remaining"><%= Management::MonthlyBudget::DESCRIPTION_MAX_LENGTH %></span>
+                  文字
+                </div>
+              </div>
             </div>
 
             <div class="alert alert-info" role="alert">
@@ -64,7 +75,7 @@
           <div class="modal-body">
             <div class="mb-3">
               <label class="form-label"><%= t('numerical_managements.modals.labels.target_month') %></label>
-              <input type="text" class="form-control-plaintext" value="<%= @selected_date.strftime('%Y年%m月') %>" readonly>
+              <input type="text" class="form-control-plaintext" value="<%= l(@selected_date, format: :year_month) %>" readonly>
             </div>
 
             <div class="mb-3">
@@ -83,8 +94,20 @@
             </div>
 
             <div class="mb-3">
-              <%= label_tag 'monthly_budget[description]', t('numerical_managements.modals.labels.description'), class: "form-label" %>
-              <%= text_area_tag 'monthly_budget[description]', nil, class: "form-control", rows: 3 %>
+              <%= label_tag 'monthly_budget[description]', t('activerecord.attributes.management/monthly_budget.description'), class: "form-label" %>
+              <div data-controller="input--character-counter" data-input--character-counter-max-value="<%= Management::MonthlyBudget::DESCRIPTION_MAX_LENGTH %>">
+                <%= text_area_tag 'monthly_budget[description]',
+                      nil,
+                      class: "form-control",
+                      rows: Management::MonthlyBudget::DESCRIPTION_ROWS,
+                      maxlength: Management::MonthlyBudget::DESCRIPTION_MAX_LENGTH,
+                      data: { input__character_counter_target: "input" } %>
+                <div class="form-text text-end">
+                  <span data-input--character-counter-target="count">0</span> /
+                  <span data-input--character-counter-target="remaining"><%= Management::MonthlyBudget::DESCRIPTION_MAX_LENGTH %></span>
+                  文字
+                </div>
+              </div>
             </div>
 
             <div class="alert alert-info" role="alert">
