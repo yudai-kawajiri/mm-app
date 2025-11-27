@@ -708,4 +708,23 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 });
+
+// 実績入力モーダル: 開く時にCSRFトークンを更新
+document.addEventListener("DOMContentLoaded", function() {
+  const actualRevenueModal = document.getElementById("actualRevenueModal");
+  
+  if (actualRevenueModal) {
+    actualRevenueModal.addEventListener("show.bs.modal", function() {
+      const form = document.getElementById("actualRevenueForm");
+      if (form) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const tokenInput = form.querySelector('input[name="authenticity_token"]');
+        if (tokenInput && csrfToken) {
+          tokenInput.value = csrfToken;
+        }
+      }
+    });
+  }
+});
 </script>
+
