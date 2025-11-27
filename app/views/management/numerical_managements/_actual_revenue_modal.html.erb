@@ -23,10 +23,6 @@
             <%= f.label :actual_revenue, t('numerical_managements.modals.labels.actual_revenue_yen'), class: "form-label" %>
             <%= f.text_field :actual_revenue,
               class: "form-control actual-revenue-input",
-          <div class="mb-3">
-            <%= f.label :actual_revenue, t('numerical_managements.modals.labels.actual_revenue_yen'), class: "form-label" %>
-            <%= f.text_field :actual_revenue,
-              class: "form-control actual-revenue-input",
               required: true,
               id: "actualRevenueInput",
               data: {
@@ -34,6 +30,8 @@
                 action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste'
               } %>
           </div>
+
+          <div class="alert alert-info" role="alert">
             <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.actual_revenue_entry.info') %>
           </div>
         </div>
