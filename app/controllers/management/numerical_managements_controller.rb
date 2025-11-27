@@ -59,10 +59,12 @@ class Management::NumericalManagementsController < ApplicationController
     daily_target.user_id = current_user.id
 
     if daily_target.save
-      render json: { success: true, target_amount: daily_target.target_amount }
+      flash[:notice] = t('numerical_managements.messages.daily_target_updated')
+      redirect_to management_numerical_managements_path(year: year, month: month)
     else
-      logger.error("DailyTarget save failed: #{daily_target.errors.full_messages.join(", ")}")
-      render json: { success: false, errors: daily_target.errors.full_messages }, status: :unprocessable_entity
+      logger.error("DailyTarget save failed: #{daily_target.errors.full_messages.join(', ')}")
+      flash[:alert] = daily_target.errors.full_messages.join(', ')
+      redirect_to management_numerical_managements_path(year: year, month: month)
     end
   end
 
