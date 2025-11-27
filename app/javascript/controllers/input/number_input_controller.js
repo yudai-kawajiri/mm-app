@@ -201,16 +201,6 @@ export default class extends Controller {
     const input = event.target
     const value = input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY).trim()
 
-    // 「0」または「0.0」の場合は全選択
-    if (value === SPECIAL_VALUES.ZERO ||
-        value === SPECIAL_VALUES.ZERO_DECIMAL ||
-  // focus イベント時の処理
-  // カンマを削除して編集しやすくする
-  // 「0」または「0.0」の場合、フォーカス時に全選択する
-  handleFocus(event) {
-    const input = event.target
-    const value = input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY).trim()
-
     // カンマを削除した値を設定
     input.value = value
 
