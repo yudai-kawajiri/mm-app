@@ -134,22 +134,21 @@ class Resources::PlansController < AuthenticatedController
 
     # 日別詳細からの印刷の場合のみ、scheduled_date、budget、achievement_rateを設定
     if from_daily
-      # 日付から該当のPlanScheduleを取得
-      date = params[:date].present? ? Date.parse(params[:date]) : nil
-      @plan_schedule = @plan.plan_schedules.find_by(scheduled_date: date) if date
-
-      # 計画に関連する情報を取得
-      plan_schedule = @plan.plan_schedules.order(scheduled_date: :desc).first
-      @scheduled_date = plan_schedule&.scheduled_date
-
-      # 月間予算から情報を取得
-      if @scheduled_date
-        monthly_budget = Management::MonthlyBudget
-                          .where(user_id: current_user.id)
-                          .where("budget_month = ?", @scheduled_date.beginning_of_month)
-                          .first
-        @budget = monthly_budget&.target_amount
+      # params[:date]から日付を取得（必須）
+      if params[:date].present?
+        @scheduled_date = Date.parse(params[:date])
+        
+        # 該当日付のPlanScheduleを取得
+        @plan_schedule = @plan.plan_schedules.find_by(scheduled_date: @scheduled_date)
+        
+        # その日の目標額を取得（DailyTargetから）
+        daily_target = Management::DailyTarget
+                        .where(user_id: current_user.id)
+                        .find_by(target_date: @scheduled_date)
+        @budget = daily_target&.target_amount
       else
+        @scheduled_date = nil
+        @plan_schedule = nil
         @budget = nil
       end
     else
@@ -158,48 +157,6 @@ class Resources::PlansController < AuthenticatedController
       @scheduled_date = nil
       @budget = nil
     end
-
-    # ⭐ 重要：印刷元によってデータソースを切り替え
-    if from_daily && @plan_schedule&.has_snapshot?
-      # 日別詳細から印刷：スナップショットを使用
-      @plan_products_for_print = @plan_schedule.snapshot_products
-                                              .sort_by { |item| [ item[:product].display_order || 999999, item[:product].id ] }
-    else
-      # 計画詳細から印刷：Planマスタを使用
-      @plan_products_for_print = @plan.plan_products
-                                      .includes(product: [ :category, { image_attachment: :blob } ])
-                                      .joins(:product)
-                                      .order("products.display_order ASC, products.id ASC")
-                                      .map do |pp|
-        {
-          product: pp.product,
-          production_count: pp.production_count,
-          price: pp.product.price,
-          subtotal: pp.production_count * pp.product.price
-        }
-      end
-    end
-
-    # 商品合計金額を計算（これを計画高として表示）
-    @planned_revenue = @plan_products_for_print.sum { |item| item[:subtotal] }
-    @total_product_cost = @planned_revenue
-
-    # 達成率の計算（日別詳細からの印刷の場合のみ）
-    if from_daily && @budget && @budget > 0
-      @achievement_rate = ((@planned_revenue.to_f / @budget) * 100).round(1)
-    else
-      @achievement_rate = nil
-    end
-
-    # 原材料サマリーを取得（display_order 順）
-    @materials_summary = @plan.calculate_materials_summary
-                              .sort_by do |material_data|
-                                material = Resources::Material.find(material_data[:material_id])
-                                [ material.display_order || 999999, material.id ]
-                              end
-
-    # 印刷レイアウトを使用
-    render layout: "print"
   end
 
   private
