@@ -42,7 +42,10 @@
                       class: "form-control",
                       rows: Management::MonthlyBudget::DESCRIPTION_ROWS,
                       maxlength: Management::MonthlyBudget::DESCRIPTION_MAX_LENGTH,
-                      data: { input__character_counter_target: "input" } %>
+                      data: {
+                        input__character_counter_target: "input",
+                        action: "input->input--character-counter#updateCount"
+                      } %>
                 <div class="form-text text-end">
                   <span data-input--character-counter-target="count">0</span> /
                   <span data-input--character-counter-target="remaining"><%= Management::MonthlyBudget::DESCRIPTION_MAX_LENGTH %></span>
@@ -101,7 +104,10 @@
                       class: "form-control",
                       rows: Management::MonthlyBudget::DESCRIPTION_ROWS,
                       maxlength: Management::MonthlyBudget::DESCRIPTION_MAX_LENGTH,
-                      data: { input__character_counter_target: "input" } %>
+                      data: {
+                        input__character_counter_target: "input",
+                        action: "input->input--character-counter#updateCount"
+                      } %>
                 <div class="form-text text-end">
                   <span data-input--character-counter-target="count">0</span> /
                   <span data-input--character-counter-target="remaining"><%= Management::MonthlyBudget::DESCRIPTION_MAX_LENGTH %></span>
