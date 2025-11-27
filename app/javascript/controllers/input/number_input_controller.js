@@ -204,22 +204,32 @@ export default class extends Controller {
     // 「0」または「0.0」の場合は全選択
     if (value === SPECIAL_VALUES.ZERO ||
         value === SPECIAL_VALUES.ZERO_DECIMAL ||
+  // focus イベント時の処理
+  // カンマを削除して編集しやすくする
+  // 「0」または「0.0」の場合、フォーカス時に全選択する
+  handleFocus(event) {
+    const input = event.target
+    const value = input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY).trim()
+
+    // カンマを削除した値を設定
+    input.value = value
+
+    // 「0」または「0.0」の場合は全選択
+    if (value === SPECIAL_VALUES.ZERO ||
+        value === SPECIAL_VALUES.ZERO_DECIMAL ||
         value === SPECIAL_VALUES.ZERO_TWO_DECIMAL) {
       if (!this.isNumberType) {
         input.select()
       }
+    } else {
+      // それ以外の場合はカーソルを末尾に移動
+      if (!this.isNumberType) {
+        setTimeout(() => {
+          input.setSelectionRange(value.length, value.length)
+        }, 0)
+      }
     }
   }
-
-  // blur イベント時の処理
-  // 小数点フィールドの場合、入力完了時に.0形式に変換する
-  handleBlur(event) {
-    const input = event.target
-
-    // 小数点フィールドモードでない場合は何もしない
-    if (!this.decimalField) {
-      return
-    }
 
     const value = input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY).trim()
 
