@@ -207,11 +207,11 @@ export default class extends Controller {
     this.dailyTargetSumTarget.textContent = '¥' + sum.toLocaleString('ja-JP')
 
     if (diff > 0) {
-      this.budgetDiffTarget.textContent = '-¥' + diff.toLocaleString('ja-JP') + ' \u4e0d\u8db3'
+      this.budgetDiffTarget.textContent = '-¥' + diff.toLocaleString('ja-JP') + ' ' + this.shortageText
       this.budgetDiffTarget.className = 'fw-bold text-warning'
       this.saveButtonTarget.disabled = false
     } else if (diff < 0) {
-      this.budgetDiffTarget.textContent = '+¥' + Math.abs(diff).toLocaleString('ja-JP') + ' \u8d85\u904e'
+      this.budgetDiffTarget.textContent = '¥' + Math.abs(diff).toLocaleString('ja-JP') + ' ' + this.excessText
       this.budgetDiffTarget.className = 'fw-bold text-danger'
       this.saveButtonTarget.disabled = true
     } else {
