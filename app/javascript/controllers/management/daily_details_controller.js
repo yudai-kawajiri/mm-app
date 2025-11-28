@@ -5,10 +5,10 @@ export default class extends Controller {
 
   connect() {
     this.isEditMode = false
-    this.monthlyBudget = parseInt(this.element.dataset.monthlyBudget, 10) || 0
+    this.monthlyBudget = parseInt(this.element.dataset.managementDailyDetailsMonthlyBudgetValue, 10) || 0
     this.initializeCumulativeValues()
-    this.shortageText = this.element.dataset.shortageText || ""
-    this.excessText = this.element.dataset.excessText || ""
+    this.shortageText = this.element.dataset.managementDailyDetailsShortageTextValue || ""
+    this.excessText = this.element.dataset.managementDailyDetailsExcessTextValue || ""
   }
 
   toggleEditMode() {
