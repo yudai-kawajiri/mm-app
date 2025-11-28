@@ -613,16 +613,6 @@ function initializeCumulativeValues() {
   });
 }
 
-document.getElementById("bulkEditForm").addEventListener("submit", function(e) {
-  // input--number-input コントローラーを持つ全ての input フィールドを処理
-  document.querySelectorAll("[data-controller*='input--number-input']").forEach(function(input) {
-    if (!input.disabled && input.value) {
-      // カンマを削除して数値のみにする
-      input.value = input.value.replace(/,/g, "");
-    }
-  });
-});
-
 function setEditModalData(button) {
   const date = button.getAttribute("data-date");
   const dateDisplay = button.getAttribute("data-date-display");
@@ -672,15 +662,6 @@ function setActualModalData(button) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-  const editTargetInput = document.getElementById("editTargetAmount");
-  const actualRevenueInput = document.getElementById("actualRevenueInput");
-  const editMonthlyBudgetInput = document.getElementById("editMonthlyBudgetAmount");
-  const newMonthlyBudgetInput = document.getElementById("newMonthlyBudgetAmount");
-
-  initializeCumulativeValues();
-});
-
 // Turbo対応: ページ読み込み時とTurbo遷移後にイベントリスナーを再設定
 document.addEventListener("turbo:load", function() {
   const toggleBtn = document.getElementById("bulkEditToggleBtn");
@@ -695,6 +676,9 @@ document.addEventListener("turbo:load", function() {
     cancelBtn.removeEventListener("click", toggleBulkEditMode); // 重複防止
     cancelBtn.addEventListener("click", toggleBulkEditMode);
   }
+
+  // 累計値を初期化
+  initializeCumulativeValues();
 });
 
 // 一括編集フォーム送信時: カンマを削除
