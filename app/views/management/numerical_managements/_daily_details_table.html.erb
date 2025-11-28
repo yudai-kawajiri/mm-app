@@ -49,7 +49,7 @@
   </div>
 
   <div class="card-body p-0">
-    <%= form_with url: bulk_update_management_numerical_managements_path, method: :post, id: "bulkEditForm" do |f| %>
+    <%= form_with url: bulk_update_management_numerical_managements_path, method: :patch, id: "bulkEditForm" do |f| %>
       <%= hidden_field_tag :year, @selected_date.year %>
       <%= hidden_field_tag :month, @selected_date.month %>
 
@@ -695,5 +695,16 @@ document.addEventListener("turbo:load", function() {
     cancelBtn.removeEventListener("click", toggleBulkEditMode); // 重複防止
     cancelBtn.addEventListener("click", toggleBulkEditMode);
   }
+});
+
+// 一括編集フォーム送信時: カンマを削除
+document.getElementById("bulkEditForm").addEventListener("submit", function(e) {
+  // input--number-input コントローラーを持つ全ての input フィールドを処理
+  document.querySelectorAll("[data-controller*='input--number-input']").forEach(function(input) {
+    if (!input.disabled && input.value) {
+      // カンマを削除して数値のみにする
+      input.value = input.value.replace(/,/g, "");
+    }
+  });
 });
 </script>
