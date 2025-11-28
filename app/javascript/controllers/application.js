@@ -1,10 +1,8 @@
-// Stimulus Application の初期化とデバッグモード設定
-//
-// Stimulusフレームワークの起動とグローバル設定を行う
-// 開発環境では常にデバッグモードを有効化し、ブラウザコンソールからアクセス可能にする
-
+// Stimulus アプリケーション設定
+import "@hotwired/turbo-rails"
 import { Application } from "@hotwired/stimulus"
 import Logger from "utils/logger"
+import CurrencyFormatter from "utils/currency_formatter"
 
 // グローバルオブジェクト名
 const GLOBAL_OBJECT = {
@@ -24,12 +22,13 @@ const LOG_MESSAGES = {
 // Stimulusアプリケーションを起動
 const application = Application.start()
 
-// Rails の環境変数を使用してデバッグモードを設定
-// 開発環境では常にデバッグモードを有効化
+// Rails環境変数を使用してデバッグモードを設定
 application.debug = DEBUG_CONFIG.ENABLED
 
-// デバッグ用: ブラウザコンソールから Stimulus にアクセス可能
+// デバッグ用: ブラウザコンソールからStimulusにアクセス可能
 window[GLOBAL_OBJECT.STIMULUS] = application
 Logger.log(LOG_MESSAGES.DEBUG_MODE_ENABLED)
+
+window.CurrencyFormatter = CurrencyFormatter
 
 export { application }

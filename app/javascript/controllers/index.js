@@ -105,3 +105,6 @@ application.register(CONTROLLER_NAMES.SORTABLE_TABLE, SortableTableController)
 
 // UI - Tabs Controllers
 application.register(CONTROLLER_NAMES.TABS_CATEGORY_TABS, TabsCategoryTabsController)
+
+// デバッグ
+console.log('✅ Controllers registered:', application.router.modulesByIdentifier.size)
