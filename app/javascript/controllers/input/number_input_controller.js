@@ -221,6 +221,20 @@ export default class extends Controller {
     }
   }
 
+  handleBlur(event) {
+    const input = event.target;
+    let rawValue = input.dataset.rawValue || input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY);
+
+    // 空または '0' の場合は '0' に正規化
+    if (rawValue === '' || rawValue === '0') {
+      rawValue = '0';
+    }
+
+    // 整数値に変換
+    const numValue = parseInt(rawValue, 10) || 0;
+    input.value = numValue.toString();
+    input.dataset.rawValue = rawValue;
+  }
 
   // input イベント時の処理
   // 全角→半角変換とカンマ挿入を実行
