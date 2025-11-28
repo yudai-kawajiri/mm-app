@@ -615,7 +615,7 @@ function initializeCumulativeValues() {
 
 document.getElementById("bulkEditForm").addEventListener("submit", function(e) {
   // input--number-input コントローラーを持つ全ての input フィールドを処理
-  document.querySelectorAll("[data-controller*="input--number-input"]").forEach(function(input) {
+  document.querySelectorAll("[data-controller*='input--number-input']").forEach(function(input) {
     if (!input.disabled && input.value) {
       // カンマを削除して数値のみにする
       input.value = input.value.replace(/,/g, "");
@@ -662,7 +662,7 @@ function setActualModalData(button) {
   const form = document.getElementById("actualRevenueForm");
   if (form && scheduleId) {
     form.action = "/management/plan_schedules/" + scheduleId + "/actual_revenue";
-    
+
     // CSRFトークンを更新
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const tokenInput = form.querySelector('input[name="authenticity_token"]');
@@ -674,77 +674,26 @@ function setActualModalData(button) {
 
 document.addEventListener("DOMContentLoaded", function() {
   const editTargetInput = document.getElementById("editTargetAmount");
-  //   if (editTargetInput) {
-  //     setupNumericInput(editTargetInput);
-  //   }
-  // 
   const actualRevenueInput = document.getElementById("actualRevenueInput");
-  //   if (actualRevenueInput) {
-  //     setupNumericInput(actualRevenueInput);
-  //   }
-  // 
   const editMonthlyBudgetInput = document.getElementById("editMonthlyBudgetAmount");
-  //   if (editMonthlyBudgetInput) {
-  //     setupNumericInput(editMonthlyBudgetInput);
-  //   }
-  // 
   const newMonthlyBudgetInput = document.getElementById("newMonthlyBudgetAmount");
-  //   if (newMonthlyBudgetInput) {
-  //     setupNumericInput(newMonthlyBudgetInput);
-  //   }
-  // 
-  initializeCumulativeValues();
 
-  // 一括編集ボタンのイベントリスナーを設定
+  initializeCumulativeValues();
+});
+
+// Turbo対応: ページ読み込み時とTurbo遷移後にイベントリスナーを再設定
+document.addEventListener("turbo:load", function() {
   const toggleBtn = document.getElementById("bulkEditToggleBtn");
   const cancelBtn = document.getElementById("bulkEditCancelBtn");
-  
+
   if (toggleBtn) {
+    toggleBtn.removeEventListener("click", toggleBulkEditMode); // 重複防止
     toggleBtn.addEventListener("click", toggleBulkEditMode);
   }
-  
+
   if (cancelBtn) {
+    cancelBtn.removeEventListener("click", toggleBulkEditMode); // 重複防止
     cancelBtn.addEventListener("click", toggleBulkEditMode);
   }
 });
-
-// 月間予算モーダル: キャンセル時のリセット処理
-document.addEventListener("DOMContentLoaded", function() {
-  const budgetModal = document.getElementById("budgetSettingModal");
-  
-  if (budgetModal) {
-    budgetModal.addEventListener("show.bs.modal", function() {
-      // 編集モード: 元の値を復元
-      const editInput = document.getElementById("editMonthlyBudgetAmount");
-      if (editInput && editInput.dataset.originalValue) {
-        editInput.value = editInput.dataset.originalValue;
-      }
-      
-      // 新規作成モード: フィールドをクリア
-      const newInput = document.getElementById("newMonthlyBudgetAmount");
-      if (newInput) {
-        newInput.value = "";
-      }
-    });
-  }
-});
-
-// 実績入力モーダル: 開く時にCSRFトークンを更新
-document.addEventListener("DOMContentLoaded", function() {
-  const actualRevenueModal = document.getElementById("actualRevenueModal");
-  
-  if (actualRevenueModal) {
-    actualRevenueModal.addEventListener("show.bs.modal", function() {
-      const form = document.getElementById("actualRevenueForm");
-      if (form) {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const tokenInput = form.querySelector('input[name="authenticity_token"]');
-        if (tokenInput && csrfToken) {
-          tokenInput.value = csrfToken;
-        }
-      }
-    });
-  }
-});
 </script>
-
