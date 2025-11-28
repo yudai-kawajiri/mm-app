@@ -2,13 +2,15 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["toggleBtn", "summary", "form", "dailyTargetSum", "budgetDiff", "saveButton"]
+  static values = {
+    monthlyBudget: Number,
+    shortageText: String,
+    excessText: String
+  }
 
   connect() {
     this.isEditMode = false
-    this.monthlyBudget = parseInt(this.element.dataset.managementDailyDetailsMonthlyBudgetValue, 10) || 0
     this.initializeCumulativeValues()
-    this.shortageText = this.element.dataset.managementDailyDetailsShortageTextValue || ""
-    this.excessText = this.element.dataset.managementDailyDetailsExcessTextValue || ""
   }
 
   toggleEditMode() {
@@ -203,15 +205,15 @@ export default class extends Controller {
       }
     })
 
-    const diff = this.monthlyBudget - sum
+    const diff = this.monthlyBudgetValue - sum
     this.dailyTargetSumTarget.textContent = '¥' + sum.toLocaleString('ja-JP')
 
     if (diff > 0) {
-      this.budgetDiffTarget.textContent = '-¥' + diff.toLocaleString('ja-JP') + ' ' + this.shortageText
+      this.budgetDiffTarget.textContent = '-¥' + diff.toLocaleString('ja-JP') + ' ' + this.shortageTextValue
       this.budgetDiffTarget.className = 'fw-bold text-warning'
       this.saveButtonTarget.disabled = false
     } else if (diff < 0) {
-      this.budgetDiffTarget.textContent = '¥' + Math.abs(diff).toLocaleString('ja-JP') + ' ' + this.excessText
+      this.budgetDiffTarget.textContent = '¥' + Math.abs(diff).toLocaleString('ja-JP') + ' ' + this.excessTextValue
       this.budgetDiffTarget.className = 'fw-bold text-danger'
       this.saveButtonTarget.disabled = true
     } else {
