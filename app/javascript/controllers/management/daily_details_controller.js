@@ -6,18 +6,16 @@ export default class extends Controller {
   connect() {
     this.isEditMode = false
     this.monthlyBudget = parseInt(this.element.dataset.monthlyBudget, 10) || 0
-
-    // 累計値を初期化
     this.initializeCumulativeValues()
+    this.shortageText = this.element.dataset.shortageText || ""
+    this.excessText = this.element.dataset.excessText || ""
   }
 
   toggleEditMode() {
     this.isEditMode = !this.isEditMode
 
     if (this.isEditMode) {
-      this.toggleBtnTarget.innerHTML = '<i class="bi bi-eye"></i> 通常表示'
       this.summaryTarget.style.display = 'block'
-
       document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'none')
       document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'block')
       document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'none')
@@ -42,9 +40,7 @@ export default class extends Controller {
 
       this.calculateDailyTargetSum()
     } else {
-      this.toggleBtnTarget.innerHTML = '<i class="bi bi-pencil-square"></i> 一括編集'
       this.summaryTarget.style.display = 'none'
-
       document.querySelectorAll('.normal-mode-display').forEach(el => el.style.display = 'inline')
       document.querySelectorAll('.bulk-edit-input').forEach(el => el.style.display = 'none')
       document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'table-cell')
@@ -60,42 +56,29 @@ export default class extends Controller {
 
   setupNumericInput(input) {
     let isComposing = false
-
     const initialValue = input.value.replace(/,/g, '')
     input.dataset.rawValue = initialValue || '0'
 
-    input.addEventListener('compositionstart', () => {
-      isComposing = true
-    })
-
-    input.addEventListener('compositionend', (e) => {
-      isComposing = false
-      this.processInput(e.target)
-    })
+    input.addEventListener('compositionstart', () => { isComposing = true })
+    input.addEventListener('compositionend', (e) => { isComposing = false; this.processInput(e.target) })
 
     input.addEventListener('focus', (e) => {
       const rawValue = e.target.dataset.rawValue || '0'
       e.target.value = rawValue
-
       setTimeout(() => {
         const len = e.target.value.length
         e.target.setSelectionRange(len, len)
       }, 0)
     })
 
-    input.addEventListener('input', (e) => {
-      if (isComposing) return
-      this.processInput(e.target)
-    })
+    input.addEventListener('input', (e) => { if (!isComposing) this.processInput(e.target) })
 
     input.addEventListener('blur', (e) => {
       let rawValue = e.target.dataset.rawValue || ''
-
       if (rawValue === '' || rawValue === '0') {
         rawValue = '0'
         e.target.dataset.rawValue = '0'
       }
-
       const numValue = parseInt(rawValue, 10) || 0
       e.target.value = rawValue
     })
@@ -108,44 +91,32 @@ export default class extends Controller {
     let value = originalValue
     value = value.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
     value = value.replace(/[^\d]/g, '')
-
-    if (value.length > 1) {
-      value = value.replace(/^0+/, '')
-    }
+    if (value.length > 1) value = value.replace(/^0+/, '')
 
     if (input.value !== value) {
       let digitsBeforeCursor = 0
       for (let i = 0; i < originalCursorPos && i < originalValue.length; i++) {
-        if (/\d/.test(originalValue[i])) {
-          digitsBeforeCursor++
-        }
+        if (/\d/.test(originalValue[i])) digitsBeforeCursor++
       }
 
       input.value = value
-
-      let newPos = 0
-      let digitCount = 0
+      let newPos = 0, digitCount = 0
       for (let i = 0; i < value.length; i++) {
         if (digitCount >= digitsBeforeCursor) break
         newPos++
         digitCount++
       }
-
       input.setSelectionRange(newPos, newPos)
     }
 
     input.dataset.rawValue = value
-
     if (input.classList.contains('bulk-edit-target') || input.classList.contains('bulk-edit-actual')) {
       this.calculateDailyTargetSum()
     }
   }
 
   calculateDailyTargetSum() {
-    let sum = 0
-    let cumulativeTarget = 0
-    let cumulativePlanned = 0
-    let cumulativeActual = 0
+    let sum = 0, cumulativeTarget = 0, cumulativePlanned = 0, cumulativeActual = 0
 
     document.querySelectorAll('.bulk-edit-target').forEach(input => {
       const value = parseInt(input.dataset.rawValue, 10) || 0
@@ -166,12 +137,34 @@ export default class extends Controller {
             actualValue = parseInt(actualInput.dataset.rawValue, 10) || 0
           } else {
             const displaySpan = actualCell.querySelector('.normal-mode-display')
-            if (displaySpan) {
-              actualValue = parseInt(displaySpan.textContent.replace(/[^0-9]/g, ''), 10) || 0
-            }
+            if (displaySpan) actualValue = parseInt(displaySpan.textContent.replace(/[^0-9]/g, ''), 10) || 0
           }
         }
         cumulativeActual += actualValue
+
+        const targetValue = parseInt(input.dataset.rawValue, 10) || 0
+        const achievementRateCell = currentRow.querySelector("td:nth-child(5)")
+        if (achievementRateCell) {
+          let rate = 0
+          if (targetValue > 0) rate = (actualValue / targetValue) * 100
+          const rateSpan = achievementRateCell.querySelector("span")
+          if (rateSpan) {
+            rateSpan.className = ""
+            if (rate >= 100) rateSpan.classList.add("text-success")
+            else if (rate >= 80) rateSpan.classList.add("text-warning")
+            else rateSpan.classList.add("text-danger")
+            rateSpan.textContent = rate.toFixed(1) + "%"
+          }
+        }
+
+        const budgetDiffCell = currentRow.querySelector("td:nth-child(6)")
+        if (budgetDiffCell) {
+          const diff = actualValue - targetValue
+          budgetDiffCell.textContent = "¥" + diff.toLocaleString("ja-JP")
+          budgetDiffCell.className = "text-end"
+          if (diff >= 0) budgetDiffCell.classList.add("text-success")
+          else budgetDiffCell.classList.add("text-danger")
+        }
 
         const cumulativeRow = currentRow.nextElementSibling
         if (cumulativeRow && cumulativeRow.classList.contains('table-light')) {
@@ -182,20 +175,13 @@ export default class extends Controller {
           const cumulativeRateCell = cumulativeRow.querySelector('td:nth-child(4)')
           if (cumulativeRateCell) {
             let rate = 0
-            if (cumulativeTarget > 0) {
-              rate = (cumulativeActual / cumulativeTarget) * 100
-            }
-
+            if (cumulativeTarget > 0) rate = (cumulativeActual / cumulativeTarget) * 100
             const rateSpan = cumulativeRateCell.querySelector('span')
             if (rateSpan) {
               rateSpan.className = ''
-              if (rate >= 100) {
-                rateSpan.classList.add('text-success')
-              } else if (rate >= 80) {
-                rateSpan.classList.add('text-warning')
-              } else {
-                rateSpan.classList.add('text-danger')
-              }
+              if (rate >= 100) rateSpan.classList.add('text-success')
+              else if (rate >= 80) rateSpan.classList.add('text-warning')
+              else rateSpan.classList.add('text-danger')
               rateSpan.textContent = rate.toFixed(1) + '%'
             }
           }
@@ -204,36 +190,30 @@ export default class extends Controller {
           if (cumulativeDiffCell) {
             const diff = cumulativeActual - cumulativeTarget
             const labelElement = cumulativeDiffCell.querySelector('small.text-muted')
-
             if (labelElement) {
               cumulativeDiffCell.innerHTML = ''
               cumulativeDiffCell.appendChild(labelElement.cloneNode(true))
               cumulativeDiffCell.appendChild(document.createTextNode(' ¥' + diff.toLocaleString('ja-JP')))
-
               cumulativeDiffCell.className = 'text-end'
-              if (diff >= 0) {
-                cumulativeDiffCell.classList.add('text-success')
-              } else {
-                cumulativeDiffCell.classList.add('text-danger')
-              }
+              if (diff >= 0) cumulativeDiffCell.classList.add('text-success')
+              else cumulativeDiffCell.classList.add('text-danger')
             }
           }
         }
       }
     })
 
-    const diff = sum - this.monthlyBudget
-
+    const diff = this.monthlyBudget - sum
     this.dailyTargetSumTarget.textContent = '¥' + sum.toLocaleString('ja-JP')
 
     if (diff > 0) {
-      this.budgetDiffTarget.textContent = '+¥' + diff.toLocaleString('ja-JP') + ' 超過'
-      this.budgetDiffTarget.className = 'fw-bold text-danger'
-      this.saveButtonTarget.disabled = true
-    } else if (diff < 0) {
-      this.budgetDiffTarget.textContent = '-¥' + Math.abs(diff).toLocaleString('ja-JP') + ' 不足'
+      this.budgetDiffTarget.textContent = '-¥' + diff.toLocaleString('ja-JP') + ' \u4e0d\u8db3'
       this.budgetDiffTarget.className = 'fw-bold text-warning'
       this.saveButtonTarget.disabled = false
+    } else if (diff < 0) {
+      this.budgetDiffTarget.textContent = '+¥' + Math.abs(diff).toLocaleString('ja-JP') + ' \u8d85\u904e'
+      this.budgetDiffTarget.className = 'fw-bold text-danger'
+      this.saveButtonTarget.disabled = true
     } else {
       this.budgetDiffTarget.textContent = '¥0'
       this.budgetDiffTarget.className = 'fw-bold text-success'
@@ -254,9 +234,7 @@ export default class extends Controller {
   }
 
   initializeCumulativeValues() {
-    let cumulativeTarget = 0
-    let cumulativePlanned = 0
-    let cumulativeActual = 0
+    let cumulativeTarget = 0, cumulativePlanned = 0, cumulativeActual = 0
 
     document.querySelectorAll('tbody tr').forEach(row => {
       const dateCell = row.querySelector('td[rowspan="2"]')
@@ -283,20 +261,13 @@ export default class extends Controller {
         const cumulativeRateCell = cumulativeRow.querySelector('td:nth-child(4)')
         if (cumulativeRateCell) {
           let rate = 0
-          if (cumulativeTarget > 0) {
-            rate = (cumulativeActual / cumulativeTarget) * 100
-          }
-
+          if (cumulativeTarget > 0) rate = (cumulativeActual / cumulativeTarget) * 100
           const rateSpan = cumulativeRateCell.querySelector('span')
           if (rateSpan) {
             rateSpan.className = ''
-            if (rate >= 100) {
-              rateSpan.classList.add('text-success')
-            } else if (rate >= 80) {
-              rateSpan.classList.add('text-warning')
-            } else {
-              rateSpan.classList.add('text-danger')
-            }
+            if (rate >= 100) rateSpan.classList.add('text-success')
+            else if (rate >= 80) rateSpan.classList.add('text-warning')
+            else rateSpan.classList.add('text-danger')
             rateSpan.textContent = rate.toFixed(1) + '%'
           }
         }
@@ -305,18 +276,13 @@ export default class extends Controller {
         if (cumulativeDiffCell) {
           const diff = cumulativeActual - cumulativeTarget
           const labelElement = cumulativeDiffCell.querySelector('small.text-muted')
-
           if (labelElement) {
             cumulativeDiffCell.innerHTML = ''
             cumulativeDiffCell.appendChild(labelElement.cloneNode(true))
             cumulativeDiffCell.appendChild(document.createTextNode(' ¥' + diff.toLocaleString('ja-JP')))
-
             cumulativeDiffCell.className = 'text-end'
-            if (diff >= 0) {
-              cumulativeDiffCell.classList.add('text-success')
-            } else {
-              cumulativeDiffCell.classList.add('text-danger')
-            }
+            if (diff >= 0) cumulativeDiffCell.classList.add('text-success')
+            else cumulativeDiffCell.classList.add('text-danger')
           }
         }
       }
@@ -325,9 +291,7 @@ export default class extends Controller {
 
   beforeSubmit(event) {
     document.querySelectorAll("[data-controller*='input--number-input']").forEach(input => {
-      if (!input.disabled && input.value) {
-        input.value = input.value.replace(/,/g, "")
-      }
+      if (!input.disabled && input.value) input.value = input.value.replace(/,/g, "")
     })
   }
 }
