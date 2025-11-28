@@ -4,7 +4,8 @@
     <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
     <button type="button"
             class="btn btn-primary btn-sm"
-            id="bulkEditToggleBtn">
+            id="bulkEditToggle"
+            onclick="toggleBulkEditMode()">
       <i class="bi bi-pencil-square"></i> <%= t('numerical_managements.bulk_edit.toggle_edit_mode') %></button>
   </div>
 
@@ -259,7 +260,7 @@
 
       <div class="card-footer bulk-edit-actions" style="display: none;">
         <div class="d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-secondary" id="bulkEditCancelBtn">
+          <button type="button" class="btn btn-secondary" onclick="toggleBulkEditMode()">
             <i class="bi bi-x-lg"></i> <%= t('common.cancel') %>
           </button>
           <button type="submit" class="btn btn-success" id="bulkSaveButton">
@@ -371,7 +372,7 @@ function toggleBulkEditMode() {
   window.isEditMode = !window.isEditMode;
 
   if (window.isEditMode) {
-    document.getElementById('bulkEditToggleBtn').innerHTML = '<i class="bi bi-eye"></i> <%= j t('numerical_managements.bulk_edit.toggle_normal_mode') %>';
+    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-eye"></i> <%= j t('numerical_managements.bulk_edit.toggle_normal_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'block';
     document.querySelectorAll('.normal-mode-display').forEach(function(el) {
       el.style.display = 'none';
@@ -404,7 +405,7 @@ function toggleBulkEditMode() {
 
     calculateDailyTargetSum();
   } else {
-    document.getElementById('bulkEditToggleBtn').innerHTML = '<i class="bi bi-pencil-square"></i> <%= j t('numerical_managements.bulk_edit.toggle_edit_mode') %>';
+    document.getElementById('bulkEditToggle').innerHTML = '<i class="bi bi-pencil-square"></i> <%= j t('numerical_managements.bulk_edit.toggle_edit_mode') %>';
     document.getElementById('bulkEditSummary').style.display = 'none';
     document.querySelectorAll('.normal-mode-display').forEach(function(el) {
       el.style.display = 'inline';
@@ -694,18 +695,6 @@ document.addEventListener("DOMContentLoaded", function() {
   //   }
   // 
   initializeCumulativeValues();
-
-  // 一括編集ボタンのイベントリスナーを設定
-  const toggleBtn = document.getElementById("bulkEditToggleBtn");
-  const cancelBtn = document.getElementById("bulkEditCancelBtn");
-  
-  if (toggleBtn) {
-    toggleBtn.addEventListener("click", toggleBulkEditMode);
-  }
-  
-  if (cancelBtn) {
-    cancelBtn.addEventListener("click", toggleBulkEditMode);
-  }
 });
 
 // 月間予算モーダル: キャンセル時のリセット処理
