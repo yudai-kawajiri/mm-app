@@ -24,7 +24,7 @@
         <div class="collapse <%= 'show' if is_active %>"
               id="<%= collapse_id %>"
               data-bs-parent="#sidebar-accordion">
-          
+
           <% item[:submenu].each_with_index do |sub_item, sub_index| %>
             <% if sub_item[:submenu] %>
               <%# 第2階層: サブメニュー (さらに子がある場合) %>
@@ -72,8 +72,36 @@
 
     <hr>
 
-    <%= link_to t('dashboard.menu.account_settings'), edit_user_registration_path,
-        class: sidebar_link_class(edit_user_registration_path) %>
+    <%# 設定メニュー（サブメニュー付き） %>
+    <% settings_collapse_id = 'collapse-settings' %>
+    <% settings_is_active = current_page?(help_path) || current_page?(edit_user_registration_path) %>
+
+    <a href="#"
+        class="list-group-item list-group-item-action <%= 'active' if settings_is_active %>"
+        data-bs-toggle="collapse"
+        data-bs-target="#<%= settings_collapse_id %>"
+        role="button"
+        aria-expanded="<%= settings_is_active %>"
+        aria-controls="<%= settings_collapse_id %>"
+        onclick="event.preventDefault();">
+      <i class="bi bi-gear"></i> 設定
+      <i class="bi bi-chevron-down float-end"></i>
+    </a>
+
+    <div class="collapse <%= 'show' if settings_is_active %>"
+          id="<%= settings_collapse_id %>"
+          data-bs-parent="#sidebar-accordion">
+
+      <%= link_to edit_user_registration_path,
+          class: "list-group-item list-group-item-action ps-4 #{current_page?(edit_user_registration_path) ? 'active' : ''}" do %>
+        <%= submenu_indicator %>アカウント設定
+      <% end %>
+
+      <%= link_to help_path,
+          class: "list-group-item list-group-item-action ps-4 #{current_page?(help_path) ? 'active' : ''}" do %>
+        <%= submenu_indicator %>使い方・ヘルプ
+      <% end %>
+    </div>
 
     <%= button_to destroy_user_session_path, method: :delete, class: "list-group-item list-group-item-action text-danger mt-2" do %>
       <%= t('devise.sessions.sign_out') %>
