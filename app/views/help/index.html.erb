@@ -1,0 +1,651 @@
+<% content_for :title, '使い方・ヘルプ' %>
+
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1>使い方・ヘルプ</h1>
+      <p class="text-muted">システムの使い方や、よくある質問を検索できます</p>
+    </div>
+  </div>
+
+  <!-- 検索ボックス(左寄せ) -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="input-group">
+        <span class="input-group-text">🔍</span>
+        <input type="text"
+               class="form-control"
+               id="helpSearch"
+               placeholder="キーワードから探す(例: 予算、材料、印刷)">
+      </div>
+    </div>
+  </div>
+
+  <!-- 使い方動画セクション -->
+  <section class="mb-5">
+    <h2 class="border-bottom pb-2 mb-4">使い方動画</h2>
+
+    <!-- 動画が見つからない場合のメッセージ -->
+    <div class="alert alert-info d-none" id="noVideosFound">
+      該当する動画が見つかりませんでした。
+    </div>
+
+    <!-- 基本操作(初期状態: 折りたたみ) -->
+    <div class="mb-3" data-video-category>
+      <h5 class="mb-2">
+        <a class="text-decoration-none d-block"
+           data-bs-toggle="collapse"
+           href="#collapseBasic"
+           role="button"
+           aria-expanded="false"
+           aria-controls="collapseBasic">
+          ▶ 基本操作
+        </a>
+      </h5>
+      <div class="collapse" id="collapseBasic">
+        <div class="row g-3">
+          <div class="col-md-4" data-video-item data-keywords="検索 フィルター 絞り込み キーワード">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('検索機能の使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">検索機能の使い方</h6>
+                <p class="card-text small">キーワード入力による絞り込み検索の方法</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" data-video-item data-keywords="コピー 複製 データ">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('コピー機能の使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">コピー機能の使い方</h6>
+                <p class="card-text small">既存データの複製方法</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" data-video-item data-keywords="印刷 出力 プリント PDF">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('印刷機能の使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">印刷機能の使い方</h6>
+                <p class="card-text small">各画面からの印刷・出力方法</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 数値管理(初期状態: 折りたたみ) -->
+    <div class="mb-3" data-video-category>
+      <h5 class="mb-2">
+        <a class="text-decoration-none d-block"
+           data-bs-toggle="collapse"
+           href="#collapseNumerical"
+           role="button"
+           aria-expanded="false"
+           aria-controls="collapseNumerical">
+          ▶ 数値管理
+        </a>
+      </h5>
+      <div class="collapse" id="collapseNumerical">
+        <div class="row g-3">
+          <div class="col-md-3" data-video-item data-keywords="月間 予算 設定 売上">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('月間予算の使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">月間予算の設定</h6>
+                <p class="card-text small">月全体の売上目標金額を登録する</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3" data-video-item data-keywords="日別 目標 設定">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('日別目標の使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">日別目標の調整</h6>
+                <p class="card-text small">各日ごとの売上目標額を個別に入力</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3" data-video-item data-keywords="実績 入力 売上">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('実績入力の使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">実績の確認方法</h6>
+                <p class="card-text small">製造計画から自動反映された売上実績を確認</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3" data-video-item data-keywords="一括 編集 まとめて">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('一括編集の使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">一括編集機能</h6>
+                <p class="card-text small">複数日分の目標を同時にまとめて変更</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- リソース管理(初期状態: 折りたたみ) -->
+    <div class="mb-3" data-video-category>
+      <h5 class="mb-2">
+        <a class="text-decoration-none d-block"
+           data-bs-toggle="collapse"
+           href="#collapseResource"
+           role="button"
+           aria-expanded="false"
+           aria-controls="collapseResource">
+          ▶ リソース管理
+        </a>
+      </h5>
+      <div class="collapse" id="collapseResource">
+        <div class="row g-3">
+          <div class="col-md-4 col-lg-3" data-video-item data-keywords="カテゴリ 種別 分類">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('カテゴリーの使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">カテゴリーの使い方</h6>
+                <p class="card-text small">材料・商品の分類設定</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-lg-3" data-video-item data-keywords="単位 g kg 個">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('単位の使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">単位の使い方</h6>
+                <p class="card-text small">使用・発注・製造単位の設定</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-lg-2" data-video-item data-keywords="材料 原材料 登録 リソース 管理">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('材料の使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">材料の使い方</h6>
+                <p class="card-text small">原材料の登録・編集・削除方法</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-lg-2" data-video-item data-keywords="発注 グループ 印刷">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('発注グループの使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">発注グループの使い方</h6>
+                <p class="card-text small">発注グループの管理と印刷</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-lg-2" data-video-item data-keywords="商品 登録 製品 品番">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('商品の使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">商品の使い方</h6>
+                <p class="card-text small">商品の登録と材料紐付け</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 製造計画(初期状態: 折りたたみ) -->
+    <div class="mb-3" data-video-category>
+      <h5 class="mb-2">
+        <a class="text-decoration-none d-block"
+           data-bs-toggle="collapse"
+           href="#collapsePlan"
+           role="button"
+           aria-expanded="false"
+           aria-controls="collapsePlan">
+          ▶ 製造計画
+        </a>
+      </h5>
+      <div class="collapse" id="collapsePlan">
+        <div class="row g-3">
+          <div class="col-md-6" data-video-item data-keywords="計画 製造 スケジュール 登録 編集 削除">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('製造計画の使い方 動画を準備中')">
+              <div class="card-body">
+                <h6 class="card-title">製造計画の使い方</h6>
+                <p class="card-text small">製造計画の作成・編集・削除方法</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- よくある質問セクション -->
+  <section class="mb-5">
+    <h2 class="border-bottom pb-2 mb-4">よくある質問</h2>
+
+    <div class="accordion" id="faqAccordion">
+      <!-- カテゴリー管理 -->
+      <div class="accordion-item" data-faq-item data-keywords="カテゴリー 種別 分類 材料 商品 計画">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqCategory"
+                  aria-expanded="false"
+                  aria-controls="faqCategory">
+            カテゴリー管理について
+          </button>
+        </h2>
+        <div id="faqCategory" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            <p><strong>カテゴリー管理とは？</strong></p>
+            <p>原材料、商品、製造計画を分類するための機能です。</p>
+            <ul>
+              <li><strong>原材料の種別:</strong> 鮮魚、乾物、調味料など</li>
+              <li><strong>商品の種別:</strong> にぎり、巻物、刺身盛りなど</li>
+              <li><strong>製造計画の種別:</strong> 平日、週末、イベント、季節など</li>
+            </ul>
+            <p class="mb-0"><small class="text-muted">※ 種別ごとに絞り込み検索ができるため、データ管理が効率化されます。</small></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 単位管理 -->
+      <div class="accordion-item" data-faq-item data-keywords="単位 カテゴリ 使用単位 発注単位 製造単位 g kg 個">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqUnit"
+                  aria-expanded="false"
+                  aria-controls="faqUnit">
+            単位管理について
+          </button>
+        </h2>
+        <div id="faqUnit" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            <p><strong>単位管理とは?</strong></p>
+            <p>原材料の数量を管理するための単位を設定する機能です。</p>
+            <ul>
+              <li><strong>製造単位:</strong> g(グラム)、貫、切れなど</li>
+              <li><strong>カテゴリ:</strong> 使用単位、発注単位、製造単位の3種類に分類</li>
+            </ul>
+            <p><strong>単位の使い分け例:</strong></p>
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>材料</th>
+                  <th>使用単位</th>
+                  <th>発注単位</th>
+                  <th>製造単位</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>マグロ(赤身)</td>
+                  <td>g (50g/貫)</td>
+                  <td>kg (1サク)</td>
+                  <td>貫 (1貫の寿司)</td>
+                </tr>
+                <tr>
+                  <td>シャリ(酢飯)</td>
+                  <td>g (20g/貫)</td>
+                  <td>kg (1袋)</td>
+                  <td>貫 (1貫の寿司)</td>
+                </tr>
+                <tr>
+                  <td>サーモン</td>
+                  <td>切れ (3切れ/刺身盛り)</td>
+                  <td>柵 (1柵)</td>
+                  <td>人前 (1人前の刺身盛り)</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="mb-0"><small class="text-muted">※ 各単位を正確に設定することで、材料の在庫管理・発注計算が正確になります。</small></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 発注グループ管理 -->
+      <div class="accordion-item" data-faq-item data-keywords="発注 グループ 印刷 まとめて 種類ごと">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqOrderGroup"
+                  aria-expanded="false"
+                  aria-controls="faqOrderGroup">
+            発注グループ管理について
+          </button>
+        </h2>
+        <div id="faqOrderGroup" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            <p><strong>発注グループ管理とは？</strong></p>
+            <p>原材料を種類ごとにグループ化し、発注時にまとめて出力できるようにする機能です。</p>
+            <p><strong>使い方の例:</strong></p>
+            <ul>
+              <li><strong>鮮魚グループ:</strong> マグロ、サーモン、イカ、タイなど → まとめて印刷して発注</li>
+              <li><strong>乾物グループ:</strong> 米、海苔、わさび、ガリなど</li>
+              <li><strong>調味料グループ:</strong> 醤油、酢、みりん、塩など</li>
+            </ul>
+            <p class="mb-0"><small class="text-muted">※ グループごとに印刷できるため、発注作業が効率化されます。</small></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 原材料管理 -->
+      <div class="accordion-item" data-faq-item data-keywords="原材料 材料 登録 使用量 発注量">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqMaterial"
+                  aria-expanded="false"
+                  aria-controls="faqMaterial">
+            原材料管理について
+          </button>
+        </h2>
+        <div id="faqMaterial" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            <p><strong>原材料管理とは？</strong></p>
+            <p>製造に使用する原材料の情報を登録・管理する機能です。</p>
+            <p><strong>登録する情報:</strong></p>
+            <ul>
+              <li><strong>カテゴリー:</strong> 材料の種別(鮮魚、乾物、調味料など)</li>
+              <li><strong>単位:</strong> 使用単位、発注単位、製造単位</li>
+              <li><strong>発注グループ:</strong> 発注時のグループ分け</li>
+              <li><strong>基本使用量:</strong> 1商品あたりの使用量(使用単位)</li>
+              <li><strong>基本発注量:</strong> 通常の発注量(発注単位)</li>
+            </ul>
+            <p><strong>例: マグロ(赤身)の場合</strong></p>
+            <ul>
+              <li>カテゴリー: 鮮魚</li>
+              <li>使用単位: g、発注単位: kg、製造単位: 貫</li>
+              <li>発注グループ: 鮮魚グループ</li>
+              <li>基本使用量: 50g (1貫の寿司に使う量)</li>
+              <li>基本発注量: 3kg (通常1回に発注する量)</li>
+            </ul>
+            <p class="mb-0"><small class="text-muted">※ 基本使用量を正確に設定することで、製造計画から必要な材料量を自動計算できます。</small></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 商品管理 -->
+      <div class="accordion-item" data-faq-item data-keywords="商品 登録 品番 ステータス 材料 紐付け">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqProduct"
+                  aria-expanded="false"
+                  aria-controls="faqProduct">
+            商品管理について
+          </button>
+        </h2>
+        <div id="faqProduct" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            <p><strong>商品管理とは？</strong></p>
+            <p>製造・販売する商品の情報を登録・管理する機能です。</p>
+            <p><strong>登録する情報:</strong></p>
+            <ul>
+              <li><strong>商品コード:</strong> 4桁の商品識別番号</li>
+              <li><strong>商品名:</strong> 商品の名称</li>
+              <li><strong>カテゴリー:</strong> 商品の種別(にぎり、巻物、刺身盛りなど)</li>
+              <li><strong>価格:</strong> 販売価格</li>
+              <li><strong>ステータス:</strong> 下書き、販売中、販売終了</li>
+              <li><strong>商品画像:</strong> 商品の写真</li>
+              <li><strong>材料と使用量:</strong> 商品に使う材料とその量を紐付け</li>
+            </ul>
+            <p><strong>例: まぐろにぎり(2貫)の場合</strong></p>
+            <ul>
+              <li>商品コード: 0001</li>
+              <li>カテゴリー: にぎり</li>
+              <li>価格: 300円</li>
+              <li>ステータス: 販売中</li>
+              <li>材料紐付け: マグロ(赤身) 50g × 2貫、シャリ 20g × 2貫、わさび 適量</li>
+            </ul>
+            <p><strong>例: 刺身盛り合わせ(1人前)の場合</strong></p>
+            <ul>
+              <li>商品コード: 0101</li>
+              <li>カテゴリー: 刺身盛り</li>
+              <li>価格: 1,500円</li>
+              <li>材料紐付け: マグロ 3切れ、サーモン 3切れ、イカ 3切れ、つま 適量</li>
+            </ul>
+            <p class="mb-0"><small class="text-muted">※ 商品に材料を紐付けることで、製造計画から自動的に必要な材料量が計算されます。</small></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 数値管理の基本機能 -->
+      <div class="accordion-item" data-faq-item data-keywords="数値 管理 予算 目標 実績 月間 日別 一括編集">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqNumericalBasic"
+                  aria-expanded="false"
+                  aria-controls="faqNumericalBasic">
+            数値管理の基本機能
+          </button>
+        </h2>
+        <div id="faqNumericalBasic" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            <p><strong>数値管理とは？</strong></p>
+            <p>月間売上予算、日別目標、実績を管理する機能です。</p>
+
+            <h6 class="mt-3">月間予算</h6>
+            <p>月全体の売上予算額を設定します。この金額を基に日別目標の調整や、予算との差異を確認できます。</p>
+            <p class="small"><strong>例:</strong> 6月の月間予算を500万円に設定</p>
+
+            <h6 class="mt-3">日別目標</h6>
+            <p>各日ごとの売上目標を個別に設定します。平日・週末で目標を変えたり、イベント日を増額するなど柔軟に調整可能です。</p>
+            <p class="small"><strong>例:</strong> 平日15万円、週末25万円、お盆期間30万円など</p>
+
+            <h6 class="mt-3">実績入力</h6>
+            <p>製造計画で登録した販売額から、日別の実績が自動で反映されます。目標との差異や達成率が自動計算されます。</p>
+            <p class="small"><strong>例:</strong> 6月1日の計画: まぐろにぎり 100皿 × 300円 = 30,000円 → 実績に自動反映</p>
+
+            <h6 class="mt-3">一括編集</h6>
+            <p>複数日分の目標を同時にまとめて変更できる機能です。月間予算を超過しないよう注意が必要です。</p>
+            <p class="small mb-0"><strong>例:</strong> 6月の全平日の目標を一括で15万円に変更</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 月末予測とアクションプラン -->
+      <div class="accordion-item" data-faq-item data-keywords="月末予測 アクションプラン 予測売上 達成率 必要追加額 残日数">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqForecast"
+                  aria-expanded="false"
+                  aria-controls="faqForecast">
+            月末予測とアクションプラン
+          </button>
+        </h2>
+        <div id="faqForecast" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            <h6 class="mt-0">月末予測とは？</h6>
+            <p><strong>月末予測</strong>は、現在の実績と残りの製造計画から、月末時点での予測売上を自動計算する機能です。</p>
+            <ul>
+              <li><strong>予測売上:</strong> 実績 + 残り計画金額 × (1 - 見切り率)</li>
+              <li><strong>達成率:</strong> 予測売上 ÷ 月間予算 × 100</li>
+              <li><strong>予算差:</strong> 予測売上 - 月間予算</li>
+            </ul>
+            <p class="small"><strong>例:</strong> 実績80万円、残り計画30万円、見切り率20%の場合<br>
+            → 予測売上 = 80万 + (30万 × 0.8) = <strong>104万円</strong></p>
+
+            <h6 class="mt-4">アクションプランとは？</h6>
+            <p><strong>アクションプラン</strong>は、月間予算を達成するために必要な追加売上額を提案する機能です。</p>
+            <ul>
+              <li><strong>残り日数:</strong> 月末までの営業日数</li>
+              <li><strong>必要追加額:</strong> 月間予算 - 予測売上(マイナスの場合)</li>
+              <li><strong>推奨日次追加額:</strong> 必要追加額 ÷ (1 - 見切り率) ÷ 残日数</li>
+            </ul>
+            <p class="small mb-0"><strong>例:</strong> 予算500万円、予測売上490万円、残り5日、見切り率15%の場合<br>
+            → 必要追加額 = 10万円<br>
+            → 推奨日次追加額 = 10万 ÷ 0.85 ÷ 5 ≒ <strong>2.4万円/日</strong><br>
+            → 「あと5日間、1日あたり2.4万円分多く製造すれば予算達成できる」</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 見切り率について -->
+      <div class="accordion-item" data-faq-item data-keywords="見切り率 予算見切り率 目標見切り率 計算式 値引き 廃棄">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqMarkdownRate"
+                  aria-expanded="false"
+                  aria-controls="faqMarkdownRate">
+            見切り率について
+          </button>
+        </h2>
+        <div id="faqMarkdownRate" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            <h6 class="mt-0">見切り率とは？</h6>
+            <p><strong>見切り率</strong>は、売れ残りや値引き販売を考慮した売上予測のための係数です。</p>
+            <p class="small">寿司屋では閉店前の時間帯に値引き販売したり、売れ残りが発生します。見切り率を設定することで、より現実的な売上予測ができます。</p>
+
+            <table class="table table-sm table-bordered mt-3">
+              <thead class="table-light">
+                <tr>
+                  <th>項目</th>
+                  <th>説明</th>
+                  <th>使用場面</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>予算見切り率</strong></td>
+                  <td>売上予測の計算に使用(デフォルト: 20%)</td>
+                  <td>月末予測の「予測売上」計算</td>
+                </tr>
+                <tr>
+                  <td><strong>目標見切り率</strong></td>
+                  <td>追加額の計算に使用(デフォルト: 15%)</td>
+                  <td>アクションプランの「推奨日次追加額」計算</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h6 class="mt-4">計算式</h6>
+
+            <div class="card bg-light mt-2">
+              <div class="card-body">
+                <p class="mb-2"><strong>① 予測売上の計算</strong></p>
+                <code class="d-block mb-2">
+                  予測売上 = 実績売上 + (残り計画金額 × (1 - 予算見切り率 ÷ 100))
+                </code>
+                <p class="small mb-0"><strong>例:</strong> 実績売上 80万円、残り計画金額 30万円、予算見切り率 20% の場合<br>
+                → 予測売上 = 80万 + (30万 × (1 - 20 ÷ 100)) = 80万 + 24万 = <strong>104万円</strong><br>
+                <span class="text-muted">(残り30万円分の寿司のうち、20%が値引き・廃棄になると想定)</span></p>
+              </div>
+            </div>
+
+            <div class="card bg-light mt-3">
+              <div class="card-body">
+                <p class="mb-2"><strong>② 推奨日次追加額の計算</strong></p>
+                <code class="d-block mb-2">
+                  推奨日次追加額 = 必要追加額 ÷ (1 - 目標見切り率 ÷ 100) ÷ 残日数
+                </code>
+                <p class="small mb-0"><strong>例:</strong> 必要追加額 10万円、目標見切り率 15%、残日数 5日 の場合<br>
+                → 推奨日次追加額 = 10万 ÷ (1 - 15 ÷ 100) ÷ 5 = 10万 ÷ 0.85 ÷ 5 ≒ <strong>23,529円/日</strong><br>
+                <span class="text-muted">(15%の見切り・廃棄を見込んで、1日あたり約2.4万円分多く製造する必要がある)</span></p>
+              </div>
+            </div>
+
+            <p class="mt-3 mb-0"><small class="text-muted">
+              見切り率を適切に設定することで、より現実的な売上予測と目標設定が可能になります。
+            </small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQが見つからない場合のメッセージ -->
+    <div class="alert alert-info mt-3 d-none" id="noFaqFound">
+      該当する質問が見つかりませんでした。
+    </div>
+  </section>
+
+  <!-- 検索結果なしメッセージ -->
+  <div class="alert alert-warning d-none" id="noResultsFound">
+    「<strong id="searchKeyword"></strong>」に一致する情報が見つかりませんでした。
+  </div>
+</div>
+
+<!-- 検索機能のJavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('helpSearch');
+  const videoItems = document.querySelectorAll('[data-video-item]');
+  const videoCategories = document.querySelectorAll('[data-video-category]');
+  const faqItems = document.querySelectorAll('[data-faq-item]');
+  const noVideosFound = document.getElementById('noVideosFound');
+  const noFaqFound = document.getElementById('noFaqFound');
+  const noResultsFound = document.getElementById('noResultsFound');
+  const searchKeyword = document.getElementById('searchKeyword');
+
+  searchInput.addEventListener('input', function() {
+    const keyword = this.value.toLowerCase().trim();
+
+    if (keyword === '') {
+      // 検索キーワードが空の場合、全て表示
+      videoItems.forEach(item => item.classList.remove('d-none'));
+      videoCategories.forEach(category => category.classList.remove('d-none'));
+      faqItems.forEach(item => item.classList.remove('d-none'));
+      noVideosFound.classList.add('d-none');
+      noFaqFound.classList.add('d-none');
+      noResultsFound.classList.add('d-none');
+      return;
+    }
+
+    let videoCount = 0;
+    let faqCount = 0;
+
+    // 動画の検索
+    videoItems.forEach(item => {
+      const keywords = item.dataset.keywords.toLowerCase();
+      const title = item.textContent.toLowerCase();
+
+      if (keywords.includes(keyword) || title.includes(keyword)) {
+        item.classList.remove('d-none');
+        videoCount++;
+      } else {
+        item.classList.add('d-none');
+      }
+    });
+
+    // カテゴリーの表示制御(該当動画があるカテゴリーのみ表示)
+    videoCategories.forEach(category => {
+      const visibleVideos = category.querySelectorAll('[data-video-item]:not(.d-none)');
+      if (visibleVideos.length > 0) {
+        category.classList.remove('d-none');
+        // 該当するカテゴリーを自動展開
+        const collapseElement = category.querySelector('.collapse');
+        if (collapseElement && !collapseElement.classList.contains('show')) {
+          collapseElement.classList.add('show');
+        }
+      } else {
+        category.classList.add('d-none');
+      }
+    });
+
+    // FAQの検索
+    faqItems.forEach(item => {
+      const keywords = item.dataset.keywords.toLowerCase();
+      const title = item.querySelector('.accordion-button').textContent.toLowerCase();
+      const content = item.textContent.toLowerCase();
+
+      if (keywords.includes(keyword) || title.includes(keyword) || content.includes(keyword)) {
+        item.classList.remove('d-none');
+        faqCount++;
+      } else {
+        item.classList.add('d-none');
+      }
+    });
+
+    // 結果表示の制御
+    noVideosFound.classList.toggle('d-none', videoCount > 0);
+    noFaqFound.classList.toggle('d-none', faqCount > 0);
+
+    if (videoCount === 0 && faqCount === 0) {
+      searchKeyword.textContent = keyword;
+      noResultsFound.classList.remove('d-none');
+    } else {
+      noResultsFound.classList.add('d-none');
+    }
+  });
+});
+</script>

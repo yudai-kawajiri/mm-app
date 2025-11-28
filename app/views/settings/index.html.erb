@@ -1,0 +1,29 @@
+<div class="container mt-4">
+  <h1 class="mb-4">設定</h1>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-person-circle"></i> アカウント設定
+          </h5>
+          <p class="card-text">プロフィール、パスワード、メールアドレスの変更</p>
+          <%= link_to 'アカウント設定を開く', edit_user_registration_path, class: 'btn btn-primary' %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-question-circle"></i> 使い方・ヘルプ
+          </h5>
+          <p class="card-text">使い方動画、FAQ、よくある質問</p>
+          <%= link_to '使い方を見る', help_path, class: 'btn btn-success' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
