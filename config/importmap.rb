@@ -28,6 +28,7 @@ pin "controllers/input/number_input_controller", to: "controllers/input/number_i
 pin "controllers/management/order_group_controller", to: "controllers/management/order_group_controller.js"
 pin "controllers/management/plan_assignment_controller", to: "controllers/management/plan_assignment_controller.js"
 pin "controllers/management/assign_plan_info_controller", to: "controllers/management/assign_plan_info_controller.js"
+pin "controllers/management/daily_details_controller", to: "controllers/management/daily_details_controller.js"
 
 # Resources Controllers
 pin "controllers/resources/plan-product/row_controller", to: "controllers/resources/plan-product/row_controller.js"
