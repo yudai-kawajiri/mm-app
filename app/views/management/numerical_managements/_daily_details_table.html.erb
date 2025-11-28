@@ -111,7 +111,7 @@
                     <% first_schedule = day[:plan_schedules].first %>
                     <%= text_field_tag "daily_data[#{index}][actual_revenue]",
                               number_with_delimiter((first_schedule&.actual_revenue || 0).to_i),
-                              class: "form-control form-control-sm text-end",
+                              class: "form-control form-control-sm text-end bulk-edit-actual",
                               data: {
                                 controller: "input--number-input",
                                 action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur"
@@ -361,7 +361,8 @@ function setupNumericInput(input) {
 
     input.dataset.rawValue = value;
 
-    if (input.classList.contains('bulk-edit-target')) {
+    // 予算または実績入力時にリアルタイム計算
+    if (input.classList.contains('bulk-edit-target') || input.classList.contains('bulk-edit-actual')) {
       calculateDailyTargetSum();
     }
   }
