@@ -292,42 +292,55 @@ ja:
       search_function:
         title: "検索機能の使い方"
         description: "キーワード入力による絞り込み検索の方法"
+        youtube_id: ""
       copy_function:
         title: "コピー機能の使い方"
         description: "既存データの複製方法"
+        youtube_id: ""
       print_function:
         title: "印刷機能の使い方"
         description: "各画面からの印刷・出力方法"
+        youtube_id: ""
       monthly_budget:
         title: "月間予算の設定"
         description: "月全体の売上目標金額を登録する"
+        youtube_id: ""
       daily_target:
         title: "日別目標の調整"
         description: "各日ごとの売上目標額を個別に入力"
+        youtube_id: ""
       actual_confirmation:
         title: "実績の確認方法"
         description: "製造計画から自動反映された売上実績を確認"
+        youtube_id: ""
       bulk_edit:
         title: "一括編集機能"
         description: "複数日分の目標を同時にまとめて変更"
+        youtube_id: ""
       category:
         title: "カテゴリーの使い方"
         description: "材料・商品の分類設定"
+        youtube_id: ""
       unit:
         title: "単位の使い方"
         description: "使用・発注・製造単位の設定"
+        youtube_id: ""
       material:
         title: "材料の使い方"
         description: "原材料の登録・編集・削除方法"
+        youtube_id: ""
       order_group:
         title: "発注グループの使い方"
         description: "発注グループの管理と印刷"
+        youtube_id: ""
       product:
         title: "商品の使い方"
         description: "商品の登録と材料紐付け"
+        youtube_id: ""
       plan:
         title: "製造計画の使い方"
         description: "製造計画の作成・編集・削除方法"
+        youtube_id: ""
 
     video_keywords:
       search_function: "検索 フィルター 絞り込み キーワード"

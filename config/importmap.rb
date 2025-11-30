@@ -42,6 +42,7 @@ pin "controllers/resources/product-material/material_controller", to: "controlle
 
 # Help Controllers
 pin "controllers/help_search_controller", to: "controllers/help_search_controller.js"
+pin "controllers/video_modal_controller", to: "controllers/video_modal_controller.js"
 
 # Form Validation Controller
 pin "controllers/form_validation_controller", to: "controllers/form_validation_controller.js"

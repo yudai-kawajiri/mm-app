@@ -47,7 +47,7 @@
       <div class="collapse" id="collapseBasic">
         <div class="row g-3">
           <div class="col-md-4" data-keywords="<%= t('help.video_keywords.search_function') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.search_function.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.search_function.youtube_id') %>" data-video-title="<%= t('help.videos.search_function.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.search_function.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.search_function.description') %></p>
@@ -55,7 +55,7 @@
             </div>
           </div>
           <div class="col-md-4" data-keywords="<%= t('help.video_keywords.copy_function') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.copy_function.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.copy_function.youtube_id') %>" data-video-title="<%= t('help.videos.copy_function.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.copy_function.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.copy_function.description') %></p>
@@ -63,7 +63,7 @@
             </div>
           </div>
           <div class="col-md-4" data-keywords="<%= t('help.video_keywords.print_function') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.print_function.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.print_function.youtube_id') %>" data-video-title="<%= t('help.videos.print_function.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.print_function.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.print_function.description') %></p>
@@ -89,7 +89,7 @@
       <div class="collapse" id="collapseNumerical">
         <div class="row g-3">
           <div class="col-md-3" data-keywords="<%= t('help.video_keywords.monthly_budget') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.monthly_budget.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.monthly_budget.youtube_id') %>" data-video-title="<%= t('help.videos.monthly_budget.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.monthly_budget.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.monthly_budget.description') %></p>
@@ -97,7 +97,7 @@
             </div>
           </div>
           <div class="col-md-3" data-keywords="<%= t('help.video_keywords.daily_target') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.daily_target.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.daily_target.youtube_id') %>" data-video-title="<%= t('help.videos.daily_target.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.daily_target.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.daily_target.description') %></p>
@@ -105,7 +105,7 @@
             </div>
           </div>
           <div class="col-md-3" data-keywords="<%= t('help.video_keywords.actual_confirmation') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.actual_confirmation.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.actual_confirmation.youtube_id') %>" data-video-title="<%= t('help.videos.actual_confirmation.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.actual_confirmation.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.actual_confirmation.description') %></p>
@@ -113,7 +113,7 @@
             </div>
           </div>
           <div class="col-md-3" data-keywords="<%= t('help.video_keywords.bulk_edit') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.bulk_edit.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.bulk_edit.youtube_id') %>" data-video-title="<%= t('help.videos.bulk_edit.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.bulk_edit.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.bulk_edit.description') %></p>
@@ -139,7 +139,7 @@
       <div class="collapse" id="collapseResource">
         <div class="row g-3">
           <div class="col-md-4 col-lg-3" data-keywords="<%= t('help.video_keywords.category') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.category.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.category.youtube_id') %>" data-video-title="<%= t('help.videos.category.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.category.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.category.description') %></p>
@@ -147,7 +147,7 @@
             </div>
           </div>
           <div class="col-md-4 col-lg-3" data-keywords="<%= t('help.video_keywords.unit') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.unit.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.unit.youtube_id') %>" data-video-title="<%= t('help.videos.unit.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.unit.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.unit.description') %></p>
@@ -155,7 +155,7 @@
             </div>
           </div>
           <div class="col-md-4 col-lg-2" data-keywords="<%= t('help.video_keywords.material') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.material.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.material.youtube_id') %>" data-video-title="<%= t('help.videos.material.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.material.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.material.description') %></p>
@@ -163,7 +163,7 @@
             </div>
           </div>
           <div class="col-md-4 col-lg-2" data-keywords="<%= t('help.video_keywords.order_group') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.order_group.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.order_group.youtube_id') %>" data-video-title="<%= t('help.videos.order_group.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.order_group.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.order_group.description') %></p>
@@ -171,7 +171,7 @@
             </div>
           </div>
           <div class="col-md-4 col-lg-2" data-keywords="<%= t('help.video_keywords.product') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.product.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.product.youtube_id') %>" data-video-title="<%= t('help.videos.product.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.product.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.product.description') %></p>
@@ -197,7 +197,7 @@
       <div class="collapse" id="collapsePlan">
         <div class="row g-3">
           <div class="col-md-6" data-keywords="<%= t('help.video_keywords.plan') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.plan.title') %> 動画を準備中')">
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.plan.youtube_id') %>" data-video-title="<%= t('help.videos.plan.title') %>">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.plan.title') %></h6>
                 <p class="card-text small"><%= t('help.videos.plan.description') %></p>
@@ -226,5 +226,22 @@
   <!-- 検索結果なしメッセージ -->
   <div class="alert alert-warning d-none" id="noResultsFound" data-help-search-target="noResultsFound">
     「<strong id="searchKeyword" data-help-search-target="searchKeyword"></strong>」<%= t('help.search.no_results_found') %>
+  </div>
+</div>
+
+<!-- 動画モーダル -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true" data-controller="video-modal" data-video-modal-target="modal">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="videoModalLabel" data-video-modal-target="title">動画タイトル</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-action="click->video-modal#close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="ratio ratio-16x9">
+          <iframe data-video-modal-target="iframe" src="" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
