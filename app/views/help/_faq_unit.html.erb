@@ -1,0 +1,46 @@
+<div class="accordion-item" data-faq-item data-keywords="<%= t('help.faq_keywords.unit') %>" data-help-search-target="faqItem">
+  <h2 class="accordion-header">
+    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqUnit" aria-expanded="false" aria-controls="faqUnit">
+      <%= t('help.faq.unit.title') %>
+    </button>
+  </h2>
+  <div id="faqUnit" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+    <div class="accordion-body">
+      <p><%= t('help.faq.unit.description') %></p>
+
+      <h6><%= t('help.faq.unit.table.title') %></h6>
+      <table class="table table-sm table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th><%= t('help.faq.unit.table.header.item') %></th>
+            <th><%= t('help.faq.unit.table.header.usage_unit') %></th>
+            <th><%= t('help.faq.unit.table.header.order_unit') %></th>
+            <th><%= t('help.faq.unit.table.header.production_unit') %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><%= t('help.faq.unit.table.row1.item') %></td>
+            <td><%= t('help.faq.unit.table.row1.usage_unit') %></td>
+            <td><%= t('help.faq.unit.table.row1.order_unit') %></td>
+            <td><%= t('help.faq.unit.table.row1.production_unit') %></td>
+          </tr>
+          <tr>
+            <td><%= t('help.faq.unit.table.row2.item') %></td>
+            <td><%= t('help.faq.unit.table.row2.usage_unit') %></td>
+            <td><%= t('help.faq.unit.table.row2.order_unit') %></td>
+            <td><%= t('help.faq.unit.table.row2.production_unit') %></td>
+          </tr>
+          <tr>
+            <td><%= t('help.faq.unit.table.row3.item') %></td>
+            <td><%= t('help.faq.unit.table.row3.usage_unit') %></td>
+            <td><%= t('help.faq.unit.table.row3.order_unit') %></td>
+            <td><%= t('help.faq.unit.table.row3.production_unit') %></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="text-muted small"><%= t('help.faq.unit.note') %></p>
+    </div>
+  </div>
+</div>

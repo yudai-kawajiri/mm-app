@@ -1,0 +1,18 @@
+<div class="accordion-item" data-faq-item data-keywords="<%= t('help.faq_keywords.category') %>" data-help-search-target="faqItem">
+  <h2 class="accordion-header">
+    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCategory" aria-expanded="false" aria-controls="faqCategory">
+      <%= t('help.faq.category.title') %>
+    </button>
+  </h2>
+  <div id="faqCategory" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+    <div class="accordion-body">
+      <p><%= t('help.faq.category.description') %></p>
+      <ul>
+        <li><%= t('help.faq.category.example1') %></li>
+        <li><%= t('help.faq.category.example2') %></li>
+        <li><%= t('help.faq.category.example3') %></li>
+      </ul>
+      <p class="text-muted small"><%= t('help.faq.category.note') %></p>
+    </div>
+  </div>
+</div>
