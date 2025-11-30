@@ -329,6 +329,21 @@ ja:
         title: "製造計画の使い方"
         description: "製造計画の作成・編集・削除方法"
 
+    video_keywords:
+      search_function: "検索 フィルター 絞り込み キーワード"
+      copy_function: "コピー 複製 データ"
+      print_function: "印刷 出力 プリント PDF"
+      monthly_budget: "月間 予算 設定 売上"
+      daily_target: "日別 目標 設定"
+      actual_confirmation: "実績 入力 売上"
+      bulk_edit: "一括 編集 まとめて"
+      category: "カテゴリ 種別 分類"
+      unit: "単位 g kg 個"
+      material: "材料 原材料 登録 リソース 管理"
+      order_group: "発注 グループ 印刷"
+      product: "商品 登録 製品 品番"
+      plan: "計画 製造 スケジュール 登録 編集 削除"
+
     faq_keywords:
       category: "カテゴリ 種別 分類 タブ"
       unit: "単位 g kg 個 換算"
