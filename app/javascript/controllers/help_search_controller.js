@@ -44,7 +44,7 @@ export default class extends Controller {
 
     // カテゴリーの表示制御(該当動画があるカテゴリーのみ表示)
     this.videoCategoryTargets.forEach(category => {
-      const visibleVideos = category.querySelectorAll('[data-video-item]:not(.d-none)')
+      const visibleVideos = category.querySelectorAll('[data-help-search-target="videoItem"]:not(.d-none)')
       if (visibleVideos.length > 0) {
         category.classList.remove('d-none')
         // 該当するカテゴリーを自動展開
