@@ -22,19 +22,25 @@ pin "controllers/ui/image_preview_controller", to: "controllers/ui/image_preview
 
 # Input Controllers
 pin "controllers/input/character_counter_controller", to: "controllers/input/character_counter_controller.js"
+pin "controllers/input/measurement_type_controller", to: "controllers/input/measurement_type_controller.js"
 pin "controllers/input/number_input_controller", to: "controllers/input/number_input_controller.js"
+
+# Chart Controllers
+pin "controllers/charts/budget_chart_controller", to: "controllers/charts/budget_chart_controller.js"
 
 # Management Controllers
 pin "controllers/management/order_group_controller", to: "controllers/management/order_group_controller.js"
 pin "controllers/management/plan_assignment_controller", to: "controllers/management/plan_assignment_controller.js"
 pin "controllers/management/assign_plan_info_controller", to: "controllers/management/assign_plan_info_controller.js"
-pin "controllers/management/daily_details_controller", to: "controllers/management/daily_details_controller.js"
 
 # Resources Controllers
 pin "controllers/resources/plan-product/row_controller", to: "controllers/resources/plan-product/row_controller.js"
 pin "controllers/resources/plan-product/totals_controller", to: "controllers/resources/plan-product/totals_controller.js"
 pin "controllers/resources/plan-product/sync_controller", to: "controllers/resources/plan-product/sync_controller.js"
 pin "controllers/resources/product-material/material_controller", to: "controllers/resources/product-material/material_controller.js"
+
+# Help Controllers
+pin "controllers/help_search_controller", to: "controllers/help_search_controller.js"
 
 # Form Validation Controller
 pin "controllers/form_validation_controller", to: "controllers/form_validation_controller.js"
@@ -49,3 +55,8 @@ pin "cocoon", to: "cocoon.js", preload: true
 
 # Sortable.js（ドラッグ&ドロップライブラリ）
 pin "sortablejs", to: "https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/+esm"
+
+# Chart.js
+pin "chart.js", to: "https://ga.jspm.io/npm:chart.js@4.5.1/dist/chart.js"
+pin "chart.js/auto", to: "https://ga.jspm.io/npm:chart.js@4.5.1/auto/auto.js"
+pin "@kurkle/color", to: "https://ga.jspm.io/npm:@kurkle/color@0.3.4/dist/color.esm.js"

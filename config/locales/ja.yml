@@ -69,7 +69,6 @@ ja:
         unit: "¥"
         format: "%u%n"
 
-  # 共通フラッシュメッセージ（統一テンプレート）
   flash_messages:
     create:
       success: "%{resource}を登録しました"
@@ -88,7 +87,6 @@ ja:
       failure: "%{resource}のコピーに失敗しました"
     not_authorized: "この操作を実行する権限がありません"
 
-  # 共通翻訳
   common:
     search: "検索"
     clear: "クリア"
@@ -124,8 +122,6 @@ ja:
       month: "月"
     actions:
       reorder_print_order: "印刷順を並び替え"
-    save_order: "並び順を保存"
-    cancel: "キャンセル"
 
   totals:
     category: "カテゴリ合計"
@@ -133,19 +129,16 @@ ja:
   labels:
     date: "日付"
 
-  # フォーム共通
   forms:
     titles:
       basic_info: "基本情報"
       plan_product: "製造商品"
       product_material: "商品原材料"
 
-  # 検索
   search:
     placeholders:
       enter_name: "名前を入力"
 
-  # ヘルパー
   helpers:
     no_setting: "未設定"
     prompt:
@@ -178,7 +171,6 @@ ja:
       user:
         remember_me: "ログイン情報を記憶する"
 
-  # エラーメッセージ
   errors:
     template:
       header:
@@ -212,7 +204,6 @@ ja:
       restrict_dependent_destroy:
         has_many: "%{record}で使用しているため、この%{model}を削除できません"
 
-  # API エラーメッセージ
   api:
     errors:
       unauthorized: "認証が必要です"
@@ -227,12 +218,10 @@ ja:
       invalid_status: "無効なステータスです"
       missing_required_info: "必要な情報が不足しています"
 
-  # Stimulus Controller メッセージ
   sortable_table:
     saved: "並び替えを保存しました"
     save_failed: "並び替えの保存に失敗しました"
 
-  # サービスクラスのメッセージ  ← ここに追加
   services:
     numerical_data_bulk_update:
       errors:
@@ -246,12 +235,10 @@ ja:
         api_error: "天気予報API エラー: %{code} - %{body}"
         service_error: "天気予報サービス エラー: %{message}"
 
-  # 共通コンポーネント
   components:
     category_tabs:
       confirm_delete: "このカテゴリタブを削除しますか？"
 
-  # ダッシュボード・サイドバーメニュー
   dashboard:
     menu:
       title: "メニュー"
@@ -280,3 +267,219 @@ ja:
       user_management: "ユーザー管理"
       system_logs: "システムログ"
       account_settings: "アカウント設定"
+
+  help:
+    title: "使い方・ヘルプ"
+    subtitle: "システムの使い方や、よくある質問を検索できます"
+
+    search:
+      placeholder: "キーワードから探す(例: 予算、原材料、印刷)"
+      no_videos_found: "該当する動画が見つかりませんでした。"
+      no_faq_found: "該当する質問が見つかりませんでした。"
+      no_results_found: "に一致する情報が見つかりませんでした。"
+
+    sections:
+      videos: "使い方動画"
+      faq: "よくある質問"
+
+    categories:
+      basic_operations: "基本操作"
+      numerical_management: "数値管理"
+      resource_management: "リソース管理"
+      production_planning: "製造計画"
+
+    videos:
+      search_function:
+        title: "検索機能の使い方"
+        description: "キーワード入力による絞り込み検索の方法"
+      copy_function:
+        title: "コピー機能の使い方"
+        description: "既存データの複製方法"
+      print_function:
+        title: "印刷機能の使い方"
+        description: "各画面からの印刷・出力方法"
+      monthly_budget:
+        title: "月間予算の設定"
+        description: "月全体の売上目標金額を登録する"
+      daily_target:
+        title: "日別目標の調整"
+        description: "各日ごとの売上目標額を個別に入力"
+      actual_confirmation:
+        title: "実績の確認方法"
+        description: "製造計画から自動反映された売上実績を確認"
+      bulk_edit:
+        title: "一括編集機能"
+        description: "複数日分の目標を同時にまとめて変更"
+      category:
+        title: "カテゴリーの使い方"
+        description: "材料・商品の分類設定"
+      unit:
+        title: "単位の使い方"
+        description: "使用・発注・製造単位の設定"
+      material:
+        title: "材料の使い方"
+        description: "原材料の登録・編集・削除方法"
+      order_group:
+        title: "発注グループの使い方"
+        description: "発注グループの管理と印刷"
+      product:
+        title: "商品の使い方"
+        description: "商品の登録と材料紐付け"
+      plan:
+        title: "製造計画の使い方"
+        description: "製造計画の作成・編集・削除方法"
+
+    video_keywords:
+      search_function: "検索 フィルター 絞り込み キーワード"
+      copy_function: "コピー 複製 データ"
+      print_function: "印刷 出力 プリント PDF"
+      monthly_budget: "月間 予算 設定 売上"
+      daily_target: "日別 目標 設定"
+      actual_confirmation: "実績 入力 売上"
+      bulk_edit: "一括 編集 まとめて"
+      category: "カテゴリ 種別 分類"
+      unit: "単位 g kg 個"
+      material: "材料 原材料 登録 リソース 管理"
+      order_group: "発注 グループ 印刷"
+      product: "商品 登録 製品 品番"
+      plan: "計画 製造 スケジュール 登録 編集 削除"
+
+    faq_keywords:
+      category: "カテゴリ 種別 分類 タブ"
+      unit: "単位 g kg 個 換算"
+      order_group: "発注 グループ 印刷 仕入先"
+      material: "材料 原材料 リソース 登録"
+      product: "商品 製品 登録 レシピ"
+      numerical_basic: "数値管理 予算 目標 実績 売上"
+      forecast: "月末 予測 アクションプラン 達成率 追加額"
+      markdown_rate: "見切り 見切り率 廃棄 ロス 予算 目標"
+
+    faq:
+      category:
+        title: "カテゴリー管理について"
+        description: "原材料、商品、製造計画を分類するための機能です。"
+        example1: "鮮魚、乾物、調味料などの原材料種別"
+        example2: "にぎり、巻物、刺身盛りなどの商品種別"
+        example3: "平日、週末、イベントなどの計画種別"
+        note: "※ 種別ごとに絞り込み検索ができるため、データ管理が効率化されます。"
+
+      unit:
+        title: "単位管理について"
+        description: "原材料の数量を管理するための単位を設定する機能です。"
+        table:
+          title: "単位の使い分け例:"
+          header:
+            item: "材料"
+            usage_unit: "使用単位"
+            order_unit: "発注単位"
+            production_unit: "製造単位"
+          row1:
+            item: "マグロ(赤身)"
+            usage_unit: "g (50g/貫)"
+            order_unit: "kg (1サク)"
+            production_unit: "貫 (1貫の寿司)"
+          row2:
+            item: "シャリ(酢飯)"
+            usage_unit: "g (20g/貫)"
+            order_unit: "kg (1袋)"
+            production_unit: "貫 (1貫の寿司)"
+          row3:
+            item: "サーモン"
+            usage_unit: "切れ (3切れ/刺身盛り)"
+            order_unit: "柵 (1柵)"
+            production_unit: "人前 (1人前の刺身盛り)"
+        note: "※ 各単位を正確に設定することで、材料の在庫管理・発注計算が正確になります。"
+
+      order_group:
+        title: "発注グループ管理について"
+        description: "原材料を種類ごとにグループ化し、発注時にまとめて出力できるようにする機能です。"
+        example1: "鮮魚グループ: マグロ、サーモン、イカ、タイなど → まとめて印刷して発注"
+        example2: "乾物グループ: 米、海苔、わさび、ガリなど"
+        example3: "調味料グループ: 醤油、酢、みりん、塩など"
+        note: "※ グループごとに印刷できるため、発注作業が効率化されます。"
+
+      material:
+        title: "原材料管理について"
+        description: "製造に使用する原材料の情報を登録・管理する機能です。"
+        field1: "カテゴリー: 材料の種別(鮮魚、乾物、調味料など)"
+        field2: "単位: 使用単位、発注単位、製造単位"
+        field3: "発注グループ: 発注時のグループ分け"
+        field4: "基本使用量: 1商品あたりの使用量"
+        note: "※ 基本使用量を正確に設定することで、製造計画から必要な材料量を自動計算できます。"
+
+      product:
+        title: "商品管理について"
+        description: "製造・販売する商品の情報を登録・管理する機能です。"
+        field1: "品番: 4桁の商品識別番号"
+        field2: "カテゴリー: 商品の種別(にぎり、巻物、刺身盛りなど)"
+        field3: "材料と使用量: 商品に使う材料とその量を紐付け"
+        note: "※ 商品に材料を紐付けることで、製造計画から自動的に必要な材料量が計算されます。"
+
+      numerical_basic:
+        title: "数値管理の基本機能"
+        description: "月間売上予算、日別目標、実績を管理する機能です。"
+        feature1:
+          title: "① 月間予算"
+          description: "月全体の売上予算額を設定します。この金額を基に日別目標の調整や、予算との差異を確認できます。例: 6月の月間予算を500万円に設定"
+        feature2:
+          title: "② 日別目標"
+          description: "各日ごとの売上目標を個別に設定します。平日・週末で目標を変えたり、イベント日を増額するなど柔軟に調整可能です。例: 平日15万円、週末25万円、お盆期間30万円など"
+        feature3:
+          title: "③ 実績入力"
+          description: "製造計画で登録した販売額から、日別の実績が自動で反映されます。目標との差異や達成率が自動計算されます。例: 6月1日の計画: まぐろにぎり 100皿 × 300円 = 30,000円 → 実績に自動反映"
+        feature4:
+          title: "④ 一括編集"
+          description: "複数日分の目標を同時にまとめて変更できる機能です。月間予算を超過しないよう注意が必要です。例: 6月の全平日の目標を一括で15万円に変更"
+        note: ""
+
+      forecast:
+        title: "月末予測とアクションプラン"
+        description: "現在の実績と残りの製造計画から、月末時点での予測売上を自動計算する機能です。"
+        formula1_title: "① 予測売上の計算"
+        formula1_code: "予測売上 = 実績 + 残り計画金額 × (1 - 見切り率)"
+        example_label: "例:"
+        formula1_example: "実績80万円、残り計画30万円、見切り率20%の場合 → 予測売上 = 80万 + (30万 × 0.8) = 104万円"
+        formula1_note: "(残り30万円分の寿司のうち、20%が値引き・廃棄になると想定)"
+        formula2_title: "② 推奨日次追加額の計算"
+        formula2_code: "推奨日次追加額 = 必要追加額 ÷ (1 - 見切り率) ÷ 残日数"
+        formula2_example: "必要追加額10万円、見切り率15%、残り5日の場合 → 推奨日次追加額 = 10万 ÷ 0.85 ÷ 5 ≒ 23,529円/日"
+        formula2_note: "(15%の見切り・廃棄を見込んで、1日あたり約2.4万円分多く製造する必要がある)"
+        final_note: "見切り率を適切に設定することで、より現実的な売上予測と目標設定が可能になります。"
+
+      markdown_rate:
+        title: "見切り率について"
+        description: "見切り率は、売れ残りや値引き販売を考慮した売上予測のための係数です。閉店前の時間帯に値引き販売したり、売れ残りが発生します。見切り率を設定することで、より現実的な売上予測ができます。"
+        table:
+          title: "見切り率の種類:"
+          header:
+            item: "項目"
+            description: "説明"
+            usage: "使用場面"
+          row1:
+            item: "予算見切り率"
+            description: "売上予測の計算に使用"
+            usage: "月末予測の「予測売上」計算"
+          row2:
+            item: "目標見切り率"
+            description: "追加額の計算に使用"
+            usage: "アクションプランの「推奨日次追加額」計算"
+        formula1_title: "① 予測売上の計算"
+        formula1_code: "予測売上 = 実績売上 + (残り計画金額 × (1 - 予算見切り率 ÷ 100))"
+        example_label: "例:"
+        formula1_example: "実績売上80万円、残り計画金額30万円、予算見切り率20%の場合 → 予測売上 = 80万 + (30万 × 0.8) = 104万円"
+        formula2_title: "② 推奨日次追加額の計算"
+        formula2_code: "推奨日次追加額 = 必要追加額 ÷ (1 - 目標見切り率 ÷ 100) ÷ 残日数"
+        formula2_example: "必要追加額10万円、目標見切り率15%、残日数5日の場合 → 推奨日次追加額 = 10万 ÷ 0.85 ÷ 5 ≒ 23,529円/日"
+        final_note: "見切り率を適切に設定することで、より現実的な売上予測と目標設定が可能になります。"
+
+  # 設定ページ
+  settings:
+    title: "設定"
+    account:
+      title: "アカウント設定"
+      description: "プロフィール、パスワード、メールアドレスの変更"
+      button: "アカウント設定を開く"
+    help:
+      title: "使い方・ヘルプ"
+      description: "使い方動画、FAQ、よくある質問"
+      button: "使い方を見る"
