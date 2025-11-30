@@ -278,6 +278,10 @@ ja:
       no_faq_found: "該当する質問が見つかりませんでした。"
       no_results_found: "に一致する情報が見つかりませんでした。"
 
+    video_modal:
+      preparing: "の動画を準備中です"
+      default_title: "動画"
+
     sections:
       videos: "使い方動画"
       faq: "よくある質問"
@@ -496,3 +500,4 @@ ja:
       title: "使い方・ヘルプ"
       description: "使い方動画、FAQ、よくある質問"
       button: "使い方を見る"
+      
