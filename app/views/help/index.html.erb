@@ -46,7 +46,7 @@
       </h5>
       <div class="collapse" id="collapseBasic">
         <div class="row g-3">
-          <div class="col-md-4" data-video-item data-keywords="検索 フィルター 絞り込み キーワード" data-help-search-target="videoItem">
+          <div class="col-md-4" data-video-item data-keywords="<%= t('help.video_keywords.search_function') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.search_function.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.search_function.title') %></h6>
@@ -54,7 +54,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4" data-video-item data-keywords="コピー 複製 データ" data-help-search-target="videoItem">
+          <div class="col-md-4" data-video-item data-keywords="<%= t('help.video_keywords.copy_function') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.copy_function.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.copy_function.title') %></h6>
@@ -62,7 +62,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4" data-video-item data-keywords="印刷 出力 プリント PDF" data-help-search-target="videoItem">
+          <div class="col-md-4" data-video-item data-keywords="<%= t('help.video_keywords.print_function') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.print_function.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.print_function.title') %></h6>
@@ -88,7 +88,7 @@
       </h5>
       <div class="collapse" id="collapseNumerical">
         <div class="row g-3">
-          <div class="col-md-3" data-video-item data-keywords="月間 予算 設定 売上" data-help-search-target="videoItem">
+          <div class="col-md-3" data-video-item data-keywords="<%= t('help.video_keywords.monthly_budget') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.monthly_budget.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.monthly_budget.title') %></h6>
@@ -96,7 +96,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3" data-video-item data-keywords="日別 目標 設定" data-help-search-target="videoItem">
+          <div class="col-md-3" data-video-item data-keywords="<%= t('help.video_keywords.daily_target') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.daily_target.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.daily_target.title') %></h6>
@@ -104,7 +104,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3" data-video-item data-keywords="実績 入力 売上" data-help-search-target="videoItem">
+          <div class="col-md-3" data-video-item data-keywords="<%= t('help.video_keywords.actual_confirmation') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.actual_confirmation.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.actual_confirmation.title') %></h6>
@@ -112,7 +112,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3" data-video-item data-keywords="一括 編集 まとめて" data-help-search-target="videoItem">
+          <div class="col-md-3" data-video-item data-keywords="<%= t('help.video_keywords.bulk_edit') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.bulk_edit.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.bulk_edit.title') %></h6>
@@ -138,7 +138,7 @@
       </h5>
       <div class="collapse" id="collapseResource">
         <div class="row g-3">
-          <div class="col-md-4 col-lg-3" data-video-item data-keywords="カテゴリ 種別 分類" data-help-search-target="videoItem">
+          <div class="col-md-4 col-lg-3" data-video-item data-keywords="<%= t('help.video_keywords.category') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.category.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.category.title') %></h6>
@@ -146,7 +146,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4 col-lg-3" data-video-item data-keywords="単位 g kg 個" data-help-search-target="videoItem">
+          <div class="col-md-4 col-lg-3" data-video-item data-keywords="<%= t('help.video_keywords.unit') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.unit.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.unit.title') %></h6>
@@ -154,7 +154,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4 col-lg-2" data-video-item data-keywords="材料 原材料 登録 リソース 管理" data-help-search-target="videoItem">
+          <div class="col-md-4 col-lg-2" data-video-item data-keywords="<%= t('help.video_keywords.material') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.material.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.material.title') %></h6>
@@ -162,7 +162,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4 col-lg-2" data-video-item data-keywords="発注 グループ 印刷" data-help-search-target="videoItem">
+          <div class="col-md-4 col-lg-2" data-video-item data-keywords="<%= t('help.video_keywords.order_group') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.order_group.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.order_group.title') %></h6>
@@ -170,7 +170,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4 col-lg-2" data-video-item data-keywords="商品 登録 製品 品番" data-help-search-target="videoItem">
+          <div class="col-md-4 col-lg-2" data-video-item data-keywords="<%= t('help.video_keywords.product') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.product.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.product.title') %></h6>
@@ -196,7 +196,7 @@
       </h5>
       <div class="collapse" id="collapsePlan">
         <div class="row g-3">
-          <div class="col-md-6" data-video-item data-keywords="計画 製造 スケジュール 登録 編集 削除" data-help-search-target="videoItem">
+          <div class="col-md-6" data-video-item data-keywords="<%= t('help.video_keywords.plan') %>" data-help-search-target="videoItem">
             <div class="card h-100 shadow-sm" style="cursor: pointer;" onclick="alert('<%= t('help.videos.plan.title') %> 動画を準備中')">
               <div class="card-body">
                 <h6 class="card-title"><%= t('help.videos.plan.title') %></h6>
