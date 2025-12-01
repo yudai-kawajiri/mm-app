@@ -58,15 +58,20 @@ $submenu-font-size: 0.9rem;
 }
 
 /* ========================================
-   フラッシュメッセージ - サイドバーを避けてコンテンツエリアに表示
+  フラッシュメッセージ - サイドバーを避けてコンテンツエリアに表示
    ======================================== */
 .flash-messages-container {
   position: fixed !important;
   top: 0 !important;
-  left: 25% !important;  /* col-md-3 = 25% */
+  left: 0 !important;
   right: 0 !important;
   z-index: 10000 !important;
   pointer-events: none;
+}
+
+/* ログイン後（サイドバーあり）の場合 */
+body.authenticated .flash-messages-container {
+  left: 25% !important;  /* col-md-3 = 25% */
 }
 
 .flash-messages-container .alert {
