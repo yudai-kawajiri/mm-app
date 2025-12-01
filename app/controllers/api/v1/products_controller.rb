@@ -5,7 +5,7 @@
 # 商品情報取得API
 #
 # 機能:
-# - 製造計画作成時の商品選択で使用する価格・カテゴリ情報取得
+# - 製造計画作成時の商品選択で使用する価格・カテゴリ―情報取得
 # - ユーザーが所有する商品のみアクセス可能
 #
 # エンドポイント:
@@ -13,14 +13,14 @@
 #
 # 認証: AuthenticatedController を継承（ログイン必須）
 class Api::V1::ProductsController < AuthenticatedController
-  # 商品の価格・カテゴリ情報取得
+  # 商品の価格・カテゴリ―情報取得
   #
-  # 製造計画フォームで商品選択時に、価格とカテゴリ情報を動的に取得する。
+  # 製造計画フォームで商品選択時に、価格とカテゴリ―情報を動的に取得する。
   # フロントエンドの row_controller.js から呼ばれる。
   #
   # @return [JSON] 商品情報
   #   - price: 商品価格（円）
-  #   - category_id: カテゴリID
+  #   - category_id: カテゴリ―ID
   #
   # @raise [ActiveRecord::RecordNotFound] 商品が見つからない、または権限がない
   # @raise [StandardError] 予期しないエラー

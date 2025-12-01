@@ -27,7 +27,7 @@ RSpec.describe "Plans", type: :request do
         expect(response).to render_template(:index)
       end
 
-      it '@plan_categoriesにカテゴリを割り当てること' do
+      it '@plan_categoriesにカテゴリ―を割り当てること' do
         get plans_path
         expect(assigns(:plan_categories)).not_to be_nil
       end
@@ -67,12 +67,12 @@ RSpec.describe "Plans", type: :request do
         expect(assigns(:plan)).to be_a_new(Plan)
       end
 
-      it '@plan_categoriesにカテゴリを割り当てること' do
+      it '@plan_categoriesにカテゴリ―を割り当てること' do
         get new_plan_path
         expect(assigns(:plan_categories)).not_to be_nil
       end
 
-      it '@product_categoriesにカテゴリを割り当てること' do
+      it '@product_categoriesにカテゴリ―を割り当てること' do
         get new_plan_path
         expect(assigns(:product_categories)).not_to be_nil
       end
@@ -197,12 +197,12 @@ RSpec.describe "Plans", type: :request do
         expect(assigns(:plan)).to eq(plan)
       end
 
-      it '@plan_categoriesにカテゴリを割り当てること' do
+      it '@plan_categoriesにカテゴリ―を割り当てること' do
         get edit_plan_path(plan)
         expect(assigns(:plan_categories)).not_to be_nil
       end
 
-      it '@product_categoriesにカテゴリを割り当てること' do
+      it '@product_categoriesにカテゴリ―を割り当てること' do
         get edit_plan_path(plan)
         expect(assigns(:product_categories)).not_to be_nil
       end

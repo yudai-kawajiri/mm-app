@@ -8,7 +8,7 @@ ja:
       sort_placeholder: "並び順を選択"
       sort_options:
         name: "名前順"
-        category: "カテゴリ順"
+        category: "カテゴリ―順"
         created_at: "登録順"
     show:
       title: "%{name} - 単位詳細"
@@ -48,7 +48,7 @@ ja:
       sort_options:
         display_order: "印刷順"
         name: "名前順"
-        category: "カテゴリ順"
+        category: "カテゴリ―順"
         order_group: "発注グループ順"
         created_at: "登録順"
     show:
@@ -116,7 +116,7 @@ ja:
       sort_placeholder: "並び順を選択"
       sort_options:
         name: "名前順"
-        category: "カテゴリ順"
+        category: "カテゴリ―順"
         display_order: "印刷順"
         created_at: "登録順"
     show:
@@ -137,8 +137,8 @@ ja:
       delete_button: "削除"
       no_materials_set: "原材料が設定されていません"
     category_selector:
-      prompt: "カテゴリを選択"
-      add_button: "カテゴリタブを追加"
+      prompt: "カテゴリ―を選択"
+      add_button: "カテゴリ―タブを追加"
     tab_all: "全て"
     table_headers:
       material_name: "原材料名"
@@ -162,14 +162,14 @@ ja:
       sort_options:
         name: "名前順"
         status: "ステータス順"
-        category: "カテゴリ順"
+        category: "カテゴリ―順"
     show:
       title: "%{name} - 計画詳細"
     edit:
       title: "%{name} - 計画編集"
     grand_total: "総合計"
     tab_all: "全て"
-    tab_total: "カテゴリ合計"
+    tab_total: "カテゴリ―合計"
     actions:
       preview: "印刷プレビュー"
     messages:

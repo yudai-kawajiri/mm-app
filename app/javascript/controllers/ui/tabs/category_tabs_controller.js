@@ -629,7 +629,7 @@ export default class extends Controller {
     try {
       Logger.log(`=== Deleting category ${categoryId} ===`)
 
-      // カテゴリタブのペインを探す
+      // カテゴリ―タブのペインを探す
       let tabPane = document.getElementById(`nav-${categoryId}`)
       if (!tabPane) {
         tabPane = document.getElementById(`category-pane-${categoryId}`)
@@ -644,7 +644,7 @@ export default class extends Controller {
         }
       }
 
-      // カテゴリタブ内の行を処理（新規追加データ用）
+      // カテゴリ―タブ内の行を処理（新規追加データ用）
       if (tabPane) {
         const categoryTbody = tabPane.querySelector(HTML_ELEMENT.TBODY)
         if (categoryTbody) {
@@ -701,11 +701,11 @@ export default class extends Controller {
           })
         })
 
-        // 既存データの処理：現在表示されているカテゴリタブと同じIDを持つ行を検索
+        // 既存データの処理：現在表示されているカテゴリ―タブと同じIDを持つ行を検索
         if (tabPane) {
           const categoryTbody = tabPane.querySelector(HTML_ELEMENT.TBODY)
           if (categoryTbody) {
-            // カテゴリタブ内に表示されていた行のIDを収集（material_idまたはproduct_id）
+            // カテゴリ―タブ内に表示されていた行のIDを収集（material_idまたはproduct_id）
             const displayedRows = Array.from(categoryTbody.querySelectorAll(HTML_ELEMENT.TR))
             displayedRows.forEach(catRow => {
               // 商品原材料の場合：material_id

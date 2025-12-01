@@ -5,7 +5,7 @@
 # 単位（Unit）のCRUD操作を管理
 #
 # 機能:
-#   - 単位の一覧表示（検索・カテゴリフィルタ・ページネーション・ソート機能）
+#   - 単位の一覧表示（検索・カテゴリ―フィルタ・ページネーション・ソート機能）
 #   - 単位の作成・編集・削除
 #   - 単位のコピー
 class Resources::UnitsController < AuthenticatedController

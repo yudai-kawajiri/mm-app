@@ -27,7 +27,7 @@ RSpec.describe "Products", type: :request do
         expect(response).to render_template(:index)
       end
 
-      it '@product_categoriesにカテゴリを割り当てること' do
+      it '@product_categoriesにカテゴリ―を割り当てること' do
         get resources_products_path
         expect(assigns(:product_categories)).not_to be_nil
       end
@@ -67,12 +67,12 @@ RSpec.describe "Products", type: :request do
         expect(assigns(:product)).to be_a_new(Resources::Product)
       end
 
-      it '@product_categoriesにカテゴリを割り当てること' do
+      it '@product_categoriesにカテゴリ―を割り当てること' do
         get new_resources_product_path
         expect(assigns(:product_categories)).not_to be_nil
       end
 
-      it '@material_categoriesにカテゴリを割り当てること' do
+      it '@material_categoriesにカテゴリ―を割り当てること' do
         get new_resources_product_path
         expect(assigns(:material_categories)).not_to be_nil
       end
@@ -206,12 +206,12 @@ RSpec.describe "Products", type: :request do
         expect(assigns(:product)).to eq(product)
       end
 
-      it '@product_categoriesにカテゴリを割り当てること' do
+      it '@product_categoriesにカテゴリ―を割り当てること' do
         get edit_resources_product_path(product)
         expect(assigns(:product_categories)).not_to be_nil
       end
 
-      it '@material_categoriesにカテゴリを割り当てること' do
+      it '@material_categoriesにカテゴリ―を割り当てること' do
         get edit_resources_product_path(product)
         expect(assigns(:material_categories)).not_to be_nil
       end

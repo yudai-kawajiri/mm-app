@@ -63,7 +63,7 @@ Rails.application.routes.draw do
   # リソース管理（Resources名前空間）
   # ====================
   namespace :resources do
-    # カテゴリ
+    # カテゴリ―
     resources :categories do
       member do
         post :copy

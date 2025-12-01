@@ -13,13 +13,13 @@
 //   </tr>
 //
 // 責務:
-// - 商品選択時のAPI連携（価格・カテゴリ取得）
+// - 商品選択時のAPI連携（価格・カテゴリ―取得）
 // - 数量×単価の小計計算
 // - 親コントローラーへの再計算通知
 // - 編集時の既存データ読み込み
 //
 // データフロー:
-// 1. 商品選択 → updateProduct() → API取得 → 価格・カテゴリ設定
+// 1. 商品選択 → updateProduct() → API取得 → 価格・カテゴリ―設定
 // 2. 数量入力 → calculate() → 小計計算 → 親に通知
 // 3. 親コントローラー → getCurrentValues() → 値取得 → 合計計算
 //
@@ -31,7 +31,7 @@
 //
 // Values:
 // - price: 商品単価
-// - categoryId: カテゴリID
+// - categoryId: カテゴリ―ID
 //
 // 翻訳キー:
 // - plans.errors.product_fetch_failed: 商品情報取得失敗メッセージ
@@ -139,7 +139,7 @@ export default class extends Controller {
   // 商品選択時の処理
   // ============================================================
 
-  // 商品選択時に価格とカテゴリを取得
+  // 商品選択時に価格とカテゴリ―を取得
   async updateProduct(event) {
     const productId = event.target.value
     Logger.log(LOG_MESSAGES.PRODUCT_SELECTED(productId))
@@ -154,7 +154,7 @@ export default class extends Controller {
 
   // 商品情報をAPIから取得
   // /api/v1/products/:id/fetch_plan_details から
-  // 商品の価格とカテゴリIDを取得し、表示を更新する
+  // 商品の価格とカテゴリ―IDを取得し、表示を更新する
   async fetchProductInfo(productId) {
     try {
       Logger.log(LOG_MESSAGES.FETCHING_PRODUCT_INFO(productId))

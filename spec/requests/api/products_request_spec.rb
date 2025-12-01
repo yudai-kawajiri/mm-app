@@ -27,7 +27,7 @@ RSpec.describe "Api::V1::Products", type: :request do
         expect(json['price']).to eq(1500)
       end
 
-      it '正しいカテゴリIDを返すこと' do
+      it '正しいカテゴリ―IDを返すこと' do
         get fetch_plan_details_api_v1_product_path(product), as: :json
         json = JSON.parse(response.body)
         expect(json['category_id']).to eq(category.id)

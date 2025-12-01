@@ -5,7 +5,7 @@
 # 商品（Product）のCRUD操作を管理
 #
 # 機能:
-#   - 商品の一覧表示（検索・カテゴリフィルタ・ページネーション・ソート機能）
+#   - 商品の一覧表示（検索・カテゴリ―フィルタ・ページネーション・ソート機能）
 #   - 商品の作成・編集・削除
 #   - 商品のコピー機能
 class Resources::ProductsController < AuthenticatedController
@@ -141,7 +141,7 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def purge_image
     @product.image.purge if @product.image.attached?
-    
+
     respond_to do |format|
       format.html { redirect_to edit_resources_product_path(@product), notice: t("products.messages.image_deleted") }
       format.json { head :no_content }

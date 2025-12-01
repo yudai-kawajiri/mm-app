@@ -232,9 +232,9 @@ export default class extends Controller {
   // ============================================================
 
   // 原材料選択を他のタブに同期
-  // 複数のカテゴリタブで同じ原材料行を使用している場合、
+  // 複数のカテゴリ―タブで同じ原材料行を使用している場合、
   // 一方のタブで選択された原材料を他方にも反映する
-  syncMaterialToOtherTabs(event) {
+  syncMaterialTotherTabs(event) {
     const uniqueId = event.target.dataset[DATA_ATTRIBUTE.UNIQUE_ID]
     const selectedMaterialId = event.target.value
 

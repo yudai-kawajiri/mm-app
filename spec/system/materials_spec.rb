@@ -19,10 +19,10 @@ RSpec.describe '原材料管理', type: :system do
       expect(page).to have_content('サーモン')
     end
 
-    it '原材料の単位とカテゴリが表示される' do
+    it '原材料の単位とカテゴリ―が表示される' do
       visit resources_materials_path
 
-      # テーブル内に単位とカテゴリが表示されることを確認
+      # テーブル内に単位とカテゴリ―が表示されることを確認
       expect(page).to have_content(material1.unit_for_product.name)
       expect(page).to have_content(material1.unit_for_order.name)
       expect(page).to have_content(material1.category.name)

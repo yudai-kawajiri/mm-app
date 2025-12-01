@@ -27,10 +27,10 @@ class Management::NumericalManagementsController < ApplicationController
       month: month
     ).calculate
 
-    # ★★★ 全ての計画を取得（カテゴリ選択用、計画フィルタはJS側） ★★★
+    # 全ての計画を取得（カテゴリ―選択用、計画フィルタはJS側）
     @plans_by_category = current_user.plans
-                                     .includes(:category, plan_products: :product)
-                                     .group_by { |plan| plan.category.name }
+                                      .includes(:category, plan_products: :product)
+                                      .group_by { |plan| plan.category.name }
   end
 
   def calendar

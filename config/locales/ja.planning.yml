@@ -9,12 +9,12 @@ ja:
       title: "%{name} - 製造計画詳細"
     edit:
       title: "%{name} - 製造計画編集"
-    category_total_label: "カテゴリ合計"
+    category_total_label: "カテゴリ―合計"
     total_price_label: "総合計"
     plan_product_subtotal: "小計"
     category_selector:
-      prompt: "カテゴリを選択"
-      add_button: "カテゴリタブを追加"
+      prompt: "カテゴリ―を選択"
+      add_button: "カテゴリ―タブを追加"
     tab_all: "全て"
     table_headers:
       product_name: "商品名"
@@ -47,7 +47,7 @@ ja:
       no_materials: "原材料が登録されていません"
     add_product_button: "商品を追加"
     errors:
-      duplicate_name: "は既に同じカテゴリ内に存在します"
+      duplicate_name: "は既に同じカテゴリ―内に存在します"
       duplicate_product: "同じ商品を複数回追加することはできません"
       product_fetch_failed: "商品情報の取得に失敗しました。ページを再読み込みしてください。"
     messages:
@@ -157,7 +157,7 @@ ja:
         title: "計画登録"
         edit_title: "計画編集"
         planned_revenue_help: "計画を選択後に自動で入力されます"
-        info: "カテゴリと計画を選択してください。商品数量は必要に応じて調整できます"
+        info: "カテゴリ―と計画を選択してください。商品数量は必要に応じて調整できます"
         alert_plan_unavailable: "この計画は現在選択できません。計画が完了または削除された可能性があります。"  # ← 追加
         planned_revenue_help: "計画を選択後に自動で入力されます"
       labels:
@@ -169,7 +169,7 @@ ja:
         planned_revenue_yen: "計画高（円）"
         description: "概要"
         optional: "（任意）"
-        category: "カテゴリ"
+        category: "カテゴリ―"
         plan_select: "計画選択"
         product_quantity_adjustment: "商品数量調整"
         planned_revenue: "計画高"
@@ -177,7 +177,7 @@ ja:
         monthly_budget: "月間予算"
         daily_target: "日別予算"
       prompts:
-        select_plan_after_category: "選択してください（カテゴリ選択後に選択可能）"
+        select_plan_after_category: "選択してください（カテゴリ―選択後に選択可能）"
         no_available_plans: "選択可能な計画がありません（全てステータスが「完了」です）"
       confirm:
         delete: "本当に削除しますか？"

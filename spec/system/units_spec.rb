@@ -19,7 +19,7 @@ RSpec.describe '単位管理', type: :system do
       expect(page).to have_content('箱')
     end
 
-    it '単位のカテゴリが表示される' do
+    it '単位のカテゴリ―が表示される' do
       visit resources_units_path
 
       # enumの翻訳が表示されることを確認
@@ -46,7 +46,7 @@ RSpec.describe '単位管理', type: :system do
 
       expect(page).to have_content('単位登録')
       expect(page).to have_field('単位名')
-      expect(page).to have_select('カテゴリ')
+      expect(page).to have_select('カテゴリ―')
       expect(page).to have_button('登録')
     end
 

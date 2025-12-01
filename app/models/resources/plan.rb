@@ -66,7 +66,7 @@ class Resources::Plan < ApplicationRecord
   # スケジュール可能な計画を取得（下書きまたは実施中）
   scope :available_for_schedule, -> { where(status: [ :draft, :active ]) }
 
-  # カテゴリIDでの絞り込み
+  # ―
   #
   # @param category_id [Integer, nil] カテゴリーID
   # @return [ActiveRecord::Relation] 絞り込み結果

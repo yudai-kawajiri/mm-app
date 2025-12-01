@@ -124,7 +124,7 @@ ja:
       reorder_print_order: "印刷順を並び替え"
 
   totals:
-    category: "カテゴリ合計"
+    category: "カテゴリ―合計"
 
   labels:
     date: "日付"
@@ -237,15 +237,15 @@ ja:
 
   components:
     category_tabs:
-      confirm_delete: "このカテゴリタブを削除しますか?"
+      confirm_delete: "このカテゴリ―タブを削除しますか?"
 
   dashboard:
     menu:
       title: "メニュー"
       dashboard: "ダッシュボード"
-      category_management: "カテゴリ管理"
+      category_management: "カテゴリ―管理"
       category_list: "カテゴリ一覧"
-      new_category: "カテゴリ登録"
+      new_category: "カテゴリ―登録"
       material_management: "原材料管理"
       unit_management: "単位管理"
       unit_list: "単位一覧"
@@ -360,7 +360,7 @@ ja:
       daily_target: "日別 目標 設定"
       actual_confirmation: "実績 入力 売上"
       bulk_edit: "一括 編集 まとめて"
-      category: "カテゴリ 種別 分類"
+      category: "カテゴリ― 種別 分類"
       unit: "単位 g kg 個"
       material: "材料 原材料 登録 リソース 管理"
       order_group: "発注 グループ 印刷"
@@ -368,7 +368,7 @@ ja:
       plan: "計画 製造 スケジュール 登録 編集 削除"
 
     faq_keywords:
-      category: "カテゴリ 種別 分類 タブ"
+      category: "カテゴリ― 種別 分類 タブ"
       unit: "単位 g kg 個 換算"
       order_group: "発注 グループ 印刷 仕入先"
       material: "材料 原材料 リソース 登録"

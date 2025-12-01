@@ -1,6 +1,6 @@
 // Nested Form Controller
 //
-// カテゴリタブごとの動的フィールド追加管理
+// カテゴリ―タブごとの動的フィールド追加管理
 //
 // 使用例:
 //   <div data-controller="form--nested-form">
@@ -23,7 +23,7 @@
 //   </div>
 //
 // 機能:
-// - カテゴリタブごとの動的フィールド追加
+// - カテゴリ―タブごとの動的フィールド追加
 // - ALLタブへの自動同期
 // - ユニークIDの自動生成
 // - テンプレートのNEW_RECORD置換
@@ -41,7 +41,7 @@ export default class extends Controller {
   static targets = ["target", "template"]
 
   // フィールド追加処理
-  // カテゴリタブとALLタブに新しいフォーム行を追加
+  // カテゴリ―タブとALLタブに新しいフォーム行を追加
   add(event) {
     event.preventDefault()
 
@@ -83,7 +83,7 @@ export default class extends Controller {
     content = content.replace(/data-row-unique-id="[^"]*"/g, `data-row-unique-id="${uniqueId}"`)
     content = content.replace(new RegExp(`data-unique-id="${ID_PREFIX}[^"]*"`, 'g'), `data-unique-id="${uniqueId}"`)
 
-    // カテゴリタブに追加
+    // カテゴリ―タブに追加
     categoryContainer.insertAdjacentHTML('beforeend', content)
     Logger.log(`Added to category ${categoryId} tab`)
 
@@ -105,7 +105,7 @@ export default class extends Controller {
     Logger.log(`New field added with unique ID: ${uniqueId}`)
   }
 
-  // カテゴリIDに対応するターゲットコンテナを検索
+  // カテゴリ―IDに対応するターゲットコンテナを検索
   // 両方のIDパターン（nav-X と category-pane-X）に対応
   findTargetContainer(categoryId) {
     // タブペインを検索

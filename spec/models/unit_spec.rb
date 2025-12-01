@@ -15,7 +15,7 @@ RSpec.describe Resources::Unit, type: :model do
       expect(unit.errors[:name]).to include('を入力してください')
     end
 
-    it 'カテゴリがなければ無効であること' do
+    it 'カテゴリ―がなければ無効であること' do
       unit = build(:unit, category: nil)
       unit.valid?
       expect(unit.errors[:category]).to include('を入力してください')

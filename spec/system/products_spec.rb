@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe '製品管理', type: :system do
   let(:user) { create(:user) }
-  let(:category) { create(:category, name: 'テストカテゴリ', user: user) }
+  let(:category) { create(:category, name: 'テストカテゴリ―', user: user) }
   let!(:product) { create(:product, name: 'まぐろ握り', price: 300, category: category, user: user) }
 
   before do
@@ -83,7 +83,7 @@ RSpec.describe '製品管理', type: :system do
       }
 
       visit resources_product_path(product)
-      
+
       expect(page).to have_content('大トロ握り')
       expect(page).to have_content('500')
     end

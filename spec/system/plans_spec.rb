@@ -19,7 +19,7 @@ RSpec.describe '製造計画管理', type: :system do
       expect(page).to have_content('特別生産計画')
     end
 
-    it '製造計画のカテゴリとステータスが表示される' do
+    it '製造計画のカテゴリ―とステータスが表示される' do
       visit resources_plans_path
 
       expect(page).to have_content(plan1.category.name)
