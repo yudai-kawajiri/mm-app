@@ -149,10 +149,10 @@ ja:
     links:
       destroy: "削除"
     character_counter:
-      hint: "%{current} / %{max} 文字（残り %{remaining} 文字）"
+      hint: "%{current} / %{max} 文字(残り %{remaining} 文字)"
     confirm:
-      destroy: "本当にこの%{resource}を削除してもよろしいですか？"
-      copy: "この%{resource}をコピーしますか？"
+      destroy: "本当にこの%{resource}を削除してもよろしいですか?"
+      copy: "この%{resource}をコピーしますか?"
     link:
       back: "戻る"
       edit: "編集"
@@ -237,7 +237,7 @@ ja:
 
   components:
     category_tabs:
-      confirm_delete: "このカテゴリタブを削除しますか？"
+      confirm_delete: "このカテゴリタブを削除しますか?"
 
   dashboard:
     menu:
@@ -272,6 +272,9 @@ ja:
     title: "使い方・ヘルプ"
     subtitle: "システムの使い方や、よくある質問を検索できます"
 
+    ui:
+      expand_arrow: "▶"
+
     search:
       placeholder: "キーワードから探す(例: 予算、原材料、印刷)"
       no_videos_found: "該当する動画が見つかりませんでした。"
@@ -281,6 +284,9 @@ ja:
     video_modal:
       preparing: "の動画を準備中です"
       default_title: "動画"
+
+    video_card:
+      click_to_watch: "クリックして動画を見る"
 
     sections:
       videos: "使い方動画"
@@ -324,7 +330,7 @@ ja:
       category:
         title: "カテゴリーの使い方"
         description: "材料・商品の分類設定"
-        youtube_id: ""
+        youtube_id: "ICyr8SWODXY"
       unit:
         title: "単位の使い方"
         description: "使用・発注・製造単位の設定"
@@ -500,4 +506,3 @@ ja:
       title: "使い方・ヘルプ"
       description: "使い方動画、FAQ、よくある質問"
       button: "使い方を見る"
-      

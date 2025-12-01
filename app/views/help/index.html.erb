@@ -41,35 +41,28 @@
            role="button"
            aria-expanded="false"
            aria-controls="collapseBasic">
-          ▶ <%= t('help.categories.basic_operations') %>
+          <%= t('help.ui.expand_arrow') %> <%= t('help.categories.basic_operations') %>
         </a>
       </h5>
       <div class="collapse" id="collapseBasic">
         <div class="row g-3">
-          <div class="col-md-4" data-keywords="<%= t('help.video_keywords.search_function') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.search_function.youtube_id') %>" data-video-title="<%= t('help.videos.search_function.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.search_function.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.search_function.description') %></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4" data-keywords="<%= t('help.video_keywords.copy_function') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.copy_function.youtube_id') %>" data-video-title="<%= t('help.videos.copy_function.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.copy_function.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.copy_function.description') %></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4" data-keywords="<%= t('help.video_keywords.print_function') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.print_function.youtube_id') %>" data-video-title="<%= t('help.videos.print_function.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.print_function.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.print_function.description') %></p>
-              </div>
-            </div>
-          </div>
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.search_function'),
+                     youtube_id: t('help.videos.search_function.youtube_id'),
+                     title: t('help.videos.search_function.title'),
+                     description: t('help.videos.search_function.description') %>
+
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.copy_function'),
+                     youtube_id: t('help.videos.copy_function.youtube_id'),
+                     title: t('help.videos.copy_function.title'),
+                     description: t('help.videos.copy_function.description') %>
+
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.print_function'),
+                     youtube_id: t('help.videos.print_function.youtube_id'),
+                     title: t('help.videos.print_function.title'),
+                     description: t('help.videos.print_function.description') %>
         </div>
       </div>
     </div>
@@ -83,43 +76,34 @@
            role="button"
            aria-expanded="false"
            aria-controls="collapseNumerical">
-          ▶ <%= t('help.categories.numerical_management') %>
+          <%= t('help.ui.expand_arrow') %> <%= t('help.categories.numerical_management') %>
         </a>
       </h5>
       <div class="collapse" id="collapseNumerical">
         <div class="row g-3">
-          <div class="col-md-3" data-keywords="<%= t('help.video_keywords.monthly_budget') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.monthly_budget.youtube_id') %>" data-video-title="<%= t('help.videos.monthly_budget.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.monthly_budget.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.monthly_budget.description') %></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3" data-keywords="<%= t('help.video_keywords.daily_target') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.daily_target.youtube_id') %>" data-video-title="<%= t('help.videos.daily_target.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.daily_target.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.daily_target.description') %></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3" data-keywords="<%= t('help.video_keywords.actual_confirmation') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.actual_confirmation.youtube_id') %>" data-video-title="<%= t('help.videos.actual_confirmation.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.actual_confirmation.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.actual_confirmation.description') %></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3" data-keywords="<%= t('help.video_keywords.bulk_edit') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.bulk_edit.youtube_id') %>" data-video-title="<%= t('help.videos.bulk_edit.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.bulk_edit.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.bulk_edit.description') %></p>
-              </div>
-            </div>
-          </div>
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.monthly_budget'),
+                     youtube_id: t('help.videos.monthly_budget.youtube_id'),
+                     title: t('help.videos.monthly_budget.title'),
+                     description: t('help.videos.monthly_budget.description') %>
+
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.daily_target'),
+                     youtube_id: t('help.videos.daily_target.youtube_id'),
+                     title: t('help.videos.daily_target.title'),
+                     description: t('help.videos.daily_target.description') %>
+
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.actual_confirmation'),
+                     youtube_id: t('help.videos.actual_confirmation.youtube_id'),
+                     title: t('help.videos.actual_confirmation.title'),
+                     description: t('help.videos.actual_confirmation.description') %>
+
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.bulk_edit'),
+                     youtube_id: t('help.videos.bulk_edit.youtube_id'),
+                     title: t('help.videos.bulk_edit.title'),
+                     description: t('help.videos.bulk_edit.description') %>
         </div>
       </div>
     </div>
@@ -133,51 +117,40 @@
            role="button"
            aria-expanded="false"
            aria-controls="collapseResource">
-          ▶ <%= t('help.categories.resource_management') %>
+          <%= t('help.ui.expand_arrow') %> <%= t('help.categories.resource_management') %>
         </a>
       </h5>
       <div class="collapse" id="collapseResource">
         <div class="row g-3">
-          <div class="col-md-4 col-lg-3" data-keywords="<%= t('help.video_keywords.category') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.category.youtube_id') %>" data-video-title="<%= t('help.videos.category.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.category.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.category.description') %></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 col-lg-3" data-keywords="<%= t('help.video_keywords.unit') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.unit.youtube_id') %>" data-video-title="<%= t('help.videos.unit.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.unit.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.unit.description') %></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 col-lg-2" data-keywords="<%= t('help.video_keywords.material') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.material.youtube_id') %>" data-video-title="<%= t('help.videos.material.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.material.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.material.description') %></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 col-lg-2" data-keywords="<%= t('help.video_keywords.order_group') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.order_group.youtube_id') %>" data-video-title="<%= t('help.videos.order_group.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.order_group.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.order_group.description') %></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 col-lg-2" data-keywords="<%= t('help.video_keywords.product') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.product.youtube_id') %>" data-video-title="<%= t('help.videos.product.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.product.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.product.description') %></p>
-              </div>
-            </div>
-          </div>
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.category'),
+                     youtube_id: t('help.videos.category.youtube_id'),
+                     title: t('help.videos.category.title'),
+                     description: t('help.videos.category.description') %>
+
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.unit'),
+                     youtube_id: t('help.videos.unit.youtube_id'),
+                     title: t('help.videos.unit.title'),
+                     description: t('help.videos.unit.description') %>
+
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.material'),
+                     youtube_id: t('help.videos.material.youtube_id'),
+                     title: t('help.videos.material.title'),
+                     description: t('help.videos.material.description') %>
+
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.order_group'),
+                     youtube_id: t('help.videos.order_group.youtube_id'),
+                     title: t('help.videos.order_group.title'),
+                     description: t('help.videos.order_group.description') %>
+
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.product'),
+                     youtube_id: t('help.videos.product.youtube_id'),
+                     title: t('help.videos.product.title'),
+                     description: t('help.videos.product.description') %>
         </div>
       </div>
     </div>
@@ -191,19 +164,16 @@
            role="button"
            aria-expanded="false"
            aria-controls="collapsePlan">
-          ▶ <%= t('help.categories.production_planning') %>
+          <%= t('help.ui.expand_arrow') %> <%= t('help.categories.production_planning') %>
         </a>
       </h5>
       <div class="collapse" id="collapsePlan">
         <div class="row g-3">
-          <div class="col-md-6" data-keywords="<%= t('help.video_keywords.plan') %>" data-help-search-target="videoItem">
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" data-action="click->video-modal#open" data-youtube-id="<%= t('help.videos.plan.youtube_id') %>" data-video-title="<%= t('help.videos.plan.title') %>" data-preparing-message="<%= t('help.video_modal.preparing') %>">
-              <div class="card-body">
-                <h6 class="card-title"><%= t('help.videos.plan.title') %></h6>
-                <p class="card-text small"><%= t('help.videos.plan.description') %></p>
-              </div>
-            </div>
-          </div>
+          <%= render 'shared/video_card',
+                     keywords: t('help.video_keywords.plan'),
+                     youtube_id: t('help.videos.plan.youtube_id'),
+                     title: t('help.videos.plan.title'),
+                     description: t('help.videos.plan.description') %>
         </div>
       </div>
     </div>
@@ -227,19 +197,19 @@
   <div class="alert alert-warning d-none" id="noResultsFound" data-help-search-target="noResultsFound">
     「<strong id="searchKeyword" data-help-search-target="searchKeyword"></strong>」<%= t('help.search.no_results_found') %>
   </div>
-</div>
 
-<!-- 動画モーダル -->
-<div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true" data-video-modal-target="modal">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="videoModalLabel" data-video-modal-target="title"><%= t('help.video_modal.default_title') %></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-action="click->video-modal#close"></button>
-      </div>
-      <div class="modal-body p-0">
-        <div class="ratio ratio-16x9">
-          <iframe data-video-modal-target="iframe" src="" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <!-- 動画モーダル（container-fluidの中に移動） -->
+  <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true" data-video-modal-target="modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="videoModalLabel" data-video-modal-target="title"><%= t('help.video_modal.default_title') %></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-action="click->video-modal#close"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div class="ratio ratio-16x9">
+            <iframe data-video-modal-target="iframe" src="" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
         </div>
       </div>
     </div>
