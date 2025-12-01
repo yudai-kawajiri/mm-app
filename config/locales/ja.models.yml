@@ -84,7 +84,7 @@ ja:
         reading: "読み仮名"
         category: "カテゴリー"
         category_id: "カテゴリー"
-        default_unit_weight: "基本使用量"
+        default_unit_weight: "基本分量"
         unit_for_product: "製造単位"
         unit_weight_for_order: "基本発注量"
         pieces_per_order_unit: "基本発注入数"

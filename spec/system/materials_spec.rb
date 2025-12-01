@@ -50,7 +50,7 @@ RSpec.describe '原材料管理', type: :system do
       expect(page).to have_content('原材料登録')
       expect(page).to have_field('原材料名')
       expect(page).to have_content('カテゴリー')
-      expect(page).to have_content('基本使用量')
+      expect(page).to have_content('基本分量')
       expect(page).to have_button('登録')
     end
 

@@ -329,27 +329,27 @@ ja:
         youtube_id: ""
       category:
         title: "カテゴリーの使い方"
-        description: "材料・商品の分類設定"
-        youtube_id: "ICyr8SWODXY"
+        description: "原材料・商品・計画の分類設定"
+        youtube_id: "wF37663W1gE"
       unit:
         title: "単位の使い方"
         description: "製造・発注・使用単位の設定"
-        youtube_id: ""
+        youtube_id: "wF37663W1gE"
       material:
-        title: "材料の使い方"
-        description: "原材料の登録・編集・削除方法"
-        youtube_id: ""
+        title: "原材料の使い方"
+        description: "原材料の登録方法"
+        youtube_id: "A3YnvlfJcEY"
       order_group:
         title: "発注グループの使い方"
-        description: "発注グループの管理と印刷"
-        youtube_id: ""
+        description: "発注グループの登録"
+        youtube_id: "ndedyZjxja0"
       product:
         title: "商品の使い方"
-        description: "商品の登録と材料紐付け"
+        description: "商品の登録と原材料紐付け"
         youtube_id: ""
       plan:
         title: "製造計画の使い方"
-        description: "製造計画の作成・編集・削除方法"
+        description: "製造計画の登録と商品紐付け"
         youtube_id: ""
 
     video_keywords:
@@ -427,8 +427,8 @@ ja:
         field1: "カテゴリー: 材料の種別(鮮魚、乾物、調味料など)"
         field2: "単位: 製造単位、発注単位、使用単位"
         field3: "発注グループ: 発注時のグループ分け"
-        field4: "基本使用量: 1商品あたりの使用量"
-        note: "※ 基本使用量を正確に設定することで、製造計画から必要な材料量を自動計算できます。"
+        field4: "基本分量: 1商品あたりの分量"
+        note: "※ 基本分量を正確に設定することで、製造計画から必要な材料量を自動計算できます。"
 
       product:
         title: "商品管理について"
