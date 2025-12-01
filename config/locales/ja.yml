@@ -333,7 +333,7 @@ ja:
         youtube_id: "ICyr8SWODXY"
       unit:
         title: "単位の使い方"
-        description: "使用・発注・製造単位の設定"
+        description: "製造・発注・使用単位の設定"
         youtube_id: ""
       material:
         title: "材料の使い方"
@@ -393,9 +393,9 @@ ja:
           title: "単位の使い分け例:"
           header:
             item: "材料"
-            usage_unit: "使用単位"
+            usage_unit: "製造単位"
             order_unit: "発注単位"
-            production_unit: "製造単位"
+            production_unit: "使用単位"
           row1:
             item: "マグロ(赤身)"
             usage_unit: "g (50g/貫)"
@@ -425,7 +425,7 @@ ja:
         title: "原材料管理について"
         description: "製造に使用する原材料の情報を登録・管理する機能です。"
         field1: "カテゴリー: 材料の種別(鮮魚、乾物、調味料など)"
-        field2: "単位: 使用単位、発注単位、製造単位"
+        field2: "単位: 製造単位、発注単位、使用単位"
         field3: "発注グループ: 発注時のグループ分け"
         field4: "基本使用量: 1商品あたりの使用量"
         note: "※ 基本使用量を正確に設定することで、製造計画から必要な材料量を自動計算できます。"
