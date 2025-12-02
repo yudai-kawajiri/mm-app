@@ -44,7 +44,7 @@ class NumericalForecastService
   #   - forecast_diff: 予算差
   #   - daily_achievement_rate: 日別予算達成率(%)
   #   - remaining_days: 残り日数
-  #   - required_additional: 必要追加額
+  #   - required_additional: 必要追加高
   #   - daily_required: 推奨日次目標
   #   - current_daily_average: 現在の1日平均実績
   #   - daily_target_diff: 目標との差
@@ -114,10 +114,10 @@ class NumericalForecastService
                         0
     end
 
-    # 必要追加額（予算に達していない場合のみ）
+    # 必要追加高（予算に達していない場合のみ）
     required_additional = diff < 0 ? diff.abs : 0
 
-    # 推奨日次目標 = (必要追加額 ÷ 残り日数) ÷ (1 - 目標見切り率/100)
+    # 推奨日次目標 = (必要追加高 ÷ 残り日数) ÷ (1 - 目標見切り率/100)
     daily_required = if remaining_days > 0 && required_additional > 0
                         target_discount_multiplier = 1 - (target_discount_rate / PERCENTAGE_MULTIPLIER)
                         if target_discount_multiplier > 0
