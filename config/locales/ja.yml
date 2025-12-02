@@ -124,7 +124,7 @@ ja:
       reorder_print_order: "印刷順を並び替え"
 
   totals:
-    category: "カテゴリ合計"
+    category: "カテゴリ―合計"
 
   labels:
     date: "日付"
@@ -149,10 +149,10 @@ ja:
     links:
       destroy: "削除"
     character_counter:
-      hint: "%{current} / %{max} 文字（残り %{remaining} 文字）"
+      hint: "%{current} / %{max} 文字(残り %{remaining} 文字)"
     confirm:
-      destroy: "本当にこの%{resource}を削除してもよろしいですか？"
-      copy: "この%{resource}をコピーしますか？"
+      destroy: "本当にこの%{resource}を削除してもよろしいですか?"
+      copy: "この%{resource}をコピーしますか?"
     link:
       back: "戻る"
       edit: "編集"
@@ -237,15 +237,15 @@ ja:
 
   components:
     category_tabs:
-      confirm_delete: "このカテゴリタブを削除しますか？"
+      confirm_delete: "このカテゴリ―タブを削除しますか?"
 
   dashboard:
     menu:
       title: "メニュー"
       dashboard: "ダッシュボード"
-      category_management: "カテゴリ管理"
+      category_management: "カテゴリ―管理"
       category_list: "カテゴリ一覧"
-      new_category: "カテゴリ登録"
+      new_category: "カテゴリ―登録"
       material_management: "原材料管理"
       unit_management: "単位管理"
       unit_list: "単位一覧"
@@ -272,11 +272,21 @@ ja:
     title: "使い方・ヘルプ"
     subtitle: "システムの使い方や、よくある質問を検索できます"
 
+    ui:
+      expand_arrow: "▶"
+
     search:
       placeholder: "キーワードから探す(例: 予算、原材料、印刷)"
       no_videos_found: "該当する動画が見つかりませんでした。"
       no_faq_found: "該当する質問が見つかりませんでした。"
       no_results_found: "に一致する情報が見つかりませんでした。"
+
+    video_modal:
+      preparing: "の動画を準備中です"
+      default_title: "動画"
+
+    video_card:
+      click_to_watch: "クリックして動画を見る"
 
     sections:
       videos: "使い方動画"
@@ -292,52 +302,75 @@ ja:
       search_function:
         title: "検索機能の使い方"
         description: "キーワード入力による絞り込み検索の方法"
+        youtube_id: "ebQuolQ27P0"
       copy_function:
         title: "コピー機能の使い方"
         description: "既存データの複製方法"
+        youtube_id: "lL0zQMALkkM"
+      status_update:
+        title: "ステータス更新の使い方"
+        description: "一覧画面からのステータス変更方法"
+        youtube_id: "eSg2Ner68Fs"
+      crud_operations:
+        title: "基本操作の使い方"
+        description: "一覧、登録、詳細、編集、削除の操作方法"
+        youtube_id: "lO3DTU1I-D4"
       print_function:
         title: "印刷機能の使い方"
-        description: "各画面からの印刷・出力方法"
+        description: "印刷画面での並び順の変更と、各画面からのプレビュー・印刷方法"
+        youtube_id: "OhnGRAiTTPQ"
+      plan_assignment:
+        title: "製造計画の登録"
+        description: "日別の製造計画の登録方法"
+        youtube_id: "UpHiDK6z1eo"
       monthly_budget:
         title: "月間予算の設定"
-        description: "月全体の売上目標金額を登録する"
-      daily_target:
-        title: "日別目標の調整"
-        description: "各日ごとの売上目標額を個別に入力"
-      actual_confirmation:
-        title: "実績の確認方法"
-        description: "製造計画から自動反映された売上実績を確認"
-      bulk_edit:
-        title: "一括編集機能"
-        description: "複数日分の目標を同時にまとめて変更"
+        description: "月全体の売上目標金額の登録方法"
+        youtube_id: "P6k6UWzaOJM"
+      daily_budget_and_actual:
+        title: "日別予算と実績の一括編集"
+        description: "日別の予算設定と実績入力をモーダルから一括で行う方法"
+        youtube_id: "oi31X3xv7zg"
+      loss_rate_setting:
+        title: "見切率の設定"
+        description: "予測売上と、必要追加高を計算するための見切率を設定する方法"
+        youtube_id: "ZpahDZvormY"
       category:
         title: "カテゴリーの使い方"
-        description: "材料・商品の分類設定"
+        description: "原材料・商品・計画の分類を設定する方法"
+        youtube_id: "wF37663W1gE"
       unit:
         title: "単位の使い方"
-        description: "使用・発注・製造単位の設定"
+        description: "製造・発注・使用単位を設定する方法"
+        youtube_id: "wF37663W1gE"
       material:
-        title: "材料の使い方"
-        description: "原材料の登録・編集・削除方法"
+        title: "原材料の使い方"
+        description: "原材料の登録方法"
+        youtube_id: "A3YnvlfJcEY"
       order_group:
         title: "発注グループの使い方"
-        description: "発注グループの管理と印刷"
+        description: "発注グループの登録方法"
+        youtube_id: "ndedyZjxja0"
       product:
         title: "商品の使い方"
-        description: "商品の登録と材料紐付け"
+        description: "商品の登録と原材料紐付け方法"
+        youtube_id: "P7bMCcHikd8"
       plan:
         title: "製造計画の使い方"
-        description: "製造計画の作成・編集・削除方法"
+        description: "製造計画の登録と商品紐付け方法"
+        youtube_id: "7zy-RftXQHQ"
 
     video_keywords:
       search_function: "検索 フィルター 絞り込み キーワード"
       copy_function: "コピー 複製 データ"
+      status_update: "ステータス 状態 更新 変更 一覧"
+      crud_operations: "基本操作 一覧 登録 詳細 編集 更新 削除 "
       print_function: "印刷 出力 プリント PDF"
       monthly_budget: "月間 予算 設定 売上"
-      daily_target: "日別 目標 設定"
-      actual_confirmation: "実績 入力 売上"
-      bulk_edit: "一括 編集 まとめて"
-      category: "カテゴリ 種別 分類"
+      daily_budget_and_actual: "日別予算 実績入力 一括編集 モーダル 数値管理 予算編集 実績登録"
+      plan_assignment: "計画登録 計画 登録 数値管理 実績 印刷"
+      loss_rate_setting: "見切率 設定 商品 廃棄率 ロス率"
+      category: "カテゴリ― 種別 分類"
       unit: "単位 g kg 個"
       material: "材料 原材料 登録 リソース 管理"
       order_group: "発注 グループ 印刷"
@@ -345,14 +378,14 @@ ja:
       plan: "計画 製造 スケジュール 登録 編集 削除"
 
     faq_keywords:
-      category: "カテゴリ 種別 分類 タブ"
+      category: "カテゴリ― 種別 分類 タブ"
       unit: "単位 g kg 個 換算"
       order_group: "発注 グループ 印刷 仕入先"
       material: "材料 原材料 リソース 登録"
       product: "商品 製品 登録 レシピ"
       numerical_basic: "数値管理 予算 目標 実績 売上"
-      forecast: "月末 予測 アクションプラン 達成率 追加額"
-      markdown_rate: "見切り 見切り率 廃棄 ロス 予算 目標"
+      forecast: "月末 予測 アクションプラン 達成率 追加高"
+      markdown_rate: "見切 見切率 廃棄 ロス 予算 目標"
 
     faq:
       category:
@@ -370,9 +403,9 @@ ja:
           title: "単位の使い分け例:"
           header:
             item: "材料"
-            usage_unit: "使用単位"
+            usage_unit: "製造単位"
             order_unit: "発注単位"
-            production_unit: "製造単位"
+            production_unit: "使用単位"
           row1:
             item: "マグロ(赤身)"
             usage_unit: "g (50g/貫)"
@@ -402,10 +435,10 @@ ja:
         title: "原材料管理について"
         description: "製造に使用する原材料の情報を登録・管理する機能です。"
         field1: "カテゴリー: 材料の種別(鮮魚、乾物、調味料など)"
-        field2: "単位: 使用単位、発注単位、製造単位"
+        field2: "単位: 製造単位、発注単位、使用単位"
         field3: "発注グループ: 発注時のグループ分け"
-        field4: "基本使用量: 1商品あたりの使用量"
-        note: "※ 基本使用量を正確に設定することで、製造計画から必要な材料量を自動計算できます。"
+        field4: "基本分量: 1商品あたりの分量"
+        note: "※ 基本分量を正確に設定することで、製造計画から必要な材料量を自動計算できます。"
 
       product:
         title: "商品管理について"
@@ -436,41 +469,41 @@ ja:
         title: "月末予測とアクションプラン"
         description: "現在の実績と残りの製造計画から、月末時点での予測売上を自動計算する機能です。"
         formula1_title: "① 予測売上の計算"
-        formula1_code: "予測売上 = 実績 + 残り計画金額 × (1 - 見切り率)"
+        formula1_code: "予測売上 = 実績 + 残り計画金額 × (1 - 見切率)"
         example_label: "例:"
-        formula1_example: "実績80万円、残り計画30万円、見切り率20%の場合 → 予測売上 = 80万 + (30万 × 0.8) = 104万円"
+        formula1_example: "実績80万円、残り計画30万円、見切率20%の場合 → 予測売上 = 80万 + (30万 × 0.8) = 104万円"
         formula1_note: "(残り30万円分の寿司のうち、20%が値引き・廃棄になると想定)"
-        formula2_title: "② 推奨日次追加額の計算"
-        formula2_code: "推奨日次追加額 = 必要追加額 ÷ (1 - 見切り率) ÷ 残日数"
-        formula2_example: "必要追加額10万円、見切り率15%、残り5日の場合 → 推奨日次追加額 = 10万 ÷ 0.85 ÷ 5 ≒ 23,529円/日"
+        formula2_title: "② 推奨日次追加高の計算"
+        formula2_code: "推奨日次追加高 = 必要追加高 ÷ (1 - 見切率) ÷ 残日数"
+        formula2_example: "必要追加高10万円、見切率15%、残り5日の場合 → 推奨日次追加高 = 10万 ÷ 0.85 ÷ 5 ≒ 23,529円/日"
         formula2_note: "(15%の見切り・廃棄を見込んで、1日あたり約2.4万円分多く製造する必要がある)"
-        final_note: "見切り率を適切に設定することで、より現実的な売上予測と目標設定が可能になります。"
+        final_note: "見切率を適切に設定することで、より現実的な売上予測と目標設定が可能になります。"
 
       markdown_rate:
-        title: "見切り率について"
-        description: "見切り率は、売れ残りや値引き販売を考慮した売上予測のための係数です。閉店前の時間帯に値引き販売したり、売れ残りが発生します。見切り率を設定することで、より現実的な売上予測ができます。"
+        title: "見切率について"
+        description: "見切率は、売れ残りや値引き販売を考慮した売上予測のための係数です。閉店前の時間帯に値引き販売したり、売れ残りが発生します。見切率を設定することで、より現実的な売上予測ができます。"
         table:
-          title: "見切り率の種類:"
+          title: "見切率の種類:"
           header:
             item: "項目"
             description: "説明"
             usage: "使用場面"
           row1:
-            item: "予算見切り率"
+            item: "予算見切率"
             description: "売上予測の計算に使用"
             usage: "月末予測の「予測売上」計算"
           row2:
-            item: "目標見切り率"
-            description: "追加額の計算に使用"
-            usage: "アクションプランの「推奨日次追加額」計算"
+            item: "目標見切率"
+            description: "追加高の計算に使用"
+            usage: "アクションプランの「推奨日次追加高」計算"
         formula1_title: "① 予測売上の計算"
-        formula1_code: "予測売上 = 実績売上 + (残り計画金額 × (1 - 予算見切り率 ÷ 100))"
+        formula1_code: "予測売上 = 実績売上 + (残り計画金額 × (1 - 予算見切率 ÷ 100))"
         example_label: "例:"
-        formula1_example: "実績売上80万円、残り計画金額30万円、予算見切り率20%の場合 → 予測売上 = 80万 + (30万 × 0.8) = 104万円"
-        formula2_title: "② 推奨日次追加額の計算"
-        formula2_code: "推奨日次追加額 = 必要追加額 ÷ (1 - 目標見切り率 ÷ 100) ÷ 残日数"
-        formula2_example: "必要追加額10万円、目標見切り率15%、残日数5日の場合 → 推奨日次追加額 = 10万 ÷ 0.85 ÷ 5 ≒ 23,529円/日"
-        final_note: "見切り率を適切に設定することで、より現実的な売上予測と目標設定が可能になります。"
+        formula1_example: "実績売上80万円、残り計画金額30万円、予算見切率20%の場合 → 予測売上 = 80万 + (30万 × 0.8) = 104万円"
+        formula2_title: "② 推奨日次追加高の計算"
+        formula2_code: "推奨日次追加高 = 必要追加高 ÷ (1 - 目標見切率 ÷ 100) ÷ 残日数"
+        formula2_example: "必要追加高10万円、目標見切率15%、残日数5日の場合 → 推奨日次追加高 = 10万 ÷ 0.85 ÷ 5 ≒ 23,529円/日"
+        final_note: "見切率を適切に設定することで、より現実的な売上予測と目標設定が可能になります。"
 
   # 設定ページ
   settings:

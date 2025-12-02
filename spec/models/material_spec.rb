@@ -15,7 +15,7 @@ RSpec.describe Resources::Material, type: :model do
       expect(material.errors[:name]).to include('を入力してください')
     end
 
-    it '同じカテゴリ内で名前が重複していれば無効であること' do
+    it '同じカテゴリ―内で名前が重複していれば無効であること' do
       category = create(:category, :material)
       user = create(:user)
       create(:material, name: 'テスト原材料', category: category, user: user)
@@ -24,7 +24,7 @@ RSpec.describe Resources::Material, type: :model do
       expect(material.errors[:name]).to include('は既に使用されています')
     end
 
-    it '異なるカテゴリであれば同じ名前でも有効であること' do
+    it '異なるカテゴリ―であれば同じ名前でも有効であること' do
       category1 = create(:category, :material)
       category2 = create(:category, :material)
       user = create(:user)

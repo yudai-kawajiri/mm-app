@@ -84,8 +84,8 @@ ja:
         reading: "読み仮名"
         category: "カテゴリー"
         category_id: "カテゴリー"
-        default_unit_weight: "基本使用量"
-        unit_for_product: "使用単位"
+        default_unit_weight: "基本分量"
+        unit_for_product: "製造単位"
         unit_weight_for_order: "基本発注量"
         pieces_per_order_unit: "基本発注入数"
         default_order_quantity: "基本発注量/発注入数"
@@ -93,7 +93,7 @@ ja:
         order_group: "発注グループ"
         order_group_id: "発注グループ"
         new_order_group_name: "新発注グループ"
-        production_unit: "製造単位"
+        production_unit: "使用単位"
         description: "概要"
 
       "resources/product":
@@ -164,9 +164,9 @@ ja:
 
       "resources/unit":
         category:
-          production: "使用単位"
+          production: "製造単位"
           ordering: "発注単位"
-          manufacturing: "製造単位"
+          manufacturing: "使用単位"
 
       "resources/product":
         status:

@@ -39,6 +39,7 @@ import TabsCategoryTabsController from "controllers/ui/tabs/category_tabs_contro
 
 // Help Controllers
 import HelpSearchController from "controllers/help_search_controller"
+import VideoModalController from "controllers/video_modal_controller"
 
 // コントローラー名定数
 // data-controller 属性で使用される識別子
@@ -76,7 +77,8 @@ const CONTROLLER_NAMES = {
   TABS_CATEGORY_TABS: 'tabs--category-tabs',
 
   // Help
-  HELP_SEARCH: 'help-search'
+  HELP_SEARCH: 'help-search',
+  VIDEO_MODAL: 'video-modal'
 }
 
 // コントローラー登録
@@ -114,3 +116,4 @@ application.register(CONTROLLER_NAMES.TABS_CATEGORY_TABS, TabsCategoryTabsContro
 
 // Help Controllers
 application.register(CONTROLLER_NAMES.HELP_SEARCH, HelpSearchController)
+application.register(CONTROLLER_NAMES.VIDEO_MODAL, VideoModalController)

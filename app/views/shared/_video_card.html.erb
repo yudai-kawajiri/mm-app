@@ -1,0 +1,17 @@
+<div class="col-md-6 col-lg-4" data-keywords="<%= keywords %>" data-help-search-target="videoItem">
+  <div class="card h-100 shadow-sm" style="cursor: pointer;"
+       data-action="click->video-modal#open"
+       data-youtube-id="<%= youtube_id %>"
+       data-video-title="<%= title %>"
+       data-preparing-message="<%= t('help.video_modal.preparing') %>">
+    <div class="card-body">
+      <h6 class="card-title"><%= title %></h6>
+      <p class="card-text small"><%= description %></p>
+      <div class="text-end mt-2">
+        <small class="text-muted">
+          <i class="bi bi-youtube"></i> <%= t('help.video_card.click_to_watch') %>
+        </small>
+      </div>
+    </div>
+  </div>
+</div>

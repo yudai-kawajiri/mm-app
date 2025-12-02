@@ -25,6 +25,12 @@
 //
 //     <!-- テーブル -->
 //     <table>
+//       <thead>
+//         <tr>
+//           <th class="drag-handle-header d-none"></th>
+//           <th>項目1</th>
+//         </tr>
+//       </thead>
 //       <tbody>
 //         <tr data-id="1" data-display-order="1">
 //           <td><span class="drag-handle d-none">☰</span></td>
@@ -50,6 +56,7 @@
 // - サーバーへの並び替え保存（Ajax）
 // - キャンセル機能（ページリロード）
 // - 並び替えモード中はソートプルダウンを無効化
+// - 保存後は印刷順（display_order）で一覧を表示
 
 import { Controller } from "@hotwired/stimulus"
 import Sortable from "sortablejs"
@@ -74,6 +81,7 @@ const VALUES = {
 const CSS_CLASSES = {
   D_NONE: 'd-none',
   DRAG_HANDLE: 'drag-handle',
+  DRAG_HANDLE_HEADER: 'drag-handle-header',
   SORTABLE_GHOST: 'sortable-ghost'
 }
 
@@ -101,6 +109,7 @@ const DATA_ATTRIBUTES = {
 const SELECTOR = {
   TBODY: 'tbody',
   DRAG_HANDLE: '.drag-handle',
+  DRAG_HANDLE_HEADER: '.drag-handle-header',
   TD_LAST_CHILD: 'td:last-child',
   SELECT: 'select',
   TR: 'tr',
@@ -177,8 +186,8 @@ export default class extends Controller {
   // 並び替えモードの切り替え
   // 以下の処理を実行:
   // - 通常ボタンを非表示、保存・キャンセルボタンを表示
-  // - ドラッグハンドルを表示
-  // - アクションボタンを非表示
+  // - ドラッグハンドルとヘッダーを表示
+  // - アクションボタンの中身を非表示
   // - ソートプルダウンを無効化
   // - Sortable.js を有効化
   toggleReorderMode() {
@@ -197,14 +206,17 @@ export default class extends Controller {
       }
     }
 
-    // ドラッグハンドルを表示
-    this.element.querySelectorAll(SELECTOR.DRAG_HANDLE).forEach(el => {
+    // ドラッグハンドルとヘッダーを表示
+    this.element.querySelectorAll(`${SELECTOR.DRAG_HANDLE}, ${SELECTOR.DRAG_HANDLE_HEADER}`).forEach(el => {
       el.classList.remove(CSS_CLASSES.D_NONE)
     })
 
-    // アクションボタンを非表示
-    this.tbodyTarget.querySelectorAll(SELECTOR.TD_LAST_CHILD).forEach(el => {
-      el.style[STYLE_PROPERTY.DISPLAY] = STYLE_VALUE.DISPLAY_NONE
+    // アクションボタンの中身のみを非表示（tdは残してテーブルの線を維持）
+    this.tbodyTarget.querySelectorAll(SELECTOR.TD_LAST_CHILD).forEach(td => {
+      // 子要素を非表示にする
+      Array.from(td.children).forEach(child => {
+        child.style[STYLE_PROPERTY.DISPLAY] = STYLE_VALUE.DISPLAY_NONE
+      })
     })
 
     // Sortable.js を有効化
@@ -223,7 +235,7 @@ export default class extends Controller {
 
   // 並び替えの保存処理
   // 現在の行の順序をサーバーに送信して保存
-  // 成功時はページをリロード
+  // 成功時は印刷順（display_order）でページをリロード
   //
   // 翻訳キー:
   // - sortable_table.csrf_token_not_found: CSRFトークンエラー
@@ -268,7 +280,10 @@ export default class extends Controller {
       Logger.log(LOG_MESSAGES.responseOk(response.ok))
 
       if (response.ok) {
-        location.reload()
+        // 印刷順（display_order）でリロード
+        const url = new URL(window.location.href)
+        url.searchParams.set('sort_by', 'display_order')
+        window.location.href = url.toString()
       } else {
         return response.text().then(text => {
           Logger.error(LOG_MESSAGES.errorResponse(text))

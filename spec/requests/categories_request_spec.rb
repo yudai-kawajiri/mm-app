@@ -14,7 +14,7 @@ RSpec.describe "Categories", type: :request do
         expect(response).to have_http_status(:success)
       end
 
-      it '@categoriesにカテゴリを割り当てること' do
+      it '@categoriesにカテゴリ―を割り当てること' do
         get categories_path
         expect(assigns(:categories)).to include(category)
       end
@@ -54,7 +54,7 @@ RSpec.describe "Categories", type: :request do
         expect(response).to have_http_status(:success)
       end
 
-      it '@categoryに新しいカテゴリを割り当てること' do
+      it '@categoryに新しいカテゴリ―を割り当てること' do
         get new_category_path
         expect(assigns(:category)).to be_a_new(Category)
       end
@@ -81,20 +81,20 @@ RSpec.describe "Categories", type: :request do
         let(:valid_params) do
           {
             category: {
-              name: '新しいカテゴリ',
+              name: '新しいカテゴリ―',
               category_type: 'material',
               description: 'テスト概要'
             }
           }
         end
 
-        it 'カテゴリが作成されること' do
+        it 'カテゴリ―が作成されること' do
           expect {
             post categories_path, params: valid_params
           }.to change(Category, :count).by(1)
         end
 
-        it 'カテゴリ一覧にリダイレクトされること' do
+        it 'カテゴリ―一覧にリダイレクトされること' do
           post categories_path, params: valid_params
           expect(response).to redirect_to(categories_url)
         end
@@ -115,7 +115,7 @@ RSpec.describe "Categories", type: :request do
           }
         end
 
-        it 'カテゴリが作成されないこと' do
+        it 'カテゴリ―が作成されないこと' do
           expect {
             post categories_path, params: invalid_params
           }.not_to change(Category, :count)
@@ -140,7 +140,7 @@ RSpec.describe "Categories", type: :request do
         expect(response).to have_http_status(:success)
       end
 
-      it '@categoryにカテゴリを割り当てること' do
+      it '@categoryにカテゴリ―を割り当てること' do
         get category_path(category)
         expect(assigns(:category)).to eq(category)
       end
@@ -168,7 +168,7 @@ RSpec.describe "Categories", type: :request do
         expect(response).to have_http_status(:success)
       end
 
-      it '@categoryにカテゴリを割り当てること' do
+      it '@categoryにカテゴリ―を割り当てること' do
         get edit_category_path(category)
         expect(assigns(:category)).to eq(category)
       end
@@ -195,19 +195,19 @@ RSpec.describe "Categories", type: :request do
         let(:valid_params) do
           {
             category: {
-              name: '更新されたカテゴリ名',
+              name: '更新されたカテゴリ―名',
               description: '更新された概要'
             }
           }
         end
 
-        it 'カテゴリが更新されること' do
+        it 'カテゴリ―が更新されること' do
           patch category_path(category), params: valid_params
           category.reload
-          expect(category.name).to eq('更新されたカテゴリ名')
+          expect(category.name).to eq('更新されたカテゴリ―名')
         end
 
-        it 'カテゴリ一覧にリダイレクトされること' do
+        it 'カテゴリ―一覧にリダイレクトされること' do
           patch category_path(category), params: valid_params
           expect(response).to redirect_to(categories_url)
         end
@@ -227,7 +227,7 @@ RSpec.describe "Categories", type: :request do
           }
         end
 
-        it 'カテゴリが更新されないこと' do
+        it 'カテゴリ―が更新されないこと' do
           original_name = category.name
           patch category_path(category), params: invalid_params
           category.reload
@@ -248,14 +248,14 @@ RSpec.describe "Categories", type: :request do
     context 'ログインしている場合' do
       before { sign_in admin_user, scope: :user }
 
-      it 'カテゴリが削除されること' do
+      it 'カテゴリ―が削除されること' do
         category_to_delete = create(:category, user: admin_user)
         expect {
           delete category_path(category_to_delete)
         }.to change(Category, :count).by(-1)
       end
 
-      it 'カテゴリ一覧にリダイレクトされること' do
+      it 'カテゴリ―一覧にリダイレクトされること' do
         delete category_path(category)
         expect(response).to redirect_to(categories_url)
       end

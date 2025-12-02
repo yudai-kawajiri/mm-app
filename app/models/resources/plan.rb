@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Plan
 #
 # 計画モデル - 製品の組み合わせと販売計画を管理
@@ -7,15 +5,15 @@
 # 使用例:
 #   Plan.create(name: "ランチセット", category_id: 1, status: :active)
 #   Plan.active_plans
-  # フォーム定数
-  DESCRIPTION_MAX_LENGTH = 500
-  DESCRIPTION_ROWS = 3
-
 #   plan.expected_revenue
 class Resources::Plan < ApplicationRecord
   # 定数
-  WEEKDAY_RANGE = (1..5).freeze                    # 平日の範囲（月曜〜金曜）
-  DEFAULT_DISPLAY_ORDER = 999_999                  # 表示順が未設定の場合のデフォルト値
+  WEEKDAY_RANGE = (1..5).freeze
+  DEFAULT_DISPLAY_ORDER = 999_999
+
+  # フォーム定数
+  DESCRIPTION_MAX_LENGTH = 500
+  DESCRIPTION_ROWS = 3
 
   # 変更履歴の記録
   has_paper_trail
@@ -66,7 +64,7 @@ class Resources::Plan < ApplicationRecord
   # スケジュール可能な計画を取得（下書きまたは実施中）
   scope :available_for_schedule, -> { where(status: [ :draft, :active ]) }
 
-  # カテゴリIDでの絞り込み
+  # ―
   #
   # @param category_id [Integer, nil] カテゴリーID
   # @return [ActiveRecord::Relation] 絞り込み結果

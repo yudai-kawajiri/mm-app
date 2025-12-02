@@ -66,6 +66,7 @@
           <%= f.hidden_field :planned_revenue, id: "plannedRevenue" %>
 
           <div class="alert alert-info mb-3"
+               id="assignPlanInfoAlert"
                data-management--assign-plan-info-target="infoAlert">
             <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.assign_plan.info') %>
           </div>
@@ -152,10 +153,16 @@ function setAssignPlanModalData(button) {
   const form = document.getElementById('assignPlanForm');
   const modalTitle = document.getElementById('assignPlanModalLabel');
   const submitBtn = document.getElementById('assignPlanSubmitBtn');
+  const infoAlert = document.getElementById('assignPlanInfoAlert');
 
   document.getElementById('productsAdjustSection').style.display = 'none';
   document.getElementById('productsContainer').innerHTML = '';
   window.currentPlanProducts = [];
+
+  // 初期状態：ヒントアラートを表示
+  if (infoAlert) {
+    infoAlert.style.display = 'block';
+  }
 
   if (scheduleId) {
     modalTitle.textContent = window.assignPlanI18n.editTitle;
@@ -253,6 +260,7 @@ function setAssignPlanModalData(button) {
 function handleCategoryChange(select) {
   const category = select.value;
   const planSelect = document.getElementById('assignPlanSelect');
+  const infoAlert = document.getElementById('assignPlanInfoAlert');
 
   console.log('handleCategoryChange called:', category); // デバッグ用
 
@@ -265,6 +273,11 @@ function handleCategoryChange(select) {
     planSelect.disabled = true;
     const plannedRevenueFieldEmpty = document.getElementById('plannedRevenue');
     if (plannedRevenueFieldEmpty) plannedRevenueFieldEmpty.value = '';
+
+    // カテゴリー未選択時はヒントを表示
+    if (infoAlert) {
+      infoAlert.style.display = 'block';
+    }
     return;
   }
 
@@ -302,18 +315,29 @@ function handleCategoryChange(select) {
 
 function handlePlanChange(select) {
   const selectedOption = select.selectedOptions[0];
+  const infoAlert = document.getElementById('assignPlanInfoAlert');
 
   if (selectedOption && selectedOption.value) {
     const products = JSON.parse(selectedOption.dataset.products || '[]');
     window.currentPlanProducts = products;
 
     displayProducts(products);
+
+    // 計画が選択されたらヒントを非表示
+    if (infoAlert) {
+      infoAlert.style.display = 'none';
+    }
   } else {
     document.getElementById('productsAdjustSection').style.display = 'none';
     document.getElementById('productsContainer').innerHTML = '';
     const plannedRevenueFieldReset = document.getElementById('plannedRevenue');
     if (plannedRevenueFieldReset) plannedRevenueFieldReset.value = '';
     window.currentPlanProducts = [];
+
+    // 計画未選択時はヒントを表示
+    if (infoAlert) {
+      infoAlert.style.display = 'block';
+    }
   }
 }
 

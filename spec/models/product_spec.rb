@@ -33,7 +33,7 @@ RSpec.describe Resources::Product, type: :model do
       expect(product.errors[:price]).to include('0より大きい値を入力してください')
     end
 
-    it 'カテゴリがなければ無効であること' do
+    it 'カテゴリ―がなければ無効であること' do
       product = build(:product, category: nil)
       product.valid?
       expect(product.errors[:category]).to include('を入力してください')
@@ -67,7 +67,7 @@ RSpec.describe Resources::Product, type: :model do
   end
 
   describe 'アソシエーション' do
-    it 'カテゴリに属していること' do
+    it 'カテゴリ―に属していること' do
       product = create(:product)
       expect(product.category).to be_present
     end

@@ -26,7 +26,7 @@ RSpec.describe "Materials", type: :request do
         expect(response).to render_template(:index)
       end
 
-      it '@material_categoriesにカテゴリを割り当てること' do
+      it '@material_categoriesにカテゴリ―を割り当てること' do
         get materials_path
         expect(assigns(:material_categories)).not_to be_nil
       end
@@ -66,7 +66,7 @@ RSpec.describe "Materials", type: :request do
         expect(assigns(:material)).to be_a_new(Material)
       end
 
-      it '@material_categoriesにカテゴリを割り当てること' do
+      it '@material_categoriesにカテゴリ―を割り当てること' do
         get new_material_path
         expect(assigns(:material_categories)).not_to be_nil
       end
@@ -190,7 +190,7 @@ RSpec.describe "Materials", type: :request do
         expect(assigns(:material)).to eq(material)
       end
 
-      it '@material_categoriesにカテゴリを割り当てること' do
+      it '@material_categoriesにカテゴリ―を割り当てること' do
         get edit_material_path(material)
         expect(assigns(:material_categories)).not_to be_nil
       end

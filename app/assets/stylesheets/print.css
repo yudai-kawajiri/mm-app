@@ -92,9 +92,13 @@
   }
 
   .page-break {
+    display: block;
+    page-break-before: always;
+    page-break-inside: avoid;
     margin: 0;
     border: none;
     padding: 0;
+    height: 0;
   }
 
   .print-footer {

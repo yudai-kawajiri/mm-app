@@ -8,12 +8,12 @@
 //     data-controller="plan-assignment"
 //     data-bs-backdrop="static"
 //   >
-//     <!-- カテゴリ選択 -->
+//     <!-- カテゴリ―選択 -->
 //     <select
 //       data-plan-assignment-target="category"
 //       data-action="change->plan-assignment#updatePlans"
 //     >
-//       <option value="">カテゴリを選択</option>
+//       <option value="">カテゴリ―を選択</option>
 //     </select>
 //
 //     <!-- 計画選択 -->
@@ -33,16 +33,16 @@
 //   </div>
 //
 // 機能:
-// - カテゴリ選択に応じた計画の動的読み込み
+// - カテゴリ―選択に応じた計画の動的読み込み
 // - 計画選択時の予定売上自動表示
 // - モーダル開閉時の状態リセット
 // - グローバル変数 window.plansByCategory からデータ取得
 //
 // Targets:
-// - category: カテゴリセレクトボックス
+// - category: カテゴリ―セレクトボックス
 // - plan: 計画セレクトボックス
 // - plannedRevenue: 予定売上表示フィールド
-// - categoryGroup: カテゴリ選択グループ
+// - categoryGroup: カテゴリ―選択グループ
 // - planGroup: 計画選択グループ
 //
 // 必須データ:
@@ -135,7 +135,7 @@ export default class extends Controller {
   }
 
   // データ読み込みメソッド
-  // window.plansByCategory からカテゴリ別の計画データを読み込む
+  // window.plansByCategory からカテゴリ―別の計画データを読み込む
   // connect と show.bs.modal で共通使用
   loadPlansData() {
     this.plansData = window[GLOBAL_DATA.PLANS_BY_CATEGORY] || DEFAULT_VALUE.EMPTY_OBJECT
@@ -145,13 +145,13 @@ export default class extends Controller {
 
   // モーダルリセット処理
   // モーダルを初期状態に戻す:
-  // - カテゴリと計画の選択をクリア
+  // - カテゴリ―と計画の選択をクリア
   // - 予定売上をクリア
-  // - カテゴリグループを表示、計画グループを非表示
+  // - カテゴリ―グループを表示、計画グループを非表示
   resetModal() {
     Logger.log(LOG_MESSAGES.RESET_MODAL)
 
-    // カテゴリと計画の選択をリセット
+    // カテゴリ―と計画の選択をリセット
     if (this.hasCategoryTarget) {
       this.categoryTarget.value = DEFAULT_VALUE.EMPTY_STRING
     }
@@ -163,7 +163,7 @@ export default class extends Controller {
       this.plannedRevenueTarget.value = DEFAULT_VALUE.EMPTY_STRING
     }
 
-    // カテゴリグループを表示、計画グループを非表示
+    // カテゴリ―グループを表示、計画グループを非表示
     if (this.hasCategoryGroupTarget) {
       this.categoryGroupTarget.style.display = DISPLAY_STYLE.SHOW
     }
@@ -177,8 +177,8 @@ export default class extends Controller {
     return `<option ${HTML_ATTRIBUTE.VALUE}="${DEFAULT_VALUE.EMPTY_STRING}">${i18n.t(I18N_KEYS.SELECT_PLAN)}</option>`
   }
 
-  // カテゴリ選択時の処理
-  // 選択されたカテゴリに対応する計画を計画セレクトボックスに追加する
+  // カテゴリ―選択時の処理
+  // 選択されたカテゴリ―に対応する計画を計画セレクトボックスに追加する
   // 計画がある場合は計画グループを表示
   updatePlans(event) {
     const category = event.target.value
@@ -201,7 +201,7 @@ export default class extends Controller {
       return
     }
 
-    // カテゴリに対応する計画を取得
+    // カテゴリ―に対応する計画を取得
     const plans = this.plansData[category]
     Logger.log(LOG_MESSAGES.PLANS_FOR_CATEGORY(category), plans)
 

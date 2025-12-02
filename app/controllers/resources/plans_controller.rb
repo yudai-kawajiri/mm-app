@@ -5,7 +5,7 @@
 # 製造計画（Plan）のCRUD操作を管理
 #
 # 機能:
-#   - 計画の一覧表示（検索・カテゴリフィルタ・ページネーション・ソート機能）
+#   - 計画の一覧表示（検索・カテゴリ―フィルタ・ページネーション・ソート機能）
 #   - 計画の作成・編集・削除
 #   - 計画のコピー・印刷機能
 class Resources::PlansController < AuthenticatedController
@@ -137,10 +137,10 @@ class Resources::PlansController < AuthenticatedController
       # params[:date]から日付を取得（必須）
       if params[:date].present?
         @scheduled_date = Date.parse(params[:date])
-        
+
         # 該当日付のPlanScheduleを取得
         @plan_schedule = @plan.plan_schedules.find_by(scheduled_date: @scheduled_date)
-        
+
         # その日の目標額を取得（DailyTargetから）
         daily_target = Management::DailyTarget
                         .where(user_id: current_user.id)

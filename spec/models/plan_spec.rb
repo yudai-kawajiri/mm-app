@@ -15,7 +15,7 @@ RSpec.describe Resources::Plan, type: :model do
       expect(plan.errors[:status]).to include('を入力してください')
     end
 
-    it 'カテゴリがなければ無効であること' do
+    it 'カテゴリ―がなければ無効であること' do
       plan = build(:plan, category: nil)
       plan.valid?
       expect(plan.errors[:category]).to include('を入力してください')
@@ -49,7 +49,7 @@ RSpec.describe Resources::Plan, type: :model do
   end
 
   describe 'アソシエーション' do
-    it 'カテゴリに属していること' do
+    it 'カテゴリ―に属していること' do
       plan = create(:plan)
       expect(plan.category).to be_present
     end

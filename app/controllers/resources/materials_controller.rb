@@ -5,7 +5,7 @@
 # 原材料（Material）のCRUD操作を管理
 #
 # 機能:
-#   - 原材料の一覧表示（検索・カテゴリフィルタ・ページネーション・ソート機能）
+#   - 原材料の一覧表示（検索・カテゴリ―フィルタ・ページネーション・ソート機能）
 #   - 原材料の作成・編集・削除
 #   - 原材料のコピー
 class Resources::MaterialsController < AuthenticatedController

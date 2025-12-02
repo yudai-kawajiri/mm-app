@@ -32,6 +32,7 @@ pin "controllers/charts/budget_chart_controller", to: "controllers/charts/budget
 pin "controllers/management/order_group_controller", to: "controllers/management/order_group_controller.js"
 pin "controllers/management/plan_assignment_controller", to: "controllers/management/plan_assignment_controller.js"
 pin "controllers/management/assign_plan_info_controller", to: "controllers/management/assign_plan_info_controller.js"
+pin "controllers/management/daily_details_controller", to: "controllers/management/daily_details_controller.js"
 
 # Resources Controllers
 pin "controllers/resources/plan-product/row_controller", to: "controllers/resources/plan-product/row_controller.js"
@@ -41,6 +42,7 @@ pin "controllers/resources/product-material/material_controller", to: "controlle
 
 # Help Controllers
 pin "controllers/help_search_controller", to: "controllers/help_search_controller.js"
+pin "controllers/video_modal_controller", to: "controllers/video_modal_controller.js"
 
 # Form Validation Controller
 pin "controllers/form_validation_controller", to: "controllers/form_validation_controller.js"

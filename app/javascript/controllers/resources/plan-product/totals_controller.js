@@ -1,10 +1,10 @@
 // Plan Product Totals Controller
 //
-// 製造計画の商品行の総合計・カテゴリ別合計を管理する親コントローラー
+// 製造計画の商品行の総合計・カテゴリ―別合計を管理する親コントローラー
 //
 // 責務:
 // - 全商品行の総合計金額計算
-// - カテゴリ別合計金額計算
+// - カテゴリ―別合計金額計算
 // - 合計表示要素の更新
 // - 子コントローラー（商品行・タブ）からの再計算イベント処理
 //
@@ -16,7 +16,7 @@
 //
 // Targets:
 // - grandTotal: 総合計表示要素
-// - categoryTotal: カテゴリ別合計表示要素
+// - categoryTotal: カテゴリ―別合計表示要素
 // - totalContainer: 合計コンテナ要素
 
 import { Controller } from "@hotwired/stimulus"
@@ -120,9 +120,9 @@ export default class extends Controller {
     this.updateTimeout = setTimeout(() => this.updateTotals(), DELAY_MS.RECALCULATION)
   }
 
-  // 総合計とカテゴリ合計を更新
+  // 総合計とカテゴリ―合計を更新
   // ALLタブ内の全商品行を走査し、子コントローラーから値を取得して集計
-  // カテゴリ別合計と総合計を算出し、対応する表示要素を更新する
+  // カテゴリ―別合計と総合計を算出し、対応する表示要素を更新する
   updateTotals() {
     // 既に更新中なら無視
     if (this.isUpdatingTotals) {
@@ -184,7 +184,7 @@ export default class extends Controller {
           grandTotal += values.subtotal
           rowCount++
 
-          // カテゴリ別集計（カテゴリIDが有効な場合）
+          // カテゴリ―別集計（カテゴリ―IDが有効な場合）
           if (values.categoryId && values.categoryId !== DEFAULT_VALUE.ZERO) {
             if (!categoryTotals[values.categoryId]) {
               categoryTotals[values.categoryId] = DEFAULT_VALUE.ZERO
@@ -209,7 +209,7 @@ export default class extends Controller {
   }
 
   // 表示を更新
-  // 総合計金額とカテゴリ別合計金額を表示要素に反映する
+  // 総合計金額とカテゴリ―別合計金額を表示要素に反映する
   updateDisplay(grandTotal, categoryTotals) {
     // 総合計の更新
     if (this.hasGrandTotalTarget) {
@@ -219,7 +219,7 @@ export default class extends Controller {
       Logger.warn(LOG_MESSAGES.GRAND_TOTAL_TARGET_NOT_FOUND)
     }
 
-    // カテゴリ別合計の更新
+    // カテゴリ―別合計の更新
     if (this.hasCategoryTotalTarget) {
       this.categoryTotalTargets.forEach(target => {
         const categoryId = target.dataset[DATA_ATTRIBUTE.CATEGORY_ID]

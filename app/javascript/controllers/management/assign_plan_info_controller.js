@@ -22,7 +22,7 @@ export default class extends Controller {
     }
   }
 
-  // カテゴリ変更時に呼ばれる（計画選択がリセットされるので、infoを表示）
+  // カテゴリ―変更時に呼ばれる（計画選択がリセットされるので、infoを表示）
   handleCategoryChange() {
     this.showInfo()
   }
