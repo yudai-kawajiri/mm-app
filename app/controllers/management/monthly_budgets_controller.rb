@@ -8,7 +8,7 @@
 #   - 月次予算の作成・更新
 #   - 月次予算の削除（日別目標・計画スケジュールも連動）
 #   - 実績入力済みスケジュールの保護
-#   - 見切り率の更新
+#   - 見切率の更新
 class Management::MonthlyBudgetsController < ApplicationController
   include NumericSanitizer
 
@@ -82,7 +82,7 @@ class Management::MonthlyBudgetsController < ApplicationController
                 alert: t("numerical_managements.messages.budget_delete_failed")
   end
 
-  # 見切り率を更新
+  # 見切率を更新
   def update_discount_rates
     # NumericSanitizerを使って全角→半角変換 & サニタイズ
     cleaned_params = sanitize_numeric_params(
@@ -132,7 +132,7 @@ class Management::MonthlyBudgetsController < ApplicationController
     )
   end
 
-  # 見切り率用パラメータ
+  # 見切率用パラメータ
   def discount_rate_params
     param_key = params.key?(:management_monthly_budget) ? :management_monthly_budget : :monthly_budget
     params.require(param_key).permit(:forecast_discount_rate, :target_discount_rate)

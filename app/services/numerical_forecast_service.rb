@@ -64,7 +64,7 @@ class NumericalForecastService
     # データ取得
     target = budget.target_amount || 0
 
-    # 見切り率の取得
+    # 見切率の取得
     forecast_discount_rate = budget.forecast_discount_rate || 0
     target_discount_rate = budget.target_discount_rate || 0
 
@@ -88,7 +88,7 @@ class NumericalForecastService
     # 月全体の計画高（月間計画売上カード用）
     total_planned_amount = all_schedules.sum { |ps| ps.current_planned_revenue }
 
-    # 月末予測売上 = 確定実績 + 実績未入力の計画高 × (1 - 予測見切り率/100)
+    # 月末予測売上 = 確定実績 + 実績未入力の計画高 × (1 - 予測見切率/100)
     discount_multiplier = 1 - (forecast_discount_rate / PERCENTAGE_MULTIPLIER)
     adjusted_planned = (unconfirmed_planned_total * discount_multiplier).round(AMOUNT_PRECISION)
     forecast = actual_confirmed + adjusted_planned
@@ -117,7 +117,7 @@ class NumericalForecastService
     # 必要追加高（予算に達していない場合のみ）
     required_additional = diff < 0 ? diff.abs : 0
 
-    # 推奨日次目標 = (必要追加高 ÷ 残り日数) ÷ (1 - 目標見切り率/100)
+    # 推奨日次目標 = (必要追加高 ÷ 残り日数) ÷ (1 - 目標見切率/100)
     daily_required = if remaining_days > 0 && required_additional > 0
                         target_discount_multiplier = 1 - (target_discount_rate / PERCENTAGE_MULTIPLIER)
                         if target_discount_multiplier > 0
