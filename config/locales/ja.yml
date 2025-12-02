@@ -330,7 +330,7 @@ ja:
       daily_budget_and_actual:
         title: "日別予算と実績の一括編集"
         description: "日別の予算設定と実績入力をモーダルから一括で行う方法"
-        youtube_id: "YOUTUBE_VIDEO_ID_HERE"
+        youtube_id: "oi31X3xv7zg"
       loss_rate_setting:
         title: "見切率の設定"
         description: "予測売上と、必要追加高を計算するための見切率を設定する方法"
