@@ -36,33 +36,45 @@
     <div class="mb-3" data-help-search-target="videoCategory">
       <h5 class="mb-2">
         <a class="text-decoration-none d-block"
-           data-bs-toggle="collapse"
-           href="#collapseBasic"
-           role="button"
-           aria-expanded="false"
-           aria-controls="collapseBasic">
+          data-bs-toggle="collapse"
+          href="#collapseBasic"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseBasic">
           <%= t('help.ui.expand_arrow') %> <%= t('help.categories.basic_operations') %>
         </a>
       </h5>
       <div class="collapse" id="collapseBasic">
         <div class="row g-3">
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.search_function'),
-                     youtube_id: t('help.videos.search_function.youtube_id'),
-                     title: t('help.videos.search_function.title'),
-                     description: t('help.videos.search_function.description') %>
+                    keywords: t('help.video_keywords.crud_operations'),
+                    youtube_id: t('help.videos.crud_operations.youtube_id'),
+                    title: t('help.videos.crud_operations.title'),
+                    description: t('help.videos.crud_operations.description') %>
 
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.copy_function'),
-                     youtube_id: t('help.videos.copy_function.youtube_id'),
-                     title: t('help.videos.copy_function.title'),
-                     description: t('help.videos.copy_function.description') %>
+                    keywords: t('help.video_keywords.search_function'),
+                    youtube_id: t('help.videos.search_function.youtube_id'),
+                    title: t('help.videos.search_function.title'),
+                    description: t('help.videos.search_function.description') %>
 
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.print_function'),
-                     youtube_id: t('help.videos.print_function.youtube_id'),
-                     title: t('help.videos.print_function.title'),
-                     description: t('help.videos.print_function.description') %>
+                    keywords: t('help.video_keywords.copy_function'),
+                    youtube_id: t('help.videos.copy_function.youtube_id'),
+                    title: t('help.videos.copy_function.title'),
+                    description: t('help.videos.copy_function.description') %>
+
+          <%= render 'shared/video_card',
+                    keywords: t('help.video_keywords.status_update'),
+                    youtube_id: t('help.videos.status_update.youtube_id'),
+                    title: t('help.videos.status_update.title'),
+                    description: t('help.videos.status_update.description') %>
+
+          <%= render 'shared/video_card',
+                    keywords: t('help.video_keywords.print_function'),
+                    youtube_id: t('help.videos.print_function.youtube_id'),
+                    title: t('help.videos.print_function.title'),
+                    description: t('help.videos.print_function.description') %>
         </div>
       </div>
     </div>

@@ -302,14 +302,22 @@ ja:
       search_function:
         title: "検索機能の使い方"
         description: "キーワード入力による絞り込み検索の方法"
-        youtube_id: ""
+        youtube_id: "ebQuolQ27P0"
       copy_function:
         title: "コピー機能の使い方"
         description: "既存データの複製方法"
         youtube_id: ""
+      status_update:
+        title: "ステータス更新の使い方"
+        description: "一覧画面からステータスを素早く変更する方法を説明します。"
+        youtube_id: ""
+      crud_operations:
+        title: "基本操作の使い方"
+        description: "一覧、登録、詳細、編集、削除の基本操作を説明します。"
+        youtube_id: "lO3DTU1I-D4"
       print_function:
         title: "印刷機能の使い方"
-        description: "各画面からの印刷・出力方法"
+        description: "印刷画面での並び順の変更と、各画面からのプレビュー・印刷方法"
         youtube_id: ""
       monthly_budget:
         title: "月間予算の設定"
@@ -346,15 +354,17 @@ ja:
       product:
         title: "商品の使い方"
         description: "商品の登録と原材料紐付け"
-        youtube_id: ""
+        youtube_id: "P7bMCcHikd8"
       plan:
         title: "製造計画の使い方"
         description: "製造計画の登録と商品紐付け"
-        youtube_id: ""
+        youtube_id: "7zy-RftXQHQ"
 
     video_keywords:
       search_function: "検索 フィルター 絞り込み キーワード"
       copy_function: "コピー 複製 データ"
+      status_update: "ステータス 状態 更新 変更 一覧"
+      crud_operations: "基本操作 一覧 登録 詳細 編集 更新 削除 "
       print_function: "印刷 出力 プリント PDF"
       monthly_budget: "月間 予算 設定 売上"
       daily_target: "日別 目標 設定"

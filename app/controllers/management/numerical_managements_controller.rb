@@ -46,9 +46,23 @@ class Management::NumericalManagementsController < ApplicationController
   end
 
   def update_daily_target
+    # デバッグログ追加
+    Rails.logger.debug "===== DEBUG: update_daily_target ====="
+    Rails.logger.debug "params: #{params.inspect}"
+    Rails.logger.debug "management_daily_target: #{params[:management_daily_target].inspect}"
+    Rails.logger.debug "daily_target: #{params[:daily_target].inspect}"
+
     key = params.key?(:management_daily_target) ? :management_daily_target : :daily_target
+
+    Rails.logger.debug "key: #{key}"
+    Rails.logger.debug "params[key]: #{params[key].inspect}"
+
     date_param = params[key][:target_date] || params[key][:date]
     target_param = params[key][:target_amount] || params[key][:target]
+
+    Rails.logger.debug "date_param: #{date_param}"
+    Rails.logger.debug "target_param: #{target_param}"
+    # デバッグログここまで
 
     date = Date.parse(date_param)
 
@@ -71,7 +85,6 @@ class Management::NumericalManagementsController < ApplicationController
 
     # 予算超過チェック
     if monthly_budget.target_amount > 0
-      # 現在の日別予算の合計を計算（更新対象を除く）
       current_total = monthly_budget.daily_targets
                                     .where.not(id: daily_target.id)
                                     .sum(:target_amount)
@@ -139,45 +152,44 @@ class Management::NumericalManagementsController < ApplicationController
 
   private
 
-    def convert_daily_data_to_bulk_params(daily_data)
-      monthly_budgets = {}
-      daily_targets = {}
-      plan_schedule_actuals = {}
+  def convert_daily_data_to_bulk_params(daily_data)
+    monthly_budgets = {}
+    daily_targets = {}
+    plan_schedule_actuals = {}
 
-      daily_data.each do |index, day_attrs|
-        # 日別目標の処理（target_amountが0以外の場合のみ）
-        target_amount = day_attrs[:target_amount].to_i
-        if target_amount > 0
-          if day_attrs[:target_id].present?
-            # 既存の日別目標を更新
-            daily_targets[day_attrs[:target_id]] = {
-              target_amount: day_attrs[:target_amount],
-              target_date: day_attrs[:date]
-            }
-          else
-            # 新規作成の場合は日付をキーにする
-            daily_targets[day_attrs[:date]] = {
-              target_amount: day_attrs[:target_amount],
-              target_date: day_attrs[:date]
-            }
-          end
-        end
-
-        # 実績の処理
-        if day_attrs[:plan_schedule_id].present? && day_attrs[:actual_revenue].present?
-          plan_schedule_actuals[day_attrs[:plan_schedule_id]] = {
-            actual_revenue: day_attrs[:actual_revenue]
+    daily_data.each do |index, day_attrs|
+      # 日別目標の処理（target_amountが0以外の場合のみ）
+      target_amount = day_attrs[:target_amount].to_i
+      if target_amount > 0
+        if day_attrs[:target_id].present?
+          # 既存の日別目標を更新
+          daily_targets[day_attrs[:target_id]] = {
+            target_amount: day_attrs[:target_amount],
+            target_date: day_attrs[:date]
+          }
+        else
+          # 新規作成の場合は日付をキーにする
+          daily_targets[day_attrs[:date]] = {
+            target_amount: day_attrs[:target_amount],
+            target_date: day_attrs[:date]
           }
         end
       end
 
-      {
-        monthly_budgets: monthly_budgets,
-        daily_targets: daily_targets,
-        plan_schedule_actuals: plan_schedule_actuals
-      }
+      # 実績の処理
+      if day_attrs[:plan_schedule_id].present? && day_attrs[:actual_revenue].present?
+        plan_schedule_actuals[day_attrs[:plan_schedule_id]] = {
+          actual_revenue: day_attrs[:actual_revenue]
+        }
+      end
     end
 
+    {
+      monthly_budgets: monthly_budgets,
+      daily_targets: daily_targets,
+      plan_schedule_actuals: plan_schedule_actuals
+    }
+  end
 
   def bulk_update_params
     params.permit(

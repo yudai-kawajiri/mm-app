@@ -1,5 +1,5 @@
 <%# 日別明細テーブル(一括編集機能付き) %>
-<div class="card" data-controller="management--daily-details" data-management--daily-details-monthly-budget-value="<%= @monthly_budget&.target_amount || 0 %>" data-management--daily-details-shortage-text-value="<%= t('numerical_managements.bulk_edit.shortage') %>" data-management--daily-details-excess-text-value="<%= t('numerical_managements.bulk_edit.excess') %>">
+<div class="card" data-controller="management--daily-details numerical-modal" data-management--daily-details-monthly-budget-value="<%= @monthly_budget&.target_amount || 0 %>" data-management--daily-details-shortage-text-value="<%= t('numerical_managements.bulk_edit.shortage') %>" data-management--daily-details-excess-text-value="<%= t('numerical_managements.bulk_edit.excess') %>">
   <div class="card-header d-flex justify-content-between align-items-center">
     <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
     <button type="button"

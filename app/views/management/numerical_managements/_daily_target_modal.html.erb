@@ -7,17 +7,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <%= form_with model: Management::DailyTarget.new,
-                    url: update_daily_target_management_numerical_managements_path,
+      <%= form_with url: update_daily_target_management_numerical_managements_path,
                     method: :patch,
                     local: true,
                     id: "editTargetForm" do |f| %>
 
         <div class="modal-body">
           <!-- Hidden fields for date parameters -->
-          <%= hidden_field_tag :year, '', id: 'editTargetYear' %>
-          <%= hidden_field_tag :month, '', id: 'editTargetMonth' %>
-          <%= hidden_field_tag :date, '', id: 'editTargetDateValue' %>
+          <%= hidden_field_tag 'management_daily_target[year]', '', id: 'editTargetYear' %>
+          <%= hidden_field_tag 'management_daily_target[month]', '', id: 'editTargetMonth' %>
+          <%= hidden_field_tag 'management_daily_target[target_date]', '', id: 'editTargetDateValue' %>
 
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.labels.target_date') %></label>
@@ -25,8 +24,8 @@
           </div>
 
           <div class="mb-3">
-            <%= f.label :target_amount, t('numerical_managements.modals.labels.daily_target_yen'), class: "form-label" %>
-            <%= f.text_field :target_amount,
+            <label for="editTargetAmount" class="form-label"><%= t('numerical_managements.modals.labels.daily_target_yen') %></label>
+            <%= text_field_tag 'management_daily_target[target_amount]', '',
               class: "form-control",
               required: true,
               id: "editTargetAmount",
@@ -43,9 +42,47 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common.cancel') %></button>
-          <%= f.submit t('common.update'), class: "btn btn-primary" %>
+          <%= submit_tag t('common.update'), class: "btn btn-primary" %>
         </div>
       <% end %>
     </div>
   </div>
 </div>
+
+<script>
+function setEditModalData(button) {
+  const date = button.dataset.date;
+  const targetAmount = button.dataset.targetAmount;
+
+  console.log('setEditModalData called:', { date, targetAmount });
+
+  if (!date) {
+    console.error('data-date attribute is missing');
+    return;
+  }
+
+  // 日付を分解
+  const dateObj = new Date(date);
+  const year = dateObj.getFullYear();
+  const month = dateObj.getMonth() + 1;
+  const day = dateObj.getDate();
+
+  // 表示用の日付
+  const displayDate = `${month}月${day}日`;
+
+  // モーダルのフィールドに値を設定
+  document.getElementById('editTargetYear').value = year;
+  document.getElementById('editTargetMonth').value = month;
+  document.getElementById('editTargetDateValue').value = date;
+  document.getElementById('editTargetDate').textContent = displayDate;
+  document.getElementById('editTargetAmount').value = targetAmount || '';
+
+  console.log('Modal fields set:', {
+    year: document.getElementById('editTargetYear').value,
+    month: document.getElementById('editTargetMonth').value,
+    date: document.getElementById('editTargetDateValue').value,
+    displayDate: document.getElementById('editTargetDate').textContent,
+    targetAmount: document.getElementById('editTargetAmount').value
+  });
+}
+</script>
