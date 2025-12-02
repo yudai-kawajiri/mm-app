@@ -306,42 +306,46 @@ ja:
       copy_function:
         title: "コピー機能の使い方"
         description: "既存データの複製方法"
-        youtube_id: ""
+        youtube_id: "lL0zQMALkkM"
       status_update:
         title: "ステータス更新の使い方"
-        description: "一覧画面からステータスを素早く変更する方法を説明します。"
-        youtube_id: ""
+        description: "一覧画面からのステータス変更方法"
+        youtube_id: "eSg2Ner68Fs"
       crud_operations:
         title: "基本操作の使い方"
-        description: "一覧、登録、詳細、編集、削除の基本操作を説明します。"
+        description: "一覧、登録、詳細、編集、削除の操作方法"
         youtube_id: "lO3DTU1I-D4"
       print_function:
         title: "印刷機能の使い方"
         description: "印刷画面での並び順の変更と、各画面からのプレビュー・印刷方法"
-        youtube_id: ""
+        youtube_id: "OhnGRAiTTPQ"
+      plan_assignment:
+        title: "製造計画の登録"
+        description: "日別の製造計画の登録方法"
+        youtube_id: "YOUTUBE_VIDEO_ID_HERE"
       monthly_budget:
         title: "月間予算の設定"
-        description: "月全体の売上目標金額を登録する"
-        youtube_id: ""
+        description: "月全体の売上目標金額の登録方法"
+        youtube_id: "P6k6UWzaOJM"
       daily_target:
         title: "日別目標の調整"
-        description: "各日ごとの売上目標額を個別に入力"
+        description: "各日ごとの売上目標額の入力方法"
         youtube_id: ""
       actual_confirmation:
         title: "実績の確認方法"
-        description: "製造計画から自動反映された売上実績を確認"
+        description: "製造計画から自動反映された売上実績の確認方法"
         youtube_id: ""
       bulk_edit:
         title: "一括編集機能"
-        description: "複数日分の目標を同時にまとめて変更"
+        description: "複数日分の目標を同時にまとめて変更する方法"
         youtube_id: ""
       category:
         title: "カテゴリーの使い方"
-        description: "原材料・商品・計画の分類設定"
+        description: "原材料・商品・計画の分類を設定する方法"
         youtube_id: "wF37663W1gE"
       unit:
         title: "単位の使い方"
-        description: "製造・発注・使用単位の設定"
+        description: "製造・発注・使用単位を設定する方法"
         youtube_id: "wF37663W1gE"
       material:
         title: "原材料の使い方"
@@ -349,15 +353,15 @@ ja:
         youtube_id: "A3YnvlfJcEY"
       order_group:
         title: "発注グループの使い方"
-        description: "発注グループの登録"
+        description: "発注グループの登録方法"
         youtube_id: "ndedyZjxja0"
       product:
         title: "商品の使い方"
-        description: "商品の登録と原材料紐付け"
+        description: "商品の登録と原材料紐付け方法"
         youtube_id: "P7bMCcHikd8"
       plan:
         title: "製造計画の使い方"
-        description: "製造計画の登録と商品紐付け"
+        description: "製造計画の登録と商品紐付け方法"
         youtube_id: "7zy-RftXQHQ"
 
     video_keywords:
@@ -369,6 +373,7 @@ ja:
       monthly_budget: "月間 予算 設定 売上"
       daily_target: "日別 目標 設定"
       actual_confirmation: "実績 入力 売上"
+      plan_assignment: "計画登録 計画 登録 数値管理 実績 印刷"
       bulk_edit: "一括 編集 まとめて"
       category: "カテゴリ― 種別 分類"
       unit: "単位 g kg 個"

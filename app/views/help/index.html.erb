@@ -83,39 +83,45 @@
     <div class="mb-3" data-help-search-target="videoCategory">
       <h5 class="mb-2">
         <a class="text-decoration-none d-block"
-           data-bs-toggle="collapse"
-           href="#collapseNumerical"
-           role="button"
-           aria-expanded="false"
-           aria-controls="collapseNumerical">
+            data-bs-toggle="collapse"
+            href="#collapseNumerical"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseNumerical">
           <%= t('help.ui.expand_arrow') %> <%= t('help.categories.numerical_management') %>
         </a>
       </h5>
       <div class="collapse" id="collapseNumerical">
         <div class="row g-3">
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.monthly_budget'),
-                     youtube_id: t('help.videos.monthly_budget.youtube_id'),
-                     title: t('help.videos.monthly_budget.title'),
-                     description: t('help.videos.monthly_budget.description') %>
+                      keywords: t('help.video_keywords.monthly_budget'),
+                      youtube_id: t('help.videos.monthly_budget.youtube_id'),
+                      title: t('help.videos.monthly_budget.title'),
+                      description: t('help.videos.monthly_budget.description') %>
 
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.daily_target'),
-                     youtube_id: t('help.videos.daily_target.youtube_id'),
-                     title: t('help.videos.daily_target.title'),
-                     description: t('help.videos.daily_target.description') %>
+                      keywords: t('help.video_keywords.daily_target'),
+                      youtube_id: t('help.videos.daily_target.youtube_id'),
+                      title: t('help.videos.daily_target.title'),
+                      description: t('help.videos.daily_target.description') %>
 
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.actual_confirmation'),
-                     youtube_id: t('help.videos.actual_confirmation.youtube_id'),
-                     title: t('help.videos.actual_confirmation.title'),
-                     description: t('help.videos.actual_confirmation.description') %>
+                      keywords: t('help.video_keywords.plan_assignment'),
+                      youtube_id: t('help.videos.plan_assignment.youtube_id'),
+                      title: t('help.videos.plan_assignment.title'),
+                      description: t('help.videos.plan_assignment.description') %>
 
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.bulk_edit'),
-                     youtube_id: t('help.videos.bulk_edit.youtube_id'),
-                     title: t('help.videos.bulk_edit.title'),
-                     description: t('help.videos.bulk_edit.description') %>
+                      keywords: t('help.video_keywords.actual_confirmation'),
+                      youtube_id: t('help.videos.actual_confirmation.youtube_id'),
+                      title: t('help.videos.actual_confirmation.title'),
+                      description: t('help.videos.actual_confirmation.description') %>
+
+          <%= render 'shared/video_card',
+                      keywords: t('help.video_keywords.bulk_edit'),
+                      youtube_id: t('help.videos.bulk_edit.youtube_id'),
+                      title: t('help.videos.bulk_edit.title'),
+                      description: t('help.videos.bulk_edit.description') %>
         </div>
       </div>
     </div>
@@ -124,11 +130,11 @@
     <div class="mb-3" data-help-search-target="videoCategory">
       <h5 class="mb-2">
         <a class="text-decoration-none d-block"
-           data-bs-toggle="collapse"
-           href="#collapseResource"
-           role="button"
-           aria-expanded="false"
-           aria-controls="collapseResource">
+            data-bs-toggle="collapse"
+            href="#collapseResource"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseResource">
           <%= t('help.ui.expand_arrow') %> <%= t('help.categories.resource_management') %>
         </a>
       </h5>
