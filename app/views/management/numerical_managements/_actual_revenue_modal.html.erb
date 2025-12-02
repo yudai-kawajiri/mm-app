@@ -14,7 +14,7 @@
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.labels.target_date') %></label>
-            <input type="text" class="form-control-plaintext" id="actualRevenueDate" readonly>
+            <input type="text" class="form-control-plaintext" id="actualRevenueDate" readonly value="">
           </div>
 
           <div class="mb-3">
@@ -69,11 +69,11 @@ function setActualModalData(button) {
   form.action = `/management/plan_schedules/${planScheduleId}/actual_revenue`;
 
   // モーダルのフィールドに値を設定
-  document.getElementById('actualRevenueDate').textContent = displayDate;
+  document.getElementById('actualRevenueDate').value = displayDate;
   document.getElementById('actualRevenueInput').value = actualRevenue || '';
 
   console.log('Actual modal fields set:', {
-    displayDate: document.getElementById('actualRevenueDate').textContent,
+    displayDate: document.getElementById('actualRevenueDate').value,
     actualRevenue: document.getElementById('actualRevenueInput').value,
     formAction: form.action
   });

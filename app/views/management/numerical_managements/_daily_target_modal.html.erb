@@ -20,7 +20,7 @@
 
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.labels.target_date') %></label>
-            <input type="text" class="form-control-plaintext" id="editTargetDate" readonly>
+            <input type="text" class="form-control-plaintext" id="editTargetDate" readonly value="">
           </div>
 
           <div class="mb-3">
@@ -74,14 +74,14 @@ function setEditModalData(button) {
   document.getElementById('editTargetYear').value = year;
   document.getElementById('editTargetMonth').value = month;
   document.getElementById('editTargetDateValue').value = date;
-  document.getElementById('editTargetDate').textContent = displayDate;
+  document.getElementById('editTargetDate').value = displayDate;  // textContent → value に修正
   document.getElementById('editTargetAmount').value = targetAmount || '';
 
   console.log('Modal fields set:', {
     year: document.getElementById('editTargetYear').value,
     month: document.getElementById('editTargetMonth').value,
     date: document.getElementById('editTargetDateValue').value,
-    displayDate: document.getElementById('editTargetDate').textContent,
+    displayDate: document.getElementById('editTargetDate').value,  // textContent → value に修正
     targetAmount: document.getElementById('editTargetAmount').value
   });
 }
