@@ -322,23 +322,19 @@ ja:
       plan_assignment:
         title: "製造計画の登録"
         description: "日別の製造計画の登録方法"
-        youtube_id: "YOUTUBE_VIDEO_ID_HERE"
+        youtube_id: "UpHiDK6z1eo"
       monthly_budget:
         title: "月間予算の設定"
         description: "月全体の売上目標金額の登録方法"
         youtube_id: "P6k6UWzaOJM"
-      daily_target:
-        title: "日別目標の調整"
-        description: "各日ごとの売上目標額の入力方法"
-        youtube_id: ""
-      actual_confirmation:
-        title: "実績の確認方法"
-        description: "製造計画から自動反映された売上実績の確認方法"
-        youtube_id: ""
-      bulk_edit:
-        title: "一括編集機能"
-        description: "複数日分の目標を同時にまとめて変更する方法"
-        youtube_id: ""
+      daily_budget_and_actual:
+        title: "日別予算と実績の一括編集"
+        description: "日別の予算設定と実績入力をモーダルから一括で行う方法"
+        youtube_id: "YOUTUBE_VIDEO_ID_HERE"
+      loss_rate_setting:
+        title: "見切り率の設定"
+        description: "商品ごとの見切り率（廃棄率）を設定する方法"
+        youtube_id: "YOUTUBE_VIDEO_ID_HERE"
       category:
         title: "カテゴリーの使い方"
         description: "原材料・商品・計画の分類を設定する方法"
@@ -371,10 +367,9 @@ ja:
       crud_operations: "基本操作 一覧 登録 詳細 編集 更新 削除 "
       print_function: "印刷 出力 プリント PDF"
       monthly_budget: "月間 予算 設定 売上"
-      daily_target: "日別 目標 設定"
-      actual_confirmation: "実績 入力 売上"
+      daily_budget_and_actual: "日別予算 実績入力 一括編集 モーダル 数値管理 予算編集 実績登録"
       plan_assignment: "計画登録 計画 登録 数値管理 実績 印刷"
-      bulk_edit: "一括 編集 まとめて"
+      loss_rate_setting: "見切り率 設定 商品 廃棄率 ロス率"
       category: "カテゴリ― 種別 分類"
       unit: "単位 g kg 個"
       material: "材料 原材料 登録 リソース 管理"
