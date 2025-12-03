@@ -26,27 +26,27 @@
 
 <div class="mt-4">
   <h6 class="form-label text-muted" style="font-size: 1.1em;"><%= t('material_order_groups.show.materials_using_this_group') %></h6>
-  <div class="p-3 border rounded" style="min-height: 210px;">
+  <div class="p-3 border rounded d-flex align-items-center justify-content-center" style="min-height: 210px;">
     <% if material_order_group.materials.any? %>
-      <div class="mb-2">
-        <span class="badge bg-info text-dark">
-          <%= t('material_order_groups.show.materials_count', count: material_order_group.materials.count) %>
-        </span>
+      <div class="w-100">
+        <div class="mb-2">
+          <span class="badge bg-info text-dark">
+            <%= t('material_order_groups.show.materials_count', count: material_order_group.materials.count) %>
+          </span>
+        </div>
+        <ul class="list-group">
+          <% material_order_group.materials.each do |material| %>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <%= link_to material.name, resources_material_path(material), class: 'text-decoration-none' %>
+              <small class="text-muted">
+                <%= material.category&.name %>
+              </small>
+            </li>
+          <% end %>
+        </ul>
       </div>
-      <ul class="list-group">
-        <% material_order_group.materials.each do |material| %>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <%= link_to material.name, resources_material_path(material), class: 'text-decoration-none' %>
-            <small class="text-muted">
-              <%= material.category&.name %>
-            </small>
-          </li>
-        <% end %>
-      </ul>
     <% else %>
-      <div class="d-flex align-items-center justify-content-center h-100">
-        <p class="text-muted mb-0"><%= t('material_order_groups.show.no_materials') %></p>
-      </div>
+      <p class="text-muted mb-0"><%= t('material_order_groups.show.no_materials') %></p>
     <% end %>
   </div>
 </div>
