@@ -150,6 +150,8 @@ ja:
       copy_success: "商品「%{original_name}」を「%{new_name}」としてコピーしました"
       copy_failed: "商品のコピーに失敗しました: %{error}"
       image_deleted: "画像を削除しました"
+      image_delete_failed: "画像の削除に失敗しました"
+      confirm_delete_image: "この画像を削除しますか?"
       status_updated: "商品「%{name}」のステータスを「%{status}」に変更しました"
 
   # 計画
