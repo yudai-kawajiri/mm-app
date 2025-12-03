@@ -292,7 +292,7 @@ ja:
       default_title: "動画"
 
     video_card:
-      click_to_watch: "クリックして動画を見る"
+      click_to_watch: "クリックして動画を見る（字幕をONにして下さい）"
 
     sections:
       videos: "使い方動画"
@@ -424,10 +424,10 @@ ja:
             production_unit: "貫 (1貫の寿司)"
           row3:
             item: "サーモン"
-            usage_unit: "切れ (3切れ/刺身盛り)"
+            usage_unit: "切 (3切/枚)"
             order_unit: "柵 (1柵)"
             production_unit: "人前 (1人前の刺身盛り)"
-        note: "※ 各単位を正確に設定することで、材料の在庫管理・発注計算が正確になります。"
+        note: "※ 各単位を正確に設定することで、材料の発注計算が正確になります。"
 
       order_group:
         title: "発注グループ管理について"
