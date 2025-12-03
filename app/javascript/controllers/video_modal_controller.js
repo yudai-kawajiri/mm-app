@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import i18n from "controllers/i18n"
 
 export default class extends Controller {
   static targets = ["modal", "iframe", "title"]
@@ -7,7 +8,6 @@ export default class extends Controller {
     console.log("Video modal controller connected")
   }
 
-  // 動画カードがクリックされたときに呼ばれる
   open(event) {
     event.preventDefault()
 
@@ -16,7 +16,7 @@ export default class extends Controller {
 
     // YouTube IDが空の場合は準備中メッセージを表示
     if (!youtubeId || youtubeId === "") {
-      alert(`${title} の動画を準備中です`)
+      alert(i18n.t('help.video_modal.preparing', { title: title }))
       return
     }
 
@@ -32,7 +32,6 @@ export default class extends Controller {
     modal.show()
   }
 
-  // モーダルが閉じられたときに動画を停止
   close() {
     this.iframeTarget.src = ""
   }
