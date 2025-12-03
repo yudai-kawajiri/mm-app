@@ -38,6 +38,12 @@
         <div class="col">
           <div class="card border-light text-center">
             <div class="card-body p-2">
+              <div class="fw-bold small mb-1">
+                <%= l(weather[:date], format: :short) %>
+              </div>
+              <div class="text-muted small mb-2">
+                <%= l(weather[:date], format: '%a') %>
+              </div>
               <div class="my-2">
                 <img src="https://openweathermap.org/img/wn/<%= weather[:icon] %>@2x.png"
                       alt="<%= weather[:weather_description] %>"

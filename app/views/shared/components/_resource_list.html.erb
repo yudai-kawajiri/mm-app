@@ -10,6 +10,7 @@
 <% sortable = local_assigns.fetch(:sortable, false) %>
 <% sort_options = local_assigns[:sort_options] %>
 <% sort_placeholder = local_assigns[:sort_placeholder] %>
+<% search_name_proc = local_assigns[:search_name_proc] %>
 
 <% if copy_url_method.blank? && show_copy %>
   <% copy_url_method = "copy_#{resource_class.model_name.route_key.singularize}_path".to_sym %>
@@ -49,7 +50,17 @@
   </thead>
   <tbody>
     <% resources.each do |resource| %>
-      <tr data-id="<%= resource.id %>"<%= " data-display-order=\"#{resource.display_order || 999999}\"".html_safe if sortable && resource.respond_to?(:display_order) %>>
+      <%
+        # data-search-name の値を決定
+        search_name_value = if search_name_proc.present?
+          search_name_proc.call(resource)
+        else
+          resource.name
+        end
+      %>
+      <tr data-id="<%= resource.id %>"<%= " data-display-order=\"#{resource.display_order || 999999}\"".html_safe if sortable && resource.respond_to?(:display_order) %>
+          data-resource-search-target="row"
+          data-search-name="<%= search_name_value %>">
         <% if sortable %>
           <td class="drag-handle d-none text-center" style="cursor: move;">☰</td>
         <% end %>

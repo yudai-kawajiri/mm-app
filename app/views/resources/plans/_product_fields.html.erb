@@ -15,7 +15,14 @@
 
   <td style="width: 35%;">
     <% current_category_id = f.object.product&.category_id || local_assigns[:category_id] %>
-    <% products = current_category_id ? Resources::Product.where(category_id: current_category_id) : Resources::Product.all %>
+    <%
+      # ステータスが selling (販売中) の商品のみを表示
+      products = if current_category_id
+        Resources::Product.where(category_id: current_category_id, status: :selling)
+      else
+        Resources::Product.where(status: :selling)
+      end
+    %>
     <%= f.collection_select(:product_id, products, :id, :name,
         { include_blank: t('helpers.prompt.select') },
         { class: 'form-select form-select-sm',

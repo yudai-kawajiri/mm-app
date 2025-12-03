@@ -9,11 +9,19 @@
     is_show_page: false,
     new_path: new_resources_unit_path %>
 
-<div>
+<div data-controller="resource-search">
   <%
     name_with_reading = Proc.new do |unit|
       if unit.reading.present?
         "#{unit.name} <span class='text-muted small'>（#{unit.reading}）</span>".html_safe
+      else
+        unit.name
+      end
+    end
+
+    search_name = Proc.new do |unit|
+      if unit.reading.present?
+        "#{unit.name} #{unit.reading}"
       else
         unit.name
       end
@@ -31,6 +39,7 @@
       ],
       sort_placeholder: t('units.index.sort_placeholder'),
       icon_mode: true,
+      search_name_proc: search_name,
 
       columns: [
         { header: :name, data: name_with_reading },

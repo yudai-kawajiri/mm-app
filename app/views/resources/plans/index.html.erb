@@ -9,11 +9,19 @@
     is_show_page: false,
     new_path: new_resources_plan_path %>
 
-<div>
+<div data-controller="resource-search">
   <%
     name_with_reading = Proc.new do |plan|
       if plan.reading.present?
         "#{plan.name} <span class='text-muted small'>（#{plan.reading}）</span>".html_safe
+      else
+        plan.name
+      end
+    end
+
+    search_name = Proc.new do |plan|
+      if plan.reading.present?
+        "#{plan.name} #{plan.reading}"
       else
         plan.name
       end
@@ -36,6 +44,7 @@
       show_print: true,
       print_url_method: :print_resources_plan_path,
       icon_mode: true,
+      search_name_proc: search_name,
 
       columns: [
         { header: :name, data: name_with_reading },
