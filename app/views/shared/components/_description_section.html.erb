@@ -1,0 +1,19 @@
+<%# 概要セクション %>
+<% resource = local_assigns[:resource] %>
+<% resource_class = local_assigns[:resource_class] %>
+<% min_height = local_assigns.fetch(:min_height, 210) %>
+
+<%
+  has_content = resource.description.present?
+  align_class = has_content ? "align-items-start justify-content-start" : "align-items-center justify-content-center"
+%>
+
+<div class="mt-4">
+  <h6 class="form-label text-muted" style="font-size: 1.1em;">
+    <%= resource_class.human_attribute_name(:description) %>
+  </h6>
+  <div class="p-3 border rounded d-flex <%= align_class %>"
+        style="min-height: <%= min_height %>px;">
+    <%= render 'shared/components/description_content', content: resource.description %>
+  </div>
+</div>

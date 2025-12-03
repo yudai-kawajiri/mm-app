@@ -8,9 +8,7 @@ export default class extends Controller {
     "videoCategory",
     "faqItem",
     "noVideosFound",
-    "noFaqFound",
-    "noResultsFound",
-    "searchKeyword"
+    "noFaqFound"
   ]
 
   connect() {
@@ -74,13 +72,6 @@ export default class extends Controller {
     // 結果表示の制御
     this.toggleVisibility(this.noVideosFoundTarget, videoCount === 0)
     this.toggleVisibility(this.noFaqFoundTarget, faqCount === 0)
-
-    if (videoCount === 0 && faqCount === 0) {
-      this.searchKeywordTarget.textContent = keyword
-      this.noResultsFoundTarget.classList.remove('d-none')
-    } else {
-      this.noResultsFoundTarget.classList.add('d-none')
-    }
   }
 
   showAll() {
@@ -89,7 +80,6 @@ export default class extends Controller {
     this.faqItemTargets.forEach(item => item.classList.remove('d-none'))
     this.noVideosFoundTarget.classList.add('d-none')
     this.noFaqFoundTarget.classList.add('d-none')
-    this.noResultsFoundTarget.classList.add('d-none')
   }
 
   toggleVisibility(element, shouldHide) {

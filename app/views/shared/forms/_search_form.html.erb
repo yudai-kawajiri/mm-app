@@ -1,7 +1,6 @@
 <%# 検索フォーム %>
 <%= form_with url: form_path,
               method: :get,
-              local: true,
               html: {
                 class: "mb-3"
               } do |f| %>
@@ -74,10 +73,25 @@
             resource_search_target: "input",
             action: "input->resource-search#search keydown->resource-search#search"
           } %>
-        <% if params[:q].present? || params[:category_type].present? || params[:category_id].present? || params[:category].present? || params[:sort_by].present? %>
-          <%= link_to t('common.clear'), form_path, class: "btn btn-outline-secondary" %>
-        <% end %>
       </div>
+    </div>
+
+    <%
+      has_params = params[:q].present? || params[:category_type].present? ||
+                   params[:category_id].present? || params[:category].present? ||
+                   params[:sort_by].present?
+    %>
+
+    <div class="p-1 <%= 'd-none' unless has_params %>"
+         data-resource-search-target="clearButton">
+      <label class="form-label mb-1 small text-muted">&nbsp;</label>
+      <%= link_to t('common.clear'),
+          form_path,
+          class: "btn btn-outline-secondary d-block",
+          data: {
+            action: "click->resource-search#clear",
+            turbo: false
+          } %>
     </div>
   </div>
 <% end %>
