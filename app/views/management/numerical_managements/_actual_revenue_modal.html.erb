@@ -1,6 +1,11 @@
 <%# 実績入力モーダル %>
-<div class="modal fade" id="actualRevenueModal" tabindex="-1" aria-labelledby="actualRevenueModalLabel" aria-hidden="true">
-  <div class=" modal-dialog modal-lg">
+<div class="modal fade"
+      id="actualRevenueModal"
+      tabindex="-1"
+      aria-labelledby="actualRevenueModalLabel"
+      aria-hidden="true"
+      data-controller="management--actual-revenue-modal">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="actualRevenueModalLabel"><%= t('numerical_managements.modals.actual_revenue_entry.title') %></h5>
@@ -44,38 +49,3 @@
     </div>
   </div>
 </div>
-
-<script>
-function setActualModalData(button) {
-  const date = button.dataset.date;
-  const planScheduleId = button.dataset.planScheduleId;
-  const actualRevenue = button.dataset.actualRevenue;
-
-  console.log('setActualModalData called:', { date, planScheduleId, actualRevenue });
-
-  if (!planScheduleId) {
-    console.error('data-plan-schedule-id attribute is missing');
-    return;
-  }
-
-  // 日付を分解して表示用に整形
-  const dateObj = new Date(date);
-  const month = dateObj.getMonth() + 1;
-  const day = dateObj.getDate();
-  const displayDate = `${month}月${day}日`;
-
-  // フォームのアクションURLを動的に設定
-  const form = document.getElementById('actualRevenueForm');
-  form.action = `/management/plan_schedules/${planScheduleId}/actual_revenue`;
-
-  // モーダルのフィールドに値を設定
-  document.getElementById('actualRevenueDate').value = displayDate;
-  document.getElementById('actualRevenueInput').value = actualRevenue || '';
-
-  console.log('Actual modal fields set:', {
-    displayDate: document.getElementById('actualRevenueDate').value,
-    actualRevenue: document.getElementById('actualRevenueInput').value,
-    formAction: form.action
-  });
-}
-</script>

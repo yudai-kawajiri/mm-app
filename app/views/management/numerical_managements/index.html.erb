@@ -48,11 +48,6 @@
   <%= render 'daily_details_table', daily_data: @daily_data %>
 </div>
 
-<%# 計画データをJavaScriptで使用するためにJSON化 %>
-<script>
-  window.plansByCategory = <%= raw (@plans_by_category || {}).transform_values { |plans| plans.map { |p| { id: p.id, name: p.name, expected_revenue: p.expected_revenue.to_i } } }.to_json %>;
-</script>
-
 <%# 各種モーダルの読み込み %>
 <%= render 'budget_setting_modal' %>
 <%= render 'daily_target_modal' %>

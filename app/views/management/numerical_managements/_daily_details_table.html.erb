@@ -145,7 +145,6 @@
                             data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
                             data-target-id="<%= target_id %>"
                             data-target-amount="<%= day[:target].to_i %>"
-                            onclick="setEditModalData(this)"
                             title="<%= t('numerical_managements.actions.edit_target') %>">
                       <i class="bi bi-pencil"></i>
                     </button>
@@ -180,7 +179,6 @@
                               data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
                               data-plan-schedule-id="<%= first_schedule.id %>"
                               data-actual-revenue="<%= (first_schedule.actual_revenue || 0).to_i %>"
-                              onclick="setActualModalData(this)"
                               title="<%= t('numerical_managements.actions.input_actual') %>">
                         <i class="bi bi-currency-yen"></i>
                       </button>

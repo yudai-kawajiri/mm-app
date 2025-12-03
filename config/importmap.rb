@@ -34,6 +34,8 @@ pin "controllers/management/plan_assignment_controller", to: "controllers/manage
 pin "controllers/management/assign_plan_info_controller", to: "controllers/management/assign_plan_info_controller.js"
 pin "controllers/management/assign_plan_modal_controller", to: "controllers/management/assign_plan_modal_controller.js"
 pin "controllers/management/daily_details_controller", to: "controllers/management/daily_details_controller.js"
+pin "controllers/management/daily_target_modal_controller", to: "controllers/management/daily_target_modal_controller.js"
+pin "controllers/management/actual_revenue_modal_controller", to: "controllers/management/actual_revenue_modal_controller.js"
 
 # Resources Controllers
 pin "controllers/resources/plan-product/row_controller", to: "controllers/resources/plan-product/row_controller.js"
