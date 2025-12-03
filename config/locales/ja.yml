@@ -239,6 +239,12 @@ ja:
     category_tabs:
       confirm_delete: "このカテゴリ―タブを削除しますか?"
 
+  product_material:
+    unit_not_set: "未設定"
+    unit_error: "エラー"
+    errors:
+      unit_fetch_failed: "単位情報の取得に失敗しました"
+
   dashboard:
     menu:
       title: "メニュー"
