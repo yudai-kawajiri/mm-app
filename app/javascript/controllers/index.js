@@ -18,6 +18,7 @@ import NumberInputController from "controllers/input/number_input_controller"
 import OrderGroupController from "controllers/management/order_group_controller"
 import PlanAssignmentController from "controllers/management/plan_assignment_controller"
 import AssignPlanInfoController from "controllers/management/assign_plan_info_controller"
+import AssignPlanModalController from "controllers/management/assign_plan_modal_controller"
 import DailyDetailsController from "controllers/management/daily_details_controller"
 
 // Resources - Plan Product Controllers
@@ -60,6 +61,7 @@ const CONTROLLER_NAMES = {
   ORDER_GROUP: 'order-group',
   PLAN_ASSIGNMENT: 'plan-assignment',
   ASSIGN_PLAN_INFO: 'management--assign-plan-info',
+  ASSIGN_PLAN_MODAL: 'management--assign-plan-modal',
   DAILY_DETAILS: 'management--daily-details',
 
   // Resources - Plan Product
@@ -101,6 +103,7 @@ application.register(CONTROLLER_NAMES.NUMBER_INPUT, NumberInputController)
 application.register(CONTROLLER_NAMES.ORDER_GROUP, OrderGroupController)
 application.register(CONTROLLER_NAMES.PLAN_ASSIGNMENT, PlanAssignmentController)
 application.register(CONTROLLER_NAMES.ASSIGN_PLAN_INFO, AssignPlanInfoController)
+application.register(CONTROLLER_NAMES.ASSIGN_PLAN_MODAL, AssignPlanModalController)
 application.register(CONTROLLER_NAMES.DAILY_DETAILS, DailyDetailsController)
 
 // Resources - Plan Product Controllers

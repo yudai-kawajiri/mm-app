@@ -166,7 +166,6 @@
                             data-category-name="<%= first_schedule&.plan&.category&.name %>"
                             data-planned-revenue="<%= first_schedule&.snapshot_total_cost || 0 %>"
                             data-snapshot="<%= first_schedule&.snapshot_products_for_json&.to_json %>"
-                            onclick="setAssignPlanModalData(this)"
                             title="<%= first_schedule ? t('numerical_managements.actions.edit_plan') : t('numerical_managements.actions.add_plan') %>">
                       <i class="bi bi-<%= first_schedule ? 'pencil-square' : 'calendar-plus' %>"></i>
                     </button>
