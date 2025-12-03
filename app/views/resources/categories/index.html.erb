@@ -9,7 +9,7 @@
     is_show_page: false,
     new_path: new_resources_category_path %>
 
-<div>
+<div data-controller="resource-search">
   <%
     name_with_reading = Proc.new do |category|
       if category.reading.present?
@@ -18,27 +18,39 @@
         category.name
       end
     end
+
+    # 検索用: 名前と読み仮名を両方含める
+    search_name = Proc.new do |category|
+      if category.reading.present?
+        "#{category.name} #{category.reading}"
+      else
+        category.name
+      end
+    end
   %>
 
-  <%= render 'shared/components/resource_list',
-      resources: @categories,
-      resource_class: Resources::Category,
-      search_target: :category_type,
-      sort_options: [
-        [t('categories.index.sort_options.name'), 'name'],
-        [t('categories.index.sort_options.category_type'), 'category_type'],
-        [t('categories.index.sort_options.created_at'), 'created_at']
-      ],
-      sort_placeholder: t('categories.index.sort_placeholder'),
-      icon_mode: true,
+  <%= turbo_frame_tag "resource_list" do %>
+    <%= render 'shared/components/resource_list',
+        resources: @categories,
+        resource_class: Resources::Category,
+        search_target: :category_type,
+        sort_options: [
+          [t('categories.index.sort_options.name'), 'name'],
+          [t('categories.index.sort_options.category_type'), 'category_type'],
+          [t('categories.index.sort_options.created_at'), 'created_at']
+        ],
+        sort_placeholder: t('categories.index.sort_placeholder'),
+        icon_mode: true,
+        search_name_proc: search_name,
 
-      columns: [
-        { header: :name, data: name_with_reading },
-        { header: :category_type,
-          data: Proc.new { |category| translate_enum_value(category, :category_type) }
-        }
-      ]
-  %>
+        columns: [
+          { header: :name, data: name_with_reading },
+          { header: :category_type,
+            data: Proc.new { |category| translate_enum_value(category, :category_type) }
+          }
+        ]
+    %>
 
-  <%= paginate @categories, theme: 'bootstrap-5' %>
+    <%= paginate @categories, theme: 'bootstrap-5' %>
+  <% end %>
 </div>

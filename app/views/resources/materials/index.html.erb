@@ -1,7 +1,7 @@
 <%# 原材料一覧画面 %>
 <%= content_for(:title, t('materials.index.title')) %>
 
-<div data-controller="sortable-table"
+<div data-controller="sortable-table resource-search"
       data-sortable-table-reorder-path-value="<%= reorder_resources_materials_path %>"
       data-sortable-table-param-name-value="material">
 
@@ -18,6 +18,14 @@
     name_with_reading = Proc.new do |material|
       if material.reading.present?
         "#{material.name} <span class='text-muted small'>（#{material.reading}）</span>".html_safe
+      else
+        material.name
+      end
+    end
+
+    search_name = Proc.new do |material|
+      if material.reading.present?
+        "#{material.name} #{material.reading}"
       else
         material.name
       end
@@ -39,6 +47,7 @@
       sort_placeholder: t('materials.index.sort_placeholder'),
       icon_mode: true,
       sortable: true,
+      search_name_proc: search_name,
 
       columns: [
         { header: :name, data: name_with_reading },

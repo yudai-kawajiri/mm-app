@@ -9,11 +9,19 @@
     is_show_page: false,
     new_path: new_resources_material_order_group_path %>
 
-<div>
+<div data-controller="resource-search">
   <%
     name_with_reading = Proc.new do |group|
       if group.reading.present?
         "#{group.name} <span class='text-muted small'>（#{group.reading}）</span>".html_safe
+      else
+        group.name
+      end
+    end
+
+    search_name = Proc.new do |group|
+      if group.reading.present?
+        "#{group.name} #{group.reading}"
       else
         group.name
       end
@@ -23,13 +31,14 @@
   <%= render 'shared/components/resource_list',
       resources: @material_order_groups,
       resource_class: Resources::MaterialOrderGroup,
-      search_target: nil,  # カテゴリー検索なし
+      search_target: nil,
       sort_options: [
         [t('material_order_groups.index.sort_options.name'), 'name'],
         [t('material_order_groups.index.sort_options.created_at'), 'created_at']
       ],
       sort_placeholder: t('material_order_groups.index.sort_placeholder'),
       icon_mode: true,
+      search_name_proc: search_name,
 
       columns: [
         { header: :name, data: name_with_reading },
