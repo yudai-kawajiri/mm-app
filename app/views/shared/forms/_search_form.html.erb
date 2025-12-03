@@ -1,5 +1,10 @@
 <%# 検索フォーム %>
-<%= form_with url: form_path, method: :get, local: true, html: { class: "mb-3" } do |f| %>
+<%= form_with url: form_path,
+              method: :get,
+              local: true,
+              html: {
+                class: "mb-3"
+              } do |f| %>
 
   <div class="d-flex flex-row align-items-end">
     <% if local_assigns[:sort_options].present? %>
@@ -11,7 +16,7 @@
                 params[:sort_by]
               ),
               { include_blank: t('helpers.prompt.select') },
-              { class: "form-select", onchange: "this.form.submit()" } %>
+              { class: "form-select", onchange: "this.form.requestSubmit()" } %>
       </div>
     <% end %>
 
@@ -28,7 +33,7 @@
                 params[:category_type]
               ),
               { include_blank: t('helpers.prompt.select') },
-              { class: "form-select", onchange: "this.form.submit()" } %>
+              { class: "form-select", onchange: "this.form.requestSubmit()" } %>
 
         <% elsif search_target == :category %>
           <%= f.select :category,
@@ -39,7 +44,7 @@
                 params[:category]
               ),
               { include_blank: t('helpers.prompt.select') },
-              { class: "form-select", onchange: "this.form.submit()" } %>
+              { class: "form-select", onchange: "this.form.requestSubmit()" } %>
 
         <% elsif search_target == :category_id %>
           <% search_categories = local_assigns[:search_categories] %>
@@ -51,7 +56,7 @@
               params[:category_id]
             ),
             { include_blank: t('helpers.prompt.select') },
-            { class: "form-select", onchange: "this.form.submit()" } %>
+            { class: "form-select", onchange: "this.form.requestSubmit()" } %>
         <% end %>
       </div>
     <% end %>
@@ -59,16 +64,19 @@
     <div class="p-1" style="min-width: 300px;">
       <label class="form-label mb-1 small text-muted"><%= t('common.name') %></label>
       <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
         <%= f.text_field :q,
           value: params[:q],
           class: "form-control",
-          placeholder: t('search.placeholders.enter_name') %>
-        <div class="input-group-append" >
-          <%= f.submit t('common.search'), class: "btn btn-primary" %>
-          <% if params[:q].present? || params[:category_type].present? || params[:category_id].present? || params[:category].present? || params[:sort_by].present? %>
-            <%= link_to t('common.clear'), form_path,  class: "btn btn-outline-secondary" %>
-          <% end %>
-        </div>
+          placeholder: t('search.placeholders.enter_name'),
+          autocomplete: "off",
+          data: {
+            resource_search_target: "input",
+            action: "input->resource-search#search keydown->resource-search#search"
+          } %>
+        <% if params[:q].present? || params[:category_type].present? || params[:category_id].present? || params[:category].present? || params[:sort_by].present? %>
+          <%= link_to t('common.clear'), form_path, class: "btn btn-outline-secondary" %>
+        <% end %>
       </div>
     </div>
   </div>
