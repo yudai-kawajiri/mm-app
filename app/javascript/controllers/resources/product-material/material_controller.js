@@ -25,6 +25,8 @@
 //
 // 翻訳キー:
 // - product_material.errors.unit_fetch_failed: 単位データ取得失敗メッセージ
+// - product_material.unit_not_set: 単位未設定表示
+// - product_material.unit_error: 単位取得エラー表示
 
 import { Controller } from "@hotwired/stimulus"
 import i18n from "controllers/i18n"
@@ -60,18 +62,15 @@ const EVENT_OPTIONS = {
   BUBBLES: { bubbles: true }
 }
 
-const DEFAULT_TEXT = {
-  UNIT_NOT_SET: '未設定',
-  UNIT_ERROR: 'エラー'
-}
-
 const DEFAULT_VALUE = {
   ZERO: 0,
   EMPTY_STRING: ''
 }
 
 const I18N_KEYS = {
-  UNIT_FETCH_FAILED: 'product_material.errors.unit_fetch_failed'
+  UNIT_FETCH_FAILED: 'product_material.errors.unit_fetch_failed',
+  UNIT_NOT_SET: 'product_material.unit_not_set',
+  UNIT_ERROR: 'product_material.unit_error'
 }
 
 const LOG_MESSAGES = {
@@ -181,7 +180,7 @@ export default class extends Controller {
 
     // unit_name を表示
     if (this.hasUnitDisplayTarget) {
-      this.unitDisplayTarget.textContent = data.unit_name || DEFAULT_TEXT.UNIT_NOT_SET
+      this.unitDisplayTarget.textContent = data.unit_name || i18n.t(I18N_KEYS.UNIT_NOT_SET)
       Logger.log(LOG_MESSAGES.SET_UNIT_NAME, data.unit_name)
     }
 
@@ -205,7 +204,7 @@ export default class extends Controller {
   // 全ての単位関連フィールドを初期状態に戻す
   resetUnit() {
     if (this.hasUnitDisplayTarget) {
-      this.unitDisplayTarget.textContent = DEFAULT_TEXT.UNIT_NOT_SET
+      this.unitDisplayTarget.textContent = i18n.t(I18N_KEYS.UNIT_NOT_SET)
     }
 
     if (this.hasUnitIdInputTarget) {
@@ -223,7 +222,7 @@ export default class extends Controller {
   // API取得失敗時にエラー状態を表示する
   setError() {
     if (this.hasUnitDisplayTarget) {
-      this.unitDisplayTarget.textContent = DEFAULT_TEXT.UNIT_ERROR
+      this.unitDisplayTarget.textContent = i18n.t(I18N_KEYS.UNIT_ERROR)
     }
   }
 

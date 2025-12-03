@@ -1,6 +1,11 @@
 <%# 日別予算編集モーダル %>
-<div class="modal fade" id="editDailyTargetModal" tabindex="-1" aria-labelledby="editDailyTargetModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<div class="modal fade"
+     id="editDailyTargetModal"
+     tabindex="-1"
+     aria-labelledby="editDailyTargetModalLabel"
+     aria-hidden="true"
+     data-controller="management--daily-target-modal">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editDailyTargetModalLabel"><%= t('numerical_managements.modals.daily_target_edit.title') %></h5>
@@ -48,41 +53,3 @@
     </div>
   </div>
 </div>
-
-<script>
-function setEditModalData(button) {
-  const date = button.dataset.date;
-  const targetAmount = button.dataset.targetAmount;
-
-  console.log('setEditModalData called:', { date, targetAmount });
-
-  if (!date) {
-    console.error('data-date attribute is missing');
-    return;
-  }
-
-  // 日付を分解
-  const dateObj = new Date(date);
-  const year = dateObj.getFullYear();
-  const month = dateObj.getMonth() + 1;
-  const day = dateObj.getDate();
-
-  // 表示用の日付
-  const displayDate = `${month}月${day}日`;
-
-  // モーダルのフィールドに値を設定
-  document.getElementById('editTargetYear').value = year;
-  document.getElementById('editTargetMonth').value = month;
-  document.getElementById('editTargetDateValue').value = date;
-  document.getElementById('editTargetDate').value = displayDate;  // textContent → value に修正
-  document.getElementById('editTargetAmount').value = targetAmount || '';
-
-  console.log('Modal fields set:', {
-    year: document.getElementById('editTargetYear').value,
-    month: document.getElementById('editTargetMonth').value,
-    date: document.getElementById('editTargetDateValue').value,
-    displayDate: document.getElementById('editTargetDate').value,  // textContent → value に修正
-    targetAmount: document.getElementById('editTargetAmount').value
-  });
-}
-</script>

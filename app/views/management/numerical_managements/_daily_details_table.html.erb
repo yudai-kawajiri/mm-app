@@ -145,7 +145,6 @@
                             data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
                             data-target-id="<%= target_id %>"
                             data-target-amount="<%= day[:target].to_i %>"
-                            onclick="setEditModalData(this)"
                             title="<%= t('numerical_managements.actions.edit_target') %>">
                       <i class="bi bi-pencil"></i>
                     </button>
@@ -166,7 +165,6 @@
                             data-category-name="<%= first_schedule&.plan&.category&.name %>"
                             data-planned-revenue="<%= first_schedule&.snapshot_total_cost || 0 %>"
                             data-snapshot="<%= first_schedule&.snapshot_products_for_json&.to_json %>"
-                            onclick="setAssignPlanModalData(this)"
                             title="<%= first_schedule ? t('numerical_managements.actions.edit_plan') : t('numerical_managements.actions.add_plan') %>">
                       <i class="bi bi-<%= first_schedule ? 'pencil-square' : 'calendar-plus' %>"></i>
                     </button>
@@ -181,7 +179,6 @@
                               data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
                               data-plan-schedule-id="<%= first_schedule.id %>"
                               data-actual-revenue="<%= (first_schedule.actual_revenue || 0).to_i %>"
-                              onclick="setActualModalData(this)"
                               title="<%= t('numerical_managements.actions.input_actual') %>">
                         <i class="bi bi-currency-yen"></i>
                       </button>

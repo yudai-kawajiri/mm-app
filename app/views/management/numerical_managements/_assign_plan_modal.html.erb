@@ -4,8 +4,19 @@
       tabindex="-1"
       aria-labelledby="assignPlanModalLabel"
       aria-hidden="true"
-      data-controller="management--assign-plan-info"
-      data-action="show.bs.modal->management--assign-plan-info#showModal">
+      data-controller="management--assign-plan-info management--assign-plan-modal"
+      data-action="show.bs.modal->management--assign-plan-info#showModal"
+      data-management--assign-plan-modal-plans-value="<%= @plans_by_category.transform_values { |plans| plans.map { |p| { id: p.id, name: p.name, status: p.status, expected_revenue: p.expected_revenue, plan_products: p.plan_products.map { |pp| { product_id: pp.product_id, product_name: pp.product.name, production_count: pp.production_count, price: pp.product.price } } } } }.to_json %>"
+      data-management--assign-plan-modal-i18n-select-placeholder-value="<%= t('helpers.prompt.select') %>"
+      data-management--assign-plan-modal-i18n-select-plan-after-category-value="<%= t('numerical_managements.modals.prompts.select_plan_after_category') %>"
+      data-management--assign-plan-modal-i18n-no-available-plans-value="<%= t('numerical_managements.modals.prompts.no_available_plans') %>"
+      data-management--assign-plan-modal-i18n-alert-plan-unavailable-value="<%= t('numerical_managements.modals.assign_plan.alert_plan_unavailable') %>"
+      data-management--assign-plan-modal-i18n-edit-title-value="<%= t('numerical_managements.modals.assign_plan.edit_title') %>"
+      data-management--assign-plan-modal-i18n-add-title-value="<%= t('numerical_managements.modals.assign_plan.title') %>"
+      data-management--assign-plan-modal-i18n-create-label-value="<%= t('common.create') %>"
+      data-management--assign-plan-modal-i18n-update-label-value="<%= t('common.update') %>"
+      data-management--assign-plan-modal-i18n-no-products-value="<%= t('plans.print.no_products') %>"
+      data-bs-backdrop="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <%= form_with model: Planning::PlanSchedule.new,
@@ -13,28 +24,31 @@
                     url: management_plan_schedules_path,
                     method: :post,
                     local: true,
-                    id: "assignPlanForm" do |f| %>
+                    id: "assignPlanForm",
+                    data: { 'management--assign-plan-modal-target': 'form' } do |f| %>
         <div class="modal-header">
-          <h5 class="modal-title" id="assignPlanModalLabel"><%= t("numerical_managements.modals.assign_plan.title") %></h5>
+          <h5 class="modal-title" id="assignPlanModalLabel" data-management--assign-plan-modal-target="modalTitle"><%= t("numerical_managements.modals.assign_plan.title") %></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <%= f.hidden_field :scheduled_date, id: "scheduledDateHidden" %>
+          <%= f.hidden_field :scheduled_date, id: "scheduledDateHidden", data: { 'management--assign-plan-modal-target': 'dateHidden' } %>
 
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.labels.target_date') %></label>
-            <input type="text" class="form-control-plaintext" id="assignPlanDate" readonly>
+            <input type="text" class="form-control-plaintext" id="assignPlanDate" readonly data-management--assign-plan-modal-target="dateDisplay">
           </div>
 
           <div class="mb-3">
             <label class="form-label"><%= t('numerical_managements.modals.labels.category') %></label>
             <select class="form-select"
                     id="assignPlanCategory"
-                    required>
+                    required
+                    data-management--assign-plan-modal-target="categorySelect"
+                    data-action="change->management--assign-plan-modal#handleCategoryChange change->management--assign-plan-info#handleCategoryChange">
               <option value=""><%= t('helpers.prompt.select') %></option>
               <% if @plans_by_category.present? %>
                 <% @plans_by_category.keys.sort.each do |category_name| %>
-                  <option value="<%= category_name %>"><%= category_name %></option>
+                  <option value="<%= category_name %>"><%= category_name %>
                 <% end %>
               <% end %>
             </select>
@@ -47,383 +61,39 @@
                     id="assignPlanSelect"
                     disabled
                     required
-                    data-management--assign-plan-info-target="planSelect">
+                    data-management--assign-plan-info-target="planSelect"
+                    data-management--assign-plan-modal-target="planSelect"
+                    data-action="change->management--assign-plan-modal#handlePlanChange change->management--assign-plan-info#handlePlanChange">
               <option value=""><%= t('numerical_managements.modals.prompts.select_plan_after_category') %></option>
             </select>
           </div>
 
-          <div id="productsAdjustSection" style="display: none;">
+          <div id="productsAdjustSection" style="display: none;" data-management--assign-plan-modal-target="productsAdjustSection">
             <hr>
             <h6 class="mb-3"><%= t('numerical_managements.modals.labels.product_quantity_adjustment') %></h6>
-            <div id="productsContainer" class="mb-3">
+            <div id="productsContainer" class="mb-3" data-management--assign-plan-modal-target="productsContainer">
             </div>
             <div class="alert alert-info mb-0">
               <strong><%= t('numerical_managements.modals.labels.planned_revenue') %>:</strong>
-              <span id="totalCostDisplay"></span>
+              <span id="totalCostDisplay" data-management--assign-plan-modal-target="totalCostDisplay"></span>
             </div>
           </div>
 
-          <%= f.hidden_field :planned_revenue, id: "plannedRevenue" %>
+          <%= f.hidden_field :planned_revenue, id: "plannedRevenue", data: { 'management--assign-plan-modal-target': 'plannedRevenue' } %>
 
           <div class="alert alert-info mb-3"
                id="assignPlanInfoAlert"
-               data-management--assign-plan-info-target="infoAlert">
+               data-management--assign-plan-info-target="infoAlert"
+               data-management--assign-plan-modal-target="infoAlert">
             <i class="bi bi-info-circle"></i> <%= t('numerical_managements.modals.assign_plan.info') %>
           </div>
         </div>
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common.cancel') %></button>
-          <%= f.submit t('common.create'), id: 'assignPlanSubmitBtn', class: "btn btn-primary", data: { disable_with: t('common.saving') } %>
+          <%= f.submit t('common.create'), id: 'assignPlanSubmitBtn', class: "btn btn-primary", data: { disable_with: t('common.saving'), 'management--assign-plan-modal-target': 'submitBtn' } %>
         </div>
       <% end %>
     </div>
   </div>
 </div>
-
-<script>
-// グローバル変数の初期化
-window.plansByCategory = <%= raw @plans_by_category.transform_values { |plans|
-  plans.map { |p| {
-    id: p.id,
-    name: p.name,
-    status: p.status,
-    expected_revenue: p.expected_revenue,
-    plan_products: p.plan_products.map { |pp| {
-      product_id: pp.product_id,
-      product_name: pp.product.name,
-      production_count: pp.production_count,
-      price: pp.product.price
-    }}
-  }}
-}.to_json %>;
-
-window.assignPlanI18n = {
-  createLabel: '<%= j t("common.create") %>',
-  updateLabel: '<%= j t("common.update") %>',
-  editTitle: '<%= j t('numerical_managements.modals.assign_plan.edit_title') %>',
-  addTitle: '<%= j t('numerical_managements.modals.assign_plan.title') %>',
-  selectPlaceholder: '<%= j t('helpers.prompt.select') %>',
-  selectPlanAfterCategory: '<%= j t('numerical_managements.modals.prompts.select_plan_after_category') %>',
-  noAvailablePlans: '<%= j t('numerical_managements.modals.prompts.no_available_plans') %>',
-  alertPlanUnavailable: '<%= j t('numerical_managements.modals.assign_plan.alert_plan_unavailable') %>'
-};
-
-window.currentPlanProducts = [];
-
-// イベントリスナーの初期化（DOMContentLoadedとturbo:loadの両方に対応）
-function initAssignPlanModalListeners() {
-  const categorySelect = document.getElementById('assignPlanCategory');
-  if (categorySelect) {
-    // 既存のリスナーを削除してから追加（重複防止）
-    const newCategorySelect = categorySelect.cloneNode(true);
-    categorySelect.parentNode.replaceChild(newCategorySelect, categorySelect);
-
-    newCategorySelect.addEventListener('change', function() {
-      handleCategoryChange(this);
-    });
-  }
-
-  const planSelect = document.getElementById('assignPlanSelect');
-  if (planSelect) {
-    // 既存のリスナーを削除してから追加（重複防止）
-    const newPlanSelect = planSelect.cloneNode(true);
-    planSelect.parentNode.replaceChild(newPlanSelect, planSelect);
-
-    newPlanSelect.addEventListener('change', function() {
-      handlePlanChange(this);
-    });
-  }
-}
-
-document.addEventListener('DOMContentLoaded', initAssignPlanModalListeners);
-document.addEventListener('turbo:load', initAssignPlanModalListeners);
-
-function setAssignPlanModalData(button) {
-  const scheduleId = button.getAttribute('data-schedule-id');
-  const planId = button.getAttribute('data-plan-id');
-  const categoryName = button.getAttribute('data-category-name');
-  const plannedRevenue = button.getAttribute('data-planned-revenue');
-  const dateDisplay = button.getAttribute('data-date-display');
-  const date = button.getAttribute('data-date');
-
-  document.getElementById('assignPlanDate').value = dateDisplay || '';
-  document.getElementById('scheduledDateHidden').value = date || '';
-
-  const form = document.getElementById('assignPlanForm');
-  const modalTitle = document.getElementById('assignPlanModalLabel');
-  const submitBtn = document.getElementById('assignPlanSubmitBtn');
-  const infoAlert = document.getElementById('assignPlanInfoAlert');
-
-  document.getElementById('productsAdjustSection').style.display = 'none';
-  document.getElementById('productsContainer').innerHTML = '';
-  window.currentPlanProducts = [];
-
-  // 初期状態：ヒントアラートを表示
-  if (infoAlert) {
-    infoAlert.style.display = 'block';
-  }
-
-  if (scheduleId) {
-    modalTitle.textContent = window.assignPlanI18n.editTitle;
-    submitBtn.value = window.assignPlanI18n.updateLabel;
-    form.action = '/management/plan_schedules/' + scheduleId;
-
-    let methodInput = form.querySelector('input[name="_method"]');
-    if (!methodInput) {
-      methodInput = document.createElement('input');
-      methodInput.type = 'hidden';
-      methodInput.name = '_method';
-      form.appendChild(methodInput);
-    }
-    methodInput.value = 'patch';
-
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-    let tokenInput = form.querySelector('input[name="authenticity_token"]');
-
-    if (!tokenInput) {
-      tokenInput = document.createElement('input');
-      tokenInput.type = 'hidden';
-      tokenInput.name = 'authenticity_token';
-      form.appendChild(tokenInput);
-    }
-    tokenInput.value = csrfToken;
-
-    if (categoryName) {
-      const categorySelect = document.getElementById('assignPlanCategory');
-      categorySelect.value = categoryName;
-      handleCategoryChange(categorySelect);
-
-      setTimeout(() => {
-        if (planId) {
-          const planSelect = document.getElementById('assignPlanSelect');
-          planSelect.value = planId;
-
-          if (!planSelect.value || planSelect.value === '') {
-            alert(window.assignPlanI18n.alertPlanUnavailable);
-          } else {
-            handlePlanChange(planSelect);
-
-            const snapshotData = button.getAttribute('data-snapshot');
-            if (snapshotData && snapshotData !== 'null' && snapshotData !== 'undefined') {
-              setTimeout(() => {
-                try {
-                  const snapshot = JSON.parse(snapshotData);
-                  if (snapshot && Array.isArray(snapshot)) {
-                    applySnapshotToProducts(snapshot);
-                  }
-                } catch (e) {
-                  console.error('スナップショット解析エラー:', e);
-                }
-              }, 150);
-            }
-          }
-        }
-      }, 50);
-    }
-
-    const plannedRevenueField = document.getElementById('plannedRevenue');
-    if (plannedRevenueField) {
-      plannedRevenueField.value = plannedRevenue || 0;
-    }
-  } else {
-    modalTitle.textContent = window.assignPlanI18n.addTitle;
-    submitBtn.value = window.assignPlanI18n.createLabel;
-    form.action = '/management/plan_schedules';
-
-    const methodInput = form.querySelector('input[name="_method"]');
-    if (methodInput) {
-      methodInput.remove();
-    }
-
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-    let tokenInput = form.querySelector('input[name="authenticity_token"]');
-
-    if (!tokenInput) {
-      tokenInput = document.createElement('input');
-      tokenInput.type = 'hidden';
-      tokenInput.name = 'authenticity_token';
-      form.appendChild(tokenInput);
-    }
-    tokenInput.value = csrfToken;
-
-    const categorySelectClear = document.getElementById('assignPlanCategory');
-    if (categorySelectClear) categorySelectClear.value = '';
-    const planSelect = document.getElementById('assignPlanSelect');
-    planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanAfterCategory}</option>`;
-    planSelect.disabled = true;
-    const plannedRevenueFieldClear = document.getElementById('plannedRevenue');
-    if (plannedRevenueFieldClear) plannedRevenueFieldClear.value = '';
-  }
-}
-
-function handleCategoryChange(select) {
-  const category = select.value;
-  const planSelect = document.getElementById('assignPlanSelect');
-  const infoAlert = document.getElementById('assignPlanInfoAlert');
-
-  console.log('handleCategoryChange called:', category); // デバッグ用
-
-  document.getElementById('productsAdjustSection').style.display = 'none';
-  document.getElementById('productsContainer').innerHTML = '';
-  window.currentPlanProducts = [];
-
-  if (!category) {
-    planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlanAfterCategory}</option>`;
-    planSelect.disabled = true;
-    const plannedRevenueFieldEmpty = document.getElementById('plannedRevenue');
-    if (plannedRevenueFieldEmpty) plannedRevenueFieldEmpty.value = '';
-
-    // カテゴリー未選択時はヒントを表示
-    if (infoAlert) {
-      infoAlert.style.display = 'block';
-    }
-    return;
-  }
-
-  planSelect.innerHTML = `<option value="">${window.assignPlanI18n.selectPlaceholder}</option>`;
-
-  const plans = window.plansByCategory[category];
-  console.log('Plans found:', plans); // デバッグ用
-
-  if (!plans || plans.length === 0) {
-    planSelect.disabled = true;
-    return;
-  }
-
-  const availablePlans = plans.filter(plan => plan.status !== 'completed');
-  console.log('Available plans:', availablePlans); // デバッグ用
-
-  if (availablePlans.length === 0) {
-    planSelect.innerHTML = `<option value="">${window.assignPlanI18n.noAvailablePlans}</option>`;
-    planSelect.disabled = true;
-    return;
-  }
-
-  availablePlans.forEach(plan => {
-    const option = document.createElement('option');
-    option.value = plan.id;
-    option.textContent = plan.name;
-    option.dataset.revenue = plan.expected_revenue || 0;
-    option.dataset.products = JSON.stringify(plan.plan_products);
-    planSelect.appendChild(option);
-  });
-
-  planSelect.disabled = false;
-  console.log('Plan select enabled with', availablePlans.length, 'options'); // デバッグ用
-}
-
-function handlePlanChange(select) {
-  const selectedOption = select.selectedOptions[0];
-  const infoAlert = document.getElementById('assignPlanInfoAlert');
-
-  if (selectedOption && selectedOption.value) {
-    const products = JSON.parse(selectedOption.dataset.products || '[]');
-    window.currentPlanProducts = products;
-
-    displayProducts(products);
-
-    // 計画が選択されたらヒントを非表示
-    if (infoAlert) {
-      infoAlert.style.display = 'none';
-    }
-  } else {
-    document.getElementById('productsAdjustSection').style.display = 'none';
-    document.getElementById('productsContainer').innerHTML = '';
-    const plannedRevenueFieldReset = document.getElementById('plannedRevenue');
-    if (plannedRevenueFieldReset) plannedRevenueFieldReset.value = '';
-    window.currentPlanProducts = [];
-
-    // 計画未選択時はヒントを表示
-    if (infoAlert) {
-      infoAlert.style.display = 'block';
-    }
-  }
-}
-
-function displayProducts(products) {
-  const container = document.getElementById('productsContainer');
-  container.innerHTML = '';
-
-  if (products.length === 0) {
-    container.innerHTML = '<p class="text-muted">この計画には商品が登録されていません</p>';
-    document.getElementById('productsAdjustSection').style.display = 'block';
-    return;
-  }
-
-  products.forEach((product, index) => {
-    const subtotal = product.price * product.production_count;
-    const row = document.createElement('div');
-    row.className = 'row mb-2 align-items-center';
-    row.innerHTML = `
-      <div class="col-md-6">
-        <label class="form-label mb-0">${product.product_name}</label>
-      </div>
-      <div class="col-md-3">
-        <input type="number"
-               class="form-control form-control-sm"
-               name="plan_schedule[products][${product.product_id}]"
-               value="${product.production_count}"
-               min="0"
-               data-price="${product.price}"
-               data-product-id="${product.product_id}">
-      </div>
-      <div class="col-md-3 text-end">
-        <small class="text-muted" data-subtotal="${product.product_id}">${CurrencyFormatter.format(subtotal)}</small>
-      </div>
-    `;
-    container.appendChild(row);
-
-    const input = row.querySelector('input[type="number"]');
-    if (input) {
-      input.addEventListener('change', updateTotalCost);
-    }
-  });
-
-  document.getElementById('productsAdjustSection').style.display = 'block';
-  updateTotalCost();
-}
-
-function applySnapshotToProducts(snapshotProducts) {
-  if (!snapshotProducts || !Array.isArray(snapshotProducts)) {
-    return;
-  }
-
-  snapshotProducts.forEach(sp => {
-    const input = document.querySelector(`input[data-product-id="${sp.product_id}"]`);
-    if (input) {
-      input.value = sp.production_count;
-    }
-  });
-
-  updateTotalCost();
-}
-
-function updateTotalCost() {
-  let total = 0;
-
-  document.querySelectorAll('#productsContainer input[type="number"]').forEach(input => {
-    const count = parseInt(input.value) || 0;
-    const price = parseInt(input.dataset.price) || 0;
-    const productId = input.dataset.productId;
-    const subtotal = count * price;
-
-    const subtotalElement = document.querySelector(`[data-subtotal="${productId}"]`);
-    if (subtotalElement) {
-      subtotalElement.textContent = CurrencyFormatter.format(subtotal);
-    }
-
-    total += subtotal;
-  });
-
-  const totalDisplay = document.getElementById('totalCostDisplay');
-  if (totalDisplay) {
-    totalDisplay.textContent = CurrencyFormatter.format(total);
-  }
-
-  const plannedRevenueField = document.getElementById('plannedRevenue');
-  if (plannedRevenueField) {
-    plannedRevenueField.value = total;
-  }
-}
-</script>

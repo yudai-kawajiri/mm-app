@@ -106,7 +106,7 @@ const API_ENDPOINT = {
 }
 
 const LOG_MESSAGES = {
-  DELETE_ERROR: '削除エラー:'
+  DELETE_ERROR: 'Delete error:'
 }
 
 const EMPTY_VALUE = ''

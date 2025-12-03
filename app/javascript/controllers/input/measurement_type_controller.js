@@ -33,8 +33,8 @@ const DISPLAY_STYLE = {
 }
 
 const LOG_MESSAGES = {
-  INITIALIZED: '計測タイプコントローラーが初期化されました',
-  TYPE_CHANGED: '計測タイプが変更されました'
+  INITIALIZED: 'Measurement type controller initialized',
+  TYPE_CHANGED: 'Measurement type changed'
 }
 
 export default class extends Controller {

@@ -21,6 +21,7 @@
 
 import { Controller } from "@hotwired/stimulus"
 import Logger from "utils/logger"
+import CurrencyFormatter from "utils/currency_formatter"
 
 // 定数定義
 const DELAY_MS = {
