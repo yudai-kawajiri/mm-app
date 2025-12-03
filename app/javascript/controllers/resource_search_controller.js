@@ -1,10 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input", "row"]
+  static targets = ["input", "row", "clearButton"]
 
   connect() {
     console.log("Resource search controller connected")
+    this.updateClearButton()
   }
 
   search(event) {
@@ -17,6 +18,7 @@ export default class extends Controller {
     const keyword = this.inputTarget.value.toLowerCase().trim()
     console.log("Searching for:", keyword)
     this.filterRows(keyword)
+    this.updateClearButton()
   }
 
   filterRows(keyword) {
@@ -39,5 +41,24 @@ export default class extends Controller {
     })
 
     console.log(`Visible rows: ${visibleCount}`)
+  }
+
+  updateClearButton() {
+    if (!this.hasClearButtonTarget) return
+
+    const hasKeyword = this.inputTarget.value.trim() !== ''
+
+    if (hasKeyword) {
+      this.clearButtonTarget.classList.remove('d-none')
+    } else {
+      this.clearButtonTarget.classList.add('d-none')
+    }
+  }
+
+  clear(event) {
+    event.preventDefault()
+    this.inputTarget.value = ''
+    this.filterRows('')
+    this.updateClearButton()
   }
 }

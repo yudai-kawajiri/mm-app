@@ -29,28 +29,26 @@
     end
   %>
 
-  <%= turbo_frame_tag "resource_list" do %>
-    <%= render 'shared/components/resource_list',
-        resources: @categories,
-        resource_class: Resources::Category,
-        search_target: :category_type,
-        sort_options: [
-          [t('categories.index.sort_options.name'), 'name'],
-          [t('categories.index.sort_options.category_type'), 'category_type'],
-          [t('categories.index.sort_options.created_at'), 'created_at']
-        ],
-        sort_placeholder: t('categories.index.sort_placeholder'),
-        icon_mode: true,
-        search_name_proc: search_name,
+  <%= render 'shared/components/resource_list',
+      resources: @categories,
+      resource_class: Resources::Category,
+      search_target: :category_type,
+      sort_options: [
+        [t('categories.index.sort_options.name'), 'name'],
+        [t('categories.index.sort_options.category_type'), 'category_type'],
+        [t('categories.index.sort_options.created_at'), 'created_at']
+      ],
+      sort_placeholder: t('categories.index.sort_placeholder'),
+      icon_mode: true,
+      search_name_proc: search_name,
 
-        columns: [
-          { header: :name, data: name_with_reading },
-          { header: :category_type,
-            data: Proc.new { |category| translate_enum_value(category, :category_type) }
-          }
-        ]
-    %>
+      columns: [
+        { header: :name, data: name_with_reading },
+        { header: :category_type,
+          data: Proc.new { |category| translate_enum_value(category, :category_type) }
+        }
+      ]
+  %>
 
-    <%= paginate @categories, theme: 'bootstrap-5' %>
-  <% end %>
+  <%= paginate @categories, theme: 'bootstrap-5' %>
 </div>
