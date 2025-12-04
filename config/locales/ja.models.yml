@@ -31,9 +31,10 @@ ja:
           attributes:
             status:
               used_in_plans: "は計画で使用中のため変更できません"
-        product_material:
+        "planning/product_material":
           attributes:
             material_id:
+              blank: "を選択してください"
               already_registered: "は既に登録されています"
         "planning/plan_product":
           attributes:

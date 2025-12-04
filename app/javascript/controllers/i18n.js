@@ -42,18 +42,22 @@ const REGEX = {
   INTERPOLATION: /%\{(\w+)\}/g  // 補間用パターン（例: %{status} → options.status）
 }
 
-// フォールバック翻訳（英語デフォルト）
+// フォールバック翻訳（日本語デフォルト）
 // window.I18n が利用できない環境での最終的なフォールバック
 const FALLBACK_TRANSLATIONS = {
-  'products.confirm_delete_image': 'Delete this image?',
-  'products.image_deleted': 'Image deleted',
-  'products.image_delete_failed': 'Failed to delete image',
-  'sortable_table.saved': 'Order saved',
-  'sortable_table.save_failed': 'Failed to save order (status: %{status})',
-  'sortable_table.error': 'Error occurred: %{message}',
-  'sortable_table.csrf_token_not_found': 'CSRF token not found',
-  'components.category_tabs.confirm_delete': 'Delete this category tab?',
-  'help.video_modal.preparing': 'Video for "%{title}" is being prepared'
+  'products.confirm_delete_image': '画像を削除しますか？',
+  'products.image_deleted': '画像を削除しました',
+  'products.image_delete_failed': '画像の削除に失敗しました',
+  'sortable_table.saved': '並び替えを保存しました',
+  'sortable_table.save_failed': '並び替えの保存に失敗しました（ステータス: %{status}）',
+  'sortable_table.error': 'エラーが発生しました: %{message}',
+  'sortable_table.csrf_token_not_found': 'CSRFトークンが見つかりません',
+  'components.category_tabs.confirm_delete': 'このカテゴリタブを削除しますか？',
+  'help.video_modal.preparing': '"%{title}" の動画を準備中です',
+  'product_material.unit_not_set': '未設定',
+  'product_material.unit_error': 'エラー',
+  'product_material.errors.unit_fetch_failed': '単位情報の取得に失敗しました',
+  'plans.errors.product_fetch_failed': '商品情報の取得に失敗しました。ページを再読み込みしてください。'
 }
 
 // i18n オブジェクト
@@ -76,7 +80,7 @@ const i18n = {
       return this.interpolate(i18nElement.dataset[DATA_ATTRIBUTES.I18N_VALUE], options)
     }
 
-    // フォールバック翻訳（英語デフォルト）
+    // フォールバック翻訳（日本語デフォルト）
     const message = FALLBACK_TRANSLATIONS[key] || key
     return this.interpolate(message, options)
   },

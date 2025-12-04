@@ -36,6 +36,12 @@ const DEFAULT_VALUE = {
   EMPTY_STRING: ''
 }
 
+const DISPLAY_TEXT = {
+  UNIT_NOT_SET: '未設定',
+  UNIT_ERROR: 'エラー',
+  PLEASE_SELECT: '選択してください'
+}
+
 const I18N_KEYS = {
   UNIT_FETCH_FAILED: 'product_material.errors.unit_fetch_failed',
   UNIT_NOT_SET: 'product_material.unit_not_set',
@@ -113,13 +119,13 @@ export default class extends Controller {
 
     if (!materialId) {
       this.resetUnit()
+      this.resetAllTabMaterial()
       this.disableInputFields()
       return
     }
 
     this.enableInputFields()
     this.fetchUnitData(materialId)
-
     this.disableSelectedMaterialsInSameTab()
   }
 
@@ -160,7 +166,7 @@ export default class extends Controller {
     }
 
     if (this.hasUnitDisplayTarget) {
-      this.unitDisplayTarget.textContent = data.unit_name || i18n.t(I18N_KEYS.UNIT_NOT_SET)
+      this.unitDisplayTarget.textContent = data.unit_name || DISPLAY_TEXT.UNIT_NOT_SET
       Logger.log(LOG_MESSAGES.SET_UNIT_NAME, data.unit_name)
     }
 
@@ -180,7 +186,7 @@ export default class extends Controller {
 
   resetUnit() {
     if (this.hasUnitDisplayTarget) {
-      this.unitDisplayTarget.textContent = i18n.t(I18N_KEYS.UNIT_NOT_SET)
+      this.unitDisplayTarget.textContent = DISPLAY_TEXT.UNIT_NOT_SET
     }
 
     if (this.hasUnitIdInputTarget) {
@@ -191,12 +197,16 @@ export default class extends Controller {
       this.unitWeightInputTarget.value = DEFAULT_VALUE.EMPTY_STRING
     }
 
+    if (this.hasQuantityInputTarget) {
+      this.quantityInputTarget.value = DEFAULT_VALUE.EMPTY_STRING
+    }
+
     Logger.log(LOG_MESSAGES.UNIT_RESET)
   }
 
   setError() {
     if (this.hasUnitDisplayTarget) {
-      this.unitDisplayTarget.textContent = i18n.t(I18N_KEYS.UNIT_ERROR)
+      this.unitDisplayTarget.textContent = DISPLAY_TEXT.UNIT_ERROR
     }
   }
 
@@ -374,6 +384,42 @@ export default class extends Controller {
     }
   }
 
+  resetAllTabMaterial() {
+    const rowUniqueId = this.element.dataset.uniqueId
+    if (!rowUniqueId) {
+      Logger.warn('Row unique ID not found, cannot reset ALL tab material')
+      return
+    }
+
+    const allTabRow = document.querySelector(`#nav-0 tr[data-unique-id="${rowUniqueId}"]`)
+    if (!allTabRow) {
+      Logger.log(`ALL tab row not found for unique ID: ${rowUniqueId}, no reset needed`)
+      return
+    }
+
+    const allTabRowController = this.application.getControllerForElementAndIdentifier(
+      allTabRow,
+      'resources--product-material--material'
+    )
+
+    if (allTabRowController && allTabRowController !== this) {
+      if (allTabRowController.hasMaterialNameDisplayTarget) {
+        allTabRowController.materialNameDisplayTarget.textContent = DISPLAY_TEXT.PLEASE_SELECT
+      }
+
+      if (allTabRowController.hasMaterialIdHiddenTarget) {
+        allTabRowController.materialIdHiddenTarget.value = ''
+      }
+
+      allTabRowController.resetUnit()
+      allTabRowController.disableInputFields()
+
+      Logger.log('ALL tab material reset completed')
+    } else {
+      Logger.warn('ALL tab row controller not found or is same instance')
+    }
+  }
+
   syncMaterialToOtherTabs(event) {
     const uniqueId = event.target.dataset[DATA_ATTRIBUTE.UNIQUE_ID]
     const selectedMaterialId = event.target.value
@@ -422,10 +468,6 @@ export default class extends Controller {
       }
     })
   }
-
-  // ============================================================
-  // Disable selected materials in the same tab
-  // ============================================================
 
   disableSelectedMaterialsInSameTab() {
     const currentCategoryId = this.element.dataset.categoryId
