@@ -1,38 +1,7 @@
-// Product Material Material Controller
-//
-// 商品原材料フォームにおける原材料選択時の単位情報取得・表示コントローラー
-//
-// 責務:
-// - 原材料選択時の単位情報API取得
-// - 単位表示フィールドの更新
-// - デフォルト単位重量の自動設定
-// - タブ間の原材料選択同期（複数タブで同じ原材料を編集時）
-// - エラーハンドリング（API失敗時のフォールバック）
-//
-// データフロー:
-// 1. ユーザーが原材料セレクトボックスを変更
-// 2. updateUnit() が発火
-// 3. GET /api/v1/materials/:id/fetch_product_unit_data でJSON取得
-// 4. 単位情報（unit_id, unit_name, default_unit_weight）を表示フィールドに反映
-// 5. 同期イベントを他タブの同じ原材料行に送信
-//
-// Targets:
-// - materialSelect: 原材料セレクトボックス
-// - unitDisplay: 単位表示要素
-// - quantityInput: 数量入力フィールド
-// - unitWeightInput: 単位重量入力フィールド
-// - unitIdInput: 単位ID hidden フィールド
-//
-// 翻訳キー:
-// - product_material.errors.unit_fetch_failed: 単位データ取得失敗メッセージ
-// - product_material.unit_not_set: 単位未設定表示
-// - product_material.unit_error: 単位取得エラー表示
-
 import { Controller } from "@hotwired/stimulus"
 import i18n from "controllers/i18n"
 import Logger from "utils/logger"
 
-// 定数定義
 const API_ENDPOINT = {
   MATERIAL_UNIT_DATA: (materialId) => `/api/v1/materials/${materialId}/fetch_product_unit_data`
 }
@@ -97,51 +66,52 @@ const LOG_MESSAGES = {
 }
 
 export default class extends Controller {
-  static targets = ["materialSelect", "unitDisplay", "quantityInput", "unitWeightInput", "unitIdInput"]
+  static targets = ["materialSelect", "materialNameDisplay", "materialIdHidden", "unitDisplay", "quantityInput", "unitWeightInput", "unitIdInput"]
 
-  // ============================================================
-  // 初期化
-  // ============================================================
-
-  // コントローラー接続時の初期化処理
-  // 既に原材料が選択されている場合（編集時）、単位情報を取得する
   connect() {
     Logger.log(LOG_MESSAGES.CONTROLLER_CONNECTED)
     Logger.log(LOG_MESSAGES.HAS_MATERIAL_SELECT, this.hasMaterialSelectTarget)
+    Logger.log('  Has materialNameDisplay:', this.hasMaterialNameDisplayTarget)
+    Logger.log('  Has materialIdHidden:', this.hasMaterialIdHiddenTarget)
     Logger.log(LOG_MESSAGES.HAS_UNIT_DISPLAY, this.hasUnitDisplayTarget)
     Logger.log(LOG_MESSAGES.HAS_UNIT_ID_INPUT, this.hasUnitIdInputTarget)
     Logger.log(LOG_MESSAGES.HAS_UNIT_WEIGHT_INPUT, this.hasUnitWeightInputTarget)
 
-    // 既に原材料が選択されている場合（編集時）、単位情報を取得
+    let materialId = null
+
     if (this.hasMaterialSelectTarget && this.materialSelectTarget.value) {
-      const materialId = this.materialSelectTarget.value
+      materialId = this.materialSelectTarget.value
+    } else if (this.hasMaterialIdHiddenTarget && this.materialIdHiddenTarget.value) {
+      materialId = this.materialIdHiddenTarget.value
+    }
+
+    if (materialId) {
       Logger.log(LOG_MESSAGES.EXISTING_MATERIAL_DETECTED, materialId)
+      setTimeout(() => {
+        this.enableInputFields()
+        Logger.log('Input fields enabled after delay')
+      }, 100)
       this.fetchUnitData(materialId)
     } else {
       Logger.log(LOG_MESSAGES.NO_MATERIAL_SELECTED)
+      this.disableInputFields()
     }
   }
 
-  // ============================================================
-  // 原材料選択時の処理
-  // ============================================================
-
-  // 原材料選択変更時の処理
-  // セレクトボックスで原材料が選択されたとき、APIから単位情報を取得し、
-  // 関連するフィールドを更新する。空値の場合は表示をリセットする
   updateUnit(event) {
     const materialId = event.target.value
     Logger.log(LOG_MESSAGES.MATERIAL_CHANGED, materialId)
 
     if (!materialId) {
       this.resetUnit()
+      this.disableInputFields()
       return
     }
 
+    this.enableInputFields()
     this.fetchUnitData(materialId)
   }
 
-  // APIから原材料の単位情報を取得
   async fetchUnitData(materialId) {
     try {
       Logger.log(LOG_MESSAGES.FETCHING_UNIT_DATA, materialId)
@@ -160,6 +130,8 @@ export default class extends Controller {
       const data = await response.json()
 
       this.updateUnitDisplay(data)
+      this.syncMaterialNameToAllTab()
+      this.syncUnitToAllTab()
     } catch (error) {
       Logger.error(i18n.t(I18N_KEYS.UNIT_FETCH_FAILED), error)
       Logger.log(LOG_MESSAGES.FETCH_ERROR, error)
@@ -167,28 +139,23 @@ export default class extends Controller {
     }
   }
 
-  // 単位情報を表示フィールドに反映
   updateUnitDisplay(data) {
     Logger.log(LOG_MESSAGES.RECEIVED_UNIT_DATA, data)
 
-    // unit_id を hidden field に設定
     if (this.hasUnitIdInputTarget) {
       const oldValue = this.unitIdInputTarget.value
       this.unitIdInputTarget.value = data.unit_id || DEFAULT_VALUE.EMPTY_STRING
       Logger.log(LOG_MESSAGES.UPDATED_UNIT_ID(oldValue, data.unit_id))
     }
 
-    // unit_name を表示
     if (this.hasUnitDisplayTarget) {
       this.unitDisplayTarget.textContent = data.unit_name || i18n.t(I18N_KEYS.UNIT_NOT_SET)
       Logger.log(LOG_MESSAGES.SET_UNIT_NAME, data.unit_name)
     }
 
-    // default_unit_weight を入力フィールドに自動設定（編集時は上書きしない）
     if (this.hasUnitWeightInputTarget) {
       const currentValue = this.unitWeightInputTarget.value
 
-      // 値が空欄または0の場合のみデフォルト値を設定
       if (!currentValue || parseFloat(currentValue) === DEFAULT_VALUE.ZERO) {
         this.unitWeightInputTarget.value = data.default_unit_weight || DEFAULT_VALUE.ZERO
         Logger.log(LOG_MESSAGES.SET_DEFAULT_UNIT_WEIGHT, data.default_unit_weight)
@@ -200,8 +167,6 @@ export default class extends Controller {
     Logger.log(LOG_MESSAGES.UNIT_UPDATED(data.unit_name))
   }
 
-  // 単位情報をリセット
-  // 全ての単位関連フィールドを初期状態に戻す
   resetUnit() {
     if (this.hasUnitDisplayTarget) {
       this.unitDisplayTarget.textContent = i18n.t(I18N_KEYS.UNIT_NOT_SET)
@@ -218,42 +183,204 @@ export default class extends Controller {
     Logger.log(LOG_MESSAGES.UNIT_RESET)
   }
 
-  // エラー表示を設定
-  // API取得失敗時にエラー状態を表示する
   setError() {
     if (this.hasUnitDisplayTarget) {
       this.unitDisplayTarget.textContent = i18n.t(I18N_KEYS.UNIT_ERROR)
     }
   }
 
-  // ============================================================
-  // タブ間同期
-  // ============================================================
+  enableInputFields() {
+    if (this.hasQuantityInputTarget) {
+      this.quantityInputTarget.disabled = false
+      Logger.log('Quantity input enabled')
+    }
 
-  // 原材料選択を他のタブに同期
-  // 複数のカテゴリ―タブで同じ原材料行を使用している場合、
-  // 一方のタブで選択された原材料を他方にも反映する
-  syncMaterialTotherTabs(event) {
+    if (this.hasUnitWeightInputTarget) {
+      this.unitWeightInputTarget.disabled = false
+      Logger.log('Unit weight input enabled')
+    }
+  }
+
+  disableInputFields() {
+    if (this.hasQuantityInputTarget) {
+      this.quantityInputTarget.disabled = true
+      Logger.log('Quantity input disabled')
+    }
+
+    if (this.hasUnitWeightInputTarget) {
+      this.unitWeightInputTarget.disabled = true
+      Logger.log('Unit weight input disabled')
+    }
+  }
+
+  syncMaterialNameToAllTab() {
+    const rowUniqueId = this.element.dataset.uniqueId
+    if (!rowUniqueId) {
+      Logger.warn('Row unique ID not found, cannot sync material name to ALL tab')
+      return
+    }
+
+    let allTabRow = document.querySelector(`#nav-0 tr[data-unique-id="${rowUniqueId}"]`)
+
+    if (!allTabRow) {
+      Logger.warn(`ALL tab row not found for unique ID: ${rowUniqueId}, creating new row`)
+      allTabRow = this.createAllTabRow(rowUniqueId)
+      if (!allTabRow) {
+        Logger.error('Failed to create ALL tab row')
+        return
+      }
+    }
+
+    let materialId = null
+    let materialName = null
+
+    if (this.hasMaterialSelectTarget && this.materialSelectTarget.value) {
+      materialId = this.materialSelectTarget.value
+      const selectedOption = this.materialSelectTarget.options[this.materialSelectTarget.selectedIndex]
+      materialName = selectedOption ? selectedOption.text : ''
+    }
+
+    if (!materialId || !materialName) {
+      Logger.warn('Material ID or name not found, skipping sync')
+      return
+    }
+
+    Logger.log(`Syncing material name to ALL tab: ${materialName} (ID: ${materialId})`)
+
+    const allTabRowController = this.application.getControllerForElementAndIdentifier(
+      allTabRow,
+      'resources--product-material--material'
+    )
+
+    if (allTabRowController && allTabRowController !== this) {
+      if (allTabRowController.hasMaterialNameDisplayTarget) {
+        allTabRowController.materialNameDisplayTarget.textContent = materialName
+        Logger.log(`Updated materialNameDisplay in ALL tab: ${materialName}`)
+      }
+
+      if (allTabRowController.hasMaterialIdHiddenTarget) {
+        allTabRowController.materialIdHiddenTarget.value = materialId
+        Logger.log(`Updated materialIdHidden in ALL tab: ${materialId}`)
+      }
+
+      // 追加: 全てタブの入力フィールドを強制的に有効化
+      if (allTabRowController.hasQuantityInputTarget) {
+        allTabRowController.quantityInputTarget.disabled = false
+        Logger.log('ALL tab quantity input force enabled')
+      }
+
+      if (allTabRowController.hasUnitWeightInputTarget) {
+        allTabRowController.unitWeightInputTarget.disabled = false
+        Logger.log('ALL tab unit weight input force enabled')
+      }
+
+      Logger.log('ALL tab material name updated')
+    } else {
+      Logger.warn('ALL tab row controller not found or is same instance')
+    }
+  }
+
+  createAllTabRow(uniqueId) {
+    Logger.log(`Creating new ALL tab row with uniqueId: ${uniqueId}`)
+
+    const categoryId = this.element.dataset.categoryId || this.element.dataset.originalCategoryId
+
+    const allTbody = document.querySelector('#nav-0 tbody[data-category-id="0"]')
+    if (!allTbody) {
+      Logger.error('ALL tab tbody not found')
+      return null
+    }
+
+    const template = document.getElementById('material_fields_template_0')
+    if (!template) {
+      Logger.error('material_fields_template_0 not found')
+      return null
+    }
+
+    let templateHtml = template.innerHTML.replace(/NEW_RECORD/g, uniqueId)
+    templateHtml = templateHtml.replace(/row_NEW_RECORD/g, `row_${uniqueId}`)
+
+    templateHtml = templateHtml.replace(
+      /data-category-id="[^"]*"/g,
+      'data-category-id="0"'
+    )
+
+    templateHtml = templateHtml.replace(
+      /<tr([^>]*)>/,
+      `<tr$1 data-original-category-id="${categoryId}">`
+    )
+
+    allTbody.insertAdjacentHTML('beforeend', templateHtml)
+
+    const newRow = allTbody.querySelector(`tr[data-unique-id="${uniqueId}"]`)
+    Logger.log(`Created new ALL tab row: ${uniqueId}`)
+
+    return newRow
+  }
+
+  syncUnitToAllTab() {
+    const rowUniqueId = this.element.dataset.uniqueId
+    if (!rowUniqueId) {
+      Logger.warn('Row unique ID not found, cannot sync to ALL tab')
+      return
+    }
+
+    const allTabRow = document.querySelector(`#nav-0 tr[data-unique-id="${rowUniqueId}"]`)
+    if (!allTabRow) {
+      Logger.warn(`ALL tab row not found for unique ID: ${rowUniqueId}`)
+      return
+    }
+
+    if (this.hasUnitIdInputTarget) {
+      allTabRow.dataset.unitId = this.unitIdInputTarget.value || ''
+    }
+
+    Logger.log(`ALLタブの行を更新: unit_id=${this.unitIdInputTarget.value}`)
+
+    const allTabRowController = this.application.getControllerForElementAndIdentifier(
+      allTabRow,
+      'resources--product-material--material'
+    )
+
+    if (allTabRowController && allTabRowController !== this) {
+      if (allTabRowController.hasUnitIdInputTarget && this.hasUnitIdInputTarget) {
+        allTabRowController.unitIdInputTarget.value = this.unitIdInputTarget.value
+      }
+
+      if (allTabRowController.hasUnitDisplayTarget && this.hasUnitDisplayTarget) {
+        allTabRowController.unitDisplayTarget.textContent = this.unitDisplayTarget.textContent
+      }
+
+      if (allTabRowController.hasUnitWeightInputTarget && this.hasUnitWeightInputTarget) {
+        const currentValue = allTabRowController.unitWeightInputTarget.value
+        if (!currentValue || parseFloat(currentValue) === DEFAULT_VALUE.ZERO) {
+          allTabRowController.unitWeightInputTarget.value = this.unitWeightInputTarget.value
+        }
+      }
+
+      Logger.log('ALL tab row controller updated')
+    } else {
+      Logger.warn('ALL tab row controller not found or is same instance')
+    }
+  }
+
+  syncMaterialToOtherTabs(event) {
     const uniqueId = event.target.dataset[DATA_ATTRIBUTE.UNIQUE_ID]
     const selectedMaterialId = event.target.value
 
     Logger.log(LOG_MESSAGES.SYNCING_MATERIAL(selectedMaterialId, uniqueId))
 
-    // 同じunique-idを持つ他のタブの原材料選択を更新
     document.querySelectorAll(SELECTOR.ROW_BY_UNIQUE_ID(uniqueId)).forEach(row => {
-      if (row === this.element) return // 自分自身はスキップ
+      if (row === this.element) return
 
       const select = row.querySelector(SELECTOR.MATERIAL_SELECT)
       if (select && select.value !== selectedMaterialId) {
         select.value = selectedMaterialId
-        // change イベントを発火して updateUnit を呼び出す
         select.dispatchEvent(new Event(EVENT_TYPE.CHANGE, EVENT_OPTIONS.BUBBLES))
       }
     })
   }
 
-  // 数量を他のタブに同期
-  // 同じ原材料行の数量入力を全タブに同期する
   syncQuantityToOtherTabs(event) {
     const uniqueId = event.target.dataset[DATA_ATTRIBUTE.UNIQUE_ID]
     const quantity = event.target.value
@@ -270,8 +397,6 @@ export default class extends Controller {
     })
   }
 
-  // 単位重量を他のタブに同期
-  // 同じ原材料行の単位重量入力を全タブに同期する
   syncUnitWeightToOtherTabs(event) {
     const uniqueId = event.target.dataset[DATA_ATTRIBUTE.UNIQUE_ID]
     const unitWeight = event.target.value
