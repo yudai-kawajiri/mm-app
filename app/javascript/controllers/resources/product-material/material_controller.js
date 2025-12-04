@@ -62,7 +62,12 @@ const LOG_MESSAGES = {
   UNIT_RESET: 'Unit reset to default',
   SYNCING_MATERIAL: (materialId, uniqueId) => `Syncing material ${materialId} for ${uniqueId}`,
   SYNCING_QUANTITY: (quantity, uniqueId) => `Syncing quantity ${quantity} for ${uniqueId}`,
-  SYNCING_UNIT_WEIGHT: (unitWeight, uniqueId) => `Syncing unit_weight ${unitWeight} for ${uniqueId}`
+  SYNCING_UNIT_WEIGHT: (unitWeight, uniqueId) => `Syncing unit_weight ${unitWeight} for ${uniqueId}`,
+  SKIPPING_MATERIAL_DISABLE: 'Skipping material disabling: All tab or no category ID',
+  TBODY_NOT_FOUND: 'tbody[data-category-id] not found',
+  SELECTED_MATERIAL_IDS: (categoryId, ids) => `Selected material IDs in category ${categoryId}:`,
+  MATERIAL_DISABLED: (materialId) => `Disabled material ID ${materialId}`,
+  MATERIAL_DISABLE_COMPLETED: 'Disabled selected materials in same tab'
 }
 
 export default class extends Controller {
@@ -96,6 +101,10 @@ export default class extends Controller {
       Logger.log(LOG_MESSAGES.NO_MATERIAL_SELECTED)
       this.disableInputFields()
     }
+
+    setTimeout(() => {
+      this.disableSelectedMaterialsInSameTab()
+    }, 200)
   }
 
   updateUnit(event) {
@@ -110,6 +119,8 @@ export default class extends Controller {
 
     this.enableInputFields()
     this.fetchUnitData(materialId)
+
+    this.disableSelectedMaterialsInSameTab()
   }
 
   async fetchUnitData(materialId) {
@@ -263,7 +274,6 @@ export default class extends Controller {
         Logger.log(`Updated materialIdHidden in ALL tab: ${materialId}`)
       }
 
-      // 追加: 全てタブの入力フィールドを強制的に有効化
       if (allTabRowController.hasQuantityInputTarget) {
         allTabRowController.quantityInputTarget.disabled = false
         Logger.log('ALL tab quantity input force enabled')
@@ -335,7 +345,7 @@ export default class extends Controller {
       allTabRow.dataset.unitId = this.unitIdInputTarget.value || ''
     }
 
-    Logger.log(`ALLタブの行を更新: unit_id=${this.unitIdInputTarget.value}`)
+    Logger.log(`ALL tab row updated: unit_id=${this.unitIdInputTarget.value}`)
 
     const allTabRowController = this.application.getControllerForElementAndIdentifier(
       allTabRow,
@@ -411,5 +421,53 @@ export default class extends Controller {
         input.value = unitWeight
       }
     })
+  }
+
+  // ============================================================
+  // Disable selected materials in the same tab
+  // ============================================================
+
+  disableSelectedMaterialsInSameTab() {
+    const currentCategoryId = this.element.dataset.categoryId
+    if (!currentCategoryId || currentCategoryId === '0') {
+      Logger.log(LOG_MESSAGES.SKIPPING_MATERIAL_DISABLE)
+      return
+    }
+
+    const tbody = this.element.closest('tbody[data-category-id]')
+    if (!tbody) {
+      Logger.warn(LOG_MESSAGES.TBODY_NOT_FOUND)
+      return
+    }
+
+    const rows = tbody.querySelectorAll('tr[data-controller*="resources--product-material--material"]')
+
+    const selectedMaterialIds = []
+    rows.forEach(row => {
+      const select = row.querySelector('select[data-resources--product-material--material-target="materialSelect"]')
+      if (select && select.value) {
+        selectedMaterialIds.push(select.value)
+      }
+    })
+
+    Logger.log(LOG_MESSAGES.SELECTED_MATERIAL_IDS(currentCategoryId, selectedMaterialIds))
+
+    rows.forEach(row => {
+      const select = row.querySelector('select[data-resources--product-material--material-target="materialSelect"]')
+      if (!select) return
+
+      const currentValue = select.value
+
+      Array.from(select.options).forEach(option => {
+        if (option.value && option.value !== currentValue && selectedMaterialIds.includes(option.value)) {
+          option.disabled = true
+          Logger.log(LOG_MESSAGES.MATERIAL_DISABLED(option.value))
+        } else if (option.value && !selectedMaterialIds.includes(option.value)) {
+          option.disabled = false
+        }
+      })
+    })
+
+    Logger.log(LOG_MESSAGES.MATERIAL_DISABLE_COMPLETED)
   }
 }

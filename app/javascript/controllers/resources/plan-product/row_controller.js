@@ -104,7 +104,12 @@ const LOG_MESSAGES = {
   NOTIFYING_PARENT: 'Notifying parent to recalculate',
   CALLING_PARENT_RECALCULATE: 'Calling parent recalculate',
   PARENT_CONTROLLER_NOT_FOUND: 'Parent controller not found or invalid',
-  PARENT_ELEMENT_NOT_FOUND: 'Parent element not found'
+  PARENT_ELEMENT_NOT_FOUND: 'Parent element not found',
+  SKIPPING_PRODUCT_DISABLE: 'Skipping product disabling: All tab or no category ID',
+  TBODY_NOT_FOUND: 'tbody[data-category-id] not found',
+  SELECTED_PRODUCT_IDS: (categoryId, ids) => `Selected product IDs in category ${categoryId}: ${ids}`,
+  PRODUCT_DISABLED: (productId) => `Disabled product ID ${productId}`,
+  PRODUCT_DISABLE_COMPLETED: 'Disabled selected products in same tab'
 }
 
 export default class extends Controller {
@@ -119,13 +124,9 @@ export default class extends Controller {
   // 初期化
   // ============================================================
 
-  // コントローラー接続時の処理
-  // 計算中フラグを初期化し、既存の商品選択がある場合は
-  // 商品情報を取得する(編集画面用)
   connect() {
     Logger.log(LOG_MESSAGES.CONTROLLER_CONNECTED)
 
-    // 計算中フラグの初期化
     this.isCalculating = false
 
     let productId = null
@@ -148,16 +149,18 @@ export default class extends Controller {
     } else {
       Logger.log(LOG_MESSAGES.NO_PRODUCT_SELECTED)
       this.disableInputFields()
-      // 新規作成時は初期計算
       setTimeout(() => this.calculate(), DELAY_MS.INITIAL_CALCULATION)
     }
+
+    setTimeout(() => {
+      this.disableSelectedProductsInSameTab()
+    }, 200)
   }
 
   // ============================================================
   // 商品選択時の処理
   // ============================================================
 
-  // 商品選択時に価格とカテゴリーを取得
   async updateProduct(event) {
     const productId = event.target.value
     Logger.log(LOG_MESSAGES.PRODUCT_SELECTED(productId))
@@ -170,11 +173,10 @@ export default class extends Controller {
 
     this.enableInputFields()
     await this.fetchProductInfo(productId)
+
+    this.disableSelectedProductsInSameTab()
   }
 
-  // 商品情報をAPIから取得
-  // /api/v1/products/:id/fetch_plan_details から
-  // 商品の価格とカテゴリーIDを取得し、表示を更新する
   async fetchProductInfo(productId) {
     try {
       Logger.log(LOG_MESSAGES.FETCHING_PRODUCT_INFO(productId))
@@ -204,7 +206,6 @@ export default class extends Controller {
     }
   }
 
-  // 価格表示を更新
   updatePriceDisplay() {
     if (this.hasPriceDisplayTarget) {
       this.priceDisplayTarget.textContent = CurrencyFormatter.format(this.priceValue)
@@ -214,13 +215,11 @@ export default class extends Controller {
     }
   }
 
-  // 商品情報をリセット
   resetProduct() {
     this.priceValue = DEFAULT_VALUE.ZERO
     this.categoryIdValue = DEFAULT_VALUE.ZERO
     this.updatePriceDisplay()
 
-    // 小計もリセット
     if (this.hasSubtotalTarget) {
       this.subtotalTarget.textContent = CurrencyFormatter.format(DEFAULT_VALUE.ZERO)
     }
@@ -251,11 +250,7 @@ export default class extends Controller {
   // 小計計算
   // ============================================================
 
-  // 小計を計算
-  // 数量×単価で小計を計算し、表示を更新
-  // 親コントローラーへの通知を遅延実行する
   calculate() {
-    // 計算中なら無視
     if (this.isCalculating) return
 
     this.isCalculating = true
@@ -269,7 +264,6 @@ export default class extends Controller {
 
     this.updateSubtotal(subtotal)
 
-    // 親への通知は遅延させて1回だけ
     clearTimeout(this.notifyTimeout)
     this.notifyTimeout = setTimeout(() => {
       this.notifyParent()
@@ -277,7 +271,6 @@ export default class extends Controller {
     }, DELAY_MS.PARENT_NOTIFICATION)
   }
 
-  // 数量を取得
   getQuantity() {
     if (!this.hasProductionCountTarget) return DEFAULT_VALUE.ZERO
     const value = parseFloat(this.productionCountTarget.value) || DEFAULT_VALUE.ZERO
@@ -285,7 +278,6 @@ export default class extends Controller {
     return value
   }
 
-  // 小計を更新
   updateSubtotal(subtotal) {
     if (this.hasSubtotalTarget) {
       this.subtotalTarget.textContent = CurrencyFormatter.format(subtotal)
@@ -295,13 +287,9 @@ export default class extends Controller {
     }
   }
 
-  // 親コントローラーに再計算を通知
-  // resources--plan-product--totals コントローラーの
-  // recalculate メソッドを直接呼び出す
   notifyParent() {
     Logger.log(LOG_MESSAGES.NOTIFYING_PARENT)
 
-    // 直接親コントローラーを探して呼び出す
     const parentElement = document.querySelector(SELECTOR.PARENT_CONTROLLER)
     if (parentElement) {
       const parentController = this.application.getControllerForElementAndIdentifier(
@@ -323,8 +311,6 @@ export default class extends Controller {
   // ALLタブへの同期
   // ============================================================
 
-  // ALLタブの対応行に価格とカテゴリーIDを同期
-  // カテゴリータブで商品選択後、全てタブの同じ行を更新する
   syncPriceToAllTab() {
     const rowUniqueId = this.element.dataset.rowUniqueId
     if (!rowUniqueId) {
@@ -332,42 +318,35 @@ export default class extends Controller {
       return
     }
 
-    // 全てタブ(#nav-0)の対応行を検索
     const allTabRow = document.querySelector(`#nav-0 tr[data-row-unique-id="${rowUniqueId}"]`)
     if (!allTabRow) {
       Logger.warn(`ALL tab row not found for unique ID: ${rowUniqueId}`)
       return
     }
 
-    // data属性を更新
     allTabRow.dataset.planProductPriceValue = this.priceValue
     allTabRow.dataset.planProductCategoryIdValue = this.categoryIdValue
 
-    Logger.log(`ALLタブの行を更新: price=${this.priceValue}, categoryId=${this.categoryIdValue}`)
+    Logger.log(`ALL tab row updated: price=${this.priceValue}, categoryId=${this.categoryIdValue}`)
 
-    // 全てタブの行コントローラーを取得して再計算
     const allTabRowController = this.application.getControllerForElementAndIdentifier(
       allTabRow,
       'resources--plan-product--row'
     )
 
     if (allTabRowController && allTabRowController !== this) {
-      // 価格とカテゴリーIDを直接設定
       allTabRowController.priceValue = this.priceValue
       allTabRowController.categoryIdValue = this.categoryIdValue
 
-      // 表示を更新
       if (typeof allTabRowController.updatePriceDisplay === 'function') {
         allTabRowController.updatePriceDisplay()
       }
 
-      // 入力フィールドを強制的に有効化
       if (allTabRowController.hasProductionCountTarget) {
         allTabRowController.productionCountTarget.disabled = false
         Logger.log('ALL tab production count input force enabled')
       }
 
-      // 小計を再計算
       if (typeof allTabRowController.calculate === 'function') {
         allTabRowController.calculate()
       }
@@ -382,26 +361,18 @@ export default class extends Controller {
   // 外部からのアクセス用
   // ============================================================
 
-  // 現在の値を取得(親コントローラーから呼ばれる)
-  // 親コントローラーが合計計算時に各行の値を取得するために使用
   getCurrentValues() {
     const quantity = this.getQuantity()
     const price = this.priceValue || DEFAULT_VALUE.ZERO
     const subtotal = quantity * price
 
-    // カテゴリーIDの決定優先順位
     let effectiveCategoryId = DEFAULT_VALUE.ZERO
 
-    // 1. data-original-category-id（全てタブの既存データ用）
     if (this.element.dataset.originalCategoryId) {
       effectiveCategoryId = parseInt(this.element.dataset.originalCategoryId, 10)
-    }
-    // 2. categoryIdValue（コントローラーで設定された値）
-    else if (this.categoryIdValue) {
+    } else if (this.categoryIdValue) {
       effectiveCategoryId = this.categoryIdValue
-    }
-    // 3. data-plan-product-category-id-value（data属性から）
-    else if (this.element.dataset.planProductCategoryIdValue) {
+    } else if (this.element.dataset.planProductCategoryIdValue) {
       effectiveCategoryId = parseInt(this.element.dataset.planProductCategoryIdValue, 10)
     }
 
@@ -411,5 +382,53 @@ export default class extends Controller {
       subtotal: subtotal,
       categoryId: effectiveCategoryId || DEFAULT_VALUE.ZERO
     }
+  }
+
+  // ============================================================
+  // 同一タブ内で選択済み商品を無効化
+  // ============================================================
+
+  disableSelectedProductsInSameTab() {
+    const currentCategoryId = this.element.dataset.categoryId
+    if (!currentCategoryId || currentCategoryId === '0') {
+      Logger.log(LOG_MESSAGES.SKIPPING_PRODUCT_DISABLE)
+      return
+    }
+
+    const tbody = this.element.closest('tbody[data-category-id]')
+    if (!tbody) {
+      Logger.warn(LOG_MESSAGES.TBODY_NOT_FOUND)
+      return
+    }
+
+    const rows = tbody.querySelectorAll('tr[data-controller*="resources--plan-product--row"]')
+
+    const selectedProductIds = []
+    rows.forEach(row => {
+      const select = row.querySelector('select[data-resources--plan-product--row-target="productSelect"]')
+      if (select && select.value) {
+        selectedProductIds.push(select.value)
+      }
+    })
+
+    Logger.log(LOG_MESSAGES.SELECTED_PRODUCT_IDS(currentCategoryId, selectedProductIds))
+
+    rows.forEach(row => {
+      const select = row.querySelector('select[data-resources--plan-product--row-target="productSelect"]')
+      if (!select) return
+
+      const currentValue = select.value
+
+      Array.from(select.options).forEach(option => {
+        if (option.value && option.value !== currentValue && selectedProductIds.includes(option.value)) {
+          option.disabled = true
+          Logger.log(LOG_MESSAGES.PRODUCT_DISABLED(option.value))
+        } else if (option.value && !selectedProductIds.includes(option.value)) {
+          option.disabled = false
+        }
+      })
+    })
+
+    Logger.log(LOG_MESSAGES.PRODUCT_DISABLE_COMPLETED)
   }
 }
