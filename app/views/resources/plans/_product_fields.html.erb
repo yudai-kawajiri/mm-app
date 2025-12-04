@@ -23,7 +23,7 @@
     (local_assigns[:category_id] || 0) %>"
     data-row-unique-id="<%= row_unique_id %>"
     data-category-id="<%= local_assigns[:category_id] || f.object.product&.category_id || 0 %>"
-    <%= "data-original-category-id=\"#{f.object.product&.category_id}\"" if is_all_tab && f.object.product&.category_id.present? %>
+    <%= raw("data-original-category-id=\"#{f.object.product&.category_id}\"") if is_all_tab && f.object.product&.category_id.present? %>
     data-product-id="<%= f.object.product_id %>">
 
   <%= f.hidden_field :_destroy,
@@ -72,6 +72,7 @@
       class: 'form-control form-control-sm',
       inputmode: 'numeric',
       placeholder: t('activerecord.attributes.planning/plan_product.production_count'),
+      disabled: f.object.product_id.blank?,
       data: {
         controller: 'input--number-input',
         'number-input-no-comma': 'true',

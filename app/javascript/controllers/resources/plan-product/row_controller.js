@@ -25,6 +25,8 @@
 //
 // Targets:
 // - productSelect: 商品選択セレクトボックス
+// - productIdHidden: 商品ID hidden フィールド（全てタブ用）
+// - productNameDisplay: 商品名表示要素（全てタブ用）
 // - productionCount: 製造数量入力フィールド
 // - priceDisplay: 価格表示要素
 // - subtotal: 小計表示要素
@@ -44,7 +46,8 @@ import CurrencyFormatter from "utils/currency_formatter"
 // 定数定義
 const DELAY_MS = {
   INITIAL_CALCULATION: 100,
-  PARENT_NOTIFICATION: 100
+  PARENT_NOTIFICATION: 100,
+  ENABLE_INPUT_DELAY: 100
 }
 
 const DEFAULT_VALUE = {
@@ -84,6 +87,7 @@ const I18N_KEYS = {
 const LOG_MESSAGES = {
   CONTROLLER_CONNECTED: 'Plan product row controller connected',
   PRODUCT_ALREADY_SELECTED: (productId) => `Product already selected on connect: ${productId}`,
+  NO_PRODUCT_SELECTED: 'No product selected yet',
   PRODUCT_SELECTED: (productId) => `Product selected: ${productId}`,
   FETCHING_PRODUCT_INFO: (productId) => `Fetching product info for: ${productId}`,
   PRODUCT_DATA_RECEIVED: 'Product data received:',
@@ -104,7 +108,7 @@ const LOG_MESSAGES = {
 }
 
 export default class extends Controller {
-  static targets = ["productSelect", "productionCount", "priceDisplay", "subtotal"]
+  static targets = ["productSelect", "productIdHidden", "productNameDisplay", "productionCount", "priceDisplay", "subtotal"]
 
   static values = {
     price: Number,
@@ -124,12 +128,26 @@ export default class extends Controller {
     // 計算中フラグの初期化
     this.isCalculating = false
 
-    // 既に商品が選択されている場合は情報を取得(編集画面用)
+    let productId = null
+
     if (this.hasProductSelectTarget && this.productSelectTarget.value) {
-      const productId = this.productSelectTarget.value
+      productId = this.productSelectTarget.value
+    } else if (this.hasProductIdHiddenTarget && this.productIdHiddenTarget.value) {
+      productId = this.productIdHiddenTarget.value
+    } else if (this.element.dataset.productId) {
+      productId = this.element.dataset.productId
+    }
+
+    if (productId) {
       Logger.log(LOG_MESSAGES.PRODUCT_ALREADY_SELECTED(productId))
+      setTimeout(() => {
+        this.enableInputFields()
+        Logger.log('Production count input enabled after delay')
+      }, DELAY_MS.ENABLE_INPUT_DELAY)
       this.fetchProductInfo(productId)
     } else {
+      Logger.log(LOG_MESSAGES.NO_PRODUCT_SELECTED)
+      this.disableInputFields()
       // 新規作成時は初期計算
       setTimeout(() => this.calculate(), DELAY_MS.INITIAL_CALCULATION)
     }
@@ -146,9 +164,11 @@ export default class extends Controller {
 
     if (!productId) {
       this.resetProduct()
+      this.disableInputFields()
       return
     }
 
+    this.enableInputFields()
     await this.fetchProductInfo(productId)
   }
 
@@ -207,6 +227,24 @@ export default class extends Controller {
 
     this.calculate()
     Logger.log(LOG_MESSAGES.PRODUCT_RESET)
+  }
+
+  // ============================================================
+  // 入力フィールドの有効化/無効化
+  // ============================================================
+
+  enableInputFields() {
+    if (this.hasProductionCountTarget) {
+      this.productionCountTarget.disabled = false
+      Logger.log('Production count input enabled')
+    }
+  }
+
+  disableInputFields() {
+    if (this.hasProductionCountTarget) {
+      this.productionCountTarget.disabled = true
+      Logger.log('Production count input disabled')
+    }
   }
 
   // ============================================================
@@ -323,6 +361,12 @@ export default class extends Controller {
         allTabRowController.updatePriceDisplay()
       }
 
+      // 入力フィールドを強制的に有効化
+      if (allTabRowController.hasProductionCountTarget) {
+        allTabRowController.productionCountTarget.disabled = false
+        Logger.log('ALL tab production count input force enabled')
+      }
+
       // 小計を再計算
       if (typeof allTabRowController.calculate === 'function') {
         allTabRowController.calculate()
@@ -345,15 +389,27 @@ export default class extends Controller {
     const price = this.priceValue || DEFAULT_VALUE.ZERO
     const subtotal = quantity * price
 
-    // ALLタブの場合は data-original-category-id を使用、それ以外は categoryIdValue を使用
-    const originalCategoryId = this.element.dataset.originalCategoryId
-    const effectiveCategoryId = originalCategoryId || this.categoryIdValue || DEFAULT_VALUE.ZERO
+    // カテゴリーIDの決定優先順位
+    let effectiveCategoryId = DEFAULT_VALUE.ZERO
+
+    // 1. data-original-category-id（全てタブの既存データ用）
+    if (this.element.dataset.originalCategoryId) {
+      effectiveCategoryId = parseInt(this.element.dataset.originalCategoryId, 10)
+    }
+    // 2. categoryIdValue（コントローラーで設定された値）
+    else if (this.categoryIdValue) {
+      effectiveCategoryId = this.categoryIdValue
+    }
+    // 3. data-plan-product-category-id-value（data属性から）
+    else if (this.element.dataset.planProductCategoryIdValue) {
+      effectiveCategoryId = parseInt(this.element.dataset.planProductCategoryIdValue, 10)
+    }
 
     return {
       quantity: quantity,
       price: price,
       subtotal: subtotal,
-      categoryId: parseInt(effectiveCategoryId, 10) || DEFAULT_VALUE.ZERO
+      categoryId: effectiveCategoryId || DEFAULT_VALUE.ZERO
     }
   }
 }
