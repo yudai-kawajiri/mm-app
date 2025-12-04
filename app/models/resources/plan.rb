@@ -215,10 +215,10 @@ class Resources::Plan < ApplicationRecord
       # グループ全体の発注量を計算（小数点表示）
       required_order_quantity = case group_data[:measurement_type]
       when "count"
-                                  # 個数ベース: 合計個数 ÷ 1発注単位あたりの個数
+                                  # 個数ベース: 合計個数 ÷ 1発注単位当の個数
                                   (group_data[:group_total_quantity].to_f / group_data[:pieces_per_order_unit]).round(2)
       when "weight"
-                                  # 重量ベース: 合計重量 ÷ 1発注単位あたりの重量
+                                  # 重量ベース: 合計重量 ÷ 1発注単位当の重量
                                   (group_data[:group_total_weight].to_f / group_data[:unit_weight_for_order]).round(2)
       else
                                   0
