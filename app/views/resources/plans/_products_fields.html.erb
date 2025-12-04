@@ -187,6 +187,16 @@
         </div>
       </template>
 
+      <%# 「全て」タブ用のテンプレート（category_id: 0） %>
+      <template id="product_fields_template_0" data-form--nested-form-target="template">
+        <%= f.fields_for :plan_products,
+            @plan.plan_products.build,
+            child_index: 'NEW_RECORD' do |product_f| %>
+          <%= render 'product_fields', f: product_f, category_id: 0 %>
+        <% end %>
+      </template>
+
+      <%# 各カテゴリー用のテンプレート %>
       <% @product_categories.each do |category| %>
         <template id="product_fields_template_<%= category.id %>" data-form--nested-form-target="template">
           <%= f.fields_for :plan_products,

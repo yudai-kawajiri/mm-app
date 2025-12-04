@@ -117,3 +117,13 @@ body.authenticated .flash-messages-container {
     left: 0 !important;
   }
 }
+
+/* ========================================
+  読み取り専用セレクトボックス（全てタブ用）
+   ======================================== */
+.readonly-select {
+  pointer-events: none !important;
+  background-color: #e9ecef !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}

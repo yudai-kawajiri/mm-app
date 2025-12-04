@@ -1,6 +1,6 @@
 // Plan Product Row Controller
 //
-// 製造計画：商品行の計算コントローラー（子）
+// 製造計画:商品行の計算コントローラー(子)
 //
 // 使用例:
 //   <tr data-controller="resources--plan-product--row" data-resources--plan-product--row-price-value="1000">
@@ -13,13 +13,13 @@
 //   </tr>
 //
 // 責務:
-// - 商品選択時のAPI連携（価格・カテゴリ―取得）
+// - 商品選択時のAPI連携(価格・カテゴリー取得)
 // - 数量×単価の小計計算
 // - 親コントローラーへの再計算通知
 // - 編集時の既存データ読み込み
 //
 // データフロー:
-// 1. 商品選択 → updateProduct() → API取得 → 価格・カテゴリ―設定
+// 1. 商品選択 → updateProduct() → API取得 → 価格・カテゴリー設定
 // 2. 数量入力 → calculate() → 小計計算 → 親に通知
 // 3. 親コントローラー → getCurrentValues() → 値取得 → 合計計算
 //
@@ -31,7 +31,7 @@
 //
 // Values:
 // - price: 商品単価
-// - categoryId: カテゴリ―ID
+// - categoryId: カテゴリーID
 //
 // 翻訳キー:
 // - plans.errors.product_fetch_failed: 商品情報取得失敗メッセージ
@@ -117,14 +117,14 @@ export default class extends Controller {
 
   // コントローラー接続時の処理
   // 計算中フラグを初期化し、既存の商品選択がある場合は
-  // 商品情報を取得する（編集画面用）
+  // 商品情報を取得する(編集画面用)
   connect() {
     Logger.log(LOG_MESSAGES.CONTROLLER_CONNECTED)
 
     // 計算中フラグの初期化
     this.isCalculating = false
 
-    // 既に商品が選択されている場合は情報を取得（編集画面用）
+    // 既に商品が選択されている場合は情報を取得(編集画面用)
     if (this.hasProductSelectTarget && this.productSelectTarget.value) {
       const productId = this.productSelectTarget.value
       Logger.log(LOG_MESSAGES.PRODUCT_ALREADY_SELECTED(productId))
@@ -139,7 +139,7 @@ export default class extends Controller {
   // 商品選択時の処理
   // ============================================================
 
-  // 商品選択時に価格とカテゴリ―を取得
+  // 商品選択時に価格とカテゴリーを取得
   async updateProduct(event) {
     const productId = event.target.value
     Logger.log(LOG_MESSAGES.PRODUCT_SELECTED(productId))
@@ -154,7 +154,7 @@ export default class extends Controller {
 
   // 商品情報をAPIから取得
   // /api/v1/products/:id/fetch_plan_details から
-  // 商品の価格とカテゴリ―IDを取得し、表示を更新する
+  // 商品の価格とカテゴリーIDを取得し、表示を更新する
   async fetchProductInfo(productId) {
     try {
       Logger.log(LOG_MESSAGES.FETCHING_PRODUCT_INFO(productId))
@@ -173,6 +173,8 @@ export default class extends Controller {
 
       this.updatePriceDisplay()
       this.calculate()
+
+      this.syncPriceToAllTab()
 
       Logger.log(LOG_MESSAGES.PRICE_SET(this.priceValue, this.categoryIdValue))
     } catch (error) {
@@ -280,21 +282,78 @@ export default class extends Controller {
   }
 
   // ============================================================
+  // ALLタブへの同期
+  // ============================================================
+
+  // ALLタブの対応行に価格とカテゴリーIDを同期
+  // カテゴリータブで商品選択後、全てタブの同じ行を更新する
+  syncPriceToAllTab() {
+    const rowUniqueId = this.element.dataset.rowUniqueId
+    if (!rowUniqueId) {
+      Logger.warn('Row unique ID not found, cannot sync to ALL tab')
+      return
+    }
+
+    // 全てタブ(#nav-0)の対応行を検索
+    const allTabRow = document.querySelector(`#nav-0 tr[data-row-unique-id="${rowUniqueId}"]`)
+    if (!allTabRow) {
+      Logger.warn(`ALL tab row not found for unique ID: ${rowUniqueId}`)
+      return
+    }
+
+    // data属性を更新
+    allTabRow.dataset.planProductPriceValue = this.priceValue
+    allTabRow.dataset.planProductCategoryIdValue = this.categoryIdValue
+
+    Logger.log(`ALLタブの行を更新: price=${this.priceValue}, categoryId=${this.categoryIdValue}`)
+
+    // 全てタブの行コントローラーを取得して再計算
+    const allTabRowController = this.application.getControllerForElementAndIdentifier(
+      allTabRow,
+      'resources--plan-product--row'
+    )
+
+    if (allTabRowController && allTabRowController !== this) {
+      // 価格とカテゴリーIDを直接設定
+      allTabRowController.priceValue = this.priceValue
+      allTabRowController.categoryIdValue = this.categoryIdValue
+
+      // 表示を更新
+      if (typeof allTabRowController.updatePriceDisplay === 'function') {
+        allTabRowController.updatePriceDisplay()
+      }
+
+      // 小計を再計算
+      if (typeof allTabRowController.calculate === 'function') {
+        allTabRowController.calculate()
+      }
+
+      Logger.log('ALL tab row controller updated and recalculated')
+    } else {
+      Logger.warn('ALL tab row controller not found or is same instance')
+    }
+  }
+
+  // ============================================================
   // 外部からのアクセス用
   // ============================================================
 
-  // 現在の値を取得（親コントローラーから呼ばれる）
+  // 現在の値を取得(親コントローラーから呼ばれる)
   // 親コントローラーが合計計算時に各行の値を取得するために使用
   getCurrentValues() {
     const quantity = this.getQuantity()
     const price = this.priceValue || DEFAULT_VALUE.ZERO
     const subtotal = quantity * price
 
+    // ALLタブの場合は data-original-category-id を使用、それ以外は categoryIdValue を使用
+    const originalCategoryId = this.element.dataset.originalCategoryId
+    const effectiveCategoryId = originalCategoryId || this.categoryIdValue || DEFAULT_VALUE.ZERO
+
     return {
       quantity: quantity,
       price: price,
       subtotal: subtotal,
-      categoryId: this.categoryIdValue || DEFAULT_VALUE.ZERO
+      categoryId: parseInt(effectiveCategoryId, 10) || DEFAULT_VALUE.ZERO
     }
   }
 }
