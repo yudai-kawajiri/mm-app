@@ -53,6 +53,7 @@
 // - フォーカス時の「0」「0.0」自動選択
 // - 整数のみモード（小数点禁止）
 // - 小数点フィールドモード（.0形式を維持）
+// - disabledフィールドでは初期化をスキップ（リセット後の空欄状態を維持）
 
 import { Controller } from "@hotwired/stimulus"
 import Logger from "utils/logger"
@@ -86,7 +87,8 @@ const REGEX = {
   NON_DIGIT_NON_MINUS: /[^\d-]/g,
   NON_DIGIT_NON_MINUS_NON_DOT: /[^\d.-]/g,
   NUMERIC_FORMAT: /^-?\d+(\.\d+)?$/,
-  MINUS: /-/g
+  MINUS: /-/g,
+  THREE_DIGIT_GROUP: /\B(?=(\d{3})+(?!\d))/g
 }
 
 const CHAR_CODE = {
@@ -154,7 +156,8 @@ export default class extends Controller {
     }
 
     // 初期値をフォーマット（既存データや編集時）
-    if (this.element.value) {
+    // ただし、フィールドがdisabledの場合はスキップ（リセット後の空欄状態を維持）
+    if (this.element.value && !this.element.disabled) {
       this.formatInitialValue()
     }
   }
@@ -190,7 +193,7 @@ export default class extends Controller {
 
     // カンマありモードの場合はカンマを挿入
     if (!this.noComma && Number.isInteger(numValue)) {
-      this.element.value = value
+      this.element.value = this.formatNumber(value)
     }
   }
 
@@ -201,9 +204,6 @@ export default class extends Controller {
     const input = event.target
     const value = input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY).trim()
 
-    // カンマを削除した値を設定
-    input.value = value
-
     // 「0」または「0.0」の場合は全選択
     if (value === SPECIAL_VALUES.ZERO ||
         value === SPECIAL_VALUES.ZERO_DECIMAL ||
@@ -211,29 +211,35 @@ export default class extends Controller {
       if (!this.isNumberType) {
         input.select()
       }
-    } else {
-      // それ以外の場合はカーソルを末尾に移動
-      if (!this.isNumberType) {
-        setTimeout(() => {
-          input.setSelectionRange(value.length, value.length)
-        }, 0)
-      }
     }
   }
 
+  // blur イベント時の処理
+  // 小数点フィールドの場合、入力完了時に.0形式に変換する
   handleBlur(event) {
-    const input = event.target;
-    let rawValue = input.dataset.rawValue || input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY);
+    const input = event.target
 
-    // 空または '0' の場合は '0' に正規化
-    if (rawValue === '' || rawValue === '0') {
-      rawValue = '0';
+    // 小数点フィールドモードでない場合は何もしない
+    if (!this.decimalField) {
+      return
     }
 
-    // 整数値に変換
-    const numValue = parseInt(rawValue, 10) || 0;
-    input.value = numValue.toString();
-    input.dataset.rawValue = rawValue;
+    const value = input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY).trim()
+
+    // 空欄の場合は何もしない
+    if (value === SPECIAL_VALUES.EMPTY || value === SPECIAL_VALUES.MINUS) {
+      return
+    }
+
+    // 数値に変換
+    const numValue = parseFloat(value)
+
+    // NaNでない場合は.0形式に変換
+    if (!isNaN(numValue)) {
+      if (Number.isInteger(numValue)) {
+        input.value = numValue.toFixed(DECIMAL_PLACES.ONE)
+      }
+    }
   }
 
   // input イベント時の処理
@@ -261,9 +267,9 @@ export default class extends Controller {
     // 小数点がある場合は整数部分のみにカンマを挿入
     if (digits.includes(SPECIAL_VALUES.DOT)) {
       const [integer, decimal] = digits.split(SPECIAL_VALUES.DOT)
-      return integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + SPECIAL_VALUES.DOT + decimal
+      return integer.replace(REGEX.THREE_DIGIT_GROUP, ',') + SPECIAL_VALUES.DOT + decimal
     }
-    return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    return digits.replace(REGEX.THREE_DIGIT_GROUP, ',')
   }
 
   // フォーム送信前にカンマとスペースを削除して数値型に変換
@@ -369,7 +375,7 @@ export default class extends Controller {
     }
 
     // カンマを挿入（3桁区切り）※カンマなしモードの場合はスキップ
-    const formatted = integerPart
+    const formatted = this.noComma ? integerPart : this.formatNumber(integerPart)
     const finalValue = (hasNegative ? SPECIAL_VALUES.MINUS : SPECIAL_VALUES.EMPTY) + formatted + decimalPart
 
     // 値が変わっていない場合は何もしない
@@ -395,10 +401,10 @@ export default class extends Controller {
       for (let i = hasNegative ? 1 : 0; i < finalValue.length; i++) {
         if (REGEX.DIGIT.test(finalValue[i])) {
           digitsSeen++
-        }
-        if (digitsSeen >= digitsBeforeCursor) {  // 数字のカウント後、毎回判定
-          newCursorPos = i + 1
-          break
+          if (digitsSeen >= digitsBeforeCursor) {
+            newCursorPos = i + 1
+            break
+          }
         }
       }
 

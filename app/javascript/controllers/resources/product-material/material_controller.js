@@ -1,7 +1,42 @@
+// Product Material Material Controller
+//
+// 商品原材料フォームにおける原材料選択時の単位情報取得・表示コントローラー
+//
+// 責務:
+// - 原材料選択時の単位情報API取得
+// - 単位表示フィールドの更新
+// - デフォルト単位重量の自動設定
+// - タブ間の原材料選択同期（複数タブで同じ原材料を編集時）
+// - エラーハンドリング（API失敗時のフォールバック）
+// - フォーム送信時の空行自動削除
+//
+// データフロー:
+// 1. ユーザーが原材料セレクトボックスを変更
+// 2. updateUnit() が発火
+// 3. GET /api/v1/materials/:id/fetch_product_unit_data でJSON取得
+// 4. 単位情報（unit_id, unit_name, default_unit_weight）を表示フィールドに反映
+// 5. 同期イベントを他タブの同じ原材料行に送信
+// 6. フォーム送信 → markForDestructionIfEmpty() → _destroy フラグ設定
+//
+// Targets:
+// - materialSelect: 原材料セレクトボックス（カテゴリータブ用）
+// - materialNameDisplay: 原材料名表示要素（全てタブ用 <span>）
+// - materialIdHidden: 原材料ID hidden フィールド（全てタブ用）
+// - unitDisplay: 単位表示要素
+// - quantityInput: 数量入力フィールド
+// - unitWeightInput: 単位重量入力フィールド
+// - unitIdInput: 単位ID hidden フィールド
+//
+// 翻訳キー:
+// - product_material.errors.unit_fetch_failed: 単位データ取得失敗メッセージ
+// - product_material.unit_not_set: 単位未設定表示
+// - product_material.unit_error: 単位取得エラー表示
+
 import { Controller } from "@hotwired/stimulus"
 import i18n from "controllers/i18n"
 import Logger from "utils/logger"
 
+// 定数定義
 const API_ENDPOINT = {
   MATERIAL_UNIT_DATA: (materialId) => `/api/v1/materials/${materialId}/fetch_product_unit_data`
 }
@@ -79,6 +114,10 @@ const LOG_MESSAGES = {
 export default class extends Controller {
   static targets = ["materialSelect", "materialNameDisplay", "materialIdHidden", "unitDisplay", "quantityInput", "unitWeightInput", "unitIdInput"]
 
+  // ============================================================
+  // 初期化
+  // ============================================================
+
   connect() {
     Logger.log(LOG_MESSAGES.CONTROLLER_CONNECTED)
     Logger.log(LOG_MESSAGES.HAS_MATERIAL_SELECT, this.hasMaterialSelectTarget)
@@ -87,6 +126,9 @@ export default class extends Controller {
     Logger.log(LOG_MESSAGES.HAS_UNIT_DISPLAY, this.hasUnitDisplayTarget)
     Logger.log(LOG_MESSAGES.HAS_UNIT_ID_INPUT, this.hasUnitIdInputTarget)
     Logger.log(LOG_MESSAGES.HAS_UNIT_WEIGHT_INPUT, this.hasUnitWeightInputTarget)
+
+    // フォーム送信前に空行をチェック
+    this.setupFormSubmitListener()
 
     let materialId = null
 
@@ -112,6 +154,10 @@ export default class extends Controller {
       this.disableSelectedMaterialsInSameTab()
     }, 200)
   }
+
+  // ============================================================
+  // 原材料選択時の処理
+  // ============================================================
 
   updateUnit(event) {
     const materialId = event.target.value
@@ -210,6 +256,10 @@ export default class extends Controller {
     }
   }
 
+  // ============================================================
+  // 入力フィールドの有効化/無効化
+  // ============================================================
+
   enableInputFields() {
     if (this.hasQuantityInputTarget) {
       this.quantityInputTarget.disabled = false
@@ -233,6 +283,10 @@ export default class extends Controller {
       Logger.log('Unit weight input disabled')
     }
   }
+
+  // ============================================================
+  // ALLタブへの同期
+  // ============================================================
 
   syncMaterialNameToAllTab() {
     const rowUniqueId = this.element.dataset.uniqueId
@@ -420,6 +474,10 @@ export default class extends Controller {
     }
   }
 
+  // ============================================================
+  // タブ間同期
+  // ============================================================
+
   syncMaterialToOtherTabs(event) {
     const uniqueId = event.target.dataset[DATA_ATTRIBUTE.UNIQUE_ID]
     const selectedMaterialId = event.target.value
@@ -469,6 +527,10 @@ export default class extends Controller {
     })
   }
 
+  // ============================================================
+  // 同一タブ内で選択済み原材料を無効化
+  // ============================================================
+
   disableSelectedMaterialsInSameTab() {
     const currentCategoryId = this.element.dataset.categoryId
     if (!currentCategoryId || currentCategoryId === '0') {
@@ -511,5 +573,84 @@ export default class extends Controller {
     })
 
     Logger.log(LOG_MESSAGES.MATERIAL_DISABLE_COMPLETED)
+  }
+
+  // ============================================================
+  // フォーム送信前処理
+  // ============================================================
+
+  // フォーム送信前に空行を自動削除する処理を設定
+  setupFormSubmitListener() {
+    const form = this.element.closest('form')
+    if (!form) {
+      Logger.warn('Form not found for material row controller')
+      return
+    }
+
+    // 既にリスナーが設定されている場合はスキップ
+    if (form.dataset.materialSubmitListenerAdded) {
+      return
+    }
+
+    form.addEventListener('submit', (event) => {
+      this.markForDestructionIfEmpty()
+    })
+
+    form.dataset.materialSubmitListenerAdded = 'true'
+    Logger.log('Form submit listener added for material row')
+  }
+
+  // 原材料が選択されていない場合、この行を削除対象としてマーク
+  markForDestructionIfEmpty() {
+    let materialId = null
+
+    // 原材料IDを取得（select または hidden フィールドから）
+    if (this.hasMaterialSelectTarget && this.materialSelectTarget.value) {
+      materialId = this.materialSelectTarget.value
+    } else if (this.hasMaterialIdHiddenTarget && this.materialIdHiddenTarget.value) {
+      materialId = this.materialIdHiddenTarget.value
+    }
+
+    // 原材料が選択されていない場合
+    if (!materialId) {
+      Logger.log('Empty material row detected, marking for destruction')
+
+      // _destroy フィールドを探す
+      let destroyInput = this.element.querySelector('input[name*="[_destroy]"]')
+
+      // _destroy フィールドが存在しない場合は作成
+      if (!destroyInput) {
+        destroyInput = document.createElement('input')
+        destroyInput.type = 'hidden'
+        destroyInput.name = this.getDestroyFieldName()
+        destroyInput.value = '1'
+        this.element.appendChild(destroyInput)
+        Logger.log('_destroy field created and set to 1 for material row')
+      } else {
+        // 既存の _destroy フィールドに 1 を設定
+        destroyInput.value = '1'
+        Logger.log('_destroy field updated to 1 for material row')
+      }
+    }
+  }
+
+  // _destroy フィールドの name 属性を生成
+  // 例: product[product_materials_attributes][0][material_id] → product[product_materials_attributes][0][_destroy]
+  getDestroyFieldName() {
+    let nameField = null
+
+    if (this.hasMaterialSelectTarget && this.materialSelectTarget.name) {
+      nameField = this.materialSelectTarget.name
+    } else if (this.hasMaterialIdHiddenTarget && this.materialIdHiddenTarget.name) {
+      nameField = this.materialIdHiddenTarget.name
+    }
+
+    if (nameField) {
+      // [material_id] を [_destroy] に置換
+      return nameField.replace(/\[material_id\]$/, '[_destroy]')
+    }
+
+    Logger.warn('Could not determine destroy field name for material row')
+    return ''
   }
 }

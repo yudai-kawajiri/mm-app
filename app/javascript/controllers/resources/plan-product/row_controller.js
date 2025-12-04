@@ -17,11 +17,13 @@
 // - 数量×単価の小計計算
 // - 親コントローラーへの再計算通知
 // - 編集時の既存データ読み込み
+// - フォーム送信時の空行自動削除
 //
 // データフロー:
 // 1. 商品選択 → updateProduct() → API取得 → 価格・カテゴリー設定
 // 2. 数量入力 → calculate() → 小計計算 → 親に通知
 // 3. 親コントローラー → getCurrentValues() → 値取得 → 合計計算
+// 4. フォーム送信 → markForDestructionIfEmpty() → _destroy フラグ設定
 //
 // Targets:
 // - productSelect: 商品選択セレクトボックス
@@ -129,6 +131,9 @@ export default class extends Controller {
 
     this.isCalculating = false
 
+    // フォーム送信前に空行をチェック
+    this.setupFormSubmitListener()
+
     let productId = null
 
     if (this.hasProductSelectTarget && this.productSelectTarget.value) {
@@ -142,13 +147,13 @@ export default class extends Controller {
     if (productId) {
       Logger.log(LOG_MESSAGES.PRODUCT_ALREADY_SELECTED(productId))
       setTimeout(() => {
-        this.enableInputFields()
+        this.enableProductionCount()
         Logger.log('Production count input enabled after delay')
       }, DELAY_MS.ENABLE_INPUT_DELAY)
       this.fetchProductInfo(productId)
     } else {
       Logger.log(LOG_MESSAGES.NO_PRODUCT_SELECTED)
-      this.disableInputFields()
+      this.disableProductionCount()
       setTimeout(() => this.calculate(), DELAY_MS.INITIAL_CALCULATION)
     }
 
@@ -161,22 +166,27 @@ export default class extends Controller {
   // 商品選択時の処理
   // ============================================================
 
+  // 商品選択時に価格とカテゴリーを取得
   async updateProduct(event) {
     const productId = event.target.value
+    console.log('[updateProduct] Product ID:', productId)
     Logger.log(LOG_MESSAGES.PRODUCT_SELECTED(productId))
 
     if (!productId) {
+      console.log('[updateProduct] No product ID, calling resetProduct()')
       this.resetProduct()
-      this.disableInputFields()
+      console.log('[updateProduct] After resetProduct(), productionCount value:', this.productionCountTarget.value)
       return
     }
 
-    this.enableInputFields()
     await this.fetchProductInfo(productId)
 
     this.disableSelectedProductsInSameTab()
   }
 
+  // 商品情報をAPIから取得
+  // /api/v1/products/:id/fetch_plan_details から
+  // 商品の価格とカテゴリーIDを取得し、表示を更新する
   async fetchProductInfo(productId) {
     try {
       Logger.log(LOG_MESSAGES.FETCHING_PRODUCT_INFO(productId))
@@ -194,6 +204,10 @@ export default class extends Controller {
       this.categoryIdValue = product.category_id || DEFAULT_VALUE.ZERO
 
       this.updatePriceDisplay()
+
+      // 数量フィールドを有効化
+      this.enableProductionCount()
+
       this.calculate()
 
       this.syncPriceToAllTab()
@@ -201,11 +215,12 @@ export default class extends Controller {
       Logger.log(LOG_MESSAGES.PRICE_SET(this.priceValue, this.categoryIdValue))
     } catch (error) {
       Logger.error(LOG_MESSAGES.PRODUCT_FETCH_ERROR, error)
-      alert(i18n.t(I18N_KEYS.PRODUCT_FETCH_FAILED))
+      console.error(i18n.t(I18N_KEYS.PRODUCT_FETCH_FAILED), error)
       this.resetProduct()
     }
   }
 
+  // 価格表示を更新
   updatePriceDisplay() {
     if (this.hasPriceDisplayTarget) {
       this.priceDisplayTarget.textContent = CurrencyFormatter.format(this.priceValue)
@@ -215,42 +230,76 @@ export default class extends Controller {
     }
   }
 
+  // 商品情報をリセット
   resetProduct() {
     this.priceValue = DEFAULT_VALUE.ZERO
     this.categoryIdValue = DEFAULT_VALUE.ZERO
     this.updatePriceDisplay()
 
+    // 数量フィールドを先に無効化（number-inputコントローラーの干渉を防ぐ）
+    this.disableProductionCount()
+
+    // 数量もリセット
+    if (this.hasProductionCountTarget) {
+      console.log('[resetProduct] Before reset:', this.productionCountTarget.value)
+      this.productionCountTarget.value = DEFAULT_VALUE.EMPTY_STRING
+      console.log('[resetProduct] After reset:', this.productionCountTarget.value)
+      console.log('[resetProduct] Target element:', this.productionCountTarget)
+    } else {
+      console.warn('[resetProduct] productionCountTarget not found!')
+    }
+
+    // 小計もリセット
     if (this.hasSubtotalTarget) {
       this.subtotalTarget.textContent = CurrencyFormatter.format(DEFAULT_VALUE.ZERO)
     }
 
-    this.calculate()
+    // 「全て」タブの数量と売価もリセット
+    this.resetAllTabProductionCount()
+
+    // 親に通知して合計を更新
+    this.notifyParent()
+
     Logger.log(LOG_MESSAGES.PRODUCT_RESET)
   }
 
-  // ============================================================
-  // 入力フィールドの有効化/無効化
-  // ============================================================
-
-  enableInputFields() {
-    if (this.hasProductionCountTarget) {
-      this.productionCountTarget.disabled = false
-      Logger.log('Production count input enabled')
-    }
-  }
-
-  disableInputFields() {
+  // 数量入力フィールドを無効化
+  disableProductionCount() {
     if (this.hasProductionCountTarget) {
       this.productionCountTarget.disabled = true
       Logger.log('Production count input disabled')
     }
   }
 
+  // 数量入力フィールドを有効化
+  enableProductionCount() {
+    if (this.hasProductionCountTarget) {
+      this.productionCountTarget.disabled = false
+      Logger.log('Production count input enabled')
+    }
+  }
+
+  // ============================================================
+  // 入力フィールドの有効化/無効化(後方互換性)
+  // ============================================================
+
+  enableInputFields() {
+    this.enableProductionCount()
+  }
+
+  disableInputFields() {
+    this.disableProductionCount()
+  }
+
   // ============================================================
   // 小計計算
   // ============================================================
 
+  // 小計を計算
+  // 数量×単価で小計を計算し、表示を更新
+  // 親コントローラーへの通知を遅延実行する
   calculate() {
+    // 計算中なら無視
     if (this.isCalculating) return
 
     this.isCalculating = true
@@ -264,6 +313,7 @@ export default class extends Controller {
 
     this.updateSubtotal(subtotal)
 
+    // 親への通知は遅延させて1回だけ
     clearTimeout(this.notifyTimeout)
     this.notifyTimeout = setTimeout(() => {
       this.notifyParent()
@@ -271,6 +321,7 @@ export default class extends Controller {
     }, DELAY_MS.PARENT_NOTIFICATION)
   }
 
+  // 数量を取得
   getQuantity() {
     if (!this.hasProductionCountTarget) return DEFAULT_VALUE.ZERO
     const value = parseFloat(this.productionCountTarget.value) || DEFAULT_VALUE.ZERO
@@ -278,6 +329,7 @@ export default class extends Controller {
     return value
   }
 
+  // 小計を更新
   updateSubtotal(subtotal) {
     if (this.hasSubtotalTarget) {
       this.subtotalTarget.textContent = CurrencyFormatter.format(subtotal)
@@ -287,6 +339,7 @@ export default class extends Controller {
     }
   }
 
+  // 親コントローラーに通知
   notifyParent() {
     Logger.log(LOG_MESSAGES.NOTIFYING_PARENT)
 
@@ -352,6 +405,62 @@ export default class extends Controller {
       }
 
       Logger.log('ALL tab row controller updated and recalculated')
+    } else {
+      Logger.warn('ALL tab row controller not found or is same instance')
+    }
+  }
+
+  // 「全て」タブの数量と売価をリセット
+  resetAllTabProductionCount() {
+    const rowUniqueId = this.element.dataset.rowUniqueId
+    if (!rowUniqueId) {
+      Logger.warn('Row unique ID not found, cannot reset ALL tab production count')
+      return
+    }
+
+    // 全てタブ(#nav-0)の対応行を検索
+    const allTabRow = document.querySelector(`#nav-0 tr[data-row-unique-id="${rowUniqueId}"]`)
+    if (!allTabRow) {
+      Logger.warn(`ALL tab row not found for unique ID: ${rowUniqueId}`)
+      return
+    }
+
+    Logger.log(`Resetting ALL tab production count for unique ID: ${rowUniqueId}`)
+
+    // 全てタブの行コントローラーを取得
+    const allTabRowController = this.application.getControllerForElementAndIdentifier(
+      allTabRow,
+      'resources--plan-product--row'
+    )
+
+    if (allTabRowController && allTabRowController !== this) {
+      // 価格をリセット
+      allTabRowController.priceValue = DEFAULT_VALUE.ZERO
+      allTabRowController.categoryIdValue = DEFAULT_VALUE.ZERO
+
+      // 価格表示を更新
+      if (typeof allTabRowController.updatePriceDisplay === 'function') {
+        allTabRowController.updatePriceDisplay()
+      }
+
+      // 数量フィールドを無効化
+      if (typeof allTabRowController.disableProductionCount === 'function') {
+        allTabRowController.disableProductionCount()
+      }
+
+      // 数量をリセット
+      if (allTabRowController.hasProductionCountTarget) {
+        console.log('[resetAllTabProductionCount] Before reset:', allTabRowController.productionCountTarget.value)
+        allTabRowController.productionCountTarget.value = DEFAULT_VALUE.EMPTY_STRING
+        console.log('[resetAllTabProductionCount] After reset:', allTabRowController.productionCountTarget.value)
+      }
+
+      // 小計をリセット
+      if (allTabRowController.hasSubtotalTarget) {
+        allTabRowController.subtotalTarget.textContent = CurrencyFormatter.format(DEFAULT_VALUE.ZERO)
+      }
+
+      Logger.log('ALL tab production count and price reset completed')
     } else {
       Logger.warn('ALL tab row controller not found or is same instance')
     }
@@ -430,5 +539,74 @@ export default class extends Controller {
     })
 
     Logger.log(LOG_MESSAGES.PRODUCT_DISABLE_COMPLETED)
+  }
+
+  // ============================================================
+  // フォーム送信前処理
+  // ============================================================
+
+  // フォーム送信前に空行を自動削除する処理を設定
+  setupFormSubmitListener() {
+    const form = this.element.closest('form')
+    if (!form) {
+      Logger.warn('Form not found for row controller')
+      return
+    }
+
+    // 既にリスナーが設定されている場合はスキップ
+    if (form.dataset.rowSubmitListenerAdded) {
+      return
+    }
+
+    form.addEventListener('submit', (event) => {
+      this.markForDestructionIfEmpty()
+    })
+
+    form.dataset.rowSubmitListenerAdded = 'true'
+    Logger.log('Form submit listener added')
+  }
+
+  // 商品が選択されていない場合、この行を削除対象としてマーク
+  markForDestructionIfEmpty() {
+    let productId = null
+
+    // 商品IDを取得(select フィールドから)
+    if (this.hasProductSelectTarget && this.productSelectTarget.value) {
+      productId = this.productSelectTarget.value
+    }
+
+    // 商品が選択されていない場合
+    if (!productId) {
+      Logger.log('Empty row detected, marking for destruction')
+
+      // _destroy フィールドを探す
+      let destroyInput = this.element.querySelector('input[name*="[_destroy]"]')
+
+      // _destroy フィールドが存在しない場合は作成
+      if (!destroyInput) {
+        destroyInput = document.createElement('input')
+        destroyInput.type = 'hidden'
+        destroyInput.name = this.getDestroyFieldName()
+        destroyInput.value = '1'
+        this.element.appendChild(destroyInput)
+        Logger.log('_destroy field created and set to 1')
+      } else {
+        // 既存の _destroy フィールドに 1 を設定
+        destroyInput.value = '1'
+        Logger.log('_destroy field updated to 1')
+      }
+    }
+  }
+
+  // _destroy フィールドの name 属性を生成
+  // 例: plan[plan_products_attributes][0][product_id] → plan[plan_products_attributes][0][_destroy]
+  getDestroyFieldName() {
+    if (this.hasProductSelectTarget && this.productSelectTarget.name) {
+      // [product_id] を [_destroy] に置換
+      return this.productSelectTarget.name.replace(/\[product_id\]$/, '[_destroy]')
+    }
+
+    Logger.warn('Could not determine destroy field name')
+    return ''
   }
 }
