@@ -4,7 +4,7 @@ ja:
       new:
         title: "ログイン"
         submit: "ログイン"
-        email_placeholder: "example@sushi-manage.com"
+        email_placeholder: "example@mm-app-manage.com"
         password_placeholder: "パスワードを入力"
       signed_in: "ログインしました"
       signed_out: "ログアウトしました"
@@ -16,7 +16,7 @@ ja:
       new:
         title: "確認メール再送信"
         description: "アカウント確認のメールを再送信します"
-        email_placeholder: "example@sushi-manage.com"
+        email_placeholder: "example@mm-app-manage.com"
         email_help: "登録時に使用したメールアドレスを入力してください"
         submit: "確認メールを再送信"
 
@@ -33,7 +33,7 @@ ja:
         title: "新規登録"
       edit:
         title: "アカウント編集"
-        email_placeholder: "example@sushi-manage.com"
+        email_placeholder: "example@mm-app-manage.com"
         unhappy: "アカウントの使用をやめる場合"
         cancel_my_account: "アカウントを削除する"
         cancel_confirm: "本当にアカウントを削除してもよろしいですか？この操作は取り消せません"
@@ -62,7 +62,7 @@ ja:
         title: "パスワードを忘れた方"
         submit: "パスワード再設定のメールを送信"
         description: "登録したメールアドレスにパスワード再設定のリンクをお送りします"
-        email_placeholder: "example@sushi-manage.com"
+        email_placeholder: "example@mm-app-manage.com"
         email_help: "登録時に使用したメールアドレスを入力してください"
       edit:
         title: "パスワード変更"
@@ -75,7 +75,7 @@ ja:
       new:
         title: "アカウントロック解除"
         email: "メールアドレス"
-        email_placeholder: "example@sushi-manage.com"
+        email_placeholder: "example@mm-app-manage.com"
         email_hint: "登録時に使用したメールアドレスを入力してください"
         submit: "ロック解除のメールを送信"
         back_to_login: "ログイン画面に戻る"

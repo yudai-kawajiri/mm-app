@@ -1,5 +1,5 @@
 # 管理者ユーザーを作成
-admin = User.find_or_create_by!(email: 'admin@sushi-manage.com') do |user|
+admin = User.find_or_create_by!(email: 'admin@mm-app-manage.com') do |user|
   user.name = '管理者'
   user.password = 'password'
   user.password_confirmation = 'password'
