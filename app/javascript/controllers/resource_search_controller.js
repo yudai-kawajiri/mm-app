@@ -107,21 +107,30 @@ export default class extends Controller {
   clear(event) {
     event.preventDefault()
 
-    // テキスト入力をクリア
-    if (this.hasInputTarget) {
-      this.inputTarget.value = ''
-    }
+    // フォーム要素を取得
+    const form = this.element.closest('form') || this.element.querySelector('form')
 
-    // セレクトボックスをクリア
-    const form = this.element.querySelector('form')
-    if (form) {
-      const selects = form.querySelectorAll('select')
-      selects.forEach(select => {
-        select.value = ''
-      })
-    }
+    // 全てのセレクトボックスをクリア（最初のオプション = 空白を選択）
+    form.querySelectorAll('select').forEach(select => {
+      select.selectedIndex = 0  // ← 最初のオプション（nil）を選択
+    })
 
-    this.filterRows('')
-    this.updateClearButton()
+    // 全てのテキスト入力をクリア
+    form.querySelectorAll('input[type="text"]').forEach(input => {
+      input.value = ''
+    })
+
+    // クリアボタンのリンク先URLを取得
+    const clearUrl = event.currentTarget.href
+
+    // ページ全体をリロードして検索結果をリセット
+    if (clearUrl) {
+      console.log('Redirecting to:', clearUrl)
+      window.location.href = clearUrl  // ← 追加！
+    } else {
+      // リアルタイム検索のフォールバック
+      this.filterRows('')
+      this.updateClearButton()
+    }
   }
 }
