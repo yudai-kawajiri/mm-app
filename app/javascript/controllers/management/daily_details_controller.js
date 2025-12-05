@@ -23,23 +23,6 @@ export default class extends Controller {
       document.querySelectorAll('.bulk-edit-hidden').forEach(el => el.style.display = 'none')
       document.querySelector('.bulk-edit-actions').style.display = 'block'
 
-      document.querySelectorAll('.numeric-input').forEach(input => {
-        const newInput = document.createElement('input')
-        newInput.type = 'text'
-        newInput.value = input.value
-        newInput.className = input.className
-        newInput.name = input.name
-        newInput.placeholder = input.placeholder || ''
-        newInput.disabled = input.disabled
-
-        if (input.dataset.original) {
-          newInput.dataset.original = input.dataset.original
-        }
-
-        input.parentNode.replaceChild(newInput, input)
-        this.setupNumericInput(newInput)
-      })
-
       this.calculateDailyTargetSum()
     } else {
       this.summaryTarget.style.display = 'none'
@@ -50,70 +33,8 @@ export default class extends Controller {
 
       document.querySelectorAll('.bulk-edit-target').forEach(input => {
         const originalValue = parseInt(input.dataset.original, 10) || 0
-        input.dataset.rawValue = originalValue.toString()
-        input.value = originalValue.toString()
+        input.value = originalValue.toLocaleString('ja-JP')
       })
-    }
-  }
-
-  setupNumericInput(input) {
-    let isComposing = false
-    const initialValue = input.value.replace(/,/g, '')
-    input.dataset.rawValue = initialValue || '0'
-
-    input.addEventListener('compositionstart', () => { isComposing = true })
-    input.addEventListener('compositionend', (e) => { isComposing = false; this.processInput(e.target) })
-
-    input.addEventListener('focus', (e) => {
-      const rawValue = e.target.dataset.rawValue || '0'
-      e.target.value = rawValue
-      setTimeout(() => {
-        const len = e.target.value.length
-        e.target.setSelectionRange(len, len)
-      }, 0)
-    })
-
-    input.addEventListener('input', (e) => { if (!isComposing) this.processInput(e.target) })
-
-    input.addEventListener('blur', (e) => {
-      let rawValue = e.target.dataset.rawValue || ''
-      if (rawValue === '' || rawValue === '0') {
-        rawValue = '0'
-        e.target.dataset.rawValue = '0'
-      }
-      const numValue = parseInt(rawValue, 10) || 0
-      e.target.value = rawValue
-    })
-  }
-
-  processInput(input) {
-    const originalValue = input.value
-    const originalCursorPos = input.selectionStart
-
-    let value = originalValue
-    value = value.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-    value = value.replace(/[^\d]/g, '')
-    if (value.length > 1) value = value.replace(/^0+/, '')
-
-    if (input.value !== value) {
-      let digitsBeforeCursor = 0
-      for (let i = 0; i < originalCursorPos && i < originalValue.length; i++) {
-        if (/\d/.test(originalValue[i])) digitsBeforeCursor++
-      }
-
-      input.value = value
-      let newPos = 0, digitCount = 0
-      for (let i = 0; i < value.length; i++) {
-        if (digitCount >= digitsBeforeCursor) break
-        newPos++
-        digitCount++
-      }
-      input.setSelectionRange(newPos, newPos)
-    }
-
-    input.dataset.rawValue = value
-    if (input.classList.contains('bulk-edit-target') || input.classList.contains('bulk-edit-actual')) {
-      this.calculateDailyTargetSum()
     }
   }
 
@@ -121,7 +42,7 @@ export default class extends Controller {
     let sum = 0, cumulativeTarget = 0, cumulativePlanned = 0, cumulativeActual = 0
 
     document.querySelectorAll('.bulk-edit-target').forEach(input => {
-      const value = parseInt(input.dataset.rawValue, 10) || 0
+      const value = parseInt(input.value.replace(/,/g, ''), 10) || 0
       sum += value
       cumulativeTarget += value
 
@@ -134,9 +55,9 @@ export default class extends Controller {
         const actualCell = currentRow.querySelector('td:nth-child(4)')
         let actualValue = 0
         if (actualCell) {
-          const actualInput = actualCell.querySelector('.numeric-input')
+          const actualInput = actualCell.querySelector('.bulk-edit-actual')
           if (actualInput && !actualInput.disabled) {
-            actualValue = parseInt(actualInput.dataset.rawValue, 10) || 0
+            actualValue = parseInt(actualInput.value.replace(/,/g, ''), 10) || 0
           } else {
             const displaySpan = actualCell.querySelector('.normal-mode-display')
             if (displaySpan) actualValue = parseInt(displaySpan.textContent.replace(/[^0-9]/g, ''), 10) || 0
@@ -144,7 +65,7 @@ export default class extends Controller {
         }
         cumulativeActual += actualValue
 
-        const targetValue = parseInt(input.dataset.rawValue, 10) || 0
+        const targetValue = parseInt(input.value.replace(/,/g, ''), 10) || 0
         const achievementRateCell = currentRow.querySelector("td:nth-child(5)")
         if (achievementRateCell) {
           let rate = 0

@@ -1,10 +1,10 @@
 <%# 日別予算編集モーダル %>
 <div class="modal fade"
-     id="editDailyTargetModal"
-     tabindex="-1"
-     aria-labelledby="editDailyTargetModalLabel"
-     aria-hidden="true"
-     data-controller="management--daily-target-modal">
+      id="editDailyTargetModal"
+      tabindex="-1"
+      aria-labelledby="editDailyTargetModalLabel"
+      aria-hidden="true"
+      data-controller="management--daily-target-modal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -34,9 +34,12 @@
               class: "form-control",
               required: true,
               id: "editTargetAmount",
+              inputmode: "numeric",
+              autocomplete: "off",
               data: {
                 controller: 'input--number-input',
-                action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste'
+                'number-input-remove-comma-on-focus': 'true',
+                action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur keydown->input--number-input#handleKeydown'
               } %>
           </div>
 

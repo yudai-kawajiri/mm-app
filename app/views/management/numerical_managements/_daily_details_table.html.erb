@@ -87,12 +87,13 @@
                   <div class="bulk-edit-input" style="display: none;">
                     <%= text_field_tag "daily_data[#{index}][target_amount]",
                               number_with_delimiter(day[:target].to_i),
-                              class: "form-control form-control-sm text-end bulk-edit-target numeric-input",
+                              class: "form-control form-control-sm text-end bulk-edit-target",
                               data: {
-                        controller: "input--number-input",
-                        action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur",
-                        original: day[:target].to_i
-                      },
+                                original: day[:target].to_i,
+                                controller: 'input--number-input',
+                                'number-input-remove-comma-on-focus': 'true',
+                                action: 'input->input--number-input#handleInput input->management--daily-details#calculateDailyTargetSum paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur keydown->input--number-input#handleKeydown'
+                              },
                               placeholder: "0",
                               inputmode: "numeric" %>
                     <%= hidden_field_tag "daily_data[#{index}][date]", day[:date].strftime('%Y-%m-%d') %>
@@ -112,10 +113,11 @@
                     <% first_schedule = day[:plan_schedules].first %>
                     <%= text_field_tag "daily_data[#{index}][actual_revenue]",
                               number_with_delimiter((first_schedule&.actual_revenue || 0).to_i),
-                              class: "form-control form-control-sm text-end bulk-edit-actual numeric-input",
+                              class: "form-control form-control-sm text-end bulk-edit-actual",
                               data: {
                                 controller: "input--number-input",
-                                action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur"
+                                'number-input-remove-comma-on-focus': 'true',
+                                action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur keydown->input--number-input#handleKeydown"
                               },
                               disabled: day[:plan_schedules].empty?,
                               placeholder: "0",

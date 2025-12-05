@@ -172,8 +172,23 @@ export default class extends Controller {
     }
 
     if (amountField) {
-      amountField.value = targetAmount || DEFAULT_VALUE.EMPTY_STRING
-      Logger.log('Amount field set:', targetAmount, amountField)
+      const rawValue = targetAmount || DEFAULT_VALUE.EMPTY_STRING
+      amountField.value = rawValue
+
+      // input--number-inputコントローラーの初期値フォーマットをトリガー
+      if (rawValue) {
+        // Stimulusコントローラーのインスタンスを取得
+        const numberInputController = this.application.getControllerForElementAndIdentifier(
+          amountField,
+          'input--number-input'
+        )
+
+        if (numberInputController && numberInputController.formatInitialValue) {
+          numberInputController.formatInitialValue()
+        }
+      }
+
+      Logger.log('Amount field set:', amountField.value, amountField)
     } else {
       Logger.error('Amount field not found')
     }

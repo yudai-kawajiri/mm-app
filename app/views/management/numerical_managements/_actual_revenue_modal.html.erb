@@ -32,7 +32,8 @@
               autocomplete: "off",
               data: {
                 controller: 'input--number-input',
-                action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur'
+                'number-input-remove-comma-on-focus': 'true',
+                action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur keydown->input--number-input#handleKeydown'
               } %>
           </div>
 

@@ -33,7 +33,7 @@ class Resources::Product < ApplicationRecord
   nested_attribute_translation :product_materials, "Planning::ProductMaterial"
 
   # ステータス変更制限
-  restrict_status_change_if_used_in :plan_products, foreign_key: :product_id
+  restrict_status_change_if_used_in :plan_products, foreign_key: :product_id, class_name: 'Planning::PlanProduct'
 
   # 製品のステータス定義
   enum :status, { draft: 0, selling: 1, discontinued: 2 }

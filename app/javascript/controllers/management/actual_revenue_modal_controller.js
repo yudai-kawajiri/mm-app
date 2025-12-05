@@ -151,8 +151,23 @@ export default class extends Controller {
     }
 
     if (revenueInputField) {
-      revenueInputField.value = actualRevenue || DEFAULT_VALUE.EMPTY_STRING
-      Logger.log('Revenue input field set:', actualRevenue, revenueInputField)
+      const rawValue = actualRevenue || DEFAULT_VALUE.EMPTY_STRING
+      revenueInputField.value = rawValue
+
+      // input--number-inputコントローラーの初期値フォーマットをトリガー
+      if (rawValue) {
+        // Stimulusコントローラーのインスタンスを取得
+        const numberInputController = this.application.getControllerForElementAndIdentifier(
+          revenueInputField,
+          'input--number-input'
+        )
+
+        if (numberInputController && numberInputController.formatInitialValue) {
+          numberInputController.formatInitialValue()
+        }
+      }
+
+      Logger.log('Revenue input field set:', revenueInputField.value, revenueInputField)
     } else {
       Logger.error('Revenue input field not found')
     }

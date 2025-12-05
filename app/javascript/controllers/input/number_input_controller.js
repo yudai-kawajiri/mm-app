@@ -6,35 +6,44 @@
 //   <!-- カンマあり（デフォルト） -->
 //   <%= f.text_field :price,
 //       data: {
-//         controller: "number-input",
-//         action: "input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur"
+//         controller: "input--number-input",
+//         action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur"
 //       }
 //   %>
 //
 //   <!-- カンマなし -->
 //   <%= f.text_field :quantity,
 //       data: {
-//         controller: "number-input",
-//         number_input_no_comma: "true",
-//         action: "input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur"
+//         controller: "input--number-input",
+//         "number-input-no-comma": "true",
+//         action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur"
+//       }
+//   %>
+//
+//   <!-- フォーカス時にカンマ削除（一括編集と同じ動作） -->
+//   <%= f.text_field :target_amount,
+//       data: {
+//         controller: "input--number-input",
+//         "number-input-remove-comma-on-focus": "true",
+//         action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur keydown->input--number-input#handleKeydown"
 //       }
 //   %>
 //
 //   <!-- 整数のみ（小数点禁止） -->
 //   <%= f.text_field :pieces,
 //       data: {
-//         controller: "number-input",
-//         number_input_integer_only: "true",
-//         action: "input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus"
+//         controller: "input--number-input",
+//         "number-input-integer-only": "true",
+//         action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus"
 //       }
 //   %>
 //
 //   <!-- 小数点フィールド（.0形式を維持） -->
 //   <%= f.text_field :weight,
 //       data: {
-//         controller: "number-input",
-//         number_input_decimal_field: "true",
-//         action: "input->number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur"
+//         controller: "input--number-input",
+//         "number-input-decimal-field": "true",
+//         action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur"
 //       }
 //   %>
 //
@@ -46,6 +55,7 @@
 // - 全角数字→半角数字の自動変換
 // - 全角スペース・半角スペースの自動削除
 // - 3桁ごとのカンマ挿入（オプション）
+// - フォーカス時にカンマ削除（オプション）
 // - IME変換中の処理スキップ
 // - カーソル位置の保持
 // - フォーム送信前のカンマ自動削除 + 数値型変換
@@ -62,7 +72,8 @@ import Logger from "utils/logger"
 const DATA_ATTRIBUTES = {
   NO_COMMA: 'numberInputNoComma',
   INTEGER_ONLY: 'numberInputIntegerOnly',
-  DECIMAL_FIELD: 'numberInputDecimalField'
+  DECIMAL_FIELD: 'numberInputDecimalField',
+  REMOVE_COMMA_ON_FOCUS: 'numberInputRemoveCommaOnFocus'
 }
 
 const INPUT_TYPE = {
@@ -121,6 +132,10 @@ const TIMEOUT_DELAY = {
   ZERO: 0
 }
 
+const KEY_CODES = {
+  ENTER: 'Enter'
+}
+
 export default class extends Controller {
   // コントローラー接続時の処理
   // 初期設定とイベントリスナーの登録を行う
@@ -131,6 +146,7 @@ export default class extends Controller {
     this.noComma = this.element.dataset[DATA_ATTRIBUTES.NO_COMMA] === 'true'
     this.integerOnly = this.element.dataset[DATA_ATTRIBUTES.INTEGER_ONLY] === 'true'
     this.decimalField = this.element.dataset[DATA_ATTRIBUTES.DECIMAL_FIELD] === 'true'
+    this.removeCommaOnFocus = this.element.dataset[DATA_ATTRIBUTES.REMOVE_COMMA_ON_FOCUS] === 'true'
 
     // type="number"の場合はsetSelectionRangeが使えない
     this.isNumberType = this.element.type === INPUT_TYPE.NUMBER
@@ -191,23 +207,38 @@ export default class extends Controller {
       return
     }
 
-    // カンマありモードの場合はカンマを挿入
-    if (!this.noComma && Number.isInteger(numValue)) {
+    // removeCommaOnFocusモードの場合はカンマを挿入
+    // noCommaモードでない場合もカンマを挿入
+    if ((!this.noComma || this.removeCommaOnFocus) && Number.isInteger(numValue)) {
       this.element.value = this.formatNumber(value)
     }
   }
 
   // focus イベント時の処理
   // 「0」または「0.0」の場合、フォーカス時に全選択する
+  // removeCommaOnFocusモードの場合はカンマを削除する
   // 次に数字を入力すると自動的に上書きされる
   handleFocus(event) {
     const input = event.target
-    const value = input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY).trim()
+    let value = input.value.trim()
+
+    // removeCommaOnFocusモードの場合はカンマを削除
+    if (this.removeCommaOnFocus) {
+      const withoutCommas = value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY)
+      if (value !== withoutCommas) {
+        this.isUpdating = true
+        input.value = withoutCommas
+        this.isUpdating = false
+      }
+      value = withoutCommas
+    }
+
+    const valueWithoutCommas = value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY)
 
     // 「0」または「0.0」の場合は全選択
-    if (value === SPECIAL_VALUES.ZERO ||
-        value === SPECIAL_VALUES.ZERO_DECIMAL ||
-        value === SPECIAL_VALUES.ZERO_TWO_DECIMAL) {
+    if (valueWithoutCommas === SPECIAL_VALUES.ZERO ||
+        valueWithoutCommas === SPECIAL_VALUES.ZERO_DECIMAL ||
+        valueWithoutCommas === SPECIAL_VALUES.ZERO_TWO_DECIMAL) {
       if (!this.isNumberType) {
         input.select()
       }
@@ -216,15 +247,59 @@ export default class extends Controller {
 
   // blur イベント時の処理
   // 小数点フィールドの場合、入力完了時に.0形式に変換する
+  // removeCommaOnFocusモードの場合はカンマを再挿入する
   handleBlur(event) {
     const input = event.target
+    const value = input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY).trim()
 
-    // 小数点フィールドモードでない場合は何もしない
-    if (!this.decimalField) {
+    // 小数点フィールドモードの処理
+    if (this.decimalField) {
+      // 空欄の場合は何もしない
+      if (value === SPECIAL_VALUES.EMPTY || value === SPECIAL_VALUES.MINUS) {
+        return
+      }
+
+      // 数値に変換
+      const numValue = parseFloat(value)
+
+      // NaNでない場合は.0形式に変換
+      if (!isNaN(numValue)) {
+        if (Number.isInteger(numValue)) {
+          input.value = numValue.toFixed(DECIMAL_PLACES.ONE)
+        }
+      }
       return
     }
 
+    // removeCommaOnFocusモードの場合はカンマを再挿入
+    if (this.removeCommaOnFocus && value !== SPECIAL_VALUES.EMPTY && value !== SPECIAL_VALUES.MINUS) {
+      const numValue = parseFloat(value)
+      if (!isNaN(numValue) && Number.isInteger(numValue)) {
+        this.isUpdating = true
+        input.value = this.formatNumber(value)
+        this.isUpdating = false
+      }
+    }
+  }
+
+  // keydown イベント時の処理
+  // Enterキー押下時にblur処理を実行してカンマを挿入する
+  handleKeydown(event) {
+    if (event.key === KEY_CODES.ENTER) {
+      event.preventDefault()
+      this.formatWithCommaOnEnter(event.target)
+      event.target.blur()
+    }
+  }
+
+  // Enterキー押下時にカンマをフォーマット
+  formatWithCommaOnEnter(input) {
     const value = input.value.replace(REGEX.COMMA, SPECIAL_VALUES.EMPTY).trim()
+
+    // removeCommaOnFocusモードでない場合は何もしない
+    if (!this.removeCommaOnFocus) {
+      return
+    }
 
     // 空欄の場合は何もしない
     if (value === SPECIAL_VALUES.EMPTY || value === SPECIAL_VALUES.MINUS) {
@@ -234,17 +309,18 @@ export default class extends Controller {
     // 数値に変換
     const numValue = parseFloat(value)
 
-    // NaNでない場合は.0形式に変換
-    if (!isNaN(numValue)) {
-      if (Number.isInteger(numValue)) {
-        input.value = numValue.toFixed(DECIMAL_PLACES.ONE)
-      }
+    // NaNでない場合はカンマを挿入
+    if (!isNaN(numValue) && Number.isInteger(numValue)) {
+      this.isUpdating = true
+      input.value = this.formatNumber(value)
+      this.isUpdating = false
     }
   }
 
   // input イベント時の処理
   // 全角→半角変換とカンマ挿入を実行
   // IME変換中または自分が起こしたinputイベントの場合はスキップ
+  // removeCommaOnFocusモードの場合は入力中にカンマを挿入しない
   handleInput(event) {
     // IME変換中または自分が起こしたinputイベントの場合はスキップ
     if (this.isComposing || this.isUpdating) {
@@ -319,7 +395,7 @@ export default class extends Controller {
   // 4. 全角・半角スペースを削除
   // 5. カンマ削除
   // 6. 数値以外の文字削除
-  // 7. カンマ挿入（noCommaモードでない場合）
+  // 7. カンマ挿入（noCommaモードまたはremoveCommaOnFocusモードの場合はスキップ）
   // 8. カーソル位置の調整
   convertAndFormat() {
     const input = this.element
@@ -374,8 +450,10 @@ export default class extends Controller {
       return
     }
 
-    // カンマを挿入（3桁区切り）※カンマなしモードの場合はスキップ
-    const formatted = this.noComma ? integerPart : this.formatNumber(integerPart)
+    // カンマを挿入（3桁区切り）
+    // ※カンマなしモードまたはremoveCommaOnFocusモードの場合はスキップ
+    const shouldInsertComma = !this.noComma && !this.removeCommaOnFocus
+    const formatted = shouldInsertComma ? this.formatNumber(integerPart) : integerPart
     const finalValue = (hasNegative ? SPECIAL_VALUES.MINUS : SPECIAL_VALUES.EMPTY) + formatted + decimalPart
 
     // 値が変わっていない場合は何もしない
@@ -388,7 +466,8 @@ export default class extends Controller {
     input.value = finalValue
 
     // type="number"の場合はカーソル位置の調整をスキップ
-    if (!this.isNumberType && cursorPosition !== null) {
+    // removeCommaOnFocusモードの場合もカーソル位置の調整をスキップ（カンマがないため）
+    if (!this.isNumberType && cursorPosition !== null && !this.removeCommaOnFocus) {
       // カーソル位置を調整
       // 元の値でカーソルより前にある数字の個数を数える
       const originalBeforeCursor = originalValue.slice(0, cursorPosition)
