@@ -118,7 +118,7 @@ class Resources::MaterialsController < AuthenticatedController
       :category_id,
       :unit_for_product_id,
       :default_unit_weight,
-      :measurement_method,
+      :measurement_type,
       :unit_weight_for_order,
       :pieces_per_order_unit,
       :unit_for_order_id,

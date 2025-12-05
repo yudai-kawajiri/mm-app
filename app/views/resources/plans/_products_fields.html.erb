@@ -4,7 +4,7 @@
     <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i><%= t('forms.titles.plan_product') %></h5>
   </div>
   <div class="card-body">
-    <div data-controller="resources--plan-product--totals tabs--category-tabs form--nested-form"
+    <div data-controller="resources--plan-product--totals tabs--category-tabs form--nested-form resources--plan-product--form"
         data-resources--plan-product--totals-target="totalContainer"
         data-action="resources--plan-product--row:calculated->resources--plan-product--totals#recalculate">
 
@@ -187,6 +187,16 @@
         </div>
       </template>
 
+      <%# 「全て」タブ用のテンプレート（category_id: 0） %>
+      <template id="product_fields_template_0" data-form--nested-form-target="template">
+        <%= f.fields_for :plan_products,
+            @plan.plan_products.build,
+            child_index: 'NEW_RECORD' do |product_f| %>
+          <%= render 'product_fields', f: product_f, category_id: 0 %>
+        <% end %>
+      </template>
+
+      <%# 各カテゴリー用のテンプレート %>
       <% @product_categories.each do |category| %>
         <template id="product_fields_template_<%= category.id %>" data-form--nested-form-target="template">
           <%= f.fields_for :plan_products,

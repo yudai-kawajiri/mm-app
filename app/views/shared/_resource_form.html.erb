@@ -1,4 +1,19 @@
 <%# リソースフォーム %>
+<%#
+  機能:
+  - 統一されたリソースフォームテンプレート
+  - New/Edit ページで共通して使用
+  - フォームバリデーションと二重送信防止機能付き
+
+  必須引数:
+  - resource: フォーム対象のモデルインスタンス
+  - form_title: ページタイトル
+  - submit_label: 送信ボタンのラベル
+
+  Stimulusコントローラー:
+  - form-validation: フォームバリデーション
+  - form--submit: 二重送信防止
+%>
 <div class="container mt-4">
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white">

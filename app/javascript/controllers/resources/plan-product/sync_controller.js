@@ -21,13 +21,15 @@
 // - 商品選択の全タブ同期
 // - 数量入力の全タブ同期
 // - イベント発火による連鎖更新
+// - 「全て」タブの疑似readonly表示の同期
 //
 // データフロー:
 // 1. ユーザーがAタブで商品を選択
 // 2. syncProductToOtherTabs() が発火
 // 3. 同じ row-unique-id を持つ全タブのセレクトボックスに同期
-// 4. 各セレクトボックスで change イベント発火
-// 5. row_controller が価格を取得・小計計算
+// 4. 「全て」タブの <span> と hidden field も同期
+// 5. 各セレクトボックスで change イベント発火
+// 6. row_controller が価格を取得・小計計算
 
 import { Controller } from "@hotwired/stimulus"
 import Logger from "utils/logger"
@@ -39,6 +41,8 @@ const DATA_ATTRIBUTE = {
 
 const SELECTOR = {
   SELECT_BY_ROW_ID: (rowId) => `select[data-row-unique-id="${rowId}"]`,
+  PRODUCT_NAME_SPAN_BY_ROW_ID: (rowId) => `span[data-resources--plan-product--row-target="productNameDisplay"][data-row-unique-id="${rowId}"]`,
+  PRODUCT_ID_HIDDEN_BY_ROW_ID: (rowId) => `input[data-resources--plan-product--row-target="productIdHidden"][data-row-unique-id="${rowId}"]`,
   INPUT_BY_ROW_ID: (rowId) => `input[data-resources--plan-product--row-target="productionCount"][data-row-unique-id="${rowId}"]`
 }
 
@@ -53,6 +57,7 @@ const EVENT_OPTIONS = {
 
 const LOG_MESSAGES = {
   SYNC_PRODUCT: (productId, rowId) => `Sync product: ${productId} for row: ${rowId}`,
+  SYNC_PRODUCT_NAME: (productName, rowId) => `Sync product name to ALL tab: "${productName}" for row: ${rowId}`,
   SYNC_QUANTITY: (quantity, rowId) => `Sync quantity: ${quantity} for row: ${rowId}`
 }
 
@@ -62,8 +67,8 @@ export default class extends Controller {
   // ============================================================
 
   // 商品選択を他のタブに同期
-  // 同じ row-unique-id を持つ全てのセレクトボックスに
-  // 選択された商品を同期する
+  // 同じ row-unique-id を持つ全てのセレクトボックスと
+  // 「全て」タブの疑似readonly表示に選択された商品を同期する
   syncProductToOtherTabs(event) {
     const selectElement = event.currentTarget
     const selectedProductId = selectElement.value
@@ -71,6 +76,11 @@ export default class extends Controller {
 
     Logger.log(LOG_MESSAGES.SYNC_PRODUCT(selectedProductId, uniqueRowId))
 
+    // 選択された商品名を取得
+    const selectedProductName = selectElement.options[selectElement.selectedIndex]?.text || ''
+    Logger.log(LOG_MESSAGES.SYNC_PRODUCT_NAME(selectedProductName, uniqueRowId))
+
+    // 【1】他のカテゴリータブの <select> を同期
     const allMatchingSelects = document.querySelectorAll(SELECTOR.SELECT_BY_ROW_ID(uniqueRowId))
 
     allMatchingSelects.forEach(select => {
@@ -81,6 +91,20 @@ export default class extends Controller {
         const changeEvent = new Event(EVENT_TYPE.CHANGE, EVENT_OPTIONS.BUBBLES)
         select.dispatchEvent(changeEvent)
       }
+    })
+
+    // 【2】「全て」タブの <span> (商品名表示) を同期
+    const allMatchingSpans = document.querySelectorAll(SELECTOR.PRODUCT_NAME_SPAN_BY_ROW_ID(uniqueRowId))
+
+    allMatchingSpans.forEach(span => {
+      span.textContent = selectedProductName || '選択してください'
+    })
+
+    // 【3】「全て」タブの hidden field (product_id) を同期
+    const allMatchingHiddens = document.querySelectorAll(SELECTOR.PRODUCT_ID_HIDDEN_BY_ROW_ID(uniqueRowId))
+
+    allMatchingHiddens.forEach(hidden => {
+      hidden.value = selectedProductId
     })
   }
 

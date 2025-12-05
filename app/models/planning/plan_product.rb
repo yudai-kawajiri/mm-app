@@ -33,7 +33,7 @@ class Planning::PlanProduct < ApplicationRecord
         material_name: pm.material.name,
         quantity: pm.quantity,                                       # 数量（例: 1個）
         unit_weight: pm.unit_weight,                                 # 商品単位重量（例: 12g）
-        weight_per_product: pm.total_weight,                         # 商品1個あたりの重量（quantity × unit_weight）
+        weight_per_product: pm.total_weight,                         # 商品1個当の重量（quantity × unit_weight）
         total_quantity: pm.quantity * production_count,              # この計画での総数量
         total_weight: pm.total_weight * production_count,            # この計画での総重量
         unit: pm.unit,

@@ -31,6 +31,9 @@ import ResourcesPlanProductSyncController from "controllers/resources/plan-produ
 // Resources - Product Material Controllers
 import ResourcesProductMaterialMaterialController from "controllers/resources/product-material/material_controller"
 
+// Resources - Material Form Controller
+import ResourcesMaterialFormController from "controllers/resources/material_form_controller"
+
 // UI Controllers
 import FlashController from "controllers/ui/flash_controller"
 import FormValidationController from "controllers/form_validation_controller"
@@ -76,6 +79,9 @@ const CONTROLLER_NAMES = {
   // Resources - Product Material
   RESOURCES_PRODUCT_MATERIAL_MATERIAL: 'resources--product-material--material',
 
+  // Resources - Material Form
+  RESOURCES_MATERIAL_FORM: 'resources--material-form',
+
   // UI
   FLASH: 'flash',
   FORM_VALIDATION: 'form-validation',
@@ -119,6 +125,9 @@ application.register(CONTROLLER_NAMES.RESOURCES_PLAN_PRODUCT_SYNC, ResourcesPlan
 
 // Resources - Product Material Controllers
 application.register(CONTROLLER_NAMES.RESOURCES_PRODUCT_MATERIAL_MATERIAL, ResourcesProductMaterialMaterialController)
+
+// Resources - Material Form Controller
+application.register(CONTROLLER_NAMES.RESOURCES_MATERIAL_FORM, ResourcesMaterialFormController)
 
 // UI Controllers
 application.register(CONTROLLER_NAMES.FLASH, FlashController)

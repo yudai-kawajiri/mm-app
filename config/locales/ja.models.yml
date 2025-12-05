@@ -4,8 +4,6 @@ ja:
       copyable:
         copy_name_format: "%{name} (コピー%{count})"
     errors:
-      messages:
-        record_invalid: "バリデーションに失敗しました: %{errors}"
       models:
         user:
           attributes:
@@ -13,6 +11,8 @@ ja:
               not_found: "メールアドレスが見つかりません"
         product:
           attributes:
+            product_id:
+              blank: "を選択してください"
             item_number:
               too_long: "は4文字以内で入力してください"
             name:
@@ -28,10 +28,18 @@ ja:
               blank: "を選択してください"
         "resources/product":
           item_number_exceeded: "品番が上限を超えました。これ以上コピーできません。"
-        product_material:
+          attributes:
+            status:
+              used_in_plans: "は計画で使用中のため変更できません"
+        "planning/product_material":
           attributes:
             material_id:
+              blank: "を選択してください"
               already_registered: "は既に登録されています"
+        "planning/plan_product":
+          attributes:
+            product_id:
+              blank: "を選択してください"
 
     models:
       user: "アカウント"
@@ -106,7 +114,6 @@ ja:
         image: "画像"
         status: "ステータス"
         description: "概要"
-        # ネストされた属性の翻訳（階層構造）
         product_materials:
           material_id: "原材料"
           quantity: "数量"
@@ -142,7 +149,6 @@ ja:
       "planning/daily_target":
         target_date: "対象日"
         target_amount: "予算額"
-        description: "概要"
         description: "概要"
 
       "planning/actual_revenue":

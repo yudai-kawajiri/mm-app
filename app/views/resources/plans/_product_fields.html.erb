@@ -1,11 +1,29 @@
 <%# 製造計画商品行 %>
-<% row_unique_id = f.object.persisted? ? "row_#{f.object.id}" : "row_#{Time.now.to_i}_#{rand(1000)}"%>
+<%
+  # 既存レコードの場合は row_ID を使用、新規の場合は row_NEW_RECORD を使用してJavaScriptで置換される
+  if f.object.persisted?
+    row_unique_id = "row_#{f.object.id}"
+  else
+    # JavaScriptで uniqueId 置換される際に row_NEW_RECORD も置換されるようにする
+    row_unique_id = "row_NEW_RECORD"
+  end
+%>
+<%# local_assigns[:category_id] を使用して is_all_tab を判定 %>
+<% is_all_tab = (local_assigns[:category_id].to_i == 0) %>
+<% Rails.logger.debug "====== PRODUCT_FIELDS DEBUG ======" %>
+<% Rails.logger.debug "local_assigns[:category_id]: #{local_assigns[:category_id].inspect}" %>
+<% Rails.logger.debug "is_all_tab: #{is_all_tab.inspect}" %>
+<% Rails.logger.debug "persisted?: #{f.object.persisted?}" %>
+<% Rails.logger.debug "product: #{f.object.product&.name}" %>
+<% Rails.logger.debug "=================================" %>
 
 <tr data-controller="resources--plan-product--row resources--plan-product--sync form--nested-form-item"
     data-plan-product-price-value="<%= f.object.product&.price.to_f || 0.0 %>"
-    data-plan-product-category-id-value="<%= f.object.product&.category_id || local_assigns[:category_id] || 0 %>"
+    data-plan-product-category-id-value="<%= is_all_tab ? (f.object.product&.category_id || 0) :
+    (local_assigns[:category_id] || 0) %>"
     data-row-unique-id="<%= row_unique_id %>"
     data-category-id="<%= local_assigns[:category_id] || f.object.product&.category_id || 0 %>"
+    <%= raw("data-original-category-id=\"#{f.object.product&.category_id}\"") if is_all_tab && f.object.product&.category_id.present? %>
     data-product-id="<%= f.object.product_id %>">
 
   <%= f.hidden_field :_destroy,
@@ -14,24 +32,39 @@
   <%= f.hidden_field :id %>
 
   <td style="width: 35%;">
-    <% current_category_id = f.object.product&.category_id || local_assigns[:category_id] %>
-    <%
-      # ステータスが selling (販売中) の商品のみを表示
-      products = if current_category_id
-        Resources::Product.where(category_id: current_category_id, status: :selling)
-      else
-        Resources::Product.where(status: :selling)
-      end
-    %>
-    <%= f.collection_select(:product_id, products, :id, :name,
-        { include_blank: t('helpers.prompt.select') },
-        { class: 'form-select form-select-sm',
-          data: {
-            action: 'change->resources--plan-product--row#updateProduct change->resources--plan-product--sync#syncProductToOtherTabs',
-            'resources--plan-product--row-target': 'productSelect',
-            'row-unique-id': row_unique_id
-          }
-        }) %>
+    <% if is_all_tab %>
+      <%# 全てタブ: 商品名を表示のみ(編集不可) %>
+      <span class="d-inline-block pt-1"
+            data-resources--plan-product--row-target="productNameDisplay"
+            data-row-unique-id="<%= row_unique_id %>">
+        <%= f.object.product&.name || t('helpers.prompt.select') %>
+      </span>
+      <%= f.hidden_field :product_id,
+                        data: {
+                          'resources--plan-product--row-target': 'productIdHidden',
+                          'row-unique-id': row_unique_id
+                        } %>
+    <% else %>
+      <%# カテゴリータブ: 通常のselect %>
+      <% current_category_id = f.object.product&.category_id || local_assigns[:category_id] %>
+      <%
+        products = if current_category_id && current_category_id != 0
+          Resources::Product.where(category_id: current_category_id)
+                            .where("id = ? OR status = ?", f.object.product_id || 0, Resources::Product.statuses[:selling])
+        else
+          Resources::Product.where("id = ? OR status = ?", f.object.product_id || 0, Resources::Product.statuses[:selling])
+        end
+      %>
+      <%= f.collection_select(:product_id, products, :id, :name,
+          { include_blank: t('helpers.prompt.select') },
+          { class: "form-select form-select-sm",
+            data: {
+              action: 'change->resources--plan-product--row#updateProduct change->resources--plan-product--sync#syncProductToOtherTabs',
+              'resources--plan-product--row-target': 'productSelect',
+              'row-unique-id': row_unique_id
+            }
+          }) %>
+    <% end %>
   </td>
 
   <td style="width: 15%;">
@@ -39,6 +72,7 @@
       class: 'form-control form-control-sm',
       inputmode: 'numeric',
       placeholder: t('activerecord.attributes.planning/plan_product.production_count'),
+      disabled: f.object.product_id.blank?,
       data: {
         controller: 'input--number-input',
         'number-input-no-comma': 'true',

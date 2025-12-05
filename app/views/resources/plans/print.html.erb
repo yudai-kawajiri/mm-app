@@ -105,7 +105,7 @@
 
             measurement_type = material.measurement_type
             if measurement_type == 'count'
-              order_unit_detail = "1#{order_unit_name} = #{material.pieces_per_order_unit}#{material.unit_for_product&.name || t('plans.print.count_unit')}"
+              order_unit_detail = "1#{order_unit_name} = #{material.pieces_per_order_unit}#{material.production_unit&.name || t('plans.print.count_unit')}"
             elsif measurement_type == 'weight'
               order_unit_detail = "1#{order_unit_name} = #{material.unit_weight_for_order}#{t('units.gram')}"
             else
@@ -147,7 +147,7 @@
                 <% else %>
                   <%= number_with_delimiter(material_data[:total_quantity]) %>
                 <% end %>
-                <%= material.unit_for_product&.name || t('plans.print.count_unit') %>
+                <%= material.production_unit&.name || t('plans.print.count_unit') %>
               <% end %>
             </td>
 

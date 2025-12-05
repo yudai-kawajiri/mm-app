@@ -1,10 +1,10 @@
-<%# Devise認証画面用のシンプルレイアウト %>
 <!DOCTYPE html>
 <html>
   <head>
     <title><%= content_for?(:title) ? "#{yield(:title)} | #{t('application_name')}" : t('application_name') %></title>
     <%= csp_meta_tag %>
     <%= csrf_meta_tags %>
+    <%= i18n_javascript_translations %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= bootstrap_icons_tag %>
     <%= javascript_importmap_tags %>

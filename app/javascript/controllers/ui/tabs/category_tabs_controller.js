@@ -2,193 +2,6 @@ import { Controller } from "@hotwired/stimulus"
 import i18n from "controllers/i18n"
 import Logger from "utils/logger"
 
-const CSS_CLASSES = {
-  TAB_WITH_CLOSE: 'category-tab-with-close',
-  CLOSE_BUTTON: 'category-tab-close-button',
-  NAV_ITEM: 'nav-item',
-  NAV_LINK: 'nav-link',
-  ACTIVE: 'active',
-  SHOW: 'show',
-  TAB_PANE: 'tab-pane',
-  POSITION_RELATIVE: 'position-relative',
-  POSITION_ABSOLUTE: 'position-absolute',
-  TOP_50: 'top-50',
-  END_0: 'end-0',
-  TRANSLATE_MIDDLE_Y: 'translate-middle-y',
-  PE_2: 'pe-2',
-  DISABLED: 'disabled',
-  TEXT_MUTED: 'text-muted'
-}
-
-const HTML_ELEMENT = {
-  LI: 'li',
-  BUTTON: 'button',
-  SPAN: 'span',
-  TBODY: 'tbody',
-  TR: 'tr'
-}
-
-const HTML_ATTRIBUTE = {
-  ROLE: 'role',
-  TYPE: 'type',
-  ARIA_SELECTED: 'aria-selected',
-  ARIA_CONTROLS: 'aria-controls',
-  ARIA_LABELLEDBY: 'aria-labelledby',
-  ID: 'id',
-  DISABLED: 'disabled'
-}
-
-const ARIA_VALUE = {
-  TRUE: 'true',
-  FALSE: 'false'
-}
-
-const ROLE_VALUE = {
-  PRESENTATION: 'presentation',
-  TAB: 'tab'
-}
-
-const BUTTON_TYPE = {
-  BUTTON: 'button'
-}
-
-const DATA_ATTRIBUTE = {
-  BS_TOGGLE: 'data-bs-toggle',
-  BS_TARGET: 'data-bs-target',
-  CATEGORY_ID: 'data-category-id',
-  ACTION: 'data-action',
-  CATEGORY_NAME: 'data-category-name',
-  TEMPLATE_ID: 'data-template-id',
-  UNIQUE_ID: 'data-unique-id',
-  ROW_UNIQUE_ID: 'data-row-unique-id',
-  INITIAL_ROW: 'data-initial-row',
-  PRODUCT_ID: 'data-product-id'
-}
-
-const DATA_VALUE = {
-  TAB: 'tab'
-}
-
-const SELECTOR = {
-  BS_TAB_TOGGLE: '[data-bs-toggle="tab"]',
-  DELETE_BUTTON: '[data-action*="deleteTab"]',
-  CATEGORY_ITEM: '[data-category-id]',
-  NAV_LINK: '.nav-link',
-  TAB_PANE: '.tab-pane',
-  CATEGORY_NAME: '[data-category-name]',
-  TEMPLATE_ID: '[data-template-id]',
-  ADD_BUTTON: '[data-action*="add"]',
-  CATEGORY_BY_ID: (categoryId) => `[data-category-id="${categoryId}"]`,
-  TBODY_BY_CATEGORY_ID: (categoryId) => `tbody[data-category-id="${categoryId}"]`,
-  TR_BY_CATEGORY_ID: (categoryId) => `tr[data-category-id="${categoryId}"]`,
-  PANE_BY_ID: (categoryId) => `#category-pane-${categoryId}`,
-  CLOSEST_LI: 'li',
-  CLOSEST_DISABLED: '.disabled'
-}
-
-const TEMPLATE_ID = {
-  PRODUCT_FIELDS: (categoryId) => `product_fields_template_${categoryId}`,
-  MATERIAL_FIELDS: (categoryId) => `material_fields_template_${categoryId}`
-}
-
-const ELEMENT_ID = {
-  CATEGORY_TAB: (categoryId) => `category-tab-${categoryId}`,
-  CATEGORY_PANE: (categoryId) => `category-pane-${categoryId}`
-}
-
-const DELAY_MS = {
-  INITIAL_FORM_ROW: 100
-}
-
-const DEFAULT_CATEGORY_ID = '0'
-
-const TEMPLATE_PLACEHOLDER = {
-  NEW_RECORD: 'NEW_RECORD',
-  CATEGORY_ID: 'CATEGORY_ID_PLACEHOLDER'
-}
-
-const INSERT_POSITION = {
-  BEFORE_END: 'beforeend',
-  AFTER_END: 'afterend'
-}
-
-const STYLE_PROPERTY = {
-  CURSOR: 'cursor',
-  FONT_WEIGHT: 'font-weight',
-  COLOR: 'color',
-  Z_INDEX: 'z-index',
-  POINTER_EVENTS: 'pointer-events',
-  OPACITY: 'opacity',
-  DISPLAY: 'display'
-}
-
-const STYLE_VALUE = {
-  CURSOR_POINTER: 'pointer',
-  FONT_WEIGHT_BOLD: 'bold',
-  COLOR_DANGER: '#dc3545',
-  Z_INDEX_10: '10',
-  POINTER_EVENTS_NONE: 'none',
-  OPACITY_HALF: '0.5',
-  EMPTY: ''
-}
-
-const CLOSE_SYMBOL = '×'
-
-const STOP_PROPAGATION_ATTRIBUTE = 'onclick'
-const STOP_PROPAGATION_VALUE = 'event.stopPropagation()'
-
-const I18N_KEYS = {
-  CONFIRM_DELETE: 'components.category_tabs.confirm_delete'
-}
-
-const LOG_MESSAGES = {
-  CONTROLLER_CONNECTED: 'CategoryTabsController connected',
-  CONTROLLER_DISCONNECTED: 'CategoryTabsController disconnected',
-  UPDATING_TABS: (categoryId) => `Updating tabs for category ID: ${categoryId}`,
-  NO_CONTENT_FOUND: (categoryId) => `No content found for category ID: ${categoryId}`,
-  TAB_ALREADY_EXISTS: (categoryId) => `Tab for category ID ${categoryId} already exists`,
-  ADDING_TAB: (categoryId) => `Adding tab for category ID ${categoryId}`,
-  TAB_ADDED: (categoryId, categoryName) => `Tab for category ID ${categoryId} added and displayed`,
-  INVALID_CATEGORY_DATA: 'Invalid category data',
-  CATEGORY_TAB_ALREADY_EXISTS: (categoryId) => `Category tab already exists: ${categoryId}`,
-  CATEGORY_TAB_ADDED: (categoryName, categoryId) => `Category tab added: ${categoryName} (${categoryId})`,
-  ADDING_INITIAL_FORM_ROW: (categoryId) => `addInitialFormRow called for category ID: ${categoryId}`,
-  TBODY_NOT_FOUND: (categoryId) => `tbody not found for category ID: ${categoryId}`,
-  TBODY_FOUND: (categoryId) => `tbody found for category ID: ${categoryId}`,
-  TEMPLATE_NOT_FOUND: (categoryId) => `Template not found: product_fields_template_${categoryId} or material_fields_template_${categoryId}`,
-  TEMPLATE_FOUND: (templateId) => `Template found: ${templateId}`,
-  INITIAL_FORM_ROW_ADDED: (categoryId) => `Initial form row added to category ID: ${categoryId}`,
-  INVALID_TEMPLATE: 'Invalid template',
-  TAB_PANE_NOT_FOUND: 'Tab pane element not found in template',
-  TBODY_CATEGORY_ID_SET: (categoryId) => `tbody data-category-id set to: ${categoryId}`,
-  TBODY_NOT_FOUND_IN_TEMPLATE: 'tbody not found in template',
-  INVALID_CATEGORY_ID: 'Invalid category ID or name',
-  INVALID_CATEGORY_ID_FOR_DELETION: 'Invalid category ID for deletion',
-  REMOVING_PRODUCT_ROW: (categoryId) => `Removing product row from ALL tab: category ${categoryId}`,
-  NO_ROWS_FOUND_IN_ALL_TAB: (categoryId) => `No rows found with data-category-id="${categoryId}" in ALL tab`,
-  CATEGORY_TAB_DELETED: (categoryId) => `Category tab deleted: ${categoryId}`,
-  CATEGORY_OPTION_RE_ENABLED: (categoryId) => `Category option re-enabled in selector: ${categoryId}`,
-  CATEGORY_OPTION_NOT_FOUND: (categoryId) => `Category option not found in selector: ${categoryId}`
-}
-
-const HTML_ESCAPE_MAP = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  "'": '&#039;'
-}
-
-const REGEX = {
-  HTML_ESCAPE: /[&<>"']/g,
-  TR_TAG: /<tr([^>]*)>/
-}
-
-const SUBSTRING_START = {
-  RANDOM_ID: 2,
-  RANDOM_LENGTH: 9
-}
-
 export default class extends Controller {
   static targets = [
     "tabNav",
@@ -200,8 +13,7 @@ export default class extends Controller {
     "category",
     "categorySelector",
     "showButton",
-    "categoryTemplate",
-    "categoryButtons"
+    "categoryTemplate"
   ]
 
   static values = {
@@ -210,34 +22,34 @@ export default class extends Controller {
   }
 
   connect() {
-    Logger.log(LOG_MESSAGES.CONTROLLER_CONNECTED)
+    Logger.log('CategoryTabsController connected')
     this.initializeEventListeners()
     this.activateFirstTab()
-    this.disableExistingCategoryOptions()
+  }
+
+  disconnect() {
+    Logger.log('CategoryTabsController disconnected')
   }
 
   initializeEventListeners() {
     this.element.addEventListener('click', (e) => {
-      const tabButton = e.target.closest(SELECTOR.BS_TAB_TOGGLE)
+      const tabButton = e.target.closest('[data-bs-toggle="tab"]')
       if (tabButton) {
         this.handleTabClick(e, tabButton)
       }
 
-      const deleteButton = e.target.closest(SELECTOR.DELETE_BUTTON)
+      const deleteButton = e.target.closest('[data-action*="deleteTab"]')
       if (deleteButton) {
         e.preventDefault()
         e.stopPropagation()
-        const customEvent = {
-          currentTarget: deleteButton
-        }
-        this.deleteTab(customEvent)
+        this.deleteTab({ currentTarget: deleteButton })
       }
     })
 
     if (this.hasAddCategoryModalTarget) {
       this.addCategoryModalTarget.addEventListener('click', (e) => {
-        const categoryItem = e.target.closest(SELECTOR.CATEGORY_ITEM)
-        if (categoryItem && !e.target.closest(SELECTOR.CLOSEST_DISABLED)) {
+        const categoryItem = e.target.closest('[data-category-id]')
+        if (categoryItem && !e.target.closest('.disabled')) {
           const categoryId = categoryItem.dataset.categoryId
           const categoryName = categoryItem.dataset.categoryName
           this.addCategoryTab(categoryId, categoryName)
@@ -248,36 +60,26 @@ export default class extends Controller {
 
   handleTabClick(event, tabButton) {
     event.preventDefault()
-
-    this.tabNavTarget.querySelectorAll(SELECTOR.NAV_LINK).forEach(tab => {
-      tab.classList.remove(CSS_CLASSES.ACTIVE)
-      tab.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.FALSE)
-    })
-
-    this.contentContainerTarget.querySelectorAll(SELECTOR.TAB_PANE).forEach(pane => {
-      pane.classList.remove(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
-    })
-
-    tabButton.classList.add(CSS_CLASSES.ACTIVE)
-    tabButton.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.TRUE)
-
-    const targetPaneId = tabButton.getAttribute('aria-controls')
-    if (targetPaneId) {
-      const targetPane = document.getElementById(targetPaneId)
-      if (targetPane) {
-        targetPane.classList.add(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
-      }
-    }
+    const tab = new bootstrap.Tab(tabButton)
+    tab.show()
+    this.updateActiveTab(tabButton)
   }
 
   updateActiveTab(activeButton) {
-    // Handled in handleTabClick
+    this.tabNavTarget.querySelectorAll('.nav-link').forEach(tab => {
+      tab.classList.remove('active')
+      tab.setAttribute('aria-selected', 'false')
+    })
+
+    activeButton.classList.add('active')
+    activeButton.setAttribute('aria-selected', 'true')
   }
 
   activateFirstTab() {
-    const firstTab = this.tabNavTarget.querySelector(SELECTOR.NAV_LINK)
+    const firstTab = this.tabNavTarget.querySelector('.nav-link')
     if (firstTab) {
-      firstTab.click()
+      const tab = new bootstrap.Tab(firstTab)
+      tab.show()
     }
   }
 
@@ -287,18 +89,18 @@ export default class extends Controller {
 
   updateTabs() {
     const selectedCategoryId = this.categoryIdValue
-    Logger.log(LOG_MESSAGES.UPDATING_TABS(selectedCategoryId))
+    Logger.log(`Updating tabs for category ID: ${selectedCategoryId}`)
 
     if (this.hasTabTarget) {
       this.tabTargets.forEach(tab => {
-        tab.classList.remove(CSS_CLASSES.ACTIVE)
-        tab.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.FALSE)
+        tab.classList.remove('active')
+        tab.setAttribute('aria-selected', 'false')
       })
     }
 
     if (this.hasCategoryTarget) {
       this.categoryTargets.forEach(content => {
-        content.classList.remove(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
+        content.classList.remove('show', 'active')
       })
     }
 
@@ -309,8 +111,8 @@ export default class extends Controller {
       })
 
       if (activeTab) {
-        activeTab.classList.add(CSS_CLASSES.ACTIVE)
-        activeTab.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.TRUE)
+        activeTab.classList.add('active')
+        activeTab.setAttribute('aria-selected', 'true')
       }
     }
 
@@ -321,26 +123,26 @@ export default class extends Controller {
       })
 
       if (activeContent) {
-        activeContent.classList.add(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
+        activeContent.classList.add('show', 'active')
       } else {
-        Logger.warn(LOG_MESSAGES.NO_CONTENT_FOUND(selectedCategoryId))
+        Logger.warn(`No content found for category ID: ${selectedCategoryId}`)
       }
     }
   }
 
   toggleButton() {
     if (!this.hasCategorySelectorTarget || !this.hasShowButtonTarget) return
-    const isSelected = this.categorySelectorTarget.value && this.categorySelectorTarget.value !== DEFAULT_CATEGORY_ID
-    this.showButtonTarget[HTML_ATTRIBUTE.DISABLED] = !isSelected
+    const isSelected = this.categorySelectorTarget.value && this.categorySelectorTarget.value !== '0'
+    this.showButtonTarget.disabled = !isSelected
   }
 
   disableExistingCategoryOptions() {
     if (!this.hasTabNavTarget || !this.hasCategorySelectorTarget) return
-    const existingTabs = this.tabNavTarget.querySelectorAll(SELECTOR.CATEGORY_ITEM)
+    const existingTabs = this.tabNavTarget.querySelectorAll('[data-category-id]')
     const existingCategoryIds = Array.from(existingTabs).map(tab => tab.dataset.categoryId)
     Array.from(this.categorySelectorTarget.options).forEach(option => {
       if (option.value && existingCategoryIds.includes(option.value)) {
-        option[HTML_ATTRIBUTE.DISABLED] = true
+        option.disabled = true
       }
     })
   }
@@ -348,19 +150,19 @@ export default class extends Controller {
   showSelectedTab() {
     if (!this.hasCategorySelectorTarget) return
     const categoryId = String(this.categorySelectorTarget.value)
-    if (!categoryId || categoryId === DEFAULT_CATEGORY_ID) return
+    if (!categoryId || categoryId === '0') return
 
-    const existingTab = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(categoryId))
+    const existingTab = this.tabNavTarget.querySelector(`[data-category-id="${categoryId}"]`)
     if (existingTab) {
-      Logger.log(LOG_MESSAGES.TAB_ALREADY_EXISTS(categoryId))
+      Logger.log(`Tab for category ID ${categoryId} already exists`)
       this.switchToTab(categoryId)
-      this.categorySelectorTarget.value = STYLE_VALUE.EMPTY
+      this.categorySelectorTarget.value = ''
       this.toggleButton()
       return
     }
 
     const categoryName = this.categorySelectorTarget.options[this.categorySelectorTarget.selectedIndex].text
-    Logger.log(LOG_MESSAGES.ADDING_TAB(categoryId))
+    Logger.log(`Adding tab for category ID ${categoryId}`)
 
     const tabItem = this.createTabItem(categoryId, categoryName)
     const tabPane = this.addTabPane(categoryId, categoryName)
@@ -369,22 +171,23 @@ export default class extends Controller {
       this.tabNavTarget.appendChild(tabItem)
       this.disableExistingCategoryOptions()
       this.switchToTab(categoryId)
-      this.categorySelectorTarget.value = STYLE_VALUE.EMPTY
+      this.categorySelectorTarget.value = ''
       this.toggleButton()
-      Logger.log(LOG_MESSAGES.TAB_ADDED(categoryId, categoryName))
+      Logger.log(`Tab for category ID ${categoryId} added and displayed`)
     }
   }
 
   addCategoryTab(categoryId, categoryName) {
     if (!categoryId || !categoryName) {
-      Logger.warn(LOG_MESSAGES.INVALID_CATEGORY_DATA)
+      Logger.warn('Invalid category data')
       return
     }
 
-    const existingTab = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(categoryId))
+    const existingTab = this.tabNavTarget.querySelector(`[data-category-id="${categoryId}"]`)
     if (existingTab) {
-      Logger.warn(LOG_MESSAGES.CATEGORY_TAB_ALREADY_EXISTS(categoryId))
-      existingTab.click()
+      Logger.warn(`Category tab already exists: ${categoryId}`)
+      const tab = new bootstrap.Tab(existingTab)
+      tab.show()
       this.closeModal()
       return
     }
@@ -393,50 +196,50 @@ export default class extends Controller {
     const tabPane = this.addTabPane(categoryId, categoryName)
 
     if (tabItem && tabPane) {
-      const allTabButton = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(DEFAULT_CATEGORY_ID))
-      const allTabLi = allTabButton ? allTabButton.closest(SELECTOR.CLOSEST_LI) || allTabButton.parentElement : null
+      const allTabButton = this.tabNavTarget.querySelector('[data-category-id="0"]')
+      const allTabLi = allTabButton ? allTabButton.closest('li') || allTabButton.parentElement : null
 
       if (allTabLi) {
-        allTabLi.insertAdjacentElement(INSERT_POSITION.AFTER_END, tabItem)
+        allTabLi.insertAdjacentElement('afterend', tabItem)
       } else {
         this.tabNavTarget.appendChild(tabItem)
       }
 
-      const newTabButton = tabItem.querySelector(SELECTOR.NAV_LINK)
-      newTabButton.click()
+      const newTabButton = tabItem.querySelector('.nav-link')
+      const tab = new bootstrap.Tab(newTabButton)
+      tab.show()
 
-      Logger.log(LOG_MESSAGES.CATEGORY_TAB_ADDED(categoryName, categoryId))
+      Logger.log(`Category tab added: ${categoryName} (${categoryId})`)
       this.closeModal()
       this.disableCategoryInModal(categoryId)
     }
   }
 
   createTabItem(categoryId, categoryName) {
-    const li = document.createElement(HTML_ELEMENT.LI)
-    li.className = CSS_CLASSES.NAV_ITEM
-    li.setAttribute(HTML_ATTRIBUTE.ROLE, ROLE_VALUE.PRESENTATION)
+    const li = document.createElement('li')
+    li.className = 'nav-item'
+    li.setAttribute('role', 'presentation')
 
-    const tabId = ELEMENT_ID.CATEGORY_TAB(categoryId)
-    const paneId = ELEMENT_ID.CATEGORY_PANE(categoryId)
+    const tabId = `category-tab-${categoryId}`
+    const paneId = `category-pane-${categoryId}`
 
     li.innerHTML = `
-      <button class="${CSS_CLASSES.NAV_LINK} ${CSS_CLASSES.POSITION_RELATIVE} ${CSS_CLASSES.TAB_WITH_CLOSE}"
-              ${HTML_ATTRIBUTE.ID}="${tabId}"
-              ${DATA_ATTRIBUTE.BS_TOGGLE}="${DATA_VALUE.TAB}"
-              ${DATA_ATTRIBUTE.BS_TARGET}="#${paneId}"
-              ${DATA_ATTRIBUTE.CATEGORY_ID}="${categoryId}"
-              ${HTML_ATTRIBUTE.TYPE}="${BUTTON_TYPE.BUTTON}"
-              ${HTML_ATTRIBUTE.ROLE}="${ROLE_VALUE.TAB}"
-              ${HTML_ATTRIBUTE.ARIA_CONTROLS}="${paneId}"
-              ${HTML_ATTRIBUTE.ARIA_SELECTED}="${ARIA_VALUE.FALSE}"
-              style="padding-right: 2.5rem;">
+      <button class="nav-link position-relative category-tab-with-close"
+              id="${tabId}"
+              data-bs-toggle="tab"
+              data-bs-target="#${paneId}"
+              data-category-id="${categoryId}"
+              type="button"
+              role="tab"
+              aria-controls="${paneId}"
+              aria-selected="false">
         ${this.escapeHtml(categoryName)}
-        <span class="${CSS_CLASSES.POSITION_ABSOLUTE} ${CSS_CLASSES.TOP_50} ${CSS_CLASSES.END_0} ${CSS_CLASSES.TRANSLATE_MIDDLE_Y} ${CSS_CLASSES.PE_2}"
-              style="${STYLE_PROPERTY.CURSOR}: ${STYLE_VALUE.CURSOR_POINTER}; ${STYLE_PROPERTY.FONT_WEIGHT}: ${STYLE_VALUE.FONT_WEIGHT_BOLD}; ${STYLE_PROPERTY.COLOR}: ${STYLE_VALUE.COLOR_DANGER}; ${STYLE_PROPERTY.Z_INDEX}: ${STYLE_VALUE.Z_INDEX_10};"
-              ${DATA_ATTRIBUTE.ACTION}="click->tabs--category-tabs#deleteTab"
-              ${DATA_ATTRIBUTE.CATEGORY_ID}="${categoryId}"
-              ${STOP_PROPAGATION_ATTRIBUTE}="${STOP_PROPAGATION_VALUE}">
-          ${CLOSE_SYMBOL}
+        <span class="position-absolute top-50 end-0 translate-middle-y pe-2"
+              style="cursor: pointer; font-weight: bold; color: #dc3545; z-index: 10;"
+              data-action="click->tabs--category-tabs#deleteTab"
+              data-category-id="${categoryId}"
+              onclick="event.stopPropagation()">
+          ×
         </span>
       </button>
     `
@@ -446,7 +249,7 @@ export default class extends Controller {
 
   addTabPane(categoryId, categoryName) {
     if (!categoryId || !categoryName) {
-      Logger.warn(LOG_MESSAGES.INVALID_CATEGORY_ID)
+      Logger.warn('Invalid category ID or name')
       return null
     }
 
@@ -456,10 +259,11 @@ export default class extends Controller {
     if (tabPane) {
       this.contentContainerTarget.appendChild(tabPane)
 
-      Logger.log(LOG_MESSAGES.ADDING_INITIAL_FORM_ROW(categoryId))
+      Logger.log(`addInitialFormRow called for category ID: ${categoryId}`)
       setTimeout(() => {
         this.addInitialFormRow(categoryId)
-      }, DELAY_MS.INITIAL_FORM_ROW)
+        this.copyExistingRowsToNewTab(categoryId)
+      }, 100)
 
       return tabPane
     }
@@ -467,118 +271,215 @@ export default class extends Controller {
   }
 
   addInitialFormRow(categoryId) {
-    Logger.log(LOG_MESSAGES.ADDING_INITIAL_FORM_ROW(categoryId))
+    Logger.log(`Adding initial form row for category ID: ${categoryId}`)
 
-    const categoryTbody = this.contentContainerTarget.querySelector(
-      SELECTOR.TBODY_BY_CATEGORY_ID(categoryId)
-    )
+    const categoryTbody = this.contentContainerTarget.querySelector(`tbody[data-category-id="${categoryId}"]`)
 
     if (!categoryTbody) {
-      Logger.warn(LOG_MESSAGES.TBODY_NOT_FOUND(categoryId))
+      Logger.warn(`tbody not found for category ID: ${categoryId}`)
       return
     }
 
-    Logger.log(LOG_MESSAGES.TBODY_FOUND(categoryId))
+    Logger.log(`tbody found for category ID: ${categoryId}`)
 
-    let templateId = TEMPLATE_ID.PRODUCT_FIELDS(categoryId)
+    let templateId = `product_fields_template_${categoryId}`
     let template = document.getElementById(templateId)
 
     if (!template) {
-      templateId = TEMPLATE_ID.MATERIAL_FIELDS(categoryId)
+      templateId = `material_fields_template_${categoryId}`
       template = document.getElementById(templateId)
     }
 
     if (!template) {
-      Logger.warn(LOG_MESSAGES.TEMPLATE_NOT_FOUND(categoryId))
+      Logger.warn(`Template not found: product_fields_template_${categoryId} or material_fields_template_${categoryId}`)
       return
     }
 
-    Logger.log(LOG_MESSAGES.TEMPLATE_FOUND(templateId))
+    Logger.log(`Template found: ${templateId}`)
 
     const timestamp = new Date().getTime()
-    const uniqueId = `new_${timestamp}`
-    let templateHtml = template.innerHTML.replace(new RegExp(TEMPLATE_PLACEHOLDER.NEW_RECORD, 'g'), uniqueId)
+    const uniqueId = `${timestamp}_${Math.random().toString(36).substr(2, 9)}`
+    const rowUniqueId = `row_${uniqueId}`
+    let templateHtml = template.innerHTML.replace(/NEW_RECORD/g, uniqueId)
+    templateHtml = templateHtml.replace(/row_NEW_RECORD/g, rowUniqueId)
 
     templateHtml = templateHtml.replace(
-      REGEX.TR_TAG,
-      `<tr$1 ${DATA_ATTRIBUTE.CATEGORY_ID}="${categoryId}" ${DATA_ATTRIBUTE.INITIAL_ROW}="${ARIA_VALUE.TRUE}">`
+      /<tr([^>]*)>/,
+      `<tr$1 data-category-id="${categoryId}" data-initial-row="true">`
     )
 
-    categoryTbody.insertAdjacentHTML(INSERT_POSITION.BEFORE_END, templateHtml)
-    Logger.log(LOG_MESSAGES.INITIAL_FORM_ROW_ADDED(categoryId))
+    categoryTbody.insertAdjacentHTML('beforeend', templateHtml)
+    Logger.log(`Initial form row added to category ID: ${categoryId}`)
 
-    const allTbody = document.querySelector(
-      SELECTOR.TBODY_BY_CATEGORY_ID(DEFAULT_CATEGORY_ID)
-    )
+    const allTbody = this.contentContainerTarget.querySelector('tbody[data-category-id="0"]')
 
     if (allTbody) {
-      const allTabUniqueId = `new_${timestamp}_all`
-      let allTabTemplateHtml = template.innerHTML.replace(new RegExp(TEMPLATE_PLACEHOLDER.NEW_RECORD, 'g'), allTabUniqueId)
+      const allTabTemplate = document.getElementById('product_fields_template_0') ||
+                              document.getElementById('material_fields_template_0')
 
-      allTabTemplateHtml = allTabTemplateHtml.replace(/data-category-id="[^"]*"/g, '')
+      if (allTabTemplate) {
+        let allTabTemplateHtml = allTabTemplate.innerHTML.replace(/NEW_RECORD/g, uniqueId)
+        allTabTemplateHtml = allTabTemplateHtml.replace(/row_NEW_RECORD/g, rowUniqueId)
 
-      allTabTemplateHtml = allTabTemplateHtml.replace(
-        REGEX.TR_TAG,
-        `<tr$1 ${DATA_ATTRIBUTE.CATEGORY_ID}="${categoryId}" ${DATA_ATTRIBUTE.INITIAL_ROW}="${ARIA_VALUE.TRUE}" ${DATA_ATTRIBUTE.UNIQUE_ID}="${allTabUniqueId}">`
-      )
+        allTabTemplateHtml = allTabTemplateHtml.replace(
+          /data-category-id="[^"]*"/g,
+          'data-category-id="0"'
+        )
 
-      allTbody.insertAdjacentHTML(INSERT_POSITION.BEFORE_END, allTabTemplateHtml)
+        allTabTemplateHtml = allTabTemplateHtml.replace(
+          /<tr([^>]*)>/,
+          `<tr$1 data-initial-row="true" data-original-category-id="${categoryId}" data-plan-product-category-id-value="${categoryId}">`
+        )
 
-      const addedRow = allTbody.querySelector(`tr[${DATA_ATTRIBUTE.UNIQUE_ID}="${allTabUniqueId}"]`)
-      if (addedRow) {
-        Logger.log(`Added row to ALL tab with category-id: ${addedRow.getAttribute('data-category-id')}`)
+        Logger.log(`Added row to ALL tab with same uniqueId: ${uniqueId}, original category: ${categoryId}`)
+
+        allTbody.insertAdjacentHTML('beforeend', allTabTemplateHtml)
       }
     }
   }
 
+  copyExistingRowsToNewTab(categoryId) {
+    Logger.log(`Copying existing rows to category tab: ${categoryId}`)
+
+    const categoryTbody = this.contentContainerTarget.querySelector(`tbody[data-category-id="${categoryId}"]`)
+
+    if (!categoryTbody) {
+      Logger.warn(`Category tbody not found for category: ${categoryId}`)
+      return
+    }
+
+    const allTabRows = document.querySelectorAll(`#nav-0 tr[data-original-category-id="${categoryId}"]`)
+
+    if (allTabRows.length === 0) {
+      Logger.log(`No existing rows found for category: ${categoryId}`)
+      return
+    }
+
+    Logger.log(`Found ${allTabRows.length} existing row(s) for category: ${categoryId}`)
+
+    allTabRows.forEach(allTabRow => {
+      const uniqueId = allTabRow.dataset.uniqueId
+      Logger.log(`Copying row with uniqueId: ${uniqueId}`)
+
+      let templateId = `product_fields_template_${categoryId}`
+      let template = document.getElementById(templateId)
+
+      if (!template) {
+        templateId = `material_fields_template_${categoryId}`
+        template = document.getElementById(templateId)
+      }
+
+      if (!template) {
+        Logger.warn(`Template not found for category: ${categoryId}`)
+        return
+      }
+
+      let templateHtml = template.innerHTML.replace(/NEW_RECORD/g, uniqueId)
+      templateHtml = templateHtml.replace(/row_NEW_RECORD/g, `row_${uniqueId}`)
+
+      templateHtml = templateHtml.replace(
+        /<tr([^>]*)>/,
+        `<tr$1 data-category-id="${categoryId}">`
+      )
+
+      const tempDiv = document.createElement('div')
+      tempDiv.innerHTML = templateHtml
+      const newRow = tempDiv.querySelector('tr')
+
+      if (!newRow) {
+        Logger.warn(`Failed to create row from template for uniqueId: ${uniqueId}`)
+        return
+      }
+
+      const allTabSelect = allTabRow.querySelector('select[name*="[product_id]"], select[name*="[material_id]"]')
+      const allTabHiddenId = allTabRow.querySelector('input[type="hidden"][name*="[product_id]"], input[type="hidden"][name*="[material_id]"]')
+
+      if (allTabHiddenId && allTabHiddenId.value) {
+        const newRowSelect = newRow.querySelector('select[name*="[product_id]"], select[name*="[material_id]"]')
+        if (newRowSelect) {
+          newRowSelect.value = allTabHiddenId.value
+          Logger.log(`Set product/material_id: ${allTabHiddenId.value}`)
+          newRowSelect.dispatchEvent(new Event('change', { bubbles: true }))
+        }
+      } else if (allTabSelect && allTabSelect.value) {
+        const newRowSelect = newRow.querySelector('select[name*="[product_id]"], select[name*="[material_id]"]')
+        if (newRowSelect) {
+          newRowSelect.value = allTabSelect.value
+          newRowSelect.dispatchEvent(new Event('change', { bubbles: true }))
+        }
+      }
+
+      const allTabQuantity = allTabRow.querySelector('input[name*="[production_count]"], input[name*="[quantity]"]')
+      if (allTabQuantity && allTabQuantity.value) {
+        const newRowQuantity = newRow.querySelector('input[name*="[production_count]"], input[name*="[quantity]"]')
+        if (newRowQuantity) {
+          newRowQuantity.value = allTabQuantity.value
+          Logger.log(`Set quantity: ${allTabQuantity.value}`)
+        }
+      }
+
+      const allTabUnitWeight = allTabRow.querySelector('input[name*="[unit_weight]"]')
+      if (allTabUnitWeight && allTabUnitWeight.value) {
+        const newRowUnitWeight = newRow.querySelector('input[name*="[unit_weight]"]')
+        if (newRowUnitWeight) {
+          newRowUnitWeight.value = allTabUnitWeight.value
+          Logger.log(`Set unit_weight: ${allTabUnitWeight.value}`)
+        }
+      }
+
+      categoryTbody.appendChild(newRow)
+      Logger.log(`Added existing row to category tab: uniqueId=${uniqueId}`)
+    })
+  }
+
   createElementFromTemplate(template, categoryId, categoryName) {
     if (!template || !template.content) {
-      Logger.warn(LOG_MESSAGES.INVALID_TEMPLATE)
+      Logger.warn('Invalid template')
       return null
     }
 
     const clone = template.content.cloneNode(true)
-    const element = clone.querySelector(SELECTOR.TAB_PANE)
+    const element = clone.querySelector('.tab-pane')
 
     if (!element) {
-      Logger.warn(LOG_MESSAGES.TAB_PANE_NOT_FOUND)
+      Logger.warn('Tab pane element not found in template')
       return null
     }
 
-    const paneId = ELEMENT_ID.CATEGORY_PANE(categoryId)
-    element[HTML_ATTRIBUTE.ID] = paneId
-    element.setAttribute(DATA_ATTRIBUTE.CATEGORY_ID, categoryId)
-    element.setAttribute(HTML_ATTRIBUTE.ARIA_LABELLEDBY, ELEMENT_ID.CATEGORY_TAB(categoryId))
+    const paneId = `category-pane-${categoryId}`
+    element.id = paneId
+    element.setAttribute('data-category-id', categoryId)
+    element.setAttribute('aria-labelledby', `category-tab-${categoryId}`)
 
-    const categoryNameElement = element.querySelector(SELECTOR.CATEGORY_NAME)
+    const categoryNameElement = element.querySelector('[data-category-name]')
     if (categoryNameElement) {
       categoryNameElement.textContent = categoryName
     }
 
-    const elementsWithPlaceholder = element.querySelectorAll(SELECTOR.CATEGORY_BY_ID(TEMPLATE_PLACEHOLDER.CATEGORY_ID))
+    const elementsWithPlaceholder = element.querySelectorAll('[data-category-id="CATEGORY_ID_PLACEHOLDER"]')
     elementsWithPlaceholder.forEach(el => {
-      el.setAttribute(DATA_ATTRIBUTE.CATEGORY_ID, categoryId)
+      el.setAttribute('data-category-id', categoryId)
     })
 
-    const elementsWithTemplateId = element.querySelectorAll(SELECTOR.TEMPLATE_ID)
+    const elementsWithTemplateId = element.querySelectorAll('[data-template-id]')
     elementsWithTemplateId.forEach(el => {
-      const templateId = el.getAttribute(DATA_ATTRIBUTE.TEMPLATE_ID)
-      if (templateId && templateId.includes(TEMPLATE_PLACEHOLDER.CATEGORY_ID)) {
-        el.setAttribute(DATA_ATTRIBUTE.TEMPLATE_ID, templateId.replace(new RegExp(TEMPLATE_PLACEHOLDER.CATEGORY_ID, 'g'), categoryId))
+      const templateId = el.getAttribute('data-template-id')
+      if (templateId && templateId.includes('CATEGORY_ID_PLACEHOLDER')) {
+        el.setAttribute('data-template-id', templateId.replace(/CATEGORY_ID_PLACEHOLDER/g, categoryId))
       }
     })
 
-    const tbody = element.querySelector(HTML_ELEMENT.TBODY)
+    const tbody = element.querySelector('tbody')
     if (tbody) {
-      tbody.setAttribute(DATA_ATTRIBUTE.CATEGORY_ID, categoryId)
-      Logger.log(LOG_MESSAGES.TBODY_CATEGORY_ID_SET(categoryId))
+      tbody.setAttribute('data-category-id', categoryId)
+      Logger.log(`tbody data-category-id set to: ${categoryId}`)
     } else {
-      Logger.warn(LOG_MESSAGES.TBODY_NOT_FOUND_IN_TEMPLATE)
+      Logger.warn('tbody not found in template')
     }
 
-    const addButton = element.querySelector(SELECTOR.ADD_BUTTON)
+    const addButton = element.querySelector('[data-action*="add"]')
     if (addButton) {
-      addButton.setAttribute(DATA_ATTRIBUTE.CATEGORY_ID, categoryId)
+      addButton.setAttribute('data-category-id', categoryId)
     }
 
     return element
@@ -587,236 +488,88 @@ export default class extends Controller {
   switchToTab(categoryId) {
     if (!this.hasTabNavTarget || !this.hasContentContainerTarget) return
 
-    this.tabNavTarget.querySelectorAll(SELECTOR.BS_TAB_TOGGLE).forEach(tab => {
-      tab.classList.remove(CSS_CLASSES.ACTIVE)
-      tab.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.FALSE)
+    this.tabNavTarget.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+      tab.classList.remove('active')
+      tab.setAttribute('aria-selected', 'false')
     })
 
-    this.contentContainerTarget.querySelectorAll(SELECTOR.TAB_PANE).forEach(pane => {
-      pane.classList.remove(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
+    this.contentContainerTarget.querySelectorAll('.tab-pane').forEach(pane => {
+      pane.classList.remove('show', 'active')
     })
 
-    const selectedTab = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(categoryId))
-    const selectedPane = this.contentContainerTarget.querySelector(SELECTOR.PANE_BY_ID(categoryId))
+    const selectedTab = this.tabNavTarget.querySelector(`[data-category-id="${categoryId}"]`)
+    const selectedPane = this.contentContainerTarget.querySelector(`#category-pane-${categoryId}`)
 
     if (selectedTab && selectedPane) {
-      selectedTab.classList.add(CSS_CLASSES.ACTIVE)
-      selectedTab.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.TRUE)
-      selectedPane.classList.add(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
+      selectedTab.classList.add('active')
+      selectedTab.setAttribute('aria-selected', 'true')
+      selectedPane.classList.add('show', 'active')
     }
   }
 
   deleteTab(event) {
-    event.preventDefault()
-    event.stopPropagation()
-    event.stopImmediatePropagation()
-
-    const button = event.currentTarget
-    const categoryId = String(button.dataset.categoryId)
+    const deleteButton = event.currentTarget
+    const categoryId = deleteButton.dataset.categoryId
 
     if (!categoryId) {
-      Logger.warn(LOG_MESSAGES.INVALID_CATEGORY_ID_FOR_DELETION)
+      Logger.warn('Invalid category ID for deletion')
       return
     }
 
-    const confirmMessage = i18n.t(I18N_KEYS.CONFIRM_DELETE)
+    const confirmMessage = i18n.t('components.category_tabs.confirm_delete')
     if (!confirm(confirmMessage)) {
       return
     }
 
-    window._deletingCategory = true
+    const allTbody = this.contentContainerTarget.querySelector('tbody[data-category-id="0"]')
 
-    try {
-      Logger.log(`=== Deleting category ${categoryId} ===`)
+    if (allTbody) {
+      const categoryRows = allTbody.querySelectorAll(`tr[data-original-category-id="${categoryId}"]`)
 
-      // カテゴリ―タブのペインを探す
-      let tabPane = document.getElementById(`nav-${categoryId}`)
-      if (!tabPane) {
-        tabPane = document.getElementById(`category-pane-${categoryId}`)
-      }
-      if (!tabPane) {
-        const tabButton = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(categoryId))
-        if (tabButton) {
-          const paneId = tabButton.getAttribute(HTML_ATTRIBUTE.ARIA_CONTROLS)
-          if (paneId) {
-            tabPane = document.getElementById(paneId)
-          }
-        }
-      }
-
-      // カテゴリ―タブ内の行を処理（新規追加データ用）
-      if (tabPane) {
-        const categoryTbody = tabPane.querySelector(HTML_ELEMENT.TBODY)
-        if (categoryTbody) {
-          const allRows = Array.from(categoryTbody.querySelectorAll(HTML_ELEMENT.TR))
-          Logger.log(`Deleting ${allRows.length} rows from category ${categoryId}`)
-
-          allRows.forEach((row) => {
-            let destroyInput = row.querySelector('input[name*="[_destroy]"]')
-            if (!destroyInput) {
-              // _destroyフィールドがない場合は作成
-              const idInput = row.querySelector('input[name*="[id]"]')
-              if (idInput && idInput.name) {
-                const destroyName = idInput.name.replace('[id]', '[_destroy]')
-                destroyInput = document.createElement('input')
-                destroyInput.type = 'hidden'
-                destroyInput.name = destroyName
-                destroyInput.value = '1'
-                row.appendChild(destroyInput)
-                Logger.log(`Created _destroy field: ${destroyName}`)
-              }
-            } else {
-              destroyInput.value = '1'
-            }
-            row.classList.add('d-none')
-            // idと_destroy以外をdisabledにする（idはフォーム送信に必要）
-            row.querySelectorAll('input:not([name*="[_destroy]"]):not([name*="[id]"]), select, textarea').forEach(field => {
-              field.disabled = true
-            })
-          })
-        }
-      }
-
-      // ALLタブ内の行を処理（既存データ + 新規追加データ）
-      const allTbody = document.querySelector('tbody[data-category-id="0"]')
-
-      if (allTbody) {
-        // data-category-id で検索（新規追加データ）
-        const allRows = Array.from(allTbody.querySelectorAll('tr[data-category-id]'))
-        const foundRows = allRows.filter(row => {
-          const rowCategoryId = String(row.getAttribute('data-category-id'))
-          return rowCategoryId === categoryId
+      if (categoryRows.length > 0) {
+        categoryRows.forEach(row => {
+          Logger.log(`Removing product row from ALL tab: category ${categoryId}`)
+          row.remove()
         })
-
-        Logger.log(`Found ${foundRows.length} rows in ALL tab with data-category-id="${categoryId}"`)
-
-        foundRows.forEach((row) => {
-          const destroyInput = row.querySelector('input[name*="[_destroy]"]')
-          if (destroyInput) {
-            destroyInput.value = '1'
-          }
-          row.classList.add('d-none')
-          row.querySelectorAll('input:not([name*="[_destroy]"]):not([name*="[id]"]), select, textarea').forEach(field => {
-            field.disabled = true
-          })
-        })
-
-        // 既存データの処理：現在表示されているカテゴリ―タブと同じIDを持つ行を検索
-        if (tabPane) {
-          const categoryTbody = tabPane.querySelector(HTML_ELEMENT.TBODY)
-          if (categoryTbody) {
-            // カテゴリ―タブ内に表示されていた行のIDを収集（material_idまたはproduct_id）
-            const displayedRows = Array.from(categoryTbody.querySelectorAll(HTML_ELEMENT.TR))
-            displayedRows.forEach(catRow => {
-              // 商品原材料の場合：material_id
-              let itemSelect = catRow.querySelector('select[name*="[material_id]"]')
-              let itemIdName = 'material_id'
-
-              // 製造計画の場合：product_id
-              if (!itemSelect) {
-                itemSelect = catRow.querySelector('select[name*="[product_id]"]')
-                itemIdName = 'product_id'
-              }
-
-              if (itemSelect && itemSelect.value) {
-                const itemId = itemSelect.value
-                // ALLタブから同じIDを持つ行を検索
-                const allRowsToDelete = Array.from(allTbody.querySelectorAll('tr')).filter(allRow => {
-                  const allItemSelect = allRow.querySelector(`select[name*="[${itemIdName}]"]`)
-                  return allItemSelect && allItemSelect.value === itemId
-                })
-
-                Logger.log(`Found ${allRowsToDelete.length} existing data rows in ALL tab with ${itemIdName}="${itemId}"`)
-
-                allRowsToDelete.forEach((row) => {
-                  let destroyInput = row.querySelector('input[name*="[_destroy]"]')
-                  if (!destroyInput) {
-                    // _destroyフィールドがない場合は作成
-                    const idInput = row.querySelector('input[name*="[id]"]')
-                    if (idInput && idInput.name) {
-                      const destroyName = idInput.name.replace('[id]', '[_destroy]')
-                      destroyInput = document.createElement('input')
-                      destroyInput.type = 'hidden'
-                      destroyInput.name = destroyName
-                      destroyInput.value = '1'
-                      row.appendChild(destroyInput)
-                      Logger.log(`Created _destroy field for existing data: ${destroyName}`)
-                    }
-                  } else {
-                    destroyInput.value = '1'
-                  }
-                  row.classList.add('d-none')
-                  // idと_destroy以外をdisabledにする（idはフォーム送信に必要）
-                  row.querySelectorAll('input:not([name*="[_destroy]"]):not([name*="[id]"]), select, textarea').forEach(field => {
-                    field.disabled = true
-                  })
-                })
-              }
-            })
-          }
-        }
+      } else {
+        Logger.warn(`No rows found with data-category-id="${categoryId}" in ALL tab`)
       }
-
-      // 合計再計算
-      const totalsController = this.application.getControllerForElementAndIdentifier(
-        document.querySelector('[data-controller*="form--totals"]'),
-        'form--totals'
-      )
-      if (totalsController) {
-        totalsController.recalculateTotals()
-      }
-
-      // アクティブタブの切り替え
-      const tabButton = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(categoryId))
-      const isActiveTab = tabButton && tabButton.classList.contains(CSS_CLASSES.ACTIVE)
-
-      if (isActiveTab) {
-        const allTab = this.tabNavTarget.querySelector(SELECTOR.CATEGORY_BY_ID(DEFAULT_CATEGORY_ID))
-        const allPane = document.getElementById('nav-0')
-
-        if (allTab && allPane) {
-          this.tabNavTarget.querySelectorAll(SELECTOR.NAV_LINK).forEach(tab => {
-            tab.classList.remove(CSS_CLASSES.ACTIVE)
-            tab.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.FALSE)
-          })
-
-          this.contentContainerTarget.querySelectorAll(SELECTOR.TAB_PANE).forEach(pane => {
-            pane.classList.remove(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
-          })
-
-          allTab.classList.add(CSS_CLASSES.ACTIVE)
-          allTab.setAttribute(HTML_ATTRIBUTE.ARIA_SELECTED, ARIA_VALUE.TRUE)
-          allPane.classList.add(CSS_CLASSES.SHOW, CSS_CLASSES.ACTIVE)
-        }
-      }
-
-      // タブボタンとペインを削除
-      if (tabButton) {
-        const tabButtonLi = tabButton.closest('li')
-
-        if (tabButtonLi) {
-          tabButtonLi.remove()
-        } else {
-          tabButton.remove()
-          const closeButton = this.tabNavTarget.querySelector(`span[data-category-id="${categoryId}"]`)
-          if (closeButton) {
-            closeButton.remove()
-          }
-        }
-      }
-
-      if (tabPane) {
-        tabPane.remove()
-      }
-
-      this.enableCategoryInSelector(categoryId)
-      this.enableCategoryInModal(categoryId)
-
-      Logger.log(LOG_MESSAGES.CATEGORY_TAB_DELETED(categoryId))
-
-    } finally {
-      delete window._deletingCategory
     }
+
+    const tabButton = this.tabNavTarget.querySelector(`[data-category-id="${categoryId}"]`)
+    if (tabButton) {
+      if (tabButton.classList.contains('active')) {
+        const allTab = this.tabNavTarget.querySelector('[data-category-id="0"]')
+        if (allTab) {
+          this.tabNavTarget.querySelectorAll('.nav-link').forEach(tab => {
+            tab.classList.remove('active')
+            tab.setAttribute('aria-selected', 'false')
+          })
+          allTab.classList.add('active')
+          allTab.setAttribute('aria-selected', 'true')
+
+          const allPane = this.contentContainerTarget.querySelector('#nav-0')
+          if (allPane) {
+            this.contentContainerTarget.querySelectorAll('.tab-pane').forEach(pane => {
+              pane.classList.remove('show', 'active')
+            })
+            allPane.classList.add('show', 'active')
+          }
+        }
+      }
+
+      tabButton.remove()
+    }
+
+    const tabPane = this.contentContainerTarget.querySelector(`#category-pane-${categoryId}`)
+    if (tabPane) {
+      tabPane.remove()
+    }
+
+    this.enableCategoryInSelector(categoryId)
+    this.enableCategoryInModal(categoryId)
+
+    Logger.log(`Category tab deleted: ${categoryId}`)
   }
 
   closeModal() {
@@ -831,26 +584,22 @@ export default class extends Controller {
   disableCategoryInModal(categoryId) {
     if (!this.hasAddCategoryModalTarget) return
 
-    const categoryItem = this.addCategoryModalTarget.querySelector(
-      SELECTOR.CATEGORY_BY_ID(categoryId)
-    )
+    const categoryItem = this.addCategoryModalTarget.querySelector(`[data-category-id="${categoryId}"]`)
     if (categoryItem) {
-      categoryItem.classList.add(CSS_CLASSES.DISABLED, CSS_CLASSES.TEXT_MUTED)
-      categoryItem.style[STYLE_PROPERTY.POINTER_EVENTS] = STYLE_VALUE.POINTER_EVENTS_NONE
-      categoryItem.style[STYLE_PROPERTY.OPACITY] = STYLE_VALUE.OPACITY_HALF
+      categoryItem.classList.add('disabled', 'text-muted')
+      categoryItem.style.pointerEvents = 'none'
+      categoryItem.style.opacity = '0.5'
     }
   }
 
   enableCategoryInModal(categoryId) {
     if (!this.hasAddCategoryModalTarget) return
 
-    const categoryItem = this.addCategoryModalTarget.querySelector(
-      SELECTOR.CATEGORY_BY_ID(categoryId)
-    )
+    const categoryItem = this.addCategoryModalTarget.querySelector(`[data-category-id="${categoryId}"]`)
     if (categoryItem) {
-      categoryItem.classList.remove(CSS_CLASSES.DISABLED, CSS_CLASSES.TEXT_MUTED)
-      categoryItem.style[STYLE_PROPERTY.POINTER_EVENTS] = STYLE_VALUE.EMPTY
-      categoryItem.style[STYLE_PROPERTY.OPACITY] = STYLE_VALUE.EMPTY
+      categoryItem.classList.remove('disabled', 'text-muted')
+      categoryItem.style.pointerEvents = ''
+      categoryItem.style.opacity = ''
     }
   }
 
@@ -862,18 +611,21 @@ export default class extends Controller {
     )
 
     if (option) {
-      option[HTML_ATTRIBUTE.DISABLED] = false
-      Logger.log(LOG_MESSAGES.CATEGORY_OPTION_RE_ENABLED(categoryId))
+      option.disabled = false
+      Logger.log(`Category option re-enabled in selector: ${categoryId}`)
     } else {
-      Logger.warn(LOG_MESSAGES.CATEGORY_OPTION_NOT_FOUND(categoryId))
+      Logger.warn(`Category option not found in selector: ${categoryId}`)
     }
   }
 
   escapeHtml(text) {
-    return text.replace(REGEX.HTML_ESCAPE, m => HTML_ESCAPE_MAP[m])
-  }
-
-  disconnect() {
-    Logger.log(LOG_MESSAGES.CONTROLLER_DISCONNECTED)
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }
+    return text.replace(/[&<>"']/g, m => map[m])
   }
 }

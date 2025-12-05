@@ -1,12 +1,35 @@
 <%# 商品原材料行 %>
 <%
-  unique_id = f.object.persisted? ? "existing_#{f.object.id}" : "new_#{f.object.object_id}"
-  category_id ||= local_assigns[:category_id] || f.object.material&.category_id || 0
+  # 既存レコードの場合は material_ID を使用、新規の場合は material_NEW_RECORD を使用してJavaScriptで置換される
+  if f.object.persisted?
+    unique_id = "material_#{f.object.id}"
+  else
+    # JavaScriptで uniqueId 置換される際に material_NEW_RECORD も置換されるようにする
+    unique_id = "NEW_RECORD"
+  end
+%>
+<%# local_assigns[:category_id] を使用して is_all_tab を判定 %>
+<% is_all_tab = (local_assigns[:category_id].to_i == 0) %>
+<% Rails.logger.debug "====== MATERIAL_FIELDS DEBUG ======" %>
+<% Rails.logger.debug "local_assigns[:category_id]: #{local_assigns[:category_id].inspect}" %>
+<% Rails.logger.debug "is_all_tab: #{is_all_tab.inspect}" %>
+<% Rails.logger.debug "persisted?: #{f.object.persisted?}" %>
+<% Rails.logger.debug "material: #{f.object.material&.name}" %>
+<% Rails.logger.debug "=================================" %>
 
-  if category_id == 0
+<%
+  # materials のフィルタリング
+  if is_all_tab
+    # 全てタブでは、既存の原材料を表示するためだけに使用
     materials = Resources::Material.order(:name)
   else
-    materials = Resources::Material.where(category_id: category_id).order(:name)
+    # カテゴリータブでは、そのカテゴリーの原材料のみ
+    category_id = local_assigns[:category_id] || f.object.material&.category_id || 0
+    if category_id == 0
+      materials = Resources::Material.order(:name)
+    else
+      materials = Resources::Material.where(category_id: category_id).order(:name)
+    end
   end
 
   unit_weight = f.object.unit_weight
@@ -16,7 +39,9 @@
 <tr class="nested-fields"
     data-controller="form--nested-form-item resources--product-material--material"
     data-unique-id="<%= unique_id %>"
-    data-category-id="<%= category_id %>">
+    data-category-id="<%= local_assigns[:category_id].to_i %>"
+    <%= "data-original-category-id=\"#{f.object.material&.category_id}\"" if is_all_tab && f.object.material&.category_id.present? %>
+    data-material-id="<%= f.object.material_id %>">
 
   <%= f.hidden_field :_destroy, value: f.object.marked_for_destruction? ? 1 : 0,
                   data: { 'form--nested-form-item-target': 'destroy' } %>
@@ -25,23 +50,39 @@
                     value: f.object.unit_id || f.object.material&.unit_for_product_id,
                     data: { 'resources--product-material--material-target': 'unitIdInput' } %>
 
-  <td>
-    <%= f.collection_select(:material_id, materials, :id, :name,
-      { include_blank: t('helpers.prompt.select') },
-      { class: 'form-select',
-        data: {
-          action: 'change->resources--product-material--material#updateUnit change->resources--product-material--material#syncMaterialToOtherTabs',
-          'resources--product-material--material-target': 'materialSelect',
-          'unique-id': unique_id
-        }
-      }) %>
+  <td style="width: 35%;">
+    <% if is_all_tab %>
+      <%# 全てタブ: 原材料名を表示のみ(編集不可) %>
+      <span class="d-inline-block pt-1"
+            data-resources--product-material--material-target="materialNameDisplay"
+            data-unique-id="<%= unique_id %>">
+        <%= f.object.material&.name || t('helpers.prompt.select') %>
+      </span>
+      <%= f.hidden_field :material_id,
+                        data: {
+                          'resources--product-material--material-target': 'materialIdHidden',
+                          'unique-id': unique_id
+                        } %>
+    <% else %>
+      <%# カテゴリータブ: 通常のselect %>
+      <%= f.collection_select(:material_id, materials, :id, :name,
+        { include_blank: t('helpers.prompt.select') },
+        { class: 'form-select',
+          data: {
+            action: 'change->resources--product-material--material#updateUnit change->resources--product-material--material#syncMaterialToOtherTabs',
+            'resources--product-material--material-target': 'materialSelect',
+            'unique-id': unique_id
+          }
+        }) %>
+    <% end %>
   </td>
 
-  <td>
+  <td style="width: 15%;">
     <%= f.text_field :quantity,
       class: 'form-control',
       inputmode: 'decimal',
       placeholder: t('helpers.forms.quantity_placeholder'),
+      disabled: f.object.material_id.blank?,
       data: {
         controller: 'input--number-input',
         'number-input-no-comma': 'true',
@@ -52,28 +93,29 @@
       } %>
   </td>
 
-  <td>
+  <td style="width: 20%;">
     <%= f.text_field :unit_weight,
       class: 'form-control',
       inputmode: 'decimal',
       placeholder: t('products.product_material_fields.unit_weight_placeholder'),
+      disabled: f.object.material_id.blank?,
       data: {
         controller: 'input--number-input',
         'number-input-no-comma': 'true',
         'number-input-decimal-field': 'true',
         'resources--product-material--material-target': 'unitWeightInput',
-        action: 'input->input--number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
+        action: 'input->input--number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur',
         'unique-id': unique_id
       } %>
   </td>
 
-  <td>
+  <td style="width: 20%;">
     <span data-resources--product-material--material-target="unitDisplay" class="fw-bold">
       <%= f.object.material&.unit_for_product&.name || t('helpers.no_setting') %>
     </span>
   </td>
 
-  <td class="text-end">
+  <td style="width: 10%;" class="text-end">
     <button type="button"
       class="btn btn-sm btn-danger"
       data-action="click->form--nested-form-item#remove"

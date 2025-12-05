@@ -20,16 +20,20 @@ class Resources::Product < ApplicationRecord
   # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
+  include NestedAttributeTranslatable
+  include Copyable
+  include HasReading
+  include StatusChangeable
+
   # フォーム定数
   DESCRIPTION_MAX_LENGTH = 500
   DESCRIPTION_ROWS = 3
 
-  include NestedAttributeTranslatable
-  include Copyable
-  include HasReading
-
   # ネストされた属性の翻訳設定
   nested_attribute_translation :product_materials, "Planning::ProductMaterial"
+
+  # ステータス変更制限
+  restrict_status_change_if_used_in :plan_products, foreign_key: :product_id
 
   # 製品のステータス定義
   enum :status, { draft: 0, selling: 1, discontinued: 2 }

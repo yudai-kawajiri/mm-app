@@ -56,9 +56,14 @@ ja:
     edit:
       title: "%{name} - 原材料編集"
     form:
-      default_unit_weight_help: "（商品1個あたりの使用量）"
+      default_unit_weight_help: "（商品1個当の使用量）"
       unit_for_product_help: "（製造時の計量単位）"
       production_unit_help: "（原材料の管理単位）"
+      basic_order_quantity: "基本発注量"
+      unit_weight_for_order_placeholder: "例: 1000 (1kg当のグラム数)"
+      unit_weight_for_order_help: "重量ベース: 1発注単位当のグラム数を入力"
+      pieces_per_order_unit_placeholder: "例: 100 (1cs当の個数)"
+      pieces_per_order_unit_help: "個数ベース: 1発注単位当の個数を入力"
     attributes:
       default_order_quantity: "基本発注量/発注入数"
       measurement_type: "計測方法"
@@ -150,6 +155,8 @@ ja:
       copy_success: "商品「%{original_name}」を「%{new_name}」としてコピーしました"
       copy_failed: "商品のコピーに失敗しました: %{error}"
       image_deleted: "画像を削除しました"
+      image_delete_failed: "画像の削除に失敗しました"
+      confirm_delete_image: "この画像を削除しますか?"
       status_updated: "商品「%{name}」のステータスを「%{status}」に変更しました"
 
   # 計画

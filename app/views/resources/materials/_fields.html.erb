@@ -55,35 +55,57 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row" data-controller="resources--material-form">
   <div class="col-md-6">
     <div class="form-group mb-4">
       <div class="d-flex align-items-center gap-3 mb-2">
         <label class="form-label mb-0" style="font-size: 1.25rem; font-weight: 400;">
-          <%= Resources::Material.human_attribute_name(:unit_weight_for_order) %>
+          <%= t('materials.form.basic_order_quantity') %>
         </label>
         <div class="form-check">
           <%= f.radio_button :measurement_type, 'weight',
               checked: f.object.measurement_type != 'count',
-              class: 'form-check-input' %>
+              class: 'form-check-input',
+              data: { action: 'change->resources--material-form#toggleMeasurementFields' } %>
           <%= f.label :measurement_type_weight, t('materials.measurement_types.weight'), class: 'form-check-label' %>
         </div>
         <div class="form-check">
           <%= f.radio_button :measurement_type, 'count',
-              class: 'form-check-input' %>
+              class: 'form-check-input',
+              data: { action: 'change->resources--material-form#toggleMeasurementFields' } %>
           <%= f.label :measurement_type_count, t('materials.measurement_types.count'), class: 'form-check-label' %>
         </div>
       </div>
 
-      <%= f.text_field :unit_weight_for_order,
-        class: 'form-control form-control-lg',
-        data: {
-          controller: 'input--number-input' ,
-          'number-input-no-comma': 'true',
-          'number-input-decimal-field': 'true',
-          action: 'input->input--number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur'
-        }
-      %>
+      <%# 重量ベースのフィールド %>
+      <div data-resources--material-form-target="weightField" style="<%= 'display: none;' if f.object.measurement_type == 'count' %>">
+        <%= f.text_field :unit_weight_for_order,
+          class: 'form-control form-control-lg',
+          placeholder: t('materials.form.unit_weight_for_order_placeholder'),
+          data: {
+            controller: 'input--number-input',
+            'number-input-no-comma': 'true',
+            'number-input-decimal-field': 'true',
+            action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur'
+          }
+        %>
+        <small class="text-muted"><%= t('materials.form.unit_weight_for_order_help') %></small>
+      </div>
+
+      <%# 個数ベースのフィールド %>
+      <div data-resources--material-form-target="countField" style="<%= 'display: none;' unless f.object.measurement_type == 'count' %>">
+        <%= f.text_field :pieces_per_order_unit,
+          class: 'form-control form-control-lg',
+          placeholder: t('materials.form.pieces_per_order_unit_placeholder'),
+          data: {
+            controller: 'input--number-input',
+            'number-input-no-comma': 'true',
+            'number-input-decimal-field': 'false',
+            action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur'
+          }
+        %>
+        <small class="text-muted"><%= t('materials.form.pieces_per_order_unit_help') %></small>
+      </div>
     </div>
   </div>
 

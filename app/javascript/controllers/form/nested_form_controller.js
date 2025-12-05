@@ -87,11 +87,32 @@ export default class extends Controller {
     categoryContainer.insertAdjacentHTML('beforeend', content)
     Logger.log(`Added to category ${categoryId} tab`)
 
-    // ALLタブにも追加
+    // ALLタブにも追加（専用テンプレートを使用）
     const allContainer = this.findTargetContainer(DEFAULT_CATEGORY_ID)
     if (allContainer) {
-      allContainer.insertAdjacentHTML('beforeend', content)
-      Logger.log('Also added to ALL tab')
+      // 全てタブ用のテンプレートを取得
+      const allTemplateId = templateId.replace(/_\d+$/, '_0')  // material_fields_template_19 → material_fields_template_0
+      const allTemplate = document.getElementById(allTemplateId)
+
+      if (allTemplate) {
+        let allContent = allTemplate.innerHTML
+        allContent = allContent.replace(/NEW_RECORD/g, newId)
+
+        // ユニークIDを設定
+        allContent = allContent.replace(/data-row-unique-id="[^"]*"/g, `data-row-unique-id="${uniqueId}"`)
+        allContent = allContent.replace(new RegExp(`data-unique-id="${ID_PREFIX}[^"]*"`, 'g'), `data-unique-id="${uniqueId}"`)
+
+        // data-category-id を 0 に強制設定
+        allContent = allContent.replace(/data-category-id="[^"]*"/g, 'data-category-id="0"')
+
+        // data-original-category-id を追加
+        allContent = allContent.replace(/<tr([^>]*)>/, `<tr$1 data-original-category-id="${categoryId}">`)
+
+        allContainer.insertAdjacentHTML('beforeend', allContent)
+        Logger.log('Also added to ALL tab with correct template')
+      } else {
+        Logger.error(`ALL tab template not found: ${allTemplateId}`)
+      }
     }
 
     // 合計を再計算（製造計画の場合のみ）

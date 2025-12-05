@@ -42,6 +42,7 @@ pin "controllers/resources/plan-product/row_controller", to: "controllers/resour
 pin "controllers/resources/plan-product/totals_controller", to: "controllers/resources/plan-product/totals_controller.js"
 pin "controllers/resources/plan-product/sync_controller", to: "controllers/resources/plan-product/sync_controller.js"
 pin "controllers/resources/product-material/material_controller", to: "controllers/resources/product-material/material_controller.js"
+pin "controllers/resources/material_form_controller", to: "controllers/resources/material_form_controller.js"
 
 # Help Controllers
 pin "controllers/help_search_controller", to: "controllers/help_search_controller.js"
