@@ -523,3 +523,12 @@ ja:
       title: "使い方・ヘルプ"
       description: "使い方動画、FAQ、よくある質問"
       button: "使い方を見る"
+
+  # Kaminari ページネーション翻訳
+  views:
+    pagination:
+      first: "最初"
+      last: "最後"
+      previous: "&laquo; 前"
+      next: "次 &raquo;"
+      truncate: "&hellip;"
