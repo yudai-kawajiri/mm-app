@@ -524,7 +524,6 @@ ja:
       description: "使い方動画、FAQ、よくある質問"
       button: "使い方を見る"
 
-  # Kaminari ページネーション翻訳
   views:
     pagination:
       first: "最初"
