@@ -23,6 +23,7 @@ class Resources::MaterialOrderGroup < ApplicationRecord
 
   # バリデーション
   validates :name, presence: true, uniqueness: true
+  validates :reading, uniqueness: true, allow_blank: true
 
   # セレクトボックス用：名前順
   scope :ordered, -> { order(:name) }

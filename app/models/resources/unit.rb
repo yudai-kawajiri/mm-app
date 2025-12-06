@@ -48,6 +48,7 @@ class Resources::Unit < ApplicationRecord
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category }
+  validates :reading, uniqueness: { scope: :category }
   validates :category, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 

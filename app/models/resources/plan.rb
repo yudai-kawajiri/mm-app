@@ -48,6 +48,7 @@ class Resources::Plan < ApplicationRecord
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_id }
+  validates :reading, uniqueness: { scope: :category_id }, allow_blank: true
   validates :category_id, presence: true
   validates :status, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true

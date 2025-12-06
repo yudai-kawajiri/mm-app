@@ -61,6 +61,7 @@ class Resources::Product < ApplicationRecord
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_id }
+  validates :reading, uniqueness: { scope: :category_id }, allow_blank: true
   validates :price, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :item_number, presence: true, length: { maximum: ITEM_NUMBER_DIGITS }, uniqueness: { scope: :category_id }
   validates :category_id, presence: true

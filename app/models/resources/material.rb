@@ -35,6 +35,7 @@ class Resources::Material < ApplicationRecord
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_id }
+  validates :reading, uniqueness: { scope: :category_id }, allow_blank: true
   validates :measurement_type, presence: true, inclusion: { in: %w[weight count] }
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
