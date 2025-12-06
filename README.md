@@ -189,10 +189,6 @@
 
 [Figma: 画面遷移図](https://www.figma.com/design/tK57COTX5tKjmMFua3M6uC/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3--Community-?node-id=0-1&t=8R1ZXHCYrR3qE0AM-1)
 
-[Figma: 画面遷移図](https://www.figma.com/design/tK57COTX5tKjmMFua3M6uC/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3--Community-?node-id=0-1&t=8R1ZXHCYrR3qE0AM-1)
-
----
-
 ## スクリーンショット
 
 ### ダッシュボード
