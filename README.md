@@ -394,4 +394,6 @@ MIT License
 ## 作成者
 
 - GitHub: [@yudai-kawajiri](https://github.com/yudai-kawajiri)
-- Email: adgj2419@yahoo.co.jp
+- Email: mmapp@outlook.jp
+- GitHub: [https://github.com/yudai-kawajiri/mm-app](https://github.com/yudai-kawajiri/mm-app)
+- 本番環境: [https://mm-app-gpih.onrender.com](https://mm-app-gpih.onrender.com)
