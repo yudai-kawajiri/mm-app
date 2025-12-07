@@ -66,8 +66,8 @@ Rails.application.configure do
   # Docker環境: サービス名 "mailcatcher"、ポート 1025
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: ENV.fetch("MAILCATCHER_HOST", "localhost"),
-    port: ENV.fetch("MAILCATCHER_PORT", 1025).to_i
+    address: "mailcatcher",
+    port: 1025
   }
 
   # ====================

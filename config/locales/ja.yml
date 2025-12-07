@@ -531,3 +531,81 @@ ja:
       previous: "&laquo; 前"
       next: "次 &raquo;"
       truncate: "&hellip;"
+
+  # 管理者機能
+  admin:
+    users:
+      index:
+        title: "ユーザー管理"
+        table_headers:
+          name: "名前"
+          email: "メールアドレス"
+          role: "権限"
+          registered_date: "登録日"
+          actions: "操作"
+        role_badges:
+          admin: "管理者"
+          staff: "スタッフ"
+        actions:
+          delete: "削除"
+          self: "(自分)"
+        confirm:
+          delete: "%{name}を削除してもよろしいですか?"
+        empty_message: "ユーザーが登録されていません"
+      messages:
+        user_deleted: "%{name}を削除しました"
+        user_delete_failed: "%{name}の削除に失敗しました"
+
+    system_logs:
+      index:
+        title: "システムログ"
+        model: "モデル"
+        user: "ユーザー"
+        date_from: "開始日"
+        date_to: "終了日"
+        filter: "絞り込む"
+        datetime: "日時"
+        action: "操作"
+        record_id: "レコードID"
+        detail: "詳細"
+        no_logs: "ログが見つかりません"
+
+  # ActiveRecord モデル名翻訳
+  activerecord:
+    models:
+      user: "ユーザー"
+      resources/category: "カテゴリー"
+      resources/unit: "単位"
+      resources/material_order_group: "発注グループ"
+      resources/material: "原材料"
+      resources/product: "商品"
+      resources/product_material: "商品原材料"
+      resources/plan: "計画"
+      planning/plan_product: "計画商品"
+      planning/plan_schedule: "計画スケジュール"
+      management/monthly_budget: "月間予算"
+      management/daily_target: "日別目標"
+
+  # ランディングページ
+  landing:
+    title: "製造管理システム"
+    subtitle: "製造業向けの包括的な生産管理・数値管理システム"
+    welcome: "ようこそ"
+    description: "原材料管理から製造計画、売上予測まで一元管理"
+    login_button: "ログイン"
+    signup_button: "新規登録"
+    back_to_top: "トップページへ戻る"
+    features:
+      title: "主な機能"
+      resources:
+        title: "リソース管理"
+        description: "原材料・商品・カテゴリー"
+      planning:
+        title: "製造計画"
+        description: "日別計画・商品紐付け"
+      management:
+        title: "数値管理"
+        description: "予算・目標・実績"
+      forecast:
+        title: "月末予測"
+        description: "売上予測・追加額計算"

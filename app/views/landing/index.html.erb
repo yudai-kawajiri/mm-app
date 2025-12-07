@@ -1,0 +1,92 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+      <!-- ヘッダー -->
+      <div class="text-center mb-5">
+        <h1 class="display-4 mb-3">
+          <i class="bi bi-clipboard-check"></i>
+          <%= t('landing.title') %>
+        </h1>
+        <p class="lead text-muted">
+          <%= t('landing.subtitle') %>
+        </p>
+      </div>
+
+      <!-- メインカード -->
+      <div class="card shadow mb-5">
+        <div class="card-body p-4 p-md-5">
+          <h2 class="h3 text-center mb-3"><%= t('landing.welcome') %></h2>
+          <p class="text-center text-muted mb-4">
+            <%= t('landing.description') %>
+          </p>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <%= link_to new_user_session_path, class: "btn btn-primary btn-lg w-100" do %>
+                <i class="bi bi-box-arrow-in-right me-2"></i>
+                <%= t('landing.login_button') %>
+              <% end %>
+            </div>
+            <div class="col-md-6">
+              <%= link_to new_user_registration_path, class: "btn btn-outline-secondary btn-lg w-100" do %>
+                <i class="bi bi-person-plus me-2"></i>
+                <%= t('landing.signup_button') %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主な機能 -->
+      <div class="mb-5">
+        <h3 class="h4 text-center mb-4"><%= t('landing.features.title') %></h3>
+        <div class="row g-3">
+          <div class="col-sm-6 col-lg-3">
+            <div class="card h-100 text-center border-0 shadow-sm">
+              <div class="card-body p-4">
+                <div class="mb-3">
+                  <i class="bi bi-box-seam fs-1 text-primary"></i>
+                </div>
+                <h4 class="h6 fw-bold mb-2"><%= t('landing.features.resources.title') %></h4>
+                <p class="small text-muted mb-0"><%= t('landing.features.resources.description') %></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card h-100 text-center border-0 shadow-sm">
+              <div class="card-body p-4">
+                <div class="mb-3">
+                  <i class="bi bi-calendar-check fs-1 text-success"></i>
+                </div>
+                <h4 class="h6 fw-bold mb-2"><%= t('landing.features.planning.title') %></h4>
+                <p class="small text-muted mb-0"><%= t('landing.features.planning.description') %></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card h-100 text-center border-0 shadow-sm">
+              <div class="card-body p-4">
+                <div class="mb-3">
+                  <i class="bi bi-graph-up fs-1 text-info"></i>
+                </div>
+                <h4 class="h6 fw-bold mb-2"><%= t('landing.features.management.title') %></h4>
+                <p class="small text-muted mb-0"><%= t('landing.features.management.description') %></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card h-100 text-center border-0 shadow-sm">
+              <div class="card-body p-4">
+                <div class="mb-3">
+                  <i class="bi bi-speedometer2 fs-1 text-warning"></i>
+                </div>
+                <h4 class="h6 fw-bold mb-2"><%= t('landing.features.forecast.title') %></h4>
+                <p class="small text-muted mb-0"><%= t('landing.features.forecast.description') %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
