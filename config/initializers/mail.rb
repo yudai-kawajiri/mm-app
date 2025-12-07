@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# SendGrid配信メソッドを読み込み
+require Rails.root.join('lib/send_grid_delivery')
+
 if Rails.env.production?
   Rails.application.config.action_mailer.tap do |config|
     # デバッグログを追加
@@ -8,14 +11,12 @@ if Rails.env.production?
     Rails.logger.info "SENDGRID_API_KEY value: #{ENV['SENDGRID_API_KEY']&.slice(0, 10)}..." if ENV['SENDGRID_API_KEY'].present?
     Rails.logger.info "=========================="
 
-    # SendGrid Web APIを使用（mailクラスを直接設定）
+    # SendGrid Web APIを使用
     if ENV['SENDGRID_API_KEY'].present?
-      require 'sendgrid-ruby'
-      
-      config.delivery_method = :test # デフォルトをtestに設定（実際にはオーバーライドされる）
-      config.action_mailer.delivery_method = Mail::SendGrid
-      
-      # ApplicationMailerでSendGrid APIを使うように設定
+      config.delivery_method = :sendgrid
+      config.sendgrid_settings = {
+        api_key: ENV['SENDGRID_API_KEY']
+      }
       Rails.logger.info "Using SendGrid Web API"
     else
       # フォールバック: SMTP設定
