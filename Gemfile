@@ -37,6 +37,7 @@ gem "image_processing", "~> 1.2"
 gem "paper_trail", "~> 17.0"
 gem "rails-i18n"
 gem "sendgrid-ruby"
+gem "sendgrid-actionmailer"
 gem "thruster", require: false
 
 
@@ -58,7 +59,7 @@ group :development do
   gem "web-console"
   gem "whenever", require: false
 
-  # メール確認ツール（グローバルインストール推奨）
+  # メール確認ツール(グローバルインストール推奨)
   # インストール: gem install mailcatcher
   # 起動: mailcatcher
   # URL: http://localhost:1080

@@ -1,26 +1,17 @@
 # frozen_string_literal: true
 
-# SendGrid配信メソッドを読み込み
-require Rails.root.join('lib/send_grid_delivery')
-
-# メール設定
 if Rails.env.production?
   Rails.application.config.action_mailer.tap do |config|
-    # デバッグログを追加
-    Rails.logger.info "===== SENDGRID DEBUG ====="
-    Rails.logger.info "SENDGRID_API_KEY present?: #{ENV['SENDGRID_API_KEY'].present?}"
-    Rails.logger.info "SENDGRID_API_KEY value: #{ENV['SENDGRID_API_KEY']&.slice(0, 10)}..." if ENV['SENDGRID_API_KEY'].present?
-    Rails.logger.info "=========================="
-
-    # SendGrid Web APIを使用する場合（推奨）
+    # SendGrid Web APIを使用
     if ENV['SENDGRID_API_KEY'].present?
-      config.delivery_method = :sendgrid
-      config.sendgrid_settings = {
-        api_key: ENV['SENDGRID_API_KEY']
+      config.delivery_method = :sendgrid_actionmailer
+      config.sendgrid_actionmailer_settings = {
+        api_key: ENV['SENDGRID_API_KEY'],
+        raise_delivery_errors: true
       }
-      Rails.logger.info "Using SendGrid Web API"
+      Rails.logger.info "===== Using SendGrid ActionMailer gem ====="
     else
-      # フォールバック: SMTP設定（環境変数が設定されていない場合）
+      # フォールバック: SMTP設定
       config.delivery_method = :smtp
       config.perform_deliveries = true
       config.raise_delivery_errors = true
@@ -33,7 +24,7 @@ if Rails.env.production?
         authentication: ENV.fetch('SMTP_AUTHENTICATION', 'plain'),
         enable_starttls_auto: ENV.fetch('SMTP_ENABLE_STARTTLS_AUTO', 'true') == 'true'
       }
-      Rails.logger.info "Using SMTP fallback"
+      Rails.logger.info "===== Using SMTP fallback ====="
     end
 
     # 本番環境のURL設定
