@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
+# SendGrid配信メソッドを読み込み
+require Rails.root.join('lib/sendgrid_delivery')
+
 # メール設定
 if Rails.env.production?
   Rails.application.config.action_mailer.tap do |config|
     # SendGrid Web APIを使用する場合（推奨）
     if ENV['SENDGRID_API_KEY'].present?
-      config.delivery_method = :sendgrid_actionmailer
-      config.sendgrid_actionmailer_settings = {
-        api_key: ENV['SENDGRID_API_KEY'],
-        raise_delivery_errors: true
+      config.delivery_method = :sendgrid
+      config.sendgrid_settings = {
+        api_key: ENV['SENDGRID_API_KEY']
       }
     else
       # フォールバック: SMTP設定（環境変数が設定されていない場合）
