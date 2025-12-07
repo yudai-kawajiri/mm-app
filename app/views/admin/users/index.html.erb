@@ -34,9 +34,9 @@
             <td><%= user.created_at.strftime('%Y年%m月%d日') %></td>
             <td>
               <% if user != current_user %>
-                <%= button_to t('admin.users.index.actions.delete'), admin_user_path(user),
+                  <%= button_to t('admin.users.index.actions.delete'), admin_user_path(user),
                     method: :delete,
-                    data: { confirm: t('admin.users.index.confirm.delete', name: user.name) },
+                    form: { data: { turbo_method: :delete, turbo_confirm: t('admin.users.index.confirm.delete', name: user.name) } },
                     class: 'btn btn-danger btn-sm' %>
               <% else %>
                 <span class="text-muted small"><%= t('admin.users.index.actions.self') %></span>

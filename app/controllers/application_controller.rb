@@ -16,6 +16,9 @@ class ApplicationController < ActionController::Base
   # Devise利用時のストロングパラメータ設定
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  # PaperTrailで変更者を記録
+  before_action :set_paper_trail_whodunnit
+
   before_action :redirect_if_authenticated, if: -> { devise_controller? && action_name == "new" && controller_name == "sessions" }
 
 
