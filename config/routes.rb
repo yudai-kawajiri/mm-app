@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   # 未認証ユーザー
   devise_scope :user do
-    root to: "devise/sessions#new"
+    root to: "landing#index"
     get "/users", to: redirect("/")
   end
 

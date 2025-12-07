@@ -45,6 +45,14 @@ class ApplicationController < ActionController::Base
     authenticated_root_path
   end
 
+  # ログアウト後のリダイレクト先
+  #
+  # @param resource_or_scope [Symbol, User] リソースまたはスコープ
+  # @return [String] リダイレクト先のパス（ランディングページ）
+  def after_sign_out_path_for(resource_or_scope)
+    root_path
+  end
+
   # 認証状態に応じてレイアウトを切り替え
   #
   # @return [String] レイアウト名

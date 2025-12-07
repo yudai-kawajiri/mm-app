@@ -585,3 +585,27 @@ ja:
       planning/plan_schedule: "計画スケジュール"
       management/monthly_budget: "月間予算"
       management/daily_target: "日別目標"
+
+  # ランディングページ
+  landing:
+    title: "製造管理システム"
+    subtitle: "製造業向けの包括的な生産管理・数値管理システム"
+    welcome: "ようこそ"
+    description: "原材料管理から製造計画、売上予測まで一元管理"
+    login_button: "ログイン"
+    signup_button: "新規登録"
+    back_to_top: "トップページへ戻る"
+    features:
+      title: "主な機能"
+      resources:
+        title: "リソース管理"
+        description: "原材料・商品・カテゴリー"
+      planning:
+        title: "製造計画"
+        description: "日別計画・商品紐付け"
+      management:
+        title: "数値管理"
+        description: "予算・目標・実績"
+      forecast:
+        title: "月末予測"
+        description: "売上予測・追加額計算"
