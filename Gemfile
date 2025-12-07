@@ -36,6 +36,7 @@ gem "enum_help"
 gem "image_processing", "~> 1.2"
 gem "paper_trail", "~> 17.0"
 gem "rails-i18n"
+gem "sendgrid-ruby"
 gem "thruster", require: false
 
 
