@@ -21,7 +21,7 @@ Rails.application.configure do
 
     # デフォルトの送信元アドレス
     config.action_mailer.default_options = {
-      from: ENV.fetch('MAILER_FROM', 'noreply@mm-app-manage.com')
+      from: ENV.fetch('MAILER_FROM', 'mmapp@outlook.jp')
     }
   end
 end
