@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # SendGrid配信メソッドを読み込み
-require Rails.root.join('lib/sendgrid_delivery')
+require Rails.root.join('lib/send_grid_delivery')
 
 # メール設定
 if Rails.env.production?
