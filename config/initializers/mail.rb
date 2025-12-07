@@ -1,27 +1,35 @@
 # frozen_string_literal: true
 
 # メール設定
-Rails.application.configure do
-  # 本番環境でのメール送信設定
-  if Rails.env.production?
-    config.action_mailer.delivery_method = :smtp
-    config.action_mailer.perform_deliveries = true
-    config.action_mailer.raise_delivery_errors = true
-    config.action_mailer.default_url_options = { host: ENV.fetch('APP_HOST', 'mm-app-gpon-orrenderr.com') }
+if Rails.env.production?
+  Rails.application.config.action_mailer.tap do |config|
+    # SendGrid Web APIを使用する場合（推奨）
+    if ENV['SENDGRID_API_KEY'].present?
+      config.delivery_method = :sendgrid_actionmailer
+      config.sendgrid_actionmailer_settings = {
+        api_key: ENV['SENDGRID_API_KEY'],
+        raise_delivery_errors: true
+      }
+    else
+      # フォールバック: SMTP設定（環境変数が設定されていない場合）
+      config.delivery_method = :smtp
+      config.perform_deliveries = true
+      config.raise_delivery_errors = true
+      config.smtp_settings = {
+        address: ENV.fetch('SMTP_ADDRESS', 'smtp.sendgrid.net'),
+        port: ENV.fetch('SMTP_PORT', '587').to_i,
+        domain: ENV.fetch('SMTP_DOMAIN', 'mm-app-gpih.onrender.com'),
+        user_name: ENV.fetch('SMTP_USER_NAME', 'apikey'),
+        password: ENV['SMTP_PASSWORD'],
+        authentication: ENV.fetch('SMTP_AUTHENTICATION', 'plain'),
+        enable_starttls_auto: ENV.fetch('SMTP_ENABLE_STARTTLS_AUTO', 'true') == 'true'
+      }
+    end
 
-    config.action_mailer.smtp_settings = {
-      address:              ENV.fetch('SMTP_ADDRESS', 'smtp.sendgrid.net'),
-      port:                 ENV.fetch('SMTP_PORT', 587).to_i,
-      domain:               ENV.fetch('SMTP_DOMAIN', 'mm-app-gpih.onrender.com'),
-      user_name:            ENV.fetch('SMTP_USER_NAME', 'apikey'),
-      password:             ENV['SMTP_PASSWORD'],
-      authentication:       ENV.fetch('SMTP_AUTHENTICATION', 'plain'),
-      enable_starttls_auto: ENV.fetch('SMTP_ENABLE_STARTTLS_AUTO', 'true') == 'true'
-    }
+    # 本番環境のURL設定
+    config.default_url_options = { host: ENV.fetch('APP_HOST', 'mm-app-gpih.onrender.com') }
 
-    # デフォルトの送信元アドレス
-    config.action_mailer.default_options = {
-      from: ENV.fetch('MAILER_FROM', 'mmapp@outlook.jp')
-    }
+    # デフォルトの送信元メールアドレス
+    config.default_options = { from: ENV.fetch('MAILER_FROM', 'mmapp@outlook.jp') }
   end
 end
