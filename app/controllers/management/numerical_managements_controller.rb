@@ -18,7 +18,7 @@ class Management::NumericalManagementsController < ApplicationController
     )
     @monthly_budget.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
 
-    calendar_data = CalendarDataBuilderService.new(current_user, year, month).build
+    calendar_data = CalendarDataBuilderService.new(year, month).build
     @daily_data = calendar_data[:daily_data]
     @daily_targets = calendar_data[:daily_targets]
 
@@ -37,12 +37,12 @@ class Management::NumericalManagementsController < ApplicationController
     @year = params[:year]&.to_i || Date.today.year
     @month = params[:month]&.to_i || Date.today.month
 
-    calendar_data = CalendarDataBuilderService.new(current_user, @year, @month).build
+    calendar_data = CalendarDataBuilderService.new(@year, @month).build
     @daily_data = calendar_data[:daily_data]
     @monthly_budget = calendar_data[:monthly_budget]
     @daily_targets = calendar_data[:daily_targets]
 
-    @forecast = NumericalForecastService.call(current_user, @year, @month)
+    @forecast = NumericalForecastService.call(@year, @month)
   end
 
   def update_daily_target
@@ -138,7 +138,7 @@ class Management::NumericalManagementsController < ApplicationController
       return
     end
 
-    service = NumericalDataBulkUpdateService.new(current_user, sanitized_bulk_update_params)
+    service = NumericalDataBulkUpdateService.new(sanitized_bulk_update_params)
 
     if service.call
       redirect_to management_numerical_managements_path(year: year, month: month),
