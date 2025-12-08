@@ -87,7 +87,7 @@ class Resources::UnitsController < AuthenticatedController
   #
   # @return [void]
   def destroy
-    respond_to_respond(@unit, success_path: resources_units_url)
+    respond_to_destroy(@unit, success_path: resources_units_url)
   end
 
   # 単位をコピー
