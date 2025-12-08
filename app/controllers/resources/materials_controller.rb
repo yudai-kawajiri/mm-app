@@ -30,14 +30,7 @@ class Resources::MaterialsController < AuthenticatedController
   #
   # @return [void]
   def index
-    @material_categories = current_user.categories.for_materials
-    # デバッグログ
-    Rails.logger.info "===== MATERIAL CATEGORIES DEBUG ====="
-    Rails.logger.info "User ID: #{current_user.id}"
-    Rails.logger.info "Total categories: #{current_user.categories.count}"
-    Rails.logger.info "Material categories count: #{@material_categories.count}"
-    Rails.logger.info "Material categories: #{@material_categories.pluck(:id, :name, :category_type).inspect}"
-    Rails.logger.info "======================================"
+    @material_categories = Resources::Category.for_materials
     sorted_index(
       Resources::Material,
       default: "name",
