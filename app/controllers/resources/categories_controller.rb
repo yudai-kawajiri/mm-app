@@ -52,14 +52,16 @@ class Resources::CategoriesController < AuthenticatedController
   #
   # @return [void]
   def new
-    @category = current_user.categories.build
+    @category = Resources::Category.new
+    @category.user_id = current_user.id
   end
 
   # カテゴリーを作成
   #
   # @return [void]
   def create
-    @category = current_user.categories.build(category_params)
+    @category = Resources::Category.new(category_params)
+    @category.user_id = current_user.id
     respond_to_save(@category)
   end
 
@@ -100,7 +102,6 @@ class Resources::CategoriesController < AuthenticatedController
     redirect_to resources_categories_path, alert: t("flash_messages.copy.failure",
                                                     resource: @category.class.model_name.human)
   end
-
 
   private
 

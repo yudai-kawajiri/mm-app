@@ -29,33 +29,35 @@ class Resources::PlansController < AuthenticatedController
   #
   # @return [void]
   def index
+    @plan_categories = Resources::Category.for_plans.ordered
     sorted_index(
       Resources::Plan,
       default: "name",
       scope: :all,
       includes: [ :category ]
     )
-    @plan_categories = current_user.categories.for_plans.ordered
   end
 
   # 新規計画作成フォーム
   #
   # @return [void]
   def new
-    @plan = current_user.plans.build
-    @plan_categories = current_user.categories.for_plans.ordered
-    @product_categories = current_user.categories.for_products.ordered
+    @plan = Resources::Plan.new
+    @plan.user_id = current_user.id
+    @plan_categories = Resources::Category.for_plans.ordered
+    @product_categories = Resources::Category.for_products.ordered
   end
 
   # 計画を作成
   #
   # @return [void]
   def create
-    @plan = current_user.plans.build(plan_params)
+    @plan = Resources::Plan.new(plan_params)
+    @plan.user_id = current_user.id
 
     # エラー時のrender用に変数を事前設定
-    @plan_categories = current_user.categories.for_plans.ordered
-    @product_categories = current_user.categories.for_products.ordered
+    @plan_categories = Resources::Category.for_plans.ordered
+    @product_categories = Resources::Category.for_products.ordered
 
     respond_to_save(@plan)
   end
@@ -65,15 +67,15 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def show
     @plan_products = @plan.plan_products.includes(:product)
-    @product_categories = current_user.categories.for_products.ordered
+    @product_categories = Resources::Category.for_products.ordered
   end
 
   # 計画編集フォーム
   #
   # @return [void]
   def edit
-    @plan_categories = current_user.categories.for_plans.ordered
-    @product_categories = current_user.categories.for_products.ordered
+    @plan_categories = Resources::Category.for_plans.ordered
+    @product_categories = Resources::Category.for_products.ordered
   end
 
   # 計画を更新
@@ -83,8 +85,8 @@ class Resources::PlansController < AuthenticatedController
     @plan.assign_attributes(plan_params)
 
     # エラー時のrender用に変数を事前設定
-    @plan_categories = current_user.categories.for_plans.ordered
-    @product_categories = current_user.categories.for_products.ordered
+    @plan_categories = Resources::Category.for_plans.ordered
+    @product_categories = Resources::Category.for_products.ordered
 
     respond_to_save(@plan)
   end
@@ -200,7 +202,6 @@ class Resources::PlansController < AuthenticatedController
     # 印刷レイアウトを使用
     render layout: "print"
   end
-
 
   private
 
