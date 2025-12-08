@@ -26,7 +26,6 @@ class CalendarDataBuilderService
   #
   # サービスの初期化
   #
-  # @param user [User] 現在のユーザー
   # @param year [Integer] 対象年（例: 2024）
   # @param month [Integer] 対象月（1-12）
   #
@@ -34,8 +33,7 @@ class CalendarDataBuilderService
   #   service = CalendarDataBuilderService.new(current_user, 2024, 11)
   #   data = service.build
   #
-  def initialize(user, year, month)
-    @user = user
+  def initialize(year, month)
     @year = year.to_i
     @month = month.to_i
     @start_date = Date.new(@year, @month, 1)
@@ -89,7 +87,7 @@ class CalendarDataBuilderService
   #   - 今日・未来フラグを付与
   #
   def build_daily_array
-    daily_data_service = DailyDataService.new(@user, @year, @month)
+    daily_data_service = DailyDataService.new(@year, @month)
     daily_data_list = daily_data_service.call
     plan_schedules_hash = fetch_plan_schedules_hash
 

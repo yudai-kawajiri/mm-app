@@ -21,11 +21,9 @@ class DailyDataService
 
   attr_reader :user, :year, :month
 
-  # @param user [User] 対象ユーザー
   # @param year [Integer, String] 対象年
   # @param month [Integer, String] 対象月
-  def initialize(user, year, month)
-    @user = user
+  def initialize(year, month)
     @year = year.to_i
     @month = month.to_i
     @budget = find_budget
@@ -62,7 +60,6 @@ class DailyDataService
   def find_budget
     budget_month = Date.new(@year, @month, 1)
     Management::MonthlyBudget.find_by(
-      user: @user,
       budget_month: budget_month
     )
   end
@@ -82,10 +79,10 @@ class DailyDataService
                             .to_a
 
     # 計画スケジュールを事前ロード
-    @plan_schedules = @user.plan_schedules
-                           .where(scheduled_date: start_date..end_date)
-                           .includes(:plan)
-                           .to_a
+    @plan_schedules = Planning::PlanSchedule
+                            .where(scheduled_date: start_date..end_date)
+                            .includes(:plan)
+                            .to_a
   end
 
   # 日別データを計算
