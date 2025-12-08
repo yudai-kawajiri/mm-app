@@ -6,7 +6,7 @@
 #
 # 機能:
 # - 製造計画作成時の商品選択で使用する価格・カテゴリ―情報取得
-# - ユーザーが所有する商品のみアクセス可能
+# - 全ユーザーの商品にアクセス可能
 #
 # エンドポイント:
 # - GET /api/v1/products/:id/fetch_plan_details
@@ -22,7 +22,7 @@ class Api::V1::ProductsController < AuthenticatedController
   #   - price: 商品価格（円）
   #   - category_id: カテゴリ―ID
   #
-  # @raise [ActiveRecord::RecordNotFound] 商品が見つからない、または権限がない
+  # @raise [ActiveRecord::RecordNotFound] 商品が見つからない
   # @raise [StandardError] 予期しないエラー
   #
   # @example レスポンス例
@@ -34,8 +34,8 @@ class Api::V1::ProductsController < AuthenticatedController
     Rails.logger.info "=== fetch_plan_details API called ==="
     Rails.logger.info "Resources::Product ID: #{params[:id]}"
 
-    # Resources::Product を検索（権限チェック含む）
-    product = current_user.products.find(params[:id])
+    # Resources::Product を検索（全ユーザー共有）
+    product = Resources::Product.find(params[:id])
     Rails.logger.info "SUCCESS: Resources::Product found: #{product.name}"
 
     # JSON レスポンス
@@ -44,7 +44,7 @@ class Api::V1::ProductsController < AuthenticatedController
       category_id: product.category_id
     }
   rescue ActiveRecord::RecordNotFound => e
-    # 商品が見つからない、または権限がない
+    # 商品が見つからない
     Rails.logger.error "ERROR: Resources::Product not found: #{params[:id]}"
     render json: { error: I18n.t("api.errors.product_not_found") }, status: :not_found
   rescue StandardError => e

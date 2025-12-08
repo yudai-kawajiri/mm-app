@@ -69,9 +69,9 @@ class NumericalForecastService
     target_discount_rate = budget.target_discount_rate || 0
 
     # 月全体のスケジュールを取得
-    all_schedules = user.plan_schedules
-                        .includes(:plan)
-                        .where(scheduled_date: start_date..end_date)
+    all_schedules = Planning::PlanSchedule
+                  .includes(:plan)
+                  .where(scheduled_date: start_date..end_date)
 
     # 実績が入力されているものの合計
     actual_confirmed = all_schedules
@@ -100,9 +100,9 @@ class NumericalForecastService
     forecast_achievement_rate = target.positive? ? ((forecast.to_f / target) * PERCENTAGE_MULTIPLIER).round(RATE_PRECISION) : 0.0
 
     # 昨日までの日別予算の合計
-    past_target = user.daily_targets
-                      .where(target_date: start_date..past_end)
-                      .sum(:target_amount) || 0
+    past_target = Management::DailyTarget
+                .where(target_date: start_date..past_end)
+                .sum(:target_amount) || 0
 
     # 昨日までの日別予算達成率
     daily_achievement_rate = past_target.positive? ? ((actual_confirmed.to_f / past_target) * PERCENTAGE_MULTIPLIER).round(RATE_PRECISION) : 0.0
@@ -171,7 +171,7 @@ class NumericalForecastService
   # @return [MonthlyBudget, nil] 月次予算レコード
   def find_monthly_budget
     budget_month = Date.new(@year, @month, 1)
-    user.monthly_budgets.find_by(budget_month: budget_month)
+    Management::MonthlyBudget.find_by(budget_month: budget_month)
   end
 
   ##

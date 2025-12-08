@@ -19,7 +19,6 @@ class DashboardsController < AuthenticatedController
 
     # 選択された月のデータを取得
     @forecast_service = NumericalForecastService.new(
-      user: current_user,
       year: @year,
       month: @month
     )

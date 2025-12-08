@@ -6,7 +6,7 @@
 #
 # 機能:
 # - 商品作成時の原材料選択で使用する単位情報取得
-# - ユーザーが所有する原材料のみアクセス可能
+# - 全ユーザーの原材料にアクセス可能
 #
 # エンドポイント:
 # - GET /api/v1/materials/:id/fetch_product_unit_data
@@ -23,7 +23,7 @@ class Api::V1::MaterialsController < AuthenticatedController
   #   - unit_name: 単位名（例: "kg", "個"）
   #   - default_unit_weight: デフォルト単位重量
   #
-  # @raise [ActiveRecord::RecordNotFound] 原材料が見つからない、または権限がない
+  # @raise [ActiveRecord::RecordNotFound] 原材料が見つからない
   # @raise [StandardError] 予期しないエラー
   #
   # @example レスポンス例
@@ -45,7 +45,7 @@ class Api::V1::MaterialsController < AuthenticatedController
     end
 
     # Material を検索（権限チェック含む）
-    @material = current_user.materials.find(params[:id])
+    @material = Resources::Material.find(params[:id])
     Rails.logger.info "SUCCESS: Material found: #{@material.name}"
 
     # 単位情報を取得
@@ -70,7 +70,7 @@ class Api::V1::MaterialsController < AuthenticatedController
     # 原材料が見つからない、または権限がない
     Rails.logger.error "ERROR: Material not found: #{params[:id]}"
     Rails.logger.error e.message
-    render json: { error: "Material not found or access denied" }, status: :not_found
+    render json: { error: "Material not found" }, status: :not_found
   rescue StandardError => e
     # 予期しないエラー
     Rails.logger.error "ERROR: Unexpected error in fetch_product_unit_data:"
