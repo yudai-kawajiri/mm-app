@@ -23,9 +23,10 @@ class Management::MonthlyBudgetsController < ApplicationController
   def create
     budget_month = Date.new(params[:year].to_i, params[:month].to_i, 1)
 
-    @monthly_budget = current_user.monthly_budgets.find_or_initialize_by(
+    @monthly_budget = Management::MonthlyBudget.find_or_initialize_by(
       budget_month: budget_month
     )
+    @monthly_budget.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
 
     @monthly_budget.assign_attributes(sanitized_monthly_budget_params)
 
@@ -65,10 +66,10 @@ class Management::MonthlyBudgetsController < ApplicationController
       end_date = budget_month.end_of_month
 
       # 実績未入力の計画スケジュールのみ削除
-      current_user.plan_schedules
-                  .where(scheduled_date: start_date..end_date)
-                  .where("actual_revenue IS NULL OR actual_revenue = 0")
-                  .destroy_all
+      Planning::PlanSchedule
+        .where(scheduled_date: start_date..end_date)
+        .where("actual_revenue IS NULL OR actual_revenue = 0")
+        .destroy_all
 
       # 月次予算を削除
       @monthly_budget.destroy!
@@ -114,7 +115,7 @@ class Management::MonthlyBudgetsController < ApplicationController
   #
   # @return [void]
   def set_monthly_budget
-    @monthly_budget = current_user.monthly_budgets.find(params[:id])
+    @monthly_budget = Management::MonthlyBudget.find(params[:id])
   end
 
   # Strong Parameters

@@ -39,14 +39,16 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   #
   # @return [void]
   def new
-    @material_order_group = current_user.material_order_groups.build
+    @material_order_group = Resources::MaterialOrderGroup.new
+    @material_order_group.user_id = current_user.id
   end
 
   # 発注グループを作成
   #
   # @return [void]
   def create
-    @material_order_group = current_user.material_order_groups.build(material_order_group_params)
+    @material_order_group = Resources::MaterialOrderGroup.new(material_order_group_params)
+    @material_order_group.user_id = current_user.id
     respond_to_save(@material_order_group)
   end
 

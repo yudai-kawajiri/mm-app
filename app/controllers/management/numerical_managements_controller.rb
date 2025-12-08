@@ -13,9 +13,10 @@ class Management::NumericalManagementsController < ApplicationController
     month = Date.current.month if month.zero? || month < 1 || month > 12
     @selected_date = Date.new(year, month, 1)
 
-    @monthly_budget = current_user.monthly_budgets.find_or_initialize_by(
+    @monthly_budget = Management::MonthlyBudget.find_or_initialize_by(
       budget_month: @selected_date.beginning_of_month
     )
+    @monthly_budget.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
 
     calendar_data = CalendarDataBuilderService.new(current_user, year, month).build
     @daily_data = calendar_data[:daily_data]
@@ -28,9 +29,9 @@ class Management::NumericalManagementsController < ApplicationController
     ).calculate
 
     # 全ての計画を取得（カテゴリ―選択用、計画フィルタはJS側）
-    @plans_by_category = current_user.plans
-                                      .includes(:category, plan_products: :product)
-                                      .group_by { |plan| plan.category.name }
+    @plans_by_category = Resources::Plan
+                          .includes(:category, plan_products: :product)
+                          .group_by { |plan| plan.category.name }
   end
 
   def calendar
@@ -66,17 +67,18 @@ class Management::NumericalManagementsController < ApplicationController
 
     date = Date.parse(date_param)
 
-    monthly_budget = current_user.monthly_budgets.find_or_create_by!(
+    monthly_budget = Management::MonthlyBudget.find_or_initialize_by(
       budget_month: date.beginning_of_month
-    ) do |budget|
-      budget.target_amount = 0
-    end
+    )
+    monthly_budget.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
+    monthly_budget.target_amount ||= 0
+    monthly_budget.save! if monthly_budget.new_record?
 
     daily_target = Management::DailyTarget.find_or_initialize_by(
-      user: current_user,
       monthly_budget: monthly_budget,
       target_date: date
     )
+    daily_target.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
 
     sanitized_value = sanitize_numeric_params(
       { target_amount: target_param },
@@ -238,7 +240,7 @@ class Management::NumericalManagementsController < ApplicationController
   # 一括更新前の予算超過チェック
   def check_budget_before_bulk_update(year, month, params_hash)
     selected_date = Date.new(year, month, 1)
-    monthly_budget = current_user.monthly_budgets.find_by(
+    monthly_budget = Management::MonthlyBudget.find_by(
       budget_month: selected_date.beginning_of_month
     )
 

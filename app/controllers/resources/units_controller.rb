@@ -52,14 +52,16 @@ class Resources::UnitsController < AuthenticatedController
   #
   # @return [void]
   def new
-    @unit = current_user.units.build
+    @unit = Resources::Unit.new
+    @unit.user_id = current_user.id
   end
 
   # 単位を作成
   #
   # @return [void]
   def create
-    @unit = current_user.units.build(unit_params)
+    @unit = Resources::Unit.new(unit_params)
+    @unit.user_id = current_user.id
     respond_to_save(@unit)
   end
 
@@ -85,7 +87,7 @@ class Resources::UnitsController < AuthenticatedController
   #
   # @return [void]
   def destroy
-    respond_to_destroy(@unit, success_path: resources_units_url)
+    respond_to_respond(@unit, success_path: resources_units_url)
   end
 
   # 単位をコピー

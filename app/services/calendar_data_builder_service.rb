@@ -123,7 +123,6 @@ class CalendarDataBuilderService
   #
   def fetch_monthly_budget
     Management::MonthlyBudget.find_by(
-      user: @user,
       budget_month: Date.new(@year, @month, 1)
     )
   end
@@ -142,7 +141,7 @@ class CalendarDataBuilderService
   #
   def fetch_daily_targets_hash
     Management::DailyTarget
-      .where(user: @user, target_date: @start_date..@end_date)
+      .where(target_date: @start_date..@end_date)
       .index_by { |dt| dt.target_date.day }
   end
 
@@ -164,7 +163,7 @@ class CalendarDataBuilderService
   #
   def fetch_plan_schedules_hash
     Planning::PlanSchedule
-      .where(user: @user, scheduled_date: @start_date..@end_date)
+      .where(scheduled_date: @start_date..@end_date)
       .includes(plan: :category)
       .group_by(&:scheduled_date)
   end

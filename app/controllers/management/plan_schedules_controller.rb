@@ -37,12 +37,12 @@ class Management::PlanSchedulesController < AuthenticatedController
       return
     end
 
-    plan = current_user.plans.find(permitted[:plan_id])
+    plan = Resources::Plan.find(permitted[:plan_id])
 
     @plan_schedule = Planning::PlanSchedule.find_or_initialize_by(
-      user: current_user,
       scheduled_date: scheduled_date
     )
+    @plan_schedule.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
 
     @plan_schedule.assign_attributes(
       plan: plan,
@@ -85,8 +85,8 @@ class Management::PlanSchedulesController < AuthenticatedController
     scheduled_date = parse_scheduled_date(permitted[:scheduled_date])
     return unless scheduled_date
 
-    @plan_schedule = current_user.plan_schedules.find(params[:id])
-    plan = current_user.plans.find(permitted[:plan_id])
+    @plan_schedule = Planning::PlanSchedule.find(params[:id])
+    plan = Resources::Plan.find(permitted[:plan_id])
 
     @plan_schedule.assign_attributes(
       plan: plan
@@ -123,7 +123,7 @@ class Management::PlanSchedulesController < AuthenticatedController
   # @return [void]
   #
   def actual_revenue
-    @plan_schedule = current_user.plan_schedules.find(params[:id])
+    @plan_schedule = Planning::PlanSchedule.find(params[:id])
     permitted = sanitized_plan_schedule_params
 
     if @plan_schedule.update(permitted.slice(:actual_revenue))

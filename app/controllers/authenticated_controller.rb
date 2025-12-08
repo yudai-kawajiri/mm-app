@@ -65,13 +65,8 @@ class AuthenticatedController < ApplicationController
   # @example
   #   load_categories_for(:product, scope: :all)
   #   # => 全ユーザーのカテゴリーを取得
-  def load_categories_for(category_type, as: nil, scope: :current_user)
-    categories = if scope == :current_user
-                    current_user.categories.where(category_type: category_type)
-    else
-                    Resources::Category.where(category_type: category_type)
-    end
-    categories = categories.order(:name)
+  def load_categories_for(category_type, as: nil, scope: :all)
+    categories = Resources::Category.where(category_type: category_type).order(:name)
 
     # インスタンス変数名を決定
     prefix = as || category_type

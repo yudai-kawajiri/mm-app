@@ -29,33 +29,35 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [void]
   def index
+    @product_categories = Resources::Category.for_products.ordered
     sorted_index(
       Resources::Product,
       default: "name",
       scope: :all,
       includes: [ :category, :product_materials ]
     )
-    @product_categories = current_user.categories.for_products.ordered
   end
 
   # 新規商品作成フォーム
   #
   # @return [void]
   def new
-    @product = current_user.products.build
-    @product_categories = current_user.categories.for_products.ordered
-    @material_categories = current_user.categories.for_materials
+    @product = Resources::Product.new
+    @product.user_id = current_user.id
+    @product_categories = Resources::Category.for_products.ordered
+    @material_categories = Resources::Category.for_materials
   end
 
   # 商品を作成
   #
   # @return [void]
   def create
-    @product = current_user.products.build(product_params)
+    @product = Resources::Product.new(product_params)
+    @product.user_id = current_user.id
 
     # エラー時のrender用に変数を事前設定
-    @product_categories = current_user.categories.for_products.ordered
-    @material_categories = current_user.categories.for_materials
+    @product_categories = Resources::Category.for_products.ordered
+    @material_categories = Resources::Category.for_materials
 
     respond_to_save(@product)
   end
@@ -69,8 +71,8 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [void]
   def edit
-    @product_categories = current_user.categories.for_products.ordered
-    @material_categories = current_user.categories.for_materials
+    @product_categories = Resources::Category.for_products.ordered
+    @material_categories = Resources::Category.for_materials
   end
 
   # 商品を更新
@@ -80,8 +82,8 @@ class Resources::ProductsController < AuthenticatedController
     @product.assign_attributes(product_params)
 
     # エラー時のrender用に変数を事前設定
-    @product_categories = current_user.categories.for_products.ordered
-    @material_categories = current_user.categories.for_materials
+    @product_categories = Resources::Category.for_products.ordered
+    @material_categories = Resources::Category.for_materials
 
     respond_to_save(@product)
   end
@@ -98,8 +100,8 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def copy
     @product.create_copy(user: current_user)
-      redirect_to resources_products_path, notice: t("flash_messages.copy.success",
-                                                                resource: @product.class.model_name.human)
+    redirect_to resources_products_path, notice: t("flash_messages.copy.success",
+                                                   resource: @product.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Product copy failed: #{e.record.errors.full_messages.join(', ')}"
     redirect_to resources_products_path, alert: t("flash_messages.copy.failure",
@@ -127,7 +129,7 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def reorder
     params[:product_ids].each_with_index do |id, index|
-      current_user.products.find(id).update(display_order: index + 1)
+      Resources::Product.find(id).update(display_order: index + 1)
     end
 
     flash[:notice] = t("sortable_table.saved")
@@ -162,7 +164,6 @@ class Resources::ProductsController < AuthenticatedController
       :price,
       :status,
       :image,
-      :description,
       :description
     ).tap do |whitelisted|
       # ネストされた属性（ハッシュ形式）を手動で処理

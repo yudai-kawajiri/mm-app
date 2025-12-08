@@ -43,14 +43,16 @@ class Resources::MaterialsController < AuthenticatedController
   #
   # @return [void]
   def new
-    @material = current_user.materials.build
+    @material = Resources::Material.new
+    @material.user_id = current_user.id
   end
 
   # 原材料を作成
   #
   # @return [void]
   def create
-    @material = current_user.materials.build(material_params)
+    @material = Resources::Material.new(material_params)
+    @material.user_id = current_user.id
     respond_to_save(@material)
   end
 
@@ -97,7 +99,7 @@ class Resources::MaterialsController < AuthenticatedController
   # @return [void]
   def reorder
     params[:material].each_with_index do |id, index|
-      current_user.materials.find(id).update(display_order: index + 1)
+      Resources::Material.find(id).update(display_order: index + 1)
     end
 
     flash[:notice] = t("sortable_table.saved")
