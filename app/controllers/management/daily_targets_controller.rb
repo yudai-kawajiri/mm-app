@@ -25,10 +25,10 @@ class Management::DailyTargetsController < AuthenticatedController
     return unless monthly_budget
 
     @daily_target = Management::DailyTarget.find_or_initialize_by(
-      user: current_user,
       monthly_budget: monthly_budget,
       target_date: target_date
     )
+    @daily_target.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
 
     @daily_target.assign_attributes(permitted.except(:target_date))
 
@@ -55,13 +55,6 @@ class Management::DailyTargetsController < AuthenticatedController
     return unless target_date
 
     @daily_target = Management::DailyTarget.find(params[:id])
-
-    # 権限チェック
-    unless @daily_target.user_id == current_user.id
-      redirect_to management_numerical_managements_path,
-                  alert: I18n.t("api.errors.unauthorized")
-      return
-    end
 
     @daily_target.assign_attributes(permitted.except(:target_date))
 
@@ -118,7 +111,6 @@ class Management::DailyTargetsController < AuthenticatedController
   # @return [MonthlyBudget, nil] 月次予算
   def find_monthly_budget_for_date(date)
     monthly_budget = Management::MonthlyBudget.find_by(
-      user: current_user,
       budget_month: date.beginning_of_month
     )
 
