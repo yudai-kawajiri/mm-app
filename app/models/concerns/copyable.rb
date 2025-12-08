@@ -5,98 +5,75 @@
 # リソースのコピー機能を提供するConcern
 #
 # 使用例:
-#   class Resources::Product < ApplicationRecord
+#   class Product < ApplicationRecord
 #     include Copyable
 #
 #     copyable_config(
+#       name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
+#       uniqueness_scope: :name,
 #       associations_to_copy: [:product_materials],
-#       status_on_copy: :draft,
-#       additional_attributes: {
-#         item_number: :generate_next_item_number
-#       }
+#       additional_attributes: { item_number: :generate_unique_item_number, status: 'active' }
 #     )
 #   end
 #
-#   # コピー実行
-#   product = Resources::Product.find(1)
-#   copied_product = product.create_copy(user: current_user)
-#   # => 名前が "商品名 (コピー1)" となり、product_materialsもコピーされる
-#
-# 使用モデル: Product, Plan, Material, Category, Unit, MaterialOrderGroup
+#   product.create_copy(user: current_user)
 module Copyable
   extend ActiveSupport::Concern
 
   included do
-    # コピー機能のデフォルト設定
-    # 各モデルで copyable_config を使ってカスタマイズ可能
+    # コピー設定のデフォルト値
     class_attribute :copy_config, default: {
-      name_format: lambda { |original_name, copy_count|
-        I18n.t("activerecord.concerns.copyable.copy_name_format",
-                name: original_name,
-                count: copy_count)
-      },
+      name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
       uniqueness_scope: :name,
-      uniqueness_check_attributes: [ :name ],
+      uniqueness_check_attributes: [:name],
       associations_to_copy: [],
       association_copy_attributes: {},
+      status_on_copy: nil,
       additional_attributes: {},
-      skip_attributes: [ :created_at, :updated_at, :id ]
+      skip_attributes: [:created_at, :updated_at, :id]
     }
   end
 
   class_methods do
-    # コピー機能の設定
+    # コピー設定を定義
     #
-    # @param options [Hash] 設定オプション
-    # @option options [Proc] :name_format コピー名のフォーマット（デフォルト: "名前 (コピー1)"）
-    # @option options [Symbol, Array<Symbol>] :uniqueness_scope 一意性チェックのスコープ
-    # @option options [Array<Symbol>] :uniqueness_check_attributes 一意性チェック対象の属性
-    # @option options [Array<Symbol>] :associations_to_copy コピーする関連モデル
-    # @option options [Hash] :association_copy_attributes 関連モデルのコピー対象属性
-    # @option options [Hash] :additional_attributes 追加で設定する属性
-    # @option options [Symbol] :status_on_copy コピー時のステータス
-    #
-    # @example 基本的な設定
-    #   copyable_config(
-    #     associations_to_copy: [:product_materials],
-    #     status_on_copy: :draft
-    #   )
+    # @param config [Hash] 設定オプション
+    # @option config [Proc] :name_format 名前のフォーマット（original_name, copy_countを受け取る）
+    # @option config [Symbol, Array<Symbol>] :uniqueness_scope 一意性チェックのスコープ
+    # @option config [Array<Symbol>] :uniqueness_check_attributes 一意性チェックする属性
+    # @option config [Array<Symbol>] :associations_to_copy コピーする関連
+    # @option config [Hash] :association_copy_attributes 関連ごとのコピー属性
+    # @option config [Symbol, String, nil] :status_on_copy コピー時のステータス
+    # @option config [Hash] :additional_attributes 追加で設定する属性
+    # @option config [Array<Symbol>] :skip_attributes スキップする属性
+    # @return [void]
     def copyable_config(**options)
-      options[:association_copy_attributes] ||= {}
       self.copy_config = copy_config.merge(options)
     end
   end
 
-  # レコードのコピーを作成する
+  # このレコードのコピーを作成
   #
-  # @param user [User] コピーを作成するユーザー（必須）
-  # @return [ActiveRecord::Base] コピーされた新しいレコード
-  # @raise [ArgumentError] userがnilの場合
+  # @param user [User] コピーを作成するユーザー
+  # @return [ActiveRecord::Base] 新しいレコード
   # @raise [ActiveRecord::RecordInvalid] 保存に失敗した場合
-  #
-  # @example
-  #   product = Resources::Product.find(1)
-  #   copied = product.create_copy(user: current_user)
   def create_copy(user:)
-    raise ArgumentError, "user cannot be nil" if user.nil?
-
     ActiveRecord::Base.transaction do
+      # 新しい名前と読み仮名を生成
       unique_attrs = generate_unique_attributes
+
+      # レコードを複製
       new_record = dup
+      new_record.name = unique_attrs[:name]
+      new_record.reading = unique_attrs[:reading] if unique_attrs[:reading] && new_record.respond_to?(:reading=)
+      new_record.user_id = user.id if new_record.respond_to?(:user_id=)
 
-      # 一意性チェック対象の属性を設定
-      unique_attrs.each do |attr, value|
-        new_record.send("#{attr}=", value)
-      end
-
-      if new_record.respond_to?(:user_id=)
-        new_record.user_id = user.id
-      end
-
+      # ステータスを設定
       if copy_config[:status_on_copy].present? && new_record.respond_to?(:status=)
         new_record.status = copy_config[:status_on_copy]
       end
 
+      # 追加属性を設定
       copy_config[:additional_attributes].each do |attr, value|
         if value.is_a?(Symbol) && respond_to?(value, true)
           new_record.send("#{attr}=", send(value))
@@ -107,121 +84,144 @@ module Copyable
         end
       end
 
+      # 保存
       new_record.save!
+
+      # 関連レコードをコピー
       copy_associations(new_record)
+
       new_record
     end
   end
 
   private
 
-  # 一意な属性値を生成する
+  # 一意な属性を生成（名前と読み仮名）
   #
-  # uniqueness_check_attributes で指定された属性すべてに対して
-  # ユニークな値を生成する
-  #
-  # @return [Hash] 属性名と値のハッシュ
+  # @return [Hash] 一意な属性のハッシュ
   def generate_unique_attributes
+    base_name = name
+    base_reading = reading if respond_to?(:reading)
+
+    # 元の名前から「(コピー〇)」部分を削除して、真のベース名を取得
+    original_name = base_name.sub(/\s*\(コピー\d+\).*\z/, '')
+
+    # 元の読み仮名から「こぴー」部分を削除して、真のベース読み仮名を取得
+    original_reading = base_reading ? base_reading.sub(/こぴー.*\z/, '') : nil
+
     copy_count = 1
-    unique_attrs = {}
 
     loop do
-      unique_attrs = {}
+      # 元の名前（コピー部分を除去したもの）をベースに生成
+      new_name = copy_config[:name_format].call(original_name, copy_count)
+      # 元の読み仮名（こぴー部分を除去したもの）をベースに生成
+      new_reading = original_reading ? generate_reading_for_copy(original_reading, copy_count) : nil
 
-      copy_config[:uniqueness_check_attributes].each do |attr|
-        unique_attrs[attr] = generate_copy_value(attr, send(attr), copy_count)
-      end
-
-      break unless attributes_exist?(unique_attrs)
+      # 一意性チェック
+      break { name: new_name, reading: new_reading } unless attributes_exist?(new_name, new_reading)
       copy_count += 1
     end
-
-    unique_attrs
   end
 
-  # コピー用の値を生成
+  # コピー用の読み仮名を生成
   #
-  # @param attr [Symbol] 属性名
-  # @param original_value [String] 元の値
+  # @param original_reading [String] 元の読み仮名（「こぴー」が含まれていない純粋なもの）
   # @param copy_count [Integer] コピー番号
-  # @return [String] コピー用の値
-  def generate_copy_value(attr, original_value, copy_count)
-    case attr
-    when :name
-      copy_config[:name_format].call(original_value, copy_count)
-    when :reading
-      # 読み仮名には「こぴー」を繰り返し追加（数字は使えない）
-      "#{original_value}#{'こぴー' * copy_count}"
+  # @return [String] 新しい読み仮名
+  def generate_reading_for_copy(original_reading, copy_count)
+    # 元の読み仮名に「こぴー」を1回だけ追加して、その後に番号を示す「いち」「に」などを追加
+    # 11回以上は「こぴー」を繰り返す（ひらがなのみのバリデーション対応）
+    reading_numbers = ['', 'いち', 'に', 'さん', 'よん', 'ご', 'ろく', 'なな', 'はち', 'きゅう', 'じゅう']
+    if copy_count <= 10
+      "#{original_reading}こぴー#{reading_numbers[copy_count]}"
     else
-      # その他の属性は元の値をそのまま使用
-      original_value
+      # 11回目以降は「こぴー」を繰り返す（例: こぴーこぴー、こぴーこぴーこぴー）
+      repeat_count = (copy_count - 10)
+      "#{original_reading}こぴー#{'こぴー' * repeat_count}"
     end
   end
 
-  # 指定された属性の組み合わせが既に存在するかチェック
+  # 属性の組み合わせが既に存在するかチェック
   #
-  # @param attributes [Hash] チェックする属性のハッシュ
+  # @param name [String] チェックする名前
+  # @param reading [String, nil] チェックする読み仮名
   # @return [Boolean] 存在する場合true
-  def attributes_exist?(attributes)
-    conditions = attributes.dup
+  def attributes_exist?(name, reading = nil)
+    conditions = {}
 
+    # uniqueness_check_attributesの条件を追加
+    copy_config[:uniqueness_check_attributes].each do |attr|
+      case attr
+      when :name
+        conditions[:name] = name
+      when :reading
+        conditions[:reading] = reading if reading
+      else
+        conditions[attr] = send(attr) if respond_to?(attr)
+      end
+    end
+
+    # uniqueness_scopeの条件を追加
     scope = copy_config[:uniqueness_scope]
     if scope.is_a?(Array)
       scope.each do |scope_attr|
         conditions[scope_attr] = send(scope_attr) if respond_to?(scope_attr)
       end
-    elsif scope.is_a?(Symbol) && !attributes.key?(scope)
+    elsif scope.is_a?(Symbol) && scope != :name && scope != :reading
       conditions[scope] = send(scope) if respond_to?(scope)
     end
 
     self.class.exists?(conditions)
   end
 
-  # 関連レコードをコピーする
+  # 関連レコードをコピー
   #
-  # associations_to_copy で指定された関連モデルを
-  # 新しいレコードにコピーする
-  #
-  # @param new_record [ActiveRecord::Base] コピー先のレコード
+  # @param new_record [ActiveRecord::Base] 新しいレコード
+  # @return [void]
   def copy_associations(new_record)
     copy_config[:associations_to_copy].each do |association_name|
       association = self.class.reflect_on_association(association_name)
       next unless association
 
+      # 関連レコードを取得
       original_records = send(association_name)
       next if original_records.blank?
 
+      # 各レコードをコピー
       original_records.each do |original_record|
         copy_association_record(new_record, association_name, original_record)
       end
     end
   end
 
-  # 関連レコードの1件をコピーする
+  # 単一の関連レコードをコピー
   #
-  # @param new_record [ActiveRecord::Base] コピー先のレコード
+  # @param new_record [ActiveRecord::Base] 新しい親レコード
   # @param association_name [Symbol] 関連名
-  # @param original_record [ActiveRecord::Base] コピー元の関連レコード
+  # @param original_record [ActiveRecord::Base] 元のレコード
+  # @return [void]
   def copy_association_record(new_record, association_name, original_record)
-    association_copy_attrs = copy_config[:association_copy_attributes]
-
-    copy_attributes = if association_copy_attrs[association_name].present?
-                        association_copy_attrs[association_name]
-    else
+    # コピーする属性を取得
+    copy_attributes = if copy_config[:association_copy_attributes][association_name].present?
+                        copy_config[:association_copy_attributes][association_name]
+                      else
                         # デフォルト: すべての属性（id, timestamps, 外部キーを除く）
                         original_record.attributes.keys.map(&:to_sym) -
-                          [ :id, :created_at, :updated_at ] -
-                          [ association_foreign_key(association_name) ]
-    end
+                          [:id, :created_at, :updated_at] -
+                          [association_foreign_key(association_name)]
+                      end
 
+    # 属性をコピー
     attributes = copy_attributes.index_with { |attr| original_record.send(attr) }
+
+    # 新しいレコードを作成
     new_record.send(association_name).create!(attributes)
   end
 
   # 関連の外部キーを取得
   #
   # @param association_name [Symbol] 関連名
-  # @return [Symbol, nil] 外部キー名
+  # @return [Symbol] 外部キー名
   def association_foreign_key(association_name)
     association = self.class.reflect_on_association(association_name)
     association&.foreign_key&.to_sym
