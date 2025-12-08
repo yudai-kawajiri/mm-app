@@ -30,8 +30,8 @@ class Resources::Material < ApplicationRecord
   belongs_to :order_group, class_name: "Resources::MaterialOrderGroup", optional: true
 
   # 多対多の関連
-  has_many :product_materials, class_name: "Planning::ProductMaterial", dependent: :destroy
-  has_many :products, through: :product_materials, class_name: "Resources::Product", dependent: :restrict_with_error
+  has_many :product_materials, class_name: "Planning::ProductMaterial", dependent: :restrict_with_error
+  has_many :products, through: :product_materials, class_name: "Resources::Product"
 
   # バリデーション
   validates :name, presence: true, uniqueness: { scope: :category_id }

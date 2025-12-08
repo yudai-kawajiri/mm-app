@@ -203,6 +203,7 @@ ja:
       invalid: "が正しくありません"
       not_found: "が見つかりません"
       restrict_dependent_destroy:
+        has_one: "%{record}で使用しているため、この%{model}を削除できません"
         has_many: "%{record}で使用しているため、この%{model}を削除できません"
 
   api:
