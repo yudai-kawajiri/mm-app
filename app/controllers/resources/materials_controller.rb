@@ -30,13 +30,13 @@ class Resources::MaterialsController < AuthenticatedController
   #
   # @return [void]
   def index
+    @material_categories = current_user.categories.for_materials
     sorted_index(
       Resources::Material,
       default: "name",
       scope: :all,
       includes: [ :category, :unit_for_product, :unit_for_order, :production_unit, :order_group ]
     )
-    @material_categories = current_user.categories.for_materials
   end
 
   # 新規原材料作成フォーム
