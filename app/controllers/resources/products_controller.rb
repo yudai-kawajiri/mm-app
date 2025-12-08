@@ -112,15 +112,15 @@ class Resources::ProductsController < AuthenticatedController
   #
   # @return [void]
   def update_status
-    if @product.update(status: params[:status])
-      redirect_to resources_products_path,
-                  notice: t("products.messages.status_updated",
-                            name: @product.name,
-                            status: t("activerecord.enums.resources/product.status.#{@product.status}"))
-    else
-      redirect_to resources_products_path,
-                  alert: t("flash_messages.update.failure",
-                          resource: @product.class.model_name.human)
+  if @product.update(status: params[:status])
+    redirect_to resources_products_path,
+                notice: t("products.messages.status_updated",
+                          name: @product.name,
+                          status: t("activerecord.enums.resources/product.status.#{@product.status}"))
+  else
+    error_messages = @product.errors.full_messages.join("、")
+    redirect_to resources_products_path,
+                alert: error_messages
     end
   end
 
