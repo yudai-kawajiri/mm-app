@@ -7,7 +7,7 @@
 # アクションプランを提供します。
 #
 # @example 基本的な使用方法
-#   service = NumericalForecastService.new(user: current_user, year: 2024, month: 12)
+#   service = NumericalForecastService.new(year: 2024, month: 12)
 #   forecast_data = service.calculate
 #
 class NumericalForecastService
@@ -20,14 +20,12 @@ class NumericalForecastService
   # 金額の小数点以下精度（整数丸め）
   AMOUNT_PRECISION = 0
 
-  attr_reader :user, :year, :month
+  attr_reader :year, :month
 
   ##
-  # @param user [User] 対象ユーザー
   # @param year [Integer, String] 対象年
   # @param month [Integer, String] 対象月
-  def initialize(user:, year:, month:)
-    @user = user
+  def initialize(year:, month:)
     @year = year.to_i
     @month = month.to_i
   end
