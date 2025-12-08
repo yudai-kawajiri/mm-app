@@ -23,7 +23,6 @@ class Management::NumericalManagementsController < ApplicationController
     @daily_targets = calendar_data[:daily_targets]
 
     @forecast_data = NumericalForecastService.new(
-      user: current_user,
       year: year,
       month: month
     ).calculate
