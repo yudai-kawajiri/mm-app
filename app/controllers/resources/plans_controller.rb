@@ -121,9 +121,9 @@ class Resources::PlansController < AuthenticatedController
                             name: @plan.name,
                             status: t("activerecord.enums.resources/plan.status.#{@plan.status}"))
     else
+      error_messages = @plan.errors.full_messages.join("、")
       redirect_to resources_plans_path,
-                  alert: t("flash_messages.update.failure",
-                          resource: @plan.class.model_name.human)
+                alert: error_messages
     end
   end
 

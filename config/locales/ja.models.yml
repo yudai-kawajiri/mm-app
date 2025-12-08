@@ -31,6 +31,10 @@ ja:
           attributes:
             status:
               used_in_plans: "は計画で使用中のため変更できません"
+        "resources/plan":
+          attributes:
+            status:
+              used_in_plans: "は計画スケジュールで使用中のため変更できません"
         "planning/product_material":
           attributes:
             material_id:
