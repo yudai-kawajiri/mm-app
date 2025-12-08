@@ -27,7 +27,7 @@ class Management::NumericalManagementsController < ApplicationController
       month: month
     ).calculate
 
-    # 全ての計画を取得（カテゴリ―選択用、計画フィルタはJS側）
+    # 全ての計画を取得(カテゴリー選択用、計画フィルタはJS側)
     @plans_by_category = Resources::Plan
                           .includes(:category, plan_products: :product)
                           .group_by { |plan| plan.category.name }
@@ -129,8 +129,10 @@ class Management::NumericalManagementsController < ApplicationController
       params.merge!(converted_params)
     end
 
-    # 予算超過チェック（一括更新前）
-    budget_check_result = check_budget_before_bulk_update(year, month, sanitized_bulk_update_params)
+    sanitized_params = sanitized_bulk_update_params
+
+    # 予算超過チェック(一括更新前)
+    budget_check_result = check_budget_before_bulk_update(year, month, sanitized_params)
     if budget_check_result[:exceeded]
       redirect_to management_numerical_managements_path(year: year, month: month),
                   alert: budget_check_result[:message],
@@ -138,7 +140,8 @@ class Management::NumericalManagementsController < ApplicationController
       return
     end
 
-    service = NumericalDataBulkUpdateService.new(sanitized_bulk_update_params)
+    # ← current_userを渡す
+    service = NumericalDataBulkUpdateService.new(current_user, sanitized_params)
 
     if service.call
       redirect_to management_numerical_managements_path(year: year, month: month),
@@ -159,7 +162,7 @@ class Management::NumericalManagementsController < ApplicationController
     plan_schedule_actuals = {}
 
     daily_data.each do |index, day_attrs|
-      # 日別目標の処理（target_amountが0以外の場合のみ）
+      # 日別目標の処理(target_amountが0以外の場合のみ)
       target_amount = day_attrs[:target_amount].to_i
       if target_amount > 0
         if day_attrs[:target_id].present?

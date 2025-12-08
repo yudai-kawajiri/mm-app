@@ -9,16 +9,12 @@
 #     include UserAssociatable
 #   end
 #
-# 使用モデル: Plan, Product, Material, Daily, Unit, Category など
-# ユーザーに紐づくすべてのリソースで使用
+# 注意: システムは全認証ユーザーでデータを共有するため、user_idは必須ではありません
 module UserAssociatable
   extend ActiveSupport::Concern
 
   included do
-    # ユーザーへの必須関連付け
-    belongs_to :user, optional: false
-
-    # ユーザーIDの存在検証
-    validates :user_id, presence: true
+    # ユーザーへの関連付け（オプショナル）
+    belongs_to :user, optional: true
   end
 end

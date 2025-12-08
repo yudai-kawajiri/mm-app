@@ -23,11 +23,11 @@ class Management::MonthlyBudget < ApplicationRecord
   DESCRIPTION_ROWS = 3
 
   # バリデーション
-  validates :budget_month, presence: true, uniqueness: { scope: :user_id }
+  validates :budget_month, presence: true, uniqueness: true  # ← scope: :user_id を削除
   validates :target_amount, presence: true, numericality: { greater_than: 0 }
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
-  # 指定された年月の予算を取得（月初のデータのみを参照）
+  # 指定された年月の予算を取得(月初のデータのみを参照)
   #
   # @param year [Integer] 年
   # @param month [Integer] 月
@@ -47,7 +47,7 @@ class Management::MonthlyBudget < ApplicationRecord
     where(budget_month: start_date..end_date)
   }
 
-  # バリデーション前に budget_month を月の初日（1日）に正規化する
+  # バリデーション前に budget_month を月の初日(1日)に正規化する
   before_validation :normalize_budget_month
 
   # budget_month から年を取得
@@ -72,9 +72,9 @@ class Management::MonthlyBudget < ApplicationRecord
   def plan_schedules
     start_date = budget_month.beginning_of_month
     end_date = budget_month.end_of_month
-    PlanSchedule.joins(:plan)
-                .where(plans: { user_id: user.id })
-                .where(scheduled_date: start_date..end_date)
+    Planning::PlanSchedule.joins(:plan)
+                          .where(plans: { user_id: user_id })
+                          .where(scheduled_date: start_date..end_date)
   end
 
   # 月の合計予定売上を計算
@@ -91,14 +91,14 @@ class Management::MonthlyBudget < ApplicationRecord
     plan_schedules.where.not(actual_revenue: nil).sum(:actual_revenue)
   end
 
-  # 月の総見込み売上を計算（実績売上 + 残りの予定売上）
+  # 月の総見込み売上を計算(実績売上 + 残りの予定売上)
   #
   # @return [Integer] 総見込み売上
   def total_forecast_revenue
     total_actual_revenue + remaining_planned_revenue
   end
 
-  # 残りの予定売上を計算（今日以降の予定売上、または今日で実績が未入力の予定売上）
+  # 残りの予定売上を計算(今日以降の予定売上、または今日で実績が未入力の予定売上)
   #
   # @return [Integer] 残りの予定売上
   def remaining_planned_revenue
@@ -109,16 +109,16 @@ class Management::MonthlyBudget < ApplicationRecord
                     .sum(&:expected_revenue)
   end
 
-  # 達成率を計算（見込み売上 / 目標金額 * 100）
+  # 達成率を計算(見込み売上 / 目標金額 * 100)
   #
-  # @return [Float] 達成率（%）
+  # @return [Float] 達成率(%)
   def achievement_rate
     return 0 if target_amount.zero?
 
-    (total_forecast_revenue / target_amount * 100).round(1)
+    (total_forecast_revenue.to_f / target_amount * 100).round(1)
   end
 
-  # 予算差異を計算（見込み売上 - 目標金額）
+  # 予算差異を計算(見込み売上 - 目標金額)
   #
   # @return [Integer] 予算差異
   def budget_variance
@@ -127,7 +127,7 @@ class Management::MonthlyBudget < ApplicationRecord
 
   private
 
-  # 入力された budget_month を常にその月の1日（月初）に設定する
+  # 入力された budget_month を常にその月の1日(月初)に設定する
   def normalize_budget_month
     self.budget_month = budget_month.beginning_of_month if budget_month.present?
   end
