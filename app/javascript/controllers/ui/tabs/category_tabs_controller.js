@@ -28,6 +28,9 @@ export default class extends Controller {
     }
     this.initializeEventListeners()
     this.activateFirstTab()
+
+    // 追加: 編集ページロード時のグレーアウト
+    this.disableExistingCategoryOptions()
   }
 
   disconnect() {
@@ -44,7 +47,7 @@ export default class extends Controller {
     this.element.addEventListener('click', (e) => {
       const tabButton = e.target.closest('[data-bs-toggle="tab"]')
       if (tabButton) {
-        // ✅ 削除ボタンのクリックは無視
+        // 削除ボタンのクリックは無視
         if (e.target.closest('[data-action*="deleteTab"]')) {
           return
         }
@@ -82,14 +85,14 @@ export default class extends Controller {
     const categoryId = tabButton.getAttribute('data-category-id')
     Logger.log(`Tab clicked: ${categoryId}`)
 
-    // ✅ タブが存在するか確認
+    // タブが存在するか確認
     const tabPane = this.contentContainerTarget.querySelector(`#category-pane-${categoryId}`)
     if (!tabPane) {
       Logger.warn(`Tab pane not found for category: ${categoryId}`)
       return
     }
 
-    // ✅ カテゴリータブの場合のみ行をコピー（ALLタブは除外）
+    // カテゴリータブの場合のみ行をコピー（ALLタブは除外）
     if (categoryId && categoryId !== '0') {
       this.copyExistingRowsToNewTab(categoryId)
     }
@@ -242,8 +245,12 @@ export default class extends Controller {
       tab.show()
 
       Logger.log(`Category tab added: ${categoryName} (${categoryId})`)
-      this.closeModal()
+
+      // 追加: セレクターを無効化
+      this.disableExistingCategoryOptions()
       this.disableCategoryInModal(categoryId)
+
+      this.closeModal()
     }
   }
 
@@ -327,13 +334,14 @@ export default class extends Controller {
     let templateHtml = template.innerHTML.replace(/NEW_RECORD/g, uniqueId)
     templateHtml = templateHtml.replace(/row_NEW_RECORD/g, rowUniqueId)
 
+    // カテゴリータブ: data-unique-id追加
     templateHtml = templateHtml.replace(
       /<tr([^>]*)>/,
-      `<tr$1 data-category-id="${categoryId}" data-initial-row="true">`
+      `<tr$1 data-category-id="${categoryId}" data-initial-row="true" data-unique-id="${uniqueId}">`
     )
 
     categoryTbody.insertAdjacentHTML('beforeend', templateHtml)
-    Logger.log(`Initial form row added to category ID: ${categoryId}`)
+    Logger.log(`Initial form row added to category ID: ${categoryId}, uniqueId: ${uniqueId}`)
 
     const allTbody = this.contentContainerTarget.querySelector('tbody[data-category-id="0"]')
 
@@ -350,15 +358,29 @@ export default class extends Controller {
           'data-category-id="0"'
         )
 
-        // ✅ 二重引用符を削除
+        // 問題: insertAdjacentHTMLで属性を設定すると、正しく設定されない可能性がある
+        // 解決: DOMに挿入後、直接setAttribute()で設定
+
         allTabTemplateHtml = allTabTemplateHtml.replace(
           /<tr([^>]*)>/,
-          `<tr$1 data-initial-row="true" data-original-category-id="${categoryId}">`
+          `<tr$1 data-initial-row="true">`
         )
 
-        Logger.log(`Added row to ALL tab with same uniqueId: ${uniqueId}, original category: ${categoryId}`)
-
         allTbody.insertAdjacentHTML('beforeend', allTabTemplateHtml)
+
+        Logger.log(`Inserted row to ALL tab, now setting attributes...`)
+
+        // 挿入直後にDOM要素を取得して、直接属性を設定
+        const insertedRow = allTbody.querySelector(`tr:last-child`)
+        if (insertedRow) {
+          insertedRow.setAttribute('data-original-category-id', categoryId)
+          insertedRow.setAttribute('data-unique-id', uniqueId)
+
+          Logger.log(`Set attributes: data-original-category-id="${categoryId}", data-unique-id="${uniqueId}"`)
+          Logger.log(`Verification: dataset.originalCategoryId="${insertedRow.dataset.originalCategoryId}"`)
+        } else {
+          Logger.error(`Failed to find inserted row`)
+        }
       }
     }
   }
@@ -373,7 +395,7 @@ export default class extends Controller {
       return
     }
 
-    // ✅ 修正: ALLタブから該当行を取得（d-none行を除外）
+    // 修正: ALLタブから該当行を取得（d-none行を除外）
     const allTabRows = Array.from(document.querySelectorAll(`tbody[data-category-id="0"] tr`)).filter(row => {
       const originalCategoryId = row.dataset.originalCategoryId?.replace(/['"]/g, '')
       const isHidden = row.classList.contains('d-none')
@@ -391,14 +413,14 @@ export default class extends Controller {
 
     Logger.log(`Found ${allTabRows.length} existing row(s) in ALL tab for category: ${categoryId}`)
 
-    // ✅ 修正: カテゴリータブ内の既存行の uniqueId を取得
+    // 修正: カテゴリータブ内の既存行の uniqueId を取得
     const existingUniqueIds = Array.from(categoryTbody.querySelectorAll('tr')).map(row => row.dataset.uniqueId).filter(Boolean)
     Logger.log(`Existing uniqueIds in category tab: ${existingUniqueIds.join(', ')}`)
 
     allTabRows.forEach(allTabRow => {
       const uniqueId = allTabRow.dataset.uniqueId
 
-      // ✅ 既に同じ uniqueId の行が存在する場合はスキップ
+      // 既に同じ uniqueId の行が存在する場合はスキップ
       if (existingUniqueIds.includes(uniqueId)) {
         Logger.log(`Row with uniqueId ${uniqueId} already exists in category tab, skipping`)
         return
@@ -436,7 +458,7 @@ export default class extends Controller {
         return
       }
 
-      // ✅ material_id / product_id をコピー
+      // material_id / product_id をコピー
       const allTabSelect = allTabRow.querySelector('select[name*="[product_id]"], select[name*="[material_id]"]')
       const allTabHiddenId = allTabRow.querySelector('input[type="hidden"][name*="[product_id]"], input[type="hidden"][name*="[material_id]"]')
 
@@ -455,7 +477,7 @@ export default class extends Controller {
         }
       }
 
-      // ✅ quantity をコピー
+      // quantity をコピー
       const allTabQuantity = allTabRow.querySelector('input[name*="[production_count]"], input[name*="[quantity]"]')
       if (allTabQuantity && allTabQuantity.value) {
         const newRowQuantity = newRow.querySelector('input[name*="[production_count]"], input[name*="[quantity]"]')
@@ -465,7 +487,7 @@ export default class extends Controller {
         }
       }
 
-      // ✅ unit_weight をコピー
+      // unit_weight をコピー
       const allTabUnitWeight = allTabRow.querySelector('input[name*="[unit_weight]"]')
       if (allTabUnitWeight && allTabUnitWeight.value) {
         const newRowUnitWeight = newRow.querySelector('input[name*="[unit_weight]"]')
@@ -475,7 +497,7 @@ export default class extends Controller {
         }
       }
 
-      // ✅ 空の初期行を削除してから新しい行を追加
+      // 空の初期行を削除してから新しい行を追加
       const emptyInitialRow = categoryTbody.querySelector('tr[data-initial-row="true"]')
       if (emptyInitialRow) {
         const materialSelect = emptyInitialRow.querySelector('select[name*="[material_id]"], select[name*="[product_id]"]')
@@ -578,7 +600,7 @@ export default class extends Controller {
 
     Logger.log(`Starting deletion for category: ${categoryId}`)
 
-    // ✅ 修正1: タブボタンを正確に取得
+    // 保存済み削除はそのまま（動作している）
     const tabButton = this.tabNavTarget.querySelector(`button[data-category-id="${categoryId}"]`)
 
     if (!tabButton) {
@@ -589,7 +611,6 @@ export default class extends Controller {
     const targetPaneId = tabButton.getAttribute("data-bs-target")
     Logger.log(`Target pane ID: ${targetPaneId}`)
 
-    // ✅ 修正2: ALLタブから該当行を削除または_destroy=1をセット
     const allTabBody = this.contentContainerTarget.querySelector('tbody[data-category-id="0"]')
 
     if (allTabBody) {
@@ -618,7 +639,6 @@ export default class extends Controller {
       Logger.log(`Removed/marked ${rowsToRemove.length} row(s) for category ${categoryId}`)
     }
 
-    // ✅ 修正3: タブペインを削除
     const tabPane = document.querySelector(targetPaneId)
     if (tabPane) {
       tabPane.remove()
@@ -627,11 +647,9 @@ export default class extends Controller {
       Logger.warn(`Tab pane not found: ${targetPaneId}`)
     }
 
-    // ✅ 修正4: タブボタンを削除
     tabButton.remove()
     Logger.log(`Tab button removed for category: ${categoryId}`)
 
-    // ✅ 修正5: ALLタブに自動遷移
     const allTabButton = this.tabNavTarget.querySelector('[data-bs-target="#nav-0"]')
     if (allTabButton) {
       const bsTab = new bootstrap.Tab(allTabButton)
@@ -641,7 +659,6 @@ export default class extends Controller {
       Logger.warn('ALL tab button not found')
     }
 
-    // ✅ 修正6: カテゴリーセレクターで削除したカテゴリーを再度有効化
     const categorySelectors = document.querySelectorAll(
       'select[data-tabs--category-tabs-target="categorySelector"]'
     )
@@ -653,7 +670,6 @@ export default class extends Controller {
       }
     })
 
-    // ✅ 修正7: モーダルでも再度有効化
     this.enableCategoryInModal(categoryId)
 
     Logger.log(`Category tab deletion completed: ${categoryId}`)
