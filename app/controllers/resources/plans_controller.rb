@@ -145,7 +145,6 @@ class Resources::PlansController < AuthenticatedController
 
         # その日の目標額を取得（DailyTargetから）
         daily_target = Management::DailyTarget
-                        .where(user_id: current_user.id)
                         .find_by(target_date: @scheduled_date)
         @budget = daily_target&.target_amount
       else

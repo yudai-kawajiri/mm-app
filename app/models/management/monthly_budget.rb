@@ -23,7 +23,7 @@ class Management::MonthlyBudget < ApplicationRecord
   DESCRIPTION_ROWS = 3
 
   # バリデーション
-  validates :budget_month, presence: true, uniqueness: true  # ← scope: :user_id を削除
+  validates :budget_month, presence: true, uniqueness: true
   validates :target_amount, presence: true, numericality: { greater_than: 0 }
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
@@ -73,7 +73,6 @@ class Management::MonthlyBudget < ApplicationRecord
     start_date = budget_month.beginning_of_month
     end_date = budget_month.end_of_month
     Planning::PlanSchedule.joins(:plan)
-                          .where(plans: { user_id: user_id })
                           .where(scheduled_date: start_date..end_date)
   end
 
