@@ -2,11 +2,14 @@
 
 FactoryBot.define do
   factory :daily_target, class: 'Management::DailyTarget' do
-    association :user
     association :monthly_budget
     target_date { Date.current }
     target_amount { 30000 }
     description { "テスト用の日別目標メモ" }
+
+    trait :with_user do
+      association :user
+    end
 
     trait :today do
       target_date { Date.current }

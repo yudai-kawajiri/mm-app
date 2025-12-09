@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_06_115104) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_09_014300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,7 +49,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_115104) do
     t.string "name", null: false
     t.string "reading"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["name", "category_type"], name: "index_categories_on_name_and_category_type", unique: true
     t.index ["reading", "category_type"], name: "index_categories_on_reading_and_category_type", unique: true
     t.index ["user_id"], name: "index_categories_on_user_id"
@@ -62,7 +62,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_115104) do
     t.bigint "target_amount", null: false, comment: "目標金額"
     t.date "target_date", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["monthly_budget_id", "target_date"], name: "index_daily_targets_on_budget_and_date", unique: true
     t.index ["monthly_budget_id"], name: "index_daily_targets_on_monthly_budget_id"
     t.index ["target_date"], name: "index_daily_targets_on_target_date"
@@ -74,7 +74,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_115104) do
     t.string "name", null: false
     t.string "reading"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["name"], name: "index_material_order_groups_on_name", unique: true
     t.index ["reading"], name: "index_material_order_groups_on_reading", unique: true
     t.index ["user_id"], name: "index_material_order_groups_on_user_id"
@@ -97,7 +97,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_115104) do
     t.bigint "unit_for_product_id", null: false
     t.decimal "unit_weight_for_order", precision: 10, scale: 3
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["category_id"], name: "index_materials_on_category_id"
     t.index ["measurement_type"], name: "index_materials_on_measurement_type"
     t.index ["name", "category_id"], name: "index_materials_on_name_and_category_id", unique: true
@@ -117,7 +117,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_115104) do
     t.bigint "target_amount", null: false, comment: "目標金額"
     t.decimal "target_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "目標見切り率（%）"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["user_id", "budget_month"], name: "index_monthly_budgets_on_user_id_and_budget_month", unique: true
     t.index ["user_id"], name: "index_monthly_budgets_on_user_id"
   end
@@ -142,7 +142,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_115104) do
     t.date "scheduled_date", null: false, comment: "スケジュール実施日"
     t.integer "status", default: 0, null: false, comment: "ステータス"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["plan_id", "scheduled_date"], name: "index_plan_schedules_on_plan_id_and_scheduled_date", unique: true
     t.index ["plan_id"], name: "index_plan_schedules_on_plan_id"
     t.index ["plan_products_snapshot"], name: "index_plan_schedules_on_plan_products_snapshot", using: :gin
@@ -158,7 +158,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_115104) do
     t.string "reading"
     t.integer "status"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["category_id"], name: "index_plans_on_category_id"
     t.index ["name", "category_id"], name: "index_plans_on_name_and_category_id", unique: true
     t.index ["reading", "category_id"], name: "index_plans_on_reading_and_category_id", unique: true
@@ -190,7 +190,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_115104) do
     t.string "reading"
     t.integer "status"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["item_number", "category_id"], name: "index_products_on_item_number_and_category_id", unique: true
     t.index ["name", "category_id"], name: "index_products_on_name_and_category_id", unique: true
@@ -205,7 +205,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_115104) do
     t.string "name", null: false
     t.string "reading"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["name", "category"], name: "index_units_on_name_and_category", unique: true
     t.index ["reading", "category"], name: "index_units_on_reading_and_category", unique: true
     t.index ["user_id"], name: "index_units_on_user_id"
