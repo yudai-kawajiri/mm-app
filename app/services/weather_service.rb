@@ -148,7 +148,7 @@ class WeatherService
         weather: representative.dig("weather", 0, "main"),
         weather_description: representative.dig("weather", 0, "description"),
         icon: icon_code&.gsub(NIGHT_ICON_SUFFIX, DAY_ICON_SUFFIX),
-        pop: (representative.dig("pop") || 0) * PERCENTAGE_MULTIPLIER,
+        pop: (representative.dig("pop") || 0) * PERCENTAGE_MULTIPLIER
       }
     end.first(FORECAST_DAYS)
   end
@@ -187,7 +187,7 @@ class WeatherService
         weather: DUMMY_CLEAR_WEATHER_TYPES.sample,
         weather_description: DUMMY_CLEAR_WEATHER_DESCRIPTIONS.sample,
         icon: DUMMY_CLEAR_ICON,
-        pop: rand(DUMMY_CLEAR_POP_RANGE),
+        pop: rand(DUMMY_CLEAR_POP_RANGE)
       }
     end
   end

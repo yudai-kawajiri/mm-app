@@ -4,24 +4,24 @@ module I18nJavascriptHelper
   def i18n_javascript_translations
     translations = {
       products: {
-        confirm_delete_image: t('products.messages.confirm_delete_image'),
-        image_deleted: t('products.messages.image_deleted'),
-        image_delete_failed: t('products.messages.image_delete_failed')
+        confirm_delete_image: t("products.messages.confirm_delete_image"),
+        image_deleted: t("products.messages.image_deleted"),
+        image_delete_failed: t("products.messages.image_delete_failed")
       },
       components: {
         category_tabs: {
-          confirm_delete: t('components.category_tabs.confirm_delete')
+          confirm_delete: t("components.category_tabs.confirm_delete")
         }
       },
       sortable_table: {
-        saved: t('sortable_table.saved'),
-        save_failed: t('sortable_table.save_failed'),
-        error: t('sortable_table.error'),
-        csrf_token_not_found: t('sortable_table.csrf_token_not_found')
+        saved: t("sortable_table.saved"),
+        save_failed: t("sortable_table.save_failed"),
+        error: t("sortable_table.error"),
+        csrf_token_not_found: t("sortable_table.csrf_token_not_found")
       },
       help: {
         video_modal: {
-          preparing: t('help.video_modal.preparing')
+          preparing: t("help.video_modal.preparing")
         }
       }
     }

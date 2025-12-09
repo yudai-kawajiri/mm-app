@@ -37,14 +37,14 @@ RSpec.describe Resources::MaterialOrderGroup, type: :model do
     it '複数のmaterialsを持つこと' do
       material1 = create(:material, order_group: material_order_group, user: user)
       material2 = create(:material, order_group: material_order_group, user: user)
-      
+
       expect(material_order_group.materials).to include(material1, material2)
       expect(material_order_group.materials.count).to eq(2)
     end
 
     it 'materialsが紐付いている場合は削除できないこと' do
       create(:material, order_group: material_order_group, user: user)
-      
+
       expect { material_order_group.destroy! }.to raise_error(ActiveRecord::RecordNotDestroyed)
     end
   end
@@ -56,11 +56,11 @@ RSpec.describe Resources::MaterialOrderGroup, type: :model do
     end
 
     it 'orderedスコープで名前順（reading順）にソートされること' do
-      expect(Resources::MaterialOrderGroup.ordered).to eq([@group1, @group2])
+      expect(Resources::MaterialOrderGroup.ordered).to eq([ @group1, @group2 ])
     end
 
     it 'for_indexスコープで新しい順にソートされること' do
-      expect(Resources::MaterialOrderGroup.for_index).to eq([@group2, @group1])
+      expect(Resources::MaterialOrderGroup.for_index).to eq([ @group2, @group1 ])
     end
   end
 

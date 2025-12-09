@@ -7,23 +7,23 @@ class AddUniqueIndexToReading < ActiveRecord::Migration[7.0]
     remove_index :units, name: 'index_units_on_reading' if index_exists?(:units, :reading, name: 'index_units_on_reading')
     remove_index :material_order_groups, name: 'index_material_order_groups_on_reading' if index_exists?(:material_order_groups, :reading, name: 'index_material_order_groups_on_reading')
     remove_index :plans, name: 'index_plans_on_reading' if index_exists?(:plans, :reading, name: 'index_plans_on_reading')
-    
+
     # products: reading + category_id で一意
-    add_index :products, [:reading, :category_id], unique: true, name: 'index_products_on_reading_and_category_id'
-    
+    add_index :products, [ :reading, :category_id ], unique: true, name: 'index_products_on_reading_and_category_id'
+
     # materials: reading + category_id で一意
-    add_index :materials, [:reading, :category_id], unique: true, name: 'index_materials_on_reading_and_category_id'
-    
+    add_index :materials, [ :reading, :category_id ], unique: true, name: 'index_materials_on_reading_and_category_id'
+
     # categories: reading + category_type で一意
-    add_index :categories, [:reading, :category_type], unique: true, name: 'index_categories_on_reading_and_category_type'
-    
+    add_index :categories, [ :reading, :category_type ], unique: true, name: 'index_categories_on_reading_and_category_type'
+
     # units: reading + category で一意
-    add_index :units, [:reading, :category], unique: true, name: 'index_units_on_reading_and_category'
-    
+    add_index :units, [ :reading, :category ], unique: true, name: 'index_units_on_reading_and_category'
+
     # material_order_groups: reading はグローバルで一意
     add_index :material_order_groups, :reading, unique: true, name: 'index_material_order_groups_on_reading'
-    
+
     # plans: reading + category_id で一意
-    add_index :plans, [:reading, :category_id], unique: true, name: 'index_plans_on_reading_and_category_id'
+    add_index :plans, [ :reading, :category_id ], unique: true, name: 'index_plans_on_reading_and_category_id'
   end
 end

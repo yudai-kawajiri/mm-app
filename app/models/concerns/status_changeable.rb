@@ -28,7 +28,7 @@ module StatusChangeable
     # @param foreign_key [Symbol] 外部キー名（デフォルト: :product_id）
     # @param class_name [String] チェック対象のクラス名（例: 'Planning::PlanProduct'）
     # @param statuses_to_check [Array<Symbol>] チェック対象のステータス（デフォルト: [:draft, :discontinued]）
-    def restrict_status_change_if_used_in(association_name, foreign_key: :product_id, class_name: nil, statuses_to_check: [:draft, :discontinued])
+    def restrict_status_change_if_used_in(association_name, foreign_key: :product_id, class_name: nil, statuses_to_check: [ :draft, :discontinued ])
       validate :cannot_change_status_if_used, on: :update
 
       # クロージャで変数をキャプチャ

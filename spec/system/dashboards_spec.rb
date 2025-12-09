@@ -45,7 +45,6 @@ RSpec.describe 'ダッシュボード', type: :system do
       expect(page).to have_select('year', selected: '2024年')
       expect(page).to have_select('month', selected: '12月')
     end
-
   end
 
   describe '予算サマリー表示' do

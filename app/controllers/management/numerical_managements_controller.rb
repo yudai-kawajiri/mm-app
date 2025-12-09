@@ -81,7 +81,7 @@ class Management::NumericalManagementsController < ApplicationController
 
     sanitized_value = sanitize_numeric_params(
       { target_amount: target_param },
-      with_comma: [:target_amount]
+      with_comma: [ :target_amount ]
     )[:target_amount]
 
     # 予算超過チェック
@@ -94,7 +94,7 @@ class Management::NumericalManagementsController < ApplicationController
 
       if new_total > monthly_budget.target_amount
         redirect_to management_numerical_managements_path(year: date.year, month: date.month),
-                    alert: t('numerical_managements.messages.budget_exceeded',
+                    alert: t("numerical_managements.messages.budget_exceeded",
                             budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
                             total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(new_total)}"),
                     turbo: false
@@ -104,11 +104,11 @@ class Management::NumericalManagementsController < ApplicationController
 
     if daily_target.update(target_amount: sanitized_value)
       redirect_to management_numerical_managements_path(year: date.year, month: date.month),
-                  notice: t('numerical_managements.messages.daily_target_updated'),
+                  notice: t("numerical_managements.messages.daily_target_updated"),
                   turbo: false
     else
       redirect_to management_numerical_managements_path(year: date.year, month: date.month),
-            alert: t('numerical_managements.messages.daily_target_update_failed', errors: daily_target.errors.full_messages.join(', ')),
+            alert: t("numerical_managements.messages.daily_target_update_failed", errors: daily_target.errors.full_messages.join(", ")),
             turbo: false
     end
   rescue Date::Error
@@ -116,7 +116,7 @@ class Management::NumericalManagementsController < ApplicationController
       year: Date.current.year,
       month: Date.current.month
     ),
-            alert: t('api.errors.invalid_date'),
+            alert: t("api.errors.invalid_date"),
             turbo: false
   end
 
@@ -145,7 +145,7 @@ class Management::NumericalManagementsController < ApplicationController
 
     if service.call
       redirect_to management_numerical_managements_path(year: year, month: month),
-                  notice: t('numerical_managements.messages.daily_details_updated'),
+                  notice: t("numerical_managements.messages.daily_details_updated"),
                   turbo: false
     else
       redirect_to management_numerical_managements_path(year: year, month: month),
@@ -213,7 +213,7 @@ class Management::NumericalManagementsController < ApplicationController
       params_hash[:monthly_budgets].each do |_, budget_attrs|
         sanitize_numeric_params(
           budget_attrs,
-          with_comma: [:target_amount]
+          with_comma: [ :target_amount ]
         )
       end
     end
@@ -222,7 +222,7 @@ class Management::NumericalManagementsController < ApplicationController
       params_hash[:daily_targets].each do |_, target_attrs|
         sanitize_numeric_params(
           target_attrs,
-          with_comma: [:target_amount]
+          with_comma: [ :target_amount ]
         )
       end
     end
@@ -231,7 +231,7 @@ class Management::NumericalManagementsController < ApplicationController
       params_hash[:plan_schedule_actuals].each do |_, actual_attrs|
         sanitize_numeric_params(
           actual_attrs,
-          with_comma: [:actual_revenue]
+          with_comma: [ :actual_revenue ]
         )
       end
     end
@@ -254,7 +254,7 @@ class Management::NumericalManagementsController < ApplicationController
     total_daily_target = 0
 
     daily_targets_hash.each do |key, target_attrs|
-      target_amount = target_attrs[:target_amount].to_s.gsub(',', '').to_i
+      target_amount = target_attrs[:target_amount].to_s.gsub(",", "").to_i
       total_daily_target += target_amount if target_amount > 0
     end
 
@@ -262,7 +262,7 @@ class Management::NumericalManagementsController < ApplicationController
     if total_daily_target > monthly_budget.target_amount
       {
         exceeded: true,
-        message: t('numerical_managements.messages.budget_exceeded',
+        message: t("numerical_managements.messages.budget_exceeded",
                   budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
                   total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(total_daily_target)}")
       }

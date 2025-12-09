@@ -18,8 +18,8 @@ Rails.application.routes.draw do
   # ====================
   # 設定・ヘルプ
   # ====================
-  get '/settings', to: 'settings#index', as: :settings
-  get '/help', to: 'help#index', as: :help
+  get "/settings", to: "settings#index", as: :settings
+  get "/help", to: "help#index", as: :help
 
   # ====================
   # 管理者機能

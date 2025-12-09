@@ -121,7 +121,7 @@ class Resources::ProductsController < AuthenticatedController
     error_messages = @product.errors.full_messages.join("、")
     redirect_to resources_products_path,
                 alert: error_messages
-    end
+  end
   end
 
   # 並び替え順序を保存
