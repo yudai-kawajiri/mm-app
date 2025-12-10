@@ -1,17 +1,19 @@
 <%# 原材料フォームフィールド %>
 <div class="row">
   <div class="col-md-4">
-    <%= form_group_lg(f, :name) %>
+    <%= form_group_lg(f, :name, required: true, label: raw([t('activerecord.attributes.resources/material.name'), t('helpers.required_mark')].join(' '))) %>
   </div>
 
   <div class="col-md-4">
-    <%= form_group_lg(f, :reading) %>
+    <%= form_group_lg(f, :reading, required: true, label: raw([t('activerecord.attributes.resources/material.reading'), t('helpers.required_mark')].join(' '))) %>
   </div>
 
   <div class="col-md-4">
     <%= form_group_lg(f, :category_id,
         field_type: :collection_select,
         collection: Resources::Category.where(category_type: :material).ordered,
+        required: true,
+        label: raw([t('activerecord.attributes.resources/material.category_id'), t('helpers.required_mark')].join(' ')),
         select_options: { include_blank: t('helpers.prompt.select') }
     ) %>
   </div>
@@ -21,17 +23,18 @@
   <div class="col-md-6">
     <div class="form-group mb-4">
       <label class="form-label h5 text-muted mb-2">
-        <%= Resources::Material.human_attribute_name(:default_unit_weight) %>
+        <%= raw([Resources::Material.human_attribute_name(:default_unit_weight), t('helpers.required_mark')].join(' ')) %>
         <small class="text-muted"><%= t('materials.form.default_unit_weight_help') %></small>
       </label>
 
       <%= f.text_field :default_unit_weight,
           class: 'form-control form-control-lg',
+          required: true,
           data: {
             controller: 'input--number-input' ,
             'number-input-no-comma': 'true',
             'number-input-decimal-field': 'true',
-            action: 'input->input--number-input#handleInput paste->number-input#handlePaste focus->number-input#handleFocus blur->number-input#handleBlur',
+            action: 'input->input--number-input#handleInput paste->number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur',
             'form-validation-target': 'field'
           }
       %>
@@ -41,7 +44,7 @@
   <div class="col-md-6">
     <div class="form-group mb-4">
       <label class="form-label h5 text-muted mb-2">
-        <%= Resources::Material.human_attribute_name(:unit_for_product) %>
+        <%= raw([Resources::Material.human_attribute_name(:unit_for_product), t('helpers.required_mark')].join(' ')) %>
         <small class="text-muted"><%= t('materials.form.unit_for_product_help') %></small>
       </label>
 
@@ -50,7 +53,7 @@
           :id,
           :name,
           { include_blank: t('helpers.prompt.select') },
-          { class: 'form-select form-select-lg' } %>
+          { class: 'form-select form-select-lg', required: true, data: { 'form-validation-target': 'field' } } %>
     </div>
   </div>
 </div>
@@ -60,7 +63,7 @@
     <div class="form-group mb-4">
       <div class="d-flex align-items-center gap-3 mb-2">
         <label class="form-label mb-0" style="font-size: 1.25rem; font-weight: 400;">
-          <%= t('materials.form.basic_order_quantity') %>
+          <%= raw([t('materials.form.basic_order_quantity'), t('helpers.required_mark')].join(' ')) %>
         </label>
         <div class="form-check">
           <%= f.radio_button :measurement_type, 'weight',
@@ -82,11 +85,13 @@
         <%= f.text_field :unit_weight_for_order,
           class: 'form-control form-control-lg',
           placeholder: t('materials.form.unit_weight_for_order_placeholder'),
+          required: f.object.measurement_type != 'count',
           data: {
             controller: 'input--number-input',
             'number-input-no-comma': 'true',
             'number-input-decimal-field': 'true',
-            action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur'
+            action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur',
+            'form-validation-target': 'field'
           }
         %>
         <small class="text-muted"><%= t('materials.form.unit_weight_for_order_help') %></small>
@@ -97,11 +102,13 @@
         <%= f.text_field :pieces_per_order_unit,
           class: 'form-control form-control-lg',
           placeholder: t('materials.form.pieces_per_order_unit_placeholder'),
+          required: f.object.measurement_type == 'count',
           data: {
             controller: 'input--number-input',
             'number-input-no-comma': 'true',
             'number-input-decimal-field': 'false',
-            action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur'
+            action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur',
+            'form-validation-target': 'field'
           }
         %>
         <small class="text-muted"><%= t('materials.form.pieces_per_order_unit_help') %></small>
@@ -113,7 +120,8 @@
     <%= form_group_lg(f, :unit_for_order_id,
         field_type: :collection_select,
         collection: Resources::Unit.where(category: :ordering).ordered,
-        label: Resources::Material.human_attribute_name(:unit_for_order),
+        required: true,
+        label: raw([Resources::Material.human_attribute_name(:unit_for_order), t('helpers.required_mark')].join(' ')),
         select_options: { include_blank: t('helpers.prompt.select') }
     ) %>
   </div>
@@ -123,7 +131,7 @@
   <div class="col-md-6">
     <div class="form-group mb-4">
       <label class="form-label h5 text-muted mb-2">
-        <%= Resources::Material.human_attribute_name(:production_unit) %>
+        <%= raw([Resources::Material.human_attribute_name(:production_unit), t('helpers.required_mark')].join(' ')) %>
         <small class="text-muted"><%= t('materials.form.production_unit_help') %></small>
       </label>
 
@@ -132,7 +140,7 @@
           :id,
           :name,
           { include_blank: t('helpers.prompt.select') },
-          { class: 'form-select form-select-lg' } %>
+          { class: 'form-select form-select-lg', required: true, data: { 'form-validation-target': 'field' } } %>
     </div>
   </div>
   <div class="col-md-6">
@@ -150,7 +158,7 @@
         rows: 5,
         character_counter: true,
         max_length: Resources::Material::DESCRIPTION_MAX_LENGTH,
-        .
+        help_text: t('helpers.character_counter.max_hint', max: Resources::Material::DESCRIPTION_MAX_LENGTH)
     ) %>
   </div>
 </div>

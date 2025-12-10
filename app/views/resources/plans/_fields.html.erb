@@ -7,11 +7,11 @@
     <div class="row g-3">
       <%# 1段目：計画名、読み仮名 %>
       <div class="col-md-6">
-        <%= form_group_lg(f, :name, wrapper_class: 'mb-0') %>
+        <%= form_group_lg(f, :name, wrapper_class: 'mb-0', required: true, label: raw([t('activerecord.attributes.resources/plan.name'), t('helpers.required_mark')].join(' '))) %>
       </div>
 
       <div class="col-md-6">
-        <%= form_group_lg(f, :reading, wrapper_class: 'mb-0') %>
+        <%= form_group_lg(f, :reading, wrapper_class: 'mb-0', required: true, label: raw([t('activerecord.attributes.resources/plan.reading'), t('helpers.required_mark')].join(' '))) %>
       </div>
 
       <%# 2段目：カテゴリ―、ステータス %>
@@ -22,6 +22,8 @@
                           collection: @plan_categories,
                           value_method: :id,
                           text_method: :name,
+                          required: true,
+                          label: raw([t('activerecord.attributes.resources/plan.category_id'), t('helpers.required_mark')].join(' ')),
                           select_options: { include_blank: t('helpers.prompt.select')}) %>
       </div>
 
@@ -30,6 +32,8 @@
                           field_type: :select,
                           wrapper_class: 'mb-0',
                           choices: Resources::Plan.statuses.keys.map { |status| [t("activerecord.enums.resources/plan.status.#{status}"), status] },
+                          required: true,
+                          label: raw([t('activerecord.attributes.resources/plan.status'), t('helpers.required_mark')].join(' ')),
                           select_options: { include_blank: t('helpers.prompt.select') })
                           %>
       </div>
@@ -42,7 +46,7 @@
             rows: 4,
             character_counter: true,
             max_length: Resources::Plan::DESCRIPTION_MAX_LENGTH,
-            help_text: t('helpers.character_counter.max_hint', max: Resources::Material::DESCRIPTION_MAX_LENGTH)
+            help_text: t('helpers.character_counter.max_hint', max: Resources::Plan::DESCRIPTION_MAX_LENGTH)
         ) %>
       </div>
     </div>

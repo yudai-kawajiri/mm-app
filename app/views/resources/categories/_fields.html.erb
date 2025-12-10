@@ -1,10 +1,10 @@
 <%# カテゴリーフォームフィールド %>
 <div class="row">
   <div class="col-md-6">
-    <%= form_group_lg(f, :name) %>
+    <%= form_group_lg(f, :name, required: true, label: raw([t('activerecord.attributes.resources/category.name'), t('helpers.required_mark')].join(' '))) %>
   </div>
   <div class="col-md-6">
-    <%= form_group_lg(f, :reading) %>
+    <%= form_group_lg(f, :reading, required: true, label: raw([t('activerecord.attributes.resources/category.reading'), t('helpers.required_mark')].join(' '))) %>
   </div>
 </div>
 
@@ -13,6 +13,8 @@
     <%= form_group_lg(f, :category_type,
         field_type: :select,
         choices: Resources::Category.category_types.keys.map { |k| [I18n.t("activerecord.enums.resources/category.category_type.#{k}"), k] },
+        required: true,
+        label: raw([t('activerecord.attributes.resources/category.category_type'), t('helpers.required_mark')].join(' ')),
         select_options: { include_blank: t('helpers.prompt.select') }
     ) %>
   </div>
@@ -22,4 +24,4 @@
                   field_type: :text_area,
                   character_counter: true,
                   max_length: Resources::Category::DESCRIPTION_MAX_LENGTH,
-                  help_text: t('helpers.character_counter.max_hint', max: Resources::Material::DESCRIPTION_MAX_LENGTH)a) %>
+                  help_text: t('helpers.character_counter.max_hint', max: Resources::Category::DESCRIPTION_MAX_LENGTH)) %>

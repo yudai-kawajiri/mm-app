@@ -7,11 +7,11 @@
     <div class="row g-3">
       <%# 1段目：商品名、読み仮名 %>
       <div class="col-md-6">
-        <%= form_group_lg(f, :name, wrapper_class: 'mb-0') %>
+        <%= form_group_lg(f, :name, wrapper_class: 'mb-0', required: true, label: raw([t('activerecord.attributes.resources/product.name'), t('helpers.required_mark')].join(' '))) %>
       </div>
 
       <div class="col-md-6">
-        <%= form_group_lg(f, :reading, wrapper_class: 'mb-0') %>
+        <%= form_group_lg(f, :reading, wrapper_class: 'mb-0', required: true, label: raw([t('activerecord.attributes.resources/product.reading'), t('helpers.required_mark')].join(' '))) %>
       </div>
 
       <%# 2段目：カテゴリ―、売価 %>
@@ -22,6 +22,8 @@
                           collection: @product_categories,
                           value_method: :id,
                           text_method: :name,
+                          required: true,
+                          label: raw([t('activerecord.attributes.resources/product.category_id'), t('helpers.required_mark')].join(' ')),
                           select_options: { include_blank: t('helpers.prompt.select')}) %>
       </div>
 
@@ -29,6 +31,8 @@
         <%= form_group_lg(f, :price,
                           wrapper_class: 'mb-0',
                           field_type: :text_field,
+                          required: true,
+                          label: raw([t('activerecord.attributes.resources/product.price'), t('helpers.required_mark')].join(' ')),
                           prefix: t('number.currency.format.unit'),
                           inputmode: 'numeric',
                           data: {
@@ -43,6 +47,8 @@
           <div class="col-12">
             <%= form_group_lg(f, :item_number,
                               wrapper_class: 'mb-0',
+                              required: true,
+                              label: raw([t('activerecord.attributes.resources/product.item_number'), t('helpers.required_mark')].join(' ')),
                               placeholder: t('products.placeholder.item_number'),
                               data: {
                                 controller: 'input--number-input' ,
@@ -55,6 +61,8 @@
             <%= form_group_lg(f, :status,
                               field_type: :select,
                               wrapper_class: 'mb-0',
+                              required: true,
+                              label: raw([t('activerecord.attributes.resources/product.status'), t('helpers.required_mark')].join(' ')),
                               choices: Resources::Product.statuses.keys.map { |status| [t("activerecord.enums.resources/product.status.#{status}"), status] },
                               select_options: { include_blank: t('helpers.prompt.select') })
                               %>
@@ -155,7 +163,7 @@
             rows: 4,
             character_counter: true,
             max_length: Resources::Product::DESCRIPTION_MAX_LENGTH,
-            help_text: t('helpers.character_counter.max_hint', max: Resources::Material::DESCRIPTION_MAX_LENGTH)
+            help_text: t('helpers.character_counter.max_hint', max: Resources::Product::DESCRIPTION_MAX_LENGTH)
         ) %>
       </div>
     </div>
