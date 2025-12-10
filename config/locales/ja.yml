@@ -1,6 +1,11 @@
 ja:
   application_name: "製造管理システム"
 
+  meta:
+    title: "MM-App - 製造業務管理システム"
+    description: "使用量と発注量を自動で計算、予算管理しながら計画を最適化"
+    site_name: "MM-App"
+
   date:
     formats:
       year_month: "%Y年%m月"

@@ -2,6 +2,15 @@
 <html>
   <head>
     <title><%= content_for?(:title) ? "#{yield(:title)} | #{t('application_name')}" : t('application_name') %></title>
+
+    <!-- OGP Meta Tags -->
+    <meta property="og:title" content="<%= t('meta.title') %>">
+    <meta property="og:description" content="<%= t('meta.description') %>">
+    <meta property="og:image" content="<%= image_url('ogp.png') %>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="<%= t('meta.site_name') %>">
+    <meta name="twitter:card" content="summary_large_image">
+
     <%= csp_meta_tag %>
     <%= csrf_meta_tags %>
     <%= i18n_javascript_translations %>
