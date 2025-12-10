@@ -6,7 +6,7 @@
 #
 # 機能:
 # - 商品作成時の原材料選択で使用する単位情報取得
-# - 全ユーザーの原材料にアクセス可能
+# - 全ユーザーの原材料にアクセス可能（共有データ）
 #
 # エンドポイント:
 # - GET /api/v1/materials/:id/fetch_product_unit_data
@@ -37,14 +37,7 @@ class Api::V1::MaterialsController < AuthenticatedController
     Rails.logger.info "Material ID: #{params[:id]}"
     Rails.logger.info "Current User: #{current_user&.id}"
 
-    # 認証チェック
-    unless current_user
-      Rails.logger.error "ERROR: current_user is nil"
-      render json: { error: "Unauthorized" }, status: :unauthorized
-      return
-    end
-
-    # Material を検索（権限チェック含む）
+    # Material を検索（全ユーザー共有）
     @material = Resources::Material.find(params[:id])
     Rails.logger.info "SUCCESS: Material found: #{@material.name}"
 
@@ -67,7 +60,7 @@ class Api::V1::MaterialsController < AuthenticatedController
       default_unit_weight: default_unit_weight
     }
   rescue ActiveRecord::RecordNotFound => e
-    # 原材料が見つからない、または権限がない
+    # 原材料が見つからない
     Rails.logger.error "ERROR: Material not found: #{params[:id]}"
     Rails.logger.error e.message
     render json: { error: "Material not found" }, status: :not_found
