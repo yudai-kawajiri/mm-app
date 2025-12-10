@@ -1,10 +1,10 @@
 <%# 単位フォームフィールド %>
 <div class="row">
   <div class="col-md-6">
-    <%= form_group_lg(f, :name) %>
+    <%= form_group_lg(f, :name, required: true, label: "#{t('activerecord.attributes.resources/unit.name')} #{t('helpers.required_mark')}".html_safe) %>
   </div>
   <div class="col-md-6">
-    <%= form_group_lg(f, :reading) %>
+    <%= form_group_lg(f, :reading, required: true, label: "#{t('activerecord.attributes.resources/unit.reading')} #{t('helpers.required_mark')}".html_safe) %>
   </div>
 </div>
 
@@ -13,6 +13,8 @@
     <%= form_group_lg(f, :category,
         field_type: :select,
         choices: Resources::Unit.categories.keys.map { |k| [I18n.t("activerecord.enums.resources/unit.category.#{k}"), k] },
+        required: true,
+        label: "#{t('activerecord.attributes.resources/unit.category')} #{t('helpers.required_mark')}".html_safe,
         select_options: { include_blank: t('helpers.prompt.select') }
     ) %>
   </div>
@@ -21,5 +23,5 @@
 <%= form_group_lg(f, :description,
                   field_type: :text_area,
                   character_counter: true,
-                  max_length: Resources::Unit::DESCRIPTION_MAX_LENGTH),
-                  help_text: t('helpers.character_counter.max_hint', max: Resources::Material::DESCRIPTION_MAX_LENGTH) %>
+                  max_length: Resources::Unit::DESCRIPTION_MAX_LENGTH,
+                  help_text: t('helpers.character_counter.max_hint', max: Resources::Unit::DESCRIPTION_MAX_LENGTH)) %>

@@ -10,17 +10,18 @@
 
   <%= render "devise/shared/error_messages", resource: resource %>
 
-  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'needs-validation', novalidate: true }) do |f| %>
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'needs-validation', novalidate: true, data: { controller: 'form-validation' } }) do |f| %>
     <div class="mb-4">
       <%= f.label :email, class: 'form-label fw-bold' do %>
-        <%= t('activerecord.attributes.user.email') %>
+        <%= t('activerecord.attributes.user.email') %><%= raw(t('helpers.required_mark')) %>
       <% end %>
       <%= f.email_field :email,
           autofocus: true,
           autocomplete: "email",
           class: 'form-control form-control-lg',
           placeholder: t('devise.passwords.new.email_placeholder'),
-          required: true %>
+          required: true,
+          data: { 'form-validation-target': 'field' } %>
       <div class="form-text">
         <%= t('devise.passwords.new.email_help') %>
       </div>

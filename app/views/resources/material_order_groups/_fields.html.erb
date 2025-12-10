@@ -1,14 +1,13 @@
 <%# 発注グループフォームフィールド %>
 <div class="row">
   <div class="col-md-6">
-    <%= form_group_lg(f, :name) %>
+    <%= form_group_lg(f, :name, required: true, label: raw([t('activerecord.attributes.resources/material_order_group.name'), t('helpers.required_mark')].join(' '))) %>
   </div>
   <div class="col-md-6">
-    <%= form_group_lg(f, :reading) %>
+    <%= form_group_lg(f, :reading, required: true, label: raw([t('activerecord.attributes.resources/material_order_group.reading'), t('helpers.required_mark')].join(' '))) %>
   </div>
 </div>
 
-    <div class="form-text mt-2">
-      <%= t('material_order_groups.form.name_help') %>
-    </div>
-
+<div class="form-text mt-2">
+  <%= t('material_order_groups.form.name_help') %>
+</div>

@@ -5,17 +5,20 @@
 
   <%= render "devise/shared/tabs" %>
 
-  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { data: { controller: 'form-validation' } }) do |f| %>
 
     <div class="mb-4">
-      <%= f.label :email, class: "form-label h5" %><br />
-      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control form-control-lg", placeholder: t('devise.sessions.new.email_placeholder') %>
+      <%= f.label :email, class: "form-label h5" do %>
+        <%= User.human_attribute_name(:email) %><%= raw(t('helpers.required_mark')) %>
+      <% end %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control form-control-lg", placeholder: t('devise.sessions.new.email_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
     <div class="mb-4">
-      <%= f.label :password, class: "form-label h5" %><br />
-      <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: 6) %>
-
+      <%= f.label :password, class: "form-label h5" do %>
+        <%= User.human_attribute_name(:password) %><%= raw(t('helpers.required_mark')) %>
+      <% end %>
+      <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: 6), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
     <% if devise_mapping.rememberable? %>

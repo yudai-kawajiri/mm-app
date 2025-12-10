@@ -1,5 +1,10 @@
 ja:
-  application_name: "製造管理システム"
+  application_name: "MM-App"
+
+  meta:
+    title: "MM-App - 製造業務管理システム"
+    description: "使用量と発注量を自動で計算、予算管理しながら計画を最適化"
+    site_name: "MM-App"
 
   date:
     formats:
@@ -142,6 +147,7 @@ ja:
 
   helpers:
     no_setting: "未設定"
+    required_mark: "<span class='text-danger'>*</span>"
     prompt:
       select: "選択してください"
     submit:
@@ -247,42 +253,6 @@ ja:
     unit_error: "エラー"
     errors:
       unit_fetch_failed: "単位情報の取得に失敗しました"
-
-  dashboard:
-    menu:
-      title: "メニュー"
-      dashboard: "ダッシュボード"
-      category_management: "カテゴリ―管理"
-      category_list: "カテゴリ一覧"
-      new_category: "カテゴリ―登録"
-      material_master_management: "原材料マスタ管理"
-      material_management: "原材料管理"
-      unit_management: "単位管理"
-      unit_list: "単位一覧"
-      new_unit: "単位登録"
-      order_group_management: "発注グループ管理"
-      order_group_list: "発注グループ一覧"
-      new_order_group: "発注グループ登録"
-      material_list: "原材料一覧"
-      new_material: "原材料登録"
-      product_management: "商品管理"
-      product_list: "商品一覧"
-      new_product: "商品登録"
-      plan_management: "計画管理"
-      plan_list: "計画一覧"
-      new_plan: "計画登録"
-      numerical_management: "数値管理"
-      numerical_dashboard: "数値ダッシュボード"
-      admin_management: "管理者メニュー"
-      user_management: "ユーザー管理"
-      system_logs: "システムログ"
-      settings: "設定"
-      help: "使い方・ヘルプ"
-      account_settings: "アカウント設定"
-      contact: "お問い合わせ"
-      terms: "利用規約"
-      privacy_policy: "プライバシーポリシー"
-      logout: "ログアウト"
 
   help:
     title: "使い方・ヘルプ"
@@ -604,7 +574,7 @@ ja:
         message: "お問い合わせ内容"
 
   landing:
-    title: "製造管理システム"
+    title: "MM-App"
     subtitle: "製造業向けの包括的な生産管理・数値管理システム"
     welcome: "ようこそ"
     description: "原材料管理から製造計画、売上予測まで一元管理"
@@ -792,7 +762,7 @@ ja:
       message: "お問い合わせ内容"
       message_placeholder: "具体的なお問い合わせ内容をご記入ください"
       message_hint: "最大5000文字まで入力できます"
-      submit: "送信する"
+      submit: "送信"
     messages:
       success_with_response_time: "お問い合わせを送信しました。通常2〜3営業日以内にご返信いたします。"
       failure: "お問い合わせの送信に失敗しました。"

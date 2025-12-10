@@ -1,6 +1,8 @@
 <%# ダッシュボードサイドバーナビゲーション (3階層対応) %>
 <div class="col-md-3 bg-light border-end p-4">
-  <h2><%= t('dashboard.menu.title') %></h2>
+  <h2 class="mb-4 fw-bold text-primary">
+    <%= t('dashboard.menu.title') %>
+  </h2>
   <div class="list-group" id="sidebar-accordion">
 
     <% sidebar_menu_items.each_with_index do |item, index| %>
