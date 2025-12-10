@@ -74,7 +74,7 @@
 
     <%# 設定メニュー（サブメニュー付き） %>
     <% settings_collapse_id = 'collapse-settings' %>
-    <% settings_is_active = current_page?(help_path) || current_page?(edit_user_registration_path) %>
+    <% settings_is_active = current_page?(help_path) || current_page?(edit_user_registration_path) || current_page?(terms_path) || current_page?(privacy_path) %>
 
     <a href="#"
         class="list-group-item list-group-item-action <%= 'active' if settings_is_active %>"
@@ -100,6 +100,16 @@
       <%= link_to help_path,
           class: "list-group-item list-group-item-action ps-4 #{current_page?(help_path) ? 'active' : ''}" do %>
         <%= submenu_indicator %>使い方・ヘルプ
+      <% end %>
+
+      <%= link_to terms_path,
+          class: "list-group-item list-group-item-action ps-4 #{current_page?(terms_path) ? 'active' : ''}" do %>
+        <%= submenu_indicator %>利用規約
+      <% end %>
+
+      <%= link_to privacy_path,
+          class: "list-group-item list-group-item-action ps-4 #{current_page?(privacy_path) ? 'active' : ''}" do %>
+        <%= submenu_indicator %>プライバシーポリシー
       <% end %>
     </div>
 
