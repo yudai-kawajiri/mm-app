@@ -4,27 +4,35 @@
 
   <%= render "devise/shared/tabs" %>
 
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { data: { controller: 'form-validation' } }) do |f| %>
     <%= render "devise/shared/error_messages", resource: resource %>
 
     <div class="mb-4">
-      <%= f.label :name, class: "form-label h5" %><br />
-      <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control form-control-lg" %>
+      <%= f.label :name, class: "form-label h5" do %>
+        <%= User.human_attribute_name(:name) %><%= raw(t('helpers.required_mark')) %>
+      <% end %>
+      <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control form-control-lg", required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
     <div class="mb-4">
-      <%= f.label :email, class: "form-label h5" %><br />
-      <%= f.email_field :email, autocomplete: "email", class: "form-control form-control-lg", placeholder: t('devise.sessions.new.email_placeholder') %>
+      <%= f.label :email, class: "form-label h5" do %>
+        <%= User.human_attribute_name(:email) %><%= raw(t('helpers.required_mark')) %>
+      <% end %>
+      <%= f.email_field :email, autocomplete: "email", class: "form-control form-control-lg", placeholder: t('devise.sessions.new.email_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
     <div class="mb-4">
-      <%= f.label :password, class: "form-label h5" %>
-      <%= f.password_field :password, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
+      <%= f.label :password, class: "form-label h5" do %>
+        <%= User.human_attribute_name(:password) %><%= raw(t('helpers.required_mark')) %>
+      <% end %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
     <div class="mb-4">
-      <%= f.label :password_confirmation, class: "form-label h5" %><br />
-      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
+      <%= f.label :password_confirmation, class: "form-label h5" do %>
+        <%= User.human_attribute_name(:password_confirmation) %><%= raw(t('helpers.required_mark')) %>
+      <% end %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
     <%= render 'shared/terms_privacy_agreement' %>
