@@ -1,0 +1,28 @@
+<% content_for :title, t('contacts.thanks.title') %>
+
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 text-center">
+      <div class="card">
+        <div class="card-body p-5">
+          <div class="mb-4">
+            <i class="bi bi-check-circle text-success" style="font-size: 5rem;"></i>
+          </div>
+
+          <h1 class="mb-4"><%= t('contacts.thanks.title') %></h1>
+          <p class="lead mb-4"><%= t('contacts.thanks.message') %></p>
+          <p class="text-muted"><%= t('contacts.thanks.response_time') %></p>
+
+          <div class="mt-5">
+            <% if user_signed_in? %>
+              <%= link_to t('helpers.link.back_to_dashboard'), authenticated_root_path, class: 'btn btn-primary' %>
+              <%= link_to t('dashboard.menu.help'), help_path, class: 'btn btn-outline-secondary ms-2' %>
+            <% else %>
+              <%= link_to t('landing.back_to_top'), root_path, class: 'btn btn-primary' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
