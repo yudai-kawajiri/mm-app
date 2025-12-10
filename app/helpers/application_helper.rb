@@ -280,10 +280,17 @@ module ApplicationHelper
   # @param attribute [Symbol] 属性名
   # @param options [Hash] オプション
   # @return [String] ラベルHTML
-  #
   def form_label_lg(form, attribute, options = {})
     options[:class] = "form-label h5 text-muted #{options[:class]}".strip
-    form.label(attribute, options)
+
+    # label オプションがある場合はそれを使用
+    label_text = options.delete(:value) || options.delete(:label)
+
+    if label_text
+      form.label(attribute, label_text, options)
+    else
+      form.label(attribute, options)
+    end
   end
 
   #
@@ -421,8 +428,11 @@ module ApplicationHelper
     character_counter = options.delete(:character_counter) || false
     max_length = options.delete(:max_length)
 
-    # 必須かどうかを判定（モデルのバリデーションから自動判定）
-    required = form.object.class.validators_on(attribute).any? { |v| v.is_a?(ActiveModel::Validations::PresenceValidator) }
+    # 必須かどうかを判定（オプションで明示的に指定 or モデルのバリデーションから自動判定）
+    required = options.delete(:required)
+    if required.nil?
+      required = form.object.class.validators_on(attribute).any? { |v| v.is_a?(ActiveModel::Validations::PresenceValidator) }
+    end
 
     # エラーがある場合、is-invalid クラスを追加
     if form.object.errors[attribute].any?
@@ -454,7 +464,7 @@ module ApplicationHelper
 
     content_tag(:div, class: wrapper_class, data: wrapper_data) do
       # ラベル
-      label_html = form_label_lg(form, attribute, label_text ? { value: label_text } : {})
+      label_html = form_label_lg(form, attribute, label_text ? { value: label_text, required: required } : { required: required })
 
       # フィールド
       field_html = if block_given?
