@@ -25,6 +25,10 @@ Rails.application.routes.draw do
   get "/settings", to: "settings#index", as: :settings
   get "/help", to: "help#index", as: :help
 
+  # お問い合わせ
+  resources :contacts, only: [:new, :create]
+  get '/contact/thanks', to: 'contacts#thanks', as: :contact_thanks
+
   # ====================
   # 管理者機能
   # ====================

@@ -594,6 +594,13 @@ ja:
       management/daily_target: "日別目標"
 
   # ランディングページ
+    attributes:
+      contact:
+        name: "お名前"
+        email: "メールアドレス"
+        subject: "件名"
+        message: "お問い合わせ内容"
+
   landing:
     title: "製造管理システム"
     subtitle: "製造業向けの包括的な生産管理・数値管理システム"
@@ -630,7 +637,7 @@ ja:
   static_pages:
     back_to_login: "ログインページに戻る"
     back_to_dashboard: "ダッシュボードに戻る"
-    contact_via_help: "本規約に関するお問い合わせは、当サービス内のヘルプページからお願いいたします。"
+    contact_via_help: "本規約に関するお問い合わせは、"
 
   # 利用規約コンテンツ
   terms_content:
@@ -767,3 +774,35 @@ ja:
     article_7:
       title: "第7条（お問い合わせ）"
       content: "本ポリシーに関するお問い合わせは、本サービス内の「使い方・ヘルプ」ページよりご連絡ください。"
+
+  # お問い合わせ
+  contacts:
+    new:
+      title: "お問い合わせ"
+      subtitle: "ご不明な点やご要望がございましたら、お気軽にお問い合わせください。"
+    form:
+      name: "お名前"
+      name_placeholder: "山田 太郎"
+      email: "メールアドレス"
+      email_placeholder: "example@example.com"
+      subject: "件名"
+      subject_placeholder: "お問い合わせ内容の件名"
+      message: "お問い合わせ内容"
+      message_placeholder: "具体的なお問い合わせ内容をご記入ください"
+      message_hint: "最大5000文字まで入力できます"
+      submit: "送信する"
+    thanks:
+      title: "送信完了"
+      message: "お問い合わせいただきありがとうございます。"
+      response_time: "通常、2〜3営業日以内にご返信いたします。"
+    messages:
+      success: "お問い合わせを送信しました。"
+      failure: "お問い合わせの送信に失敗しました。"
+
+  contact_mailer:
+    contact_email:
+      title: "お問い合わせがありました"
+      name_label: "お名前"
+      email_label: "メールアドレス"
+      subject_label: "件名"
+      message_label: "お問い合わせ内容"
