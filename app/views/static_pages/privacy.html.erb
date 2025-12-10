@@ -1,202 +1,111 @@
-<div class="max-w-4xl mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-8">プライバシーポリシー</h1>
+<% content_for :title, t('privacy.title') %>
 
-  <div class="prose prose-lg max-w-none">
-    <p class="text-gray-600 mb-6">最終更新日: 2025年12月10日</p>
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <h1 class="mb-4"><%= t('privacy.title') %></h1>
+      <p class="text-muted mb-4"><%= t('privacy.last_updated') %>: <%= l(Date.parse('2025-12-10'), format: :long) %></p>
 
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">1. はじめに</h2>
-      <p>
-        MM-App（以下「当サービス」といいます。）は、ユーザーの個人情報の重要性を認識し、
-        個人情報の保護に関する法律（以下「個人情報保護法」といいます。）を遵守し、
-        適切に取り扱うとともに、安全管理について適切な措置を講じます。
-      </p>
-    </section>
+      <div class="card mb-4">
+        <div class="card-body">
+          <p><%= t('privacy_content.intro', app_name: t('application_name')) %></p>
+        </div>
+      </div>
 
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">2. 取得する情報</h2>
-      <p class="mb-4">当サービスは、以下の情報を取得します。</p>
-
-      <h3 class="text-xl font-semibold mb-2">2.1 ユーザーが提供する情報</h3>
-      <ul class="list-disc list-inside space-y-2 mb-4">
-        <li>氏名</li>
-        <li>メールアドレス</li>
-        <li>パスワード（暗号化して保存）</li>
-        <li>権限情報（管理者／一般ユーザー）</li>
-        <li>当サービス内で入力されたデータ
-          <ul class="list-circle list-inside ml-6 mt-2">
-            <li>商品情報（商品名、品番、価格、カテゴリー等）</li>
-            <li>原材料情報（原材料名、在庫数量、発注数量、単位重量等）</li>
-            <li>製造計画情報（計画名、期間、商品数量、予想売上等）</li>
-            <li>カテゴリー・単位情報</li>
-            <li>数値管理情報（売上予算、達成率、実績予測等）</li>
+      <!-- 第1条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('privacy_content.article_1.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('privacy_content.article_1.intro') %></p>
+          <ul>
+            <% t('privacy_content.article_1.items').each do |item| %>
+              <li><%= item %></li>
+            <% end %>
           </ul>
-        </li>
-      </ul>
+        </div>
+      </div>
 
-      <h3 class="text-xl font-semibold mb-2">2.2 自動的に取得される情報</h3>
-      <ul class="list-disc list-inside space-y-2">
-        <li>IPアドレス</li>
-        <li>ブラウザの種類とバージョン</li>
-        <li>デバイス情報（OS、画面サイズ等）</li>
-        <li>アクセス日時</li>
-        <li>利用状況（アクセスログ、操作履歴）</li>
-        <li>Cookie情報（セッション管理、ログイン状態の保持）</li>
-      </ul>
-    </section>
+      <!-- 第2条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('privacy_content.article_2.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('privacy_content.article_2.intro') %></p>
+          <ul>
+            <% t('privacy_content.article_2.items').each do |item| %>
+              <li><%= item %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
 
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">3. 情報の利用目的</h2>
-      <p class="mb-4">当サービスは、取得した情報を以下の目的で利用します。</p>
-      <ol class="list-decimal list-inside space-y-2">
-        <li>当サービスの提供、維持、保護および改善のため</li>
-        <li>ユーザー認証およびアカウント管理のため</li>
-        <li>製造計画、商品管理、原材料管理などの機能を提供するため</li>
-        <li>データの変更履歴を記録し、誰がいつ何を変更したかを追跡するため</li>
-        <li>ダッシュボードでのデータ可視化および分析のため</li>
-        <li>ユーザーからのお問い合わせへの対応のため</li>
-        <li>利用規約違反や不正利用の調査のため</li>
-        <li>当サービスに関する重要なお知らせ（メンテナンス情報、規約変更等）の送信のため</li>
-        <li>統計データの作成（個人を特定できない形式に加工）</li>
-        <li>サービスの改善および新機能の開発のため</li>
-      </ol>
-    </section>
+      <!-- 第3条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('privacy_content.article_3.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('privacy_content.article_3.paragraph_1') %></p>
+          <p><%= t('privacy_content.article_3.paragraph_2') %></p>
+        </div>
+      </div>
 
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">4. 情報の共有範囲</h2>
-      <h3 class="text-xl font-semibold mb-2">4.1 ユーザー間でのデータ共有</h3>
-      <p class="mb-4">
-        当サービスは、複数のユーザーが協力して作業を行うことを前提とした設計となっており、
-        以下のデータは全ユーザー間で共有されます。
-      </p>
-      <ul class="list-disc list-inside space-y-2 mb-4">
-        <li>商品情報（商品名、品番、価格、カテゴリー等）</li>
-        <li>原材料情報（原材料名、在庫数量、発注数量等）</li>
-        <li>製造計画情報（計画名、期間、商品数量、予想売上等）</li>
-        <li>カテゴリー・単位情報</li>
-        <li>データの作成者・編集者の氏名および編集日時（履歴として記録）</li>
-      </ul>
-      <p class="mb-4">
-        ユーザーは、当サービスに登録することにより、上記データが他のユーザーと共有されることに同意したものとみなされます。
-      </p>
+      <!-- 第4条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('privacy_content.article_4.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('privacy_content.article_4.paragraph_1') %></p>
+          <p><%= t('privacy_content.article_4.paragraph_2') %></p>
+        </div>
+      </div>
 
-      <h3 class="text-xl font-semibold mb-2">4.2 第三者への提供</h3>
-      <p class="mb-4">
-        運営者は、以下の場合を除き、ユーザーの個人情報を第三者に提供することはありません。
-      </p>
-      <ul class="list-disc list-inside space-y-2">
-        <li>ユーザーの同意がある場合</li>
-        <li>法令に基づく場合</li>
-        <li>人の生命、身体または財産の保護のために必要がある場合であって、本人の同意を得ることが困難である場合</li>
-        <li>国の機関もしくは地方公共団体またはその委託を受けた者が法令の定める事務を遂行することに対して協力する必要がある場合</li>
-      </ul>
-    </section>
+      <!-- 第5条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('privacy_content.article_5.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('privacy_content.article_5.content') %></p>
+        </div>
+      </div>
 
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">5. 情報の安全管理</h2>
-      <p class="mb-4">
-        運営者は、個人情報の漏洩、滅失または毀損の防止その他の個人情報の安全管理のために、以下の措置を講じます。
-      </p>
-      <ul class="list-disc list-inside space-y-2">
-        <li>パスワードの暗号化保存（bcrypt アルゴリズムによる暗号化）</li>
-        <li>SSL/TLS による通信の暗号化</li>
-        <li>アクセス制限（ログインしたユーザーのみがデータにアクセス可能）</li>
-        <li>データの変更履歴の記録（PaperTrail による自動記録）</li>
-        <li>定期的なセキュリティアップデート</li>
-        <li>不正アクセスの監視</li>
-      </ul>
-      <p class="mt-4">
-        ただし、運営者は、完全なセキュリティを保証するものではなく、不正アクセス、ハッキング、
-        その他の事情により個人情報が漏洩した場合でも、運営者の故意または重過失による場合を除き、
-        一切の責任を負いません。
-      </p>
-    </section>
+      <!-- 第6条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('privacy_content.article_6.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('privacy_content.article_6.content') %></p>
+        </div>
+      </div>
 
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">6. Cookie（クッキー）の使用</h2>
-      <p class="mb-4">
-        当サービスは、ユーザーの利便性向上のために Cookie を使用しています。
-      </p>
-      <h3 class="text-xl font-semibold mb-2">6.1 Cookie の利用目的</h3>
-      <ul class="list-disc list-inside space-y-2 mb-4">
-        <li>ログイン状態の保持（セッション管理）</li>
-        <li>「ログイン状態を保持する」機能の実現</li>
-        <li>ユーザーの設定（言語、テーマ等）の保存</li>
-        <li>アクセス解析（Google Analytics 等）</li>
-      </ul>
-      <h3 class="text-xl font-semibold mb-2">6.2 Cookie の無効化</h3>
-      <p>
-        ユーザーは、ブラウザの設定により Cookie を無効化することができますが、
-        その場合、当サービスの一部機能が正常に動作しない可能性があります。
-      </p>
-    </section>
+      <!-- 第7条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('privacy_content.article_7.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('privacy_content.article_7.content') %></p>
+        </div>
+      </div>
 
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">7. アクセス解析ツール</h2>
-      <p class="mb-4">
-        当サービスは、サービス改善のために Google Analytics 等のアクセス解析ツールを使用する場合があります。
-        これらのツールは Cookie を使用して、個人を特定しない形式でアクセス情報を収集します。
-      </p>
-      <p>
-        詳細については、Google Analytics の利用規約およびプライバシーポリシーをご確認ください。
-      </p>
-    </section>
+      <div class="mt-4">
+        <p class="text-muted"><%= t('static_pages.contact_via_help') %></p>
+      </div>
 
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">8. 個人情報の開示、訂正、削除</h2>
-      <p class="mb-4">
-        ユーザーは、当サービス内の設定画面から、自己の個人情報の確認、訂正、削除を行うことができます。
-      </p>
-      <h3 class="text-xl font-semibold mb-2">8.1 開示</h3>
-      <p class="mb-4">
-        ユーザーは、アカウント設定画面から自己の個人情報を確認することができます。
-      </p>
-      <h3 class="text-xl font-semibold mb-2">8.2 訂正</h3>
-      <p class="mb-4">
-        ユーザーは、アカウント設定画面から氏名、メールアドレス等の個人情報を変更することができます。
-      </p>
-      <h3 class="text-xl font-semibold mb-2">8.3 削除（アカウントの削除）</h3>
-      <p class="mb-4">
-        ユーザーは、管理者に依頼することで、アカウントおよび個人情報を削除することができます。
-        ただし、以下の点にご注意ください。
-      </p>
-      <ul class="list-disc list-inside space-y-2">
-        <li>アカウント削除後は、当サービスにログインできなくなります</li>
-        <li>ユーザーが作成したデータ（商品、原材料、製造計画等）は、他のユーザーとの共有データのため削除されません</li>
-        <li>データの変更履歴に記録された氏名は、履歴の整合性を保つため削除されません</li>
-        <li>削除されたアカウントは復旧できません</li>
-      </ul>
-    </section>
+      <!-- 戻るリンク -->
+      <% back_url = if request.referer.present?
+                      request.referer
+                    else
+                      user_signed_in? ? authenticated_root_path : new_user_session_path
+                    end %>
 
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">9. データの保管期間</h2>
-      <ul class="list-disc list-inside space-y-2">
-        <li>アカウント情報: アカウント削除まで保管</li>
-        <li>ログイン履歴: 6ヶ月間保管</li>
-        <li>操作履歴（PaperTrail）: 1年間保管（自動削除タスクにより定期削除）</li>
-        <li>商品・原材料・製造計画データ: ユーザーが削除するまで保管</li>
-      </ul>
-    </section>
-
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">10. お問い合わせ窓口</h2>
-      <p class="mb-4">
-        本プライバシーポリシーに関するお問い合わせ、個人情報の開示・訂正・削除のご依頼は、
-        当サービス内のヘルプページからお願いいたします。
-      </p>
-    </section>
-
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">11. プライバシーポリシーの変更</h2>
-      <p>
-        運営者は、必要に応じて本プライバシーポリシーを変更することがあります。
-        変更後のプライバシーポリシーは、当サービス上に掲示された時点から効力を生じるものとします。
-        重要な変更がある場合は、ユーザーに通知します。
-      </p>
-    </section>
-  </div>
-
-  <div class="mt-8 text-center">
-    <%= link_to "トップページに戻る", root_path, class: "text-blue-600 hover:underline" %>
+      <%= render 'shared/actions/back_link', url: back_url %>
+    </div>
   </div>
 </div>
