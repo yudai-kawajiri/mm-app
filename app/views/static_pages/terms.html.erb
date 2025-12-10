@@ -1,0 +1,192 @@
+<% content_for :title, t('terms.title') %>
+
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <h1 class="mb-4"><%= t('terms.title') %></h1>
+      <p class="text-muted mb-4"><%= t('terms.last_updated') %>: <%= l(Date.parse('2025-12-10'), format: :long) %></p>
+
+      <div class="card mb-4">
+        <div class="card-body">
+          <p><%= t('terms_content.intro', app_name: t('application_name')) %></p>
+        </div>
+      </div>
+
+      <!-- 第1条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_1.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= simple_format(t('terms_content.article_1.content')) %></p>
+        </div>
+      </div>
+
+      <!-- 第2条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_2.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('terms_content.article_2.content') %></p>
+          <ul>
+            <% t('terms_content.article_2.features').each do |feature| %>
+              <li><%= feature %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 第3条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_3.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('terms_content.article_3.paragraph_1') %></p>
+          <p><%= t('terms_content.article_3.paragraph_2') %></p>
+          <ul>
+            <% t('terms_content.article_3.reasons').each do |reason| %>
+              <li><%= reason %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 第4条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_4.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('terms_content.article_4.paragraph_1') %></p>
+          <p><%= t('terms_content.article_4.paragraph_2') %></p>
+          <p><%= t('terms_content.article_4.paragraph_3') %></p>
+        </div>
+      </div>
+
+      <!-- 第5条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_5.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('terms_content.article_5.paragraph_1') %></p>
+          <p><%= t('terms_content.article_5.paragraph_2') %></p>
+        </div>
+      </div>
+
+      <!-- 第6条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_6.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('terms_content.article_6.intro') %></p>
+          <ul>
+            <% t('terms_content.article_6.items').each do |item| %>
+              <li><%= item %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 第7条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_7.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('terms_content.article_7.paragraph_1') %></p>
+          <ul>
+            <% t('terms_content.article_7.reasons').each do |reason| %>
+              <li><%= reason %></li>
+            <% end %>
+          </ul>
+          <p><%= t('terms_content.article_7.paragraph_2') %></p>
+        </div>
+      </div>
+
+      <!-- 第8条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_8.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('terms_content.article_8.paragraph_1') %></p>
+          <ul>
+            <% t('terms_content.article_8.reasons').each do |reason| %>
+              <li><%= reason %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 第9条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_9.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('terms_content.article_9.paragraph_1') %></p>
+          <ul>
+            <% t('terms_content.article_9.no_guarantee').each do |item| %>
+              <li><%= item %></li>
+            <% end %>
+          </ul>
+          <p><%= t('terms_content.article_9.paragraph_2') %></p>
+        </div>
+      </div>
+
+      <!-- 第10条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_10.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('terms_content.article_10.content') %></p>
+        </div>
+      </div>
+
+      <!-- 第11条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_11.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('terms_content.article_11.content') %></p>
+        </div>
+      </div>
+
+      <!-- 第12条 -->
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><%= t('terms_content.article_12.title') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('terms_content.article_12.paragraph_1') %></p>
+          <p><%= t('terms_content.article_12.paragraph_2') %></p>
+        </div>
+      </div>
+
+      <!-- お問い合わせセクション -->
+      <div class="mt-4 text-center">
+        <p class="text-muted mb-3"><%= t('static_pages.contact_via_help') %></p>
+        <%= link_to new_contact_path, class: "btn btn-outline-primary" do %>
+          <i class="bi bi-envelope"></i> <%= t('static_pages.contact_form_link') %>
+        <% end %>
+      </div>
+
+      <!-- 戻るリンク -->
+      <div class="mt-4 text-center">
+        <% back_url = if request.referer.present? && request.referer != request.original_url
+                        request.referer
+                      else
+                        user_signed_in? ? authenticated_root_path : new_user_session_path
+                      end %>
+
+        <%= render 'shared/actions/back_link', url: back_url %>
+      </div>
+    </div>
+  </div>
+</div>
