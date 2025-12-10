@@ -60,7 +60,7 @@ ja:
       updated: "パスワードを更新しました"
       new:
         title: "パスワードを忘れた方"
-        submit: "パスワード再設定のメールを送信"
+        submit: "送信"
         description: "登録したメールアドレスにパスワード再設定のリンクをお送りします"
         email_placeholder: "example@example.com"
         email_help: "登録時に使用したメールアドレスを入力してください"
@@ -94,7 +94,7 @@ ja:
         greeting: "こんにちは、%{name}さん！"
         message: "パスワードが変更されたことをお知らせします。"
       reset_password_instructions:
-        subject: "【製造管理システム】パスワード再設定のご案内"
+        subject: "【MM-Appシステム】パスワード再設定のご案内"
         greeting: "こんにちは %{name} さん！"
         action: "パスワードの変更"
         instruction_1: "パスワードをリセットするには、以下のリンクをクリックしてください。"

@@ -147,6 +147,7 @@ ja:
 
   helpers:
     no_setting: "未設定"
+    required_mark: "<span class='text-danger'>*</span>"
     prompt:
       select: "選択してください"
     submit:
@@ -609,7 +610,7 @@ ja:
         message: "お問い合わせ内容"
 
   landing:
-    title: "製造管理システム"
+    title: "MM-App"
     subtitle: "製造業向けの包括的な生産管理・数値管理システム"
     welcome: "ようこそ"
     description: "原材料管理から製造計画、売上予測まで一元管理"
@@ -797,7 +798,7 @@ ja:
       message: "お問い合わせ内容"
       message_placeholder: "具体的なお問い合わせ内容をご記入ください"
       message_hint: "最大5000文字まで入力できます"
-      submit: "送信する"
+      submit: "送信"
     messages:
       success_with_response_time: "お問い合わせを送信しました。通常2〜3営業日以内にご返信いたします。"
       failure: "お問い合わせの送信に失敗しました。"
