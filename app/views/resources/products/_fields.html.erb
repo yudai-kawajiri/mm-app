@@ -154,7 +154,8 @@
             wrapper_class: 'mb-0',
             rows: 4,
             character_counter: true,
-            max_length: Resources::Product::DESCRIPTION_MAX_LENGTH
+            max_length: Resources::Product::DESCRIPTION_MAX_LENGTH,
+            help_text: t('helpers.character_counter.max_hint', max: Resources::Material::DESCRIPTION_MAX_LENGTH)
         ) %>
       </div>
     </div>
