@@ -24,7 +24,7 @@ module CategoryFetchable
     db_value = Resources::Category.category_types[type_key.to_sym]
 
     if db_value.present? || db_value == 0
-      current_user.categories.where(category_type: db_value).order(:name)
+      Resources::Category.where(category_type: db_value).order(:name)
     else
       Resources::Category.none
     end

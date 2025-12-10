@@ -76,8 +76,8 @@ RSpec.describe Planning::PlanProduct, type: :model do
     let(:unit) { create(:unit, user: user, category: :production) }
     let(:material) { create(:material, user: user, unit_for_product: unit) }
     let!(:product_material) do
-      create(:product_material, 
-        product: product, 
+      create(:product_material,
+        product: product,
         material: material,
         unit: unit,  # ProductMaterialのunit
         quantity: 2,
@@ -87,10 +87,10 @@ RSpec.describe Planning::PlanProduct, type: :model do
 
     it '原材料必要量を正しく計算すること' do
       requirements = plan_product.material_requirements
-      
+
       expect(requirements).to be_an(Array)
       expect(requirements.size).to eq(1)
-      
+
       requirement = requirements.first
       expect(requirement[:material]).to eq(material)
       expect(requirement[:material_id]).to eq(material.id)

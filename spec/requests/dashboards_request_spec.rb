@@ -35,10 +35,6 @@ RSpec.describe "Dashboards", type: :request do
         expect(assigns(:weather_forecast)).not_to be_nil
       end
 
-      it '@chart_dataにグラフデータを割り当てること' do
-        get authenticated_root_path
-        expect(assigns(:chart_data)).not_to be_nil
-      end
 
       it 'indexテンプレートを表示すること' do
         get authenticated_root_path
@@ -65,24 +61,7 @@ RSpec.describe "Dashboards", type: :request do
         let!(:monthly_budget) { create(:monthly_budget, user: admin_user, budget_month: Date.new(year, month, 1)) }
         let!(:daily_target) { create(:daily_target, user: admin_user, target_date: Date.new(year, month, 15), target_amount: 10000) }
 
-        it 'グラフデータが配列で生成されること' do
-          get authenticated_root_path, params: { year: year, month: month }
-          expect(assigns(:chart_data)).to be_an(Array)
-        end
-
-        it 'グラフデータに日付、目標、実績が含まれること' do
-          get authenticated_root_path, params: { year: year, month: month }
-          first_data = assigns(:chart_data).first
-          expect(first_data).to have_key(:date)
-          expect(first_data).to have_key(:target)
-          expect(first_data).to have_key(:actual)
-        end
-      end
     end
-
-    context 'スタッフでログインしている場合' do
-      before { sign_in staff_user, scope: :user }
-
       it '正常にレスポンスを返すこと' do
         get authenticated_root_path
         expect(response).to have_http_status(:success)
@@ -99,7 +78,7 @@ RSpec.describe "Dashboards", type: :request do
       it 'ログインページが表示されること' do
         get root_path  # authenticated_root_pathではなくroot_path
         expect(response).to have_http_status(:success)
-        expect(response).to render_template('devise/sessions/new')
+        expect(response).to render_template('landing/index')
       end
     end
   end

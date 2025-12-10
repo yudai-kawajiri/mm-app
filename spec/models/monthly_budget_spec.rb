@@ -27,27 +27,26 @@ RSpec.describe Management::MonthlyBudget, type: :model do
       expect(budget.errors[:target_amount]).to be_present
     end
 
-    it '同じユーザーで同じ月の予算が重複していれば無効であること' do
-      user = create(:user)
-      create(:monthly_budget, user: user, budget_month: Date.current.beginning_of_month)
-      budget = build(:monthly_budget, user: user, budget_month: Date.current.beginning_of_month)
+    it '同じ月の予算が重複していれば無効であること' do
+      specific_month = Date.new(2025, 6, 1)
+      create(:monthly_budget, budget_month: specific_month)
+      budget = build(:monthly_budget, budget_month: specific_month)
       budget.valid?
       expect(budget.errors[:budget_month]).to be_present
-    end
-
-    it '異なるユーザーであれば同じ月でも有効であること' do
-      user1 = create(:user)
-      user2 = create(:user)
-      create(:monthly_budget, user: user1, budget_month: Date.current.beginning_of_month)
-      budget = build(:monthly_budget, user: user2, budget_month: Date.current.beginning_of_month)
-      expect(budget).to be_valid
     end
   end
 
   describe 'アソシエーション' do
-    it 'ユーザーに属していること' do
-      budget = create(:monthly_budget)
-      expect(budget.user).to be_present
+    it 'ユーザーとの関連が任意であること' do
+      budget = create(:monthly_budget, user: nil)
+      expect(budget).to be_valid
+      expect(budget.user).to be_nil
+    end
+
+    it 'ユーザーを設定できること' do
+      user = create(:user)
+      budget = create(:monthly_budget, user: user)
+      expect(budget.user).to eq(user)
     end
   end
 end

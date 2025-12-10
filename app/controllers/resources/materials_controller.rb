@@ -43,6 +43,7 @@ class Resources::MaterialsController < AuthenticatedController
   #
   # @return [void]
   def new
+    @material_categories = Resources::Category.material.where(user_id: current_user.id)
     @material = Resources::Material.new
     @material.user_id = current_user.id
   end
@@ -64,7 +65,9 @@ class Resources::MaterialsController < AuthenticatedController
   # 原材料編集フォーム
   #
   # @return [void]
-  def edit; end
+  def edit
+    @material_categories = Resources::Category.material.where(user_id: current_user.id)
+  end
 
   # 原材料を更新
   #
@@ -98,7 +101,7 @@ class Resources::MaterialsController < AuthenticatedController
   #
   # @return [void]
   def reorder
-    params[:material].each_with_index do |id, index|
+    params[:material_ids].each_with_index do |id, index|
       Resources::Material.find(id).update(display_order: index + 1)
     end
 

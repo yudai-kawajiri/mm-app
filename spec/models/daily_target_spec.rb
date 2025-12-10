@@ -21,22 +21,26 @@ RSpec.describe Management::DailyTarget, type: :model do
       expect(target.errors[:target_amount]).to include('を入力してください')
     end
 
-    # 削除: 目標金額が0以下なら無効であること（バリデーションが存在しない）
-
-    it '同じユーザーで同じ日の目標が重複していれば無効であること' do
-      user = create(:user)
-      monthly_budget = create(:monthly_budget, user: user)
-      create(:daily_target, user: user, monthly_budget: monthly_budget, target_date: Date.current)
-      target = build(:daily_target, user: user, monthly_budget: monthly_budget, target_date: Date.current)
+    it '同じ日の目標が重複していれば無効であること' do
+      monthly_budget = create(:monthly_budget)
+      create(:daily_target, monthly_budget: monthly_budget, target_date: Date.current)
+      target = build(:daily_target, monthly_budget: monthly_budget, target_date: Date.current)
       target.valid?
       expect(target.errors[:target_date]).to be_present
     end
   end
 
   describe 'アソシエーション' do
-    it 'ユーザーに属していること' do
-      target = create(:daily_target)
-      expect(target.user).to be_present
+    it 'ユーザーとの関連が任意であること' do
+      target = create(:daily_target, user: nil)
+      expect(target).to be_valid
+      expect(target.user).to be_nil
+    end
+
+    it 'ユーザーを設定できること' do
+      user = create(:user)
+      target = create(:daily_target, user: user)
+      expect(target.user).to eq(user)
     end
 
     it '月間予算に属していること' do

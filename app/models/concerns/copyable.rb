@@ -25,12 +25,12 @@ module Copyable
     class_attribute :copy_config, default: {
       name_format: ->(original_name, copy_count) { "#{original_name} (コピー#{copy_count})" },
       uniqueness_scope: :name,
-      uniqueness_check_attributes: [:name],
+      uniqueness_check_attributes: [ :name ],
       associations_to_copy: [],
       association_copy_attributes: {},
       status_on_copy: nil,
       additional_attributes: {},
-      skip_attributes: [:created_at, :updated_at, :id]
+      skip_attributes: [ :created_at, :updated_at, :id ]
     }
   end
 
@@ -104,10 +104,10 @@ module Copyable
     base_reading = reading if respond_to?(:reading)
 
     # 元の名前から「(コピー〇)」部分を削除して、真のベース名を取得
-    original_name = base_name.sub(/\s*\(コピー\d+\).*\z/, '')
+    original_name = base_name.sub(/\s*\(コピー\d+\).*\z/, "")
 
     # 元の読み仮名から「こぴー」部分を削除して、真のベース読み仮名を取得
-    original_reading = base_reading ? base_reading.sub(/こぴー.*\z/, '') : nil
+    original_reading = base_reading ? base_reading.sub(/こぴー.*\z/, "") : nil
 
     copy_count = 1
 
@@ -131,7 +131,7 @@ module Copyable
   def generate_reading_for_copy(original_reading, copy_count)
     # 元の読み仮名に「こぴー」を1回だけ追加して、その後に番号を示す「いち」「に」などを追加
     # 11回以上は「こぴー」を繰り返す（ひらがなのみのバリデーション対応）
-    reading_numbers = ['', 'いち', 'に', 'さん', 'よん', 'ご', 'ろく', 'なな', 'はち', 'きゅう', 'じゅう']
+    reading_numbers = [ "", "いち", "に", "さん", "よん", "ご", "ろく", "なな", "はち", "きゅう", "じゅう" ]
     if copy_count <= 10
       "#{original_reading}こぴー#{reading_numbers[copy_count]}"
     else
@@ -204,12 +204,12 @@ module Copyable
     # コピーする属性を取得
     copy_attributes = if copy_config[:association_copy_attributes][association_name].present?
                         copy_config[:association_copy_attributes][association_name]
-                      else
+    else
                         # デフォルト: すべての属性（id, timestamps, 外部キーを除く）
                         original_record.attributes.keys.map(&:to_sym) -
-                          [:id, :created_at, :updated_at] -
-                          [association_foreign_key(association_name)]
-                      end
+                          [ :id, :created_at, :updated_at ] -
+                          [ association_foreign_key(association_name) ]
+    end
 
     # 属性をコピー
     attributes = copy_attributes.index_with { |attr| original_record.send(attr) }

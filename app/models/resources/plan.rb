@@ -31,7 +31,7 @@ class Resources::Plan < ApplicationRecord
   # ステータス変更制限を追加
   restrict_status_change_if_used_in :plan_schedules,
                                     foreign_key: :plan_id,
-                                    class_name: 'Planning::PlanSchedule'
+                                    class_name: "Planning::PlanSchedule"
 
   # 関連付け
   belongs_to :category, class_name: "Resources::Category"

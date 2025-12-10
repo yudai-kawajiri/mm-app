@@ -51,8 +51,8 @@ class Planning::PlanSchedule < ApplicationRecord
   # @param user [User] ユーザー
   # @param date [Date] 対象日
   # @return [Array<Hash>] 材料必要量の配列
-  def self.material_requirements_for_date(user, date)
-    schedules = where(user: user, scheduled_date: date)
+  def self.material_requirements_for_date(date)
+    schedules = where(scheduled_date: date)
                 .includes(plan: { plan_products: { product: { product_materials: [ :material, :unit ] } } })
 
     requirements = {}
