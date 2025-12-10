@@ -27,6 +27,8 @@
       <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
     </div>
 
+    <%= render 'shared/terms_privacy_agreement' %>
+
     <div class="d-grid gap-2">
       <%= f.submit t('helpers.submit.create'), class: "btn btn-success btn-lg" %>
     </div>
