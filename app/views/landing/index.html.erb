@@ -4,7 +4,6 @@
       <!-- ヘッダー -->
       <div class="text-center mb-5">
         <h1 class="display-4 mb-3">
-          <i class="bi bi-clipboard-check"></i>
           <%= t('landing.title') %>
         </h1>
         <p class="lead text-muted">
@@ -15,7 +14,6 @@
       <!-- メインカード -->
       <div class="card shadow mb-5">
         <div class="card-body p-4 p-md-5">
-          <h2 class="h3 text-center mb-3"><%= t('landing.welcome') %></h2>
           <p class="text-center text-muted mb-4">
             <%= t('landing.description') %>
           </p>
@@ -23,13 +21,11 @@
           <div class="row g-3">
             <div class="col-md-6">
               <%= link_to new_user_session_path, class: "btn btn-primary btn-lg w-100" do %>
-                <i class="bi bi-box-arrow-in-right me-2"></i>
                 <%= t('landing.login_button') %>
               <% end %>
             </div>
             <div class="col-md-6">
               <%= link_to new_user_registration_path, class: "btn btn-outline-secondary btn-lg w-100" do %>
-                <i class="bi bi-person-plus me-2"></i>
                 <%= t('landing.signup_button') %>
               <% end %>
             </div>
