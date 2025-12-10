@@ -15,6 +15,10 @@ Rails.application.routes.draw do
     get "/users", to: redirect("/")
   end
 
+  # 利用規約・プライバシーポリシー（未ログインでもアクセス可能）
+  get 'terms', to: 'static_pages#terms', as: :terms
+  get 'privacy', to: 'static_pages#privacy', as: :privacy
+
   # ====================
   # 設定・ヘルプ
   # ====================
