@@ -27,7 +27,6 @@ Rails.application.routes.draw do
 
   # お問い合わせ
   resources :contacts, only: [:new, :create]
-  get '/contact/thanks', to: 'contacts#thanks', as: :contact_thanks
 
   # ====================
   # 管理者機能

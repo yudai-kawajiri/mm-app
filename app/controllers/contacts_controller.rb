@@ -1,5 +1,4 @@
 class ContactsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:new, :create]
 
   def new
     @contact = Contact.new
@@ -10,16 +9,12 @@ class ContactsController < ApplicationController
 
     if @contact.valid?
       # メール送信処理（後で実装）
-      ContactMailer.contact_email(@contact).deliver_later
+      ContactMailer.contact_email(@contact).deliver_now
 
-      redirect_to contact_thanks_path, notice: t('contacts.messages.success')
+      redirect_to authenticated_root_path, notice: t('contacts.messages.success_with_response_time')
     else
       render :new, status: :unprocessable_entity
     end
-  end
-
-  def thanks
-    # お問い合わせ送信完了ページ
   end
 
   private

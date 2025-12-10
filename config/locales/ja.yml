@@ -150,6 +150,7 @@ ja:
     links:
       destroy: "削除"
     character_counter:
+      max_hint: "最大%{max}文字まで入力できます"
       hint: "%{current} / %{max} 文字(残り %{remaining} 文字)"
     confirm:
       destroy: "本当にこの%{resource}を削除してもよろしいですか?"
@@ -278,6 +279,7 @@ ja:
       settings: "設定"
       help: "使い方・ヘルプ"
       account_settings: "アカウント設定"
+      contact: "お問い合わせ"
       terms: "利用規約"
       privacy_policy: "プライバシーポリシー"
       logout: "ログアウト"
@@ -636,7 +638,7 @@ ja:
   # 静的ページ共通
   static_pages:
     back_to_login: "ログインページに戻る"
-    back_to_dashboard: "ダッシュボードに戻る"
+    contact_form_link: "お問い合わせフォームへ"
     contact_via_help: "本規約に関するお問い合わせは、"
 
   # 利用規約コンテンツ
@@ -791,15 +793,12 @@ ja:
       message_placeholder: "具体的なお問い合わせ内容をご記入ください"
       message_hint: "最大5000文字まで入力できます"
       submit: "送信する"
-    thanks:
-      title: "送信完了"
-      message: "お問い合わせいただきありがとうございます。"
-      response_time: "通常、2〜3営業日以内にご返信いたします。"
     messages:
-      success: "お問い合わせを送信しました。"
+      success_with_response_time: "お問い合わせを送信しました。通常2〜3営業日以内にご返信いたします。"
       failure: "お問い合わせの送信に失敗しました。"
 
   contact_mailer:
+    subject: "【MM-App】お問い合わせを受け付けました"
     contact_email:
       title: "お問い合わせがありました"
       name_label: "お名前"

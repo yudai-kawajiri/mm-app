@@ -1,5 +1,4 @@
 class ContactMailer < ApplicationMailer
-  default from: 'noreply@mm-app.com'
 
   def contact_email(contact)
     @contact = contact

@@ -26,10 +26,26 @@
               <%= f.text_field :subject, class: 'form-control', placeholder: t('contacts.form.subject_placeholder') %>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3"
+                 data-controller="input--character-counter"
+                 data-input--character-counter-max-value="5000">
               <%= f.label :message, t('contacts.form.message'), class: 'form-label' %>
-              <%= f.text_area :message, rows: 8, class: 'form-control', placeholder: t('contacts.form.message_placeholder') %>
-              <div class="form-text"><%= t('contacts.form.message_hint') %></div>
+              <%= f.text_area :message,
+                  rows: 8,
+                  class: 'form-control',
+                  placeholder: t('contacts.form.message_placeholder'),
+                  maxlength: 5000,
+                  data: {
+                    input__character_counter_target: "input",
+                    action: "input->input--character-counter#updateCount"
+                  } %>
+              <div class="form-text d-flex justify-content-between align-items-center mt-1">
+                <span><%= t('contacts.form.message_hint') %></span>
+                <span>
+                  <span data-input--character-counter-target="count" class="text-muted">0</span> / 5000 文字
+                  (残り <span data-input--character-counter-target="remaining" class="text-muted">5000</span> 文字)
+                </span>
+              </div>
             </div>
 
             <div class="d-grid gap-2">
