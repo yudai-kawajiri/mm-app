@@ -21,4 +21,5 @@
 <%= form_group_lg(f, :description,
                   field_type: :text_area,
                   character_counter: true,
-                  max_length: Resources::Category::DESCRIPTION_MAX_LENGTH) %>
+                  max_length: Resources::Category::DESCRIPTION_MAX_LENGTH,
+                  help_text: t('helpers.character_counter.max_hint', max: Resources::Material::DESCRIPTION_MAX_LENGTH)a) %>

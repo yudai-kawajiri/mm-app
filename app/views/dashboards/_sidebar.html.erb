@@ -74,7 +74,7 @@
 
     <%# 設定メニュー（サブメニュー付き） %>
     <% settings_collapse_id = 'collapse-settings' %>
-    <% settings_is_active = current_page?(help_path) || current_page?(edit_user_registration_path) || current_page?(terms_path) || current_page?(privacy_path) %>
+    <% settings_is_active = current_page?(help_path) || current_page?(edit_user_registration_path) || current_page?(terms_path) || current_page?(privacy_path) || current_page?(new_contact_path) %>
 
     <a href="#"
         class="list-group-item list-group-item-action <%= 'active' if settings_is_active %>"
@@ -100,6 +100,11 @@
       <%= link_to help_path,
           class: "list-group-item list-group-item-action ps-4 #{current_page?(help_path) ? 'active' : ''}" do %>
         <%= submenu_indicator %><%= t('dashboard.menu.help') %>
+      <% end %>
+
+      <%= link_to new_contact_path,
+          class: "list-group-item list-group-item-action ps-4 #{current_page?(new_contact_path) ? 'active' : ''}" do %>
+        <%= submenu_indicator %><%= t('dashboard.menu.contact') %>
       <% end %>
 
       <%= link_to terms_path,

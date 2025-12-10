@@ -14,11 +14,11 @@
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-search"></i></span>
         <input type="text"
-               class="form-control"
-               id="helpSearch"
-               placeholder="<%= t('help.search.placeholder') %>"
-               data-help-search-target="input"
-               data-action="input->help-search#search">
+                class="form-control"
+                id="helpSearch"
+                placeholder="<%= t('help.search.placeholder') %>"
+                data-help-search-target="input"
+                data-action="input->help-search#search">
       </div>
     </div>
   </div>
@@ -32,7 +32,7 @@
       <%= t('help.search.no_videos_found') %>
     </div>
 
-    <!-- 基本操作(初期状態: 折りたたみ) -->
+    <!-- 基本操作 -->
     <div class="mb-3" data-help-search-target="videoCategory">
       <h5 class="mb-2">
         <a class="text-decoration-none d-block"
@@ -79,7 +79,7 @@
       </div>
     </div>
 
-    <!-- 数値管理(初期状態: 折りたたみ) -->
+    <!-- 数値管理 -->
     <div class="mb-3" data-help-search-target="videoCategory">
       <h5 class="mb-2">
         <a class="text-decoration-none d-block"
@@ -120,7 +120,7 @@
       </div>
     </div>
 
-    <!-- リソース管理(初期状態: 折りたたみ) -->
+    <!-- リソース管理 -->
     <div class="mb-3" data-help-search-target="videoCategory">
       <h5 class="mb-2">
         <a class="text-decoration-none d-block"
@@ -135,57 +135,57 @@
       <div class="collapse" id="collapseResource">
         <div class="row g-3">
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.category'),
-                     youtube_id: t('help.videos.category.youtube_id'),
-                     title: t('help.videos.category.title'),
-                     description: t('help.videos.category.description') %>
+                      keywords: t('help.video_keywords.category'),
+                      youtube_id: t('help.videos.category.youtube_id'),
+                      title: t('help.videos.category.title'),
+                      description: t('help.videos.category.description') %>
 
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.unit'),
-                     youtube_id: t('help.videos.unit.youtube_id'),
-                     title: t('help.videos.unit.title'),
-                     description: t('help.videos.unit.description') %>
+                      keywords: t('help.video_keywords.unit'),
+                      youtube_id: t('help.videos.unit.youtube_id'),
+                      title: t('help.videos.unit.title'),
+                      description: t('help.videos.unit.description') %>
 
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.material'),
-                     youtube_id: t('help.videos.material.youtube_id'),
-                     title: t('help.videos.material.title'),
-                     description: t('help.videos.material.description') %>
+                      keywords: t('help.video_keywords.material'),
+                      youtube_id: t('help.videos.material.youtube_id'),
+                      title: t('help.videos.material.title'),
+                      description: t('help.videos.material.description') %>
 
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.order_group'),
-                     youtube_id: t('help.videos.order_group.youtube_id'),
-                     title: t('help.videos.order_group.title'),
-                     description: t('help.videos.order_group.description') %>
+                      keywords: t('help.video_keywords.order_group'),
+                      youtube_id: t('help.videos.order_group.youtube_id'),
+                      title: t('help.videos.order_group.title'),
+                      description: t('help.videos.order_group.description') %>
 
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.product'),
-                     youtube_id: t('help.videos.product.youtube_id'),
-                     title: t('help.videos.product.title'),
-                     description: t('help.videos.product.description') %>
+                      keywords: t('help.video_keywords.product'),
+                      youtube_id: t('help.videos.product.youtube_id'),
+                      title: t('help.videos.product.title'),
+                      description: t('help.videos.product.description') %>
         </div>
       </div>
     </div>
 
-    <!-- 製造計画(初期状態: 折りたたみ) -->
+    <!-- 製造計画 -->
     <div class="mb-3" data-help-search-target="videoCategory">
       <h5 class="mb-2">
         <a class="text-decoration-none d-block"
-           data-bs-toggle="collapse"
-           href="#collapsePlan"
-           role="button"
-           aria-expanded="false"
-           aria-controls="collapsePlan">
+            data-bs-toggle="collapse"
+            href="#collapsePlan"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapsePlan">
           <%= t('help.ui.expand_arrow') %> <%= t('help.categories.production_planning') %>
         </a>
       </h5>
       <div class="collapse" id="collapsePlan">
         <div class="row g-3">
           <%= render 'shared/video_card',
-                     keywords: t('help.video_keywords.plan'),
-                     youtube_id: t('help.videos.plan.youtube_id'),
-                     title: t('help.videos.plan.title'),
-                     description: t('help.videos.plan.description') %>
+                      keywords: t('help.video_keywords.plan'),
+                      youtube_id: t('help.videos.plan.youtube_id'),
+                      title: t('help.videos.plan.title'),
+                      description: t('help.videos.plan.description') %>
         </div>
       </div>
     </div>

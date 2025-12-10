@@ -94,18 +94,24 @@
         </div>
       </div>
 
-      <div class="mt-4">
-        <p class="text-muted"><%= t('static_pages.contact_via_help') %></p>
+      <!-- お問い合わせセクション -->
+      <div class="mt-4 text-center">
+        <p class="text-muted mb-3"><%= t('static_pages.contact_via_help') %></p>
+        <%= link_to new_contact_path, class: "btn btn-outline-primary" do %>
+          <i class="bi bi-envelope"></i> <%= t('static_pages.contact_form_link') %>
+        <% end %>
       </div>
 
       <!-- 戻るリンク -->
-      <% back_url = if request.referer.present?
-                      request.referer
-                    else
-                      user_signed_in? ? authenticated_root_path : new_user_session_path
-                    end %>
+      <div class="mt-4 text-center">
+        <% back_url = if request.referer.present? && request.referer != request.original_url
+                        request.referer
+                      else
+                        user_signed_in? ? authenticated_root_path : new_user_session_path
+                      end %>
 
-      <%= render 'shared/actions/back_link', url: back_url %>
+        <%= render 'shared/actions/back_link', url: back_url %>
+      </div>
     </div>
   </div>
 </div>

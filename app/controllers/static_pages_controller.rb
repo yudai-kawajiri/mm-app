@@ -13,14 +13,10 @@ class StaticPagesController < ApplicationController
   # 利用規約ページ
   #
   # @return [void]
-  def terms
-    # 利用規約を表示
-  end
+  def terms; end
 
   # プライバシーポリシーページ
   #
   # @return [void]
-  def privacy
-    # プライバシーポリシーを表示
-  end
+  def privacy; end
 end
