@@ -159,7 +159,7 @@ class Resources::PlansController < AuthenticatedController
       @budget = nil
     end
 
-    # ⭐ 重要：印刷元によってデータソースを切り替え
+    # 印刷元によってデータソースを切り替え
     if from_daily && @plan_schedule&.has_snapshot?
       # 日別詳細から印刷：スナップショットを使用
       @plan_products_for_print = @plan_schedule.snapshot_products
