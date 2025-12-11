@@ -104,6 +104,18 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   # ====================
+  # Bullet gem 設定（N+1クエリ検出）
+  # ====================
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.alert = true
+    Bullet.bullet_logger = true
+    Bullet.console = true
+    Bullet.rails_logger = true
+    Bullet.add_footer = true
+  end
+
+  # ====================
   # 開発支援機能（コメントアウト）
   # ====================
   # 翻訳ファイルがない場合にエラーを発生させる（i18n開発時に有効化）
