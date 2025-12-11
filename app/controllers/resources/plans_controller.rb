@@ -192,11 +192,8 @@ class Resources::PlansController < AuthenticatedController
     end
 
     # 原材料サマリーを取得（display_order 順）
+    # 原材料サマリーを取得（display_order 順）
     @materials_summary = @plan.calculate_materials_summary
-                              .sort_by do |material_data|
-                                material = Resources::Material.find(material_data[:material_id])
-                                [ material.display_order || Resources::Plan::DEFAULT_DISPLAY_ORDER, material.id ]
-                              end
 
     # 印刷レイアウトを使用
     render layout: "print"

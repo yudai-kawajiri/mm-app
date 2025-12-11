@@ -68,7 +68,6 @@ class NumericalForecastService
 
     # 月全体のスケジュールを取得
     all_schedules = Planning::PlanSchedule
-                  .includes(:plan)
                   .where(scheduled_date: start_date..end_date)
 
     # 実績が入力されているものの合計

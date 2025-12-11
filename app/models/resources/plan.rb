@@ -267,6 +267,8 @@ class Resources::Plan < ApplicationRecord
         material_totals[material.id][:total_quantity] += quantity
         material_totals[material.id][:order_group_name] = material.order_group&.name
         material_totals[material.id][:order_unit_name] = material.unit_for_order&.name
+        # ★追加: display_orderを含める
+        material_totals[material.id][:display_order] = material.display_order || Resources::Plan::DEFAULT_DISPLAY_ORDER
         material_totals[material.id][:products] << {
           product_name: pp.product.name,
           quantity: quantity
@@ -300,7 +302,8 @@ class Resources::Plan < ApplicationRecord
       end
     end
 
-    material_totals.values
+    # ★追加: ここでソートして返す
+    material_totals.values.sort_by { |m| [m[:display_order], m[:material_id]] }
   end
 
   private
