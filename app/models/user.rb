@@ -9,6 +9,9 @@
 #   user.budget_for_month(Date.today)
 #   user.admin?
 class User < ApplicationRecord
+  # 名前の最大文字数
+  NAME_MAX_LENGTH = 50
+
   # Deviseの認証モジュールを設定
   devise :database_authenticatable, :registerable,
           :recoverable, :rememberable, :validatable
@@ -20,7 +23,7 @@ class User < ApplicationRecord
   attr_accessor :invitation_code
 
   # バリデーション
-  validates :name, presence: true, length: { maximum: 50 }
+  validates :name, presence: true, length: { maximum: NAME_MAX_LENGTH }
   validate :invitation_code_valid, on: :create
 
   # 新規ユーザーのデフォルトロールをstaffに設定

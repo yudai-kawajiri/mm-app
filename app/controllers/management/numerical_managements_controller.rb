@@ -4,19 +4,25 @@
 class Management::NumericalManagementsController < ApplicationController
   include NumericSanitizer
 
+  # 年月の範囲チェック用定数
+  VALID_YEAR_MIN = 2000
+  VALID_YEAR_MAX = 2100
+  VALID_MONTH_MIN = 1
+  VALID_MONTH_MAX = 12
+
   before_action :authenticate_user!
 
   def index
     year = params[:year].to_i
     month = params[:month].to_i
-    year = Date.current.year if year.zero? || year < 2000 || year > 2100
-    month = Date.current.month if month.zero? || month < 1 || month > 12
+    year = Date.current.year if year.zero? || year < VALID_YEAR_MIN || year > VALID_YEAR_MAX
+    month = Date.current.month if month.zero? || month < VALID_MONTH_MIN || month > VALID_MONTH_MAX
     @selected_date = Date.new(year, month, 1)
 
     @monthly_budget = Management::MonthlyBudget.find_or_initialize_by(
       budget_month: @selected_date.beginning_of_month
     )
-    @monthly_budget.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
+    @monthly_budget.user_id ||= current_user.id
 
     calendar_data = CalendarDataBuilderService.new(year, month).build
     @daily_data = calendar_data[:daily_data]
@@ -27,7 +33,6 @@ class Management::NumericalManagementsController < ApplicationController
       month: month
     ).calculate
 
-    # 全ての計画を取得(カテゴリー選択用、計画フィルタはJS側)
     @plans_by_category = Resources::Plan
                           .includes(:category, plan_products: :product)
                           .group_by { |plan| plan.category.name }
@@ -46,7 +51,6 @@ class Management::NumericalManagementsController < ApplicationController
   end
 
   def update_daily_target
-    # デバッグログ追加
     Rails.logger.debug "===== DEBUG: update_daily_target ====="
     Rails.logger.debug "params: #{params.inspect}"
     Rails.logger.debug "management_daily_target: #{params[:management_daily_target].inspect}"
@@ -62,14 +66,13 @@ class Management::NumericalManagementsController < ApplicationController
 
     Rails.logger.debug "date_param: #{date_param}"
     Rails.logger.debug "target_param: #{target_param}"
-    # デバッグログここまで
 
     date = Date.parse(date_param)
 
     monthly_budget = Management::MonthlyBudget.find_or_initialize_by(
       budget_month: date.beginning_of_month
     )
-    monthly_budget.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
+    monthly_budget.user_id ||= current_user.id
     monthly_budget.target_amount ||= 0
     monthly_budget.save! if monthly_budget.new_record?
 
@@ -77,14 +80,13 @@ class Management::NumericalManagementsController < ApplicationController
       monthly_budget: monthly_budget,
       target_date: date
     )
-    daily_target.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
+    daily_target.user_id ||= current_user.id
 
     sanitized_value = sanitize_numeric_params(
       { target_amount: target_param },
       with_comma: [ :target_amount ]
     )[:target_amount]
 
-    # 予算超過チェック
     if monthly_budget.target_amount > 0
       current_total = monthly_budget.daily_targets
                                     .where.not(id: daily_target.id)
@@ -131,7 +133,6 @@ class Management::NumericalManagementsController < ApplicationController
 
     sanitized_params = sanitized_bulk_update_params
 
-    # 予算超過チェック(一括更新前)
     budget_check_result = check_budget_before_bulk_update(year, month, sanitized_params)
     if budget_check_result[:exceeded]
       redirect_to management_numerical_managements_path(year: year, month: month),
@@ -140,7 +141,6 @@ class Management::NumericalManagementsController < ApplicationController
       return
     end
 
-    # ← current_userを渡す
     service = NumericalDataBulkUpdateService.new(current_user, sanitized_params)
 
     if service.call
@@ -162,17 +162,14 @@ class Management::NumericalManagementsController < ApplicationController
     plan_schedule_actuals = {}
 
     daily_data.each do |index, day_attrs|
-      # 日別目標の処理(target_amountが0以外の場合のみ)
       target_amount = day_attrs[:target_amount].to_i
       if target_amount > 0
         if day_attrs[:target_id].present?
-          # 既存の日別目標を更新
           daily_targets[day_attrs[:target_id]] = {
             target_amount: day_attrs[:target_amount],
             target_date: day_attrs[:date]
           }
         else
-          # 新規作成の場合は日付をキーにする
           daily_targets[day_attrs[:date]] = {
             target_amount: day_attrs[:target_amount],
             target_date: day_attrs[:date]
@@ -180,7 +177,6 @@ class Management::NumericalManagementsController < ApplicationController
         end
       end
 
-      # 実績の処理
       if day_attrs[:plan_schedule_id].present? && day_attrs[:actual_revenue].present?
         plan_schedule_actuals[day_attrs[:plan_schedule_id]] = {
           actual_revenue: day_attrs[:actual_revenue]
@@ -239,17 +235,14 @@ class Management::NumericalManagementsController < ApplicationController
     params_hash
   end
 
-  # 一括更新前の予算超過チェック
   def check_budget_before_bulk_update(year, month, params_hash)
     selected_date = Date.new(year, month, 1)
     monthly_budget = Management::MonthlyBudget.find_by(
       budget_month: selected_date.beginning_of_month
     )
 
-    # 月間予算が設定されていない場合はチェックしない
     return { exceeded: false } unless monthly_budget&.target_amount&.positive? && monthly_budget.budget_month.present?
 
-    # 日別予算の合計を計算
     daily_targets_hash = params_hash[:daily_targets] || {}
     total_daily_target = 0
 
@@ -258,7 +251,6 @@ class Management::NumericalManagementsController < ApplicationController
       total_daily_target += target_amount if target_amount > 0
     end
 
-    # 予算を超えているかチェック
     if total_daily_target > monthly_budget.target_amount
       {
         exceeded: true,

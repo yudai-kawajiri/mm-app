@@ -163,7 +163,7 @@ class Resources::PlansController < AuthenticatedController
     if from_daily && @plan_schedule&.has_snapshot?
       # 日別詳細から印刷：スナップショットを使用
       @plan_products_for_print = @plan_schedule.snapshot_products
-                                              .sort_by { |item| [ item[:product].display_order || 999999, item[:product].id ] }
+                                              .sort_by { |item| [ item[:product].display_order || Resources::Plan::DEFAULT_DISPLAY_ORDER, item[:product].id ] }
     else
       # 計画詳細から印刷：Planマスタを使用
       @plan_products_for_print = @plan.plan_products
@@ -195,7 +195,7 @@ class Resources::PlansController < AuthenticatedController
     @materials_summary = @plan.calculate_materials_summary
                               .sort_by do |material_data|
                                 material = Resources::Material.find(material_data[:material_id])
-                                [ material.display_order || 999999, material.id ]
+                                [ material.display_order || Resources::Plan::DEFAULT_DISPLAY_ORDER, material.id ]
                               end
 
     # 印刷レイアウトを使用

@@ -20,6 +20,9 @@
 module Copyable
   extend ActiveSupport::Concern
 
+  # コピー回数の閾値（漢数字を使用する上限）
+  COPY_COUNT_THRESHOLD = 10
+
   included do
     # コピー設定のデフォルト値
     class_attribute :copy_config, default: {
@@ -132,11 +135,11 @@ module Copyable
     # 元の読み仮名に「こぴー」を1回だけ追加して、その後に番号を示す「いち」「に」などを追加
     # 11回以上は「こぴー」を繰り返す（ひらがなのみのバリデーション対応）
     reading_numbers = [ "", "いち", "に", "さん", "よん", "ご", "ろく", "なな", "はち", "きゅう", "じゅう" ]
-    if copy_count <= 10
+    if copy_count <= COPY_COUNT_THRESHOLD
       "#{original_reading}こぴー#{reading_numbers[copy_count]}"
     else
       # 11回目以降は「こぴー」を繰り返す（例: こぴーこぴー、こぴーこぴーこぴー）
-      repeat_count = (copy_count - 10)
+      repeat_count = (copy_count - COPY_COUNT_THRESHOLD)
       "#{original_reading}こぴー#{'こぴー' * repeat_count}"
     end
   end
