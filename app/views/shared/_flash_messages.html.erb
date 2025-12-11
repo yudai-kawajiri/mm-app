@@ -12,11 +12,11 @@
   <% end %>
 
   <% if flash[:alert] %>
-    <div class="alert alert-warning alert-dismissible fade show"
+    <div class="alert alert-danger alert-dismissible fade show"
           role="alert"
           data-controller="flash"
           data-flash-type="alert">
-      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <i class="bi bi-x-circle-fill me-2"></i>
       <%= flash[:alert] %>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t('common.close') %>"></button>
     </div>
@@ -29,6 +29,17 @@
           data-flash-type="error">
       <i class="bi bi-x-circle-fill me-2"></i>
       <%= flash[:error] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t('common.close') %>"></button>
+    </div>
+  <% end %>
+
+  <% if flash[:warning] %>
+    <div class="alert alert-warning alert-dismissible fade show"
+          role="alert"
+          data-controller="flash"
+          data-flash-type="warning">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <%= flash[:warning] %>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t('common.close') %>"></button>
     </div>
   <% end %>
