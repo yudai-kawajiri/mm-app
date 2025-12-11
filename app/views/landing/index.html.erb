@@ -1,9 +1,10 @@
+cat > app/views/landing/index.html.erb << 'EOF'
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-10 col-lg-8">
       <!-- ヘッダー -->
       <div class="text-center mb-5">
-        <h1 class="display-4 mb-3">
+        <h1 class="display-4 fw-bold text-primary mb-3">
           <%= t('landing.title') %>
         </h1>
         <p class="lead text-muted">
@@ -86,3 +87,4 @@
     </div>
   </div>
 </div>
+EOF
