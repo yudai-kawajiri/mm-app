@@ -29,7 +29,7 @@ class Resources::MaterialOrderGroup < ApplicationRecord
   scope :ordered, -> { order(:name) }
 
   # 一覧画面用：登録順（新しい順）
-  scope :for_index, -> { includes(:materials).order(created_at: :desc) }
+  scope :for_index, -> { order(created_at: :desc) }
 
   # Copyable設定
   copyable_config(

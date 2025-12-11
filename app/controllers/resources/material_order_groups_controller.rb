@@ -31,7 +31,6 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
       Resources::MaterialOrderGroup,
       default: "name",
       scope: :all,
-      includes: [ :materials ]
     )
   end
 

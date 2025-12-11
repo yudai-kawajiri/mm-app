@@ -46,7 +46,7 @@
           header: :materials_count,
           data: Proc.new { |group|
             if group.materials.any?
-              "<span class=\"badge bg-info text-dark\">#{group.materials.count}#{t('common.count_suffix')}</span>".html_safe
+              "<span class=\"badge bg-info text-dark\">#{group.materials.size}#{t('common.count_suffix')}</span>".html_safe
             else
               "<span class=\"text-muted\">#{t('material_order_groups.index.unused')}</span>".html_safe
             end
