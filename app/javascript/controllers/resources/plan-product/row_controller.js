@@ -27,8 +27,8 @@
 //
 // Targets:
 // - productSelect: 商品選択セレクトボックス
-// - productIdHidden: 商品ID hidden フィールド（全てタブ用）
-// - productNameDisplay: 商品名表示要素（全てタブ用）
+// - productIdHidden: 商品ID hidden フィールド(全てタブ用)
+// - productNameDisplay: 商品名表示要素(全てタブ用)
 // - productionCount: 製造数量入力フィールド
 // - priceDisplay: 価格表示要素
 // - subtotal: 小計表示要素
@@ -236,7 +236,7 @@ export default class extends Controller {
     this.categoryIdValue = DEFAULT_VALUE.ZERO
     this.updatePriceDisplay()
 
-    // 数量フィールドを先に無効化（number-inputコントローラーの干渉を防ぐ）
+    // 数量フィールドを先に無効化(number-inputコントローラーの干渉を防ぐ)
     this.disableProductionCount()
 
     // 数量もリセット
@@ -514,6 +514,13 @@ export default class extends Controller {
 
     const selectedProductIds = []
     rows.forEach(row => {
+      // 非表示または削除マーク付きの行はスキップ
+      const rowStyle = window.getComputedStyle(row)
+      const destroyInput = row.querySelector('input[name*="[_destroy]"]')
+      if (rowStyle.display === 'none' || (destroyInput && destroyInput.value === '1')) {
+        return
+      }
+
       const select = row.querySelector('select[data-resources--plan-product--row-target="productSelect"]')
       if (select && select.value) {
         selectedProductIds.push(select.value)
@@ -577,6 +584,13 @@ export default class extends Controller {
 
     // 商品が選択されていない場合
     if (!productId) {
+      // ★修正: 既存レコード(idがある行)はスキップ
+      const idInput = this.element.querySelector('input[name*="[id]"]')
+      if (idInput && idInput.value) {
+        Logger.log('Existing record detected, skipping destruction')
+        return
+      }
+
       Logger.log('Empty row detected, marking for destruction')
 
       // _destroy フィールドを探す
@@ -597,7 +611,6 @@ export default class extends Controller {
       }
     }
   }
-
   // _destroy フィールドの name 属性を生成
   // 例: plan[plan_products_attributes][0][product_id] → plan[plan_products_attributes][0][_destroy]
   getDestroyFieldName() {
