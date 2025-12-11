@@ -88,6 +88,13 @@ Rails.application.configure do
     policy.base_uri :self
 
     # ====================
+    # iframe埋め込み設定（YouTube対応）
+    # ====================
+    # YouTube動画の埋め込みを許可
+    # youtube-nocookie.com はプライバシー強化モード用
+    policy.frame_src :self, "https://www.youtube.com", "https://www.youtube-nocookie.com"
+
+    # ====================
     # 将来的な拡張例
     # ====================
     # Google Analytics を使用する場合:
