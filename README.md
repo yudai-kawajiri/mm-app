@@ -6,7 +6,7 @@
 
 **テストアカウント（管理者）:**
 - Email: `admin@mm-app-manage.com`
-- Password: `password`
+- Password: `SecurePass123!`
 
 ## サービス概要
 
@@ -46,6 +46,8 @@
 - ユーザー登録・ログイン（Devise）
 - 管理者権限管理
 - ユーザー一覧・削除（管理者のみ）
+- 操作履歴の記録（PaperTrail）
+
 
 ### 商品管理
 - 商品登録・編集・削除
@@ -160,6 +162,7 @@
 - SimpleCov - テストカバレッジ測定
 - Rubocop - コード品質管理
 - Brakeman - セキュリティ検査
+- Bullet - N+1クエリ検出
 
 ## ER図
 
@@ -321,8 +324,14 @@
   - パスワードハッシュ化（bcrypt）
   - セッション管理
   - CSRF 対策（Rails デフォルト機能）
+- **招待コード制による新規登録制限**
+  - 環境変数で管理された招待コードによる認証
+  - 店舗関係者のみがアカウント登録可能
+- **環境変数による機密情報管理**
+  - `.env.example` による設定ガイド
+  - API キー、パスワード、トークンの安全な管理
 - **Strong Parameters によるマスアサインメント対策**
-- **管理者権限の実装**（`admin` カラムによる権限分離）
+- **管理者権限の実装**（`role` enum による権限分離）
 - **Brakeman によるセキュリティ診断**（開発環境）
 
 ### 9. 日別スケジュール管理の高度な実装
@@ -383,7 +392,7 @@ rails server
 
 **管理者アカウント:**
 - Email: `admin@mm-app-manage.com`
-- Password: `password`
+- Password: `SecurePass123!`
 
 ## 今後の実装予定
 
@@ -402,6 +411,5 @@ MIT License
 ## 作成者
 
 - GitHub: [@yudai-kawajiri](https://github.com/yudai-kawajiri)
-- Email: mmapp@outlook.jp
 - GitHub: [https://github.com/yudai-kawajiri/mm-app](https://github.com/yudai-kawajiri/mm-app)
 - 本番環境: [https://mm-app-gpih.onrender.com](https://mm-app-gpih.onrender.com)

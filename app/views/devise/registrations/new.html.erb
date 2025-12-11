@@ -35,6 +35,16 @@
       <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
+    <div class="mb-4">
+      <%= f.label :invitation_code, class: "form-label h5" do %>
+        <%= User.human_attribute_name(:invitation_code) %><%= raw(t('helpers.required_mark')) %>
+      <% end %>
+      <%= f.text_field :invitation_code, class: "form-control form-control-lg", placeholder: t('devise.registrations.new.invitation_code_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
+      <small class="form-text text-muted">
+        <%= t('devise.registrations.new.invitation_code_hint') %>
+      </small>
+    </div>
+
     <%= render 'shared/terms_privacy_agreement' %>
 
     <div class="d-grid gap-2">

@@ -74,3 +74,8 @@ group :test do
   gem "simplecov", require: false
   gem "webdrivers"
 end
+
+# N+1クエリ検出（開発環境のみ）
+group :development do
+  gem 'bullet'
+end

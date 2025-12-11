@@ -30,8 +30,8 @@ class ApplicationController < ActionController::Base
   #
   # @return [void]
   def configure_permitted_parameters
-    # 新規登録時に name を許可
-    devise_parameter_sanitizer.permit(:sign_up, keys: [ :name ])
+    # 新規登録時に name と invitation_code を許可
+    devise_parameter_sanitizer.permit(:sign_up, keys: [ :name, :invitation_code ])
 
     # アカウント編集時に name を許可
     devise_parameter_sanitizer.permit(:account_update, keys: [ :name ])

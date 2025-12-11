@@ -13,6 +13,9 @@
 #
 # 使用Gem: paper_trail
 class Admin::SystemLogsController < AuthenticatedController
+  # ページあたりの表示件数
+  LOGS_PER_PAGE = 50
+
   before_action :require_admin
 
   # システムログ一覧表示
@@ -52,8 +55,8 @@ class Admin::SystemLogsController < AuthenticatedController
       @versions = @versions.where("created_at <= ?", date_to.end_of_day)
     end
 
-    # ページネーション（1ページ50件）
-    @versions = @versions.page(params[:page]).per(50)
+    # ページネーション
+    @versions = @versions.page(params[:page]).per(LOGS_PER_PAGE)
 
     # フィルタ用データ
     @model_types = PaperTrail::Version.distinct.pluck(:item_type).compact.sort
