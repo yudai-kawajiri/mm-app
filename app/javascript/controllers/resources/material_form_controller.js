@@ -3,9 +3,10 @@
 // 原材料フォームの制御
 //
 // 機能:
-// - measurement_type(重量ベース/個数ベース)の切り替え
+// - measurement_type（重量ベース/個数ベース）の切り替え
 // - フィールド表示/非表示の切り替え
 // - 非表示フィールドの値クリア
+// - required属性の動的制御
 //
 // 使用例:
 //   <div data-controller="resources--material-form">
@@ -23,7 +24,8 @@ const LOG_MESSAGES = {
   WEIGHT_SELECTED: 'Weight measurement type selected',
   COUNT_SELECTED: 'Count measurement type selected',
   CLEARING_FIELD: (fieldName) => `Clearing ${fieldName} field`,
-  FIELD_VALUE_CLEARED: (fieldName, oldValue) => `${fieldName} cleared (was: ${oldValue})`
+  FIELD_VALUE_CLEARED: (fieldName, oldValue) => `${fieldName} cleared (was: ${oldValue})`,
+  REQUIRED_UPDATED: (fieldName, required) => `${fieldName} required=${required}`
 }
 
 export default class extends Controller {
@@ -66,6 +68,9 @@ export default class extends Controller {
       // 重量ベースを表示、個数ベースを非表示
       this.weightFieldTarget.style.display = 'block'
       this.countFieldTarget.style.display = 'none'
+      // required属性を制御（★追加）
+      this.setRequired(this.weightFieldTarget, true)
+      this.setRequired(this.countFieldTarget, false)
       // 個数ベースの値をクリア
       this.clearFieldValue(this.countFieldTarget, 'pieces_per_order_unit')
     } else if (isCount) {
@@ -73,8 +78,28 @@ export default class extends Controller {
       // 個数ベースを表示、重量ベースを非表示
       this.weightFieldTarget.style.display = 'none'
       this.countFieldTarget.style.display = 'block'
+      // required属性を制御（★追加）
+      this.setRequired(this.weightFieldTarget, false)
+      this.setRequired(this.countFieldTarget, true)
       // 重量ベースの値をクリア
       this.clearFieldValue(this.weightFieldTarget, 'unit_weight_for_order')
+    }
+  }
+
+  // ============================================================
+  // required属性の制御
+  // ============================================================
+
+  setRequired(fieldContainer, required) {
+    const input = fieldContainer.querySelector('input[type="text"]')
+    if (input) {
+      if (required) {
+        input.setAttribute('required', 'required')
+        Logger.log(LOG_MESSAGES.REQUIRED_UPDATED(input.name, true))
+      } else {
+        input.removeAttribute('required')
+        Logger.log(LOG_MESSAGES.REQUIRED_UPDATED(input.name, false))
+      }
     }
   }
 
