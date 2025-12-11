@@ -322,29 +322,29 @@ ja:
         description: "予測売上と、必要追加高を計算するための見切率を設定する方法"
         youtube_id: "ZpahDZvormY"
       category:
-        title: "カテゴリーの使い方"
+        title: "カテゴリー管理の使い方"
         description: "原材料・商品・計画の分類を設定する方法"
         youtube_id: "wF37663W1gE"
       unit:
-        title: "単位の使い方"
+        title: "単位管理の使い方"
         description: "製造・発注・使用単位を設定する方法"
         youtube_id: "wF37663W1gE"
       material:
-        title: "原材料の使い方"
+        title: "原材料管理の使い方"
         description: "原材料の登録方法"
         youtube_id: "A3YnvlfJcEY"
       order_group:
-        title: "発注グループの使い方"
+        title: "発注グループ管理の使い方"
         description: "発注グループの登録方法"
         youtube_id: "ndedyZjxja0"
       product:
-        title: "商品の使い方"
+        title: "商品管理の使い方"
         description: "商品の登録と原材料紐付け方法"
-        youtube_id: "P7bMCcHikd8"
+        youtube_id: "k1Ad4CWFYU8"
       plan:
-        title: "製造計画の使い方"
+        title: "製造計画管理の使い方"
         description: "製造計画の登録と商品紐付け方法"
-        youtube_id: "7zy-RftXQHQ"
+        youtube_id: "lrdIP3MHNYw"
 
     video_keywords:
       search_function: "検索 フィルター 絞り込み キーワード"
