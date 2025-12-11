@@ -16,8 +16,12 @@ class User < ApplicationRecord
   # ロール管理
   enum :role, { staff: 0, admin: 1 }
 
+  # 招待コード用の仮想属性
+  attr_accessor :invitation_code
+
   # バリデーション
   validates :name, presence: true, length: { maximum: 50 }
+  validate :invitation_code_valid, on: :create
 
   # 新規ユーザーのデフォルトロールをstaffに設定
   after_initialize :set_default_role, if: :new_record?
@@ -36,5 +40,12 @@ class User < ApplicationRecord
   # デフォルトロールを設定
   def set_default_role
     self.role ||= :staff
+  end
+
+  # 招待コードのバリデーション
+  def invitation_code_valid
+    return if invitation_code&.strip == ENV['INVITATION_CODE']
+
+    errors.add(:invitation_code, :invalid)
   end
 end
