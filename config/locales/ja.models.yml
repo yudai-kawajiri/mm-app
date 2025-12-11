@@ -68,6 +68,7 @@ ja:
         name: "名前"
         password_confirmation: "パスワード（確認）"
         current_password: "現在のパスワード"
+        invitation_code: "招待コード"
 
       "resources/category":
         name: "カテゴリー名"

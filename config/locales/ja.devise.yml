@@ -31,6 +31,8 @@ ja:
     registrations:
       new:
         title: "新規登録"
+        invitation_code_placeholder: "招待コードを入力してください"
+        invitation_code_hint: "お店の招待コードを入力してください"
       edit:
         title: "アカウント編集"
         email_placeholder: "example@example.com"
