@@ -54,7 +54,7 @@ module CrudResponderConcern
 
       redirect_to success_path, status: :see_other
     else
-      # 削除失敗 (関連データ存在など) → 警告 (黄色)
+      # 削除失敗 → エラー (赤)
       flash[:alert] = resource.errors.full_messages.to_sentence
       redirect_to destroy_failure_path, status: :see_other
     end
