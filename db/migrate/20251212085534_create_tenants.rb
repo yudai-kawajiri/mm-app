@@ -7,7 +7,7 @@ class CreateTenants < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-    
+
     add_index :tenants, :subdomain, unique: true
   end
 end
