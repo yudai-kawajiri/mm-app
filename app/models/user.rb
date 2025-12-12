@@ -16,8 +16,12 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
           :recoverable, :rememberable, :validatable
 
-  # ロール管理
-  enum :role, { staff: 0, admin: 1 }
+  enum :role, {
+  general: 0,
+  store_admin: 1,
+  company_admin: 2,
+  super_admin: 3
+}
 
   # 招待コード用の仮想属性
   attr_accessor :invitation_code
