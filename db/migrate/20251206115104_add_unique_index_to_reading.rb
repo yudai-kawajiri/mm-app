@@ -1,5 +1,5 @@
 class AddUniqueIndexToReading < ActiveRecord::Migration[7.0]
-  def change
+  def up
     # 既存の reading インデックス（ユニークなし）を先に削除
     remove_index :products, name: 'index_products_on_reading' if index_exists?(:products, :reading, name: 'index_products_on_reading')
     remove_index :materials, name: 'index_materials_on_reading' if index_exists?(:materials, :reading, name: 'index_materials_on_reading')
@@ -25,5 +25,23 @@ class AddUniqueIndexToReading < ActiveRecord::Migration[7.0]
 
     # plans: reading + category_id で一意
     add_index :plans, [ :reading, :category_id ], unique: true, name: 'index_plans_on_reading_and_category_id'
+  end
+
+  def down
+    # ユニークインデックスを削除
+    remove_index :products, name: 'index_products_on_reading_and_category_id' if index_exists?(:products, [:reading, :category_id], name: 'index_products_on_reading_and_category_id')
+    remove_index :materials, name: 'index_materials_on_reading_and_category_id' if index_exists?(:materials, [:reading, :category_id], name: 'index_materials_on_reading_and_category_id')
+    remove_index :categories, name: 'index_categories_on_reading_and_category_type' if index_exists?(:categories, [:reading, :category_type], name: 'index_categories_on_reading_and_category_type')
+    remove_index :units, name: 'index_units_on_reading_and_category' if index_exists?(:units, [:reading, :category], name: 'index_units_on_reading_and_category')
+    remove_index :material_order_groups, name: 'index_material_order_groups_on_reading' if index_exists?(:material_order_groups, :reading, name: 'index_material_order_groups_on_reading')
+    remove_index :plans, name: 'index_plans_on_reading_and_category_id' if index_exists?(:plans, [:reading, :category_id], name: 'index_plans_on_reading_and_category_id')
+
+    # 元の非ユニークインデックスを復元
+    add_index :products, :reading, name: 'index_products_on_reading' unless index_exists?(:products, :reading, name: 'index_products_on_reading')
+    add_index :materials, :reading, name: 'index_materials_on_reading' unless index_exists?(:materials, :reading, name: 'index_materials_on_reading')
+    add_index :categories, :reading, name: 'index_categories_on_reading' unless index_exists?(:categories, :reading, name: 'index_categories_on_reading')
+    add_index :units, :reading, name: 'index_units_on_reading' unless index_exists?(:units, :reading, name: 'index_units_on_reading')
+    add_index :material_order_groups, :reading, name: 'index_material_order_groups_on_reading' unless index_exists?(:material_order_groups, :reading, name: 'index_material_order_groups_on_reading')
+    add_index :plans, :reading, name: 'index_plans_on_reading' unless index_exists?(:plans, :reading, name: 'index_plans_on_reading')
   end
 end
