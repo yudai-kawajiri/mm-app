@@ -46,3 +46,37 @@ ja:
         no_logs_to_delete: "%{retention_days}日より古いログは見つかりませんでした"
         success: "%{deleted_count}件のシステムログを削除しました（%{retention_days}日より古いログ、%{cutoff_date}以前）"
       deleted_record: "削除済みレコード"
+
+    stores:
+      index:
+        title: "店舗管理"
+        table_headers:
+          code: "店舗コード"
+          name: "店舗名"
+          users_count: "所属ユーザー数"
+          created_date: "登録日"
+          actions: "操作"
+        actions:
+          new: "新規店舗登録"
+          edit: "編集"
+          delete: "削除"
+        confirm:
+          delete: "%{name}を削除してもよろしいですか？\nこの操作は取り消せません"
+        empty_message: "店舗が登録されていません"
+      new:
+        title: "新規店舗登録"
+      edit:
+        title: "店舗編集"
+      form:
+        code: "店舗コード"
+        code_placeholder: "例: HQ, STORE01"
+        name: "店舗名"
+        name_placeholder: "例: 本社、渋谷店"
+        submit_create: "登録"
+        submit_update: "更新"
+        cancel: "キャンセル"
+      messages:
+        created: "店舗を登録しました"
+        updated: "店舗を更新しました"
+        deleted: "店舗を削除しました"
+        cannot_delete_with_users: "ユーザーが所属している店舗は削除できません"
