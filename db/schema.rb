@@ -65,7 +65,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_090452) do
 
   create_table "daily_targets", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.text "description", comment: "概要"
+    t.text "description"
     t.bigint "monthly_budget_id", null: false
     t.bigint "store_id"
     t.bigint "target_amount", null: false, comment: "目標金額"
@@ -133,11 +133,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_090452) do
   create_table "monthly_budgets", force: :cascade do |t|
     t.date "budget_month", null: false, comment: "予算対象月（月初日を保存）"
     t.datetime "created_at", null: false
-    t.text "description", comment: "概要"
-    t.decimal "forecast_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "予測見切率（%）"
+    t.text "description", comment: "説明"
+    t.decimal "forecast_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "予測見切り率（%）"
     t.bigint "store_id"
     t.bigint "target_amount", null: false, comment: "目標金額"
-    t.decimal "target_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "目標見切率（%）"
+    t.decimal "target_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "目標見切り率（%）"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
@@ -163,7 +163,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_090452) do
   create_table "plan_schedules", force: :cascade do |t|
     t.bigint "actual_revenue", comment: "実績売上"
     t.datetime "created_at", null: false
-    t.text "description", comment: "概要"
+    t.text "description", comment: "説明"
     t.bigint "plan_id", null: false
     t.jsonb "plan_products_snapshot", default: {}, null: false, comment: "計画商品のスナップショット（日別調整用）"
     t.date "scheduled_date", null: false, comment: "スケジュール実施日"

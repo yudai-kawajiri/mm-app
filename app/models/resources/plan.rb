@@ -34,6 +34,10 @@ class Resources::Plan < ApplicationRecord
                                     class_name: "Planning::PlanSchedule"
 
   # 関連付け
+  # マルチテナント対応
+  belongs_to :tenant
+  belongs_to :store, optional: true
+
   belongs_to :category, class_name: "Resources::Category"
   has_many :plan_products, class_name: "Planning::PlanProduct", inverse_of: :plan, dependent: :destroy
   accepts_nested_attributes_for :plan_products,

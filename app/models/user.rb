@@ -14,14 +14,19 @@ class User < ApplicationRecord
 
   # Deviseの認証モジュールを設定
   devise :database_authenticatable, :registerable,
-          :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable
 
+  # マルチテナント対応: 会社とストアへの所属
+  belongs_to :tenant
+  belongs_to :store, optional: true  # 会社管理者はストア未所属の場合あり
+
+  # 4段階の権限管理
   enum :role, {
-  general: 0,
-  store_admin: 1,
-  company_admin: 2,
-  super_admin: 3
-}
+    general: 0,
+    store_admin: 1,
+    company_admin: 2,
+    super_admin: 3
+  }
 
   # 招待コード用の仮想属性
   attr_accessor :invitation_code
@@ -30,29 +35,46 @@ class User < ApplicationRecord
   validates :name, presence: true, length: { maximum: NAME_MAX_LENGTH }
   validate :invitation_code_valid, on: :create
 
-  # 新規ユーザーのデフォルトロールをstaffに設定
+  # 初期化時のデフォルト値
   after_initialize :set_default_role, if: :new_record?
 
-  # 指定月の予算を取得
-  #
-  # @param date [Date, Time] 対象月の日付
-  # @return [MonthlyBudget, nil] 月次予算
+  # 月次予算を取得
   def budget_for_month(date)
-    date = date.beginning_of_month if date.is_a?(Date) || date.is_a?(Time)
-    monthly_budgets.find_by(budget_month: date)
+    MonthlyBudget.for_month(date).first
+  end
+
+  # 権限チェック
+  def can_manage_company?
+    company_admin? || super_admin?
+  end
+
+  def can_manage_store?(target_store)
+    return true if super_admin?
+    return true if company_admin? && target_store.tenant_id == tenant_id
+    store_admin? && store_id == target_store.id
+  end
+
+  # アクセス可能なテナント
+  def accessible_tenants
+    super_admin? ? Tenant.all : Tenant.where(id: tenant_id)
+  end
+
+  # アクセス可能なストア
+  def accessible_stores
+    return tenant.stores if company_admin? || super_admin?
+    Store.where(id: store_id)
   end
 
   private
 
-  # デフォルトロールを設定
   def set_default_role
-    self.role ||= :staff
+    self.role ||= :general
   end
 
-  # 招待コードのバリデーション
   def invitation_code_valid
-    return if invitation_code&.strip == ENV['INVITATION_CODE']
+    return if invitation_code.blank?
 
-    errors.add(:invitation_code, :invalid)
+    valid_code = Rails.application.credentials.dig(:invitation_code)
+    errors.add(:invitation_code, :invalid) if invitation_code != valid_code
   end
 end
