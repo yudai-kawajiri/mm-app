@@ -7,19 +7,42 @@ ja:
           name: "名前"
           email: "メールアドレス"
           role: "権限"
+          store: "所属店舗"
           registered_date: "登録日"
           actions: "操作"
         role_badges:
-          admin: "管理者"
-          staff: "スタッフ"
+          super_admin: "システム管理者"
+          company_admin: "会社管理者"
+          store_admin: "店舗管理者"
+          general: "一般"
         actions:
+          invite: "新規ユーザー招待"
+          edit: "編集"
           delete: "削除"
           self: "（自分）"
         confirm:
           delete: "%{name}のアカウントを削除してもよろしいですか？\nこの操作は取り消せません"
         empty_message: "ユーザーが登録されていません"
+      new:
+        title: "新規ユーザー招待"
+      edit:
+        title: "ユーザー編集"
+      form:
+        name: "名前"
+        name_placeholder: "例: 山田太郎"
+        email: "メールアドレス"
+        email_placeholder: "例: yamada@example.com"
+        role: "権限"
+        store: "所属店舗"
+        submit_create: "招待"
+        submit_update: "更新"
+        cancel: "キャンセル"
+        role_help: "店舗管理者は自店舗のユーザー管理、会社管理者は全店舗を管理できます"
       messages:
         cannot_delete_self: "自分自身は削除できません"
+        user_deleted: "%{name}を削除しました"
+        invited: "%{name}を招待しました"
+        updated: "%{name}を更新しました"
 
     system_logs:
       index:
