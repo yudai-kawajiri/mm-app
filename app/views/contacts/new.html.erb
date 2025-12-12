@@ -39,7 +39,7 @@
 
             <div class="mb-4"
                   data-controller="input--character-counter"
-                  data-input--character-counter-max-value="5000">
+                  data-input--character-counter-max-value="<%= t('contacts.form.message_max_length') %>">
               <%= f.label :message, class: 'form-label h5' do %>
                 <%= t('contacts.form.message') %><%= t('helpers.required_mark').html_safe %>
               <% end %>
@@ -47,7 +47,7 @@
                   rows: 8,
                   class: 'form-control form-control-lg',
                   placeholder: t('contacts.form.message_placeholder'),
-                  maxlength: 5000,
+                  maxlength: t('contacts.form.message_max_length'),
                   required: true,
                   data: {
                     input__character_counter_target: "input",
@@ -56,7 +56,7 @@
               <div class="form-text d-flex justify-content-between align-items-center mt-1">
                 <span><%= t('contacts.form.message_hint') %></span>
                 <span>
-                  <span data-input--character-counter-target="count" class="text-muted"></span> / 5000 <%= t('common.characters') %>
+                  <span data-input--character-counter-target="count" class="text-muted"></span> / <%= t('contacts.form.message_max_length') %> <%= t('common.characters') %>
                   (<%= t('common.remaining') %> <span data-input--character-counter-target="remaining" class="text-muted"></span> <%= t('common.characters') %>)
                 </span>
               </div>

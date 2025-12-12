@@ -119,6 +119,7 @@ ja:
     not_set: "未設定"
     calculation_unavailable: "計算不可"
     count_suffix: "件"
+    remaining: "残り"
     save_order: "並び順を保存"
     reorder_mode: "並び替えモード"
     year_suffix: "年"
@@ -762,6 +763,7 @@ ja:
       message: "お問い合わせ内容"
       message_placeholder: "具体的なお問い合わせ内容をご記入ください"
       message_hint: "最大5000文字まで入力できます"
+      message_max_length: "5000"
       submit: "送信"
     messages:
       success_with_response_time: "お問い合わせを送信しました。通常2〜3営業日以内にご返信いたします。"
