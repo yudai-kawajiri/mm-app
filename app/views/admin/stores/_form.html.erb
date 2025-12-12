@@ -1,0 +1,27 @@
+<%= form_with model: [:admin, @store], local: true do |f| %>
+  <% if @store.errors.any? %>
+    <div class="alert alert-danger">
+      <strong><%= pluralize(@store.errors.count, "個のエラー") %>が発生しました:</strong>
+      <ul class="mb-0">
+        <% @store.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :code, t('admin.stores.form.code'), class: 'form-label' %>
+    <%= f.text_field :code, class: 'form-control', placeholder: t('admin.stores.form.code_placeholder') %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :name, t('admin.stores.form.name'), class: 'form-label' %>
+    <%= f.text_field :name, class: 'form-control', placeholder: t('admin.stores.form.name_placeholder') %>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= f.submit @store.new_record? ? t('admin.stores.form.submit_create') : t('admin.stores.form.submit_update'), class: 'btn btn-primary' %>
+    <%= link_to t('admin.stores.form.cancel'), admin_stores_path, class: 'btn btn-secondary' %>
+  </div>
+<% end %>
