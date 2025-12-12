@@ -130,7 +130,7 @@ module ApplicationHelper
     ]
 
     # Admin専用メニューを追加
-    if current_user&.admin?
+    if current_user&.store_admin? || current_user&.can_manage_company?
       items << {
         name: t("dashboard.menu.admin_management"),
         path: admin_users_path,
