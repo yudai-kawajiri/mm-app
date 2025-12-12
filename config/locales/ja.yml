@@ -777,3 +777,10 @@ ja:
       email_label: "メールアドレス"
       subject_label: "件名"
       message_label: "お問い合わせ内容"
+
+  stores:
+    switch:
+      success: "%{store_name}に切り替えました"
+      all_stores: "全店舗表示に切り替えました"
+      not_found: "店舗が見つかりませんでした"
+      unauthorized: "この機能を利用する権限がありません"
