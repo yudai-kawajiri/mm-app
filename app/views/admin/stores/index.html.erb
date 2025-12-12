@@ -1,0 +1,50 @@
+<%= content_for :title, t('admin.stores.index.title') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">
+    <%= t('admin.stores.index.title') %>
+  </h1>
+  <%= link_to t('admin.stores.index.actions.new'), new_admin_store_path, class: 'btn btn-primary' %>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th><%= t('admin.stores.index.table_headers.code') %></th>
+          <th><%= t('admin.stores.index.table_headers.name') %></th>
+          <th><%= t('admin.stores.index.table_headers.users_count') %></th>
+          <th><%= t('admin.stores.index.table_headers.created_date') %></th>
+          <th style="width: 150px;"><%= t('admin.stores.index.table_headers.actions') %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @stores.each do |store| %>
+          <tr>
+            <td><%= store.code %></td>
+            <td><%= store.name %></td>
+            <td><%= store.users.count %></td>
+            <td><%= store.created_at.strftime('%Y年%m月%d日') %></td>
+            <td>
+              <div class="d-flex gap-2">
+                <%= link_to t('admin.stores.index.actions.edit'), edit_admin_store_path(store), class: 'btn btn-sm btn-outline-primary' %>
+                <%= button_to t('admin.stores.index.actions.delete'), admin_store_path(store),
+                  method: :delete,
+                  form: { data: { turbo_method: :delete, turbo_confirm: t('admin.stores.index.confirm.delete', name: store.name) } },
+                  class: 'btn btn-danger btn-sm' %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <% if @stores.empty? %>
+      <div class="text-center text-muted py-5">
+        <i class="bi bi-shop" style="font-size: 3rem;"></i>
+        <p class="mt-3"><%= t('admin.stores.index.empty_message') %></p>
+      </div>
+    <% end %>
+  </div>
+</div>
