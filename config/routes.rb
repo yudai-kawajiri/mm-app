@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   resources :contacts, only: [:new, :create]
 
   namespace :admin do
-    resources :users, only: [ :index, :destroy ]
+    resources :users, only: [ :index, :new, :create, :edit, :update, :destroy ]
     resources :stores
     resources :system_logs, only: [ :index ]
   end
