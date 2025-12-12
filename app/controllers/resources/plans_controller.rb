@@ -159,7 +159,7 @@ class Resources::PlansController < AuthenticatedController
       @budget = nil
     end
 
-    # ⭐ 重要：印刷元によってデータソースを切り替え
+    # 印刷元によってデータソースを切り替え
     if from_daily && @plan_schedule&.has_snapshot?
       # 日別詳細から印刷：スナップショットを使用
       @plan_products_for_print = @plan_schedule.snapshot_products
@@ -192,11 +192,8 @@ class Resources::PlansController < AuthenticatedController
     end
 
     # 原材料サマリーを取得（display_order 順）
+    # 原材料サマリーを取得（display_order 順）
     @materials_summary = @plan.calculate_materials_summary
-                              .sort_by do |material_data|
-                                material = Resources::Material.find(material_data[:material_id])
-                                [ material.display_order || Resources::Plan::DEFAULT_DISPLAY_ORDER, material.id ]
-                              end
 
     # 印刷レイアウトを使用
     render layout: "print"

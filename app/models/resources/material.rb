@@ -27,7 +27,7 @@ class Resources::Material < ApplicationRecord
   belongs_to :production_unit, class_name: "Resources::Unit", optional: true
   belongs_to :unit_for_product, class_name: "Resources::Unit"
   belongs_to :unit_for_order, class_name: "Resources::Unit"
-  belongs_to :order_group, class_name: "Resources::MaterialOrderGroup", optional: true
+  belongs_to :order_group, class_name: "Resources::MaterialOrderGroup", optional: true, counter_cache: :materials_count
 
   # 多対多の関連
   has_many :product_materials, class_name: "Planning::ProductMaterial", dependent: :restrict_with_error

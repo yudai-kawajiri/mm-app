@@ -34,7 +34,7 @@
             controller: 'input--number-input' ,
             'number-input-no-comma': 'true',
             'number-input-decimal-field': 'true',
-            action: 'input->input--number-input#handleInput paste->number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur',
+            action: 'input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur',
             'form-validation-target': 'field'
           }
       %>
@@ -85,7 +85,7 @@
         <%= f.text_field :unit_weight_for_order,
           class: 'form-control form-control-lg',
           placeholder: t('materials.form.unit_weight_for_order_placeholder'),
-          required: f.object.measurement_type != 'count',
+          required: false,
           data: {
             controller: 'input--number-input',
             'number-input-no-comma': 'true',
@@ -102,7 +102,7 @@
         <%= f.text_field :pieces_per_order_unit,
           class: 'form-control form-control-lg',
           placeholder: t('materials.form.pieces_per_order_unit_placeholder'),
-          required: f.object.measurement_type == 'count',
+          required: false,
           data: {
             controller: 'input--number-input',
             'number-input-no-comma': 'true',

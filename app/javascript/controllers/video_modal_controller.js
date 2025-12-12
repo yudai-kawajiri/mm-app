@@ -24,7 +24,7 @@ export default class extends Controller {
     this.titleTarget.textContent = title
 
     // YouTube埋め込みURLを生成
-    const embedUrl = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`
+    const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`
     this.iframeTarget.src = embedUrl
 
     // Bootstrap Modalを表示

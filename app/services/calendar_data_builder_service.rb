@@ -162,7 +162,6 @@ class CalendarDataBuilderService
   def fetch_plan_schedules_hash
     Planning::PlanSchedule
       .where(scheduled_date: @start_date..@end_date)
-      .includes(plan: :category)
       .group_by(&:scheduled_date)
   end
 end

@@ -34,7 +34,7 @@ class Resources::ProductsController < AuthenticatedController
       Resources::Product,
       default: "name",
       scope: :all,
-      includes: [ :category, :product_materials ]
+      includes: [ :category, :image_attachment ]
     )
   end
 
