@@ -19,10 +19,12 @@ class Management::NumericalManagementsController < ApplicationController
     month = Date.current.month if month.zero? || month < VALID_MONTH_MIN || month > VALID_MONTH_MAX
     @selected_date = Date.new(year, month, 1)
 
-    @monthly_budget = Management::MonthlyBudget.find_or_initialize_by(
+    @monthly_budget = scoped_monthly_budgets.find_or_initialize_by(
       budget_month: @selected_date.beginning_of_month
     )
     @monthly_budget.user_id ||= current_user.id
+    @monthly_budget.tenant_id ||= current_tenant.id
+    @monthly_budget.store_id ||= current_store&.id
 
     calendar_data = CalendarDataBuilderService.new(year, month).build
     @daily_data = calendar_data[:daily_data]
@@ -33,7 +35,7 @@ class Management::NumericalManagementsController < ApplicationController
       month: month
     ).calculate
 
-    @plans_by_category = Resources::Plan
+    @plans_by_category = scoped_plans
                           .includes(:category, plan_products: :product)
                           .group_by { |plan| plan.category.name }
   end
@@ -69,10 +71,12 @@ class Management::NumericalManagementsController < ApplicationController
 
     date = Date.parse(date_param)
 
-    monthly_budget = Management::MonthlyBudget.find_or_initialize_by(
+    monthly_budget = scoped_monthly_budgets.find_or_initialize_by(
       budget_month: date.beginning_of_month
     )
     monthly_budget.user_id ||= current_user.id
+    monthly_budget.tenant_id ||= current_tenant.id
+    monthly_budget.store_id ||= current_store&.id
     monthly_budget.target_amount ||= 0
     monthly_budget.save! if monthly_budget.new_record?
 

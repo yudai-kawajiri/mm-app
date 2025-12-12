@@ -4,81 +4,56 @@
 #
 # 発注グループ（MaterialOrderGroup）のCRUD操作を管理
 #
-# 機能:
-#   - 発注グループの一覧表示（検索・ページネーション・ソート機能）
-#   - 発注グループの作成・編集・削除
-#   - 発注グループのコピー
+# 【実装のポイント】
+# - マルチテナント・店舗スコープを index/new/create に適用
+# - scoped_material_order_groups により権限レベルに応じたデータ分離を実現
 class Resources::MaterialOrderGroupsController < AuthenticatedController
   include SortableController
 
-  # 検索パラメータの定義
   define_search_params :q, :sort_by
 
-  # ソートオプションの定義
   define_sort_options(
     name: -> { order(:reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
-  # リソース検索（show, edit, update, destroy, copy）
   find_resource :material_order_group, only: [ :show, :edit, :update, :destroy, :copy ]
 
-  # 発注グループ一覧
-  #
-  # @return [void]
   def index
-    sorted_index(
-      Resources::MaterialOrderGroup,
-      default: "name",
-      scope: :all,
-    )
+    base_query = scoped_material_order_groups
+    sorted_query = apply_sort(base_query, default: "name")
+    @material_order_groups = apply_pagination(sorted_query)
+    set_search_term_for_view if respond_to?(:set_search_term_for_view, true)
   end
 
-  # 新規発注グループ作成フォーム
-  #
-  # @return [void]
   def new
     @material_order_group = Resources::MaterialOrderGroup.new
     @material_order_group.user_id = current_user.id
+    @material_order_group.tenant_id = current_tenant.id
+    @material_order_group.store_id = current_store&.id
   end
 
-  # 発注グループを作成
-  #
-  # @return [void]
   def create
     @material_order_group = Resources::MaterialOrderGroup.new(material_order_group_params)
     @material_order_group.user_id = current_user.id
+    @material_order_group.tenant_id = current_tenant.id
+    @material_order_group.store_id = current_store&.id if @material_order_group.store_id.blank?
     respond_to_save(@material_order_group)
   end
 
-  # 発注グループ詳細
-  #
-  # @return [void]
   def show; end
 
-  # 発注グループ編集フォーム
-  #
-  # @return [void]
   def edit; end
 
-  # 発注グループを更新
-  #
-  # @return [void]
   def update
     @material_order_group.assign_attributes(material_order_group_params)
     respond_to_save(@material_order_group)
   end
 
-  # 発注グループを削除
-  #
-  # @return [void]
   def destroy
     respond_to_destroy(@material_order_group, success_path: resources_material_order_groups_url)
   end
 
-  # 発注グループをコピー
-  #
-  # @return [void]
   def copy
     @material_order_group.create_copy(user: current_user)
     redirect_to resources_material_order_groups_path, notice: t("flash_messages.copy.success",
@@ -91,9 +66,6 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
 
   private
 
-  # Strong Parameters
-  #
-  # @return [ActionController::Parameters]
   def material_order_group_params
     params.require(:resources_material_order_group).permit(:name, :reading, :description)
   end

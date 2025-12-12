@@ -31,12 +31,11 @@ class Resources::MaterialsController < AuthenticatedController
   # @return [void]
   def index
     @material_categories = Resources::Category.for_materials
-    sorted_index(
-      Resources::Material,
-      default: "name",
-      scope: :all,
-      includes: [ :category, :unit_for_product, :unit_for_order, :production_unit, :order_group ]
-    )
+    base_query = scoped_materials.includes(:category, :unit_for_product, :unit_for_order, :production_unit, :order_group)
+    base_query = base_query.search_and_filter(search_params) if defined?(search_params)
+    sorted_query = apply_sort(base_query, default: "name")
+    @materials = apply_pagination(sorted_query)
+    set_search_term_for_view if respond_to?(:set_search_term_for_view, true)
   end
 
   # 新規原材料作成フォーム
@@ -46,6 +45,8 @@ class Resources::MaterialsController < AuthenticatedController
     @material_categories = Resources::Category.material.where(user_id: current_user.id)
     @material = Resources::Material.new
     @material.user_id = current_user.id
+    @material.tenant_id = current_tenant.id
+    @material.store_id = current_store&.id
   end
 
   # 原材料を作成
@@ -54,6 +55,8 @@ class Resources::MaterialsController < AuthenticatedController
   def create
     @material = Resources::Material.new(material_params)
     @material.user_id = current_user.id
+    @material.tenant_id = current_tenant.id
+    @material.store_id = current_store&.id if @material.store_id.blank?
     respond_to_save(@material)
   end
 

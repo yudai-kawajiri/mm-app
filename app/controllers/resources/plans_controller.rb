@@ -30,12 +30,11 @@ class Resources::PlansController < AuthenticatedController
   # @return [void]
   def index
     @plan_categories = Resources::Category.for_plans.ordered
-    sorted_index(
-      Resources::Plan,
-      default: "name",
-      scope: :all,
-      includes: [ :category ]
-    )
+    base_query = scoped_plans.includes(:category)
+    base_query = base_query.search_and_filter(search_params) if defined?(search_params)
+    sorted_query = apply_sort(base_query, default: "name")
+    @plans = apply_pagination(sorted_query)
+    set_search_term_for_view if respond_to?(:set_search_term_for_view, true)
   end
 
   # 新規計画作成フォーム
@@ -44,6 +43,8 @@ class Resources::PlansController < AuthenticatedController
   def new
     @plan = Resources::Plan.new
     @plan.user_id = current_user.id
+    @plan.tenant_id = current_tenant.id
+    @plan.store_id = current_store&.id
     @plan_categories = Resources::Category.for_plans.ordered
     @product_categories = Resources::Category.for_products.ordered
   end
@@ -54,6 +55,8 @@ class Resources::PlansController < AuthenticatedController
   def create
     @plan = Resources::Plan.new(plan_params)
     @plan.user_id = current_user.id
+    @plan.tenant_id = current_tenant.id
+    @plan.store_id = current_store&.id if @plan.store_id.blank?
 
     # エラー時のrender用に変数を事前設定
     @plan_categories = Resources::Category.for_plans.ordered

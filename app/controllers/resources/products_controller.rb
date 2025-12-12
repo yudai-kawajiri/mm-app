@@ -30,12 +30,11 @@ class Resources::ProductsController < AuthenticatedController
   # @return [void]
   def index
     @product_categories = Resources::Category.for_products.ordered
-    sorted_index(
-      Resources::Product,
-      default: "name",
-      scope: :all,
-      includes: [ :category, :image_attachment ]
-    )
+    base_query = scoped_products.includes(:category, :image_attachment)
+    base_query = base_query.search_and_filter(search_params) if defined?(search_params)
+    sorted_query = apply_sort(base_query, default: "name")
+    @products = apply_pagination(sorted_query)
+    set_search_term_for_view if respond_to?(:set_search_term_for_view, true)
   end
 
   # 新規商品作成フォーム
@@ -44,6 +43,8 @@ class Resources::ProductsController < AuthenticatedController
   def new
     @product = Resources::Product.new
     @product.user_id = current_user.id
+    @product.tenant_id = current_tenant.id
+    @product.store_id = current_store&.id
     @product_categories = Resources::Category.for_products.ordered
     @material_categories = Resources::Category.for_materials
   end
@@ -54,6 +55,8 @@ class Resources::ProductsController < AuthenticatedController
   def create
     @product = Resources::Product.new(product_params)
     @product.user_id = current_user.id
+    @product.tenant_id = current_tenant.id
+    @product.store_id = current_store&.id if @product.store_id.blank?
 
     # エラー時のrender用に変数を事前設定
     @product_categories = Resources::Category.for_products.ordered

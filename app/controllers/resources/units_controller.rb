@@ -4,95 +4,66 @@
 #
 # 単位（Unit）のCRUD操作を管理
 #
-# 機能:
-#   - 単位の一覧表示（検索・カテゴリ―フィルタ・ページネーション・ソート機能）
-#   - 単位の作成・編集・削除
-#   - 単位のコピー
+# 【実装のポイント】
+# - マルチテナント・店舗スコープを index/new/create に適用
+# - scoped_units により権限レベルに応じたデータ分離を実現
 class Resources::UnitsController < AuthenticatedController
   include SortableController
 
-  # 検索パラメータの定義
   define_search_params :q, :category, :sort_by
 
-  # ソートオプションの定義
   define_sort_options(
     name: -> { order(:reading) },
     category: -> { order(:category, :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
-  # リソース検索（show, edit, update, destroy, copy）
   find_resource :unit, only: [ :show, :edit, :update, :destroy, :copy ]
 
-  # 単位一覧
-  #
-  # @return [void]
   def index
-    # 基本クエリ
-    @units = Resources::Unit.all
+    @units = scoped_units
 
-    # ソート適用
     @units = apply_sort(@units, default: "name")
 
-    # カテゴリーフィルタリング
     if params[:category].present?
       @units = @units.filter_by_category(params[:category])
     end
 
-    # 名前検索（直接実装）
     if params[:q].present?
       @units = @units.search_by_name(params[:q])
     end
 
-    # ページネーション
     @units = @units.page(params[:page])
   end
 
-  # 新規単位作成フォーム
-  #
-  # @return [void]
   def new
     @unit = Resources::Unit.new
     @unit.user_id = current_user.id
+    @unit.tenant_id = current_tenant.id
+    @unit.store_id = current_store&.id
   end
 
-  # 単位を作成
-  #
-  # @return [void]
   def create
     @unit = Resources::Unit.new(unit_params)
     @unit.user_id = current_user.id
+    @unit.tenant_id = current_tenant.id
+    @unit.store_id = current_store&.id if @unit.store_id.blank?
     respond_to_save(@unit)
   end
 
-  # 単位詳細
-  #
-  # @return [void]
   def show; end
 
-  # 単位編集フォーム
-  #
-  # @return [void]
   def edit; end
 
-  # 単位を更新
-  #
-  # @return [void]
   def update
     @unit.assign_attributes(unit_params)
     respond_to_save(@unit)
   end
 
-  # 単位を削除
-  #
-  # @return [void]
   def destroy
     respond_to_destroy(@unit, success_path: resources_units_url)
   end
 
-  # 単位をコピー
-  #
-  # @return [void]
   def copy
     @unit.create_copy(user: current_user)
     redirect_to resources_units_path, notice: t("flash_messages.copy.success",
@@ -105,9 +76,6 @@ class Resources::UnitsController < AuthenticatedController
 
   private
 
-  # Strong Parameters
-  #
-  # @return [ActionController::Parameters]
   def unit_params
     params.require(:resources_unit).permit(:name, :reading, :category, :description)
   end
