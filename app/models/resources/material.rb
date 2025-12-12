@@ -19,6 +19,10 @@ class Resources::Material < ApplicationRecord
   include HasReading
 
   # 関連付け
+  # マルチテナント対応
+  belongs_to :tenant
+  belongs_to :store, optional: true
+
   # フォーム定数
   DESCRIPTION_MAX_LENGTH = 500
   DESCRIPTION_ROWS = 3

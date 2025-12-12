@@ -39,6 +39,10 @@ class Resources::Product < ApplicationRecord
   enum :status, { draft: 0, selling: 1, discontinued: 2 }
 
   # 関連付け
+  # マルチテナント対応
+  belongs_to :tenant
+  belongs_to :store, optional: true
+
   belongs_to :category, class_name: "Resources::Category"
   has_many :product_materials, class_name: "Planning::ProductMaterial", dependent: :destroy
   has_many :materials, through: :product_materials, class_name: "Resources::Material"
