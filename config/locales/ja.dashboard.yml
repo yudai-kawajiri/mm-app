@@ -1,5 +1,9 @@
 ja:
   dashboard:
+    sidebar:
+      company: "会社"
+      store: "店舗"
+      all_stores: "全店舗"
     menu:
       title: "MM-App"
       dashboard: "ダッシュボード"
