@@ -22,8 +22,8 @@ class Resources::MaterialOrderGroup < ApplicationRecord
   has_many :materials, class_name: "Resources::Material", foreign_key: :order_group_id, dependent: :restrict_with_error
 
   # バリデーション
-  validates :name, presence: true, uniqueness: true
-  validates :reading, uniqueness: true, allow_blank: true
+  validates :name, presence: true, uniqueness: { scope: :store_id }
+  validates :reading, presence: true, uniqueness: { scope: :store_id }
 
   # セレクトボックス用：名前順
   scope :ordered, -> { order(:name) }
@@ -33,6 +33,7 @@ class Resources::MaterialOrderGroup < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    uniqueness_scope: :name
+    uniqueness_scope: [:name, :store_id],
+    uniqueness_check_attributes: [ :name, :reading ]
   )
 end

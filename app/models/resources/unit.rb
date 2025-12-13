@@ -47,8 +47,8 @@ class Resources::Unit < ApplicationRecord
             dependent: :restrict_with_error
 
   # バリデーション
-  validates :name, presence: true, uniqueness: { scope: :category }
-  validates :reading, uniqueness: { scope: :category }
+  validates :name, presence: true, uniqueness: { scope: [:category, :store_id] }
+  validates :reading, presence: true, uniqueness: { scope: [:category, :store_id] }
   validates :category, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
@@ -67,7 +67,7 @@ class Resources::Unit < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    uniqueness_scope: :category,
+    uniqueness_scope: [:category, :store_id],
     uniqueness_check_attributes: [ :name ]
   )
 end

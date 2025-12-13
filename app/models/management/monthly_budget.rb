@@ -23,7 +23,7 @@ class Management::MonthlyBudget < ApplicationRecord
   DESCRIPTION_ROWS = 3
 
   # バリデーション
-  validates :budget_month, presence: true, uniqueness: true
+  validates :budget_month, presence: true, uniqueness: { scope: :store_id }
   validates :target_amount, presence: true, numericality: { greater_than: 0 }
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 

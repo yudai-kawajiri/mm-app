@@ -57,8 +57,8 @@ class Resources::Plan < ApplicationRecord
   }
 
   # バリデーション
-  validates :name, presence: true, uniqueness: { scope: :category_id }
-  validates :reading, uniqueness: { scope: :category_id }, allow_blank: true
+  validates :name, presence: true, uniqueness: { scope: [:category_id, :store_id] }
+  validates :reading, presence: true, uniqueness: { scope: [:category_id, :store_id] }
   validates :category_id, presence: true
   validates :status, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
@@ -85,7 +85,7 @@ class Resources::Plan < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    uniqueness_scope: :category_id,
+    uniqueness_scope: [:category_id, :store_id],
     uniqueness_check_attributes: [ :name, :reading ],
     associations_to_copy: [ :plan_products ],
     additional_attributes: {
