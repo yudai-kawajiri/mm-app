@@ -24,7 +24,7 @@
         <%= form_with url: switch_store_path, method: :post, local: true do |f| %>
           <%= f.select :store_id,
               options_for_select(
-                [[t('dashboard.sidebar.all_stores'), nil]] + current_tenant.stores.pluck(:name, :id),
+                current_tenant.stores.pluck(:name, :id),
                 session[:current_store_id]
               ),
               {},
