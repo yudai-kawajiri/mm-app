@@ -125,7 +125,7 @@ class Resources::PlansController < AuthenticatedController
                                               .sort_by { |item| [ item[:product].display_order || Resources::Plan::DEFAULT_DISPLAY_ORDER, item[:product].id ] }
     else
       @plan_products_for_print = @plan.plan_products
-                                      .includes(product: [ :category, { image_attachment: :blob } ])
+                                      .includes(product: { image_attachment: :blob })
                                       .joins(:product)
                                       .order("products.display_order ASC, products.id ASC")
                                       .map do |pp|

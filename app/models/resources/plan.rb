@@ -261,7 +261,7 @@ class Resources::Plan < ApplicationRecord
     # 計画に含まれる全製品の原材料を集計
     material_totals = Hash.new { |h, k| h[k] = { total_quantity: 0, products: [] } }
 
-    plan_products.includes(product: { product_materials: :material }).each do |pp|
+    plan_products.includes(product: { product_materials: { material: [:order_group, :unit_for_order] } }).each do |pp|
       pp.product.product_materials.each do |pm|
         material = pm.material
         quantity = pm.quantity * pp.production_count
