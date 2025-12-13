@@ -3,16 +3,6 @@
 # Admin Users Controller
 #
 # ユーザー管理機能
-#
-# 機能:
-# - ユーザーの一覧表示・作成・編集・削除
-# - 店舗スコープによるアクセス制限
-# - ロール（権限）の管理
-#
-# 権限:
-# - store_admin: 自店舗のユーザーのみ管理可能
-# - company_admin: 自社全店舗のユーザーを管理可能
-# - super_admin: 全ユーザーを管理可能
 class Admin::UsersController < AuthenticatedController
   before_action :require_admin
   before_action :set_user, only: [:edit, :update, :destroy]
@@ -67,13 +57,16 @@ class Admin::UsersController < AuthenticatedController
       # 店舗管理者: 自店舗のユーザーのみ
       current_user.store.users
     when 'company_admin'
-      # 会社管理者: 自社（テナント）全店舗のユーザー
-      current_user.tenant.users
+      # 会社管理者: 店舗選択時はその店舗のみ、未選択時は全店舗
+      if current_store.present?
+        current_store.users
+      else
+        current_user.tenant.users
+      end
     when 'super_admin'
       # スーパー管理者: 全ユーザー
       User.all
     else
-      # 一般ユーザーは管理画面にアクセスできないはずだが、念のため空を返す
       User.none
     end
   end
