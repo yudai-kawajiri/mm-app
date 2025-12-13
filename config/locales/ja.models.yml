@@ -28,6 +28,7 @@ ja:
               blank: "を選択してください"
         "resources/product":
           item_number_exceeded: "品番が上限を超えました。これ以上コピーできません。"
+          category_in_use: "は %{usage} で使用中のため変更できません"
           attributes:
             status:
               used_in_plans: "は計画で使用中のため変更できません"
@@ -35,6 +36,12 @@ ja:
           attributes:
             status:
               used_in_plans: "は計画スケジュールで使用中のため変更できません"
+        "resources/category":
+          category_type_in_use: "は %{usage} で使用中のため変更できません"
+        "resources/unit":
+          category_in_use: "は %{usage} で使用中のため変更できません"
+        "resources/material":
+          category_in_use: "は %{usage} で使用中のため変更できません"
         "planning/product_material":
           attributes:
             material_id:
@@ -44,6 +51,14 @@ ja:
           attributes:
             product_id:
               blank: "を選択してください"
+      usage_formats:
+        products: "商品 %{count}件"
+        materials: "原材料 %{count}件"
+        plans: "計画 %{count}件"
+        unit_for_product: "原材料(商品用単位) %{count}件"
+        unit_for_order: "原材料(発注用単位) %{count}件"
+        product_materials: "商品原材料 %{count}件"
+        plan_products: "計画 %{count}件"
 
     models:
       user: "アカウント"
@@ -66,7 +81,7 @@ ja:
         email: "メールアドレス"
         password: "パスワード"
         name: "名前"
-        password_confirmation: "パスワード（確認）"
+        password_confirmation: "パスワード(確認)"
         current_password: "現在のパスワード"
         invitation_code: "招待コード"
 
@@ -84,8 +99,8 @@ ja:
         reading: "読み仮名"
         category: "カテゴリー"
         description: "概要"
-        materials_as_product_unit: "原材料（使用単位）"
-        materials_as_order_unit: "原材料（発注単位）"
+        materials_as_product_unit: "原材料(使用単位)"
+        materials_as_order_unit: "原材料(発注単位)"
 
       "resources/material_order_group":
         name: "グループ名"
