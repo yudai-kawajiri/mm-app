@@ -46,7 +46,6 @@ class Resources::Material < ApplicationRecord
             numericality: { greater_than: 0, only_integer: true },
             if: :count_based?
 
-  # 使用中の原材料はカテゴリー変更不可（データ整合性を保つため）
   validate :prevent_category_change_if_in_use, on: :update
 
   scope :for_index, -> { includes(:category, :unit_for_product, :unit_for_order).order(created_at: :desc) }
@@ -92,11 +91,8 @@ class Resources::Material < ApplicationRecord
 
   def prevent_category_change_if_in_use
     return unless category_id_changed?
+    return if Planning::ProductMaterial.where(material_id: id).count.zero?
 
-    usage_count = Planning::ProductMaterial.where(material_id: id).count
-    return if usage_count.zero?
-
-    usage = I18n.t('activerecord.errors.usage_formats.products', count: usage_count)
-    errors.add(:category_id, I18n.t('activerecord.errors.models.resources/material.category_in_use', usage: usage))
+    errors.add(:category_id, I18n.t('activerecord.errors.models.resources/material.category_in_use', record: "商品"))
   end
 end

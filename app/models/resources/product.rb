@@ -52,7 +52,6 @@ class Resources::Product < ApplicationRecord
   validates :status, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
-  # 使用中の商品はカテゴリー変更不可（データ整合性を保つため）
   validate :prevent_category_change_if_in_use, on: :update
 
   scope :for_index, -> { includes(:category).order(created_at: :desc) }
@@ -130,11 +129,8 @@ class Resources::Product < ApplicationRecord
 
   def prevent_category_change_if_in_use
     return unless category_id_changed?
+    return if Planning::PlanProduct.where(product_id: id).count.zero?
 
-    usage_count = Planning::PlanProduct.where(product_id: id).count
-    return if usage_count.zero?
-
-    usage = I18n.t('activerecord.errors.usage_formats.plans', count: usage_count)
-    errors.add(:category_id, I18n.t('activerecord.errors.models.resources/product.category_in_use', usage: usage))
+    errors.add(:category_id, I18n.t('activerecord.errors.models.resources/product.category_in_use', record: "計画"))
   end
 end

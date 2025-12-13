@@ -41,7 +41,6 @@ class Resources::Unit < ApplicationRecord
   validates :category, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
-  # 使用中の単位はカテゴリー変更不可（データ整合性を保つため）
   validate :prevent_category_change_if_in_use, on: :update
 
   scope :for_index, -> { order(created_at: :desc) }
@@ -62,16 +61,12 @@ class Resources::Unit < ApplicationRecord
     return unless category_changed?
 
     usage_details = []
-    unit_for_product_count = Resources::Material.where(unit_for_product_id: id).count
-    unit_for_order_count = Resources::Material.where(unit_for_order_id: id).count
-    product_materials_count = Planning::ProductMaterial.where(unit_id: id).count
-
-    usage_details << I18n.t('activerecord.errors.usage_formats.unit_for_product', count: unit_for_product_count) if unit_for_product_count > 0
-    usage_details << I18n.t('activerecord.errors.usage_formats.unit_for_order', count: unit_for_order_count) if unit_for_order_count > 0
-    usage_details << I18n.t('activerecord.errors.usage_formats.product_materials', count: product_materials_count) if product_materials_count > 0
+    usage_details << "原材料" if Resources::Material.where(unit_for_product_id: id).exists? || 
+                                  Resources::Material.where(unit_for_order_id: id).exists?
+    usage_details << "商品原材料" if Planning::ProductMaterial.where(unit_id: id).exists?
 
     return if usage_details.empty?
 
-    errors.add(:category, I18n.t('activerecord.errors.models.resources/unit.category_in_use', usage: usage_details.join('、')))
+    errors.add(:category, I18n.t('activerecord.errors.models.resources/unit.category_in_use', record: usage_details.join('、')))
   end
 end

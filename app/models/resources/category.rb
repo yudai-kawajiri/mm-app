@@ -31,7 +31,6 @@ class Resources::Category < ApplicationRecord
   validate :reading_uniqueness_within_store_and_type
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
-  # 使用中のカテゴリーは種別変更不可（データ整合性を保つため）
   validate :prevent_category_type_change_if_in_use, on: :update
 
   scope :for_index, -> { order(created_at: :desc) }
@@ -62,12 +61,12 @@ class Resources::Category < ApplicationRecord
     return unless category_type_changed?
 
     usage_details = []
-    usage_details << I18n.t('activerecord.errors.usage_formats.products', count: products.count) if products.exists?
-    usage_details << I18n.t('activerecord.errors.usage_formats.materials', count: materials.count) if materials.exists?
-    usage_details << I18n.t('activerecord.errors.usage_formats.plans', count: plans.count) if plans.exists?
+    usage_details << "商品" if products.exists?
+    usage_details << "原材料" if materials.exists?
+    usage_details << "計画" if plans.exists?
 
     return if usage_details.empty?
 
-    errors.add(:category_type, I18n.t('activerecord.errors.models.resources/category.category_type_in_use', usage: usage_details.join('、')))
+    errors.add(:category_type, I18n.t('activerecord.errors.models.resources/category.category_type_in_use', record: usage_details.join('、')))
   end
 end

@@ -28,7 +28,7 @@ ja:
               blank: "を選択してください"
         "resources/product":
           item_number_exceeded: "品番が上限を超えました。これ以上コピーできません。"
-          category_in_use: "は %{usage} で使用中のため変更できません"
+          category_in_use: "%{record}で使用しています"
           attributes:
             status:
               used_in_plans: "は計画で使用中のため変更できません"
@@ -37,11 +37,11 @@ ja:
             status:
               used_in_plans: "は計画スケジュールで使用中のため変更できません"
         "resources/category":
-          category_type_in_use: "は %{usage} で使用中のため変更できません"
+          category_type_in_use: "%{record}で使用しています"
         "resources/unit":
-          category_in_use: "は %{usage} で使用中のため変更できません"
+          category_in_use: "%{record}で使用しています"
         "resources/material":
-          category_in_use: "は %{usage} で使用中のため変更できません"
+          category_in_use: "%{record}で使用しています"
         "planning/product_material":
           attributes:
             material_id:
@@ -51,14 +51,6 @@ ja:
           attributes:
             product_id:
               blank: "を選択してください"
-      usage_formats:
-        products: "商品 %{count}件"
-        materials: "原材料 %{count}件"
-        plans: "計画 %{count}件"
-        unit_for_product: "原材料(商品用単位) %{count}件"
-        unit_for_order: "原材料(発注用単位) %{count}件"
-        product_materials: "商品原材料 %{count}件"
-        plan_products: "計画 %{count}件"
 
     models:
       user: "アカウント"
