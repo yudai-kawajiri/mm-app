@@ -1,4 +1,11 @@
-<%# リソースヘッダーアクション %>
+<%# リソースヘッダーアクション
+
+    各画面（一覧/詳細/フォーム）に応じたアクションボタンを表示
+
+    【マルチテナント対応】
+    一覧画面の新規登録ボタンは can_register? で制御
+    会社管理者が「全店舗」選択中は非表示となり、store_id=nil での登録を防止
+%>
 <% if is_form_page %>
 
   <%= render 'shared/actions/back_link',
@@ -93,9 +100,12 @@
 <% elsif is_index_page %>
 
   <% if new_path.present? %>
-    <%= render 'shared/actions/new_link',
-                url: new_path,
-                custom_class: 'btn-sm' %>
+    <%# マルチテナント: 会社管理者が「全店舗」選択中は新規登録ボタンを非表示 %>
+    <% if can_register? %>
+      <%= render 'shared/actions/new_link',
+                  url: new_path,
+                  custom_class: 'btn-sm' %>
+    <% end %>
   <% else %>
     <%
       if defined?(resource) && resource
@@ -105,9 +115,11 @@
         fallback_new_path = '#'
       end
     %>
-    <%= render 'shared/actions/new_link',
-                url: fallback_new_path,
-                custom_class: 'btn-sm' %>
+    <% if can_register? %>
+      <%= render 'shared/actions/new_link',
+                  url: fallback_new_path,
+                  custom_class: 'btn-sm' %>
+    <% end %>
   <% end %>
 
 <% end %>
