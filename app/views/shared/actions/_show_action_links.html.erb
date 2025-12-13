@@ -7,29 +7,27 @@
     <i class="bi bi-arrow-left"></i>
   <% end %>
 
-  <% if can_register? %>
-    <%= link_to [:edit, resource], class: 'btn btn-light btn-sm', title: t('helpers.link.edit') do %>
-      <i class="bi bi-pencil"></i>
-    <% end %>
+  <%= link_to [:edit, resource], class: 'btn btn-light btn-sm', title: t('helpers.link.edit') do %>
+    <i class="bi bi-pencil"></i>
+  <% end %>
 
-    <% additional_actions.each do |action| %>
-      <%= link_to action[:path],
-                  class: "btn btn-sm #{action[:class] || 'btn-light'}",
-                  target: action[:target],
-                  title: action[:label] do %>
-        <% if action[:icon].present? %>
-          <i class="bi <%= action[:icon] %>"></i>
-        <% else %>
-          <%= action[:label] %>
-        <% end %>
+  <% additional_actions.each do |action| %>
+    <%= link_to action[:path],
+                class: "btn btn-sm #{action[:class] || 'btn-light'}",
+                target: action[:target],
+                title: action[:label] do %>
+      <% if action[:icon].present? %>
+        <i class="bi <%= action[:icon] %>"></i>
+      <% else %>
+        <%= action[:label] %>
       <% end %>
     <% end %>
+  <% end %>
 
-    <%= button_to resource, method: :delete,
-        data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource.class.model_name.human) },
-        class: 'btn btn-danger btn-sm',
-        title: t('helpers.link.destroy') do %>
-      <i class="bi bi-trash"></i>
-    <% end %>
+  <%= button_to resource, method: :delete,
+      data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource.class.model_name.human) },
+      class: 'btn btn-danger btn-sm',
+      title: t('helpers.link.destroy') do %>
+    <i class="bi bi-trash"></i>
   <% end %>
 </div>

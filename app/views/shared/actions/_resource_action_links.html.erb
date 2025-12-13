@@ -19,40 +19,38 @@
       <% end %>
     <% end %>
 
-    <% if can_register? %>
-      <%= link_to url_for([:edit, resource]),
-          class: 'btn btn-sm btn-outline-secondary me-1',
-          title: t('helpers.link.edit') do %>
-        <i class="bi bi-pencil"></i>
-      <% end %>
+    <%= link_to url_for([:edit, resource]),
+        class: 'btn btn-sm btn-outline-secondary me-1',
+        title: t('helpers.link.edit') do %>
+      <i class="bi bi-pencil"></i>
+    <% end %>
 
-      <% if show_copy && copy_url.present? %>
-        <%= button_to copy_url,
-            method: :post,
-            class: 'btn btn-sm btn-secondary me-1',
-            data: { turbo_confirm: t('helpers.confirm.copy', resource: resource_name) },
-            title: t('helpers.link.copy') do %>
-          <i class="bi bi-files"></i>
-        <% end %>
+    <% if show_copy && copy_url.present? %>
+      <%= button_to copy_url,
+          method: :post,
+          class: 'btn btn-sm btn-secondary me-1',
+          data: { turbo_confirm: t('helpers.confirm.copy', resource: resource_name) },
+          title: t('helpers.link.copy') do %>
+        <i class="bi bi-files"></i>
       <% end %>
+    <% end %>
 
-      <% if show_print && print_url.present? %>
-        <%= link_to print_url,
-            class: 'btn btn-sm btn-light me-1',
-            target: '_blank',
-            title: t('plans.actions.preview') do %>
-          <i class="bi bi-printer"></i>
-        <% end %>
+    <% if show_print && print_url.present? %>
+      <%= link_to print_url,
+          class: 'btn btn-sm btn-light me-1',
+          target: '_blank',
+          title: t('plans.actions.preview') do %>
+        <i class="bi bi-printer"></i>
       <% end %>
+    <% end %>
 
-      <%= button_to resource,
-          method: :delete,
-          data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource_name) },
-          class: 'btn btn-sm btn-danger',
-          form: { style: 'display: inline-block;' },
-          title: t('helpers.link.destroy') do %>
-        <i class="bi bi-trash"></i>
-      <% end %>
+    <%= button_to resource,
+        method: :delete,
+        data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource_name) },
+        class: 'btn btn-sm btn-danger',
+        form: { style: 'display: inline-block;' },
+        title: t('helpers.link.destroy') do %>
+      <i class="bi bi-trash"></i>
     <% end %>
 
   <% else %>
@@ -63,22 +61,20 @@
           custom_class: 'me-2' %>
     <% end %>
 
-    <% if can_register? %>
-      <%= render 'shared/actions/edit_link',
-          url: url_for([:edit, resource]),
-          custom_class: 'me-2' %>
+    <%= render 'shared/actions/edit_link',
+        url: url_for([:edit, resource]),
+        custom_class: 'me-2' %>
 
-      <% if show_copy && copy_url.present? %>
-        <%= render 'shared/actions/copy_link',
-            url: copy_url,
-            custom_class: 'me-2',
-            confirm_message: t('helpers.confirm.copy', resource: resource_name) %>
-      <% end %>
-
-      <%= render 'shared/actions/delete_link',
-          url: resource,
-          resource_name: resource_name
-      %>
+    <% if show_copy && copy_url.present? %>
+      <%= render 'shared/actions/copy_link',
+          url: copy_url,
+          custom_class: 'me-2',
+          confirm_message: t('helpers.confirm.copy', resource: resource_name) %>
     <% end %>
+
+    <%= render 'shared/actions/delete_link',
+        url: resource,
+        resource_name: resource_name
+    %>
   <% end %>
 </div>

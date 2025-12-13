@@ -1,21 +1,20 @@
 <%# ソート可能ボタン %>
-<%# マルチテナント: 会社管理者が「全店舗」選択中は非表示 %>
-<% if can_register? %>
-  <div class="d-flex gap-2">
-    <button data-sortable-table-target="toggleBtn"
-            data-action="click->sortable-table#toggleReorderMode"
-            class="btn btn-sm btn-secondary">
-      <%= local_assigns[:button_text] || t('common.actions.reorder_print_order') %>
-    </button>
-    <button data-sortable-table-target="saveBtn"
-            data-action="click->sortable-table#save"
-            class="btn btn-sm btn-success d-none">
-      <%= t('common.save_order') %>
-    </button>
-    <button data-sortable-table-target="cancelBtn"
-            data-action="click->sortable-table#cancel"
-            class="btn btn-sm btn-outline-secondary d-none">
-      <%= t('common.cancel') %>
-    </button>
-  </div>
-<% end %>
+<div class="d-flex gap-2">
+  <button data-sortable-table-target="toggleBtn"
+          data-action="click->sortable-table#toggleReorderMode"
+          class="btn btn-sm btn-secondary">
+    <%= local_assigns[:button_text] || t('common.actions.reorder_print_order') %>
+  </button>
+
+  <button data-sortable-table-target="saveBtn"
+          data-action="click->sortable-table#save"
+          class="btn btn-sm btn-success d-none">
+    <%= t('common.save_order') %>
+  </button>
+
+  <button data-sortable-table-target="cancelBtn"
+          data-action="click->sortable-table#cancel"
+          class="btn btn-sm btn-outline-secondary d-none">
+    <%= t('common.cancel') %>
+  </button>
+</div>

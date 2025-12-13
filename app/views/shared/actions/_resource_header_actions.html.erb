@@ -89,25 +89,20 @@
               url: index_path,
               custom_class: 'me-2' %>
 
-  <% if can_register? %>
-    <%= render 'shared/actions/edit_link',
-                url: edit_polymorphic_path(resource),
-                custom_class: 'me-2' %>
+  <%= render 'shared/actions/edit_link',
+              url: edit_polymorphic_path(resource),
+              custom_class: 'me-2' %>
 
-    <%= render 'shared/actions/delete_link',
-                url: resource,
-                resource_name: resource.class.model_name.human %>
-  <% end %>
+  <%= render 'shared/actions/delete_link',
+              url: resource,
+              resource_name: resource.class.model_name.human %>
 
 <% elsif is_index_page %>
 
   <% if new_path.present? %>
-    <%# マルチテナント: 会社管理者が「全店舗」選択中は新規登録ボタンを非表示 %>
-    <% if can_register? %>
-      <%= render 'shared/actions/new_link',
-                  url: new_path,
-                  custom_class: 'btn-sm' %>
-    <% end %>
+    <%= render 'shared/actions/new_link',
+                url: new_path,
+                custom_class: 'btn-sm' %>
   <% else %>
     <%
       if defined?(resource) && resource
@@ -117,11 +112,9 @@
         fallback_new_path = '#'
       end
     %>
-    <% if can_register? %>
-      <%= render 'shared/actions/new_link',
-                  url: fallback_new_path,
-                  custom_class: 'btn-sm' %>
-    <% end %>
+    <%= render 'shared/actions/new_link',
+                url: fallback_new_path,
+                custom_class: 'btn-sm' %>
   <% end %>
 
 <% end %>
