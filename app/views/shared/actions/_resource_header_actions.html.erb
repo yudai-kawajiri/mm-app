@@ -89,13 +89,15 @@
               url: index_path,
               custom_class: 'me-2' %>
 
-  <%= render 'shared/actions/edit_link',
-              url: edit_polymorphic_path(resource),
-              custom_class: 'me-2' %>
+  <% if can_register? %>
+    <%= render 'shared/actions/edit_link',
+                url: edit_polymorphic_path(resource),
+                custom_class: 'me-2' %>
 
-  <%= render 'shared/actions/delete_link',
-              url: resource,
-              resource_name: resource.class.model_name.human %>
+    <%= render 'shared/actions/delete_link',
+                url: resource,
+                resource_name: resource.class.model_name.human %>
+  <% end %>
 
 <% elsif is_index_page %>
 
