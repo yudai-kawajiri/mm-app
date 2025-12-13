@@ -23,10 +23,13 @@ class Management::MonthlyBudgetsController < ApplicationController
   def create
     budget_month = Date.new(params[:year].to_i, params[:month].to_i, 1)
 
-    @monthly_budget = Management::MonthlyBudget.find_or_initialize_by(
+    # 店舗スコープを適用して予算を検索
+    @monthly_budget = scoped_monthly_budgets.find_or_initialize_by(
       budget_month: budget_month
     )
-    @monthly_budget.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
+    @monthly_budget.user_id ||= current_user.id
+    @monthly_budget.tenant_id ||= current_tenant.id
+    @monthly_budget.store_id ||= current_store&.id
 
     @monthly_budget.assign_attributes(sanitized_monthly_budget_params)
 

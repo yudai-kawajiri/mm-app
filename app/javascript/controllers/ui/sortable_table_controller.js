@@ -279,17 +279,21 @@ export default class extends Controller {
       Logger.log(LOG_MESSAGES.responseStatus(response.status))
       Logger.log(LOG_MESSAGES.responseOk(response.ok))
 
-      if (response.ok) {
-        // 印刷順（display_order）でリロード
-        const url = new URL(window.location.href)
-        url.searchParams.set('sort_by', 'display_order')
-        window.location.href = url.toString()
-      } else {
-        return response.text().then(text => {
-          Logger.error(LOG_MESSAGES.errorResponse(text))
-          alert(i18n.t(I18N_KEYS.SAVE_FAILED, { status: response.status }))
-        })
-      }
+      // JSON レスポンスをパース
+      return response.json().then(data => {
+        if (response.ok) {
+          // サーバーから翻訳済みメッセージを受け取る
+          alert(data.message)
+          const url = new URL(window.location.href)
+          url.searchParams.set('sort_by', 'display_order')
+          window.location.href = url.toString()
+        } else {
+          // エラーメッセージを表示（403 Forbidden など）
+          Logger.error(LOG_MESSAGES.errorResponse(JSON.stringify(data)))
+          alert(data.error || i18n.t(I18N_KEYS.SAVE_FAILED, { status: response.status }))
+          location.reload()
+        }
+      })
     })
     .catch(error => {
       Logger.error(LOG_MESSAGES.fetchError(error))

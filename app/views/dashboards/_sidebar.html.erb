@@ -1,29 +1,31 @@
-<%# ダッシュボードサイドバーナビゲーション (3階層対応) %>
 <div class="col-md-3 bg-light border-end p-4">
   <h2 class="mb-4 fw-bold text-primary">
     <%= t('dashboard.menu.title') %>
   </h2>
 
-  <%# マルチテナント: 会社・店舗情報表示 %>
+  <%#
+    会社管理者: 店舗切り替えドロップダウン（全店舗選択可能）
+    一般ユーザー: 所属店舗名のみ表示（変更不可）
+  %>
   <div class="mb-3 p-3 bg-white border rounded">
     <div class="mb-2">
       <small class="text-muted d-block mb-1">
-        <i class="bi bi-building"></i> 会社
+        <i class="bi bi-building"></i> <%= t('dashboard.sidebar.company') %>
       </small>
       <div class="fw-semibold"><%= current_tenant&.name %></div>
     </div>
 
     <% if current_user.can_manage_company? %>
-      <%# 会社管理者: 店舗切り替えドロップダウン %>
       <div>
         <small class="text-muted d-block mb-1">
-          <i class="bi bi-shop"></i> 店舗
+          <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
         </small>
+        <%# onchange で自動送信: JavaScript 不要で店舗切り替えを実現 %>
         <%= form_with url: switch_store_path, method: :post, local: true do |f| %>
           <%= f.select :store_id,
               options_for_select(
-                [["全店舗", nil]] + current_tenant.stores.pluck(:name, :id),
-                current_store&.id
+                current_tenant.stores.pluck(:name, :id),
+                session[:current_store_id]
               ),
               {},
               {
@@ -33,16 +35,22 @@
         <% end %>
       </div>
     <% else %>
-      <%# 一般ユーザー: 店舗名のみ表示 %>
       <div>
         <small class="text-muted d-block mb-1">
-          <i class="bi bi-shop"></i> 店舗
+          <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
         </small>
         <div class="fw-semibold"><%= current_store&.name %></div>
       </div>
     <% end %>
   </div>
 
+  <%#
+    アコーディオンメニュー:
+    - 親メニュー（カテゴリ管理、商品管理など）
+    - 子メニュー（カテゴリ一覧、新規登録など）
+    - 孫メニュー（原材料マスタ管理配下の3階層構造）
+    Bootstrap Collapse を利用し、1つのメニューのみ展開可能
+  %>
   <div class="list-group" id="sidebar-accordion">
 
     <% sidebar_menu_items.each_with_index do |item, index| %>
@@ -109,6 +117,7 @@
 
     <hr>
 
+    <%# 設定メニュー: アカウント設定、ヘルプ、利用規約など %>
     <% settings_collapse_id = 'collapse-settings' %>
     <% settings_is_active = current_page?(help_path) || current_page?(edit_user_registration_path) || current_page?(terms_path) || current_page?(privacy_path) || current_page?(new_contact_path) %>
 

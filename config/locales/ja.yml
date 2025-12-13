@@ -1,786 +1,722 @@
 ja:
-  application_name: "MM-App"
-
+  application_name: MM-App
   meta:
-    title: "MM-App - 製造業務管理システム"
-    description: "使用量と発注量を自動で計算、予算管理しながら計画を最適化"
-    site_name: "MM-App"
-
+    title: MM-App - 製造業務管理システム
+    description: 使用量と発注量を自動で計算、予算管理しながら計画を最適化
+    site_name: MM-App
   date:
     formats:
-      year_month: "%Y年%m月"
-      short: "%m/%d"
-      default: "%Y/%m/%d"
-      long: "%Y年%m月%d日(%a)"
+      year_month: '%Y年%m月'
+      short: '%m/%d'
+      default: '%Y/%m/%d'
+      long: '%Y年%m月%d日(%a)'
     abbr_day_names:
-      - "日"
-      - "月"
-      - "火"
-      - "水"
-      - "木"
-      - "金"
-      - "土"
+    - 日
+    - 月
+    - 火
+    - 水
+    - 木
+    - 金
+    - 土
     abbr_month_names:
-      - ""
-      - "1月"
-      - "2月"
-      - "3月"
-      - "4月"
-      - "5月"
-      - "6月"
-      - "7月"
-      - "8月"
-      - "9月"
-      - "10月"
-      - "11月"
-      - "12月"
+    - ''
+    - 1月
+    - 2月
+    - 3月
+    - 4月
+    - 5月
+    - 6月
+    - 7月
+    - 8月
+    - 9月
+    - 10月
+    - 11月
+    - 12月
     day_names:
-      - "日曜日"
-      - "月曜日"
-      - "火曜日"
-      - "水曜日"
-      - "木曜日"
-      - "金曜日"
-      - "土曜日"
+    - 日曜日
+    - 月曜日
+    - 火曜日
+    - 水曜日
+    - 木曜日
+    - 金曜日
+    - 土曜日
     month_names:
-      - ""
-      - "1月"
-      - "2月"
-      - "3月"
-      - "4月"
-      - "5月"
-      - "6月"
-      - "7月"
-      - "8月"
-      - "9月"
-      - "10月"
-      - "11月"
-      - "12月"
+    - ''
+    - 1月
+    - 2月
+    - 3月
+    - 4月
+    - 5月
+    - 6月
+    - 7月
+    - 8月
+    - 9月
+    - 10月
+    - 11月
+    - 12月
     order:
-      - :year
-      - :month
-      - :day
-
+    - :year
+    - :month
+    - :day
   time:
     formats:
-      year_month: "%Y年%m月"
-      default: "%Y/%m/%d %H:%M:%S"
-      long: "%Y年%m月%d日 %H:%M:%S"
-      short: "%m/%d %H:%M"
-
+      year_month: '%Y年%m月'
+      default: '%Y/%m/%d %H:%M:%S'
+      long: '%Y年%m月%d日 %H:%M:%S'
+      short: '%m/%d %H:%M'
   number:
     currency:
       format:
-        unit: "¥"
-        format: "%u%n"
-
+        unit: ¥
+        format: '%u%n'
   flash_messages:
     create:
-      success: "%{resource}を登録しました"
-      failure: "%{resource}の登録に失敗しました"
+      success: '%{resource}を登録しました'
+      failure: '%{resource}の登録に失敗しました'
     update:
-      success: "%{resource}を更新しました"
-      failure: "%{resource}の更新に失敗しました"
+      success: '%{resource}を更新しました'
+      failure: '%{resource}の更新に失敗しました'
     destroy:
-      success: "%{resource}を削除しました"
-      failure: "%{resource}の削除に失敗しました"
+      success: '%{resource}を削除しました'
+      failure: '%{resource}の削除に失敗しました'
     save:
-      success: "%{resource}を保存しました"
-      failure: "%{resource}の保存に失敗しました"
+      success: '%{resource}を保存しました'
+      failure: '%{resource}の保存に失敗しました'
     copy:
-      success: "%{resource}をコピーしました"
-      failure: "%{resource}のコピーに失敗しました"
-    not_authorized: "この操作を実行する権限がありません"
-
+      success: '%{resource}をコピーしました'
+      failure: '%{resource}のコピーに失敗しました'
+    not_authorized: この操作を実行する権限がありません
+    require_store_selected: この操作を実行するには店舗を選択してください。
   common:
-    search: "検索"
-    clear: "クリア"
-    action: "アクション"
-    cancel: "キャンセル"
-    category: "カテゴリー"
-    characters: "文字"
-    close: "閉じる"
-    create: "登録"
-    update: "更新"
-    save: "保存"
-    saving: "保存中..."
-    destroy: "削除"
-    edit: "編集"
-    name: "名前"
-    sort_by: "ソート"
-    show: "詳細"
-    back: "戻る"
-    copy: "コピー"
-    print: "印刷"
-    print_action: "印刷する"
-    record: "レコード"
-    change: "変更"
-    uncategorized: "未分類"
-    not_set: "未設定"
-    calculation_unavailable: "計算不可"
-    count_suffix: "件"
-    remaining: "残り"
-    save_order: "並び順を保存"
-    reorder_mode: "並び替えモード"
-    year_suffix: "年"
-    month_suffix: "月"
+    search: 検索
+    clear: クリア
+    action: アクション
+    cancel: キャンセル
+    category: カテゴリー
+    characters: 文字
+    close: 閉じる
+    create: 登録
+    update: 更新
+    save: 保存
+    saving: 保存中...
+    destroy: 削除
+    edit: 編集
+    name: 名前
+    sort_by: ソート
+    show: 詳細
+    back: 戻る
+    copy: コピー
+    print: 印刷
+    print_action: 印刷する
+    record: レコード
+    change: 変更
+    uncategorized: 未分類
+    not_set: 未設定
+    calculation_unavailable: 計算不可
+    count_suffix: 件
+    remaining: 残り
+    save_order: 並び順を保存
+    reorder_mode: 並び替えモード
+    year_suffix: 年
+    month_suffix: 月
     suffix:
-      year: "年"
-      month: "月"
+      year: 年
+      month: 月
     actions:
-      reorder_print_order: "印刷順を並び替え"
-
+      reorder_print_order: 印刷順を並び替え
   totals:
-    category: "カテゴリ―合計"
-
+    category: カテゴリ―合計
   labels:
-    date: "日付"
-
+    date: 日付
   forms:
     titles:
-      basic_info: "基本情報"
-      plan_product: "製造商品"
-      product_material: "商品原材料"
-
+      basic_info: 基本情報
+      plan_product: 製造商品
+      product_material: 商品原材料
   search:
     placeholders:
-      enter_name: "名前を入力"
-
+      enter_name: 名前を入力
   helpers:
-    no_setting: "未設定"
-    required_mark: "<span class='text-danger'>*</span>"
+    no_setting: 未設定
+    required_mark: <span class='text-danger'>*</span>
     prompt:
-      select: "選択してください"
+      select: 選択してください
     submit:
-      create: "登録"
-      update: "更新"
+      create: 登録
+      update: 更新
     links:
-      destroy: "削除"
+      destroy: 削除
     character_counter:
-      max_hint: "最大%{max}文字まで入力できます"
-      hint: "%{current} / %{max} 文字(残り %{remaining} 文字)"
+      max_hint: 最大%{max}文字まで入力できます
+      hint: '%{current} / %{max} 文字(残り %{remaining} 文字)'
     confirm:
-      destroy: "本当にこの%{resource}を削除してもよろしいですか?"
-      copy: "この%{resource}をコピーしますか?"
+      destroy: 本当にこの%{resource}を削除してもよろしいですか?
+      copy: この%{resource}をコピーしますか?
     link:
-      back: "戻る"
-      edit: "編集"
-      show: "詳細"
-      destroy: "削除"
-      new: "新規登録"
-      cancel: "キャンセル"
-      copy: "コピー"
-      back_to_dashboard: "ダッシュボードへ戻る"
-      add_item: "+ %{resource}を登録"
-      delete_image: "画像削除"
-      cancel_new_image: "選択をキャンセル"
+      back: 戻る
+      edit: 編集
+      show: 詳細
+      destroy: 削除
+      new: 新規登録
+      cancel: キャンセル
+      copy: コピー
+      back_to_dashboard: ダッシュボードへ戻る
+      add_item: + %{resource}を登録
+      delete_image: 画像削除
+      cancel_new_image: 選択をキャンセル
     forms:
-      quantity_placeholder: "数量"
+      quantity_placeholder: 数量
     label:
       user:
-        remember_me: "ログイン情報を記憶する"
-
+        remember_me: ログイン情報を記憶する
   errors:
     template:
       header:
-        one: "%{model}にエラーが発生しました"
-        other: "%{count}件のエラーが発生したため、%{model}を保存できませんでした"
-      body: "以下の項目を確認してください:"
+        one: '%{model}にエラーが発生しました'
+        other: '%{count}件のエラーが発生したため、%{model}を保存できませんでした'
+      body: '以下の項目を確認してください:'
     messages:
-      budget_created: "予算を設定しました"
-      budget_create_failed: "予算の設定に失敗しました"
+      budget_created: 予算を設定しました
+      budget_create_failed: 予算の設定に失敗しました
       not_saved:
-        one: "%{resource}の保存に失敗しました"
-        other: "%{count}件のエラーが発生したため、%{resource}の保存に失敗しました"
-      hiragana_only: "はひらがなのみで入力してください"
-      blank: "を入力してください"
-      required: "を入力してください"
-      not_a_number: "は数値で入力してください"
-      greater_than: "%{count}より大きい値を入力してください"
-      greater_than_or_equal_to: "は%{count}以上の値にしてください"
-      less_than: "は%{count}より小さい値にしてください"
-      less_than_or_equal_to: "は%{count}以下の値にしてください"
+        one: '%{resource}の保存に失敗しました'
+        other: '%{count}件のエラーが発生したため、%{resource}の保存に失敗しました'
+      hiragana_only: はひらがなのみで入力してください
+      blank: を入力してください
+      required: を入力してください
+      not_a_number: は数値で入力してください
+      greater_than: '%{count}より大きい値を入力してください'
+      greater_than_or_equal_to: は%{count}以上の値にしてください
+      less_than: は%{count}より小さい値にしてください
+      less_than_or_equal_to: は%{count}以下の値にしてください
       too_long:
-        one: "は%{count}文字以内で入力してください"
-        other: "は%{count}文字以内で入力してください"
+        one: は%{count}文字以内で入力してください
+        other: は%{count}文字以内で入力してください
       too_short:
-        one: "%{count}文字以上で入力してください"
-        other: "%{count}文字以上で入力してください"
-      taken: "は既に使用されています"
-      confirmation: "と%{attribute}の入力が一致しません"
-      invalid: "が正しくありません"
-      not_found: "が見つかりません"
+        one: '%{count}文字以上で入力してください'
+        other: '%{count}文字以上で入力してください'
+      taken: は既に使用されています
+      confirmation: と%{attribute}の入力が一致しません
+      invalid: が正しくありません
+      not_found: が見つかりません
       restrict_dependent_destroy:
-        has_one: "%{record}で使用しているため、この%{model}を削除できません"
-        has_many: "%{record}で使用しているため、この%{model}を削除できません"
-
+        has_one: '%{record}で使用しているため、この%{model}を削除できません'
+        has_many: '%{record}で使用しているため、この%{model}を削除できません'
   api:
     errors:
-      unauthorized: "認証が必要です"
-      plan_not_found: "計画が見つかりません"
-      plan_schedule_not_found: "計画スケジュールが見つかりません"
-      daily_target_not_found: "日別予算が見つかりません、またはアクセスが拒否されました"
-      product_not_found: "商品が見つかりません、またはアクセスが拒否されました"
-      material_not_found: "原材料が見つかりません、またはアクセスが拒否されました"
-      server_error: "サーバーエラーが発生しました"
-      invalid_date: "無効な日付形式です"
-      invalid_parameters: "パラメータが不正です"
-      invalid_status: "無効なステータスです"
-      missing_required_info: "必要な情報が不足しています"
-
+      unauthorized: 認証が必要です
+      plan_not_found: 計画が見つかりません
+      plan_schedule_not_found: 計画スケジュールが見つかりません
+      daily_target_not_found: 日別予算が見つかりません、またはアクセスが拒否されました
+      product_not_found: 商品が見つかりません、またはアクセスが拒否されました
+      material_not_found: 原材料が見つかりません、またはアクセスが拒否されました
+      server_error: サーバーエラーが発生しました
+      invalid_date: 無効な日付形式です
+      invalid_parameters: パラメータが不正です
+      invalid_status: 無効なステータスです
+      missing_required_info: 必要な情報が不足しています
   sortable_table:
-    saved: "並び替えを保存しました"
-    save_failed: "並び替えの保存に失敗しました"
-
+    saved: 並び替えを保存しました
+    not_found: 指定されたデータが見つかりませんでした。
+    save_failed: 並び替えの保存に失敗しました
+    error: "エラーが発生しました: %{message}"
   services:
     numerical_data_bulk_update:
       errors:
-        monthly_budget_update_failed: "月次予算ID %{id}: %{errors}"
-        daily_target_update_failed: "日別目標ID %{id}: %{errors}"
-        daily_target_save_failed: "日別目標 %{date}: %{errors}"
-        invalid_date: "日別目標: 無効な日付 %{date}"
-        plan_schedule_update_failed: "計画スケジュールID %{id}: %{errors}"
+        monthly_budget_update_failed: '月次予算ID %{id}: %{errors}'
+        daily_target_update_failed: '日別目標ID %{id}: %{errors}'
+        daily_target_save_failed: '日別目標 %{date}: %{errors}'
+        invalid_date: '日別目標: 無効な日付 %{date}'
+        plan_schedule_update_failed: '計画スケジュールID %{id}: %{errors}'
     weather:
       errors:
-        api_error: "天気予報API エラー: %{code} - %{body}"
-        service_error: "天気予報サービス エラー: %{message}"
-
+        api_error: '天気予報API エラー: %{code} - %{body}'
+        service_error: '天気予報サービス エラー: %{message}'
   components:
     category_tabs:
-      confirm_delete: "このカテゴリ―タブを削除しますか?"
-
+      confirm_delete: このカテゴリ―タブを削除しますか?
   product_material:
-    unit_not_set: "未設定"
-    unit_error: "エラー"
+    unit_not_set: 未設定
+    unit_error: エラー
     errors:
-      unit_fetch_failed: "単位情報の取得に失敗しました"
-
+      unit_fetch_failed: 単位情報の取得に失敗しました
   help:
-    title: "使い方・ヘルプ"
-    subtitle: "システムの使い方や、よくある質問を検索できます"
-
+    title: 使い方・ヘルプ
+    subtitle: システムの使い方や、よくある質問を検索できます
     ui:
-      expand_arrow: "▶"
-
+      expand_arrow: ▶
     search:
-      placeholder: "キーワードから探す(例: 予算、原材料、印刷)"
-      no_videos_found: "該当する動画が見つかりませんでした。"
-      no_faq_found: "該当する質問が見つかりませんでした。"
-      no_results_found: "に一致する情報が見つかりませんでした。"
-
+      placeholder: 'キーワードから探す(例: 予算、原材料、印刷)'
+      no_videos_found: 該当する動画が見つかりませんでした。
+      no_faq_found: 該当する質問が見つかりませんでした。
+      no_results_found: に一致する情報が見つかりませんでした。
     video_modal:
-      preparing: "の動画を準備中です"
-      default_title: "動画"
-
+      preparing: の動画を準備中です
+      default_title: 動画
     video_card:
-      click_to_watch: "クリックして動画を見る（字幕をONにして下さい）"
-
+      click_to_watch: クリックして動画を見る（字幕をONにして下さい）
     sections:
-      videos: "使い方動画"
-      faq: "よくある質問"
-
+      videos: 使い方動画
+      faq: よくある質問
     categories:
-      basic_operations: "基本操作"
-      numerical_management: "数値管理"
-      resource_management: "リソース管理"
-      production_planning: "製造計画"
-
+      basic_operations: 基本操作
+      numerical_management: 数値管理
+      resource_management: リソース管理
+      production_planning: 製造計画
     videos:
       search_function:
-        title: "検索機能の使い方"
-        description: "キーワード入力による絞り込み検索の方法"
-        youtube_id: "ebQuolQ27P0"
+        title: 検索機能の使い方
+        description: キーワード入力による絞り込み検索の方法
+        youtube_id: ebQuolQ27P0
       copy_function:
-        title: "コピー機能の使い方"
-        description: "既存データの複製方法"
-        youtube_id: "lL0zQMALkkM"
+        title: コピー機能の使い方
+        description: 既存データの複製方法
+        youtube_id: lL0zQMALkkM
       status_update:
-        title: "ステータス更新の使い方"
-        description: "一覧画面からのステータス変更方法"
-        youtube_id: "eSg2Ner68Fs"
+        title: ステータス更新の使い方
+        description: 一覧画面からのステータス変更方法
+        youtube_id: eSg2Ner68Fs
       crud_operations:
-        title: "基本操作の使い方"
-        description: "一覧、登録、詳細、編集、削除の操作方法"
-        youtube_id: "lO3DTU1I-D4"
+        title: 基本操作の使い方
+        description: 一覧、登録、詳細、編集、削除の操作方法
+        youtube_id: lO3DTU1I-D4
       print_function:
-        title: "印刷機能の使い方"
-        description: "印刷画面での並び順の変更と、各画面からのプレビュー・印刷方法"
-        youtube_id: "OhnGRAiTTPQ"
+        title: 印刷機能の使い方
+        description: 印刷画面での並び順の変更と、各画面からのプレビュー・印刷方法
+        youtube_id: OhnGRAiTTPQ
       plan_assignment:
-        title: "製造計画の登録"
-        description: "日別の製造計画の登録方法"
-        youtube_id: "UpHiDK6z1eo"
+        title: 製造計画の登録
+        description: 日別の製造計画の登録方法
+        youtube_id: UpHiDK6z1eo
       monthly_budget:
-        title: "月間予算の設定"
-        description: "月全体の売上目標金額の登録方法"
-        youtube_id: "P6k6UWzaOJM"
+        title: 月間予算の設定
+        description: 月全体の売上目標金額の登録方法
+        youtube_id: P6k6UWzaOJM
       daily_budget_and_actual:
-        title: "日別予算と実績の一括編集"
-        description: "日別の予算設定と実績入力をモーダルから一括で行う方法"
-        youtube_id: "oi31X3xv7zg"
+        title: 日別予算と実績の一括編集
+        description: 日別の予算設定と実績入力をモーダルから一括で行う方法
+        youtube_id: oi31X3xv7zg
       loss_rate_setting:
-        title: "見切率の設定"
-        description: "予測売上と、必要追加高を計算するための見切率を設定する方法"
-        youtube_id: "ZpahDZvormY"
+        title: 見切率の設定
+        description: 予測売上と、必要追加高を計算するための見切率を設定する方法
+        youtube_id: ZpahDZvormY
       category:
-        title: "カテゴリー管理の使い方"
-        description: "原材料・商品・計画の分類を設定する方法"
-        youtube_id: "wF37663W1gE"
+        title: カテゴリー管理の使い方
+        description: 原材料・商品・計画の分類を設定する方法
+        youtube_id: wF37663W1gE
       unit:
-        title: "単位管理の使い方"
-        description: "製造・発注・使用単位を設定する方法"
-        youtube_id: "wF37663W1gE"
+        title: 単位管理の使い方
+        description: 製造・発注・使用単位を設定する方法
+        youtube_id: wF37663W1gE
       material:
-        title: "原材料管理の使い方"
-        description: "原材料の登録方法"
-        youtube_id: "A3YnvlfJcEY"
+        title: 原材料管理の使い方
+        description: 原材料の登録方法
+        youtube_id: A3YnvlfJcEY
       order_group:
-        title: "発注グループ管理の使い方"
-        description: "発注グループの登録方法"
-        youtube_id: "ndedyZjxja0"
+        title: 発注グループ管理の使い方
+        description: 発注グループの登録方法
+        youtube_id: ndedyZjxja0
       product:
-        title: "商品管理の使い方"
-        description: "商品の登録と原材料紐付け方法"
-        youtube_id: "k1Ad4CWFYU8"
+        title: 商品管理の使い方
+        description: 商品の登録と原材料紐付け方法
+        youtube_id: k1Ad4CWFYU8
       plan:
-        title: "製造計画管理の使い方"
-        description: "製造計画の登録と商品紐付け方法"
-        youtube_id: "lrdIP3MHNYw"
-
+        title: 製造計画管理の使い方
+        description: 製造計画の登録と商品紐付け方法
+        youtube_id: lrdIP3MHNYw
     video_keywords:
-      search_function: "検索 フィルター 絞り込み キーワード"
-      copy_function: "コピー 複製 データ"
-      status_update: "ステータス 状態 更新 変更 一覧"
-      crud_operations: "基本操作 一覧 登録 詳細 編集 更新 削除 "
-      print_function: "印刷 出力 プリント PDF"
-      monthly_budget: "月間 予算 設定 売上"
-      daily_budget_and_actual: "日別予算 実績入力 一括編集 モーダル 数値管理 予算編集 実績登録"
-      plan_assignment: "計画登録 計画 登録 数値管理 実績 印刷"
-      loss_rate_setting: "見切率 設定 商品 廃棄率 ロス率"
-      category: "カテゴリ― 種別 分類"
-      unit: "単位 g kg 個"
-      material: "材料 原材料 登録 リソース 管理"
-      order_group: "発注 グループ 印刷"
-      product: "商品 登録 製品 品番"
-      plan: "計画 製造 スケジュール 登録 編集 削除"
-
+      search_function: 検索 フィルター 絞り込み キーワード
+      copy_function: コピー 複製 データ
+      status_update: ステータス 状態 更新 変更 一覧
+      crud_operations: '基本操作 一覧 登録 詳細 編集 更新 削除 '
+      print_function: 印刷 出力 プリント PDF
+      monthly_budget: 月間 予算 設定 売上
+      daily_budget_and_actual: 日別予算 実績入力 一括編集 モーダル 数値管理 予算編集 実績登録
+      plan_assignment: 計画登録 計画 登録 数値管理 実績 印刷
+      loss_rate_setting: 見切率 設定 商品 廃棄率 ロス率
+      category: カテゴリ― 種別 分類
+      unit: 単位 g kg 個
+      material: 材料 原材料 登録 リソース 管理
+      order_group: 発注 グループ 印刷
+      product: 商品 登録 製品 品番
+      plan: 計画 製造 スケジュール 登録 編集 削除
     faq_keywords:
-      category: "カテゴリ― 種別 分類 タブ"
-      unit: "単位 g kg 個 換算"
-      order_group: "発注 グループ 印刷 仕入先"
-      material: "材料 原材料 リソース 登録"
-      product: "商品 製品 登録 レシピ"
-      numerical_basic: "数値管理 予算 目標 実績 売上"
-      forecast: "月末 予測 アクションプラン 達成率 追加高"
-      markdown_rate: "見切 見切率 廃棄 ロス 予算 目標"
-
+      category: カテゴリ― 種別 分類 タブ
+      unit: 単位 g kg 個 換算
+      order_group: 発注 グループ 印刷 仕入先
+      material: 材料 原材料 リソース 登録
+      product: 商品 製品 登録 レシピ
+      numerical_basic: 数値管理 予算 目標 実績 売上
+      forecast: 月末 予測 アクションプラン 達成率 追加高
+      markdown_rate: 見切 見切率 廃棄 ロス 予算 目標
     faq:
       category:
-        title: "カテゴリー管理について"
-        description: "原材料、商品、製造計画を分類するための機能です。"
-        example1: "鮮魚、乾物、調味料などの原材料種別"
-        example2: "にぎり、巻物、刺身盛りなどの商品種別"
-        example3: "平日、週末、イベントなどの計画種別"
-        note: "※ 種別ごとに絞り込み検索ができるため、データ管理が効率化されます。"
-
+        title: カテゴリー管理について
+        description: 原材料、商品、製造計画を分類するための機能です。
+        example1: 鮮魚、乾物、調味料などの原材料種別
+        example2: にぎり、巻物、刺身盛りなどの商品種別
+        example3: 平日、週末、イベントなどの計画種別
+        note: ※ 種別ごとに絞り込み検索ができるため、データ管理が効率化されます。
       unit:
-        title: "単位管理について"
-        description: "原材料の数量を管理するための単位を設定する機能です。"
+        title: 単位管理について
+        description: 原材料の数量を管理するための単位を設定する機能です。
         table:
-          title: "単位の使い分け例:"
+          title: '単位の使い分け例:'
           header:
-            item: "材料"
-            usage_unit: "製造単位"
-            order_unit: "発注単位"
-            production_unit: "使用単位"
+            item: 材料
+            usage_unit: 製造単位
+            order_unit: 発注単位
+            production_unit: 使用単位
           row1:
-            item: "マグロ(赤身)"
-            usage_unit: "g (50g/貫)"
-            order_unit: "kg (1サク)"
-            production_unit: "貫 (1貫の寿司)"
+            item: マグロ(赤身)
+            usage_unit: g (50g/貫)
+            order_unit: kg (1サク)
+            production_unit: 貫 (1貫の寿司)
           row2:
-            item: "シャリ(酢飯)"
-            usage_unit: "g (20g/貫)"
-            order_unit: "kg (1袋)"
-            production_unit: "貫 (1貫の寿司)"
+            item: シャリ(酢飯)
+            usage_unit: g (20g/貫)
+            order_unit: kg (1袋)
+            production_unit: 貫 (1貫の寿司)
           row3:
-            item: "サーモン"
-            usage_unit: "切 (3切/枚)"
-            order_unit: "柵 (1柵)"
-            production_unit: "人前 (1人前の刺身盛り)"
-        note: "※ 各単位を正確に設定することで、材料の発注計算が正確になります。"
-
+            item: サーモン
+            usage_unit: 切 (3切/枚)
+            order_unit: 柵 (1柵)
+            production_unit: 人前 (1人前の刺身盛り)
+        note: ※ 各単位を正確に設定することで、材料の発注計算が正確になります。
       order_group:
-        title: "発注グループ管理について"
-        description: "原材料を種類ごとにグループ化し、発注時にまとめて出力できるようにする機能です。"
-        example1: "鮮魚グループ: マグロ、サーモン、イカ、タイなど → まとめて印刷して発注"
-        example2: "乾物グループ: 米、海苔、わさび、ガリなど"
-        example3: "調味料グループ: 醤油、酢、みりん、塩など"
-        note: "※ グループごとに印刷できるため、発注作業が効率化されます。"
-
+        title: 発注グループ管理について
+        description: 原材料を種類ごとにグループ化し、発注時にまとめて出力できるようにする機能です。
+        example1: '鮮魚グループ: マグロ、サーモン、イカ、タイなど → まとめて印刷して発注'
+        example2: '乾物グループ: 米、海苔、わさび、ガリなど'
+        example3: '調味料グループ: 醤油、酢、みりん、塩など'
+        note: ※ グループごとに印刷できるため、発注作業が効率化されます。
       material:
-        title: "原材料管理について"
-        description: "製造に使用する原材料の情報を登録・管理する機能です。"
-        field1: "カテゴリー: 材料の種別(鮮魚、乾物、調味料など)"
-        field2: "単位: 製造単位、発注単位、使用単位"
-        field3: "発注グループ: 発注時のグループ分け"
-        field4: "基本分量: 1商品当の分量"
-        note: "※ 基本分量を正確に設定することで、製造計画から必要な材料量を自動計算できます。"
-
+        title: 原材料管理について
+        description: 製造に使用する原材料の情報を登録・管理する機能です。
+        field1: 'カテゴリー: 材料の種別(鮮魚、乾物、調味料など)'
+        field2: '単位: 製造単位、発注単位、使用単位'
+        field3: '発注グループ: 発注時のグループ分け'
+        field4: '基本分量: 1商品当の分量'
+        note: ※ 基本分量を正確に設定することで、製造計画から必要な材料量を自動計算できます。
       product:
-        title: "商品管理について"
-        description: "製造・販売する商品の情報を登録・管理する機能です。"
-        field1: "品番: 4桁の商品識別番号"
-        field2: "カテゴリー: 商品の種別(にぎり、巻物、刺身盛りなど)"
-        field3: "材料と使用量: 商品に使う材料とその量を紐付け"
-        note: "※ 商品に材料を紐付けることで、製造計画から自動的に必要な材料量が計算されます。"
-
+        title: 商品管理について
+        description: 製造・販売する商品の情報を登録・管理する機能です。
+        field1: '品番: 4桁の商品識別番号'
+        field2: 'カテゴリー: 商品の種別(にぎり、巻物、刺身盛りなど)'
+        field3: '材料と使用量: 商品に使う材料とその量を紐付け'
+        note: ※ 商品に材料を紐付けることで、製造計画から自動的に必要な材料量が計算されます。
       numerical_basic:
-        title: "数値管理の基本機能"
-        description: "月間売上予算、日別目標、実績を管理する機能です。"
+        title: 数値管理の基本機能
+        description: 月間売上予算、日別目標、実績を管理する機能です。
         feature1:
-          title: "① 月間予算"
-          description: "月全体の売上予算額を設定します。この金額を基に日別目標の調整や、予算との差異を確認できます。例: 6月の月間予算を500万円に設定"
+          title: ① 月間予算
+          description: '月全体の売上予算額を設定します。この金額を基に日別目標の調整や、予算との差異を確認できます。例: 6月の月間予算を500万円に設定'
         feature2:
-          title: "② 日別目標"
-          description: "各日ごとの売上目標を個別に設定します。平日・週末で目標を変えたり、イベント日を増額するなど柔軟に調整可能です。例: 平日15万円、週末25万円、お盆期間30万円など"
+          title: ② 日別目標
+          description: '各日ごとの売上目標を個別に設定します。平日・週末で目標を変えたり、イベント日を増額するなど柔軟に調整可能です。例:
+            平日15万円、週末25万円、お盆期間30万円など'
         feature3:
-          title: "③ 実績入力"
-          description: "製造計画で登録した販売額から、日別の実績が自動で反映されます。目標との差異や達成率が自動計算されます。例: 6月1日の計画: まぐろにぎり 100皿 × 300円 = 30,000円 → 実績に自動反映"
+          title: ③ 実績入力
+          description: '製造計画で登録した販売額から、日別の実績が自動で反映されます。目標との差異や達成率が自動計算されます。例: 6月1日の計画:
+            まぐろにぎり 100皿 × 300円 = 30,000円 → 実績に自動反映'
         feature4:
-          title: "④ 一括編集"
-          description: "複数日分の目標を同時にまとめて変更できる機能です。月間予算を超過しないよう注意が必要です。例: 6月の全平日の目標を一括で15万円に変更"
-        note: ""
-
+          title: ④ 一括編集
+          description: '複数日分の目標を同時にまとめて変更できる機能です。月間予算を超過しないよう注意が必要です。例: 6月の全平日の目標を一括で15万円に変更'
+        note: ''
       forecast:
-        title: "月末予測とアクションプラン"
-        description: "現在の実績と残りの製造計画から、月末時点での予測売上を自動計算する機能です。"
-        formula1_title: "① 予測売上の計算"
-        formula1_code: "予測売上 = 実績 + 残り計画金額 × (1 - 見切率)"
-        example_label: "例:"
-        formula1_example: "実績80万円、残り計画30万円、見切率20%の場合 → 予測売上 = 80万 + (30万 × 0.8) = 104万円"
-        formula1_note: "(残り30万円分の寿司のうち、20%が値引き・廃棄になると想定)"
-        formula2_title: "② 推奨日次追加高の計算"
-        formula2_code: "推奨日次追加高 = 必要追加高 ÷ (1 - 見切率) ÷ 残日数"
-        formula2_example: "必要追加高10万円、見切率15%、残り5日の場合 → 推奨日次追加高 = 10万 ÷ 0.85 ÷ 5 ≒ 23,529円/日"
-        formula2_note: "(15%の見切り・廃棄を見込んで、1日当約2.4万円分多く製造する必要がある)"
-        final_note: "見切率を適切に設定することで、より現実的な売上予測と目標設定が可能になります。"
-
+        title: 月末予測とアクションプラン
+        description: 現在の実績と残りの製造計画から、月末時点での予測売上を自動計算する機能です。
+        formula1_title: ① 予測売上の計算
+        formula1_code: 予測売上 = 実績 + 残り計画金額 × (1 - 見切率)
+        example_label: '例:'
+        formula1_example: 実績80万円、残り計画30万円、見切率20%の場合 → 予測売上 = 80万 + (30万 × 0.8) = 104万円
+        formula1_note: (残り30万円分の寿司のうち、20%が値引き・廃棄になると想定)
+        formula2_title: ② 推奨日次追加高の計算
+        formula2_code: 推奨日次追加高 = 必要追加高 ÷ (1 - 見切率) ÷ 残日数
+        formula2_example: 必要追加高10万円、見切率15%、残り5日の場合 → 推奨日次追加高 = 10万 ÷ 0.85 ÷ 5 ≒ 23,529円/日
+        formula2_note: (15%の見切り・廃棄を見込んで、1日当約2.4万円分多く製造する必要がある)
+        final_note: 見切率を適切に設定することで、より現実的な売上予測と目標設定が可能になります。
       markdown_rate:
-        title: "見切率について"
-        description: "見切率は、売れ残りや値引き販売を考慮した売上予測のための係数です。閉店前の時間帯に値引き販売したり、売れ残りが発生します。見切率を設定することで、より現実的な売上予測ができます。"
+        title: 見切率について
+        description: 見切率は、売れ残りや値引き販売を考慮した売上予測のための係数です。閉店前の時間帯に値引き販売したり、売れ残りが発生します。見切率を設定することで、より現実的な売上予測ができます。
         table:
-          title: "見切率の種類:"
+          title: '見切率の種類:'
           header:
-            item: "項目"
-            description: "説明"
-            usage: "使用場面"
+            item: 項目
+            description: 説明
+            usage: 使用場面
           row1:
-            item: "予算見切率"
-            description: "売上予測の計算に使用"
-            usage: "月末予測の「予測売上」計算"
+            item: 予算見切率
+            description: 売上予測の計算に使用
+            usage: 月末予測の「予測売上」計算
           row2:
-            item: "目標見切率"
-            description: "追加高の計算に使用"
-            usage: "アクションプランの「推奨日次追加高」計算"
-        formula1_title: "① 予測売上の計算"
-        formula1_code: "予測売上 = 実績売上 + (残り計画金額 × (1 - 予算見切率 ÷ 100))"
-        example_label: "例:"
-        formula1_example: "実績売上80万円、残り計画金額30万円、予算見切率20%の場合 → 予測売上 = 80万 + (30万 × 0.8) = 104万円"
-        formula2_title: "② 推奨日次追加高の計算"
-        formula2_code: "推奨日次追加高 = 必要追加高 ÷ (1 - 目標見切率 ÷ 100) ÷ 残日数"
-        formula2_example: "必要追加高10万円、目標見切率15%、残日数5日の場合 → 推奨日次追加高 = 10万 ÷ 0.85 ÷ 5 ≒ 23,529円/日"
-        final_note: "見切率を適切に設定することで、より現実的な売上予測と目標設定が可能になります。"
-
-  # 設定ページ
+            item: 目標見切率
+            description: 追加高の計算に使用
+            usage: アクションプランの「推奨日次追加高」計算
+        formula1_title: ① 予測売上の計算
+        formula1_code: 予測売上 = 実績売上 + (残り計画金額 × (1 - 予算見切率 ÷ 100))
+        example_label: '例:'
+        formula1_example: 実績売上80万円、残り計画金額30万円、予算見切率20%の場合 → 予測売上 = 80万 + (30万 × 0.8)
+          = 104万円
+        formula2_title: ② 推奨日次追加高の計算
+        formula2_code: 推奨日次追加高 = 必要追加高 ÷ (1 - 目標見切率 ÷ 100) ÷ 残日数
+        formula2_example: 必要追加高10万円、目標見切率15%、残日数5日の場合 → 推奨日次追加高 = 10万 ÷ 0.85 ÷ 5 ≒
+          23,529円/日
+        final_note: 見切率を適切に設定することで、より現実的な売上予測と目標設定が可能になります。
   settings:
-    title: "設定"
+    title: 設定
     account:
-      title: "アカウント設定"
-      description: "プロフィール、パスワード、メールアドレスの変更"
-      button: "アカウント設定を開く"
+      title: アカウント設定
+      description: プロフィール、パスワード、メールアドレスの変更
+      button: アカウント設定を開く
     help:
-      title: "使い方・ヘルプ"
-      description: "使い方動画、FAQ、よくある質問"
-      button: "使い方を見る"
-
+      title: 使い方・ヘルプ
+      description: 使い方動画、FAQ、よくある質問
+      button: 使い方を見る
   views:
     pagination:
-      first: "最初"
-      last: "最後"
-      previous: "&laquo; 前"
-      next: "次 &raquo;"
-      truncate: "&hellip;"
-
-  # 管理者機能
+      first: 最初
+      last: 最後
+      previous: '&laquo; 前'
+      next: 次 &raquo;
+      truncate: '&hellip;'
   admin:
     users:
       index:
-        title: "ユーザー管理"
+        title: ユーザー管理
         table_headers:
-          name: "名前"
-          email: "メールアドレス"
-          role: "権限"
-          registered_date: "登録日"
-          actions: "操作"
+          name: 名前
+          email: メールアドレス
+          role: 権限
+          registered_date: 登録日
+          actions: 操作
         role_badges:
-          admin: "管理者"
-          staff: "スタッフ"
+          admin: 管理者
+          staff: スタッフ
         actions:
-          delete: "削除"
-          self: "(自分)"
+          delete: 削除
+          self: (自分)
         confirm:
-          delete: "%{name}を削除してもよろしいですか?"
-        empty_message: "ユーザーが登録されていません"
+          delete: '%{name}を削除してもよろしいですか?'
+        empty_message: ユーザーが登録されていません
       messages:
-        user_deleted: "%{name}を削除しました"
-        user_delete_failed: "%{name}の削除に失敗しました"
-
+        user_deleted: '%{name}を削除しました'
+        user_delete_failed: '%{name}の削除に失敗しました'
     system_logs:
       index:
-        title: "システムログ"
-        model: "モデル"
-        user: "ユーザー"
-        date_from: "開始日"
-        date_to: "終了日"
-        filter: "絞り込む"
-        datetime: "日時"
-        action: "操作"
-        record_id: "レコードID"
-        detail: "詳細"
-        no_logs: "ログが見つかりません"
-
-  # ActiveRecord モデル名翻訳
+        title: システムログ
+        model: モデル
+        user: ユーザー
+        date_from: 開始日
+        date_to: 終了日
+        filter: 絞り込む
+        datetime: 日時
+        action: 操作
+        record_id: レコードID
+        detail: 詳細
+        no_logs: ログが見つかりません
   activerecord:
     models:
-      user: "ユーザー"
-      resources/category: "カテゴリー"
-      resources/unit: "単位"
-      resources/material_order_group: "発注グループ"
-      resources/material: "原材料"
-      resources/product: "商品"
-      resources/product_material: "商品原材料"
-      resources/plan: "計画"
-      planning/plan_product: "計画商品"
-      planning/plan_schedule: "計画スケジュール"
-      management/monthly_budget: "月間予算"
-      management/daily_target: "日別目標"
-
-  # ランディングページ
+      user: ユーザー
+      resources/category: カテゴリー
+      resources/unit: 単位
+      resources/material_order_group: 発注グループ
+      resources/material: 原材料
+      resources/product: 商品
+      resources/product_material: 商品原材料
+      resources/plan: 計画
+      planning/plan_product: 計画商品
+      planning/plan_schedule: 計画スケジュール
+      management/monthly_budget: 月間予算
+      management/daily_target: 日別目標
     attributes:
       contact:
-        name: "お名前"
-        email: "メールアドレス"
-        subject: "件名"
-        message: "お問い合わせ内容"
-
+        name: お名前
+        email: メールアドレス
+        subject: 件名
+        message: お問い合わせ内容
   landing:
-    title: "MM-App"
-    subtitle: "製造業向けの包括的な生産管理・数値管理システム"
-    welcome: "ようこそ"
-    description: "原材料管理から製造計画、売上予測まで一元管理"
-    login_button: "ログイン"
-    signup_button: "新規登録"
-    back_to_top: "トップページへ戻る"
+    title: MM-App
+    subtitle: 製造業向けの包括的な生産管理・数値管理システム
+    welcome: ようこそ
+    description: 原材料管理から製造計画、売上予測まで一元管理
+    login_button: ログイン
+    signup_button: 新規登録
+    back_to_top: トップページへ戻る
     features:
-      title: "主な機能"
+      title: 主な機能
       resources:
-        title: "リソース管理"
-        description: "原材料・商品・カテゴリー"
+        title: リソース管理
+        description: 原材料・商品・カテゴリー
       planning:
-        title: "製造計画"
-        description: "日別計画・商品紐付け"
+        title: 製造計画
+        description: 日別計画・商品紐付け
       management:
-        title: "数値管理"
-        description: "予算・目標・実績"
+        title: 数値管理
+        description: 予算・目標・実績
       forecast:
-        title: "月末予測"
-        description: "売上予測・追加額計算"
-
-  # 利用規約・プライバシーポリシー
+        title: 月末予測
+        description: 売上予測・追加額計算
   terms:
-    title: "利用規約"
-    last_updated: "最終更新日"
-
+    title: 利用規約
+    last_updated: 最終更新日
   privacy:
-    title: "プライバシーポリシー"
-    last_updated: "最終更新日"
-
-  # 静的ページ共通
+    title: プライバシーポリシー
+    last_updated: 最終更新日
   static_pages:
-    back_to_login: "ログインページに戻る"
-    contact_form_link: "お問い合わせフォームへ"
-    contact_via_help: "本規約に関するお問い合わせは、"
-
-  # 利用規約コンテンツ
+    back_to_login: ログインページに戻る
+    contact_form_link: お問い合わせフォームへ
+    contact_via_help: 本規約に関するお問い合わせは、
   terms_content:
-    intro: "この利用規約（以下「本規約」といいます）は、%{app_name}（以下「本サービス」といいます）の利用に関する条件を定めるものです。本サービスの利用者は、本規約に同意したものとみなされます。"
-
+    intro: この利用規約（以下「本規約」といいます）は、%{app_name}（以下「本サービス」といいます）の利用に関する条件を定めるものです。本サービスの利用者は、本規約に同意したものとみなされます。
     article_1:
-      title: "第1条（適用）"
-      content: |
-        本規約は、本サービスの利用に関し、運営者と利用者との間に適用されます。
+      title: 第1条（適用）
+      content: '本規約は、本サービスの利用に関し、運営者と利用者との間に適用されます。
+
         運営者は、本サービスに関し、本規約のほか、ご利用にあたってのルール等、各種の規定を定めることがあります。これらの規定も本規約の一部を構成するものとします。
 
+        '
     article_2:
-      title: "第2条（サービス内容）"
-      content: "本サービスは、製造業を対象とした管理システムであり、以下の機能を提供します："
+      title: 第2条（サービス内容）
+      content: 本サービスは、製造業を対象とした管理システムであり、以下の機能を提供します：
       features:
-        - "商品管理機能"
-        - "原材料管理機能"
-        - "製造計画管理機能"
-        - "数値管理機能（予算実績管理等）"
-        - "ダッシュボード機能"
-        - "履歴管理機能"
-
+      - 商品管理機能
+      - 原材料管理機能
+      - 製造計画管理機能
+      - 数値管理機能（予算実績管理等）
+      - ダッシュボード機能
+      - 履歴管理機能
     article_3:
-      title: "第3条（ユーザー登録）"
-      paragraph_1: "本サービスの利用を希望する者は、本規約に同意の上、運営者が定める方法によりユーザー登録を行うものとします。"
-      paragraph_2: "運営者は、ユーザー登録の申請者に以下の事由があると判断した場合、登録を拒否することがあります。"
+      title: 第3条（ユーザー登録）
+      paragraph_1: 本サービスの利用を希望する者は、本規約に同意の上、運営者が定める方法によりユーザー登録を行うものとします。
+      paragraph_2: 運営者は、ユーザー登録の申請者に以下の事由があると判断した場合、登録を拒否することがあります。
       reasons:
-        - "本規約に違反するおそれがあると認められる場合"
-        - "虚偽の事項を申告した場合"
-        - "その他、運営者が登録を適当でないと判断した場合"
-
+      - 本規約に違反するおそれがあると認められる場合
+      - 虚偽の事項を申告した場合
+      - その他、運営者が登録を適当でないと判断した場合
     article_4:
-      title: "第4条（アカウント管理）"
-      paragraph_1: "利用者は、自己の責任において、本サービスのアカウント情報を管理するものとします。"
-      paragraph_2: "利用者は、いかなる場合にも、アカウント情報を第三者に譲渡または貸与することはできません。"
-      paragraph_3: "アカウント情報の管理不十分、使用上の過誤、第三者の使用等によって生じた損害に関する責任は利用者が負うものとします。"
-
+      title: 第4条（アカウント管理）
+      paragraph_1: 利用者は、自己の責任において、本サービスのアカウント情報を管理するものとします。
+      paragraph_2: 利用者は、いかなる場合にも、アカウント情報を第三者に譲渡または貸与することはできません。
+      paragraph_3: アカウント情報の管理不十分、使用上の過誤、第三者の使用等によって生じた損害に関する責任は利用者が負うものとします。
     article_5:
-      title: "第5条（データの取り扱い）"
-      paragraph_1: "本サービスに登録されたデータは、すべてのユーザーに共有されます。"
-      paragraph_2: "運営者は、利用者のデータのバックアップを行う義務を負いません。利用者は自己の責任においてデータのバックアップを行うものとします。"
-
+      title: 第5条（データの取り扱い）
+      paragraph_1: 本サービスに登録されたデータは、すべてのユーザーに共有されます。
+      paragraph_2: 運営者は、利用者のデータのバックアップを行う義務を負いません。利用者は自己の責任においてデータのバックアップを行うものとします。
     article_6:
-      title: "第6条（禁止事項）"
-      intro: "利用者は、本サービスの利用にあたり、以下の行為をしてはなりません："
+      title: 第6条（禁止事項）
+      intro: 利用者は、本サービスの利用にあたり、以下の行為をしてはなりません：
       items:
-        - "法令または公序良俗に違反する行為"
-        - "犯罪行為に関連する行為"
-        - "本サービスの他の利用者または第三者の権利を侵害する行為"
-        - "本サービスの運営を妨害する行為"
-        - "不正アクセスまたは試みる行為"
-        - "虚偽の情報を登録する行為"
-        - "その他、運営者が不適切と判断する行為"
-
+      - 法令または公序良俗に違反する行為
+      - 犯罪行為に関連する行為
+      - 本サービスの他の利用者または第三者の権利を侵害する行為
+      - 本サービスの運営を妨害する行為
+      - 不正アクセスまたは試みる行為
+      - 虚偽の情報を登録する行為
+      - その他、運営者が不適切と判断する行為
     article_7:
-      title: "第7条（サービスの停止等）"
-      paragraph_1: "運営者は、以下のいずれかに該当する場合には、利用者に事前に通知することなく、本サービスの全部または一部の提供を停止または中断することができるものとします。"
+      title: 第7条（サービスの停止等）
+      paragraph_1: 運営者は、以下のいずれかに該当する場合には、利用者に事前に通知することなく、本サービスの全部または一部の提供を停止または中断することができるものとします。
       reasons:
-        - "本サービスにかかるシステムの保守点検または更新を行う場合"
-        - "地震、落雷、火災、停電または天災などの不可抗力により本サービスの提供が困難となった場合"
-        - "その他、運営者が本サービスの提供が困難と判断した場合"
-      paragraph_2: "運営者は、本サービスの提供の停止または中断により、利用者または第三者が被ったいかなる不利益または損害についても、一切の責任を負わないものとします。"
-
+      - 本サービスにかかるシステムの保守点検または更新を行う場合
+      - 地震、落雷、火災、停電または天災などの不可抗力により本サービスの提供が困難となった場合
+      - その他、運営者が本サービスの提供が困難と判断した場合
+      paragraph_2: 運営者は、本サービスの提供の停止または中断により、利用者または第三者が被ったいかなる不利益または損害についても、一切の責任を負わないものとします。
     article_8:
-      title: "第8条（利用制限）"
-      paragraph_1: "運営者は、利用者が以下のいずれかに該当する場合には、事前の通知なく、利用者に対して、本サービスの全部もしくは一部の利用を制限することができるものとします。"
+      title: 第8条（利用制限）
+      paragraph_1: 運営者は、利用者が以下のいずれかに該当する場合には、事前の通知なく、利用者に対して、本サービスの全部もしくは一部の利用を制限することができるものとします。
       reasons:
-        - "本規約のいずれかの条項に違反した場合"
-        - "登録事項に虚偽の事実があることが判明した場合"
-        - "その他、運営者が本サービスの利用を適当でないと判断した場合"
-
+      - 本規約のいずれかの条項に違反した場合
+      - 登録事項に虚偽の事実があることが判明した場合
+      - その他、運営者が本サービスの利用を適当でないと判断した場合
     article_9:
-      title: "第9条（免責事項）"
-      paragraph_1: "運営者は、本サービスに関して、以下の事項を保証しません："
+      title: 第9条（免責事項）
+      paragraph_1: 運営者は、本サービスに関して、以下の事項を保証しません：
       no_guarantee:
-        - "本サービスが利用者の特定の目的に適合すること"
-        - "期待する機能・正確性・有用性を有すること"
-        - "継続的に利用できること"
-        - "不具合が生じないこと"
-      paragraph_2: "運営者は、本サービスの利用により利用者に生じたあらゆる損害について、運営者の故意または重過失による場合を除き、一切の責任を負いません。"
-
+      - 本サービスが利用者の特定の目的に適合すること
+      - 期待する機能・正確性・有用性を有すること
+      - 継続的に利用できること
+      - 不具合が生じないこと
+      paragraph_2: 運営者は、本サービスの利用により利用者に生じたあらゆる損害について、運営者の故意または重過失による場合を除き、一切の責任を負いません。
     article_10:
-      title: "第10条（サービス内容の変更等）"
-      content: "運営者は、利用者に通知することなく、本サービスの内容を変更しまたは本サービスの提供を中止することができるものとし、これによって利用者に生じた損害について一切の責任を負いません。"
-
+      title: 第10条（サービス内容の変更等）
+      content: 運営者は、利用者に通知することなく、本サービスの内容を変更しまたは本サービスの提供を中止することができるものとし、これによって利用者に生じた損害について一切の責任を負いません。
     article_11:
-      title: "第11条（利用規約の変更）"
-      content: "運営者は、必要と判断した場合には、利用者に通知することなくいつでも本規約を変更することができるものとします。変更後の本規約は、本サービス上に表示した時点から効力を生じるものとします。"
-
+      title: 第11条（利用規約の変更）
+      content: 運営者は、必要と判断した場合には、利用者に通知することなくいつでも本規約を変更することができるものとします。変更後の本規約は、本サービス上に表示した時点から効力を生じるものとします。
     article_12:
-      title: "第12条（準拠法・裁判管轄）"
-      paragraph_1: "本規約の解釈にあたっては、日本法を準拠法とします。"
-      paragraph_2: "本サービスに関して紛争が生じた場合には、運営者の所在地を管轄する裁判所を専属的合意管轄裁判所とします。"
-
-  # プライバシーポリシーコンテンツ
+      title: 第12条（準拠法・裁判管轄）
+      paragraph_1: 本規約の解釈にあたっては、日本法を準拠法とします。
+      paragraph_2: 本サービスに関して紛争が生じた場合には、運営者の所在地を管轄する裁判所を専属的合意管轄裁判所とします。
   privacy_content:
-    intro: "%{app_name}（以下「本サービス」といいます）における、利用者の個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下「本ポリシー」といいます）を定めます。"
-
+    intro: '%{app_name}（以下「本サービス」といいます）における、利用者の個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下「本ポリシー」といいます）を定めます。'
     article_1:
-      title: "第1条（収集する情報）"
-      intro: "本サービスでは、以下の情報を収集します："
+      title: 第1条（収集する情報）
+      intro: 本サービスでは、以下の情報を収集します：
       items:
-        - "ユーザー登録時に入力された情報（氏名、メールアドレス等）"
-        - "本サービスの利用に関する情報（操作履歴、アクセスログ等）"
-        - "本サービス内で登録・管理されるデータ（商品情報、原材料情報、数値データ等）"
-
+      - ユーザー登録時に入力された情報（氏名、メールアドレス等）
+      - 本サービスの利用に関する情報（操作履歴、アクセスログ等）
+      - 本サービス内で登録・管理されるデータ（商品情報、原材料情報、数値データ等）
     article_2:
-      title: "第2条（情報の利用目的）"
-      intro: "収集した情報は、以下の目的で利用します："
+      title: 第2条（情報の利用目的）
+      intro: 収集した情報は、以下の目的で利用します：
       items:
-        - "本サービスの提供・運営のため"
-        - "利用者からのお問い合わせに対応するため"
-        - "本サービスの改善・新機能開発のため"
-        - "利用規約に違反する行為への対応のため"
-
+      - 本サービスの提供・運営のため
+      - 利用者からのお問い合わせに対応するため
+      - 本サービスの改善・新機能開発のため
+      - 利用規約に違反する行為への対応のため
     article_3:
-      title: "第3条（情報の共有）"
-      paragraph_1: "本サービスに登録されたデータは、同一サービス内のすべてのユーザーに共有されます。"
-      paragraph_2: "個人を特定できる情報については、利用者の同意なく第三者に提供することはありません。ただし、法令に基づく場合を除きます。"
-
+      title: 第3条（情報の共有）
+      paragraph_1: 本サービスに登録されたデータは、同一サービス内のすべてのユーザーに共有されます。
+      paragraph_2: 個人を特定できる情報については、利用者の同意なく第三者に提供することはありません。ただし、法令に基づく場合を除きます。
     article_4:
-      title: "第4条（情報の管理）"
-      paragraph_1: "運営者は、利用者の情報の漏洩、滅失または毀損の防止その他の情報の安全管理のために必要かつ適切な措置を講じます。"
-      paragraph_2: "ただし、運営者は利用者データのバックアップを行う義務を負いません。"
-
+      title: 第4条（情報の管理）
+      paragraph_1: 運営者は、利用者の情報の漏洩、滅失または毀損の防止その他の情報の安全管理のために必要かつ適切な措置を講じます。
+      paragraph_2: ただし、運営者は利用者データのバックアップを行う義務を負いません。
     article_5:
-      title: "第5条（Cookie等の利用）"
-      content: "本サービスでは、サービスの利便性向上のため、Cookieを使用することがあります。Cookieの使用を希望されない場合、ブラウザの設定により無効にすることができます。"
-
+      title: 第5条（Cookie等の利用）
+      content: 本サービスでは、サービスの利便性向上のため、Cookieを使用することがあります。Cookieの使用を希望されない場合、ブラウザの設定により無効にすることができます。
     article_6:
-      title: "第6条（プライバシーポリシーの変更）"
-      content: "運営者は、必要に応じて本ポリシーを変更することがあります。変更後のプライバシーポリシーは、本サービス上に表示した時点から効力を生じるものとします。"
-
+      title: 第6条（プライバシーポリシーの変更）
+      content: 運営者は、必要に応じて本ポリシーを変更することがあります。変更後のプライバシーポリシーは、本サービス上に表示した時点から効力を生じるものとします。
     article_7:
-      title: "第7条（お問い合わせ）"
-      content: "本ポリシーに関するお問い合わせは、本サービス内の「使い方・ヘルプ」ページよりご連絡ください。"
-
-  # お問い合わせ
+      title: 第7条（お問い合わせ）
+      content: 本ポリシーに関するお問い合わせは、本サービス内の「使い方・ヘルプ」ページよりご連絡ください。
   contacts:
     new:
-      title: "お問い合わせ"
-      subtitle: "ご不明な点やご要望がございましたら、お気軽にお問い合わせください。"
+      title: お問い合わせ
+      subtitle: ご不明な点やご要望がございましたら、お気軽にお問い合わせください。
     form:
-      name: "お名前"
-      name_placeholder: "山田 太郎"
-      email: "メールアドレス"
-      email_placeholder: "example@example.com"
-      subject: "件名"
-      subject_placeholder: "お問い合わせ内容の件名"
-      message: "お問い合わせ内容"
-      message_placeholder: "具体的なお問い合わせ内容をご記入ください"
-      message_hint: "最大5000文字まで入力できます"
-      message_max_length: "5000"
-      submit: "送信"
+      name: お名前
+      name_placeholder: 山田 太郎
+      email: メールアドレス
+      email_placeholder: example@example.com
+      subject: 件名
+      subject_placeholder: お問い合わせ内容の件名
+      message: お問い合わせ内容
+      message_placeholder: 具体的なお問い合わせ内容をご記入ください
+      message_hint: 最大5000文字まで入力できます
+      message_max_length: '5000'
+      submit: 送信
     messages:
-      success_with_response_time: "お問い合わせを送信しました。通常2〜3営業日以内にご返信いたします。"
-      failure: "お問い合わせの送信に失敗しました。"
-
+      success_with_response_time: お問い合わせを送信しました。通常2〜3営業日以内にご返信いたします。
+      failure: お問い合わせの送信に失敗しました。
   contact_mailer:
-    subject: "【MM-App】お問い合わせを受け付けました"
+    subject: 【MM-App】お問い合わせを受け付けました
     contact_email:
-      title: "お問い合わせがありました"
-      name_label: "お名前"
-      email_label: "メールアドレス"
-      subject_label: "件名"
-      message_label: "お問い合わせ内容"
-
+      title: お問い合わせがありました
+      name_label: お名前
+      email_label: メールアドレス
+      subject_label: 件名
+      message_label: お問い合わせ内容
   stores:
     switch:
-      success: "%{store_name}に切り替えました"
-      all_stores: "全店舗表示に切り替えました"
-      not_found: "店舗が見つかりませんでした"
-      unauthorized: "この機能を利用する権限がありません"
+      success: '%{store_name}に切り替えました'
+      all_stores: 全店舗表示に切り替えました
+      not_found: 店舗が見つかりませんでした
+      unauthorized: この機能を利用する権限がありません
+  dashboard:
+    sidebar:
+      company: 会社
+      store: 店舗
+      all_stores: 全店舗

@@ -1,9 +1,8 @@
-<%# 原材料一覧画面 %>
 <%= content_for(:title, t('materials.index.title')) %>
 
 <div data-controller="sortable-table resource-search"
       data-sortable-table-reorder-path-value="<%= reorder_resources_materials_path %>"
-      data-sortable-table-param-name-value="material">
+      data-sortable-table-param-name-value="material_ids">
 
   <%= render 'shared/layouts/header_with_actions',
       title: t('materials.index.title'),

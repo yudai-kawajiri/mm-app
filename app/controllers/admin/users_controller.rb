@@ -7,10 +7,10 @@ class Admin::UsersController < AuthenticatedController
 
   def index
     @users = if current_user.store_admin?
-               current_user.store.users.includes(:store).order(created_at: :desc)
-             else
-               current_user.tenant.users.includes(:store).order(created_at: :desc)
-             end
+                current_user.store.users.includes(:store).order(created_at: :desc)
+              else
+                current_user.tenant.users.includes(:store).order(created_at: :desc)
+              end
   end
 
   def new
@@ -30,8 +30,7 @@ class Admin::UsersController < AuthenticatedController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @user.update(user_params_for_update)

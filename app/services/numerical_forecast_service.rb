@@ -7,7 +7,7 @@
 # アクションプランを提供します。
 #
 # @example 基本的な使用方法
-#   service = NumericalForecastService.new(year: 2024, month: 12)
+#   service = NumericalForecastService.new(year: 2024, month: 12, store_id: 1)
 #   forecast_data = service.calculate
 #
 class NumericalForecastService
@@ -20,14 +20,16 @@ class NumericalForecastService
   # 金額の小数点以下精度（整数丸め）
   AMOUNT_PRECISION = 0
 
-  attr_reader :year, :month
+  attr_reader :year, :month, :store_id
 
   ##
   # @param year [Integer, String] 対象年
   # @param month [Integer, String] 対象月
-  def initialize(year:, month:)
+  # @param store_id [Integer, nil] 店舗ID（マルチテナント対応）
+  def initialize(year:, month:, store_id: nil)
     @year = year.to_i
     @month = month.to_i
+    @store_id = store_id
   end
 
   ##
@@ -66,15 +68,15 @@ class NumericalForecastService
     forecast_discount_rate = budget.forecast_discount_rate || 0
     target_discount_rate = budget.target_discount_rate || 0
 
-    # 月全体のスケジュールを取得
-    all_schedules = Planning::PlanSchedule
-                  .where(scheduled_date: start_date..end_date)
+    # 月全体のスケジュールを取得（店舗スコープ適用）
+    all_schedules_query = Planning::PlanSchedule.where(scheduled_date: start_date..end_date)
+    all_schedules_query = all_schedules_query.where(store_id: @store_id) if @store_id.present?
+    all_schedules = all_schedules_query.to_a
 
     # 実績が入力されているものの合計
     actual_confirmed = all_schedules
-                        .where.not(actual_revenue: nil)
-                        .where("actual_revenue > 0")
-                        .sum(:actual_revenue) || 0
+                        .select { |ps| ps.actual_revenue.present? && ps.actual_revenue > 0 }
+                        .sum(&:actual_revenue) || 0
 
     # 実績未入力のスケジュールの計画高を集計
     unconfirmed_schedules = all_schedules.select do |ps|
@@ -96,10 +98,10 @@ class NumericalForecastService
     # 予測達成率（月末予測 ÷ 月次予算）
     forecast_achievement_rate = target.positive? ? ((forecast.to_f / target) * PERCENTAGE_MULTIPLIER).round(RATE_PRECISION) : 0.0
 
-    # 昨日までの日別予算の合計
-    past_target = Management::DailyTarget
-                .where(target_date: start_date..past_end)
-                .sum(:target_amount) || 0
+    # 昨日までの日別予算の合計（店舗スコープ適用）
+    past_target_query = Management::DailyTarget.where(target_date: start_date..past_end)
+    past_target_query = past_target_query.joins(:monthly_budget).where(monthly_budgets: { store_id: @store_id }) if @store_id.present?
+    past_target = past_target_query.sum(:target_amount) || 0
 
     # 昨日までの日別予算達成率
     daily_achievement_rate = past_target.positive? ? ((actual_confirmed.to_f / past_target) * PERCENTAGE_MULTIPLIER).round(RATE_PRECISION) : 0.0
@@ -163,12 +165,14 @@ class NumericalForecastService
   private
 
   ##
-  # 月次予算を取得
+  # 月次予算を取得（店舗スコープ適用）
   #
   # @return [MonthlyBudget, nil] 月次予算レコード
   def find_monthly_budget
     budget_month = Date.new(@year, @month, 1)
-    Management::MonthlyBudget.find_by(budget_month: budget_month)
+    query = Management::MonthlyBudget.where(budget_month: budget_month)
+    query = query.where(store_id: @store_id) if @store_id.present?
+    query.first
   end
 
   ##

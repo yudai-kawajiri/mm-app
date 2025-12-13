@@ -5,11 +5,13 @@
           class="btn btn-sm btn-secondary">
     <%= local_assigns[:button_text] || t('common.actions.reorder_print_order') %>
   </button>
+
   <button data-sortable-table-target="saveBtn"
           data-action="click->sortable-table#save"
           class="btn btn-sm btn-success d-none">
     <%= t('common.save_order') %>
   </button>
+
   <button data-sortable-table-target="cancelBtn"
           data-action="click->sortable-table#cancel"
           class="btn btn-sm btn-outline-secondary d-none">

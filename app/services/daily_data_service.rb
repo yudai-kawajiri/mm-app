@@ -5,7 +5,7 @@
 # 日別データ（目標・実績・計画）を計算するサービス
 #
 # 使用例:
-#   service = DailyDataService.new(current_user, 2024, 12)
+#   service = DailyDataService.new(2024, 12, store_id: 1)
 #   daily_data = service.call
 #
 # 機能:
@@ -19,13 +19,15 @@ class DailyDataService
   # 達成率の小数点以下桁数
   ACHIEVEMENT_RATE_PRECISION = 1
 
-  attr_reader :user, :year, :month
+  attr_reader :year, :month, :store_id
 
   # @param year [Integer, String] 対象年
   # @param month [Integer, String] 対象月
-  def initialize(year, month)
+  # @param store_id [Integer, nil] 店舗ID（マルチテナント対応）
+  def initialize(year, month, store_id: nil)
     @year = year.to_i
     @month = month.to_i
+    @store_id = store_id
     @budget = find_budget
     load_data_for_month
   end
@@ -54,17 +56,17 @@ class DailyDataService
 
   private
 
-  # 月次予算を取得
+  # 月次予算を取得（店舗スコープ適用）
   #
   # @return [Management::MonthlyBudget, nil] 月次予算
   def find_budget
     budget_month = Date.new(@year, @month, 1)
-    Management::MonthlyBudget.find_by(
-      budget_month: budget_month
-    )
+    query = Management::MonthlyBudget.where(budget_month: budget_month)
+    query = query.where(store_id: @store_id) if @store_id.present?
+    query.first
   end
 
-  # データを事前ロード（N+1問題対策）
+  # データを事前ロード（N+1問題対策、店舗スコープ適用）
   #
   # @return [void]
   def load_data_for_month
@@ -78,11 +80,10 @@ class DailyDataService
                             .where(target_date: start_date..end_date)
                             .to_a
 
-    # 計画スケジュールを事前ロード
-    @plan_schedules = Planning::PlanSchedule
-                            .where(scheduled_date: start_date..end_date)
-                            .includes(:plan)
-                            .to_a
+    # 計画スケジュールを事前ロード（店舗スコープ適用）
+    schedules_query = Planning::PlanSchedule.where(scheduled_date: start_date..end_date)
+    schedules_query = schedules_query.where(store_id: @store_id) if @store_id.present?
+    @plan_schedules = schedules_query.includes(:plan).to_a
   end
 
   # 日別データを計算

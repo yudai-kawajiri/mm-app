@@ -1,98 +1,62 @@
 # frozen_string_literal: true
 
-# CategoriesController
-#
-# カテゴリー（Category）のCRUD操作を管理
-#
-# 機能:
-#   - カテゴリーの一覧表示（検索・タイプフィルタ・ページネーション・ソート機能）
-#   - カテゴリーの作成・編集・削除
-#   - カテゴリーのコピー
 class Resources::CategoriesController < AuthenticatedController
   include SortableController
 
-  # 検索パラメータの定義
   define_search_params :q, :category_type, :sort_by
 
-  # ソートオプションの定義
   define_sort_options(
     name: -> { order(:reading) },
     category_type: -> { order(:category_type, :reading) },
     created_at: -> { order(created_at: :desc) }
   )
 
-  # リソース検索（show, edit, update, destroy, copy）
   find_resource :category, only: [ :show, :edit, :update, :destroy, :copy ]
 
-  # カテゴリー一覧
-  #
-  # @return [void]
   def index
-    # 基本クエリ
-    @categories = Resources::Category.all
+    @categories = scoped_categories
 
-    # ソート適用
     @categories = apply_sort(@categories, default: "name")
 
-    # カテゴリー種別フィルタリング
     if params[:category_type].present?
       @categories = @categories.where(category_type: params[:category_type])
     end
 
-    # 名前検索
     if params[:q].present?
       @categories = @categories.search_by_name(params[:q])
     end
 
-    # ページネーション
     @categories = @categories.page(params[:page])
   end
 
-  # 新規カテゴリー作成フォーム
-  #
-  # @return [void]
   def new
     @category = Resources::Category.new
     @category.user_id = current_user.id
+    @category.tenant_id = current_tenant.id
+    @category.store_id = current_store&.id
   end
 
-  # カテゴリーを作成
-  #
-  # @return [void]
   def create
     @category = Resources::Category.new(category_params)
     @category.user_id = current_user.id
+    @category.tenant_id = current_tenant.id
+    @category.store_id = current_store&.id if @category.store_id.blank?
     respond_to_save(@category)
   end
 
-  # カテゴリー詳細
-  #
-  # @return [void]
   def show; end
 
-  # カテゴリー編集フォーム
-  #
-  # @return [void]
   def edit; end
 
-  # カテゴリーを更新
-  #
-  # @return [void]
   def update
     @category.assign_attributes(category_params)
     respond_to_save(@category)
   end
 
-  # カテゴリーを削除
-  #
-  # @return [void]
   def destroy
     respond_to_destroy(@category, success_path: resources_categories_url)
   end
 
-  # カテゴリーをコピー
-  #
-  # @return [void]
   def copy
     @category.create_copy(user: current_user)
     redirect_to resources_categories_path, notice: t("flash_messages.copy.success",
@@ -105,9 +69,6 @@ class Resources::CategoriesController < AuthenticatedController
 
   private
 
-  # Strong Parameters
-  #
-  # @return [ActionController::Parameters]
   def category_params
     params.require(:resources_category).permit(:name, :reading, :category_type, :description)
   end
