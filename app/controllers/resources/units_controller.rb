@@ -12,6 +12,7 @@ class Resources::UnitsController < AuthenticatedController
   )
 
   find_resource :unit, only: [ :show, :edit, :update, :destroy, :copy ]
+  before_action :set_unit, only: [ :show, :edit, :update, :destroy, :copy ]
 
   def index
     @units = scoped_units
@@ -65,6 +66,10 @@ class Resources::UnitsController < AuthenticatedController
     Rails.logger.error "Unit copy failed: #{e.record.errors.full_messages.join(', ')}"
     redirect_to resources_units_path, alert: t("flash_messages.copy.failure",
                                                 resource: @unit.class.model_name.human)
+  end
+
+  def set_unit
+    @unit = scoped_units.find(params[:id])
   end
 
   private

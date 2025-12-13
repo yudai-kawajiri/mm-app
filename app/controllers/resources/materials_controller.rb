@@ -15,6 +15,7 @@ class Resources::MaterialsController < AuthenticatedController
   )
 
   find_resource :material, only: [ :show, :edit, :update, :destroy, :copy ]
+  before_action :set_material, only: [ :show, :edit, :update, :destroy, :copy ]
 
   # 原材料一覧
   #
@@ -25,7 +26,7 @@ class Resources::MaterialsController < AuthenticatedController
   # 【データスコープ】
   # scoped_materials で現在のテナント・店舗に応じたデータのみ取得
   def index
-    @material_categories = Resources::Category.for_materials
+    @material_categories = scoped_categories.for_materials
     base_query = scoped_materials.includes(:category, :unit_for_product, :unit_for_order, :production_unit, :order_group)
     base_query = base_query.search_and_filter(search_params) if defined?(search_params)
     sorted_query = apply_sort(base_query, default: "name")
@@ -38,7 +39,11 @@ class Resources::MaterialsController < AuthenticatedController
   # 【自動設定】
   # user_id, tenant_id, store_id を自動設定
   def new
-    @material_categories = Resources::Category.material.where(user_id: current_user.id)
+    @material_categories = scoped_categories.for_materials
+    @production_units = scoped_units.where(category: :production).ordered
+    @order_units = scoped_units.where(category: :ordering).ordered
+    @manufacturing_units = scoped_units.where(category: :manufacturing).ordered
+    @material_order_groups = scoped_material_order_groups.ordered
     @material = Resources::Material.new
     @material.user_id = current_user.id
     @material.tenant_id = current_tenant.id
@@ -50,6 +55,11 @@ class Resources::MaterialsController < AuthenticatedController
   # 【自動設定】
   # user_id, tenant_id, store_id を自動設定（store_id が空の場合のみ）
   def create
+    @material_categories = scoped_categories.for_materials
+    @production_units = scoped_units.where(category: :production).ordered
+    @order_units = scoped_units.where(category: :ordering).ordered
+    @manufacturing_units = scoped_units.where(category: :manufacturing).ordered
+    @material_order_groups = scoped_material_order_groups.ordered
     @material = Resources::Material.new(material_params)
     @material.user_id = current_user.id
     @material.tenant_id = current_tenant.id
@@ -60,10 +70,19 @@ class Resources::MaterialsController < AuthenticatedController
   def show; end
 
   def edit
-    @material_categories = Resources::Category.material.where(user_id: current_user.id)
+    @material_categories = scoped_categories.for_materials
+    @production_units = scoped_units.where(category: :production).ordered
+    @order_units = scoped_units.where(category: :ordering).ordered
+    @manufacturing_units = scoped_units.where(category: :manufacturing).ordered
+    @material_order_groups = scoped_material_order_groups.ordered
   end
 
   def update
+    @material_categories = scoped_categories.for_materials
+    @production_units = scoped_units.where(category: :production).ordered
+    @order_units = scoped_units.where(category: :ordering).ordered
+    @manufacturing_units = scoped_units.where(category: :manufacturing).ordered
+    @material_order_groups = scoped_material_order_groups.ordered
     @material.assign_attributes(material_params)
     respond_to_save(@material)
   end
@@ -93,6 +112,10 @@ class Resources::MaterialsController < AuthenticatedController
     render json: { message: t("sortable_table.saved") }, status: :ok
   rescue ActiveRecord::RecordNotFound
     render json: { error: t("sortable_table.not_found") }, status: :not_found
+  end
+
+  def set_material
+    @material = scoped_materials.find(params[:id])
   end
 
   private

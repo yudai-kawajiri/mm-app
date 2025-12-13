@@ -21,7 +21,7 @@ class Resources::ProductsController < AuthenticatedController
   # - category: カテゴリ名表示
   # - image_attachment: 画像表示
   def index
-    @product_categories = Resources::Category.for_products.ordered
+    @product_categories = scoped_categories.for_products.ordered
     base_query = scoped_products.includes(:category, :image_attachment)
     base_query = base_query.search_and_filter(search_params) if defined?(search_params)
     sorted_query = apply_sort(base_query, default: "name")
@@ -34,8 +34,9 @@ class Resources::ProductsController < AuthenticatedController
     @product.user_id = current_user.id
     @product.tenant_id = current_tenant.id
     @product.store_id = current_store&.id
-    @product_categories = Resources::Category.for_products.ordered
-    @material_categories = Resources::Category.for_materials
+    @product_categories = scoped_categories.for_products.ordered
+    @material_categories = scoped_categories.for_materials
+    @materials = scoped_materials.ordered
   end
 
   def create
@@ -44,24 +45,29 @@ class Resources::ProductsController < AuthenticatedController
     @product.tenant_id = current_tenant.id
     @product.store_id = current_store&.id if @product.store_id.blank?
 
-    @product_categories = Resources::Category.for_products.ordered
-    @material_categories = Resources::Category.for_materials
+    @product_categories = scoped_categories.for_products.ordered
+    @material_categories = scoped_categories.for_materials
+    @materials = scoped_materials.ordered
 
     respond_to_save(@product)
   end
 
-  def show; end
+  def show
+    @product_materials = @product.product_materials.includes(:material, :unit).order(:id)
+  end
 
   def edit
-    @product_categories = Resources::Category.for_products.ordered
-    @material_categories = Resources::Category.for_materials
+    @product_categories = scoped_categories.for_products.ordered
+    @material_categories = scoped_categories.for_materials
+    @materials = scoped_materials.ordered
   end
 
   def update
     @product.assign_attributes(product_params)
 
-    @product_categories = Resources::Category.for_products.ordered
-    @material_categories = Resources::Category.for_materials
+    @product_categories = scoped_categories.for_products.ordered
+    @material_categories = scoped_categories.for_materials
+    @materials = scoped_materials.ordered
 
     respond_to_save(@product)
   end
@@ -111,6 +117,11 @@ class Resources::ProductsController < AuthenticatedController
       format.json { head :no_content }
     end
   end
+
+  def set_product
+    @product = scoped_products.find(params[:id])
+  end
+
 
   private
 

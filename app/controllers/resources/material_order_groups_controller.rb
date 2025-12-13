@@ -18,6 +18,7 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   )
 
   find_resource :material_order_group, only: [ :show, :edit, :update, :destroy, :copy ]
+  before_action :set_material_order_group, only: [ :show, :edit, :update, :destroy, :copy ]
 
   def index
     base_query = scoped_material_order_groups
@@ -62,6 +63,10 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
     Rails.logger.error "MaterialOrderGroup copy failed: #{e.record.errors.full_messages.join(', ')}"
     redirect_to resources_material_order_groups_path, alert: t("flash_messages.copy.failure",
                                                                 resource: @material_order_group.class.model_name.human)
+  end
+
+  def set_material_order_group
+    @material_order_group = scoped_material_order_groups.find(params[:id])
   end
 
   private
