@@ -1,14 +1,8 @@
 # frozen_string_literal: true
 
-# UnitsController
-#
-# 単位（Unit）のCRUD操作を管理
-#
-# 【実装のポイント】
-# - マルチテナント・店舗スコープを index/new/create に適用
-# - scoped_units により権限レベルに応じたデータ分離を実現
 class Resources::UnitsController < AuthenticatedController
   include SortableController
+  before_action :require_store_selected, only: [:new, :edit, :create, :update, :copy, :destroy]
 
   define_search_params :q, :category, :sort_by
 

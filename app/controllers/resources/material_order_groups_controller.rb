@@ -9,6 +9,7 @@
 # - scoped_material_order_groups により権限レベルに応じたデータ分離を実現
 class Resources::MaterialOrderGroupsController < AuthenticatedController
   include SortableController
+  before_action :require_store_selected, only: [:new, :edit, :create, :update, :copy, :destroy]
 
   define_search_params :q, :sort_by
 
