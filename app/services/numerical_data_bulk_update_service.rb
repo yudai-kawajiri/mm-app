@@ -8,9 +8,10 @@
 class NumericalDataBulkUpdateService
   attr_reader :errors
 
-  def initialize(user, params)
+  def initialize(user, params, store_id = nil)
     @user = user
     @params = params
+    @store_id = store_id
     @errors = []
   end
 
@@ -82,21 +83,21 @@ class NumericalDataBulkUpdateService
         # 新規作成(キーは日付文字列)
         target_date = Date.parse(attributes[:target_date])
 
-        # ← user指定なしで全ユーザー共通のMonthlyBudgetを検索・作成
+        # 修正: tenant_id と store_id を追加
         monthly_budget = Management::MonthlyBudget.find_or_create_by!(
-          budget_month: target_date.beginning_of_month
+          budget_month: target_date.beginning_of_month,
+          tenant_id: @user.tenant_id,
+          store_id: @store_id
         ) do |budget|
           budget.target_amount = 0
-          budget.user_id = @user.id  # ← 新規作成時のみuser_idを設定(履歴用)
+          budget.user_id = @user.id
         end
 
-        # ← user指定なしで検索(全ユーザー共通データ)
         target = Management::DailyTarget.find_or_initialize_by(
           monthly_budget: monthly_budget,
           target_date: target_date
         )
 
-        # ← 新規作成時のみuser_idを設定(履歴用)
         target.user_id = @user.id if target.new_record?
 
         Rails.logger.debug "Target new_record?: #{target.new_record?}, target_amount: #{target_amount}"

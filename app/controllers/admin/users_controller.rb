@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
-# Admin Users Controller
-#
-# ユーザー管理機能
 class Admin::UsersController < AuthenticatedController
   before_action :require_admin
   before_action :set_user, only: [:edit, :update, :destroy]
   before_action :set_stores, only: [:new, :create, :edit, :update]
 
   def index
-    @users = accessible_users.includes(:store).order(created_at: :desc)
+    @users = accessible_users.order(created_at: :desc)
   end
 
   def new
@@ -50,22 +47,18 @@ class Admin::UsersController < AuthenticatedController
 
   private
 
-  # 権限に応じてアクセス可能なユーザーを返す
   def accessible_users
     case current_user.role
     when 'store_admin'
-      # 店舗管理者: 自店舗のユーザーのみ
       current_user.store.users
     when 'company_admin'
-      # 会社管理者: 店舗選択時はその店舗のみ、未選択時は全店舗
       if current_store.present?
         current_store.users
       else
-        current_user.tenant.users
+        current_user.tenant.users.includes(:store)
       end
     when 'super_admin'
-      # スーパー管理者: 全ユーザー
-      User.all
+      User.all.includes(:store)
     else
       User.none
     end
@@ -80,13 +73,10 @@ class Admin::UsersController < AuthenticatedController
   def set_stores
     @stores = case current_user.role
               when 'store_admin'
-                # 店舗管理者: 自店舗のみ選択可能
                 [current_user.store]
               when 'company_admin'
-                # 会社管理者: 自社全店舗から選択可能
                 current_user.tenant.stores.order(:code)
               when 'super_admin'
-                # スーパー管理者: 全店舗から選択可能
                 Store.all.includes(:tenant).order('tenants.name, stores.code')
               else
                 []

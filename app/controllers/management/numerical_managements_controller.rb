@@ -146,7 +146,7 @@ class Management::NumericalManagementsController < ApplicationController
       return
     end
 
-    service = NumericalDataBulkUpdateService.new(current_user, sanitized_params)
+    service = NumericalDataBulkUpdateService.new(current_user, sanitized_params, current_store&.id)
 
     if service.call
       redirect_to management_numerical_managements_path(year: year, month: month),
@@ -242,7 +242,7 @@ class Management::NumericalManagementsController < ApplicationController
 
   def check_budget_before_bulk_update(year, month, params_hash)
     selected_date = Date.new(year, month, 1)
-    monthly_budget = Management::MonthlyBudget.find_by(
+    monthly_budget = scoped_monthly_budgets.find_by(
       budget_month: selected_date.beginning_of_month
     )
 
