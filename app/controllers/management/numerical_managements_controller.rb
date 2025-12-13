@@ -26,13 +26,14 @@ class Management::NumericalManagementsController < ApplicationController
     @monthly_budget.tenant_id ||= current_tenant.id
     @monthly_budget.store_id ||= current_store&.id
 
-    calendar_data = CalendarDataBuilderService.new(year, month).build
+    calendar_data = CalendarDataBuilderService.new(year, month, store_id: current_store&.id).build
     @daily_data = calendar_data[:daily_data]
     @daily_targets = calendar_data[:daily_targets]
 
     @forecast_data = NumericalForecastService.new(
       year: year,
-      month: month
+      month: month,
+      store_id: current_store&.id
     ).calculate
 
     @plans_by_category = scoped_plans
@@ -44,12 +45,12 @@ class Management::NumericalManagementsController < ApplicationController
     @year = params[:year]&.to_i || Date.today.year
     @month = params[:month]&.to_i || Date.today.month
 
-    calendar_data = CalendarDataBuilderService.new(@year, @month).build
+    calendar_data = CalendarDataBuilderService.new(@year, @month, store_id: current_store&.id).build
     @daily_data = calendar_data[:daily_data]
     @monthly_budget = calendar_data[:monthly_budget]
     @daily_targets = calendar_data[:daily_targets]
 
-    @forecast = NumericalForecastService.call(@year, @month)
+    @forecast = NumericalForecastService.new(year: @year, month: @month, store_id: current_store&.id).calculate
   end
 
   def update_daily_target
