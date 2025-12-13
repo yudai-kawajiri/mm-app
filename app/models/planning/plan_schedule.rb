@@ -23,6 +23,9 @@ class Planning::PlanSchedule < ApplicationRecord
   validates :status, presence: true
   validates :actual_revenue, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
+  # tenant_id と store_id を plan から自動設定
+  before_validation :set_tenant_and_store_id, on: :create
+
   # スケジュールの現在の状態を定義
   enum :status, { scheduled: 0, completed: 1, cancelled: 2 }
 
@@ -264,4 +267,10 @@ class Planning::PlanSchedule < ApplicationRecord
       "created_at" => Time.current.iso8601
     }
   end
+  # tenant_id と store_id を plan から自動設定
+  def set_tenant_and_store_id
+    self.tenant_id ||= plan&.tenant_id
+    self.store_id ||= plan&.store_id
+  end
+
 end

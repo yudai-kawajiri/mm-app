@@ -22,6 +22,9 @@ class Management::DailyTarget < ApplicationRecord
   validates :target_date, presence: true, uniqueness: { scope: :monthly_budget_id }
   validates :target_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
+  # tenant_id を monthly_budget から自動設定
+  before_validation :set_tenant_id, on: :create
+
   # 指定された年月の日別目標を取得
   #
   # @param year [Integer] 年
@@ -35,4 +38,11 @@ class Management::DailyTarget < ApplicationRecord
 
   # 日付順で取得（降順）
   scope :recent, -> { order(target_date: :desc) }
+
+  private
+
+  # tenant_id を monthly_budget から自動設定
+  def set_tenant_id
+    self.tenant_id ||= monthly_budget&.tenant_id
+  end
 end
