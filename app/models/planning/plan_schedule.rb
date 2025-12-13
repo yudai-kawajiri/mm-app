@@ -19,7 +19,7 @@ class Planning::PlanSchedule < ApplicationRecord
   belongs_to :plan, class_name: "Resources::Plan"
 
   # バリデーション
-  validates :scheduled_date, presence: true, uniqueness: { scope: :plan_id }
+  validates :scheduled_date, presence: true, uniqueness: { scope: :store_id }
   validates :status, presence: true
   validates :actual_revenue, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 

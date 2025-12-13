@@ -6,11 +6,7 @@ class Admin::UsersController < AuthenticatedController
   before_action :set_stores, only: [:new, :create, :edit, :update]
 
   def index
-    @users = if current_user.store_admin?
-                current_user.store.users.includes(:store).order(created_at: :desc)
-              else
-                current_user.tenant.users.includes(:store).order(created_at: :desc)
-              end
+    @users = accessible_users.order(created_at: :desc)
   end
 
   def new
@@ -51,19 +47,39 @@ class Admin::UsersController < AuthenticatedController
 
   private
 
+  def accessible_users
+    case current_user.role
+    when 'store_admin'
+      current_user.store.users
+    when 'company_admin'
+      if current_store.present?
+        current_store.users
+      else
+        current_user.tenant.users.includes(:store)
+      end
+    when 'super_admin'
+      User.all.includes(:store)
+    else
+      User.none
+    end
+  end
+
   def set_user
-    @user = if current_user.store_admin?
-              current_user.store.users.find(params[:id])
-            else
-              current_user.tenant.users.find(params[:id])
-            end
+    @user = accessible_users.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to admin_users_path, alert: t('admin.users.messages.user_not_found')
   end
 
   def set_stores
-    @stores = if current_user.store_admin?
+    @stores = case current_user.role
+              when 'store_admin'
                 [current_user.store]
-              else
+              when 'company_admin'
                 current_user.tenant.stores.order(:code)
+              when 'super_admin'
+                Store.all.includes(:tenant).order('tenants.name, stores.code')
+              else
+                []
               end
   end
 

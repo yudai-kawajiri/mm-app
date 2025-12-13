@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_13_040110) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_13_134255) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -65,7 +65,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_13_040110) do
 
   create_table "daily_targets", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.text "description"
+    t.text "description", comment: "概要"
     t.bigint "monthly_budget_id", null: false
     t.bigint "store_id"
     t.bigint "target_amount", null: false, comment: "目標金額"
@@ -133,11 +133,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_13_040110) do
   create_table "monthly_budgets", force: :cascade do |t|
     t.date "budget_month", null: false, comment: "予算対象月（月初日を保存）"
     t.datetime "created_at", null: false
-    t.text "description", comment: "説明"
-    t.decimal "forecast_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "予測見切り率（%）"
+    t.text "description", comment: "概要"
+    t.decimal "forecast_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "予測見切率（%）"
     t.bigint "store_id"
     t.bigint "target_amount", null: false, comment: "目標金額"
-    t.decimal "target_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "目標見切り率（%）"
+    t.decimal "target_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "目標見切率（%）"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
@@ -163,7 +163,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_13_040110) do
   create_table "plan_schedules", force: :cascade do |t|
     t.bigint "actual_revenue", comment: "実績売上"
     t.datetime "created_at", null: false
-    t.text "description", comment: "説明"
+    t.text "description", comment: "概要"
     t.bigint "plan_id", null: false
     t.jsonb "plan_products_snapshot", default: {}, null: false, comment: "計画商品のスナップショット（日別調整用）"
     t.date "scheduled_date", null: false, comment: "スケジュール実施日"
@@ -172,10 +172,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_13_040110) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["plan_id", "scheduled_date"], name: "index_plan_schedules_on_plan_id_and_scheduled_date", unique: true
     t.index ["plan_id"], name: "index_plan_schedules_on_plan_id"
     t.index ["plan_products_snapshot"], name: "index_plan_schedules_on_plan_products_snapshot", using: :gin
     t.index ["scheduled_date"], name: "index_plan_schedules_on_scheduled_date"
+    t.index ["store_id", "scheduled_date"], name: "index_plan_schedules_on_store_id_and_scheduled_date", unique: true
     t.index ["store_id"], name: "index_plan_schedules_on_store_id"
     t.index ["tenant_id"], name: "index_plan_schedules_on_tenant_id"
     t.index ["user_id"], name: "index_plan_schedules_on_user_id"
@@ -302,9 +302,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_13_040110) do
     t.bigint "item_id", null: false
     t.string "item_type", null: false
     t.text "object"
+    t.bigint "store_id"
     t.bigint "tenant_id"
     t.string "whodunnit"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+    t.index ["store_id"], name: "index_versions_on_store_id"
     t.index ["tenant_id"], name: "index_versions_on_tenant_id"
   end
 
@@ -358,5 +360,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_13_040110) do
   add_foreign_key "units", "users"
   add_foreign_key "users", "stores"
   add_foreign_key "users", "tenants"
+  add_foreign_key "versions", "stores"
   add_foreign_key "versions", "tenants"
 end

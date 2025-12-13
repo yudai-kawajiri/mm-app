@@ -3,45 +3,22 @@
 # Admin System Logs Controller
 #
 # システムログ（監査ログ）管理
-#
-# 機能:
-# - PaperTrail によるモデル変更履歴の閲覧
-# - モデル種別・ユーザー・日付範囲でのフィルタリング
-# - ページネーション対応（1ページ50件）
-#
-# 認証: 管理者のみアクセス可能（before_action :require_admin）
-#
-# 使用Gem: paper_trail
 class Admin::SystemLogsController < AuthenticatedController
-  # ページあたりの表示件数
   LOGS_PER_PAGE = 50
 
   before_action :require_admin
 
-  # システムログ一覧表示
-  #
-  # PaperTrail::Version から監査ログを取得し、フィルタリング・ページネーションを適用する。
-  #
-  # @param params [Hash] フィルタパラメータ
-  # @option params [String] :item_type モデル種別（例: "Product", "Material"）
-  # @option params [String] :whodunnit ユーザーID
-  # @option params [String] :date_from 開始日（YYYY-MM-DD形式）
-  # @option params [String] :date_to 終了日（YYYY-MM-DD形式）
-  # @option params [Integer] :page ページ番号
-  #
-  # @return [void]
   def index
-    @versions = PaperTrail::Version.order(created_at: :desc)
+    @versions = accessible_versions
+      .order(created_at: :desc)
+      .page(params[:page])
+      .per(LOGS_PER_PAGE)
 
     # モデル種別でフィルタ
-    if params[:item_type].present?
-      @versions = @versions.where(item_type: params[:item_type])
-    end
+    @versions = @versions.where(item_type: params[:item_type]) if params[:item_type].present?
 
     # ユーザーでフィルタ
-    if params[:whodunnit].present?
-      @versions = @versions.where(whodunnit: params[:whodunnit])
-    end
+    @versions = @versions.where(whodunnit: params[:whodunnit]) if params[:whodunnit].present?
 
     # 開始日でフィルタ
     if params[:date_from].present?
@@ -55,11 +32,54 @@ class Admin::SystemLogsController < AuthenticatedController
       @versions = @versions.where("created_at <= ?", date_to.end_of_day)
     end
 
-    # ページネーション
-    @versions = @versions.page(params[:page]).per(LOGS_PER_PAGE)
+    @model_types = accessible_model_types
+    @users = accessible_users
+  end
 
-    # フィルタ用データ
-    @model_types = PaperTrail::Version.distinct.pluck(:item_type).compact.sort
-    @users = User.all
+  private
+
+  # 権限に応じてアクセス可能なログを返す
+  def accessible_versions
+    case current_user.role
+    when 'store_admin'
+      # 店舗管理者: 自店舗の履歴のみ
+      PaperTrail::Version.where(store_id: current_user.store_id)
+    when 'company_admin'
+      # 会社管理者: 店舗選択時はその店舗のみ、未選択時は全店舗
+      if current_store.present?
+        PaperTrail::Version.where(store_id: current_store.id)
+      else
+        store_ids = current_user.tenant.stores.pluck(:id)
+        PaperTrail::Version.where(store_id: store_ids)
+      end
+    when 'super_admin'
+      # スーパー管理者: 全履歴
+      PaperTrail::Version.all
+    else
+      PaperTrail::Version.none
+    end
+  end
+
+  # アクセス可能なモデル種別
+  def accessible_model_types
+    accessible_versions.distinct.pluck(:item_type).compact.sort
+  end
+
+  # アクセス可能なユーザー
+  def accessible_users
+    case current_user.role
+    when 'store_admin'
+      User.where(store_id: current_user.store_id)
+    when 'company_admin'
+      if current_store.present?
+        User.where(store_id: current_store.id)
+      else
+        current_user.tenant.users
+      end
+    when 'super_admin'
+      User.all
+    else
+      User.none
+    end
   end
 end

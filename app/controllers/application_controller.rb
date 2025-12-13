@@ -50,6 +50,11 @@ class ApplicationController < ActionController::Base
     user_signed_in? ? current_user.id : nil
   end
 
+  # PaperTrail: store_id を自動記録
+  def info_for_paper_trail
+    { store_id: current_store&.id }
+  end
+
   # マルチテナント: 現在のユーザーが所属する会社
   #
   # 【設計意図】

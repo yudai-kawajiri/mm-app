@@ -1,21 +1,8 @@
 # frozen_string_literal: true
 
-# DailyTargetsController
-#
-# 日別目標のCRUD操作を管理
-#
-# 機能:
-#   - 日別目標の作成・更新
-#   - 月次予算との紐付け
-#   - 権限チェック
 class Management::DailyTargetsController < AuthenticatedController
   include NumericSanitizer
 
-  # 日別目標を作成
-  #
-  # find_or_initialize_by で既存レコード検索 or 新規作成
-  #
-  # @return [void]
   def create
     permitted = sanitized_daily_target_params
     target_date = parse_target_date(permitted[:target_date])
@@ -28,7 +15,9 @@ class Management::DailyTargetsController < AuthenticatedController
       monthly_budget: monthly_budget,
       target_date: target_date
     )
-    @daily_target.user_id ||= current_user.id  # 新規作成時のみ user_id を設定
+    @daily_target.user_id ||= current_user.id
+    @daily_target.store_id ||= current_store&.id
+    @daily_target.tenant_id ||= current_tenant.id
 
     @daily_target.assign_attributes(permitted.except(:target_date))
 
@@ -46,9 +35,6 @@ class Management::DailyTargetsController < AuthenticatedController
     end
   end
 
-  # 日別目標を更新
-  #
-  # @return [void]
   def update
     permitted = sanitized_daily_target_params
     target_date = parse_target_date(permitted[:target_date])
@@ -72,18 +58,10 @@ class Management::DailyTargetsController < AuthenticatedController
 
   private
 
-  # Strong Parameters
-  #
-  # @return [ActionController::Parameters]
   def daily_target_params
     params.require(:daily_target).permit(:target_date, :target_amount)
   end
 
-  # サニタイズ済みパラメータ
-  #
-  # NumericSanitizerで全角→半角、カンマ削除、スペース削除
-  #
-  # @return [ActionController::Parameters]
   def sanitized_daily_target_params
     sanitize_numeric_params(
       daily_target_params,
@@ -91,10 +69,6 @@ class Management::DailyTargetsController < AuthenticatedController
     )
   end
 
-  # 日付パース
-  #
-  # @param date_string [String] 日付文字列
-  # @return [Date, nil] パース結果
   def parse_target_date(date_string)
     return nil unless date_string.present?
 
@@ -105,12 +79,9 @@ class Management::DailyTargetsController < AuthenticatedController
     nil
   end
 
-  # 月次予算を検索
-  #
-  # @param date [Date] 対象日
-  # @return [MonthlyBudget, nil] 月次予算
   def find_monthly_budget_for_date(date)
-    monthly_budget = Management::MonthlyBudget.find_by(
+    # 店舗スコープを適用して月次予算を検索
+    monthly_budget = scoped_monthly_budgets.find_by(
       budget_month: date.beginning_of_month
     )
 
