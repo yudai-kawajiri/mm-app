@@ -38,8 +38,8 @@ class Resources::Material < ApplicationRecord
   has_many :products, through: :product_materials, class_name: "Resources::Product"
 
   # バリデーション
-  validates :name, presence: true, uniqueness: { scope: :category_id }
-  validates :reading, uniqueness: { scope: :category_id }, allow_blank: true
+  validates :name, presence: true, uniqueness: { scope: [:category_id, :store_id] }
+  validates :reading, presence: true, uniqueness: { scope: [:category_id, :store_id] }
   validates :measurement_type, presence: true, inclusion: { in: %w[weight count] }
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
@@ -116,7 +116,7 @@ class Resources::Material < ApplicationRecord
   # Copyable設定
   # 注意: product_materialsはコピーしない（独立したマスタデータのため）
   copyable_config(
-    uniqueness_scope: :category_id,
+    uniqueness_scope: [:category_id, :store_id],
     uniqueness_check_attributes: [ :name, :reading ]
   )
 end

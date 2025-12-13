@@ -83,40 +83,16 @@ class ApplicationController < ActionController::Base
   # - N+1防止: eager loadingの起点となるベースクエリを提供
   # - セキュリティ: WHERE句でテナント・店舗を強制し、データ漏洩を防止
   # - パフォーマンス: インデックス活用（tenant_id + store_id）
-  def scoped_products
-    return Resources::Product.none unless current_tenant
-    Resources::Product.where(tenant_id: current_tenant.id, store_id: current_store&.id)
-  end
 
   # マルチテナント: Materials のデータスコープ
-  def scoped_materials
-    return Resources::Material.none unless current_tenant
-    Resources::Material.where(tenant_id: current_tenant.id, store_id: current_store&.id)
-  end
 
   # マルチテナント: Plans のデータスコープ
-  def scoped_plans
-    return Resources::Plan.none unless current_tenant
-    Resources::Plan.where(tenant_id: current_tenant.id, store_id: current_store&.id)
-  end
 
   # マルチテナント: Categories のデータスコープ
-  def scoped_categories
-    return Resources::Category.none unless current_tenant
-    Resources::Category.where(tenant_id: current_tenant.id, store_id: current_store&.id)
-  end
 
   # マルチテナント: Units のデータスコープ
-  def scoped_units
-    return Resources::Unit.none unless current_tenant
-    Resources::Unit.where(tenant_id: current_tenant.id, store_id: current_store&.id)
-  end
 
   # マルチテナント: MaterialOrderGroups のデータスコープ
-  def scoped_material_order_groups
-    return Resources::MaterialOrderGroup.none unless current_tenant
-    Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id, store_id: current_store&.id)
-  end
 
   # マルチテナント: MonthlyBudgets のデータスコープ
   #
@@ -127,6 +103,45 @@ class ApplicationController < ActionController::Base
     return Management::MonthlyBudget.none unless current_tenant
     Management::MonthlyBudget.where(tenant_id: current_tenant.id, store_id: current_store&.id)
   end
+
+  # カテゴリーのスコープ
+  def scoped_categories
+    Resources::Category.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+  end
+
+  # 商品のスコープ
+  def scoped_products
+    Resources::Product.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+  end
+
+  # 原材料のスコープ
+  def scoped_materials
+    Resources::Material.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+  end
+
+  # プランのスコープ
+  def scoped_plans
+    Resources::Plan.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+  end
+
+  # 発注グループのスコープ
+  def scoped_material_order_groups
+    Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+  end
+
+  # 単位のスコープ
+  def scoped_units
+    Resources::Unit.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+  end
+
+
+
+
+
+
+
+
+
 
   # マルチテナント: DailyTargets のデータスコープ
   #

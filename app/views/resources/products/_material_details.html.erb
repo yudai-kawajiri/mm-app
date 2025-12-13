@@ -1,6 +1,6 @@
 <%# 商品原材料詳細表示 %>
 <% product = local_assigns[:product] %>
-<% product_materials = product.product_materials.includes(:material, :unit).order(:id) if product.present? %>
+<% product_materials = @product_materials || product.product_materials.order(:id) if product.present? %>
 
 <% if product_materials.present? %>
   <table class="table table-sm table-borderless">

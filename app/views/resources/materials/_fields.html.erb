@@ -11,7 +11,7 @@
   <div class="col-md-4">
     <%= form_group_lg(f, :category_id,
         field_type: :collection_select,
-        collection: Resources::Category.where(category_type: :material).ordered,
+        collection: @material_categories,
         required: true,
         label: raw([t('activerecord.attributes.resources/material.category_id'), t('helpers.required_mark')].join(' ')),
         select_options: { include_blank: t('helpers.prompt.select') }
@@ -49,7 +49,7 @@
       </label>
 
       <%= f.collection_select :unit_for_product_id,
-          Resources::Unit.where(category: :production).ordered,
+          @production_units,
           :id,
           :name,
           { include_blank: t('helpers.prompt.select') },
@@ -119,7 +119,7 @@
   <div class="col-md-6">
     <%= form_group_lg(f, :unit_for_order_id,
         field_type: :collection_select,
-        collection: Resources::Unit.where(category: :ordering).ordered,
+        collection: @order_units,
         required: true,
         label: raw([Resources::Material.human_attribute_name(:unit_for_order), t('helpers.required_mark')].join(' ')),
         select_options: { include_blank: t('helpers.prompt.select') }
@@ -136,7 +136,7 @@
       </label>
 
       <%= f.collection_select :production_unit_id,
-          Resources::Unit.where(category: :manufacturing).ordered,
+          @manufacturing_units,
           :id,
           :name,
           { include_blank: t('helpers.prompt.select') },
@@ -146,7 +146,7 @@
   <div class="col-md-6">
     <%= form_group_lg(f, :order_group_id,
         field_type: :collection_select,
-        collection: Resources::MaterialOrderGroup.ordered
+        collection: @material_order_groups
     ) %>
   </div>
 </div>

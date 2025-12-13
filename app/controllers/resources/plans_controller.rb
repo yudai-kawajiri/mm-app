@@ -13,11 +13,12 @@ class Resources::PlansController < AuthenticatedController
   )
 
   find_resource :plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ]
+  before_action :set_plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ]
 
   # 【Eager Loading】
   # N+1クエリを防ぐため、category を事前ロード
   def index
-    @plan_categories = Resources::Category.for_plans.ordered
+    @plan_categories = scoped_categories.for_plans.ordered
     base_query = scoped_plans.includes(:category)
     base_query = base_query.search_and_filter(search_params) if defined?(search_params)
     sorted_query = apply_sort(base_query, default: "name")
@@ -30,8 +31,8 @@ class Resources::PlansController < AuthenticatedController
     @plan.user_id = current_user.id
     @plan.tenant_id = current_tenant.id
     @plan.store_id = current_store&.id
-    @plan_categories = Resources::Category.for_plans.ordered
-    @product_categories = Resources::Category.for_products.ordered
+    @plan_categories = scoped_categories.for_plans.ordered
+    @product_categories = scoped_categories.for_products.ordered
   end
 
   def create
@@ -40,27 +41,27 @@ class Resources::PlansController < AuthenticatedController
     @plan.tenant_id = current_tenant.id
     @plan.store_id = current_store&.id if @plan.store_id.blank?
 
-    @plan_categories = Resources::Category.for_plans.ordered
-    @product_categories = Resources::Category.for_products.ordered
+    @plan_categories = scoped_categories.for_plans.ordered
+    @product_categories = scoped_categories.for_products.ordered
 
     respond_to_save(@plan)
   end
 
   def show
     @plan_products = @plan.plan_products.includes(:product)
-    @product_categories = Resources::Category.for_products.ordered
+    @product_categories = scoped_categories.for_products.ordered
   end
 
   def edit
-    @plan_categories = Resources::Category.for_plans.ordered
-    @product_categories = Resources::Category.for_products.ordered
+    @plan_categories = scoped_categories.for_plans.ordered
+    @product_categories = scoped_categories.for_products.ordered
   end
 
   def update
     @plan.assign_attributes(plan_params)
 
-    @plan_categories = Resources::Category.for_plans.ordered
-    @product_categories = Resources::Category.for_products.ordered
+    @plan_categories = scoped_categories.for_plans.ordered
+    @product_categories = scoped_categories.for_products.ordered
 
     respond_to_save(@plan)
   end
@@ -150,6 +151,10 @@ class Resources::PlansController < AuthenticatedController
     @materials_summary = @plan.calculate_materials_summary
 
     render layout: "print"
+  end
+
+  def set_plan
+    @plan = scoped_plans.find(params[:id])
   end
 
   private

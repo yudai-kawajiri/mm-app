@@ -36,9 +36,12 @@ class Resources::Category < ApplicationRecord
   has_many :plans, class_name: "Resources::Plan", dependent: :restrict_with_error
 
   # バリデーション
-  validates :name, presence: true, uniqueness: { scope: :category_type }
-  validates :reading, uniqueness: { scope: :category_type }, allow_blank: true
+  validates :name, presence: true, uniqueness: { scope: [:category_type, :store_id] }
+  # 読み仮名の一意性をstore_id込みでチェック
+
   validates :category_type, presence: true
+  validates :reading, presence: true
+  validate :reading_uniqueness_within_store_and_type
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
   # 一覧画面用：登録順（新しい順）
@@ -54,7 +57,20 @@ class Resources::Category < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    uniqueness_scope: :category_type,
+    uniqueness_scope: [:category_type, :store_id],
     uniqueness_check_attributes: [ :name, :reading ]
   )
+
 end
+
+  # 読み仮名の一意性を店舗スコープ内でチェック
+  def reading_uniqueness_within_store_and_type
+    return if reading.blank?
+
+    existing = self.class
+      .where(reading: reading, category_type: category_type, store_id: store_id)
+      .where.not(id: id)
+      .exists?
+
+    errors.add(:reading, :taken) if existing
+  end
