@@ -21,14 +21,14 @@
   # materials のフィルタリング
   if is_all_tab
     # 全てタブでは、既存の原材料を表示するためだけに使用
-    materials = Resources::Material.order(:name)
+    materials = @materials
   else
     # カテゴリータブでは、そのカテゴリーの原材料のみ
     category_id = local_assigns[:category_id] || f.object.material&.category_id || 0
     if category_id == 0
-      materials = Resources::Material.order(:name)
+      materials = @materials
     else
-      materials = Resources::Material.where(category_id: category_id).order(:name)
+      materials = @materials.where(category_id: category_id)
     end
   end
 
