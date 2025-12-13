@@ -71,15 +71,15 @@ class Planning::ProductMaterial < ApplicationRecord
     case material.order_conversion_type
     when :pieces
       I18n.t("planning.product_material.order_quantity_detail.pieces",
-             quantity: quantity,
-             unit: unit.name,
-             order_quantity: required_order_quantity,
-             order_unit: order_unit_name)
+            quantity: quantity,
+            unit: unit.name,
+            order_quantity: required_order_quantity,
+            order_unit: order_unit_name)
     when :weight
       I18n.t("planning.product_material.order_quantity_detail.weight",
-             weight: total_weight.round(1),
-             order_quantity: required_order_quantity,
-             order_unit: order_unit_name)
+            weight: total_weight.round(1),
+            order_quantity: required_order_quantity,
+            order_unit: order_unit_name)
     else
       I18n.t("common.calculation_unavailable")
     end
