@@ -2,7 +2,6 @@
 
 class Resources::UnitsController < AuthenticatedController
   include SortableController
-  before_action :require_store_selected, only: [:new, :edit, :create, :update, :copy, :destroy]
 
   define_search_params :q, :category, :sort_by
 

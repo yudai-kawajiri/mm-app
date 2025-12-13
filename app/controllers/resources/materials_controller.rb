@@ -3,7 +3,6 @@
 class Resources::MaterialsController < AuthenticatedController
   include SortableController
 
-  before_action :require_store_selected, only: [:new, :edit, :create, :update, :copy, :destroy, :reorder]
 
   define_search_params :q, :category_id, :sort_by
 
@@ -76,7 +75,6 @@ class Resources::MaterialsController < AuthenticatedController
   # 原材料をコピー
   #
   # 【注意】
-  # コピー実行時は before_action :require_store_selected で店舗選択をチェック
   def copy
     @material.create_copy(user: current_user)
     redirect_to resources_materials_path, notice: t("flash_messages.copy.success",
