@@ -22,8 +22,7 @@ class Admin::StoresController < AuthenticatedController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @store.update(store_params)

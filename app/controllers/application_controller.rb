@@ -56,14 +56,6 @@ class ApplicationController < ActionController::Base
   # マルチテナント: 現在のストア
   #
   # 【権限による動作の違い】
-  # - 一般ユーザー/店舗管理者: 自分が所属する店舗固定（変更不可）
-  # - 会社管理者: セッションで選択した店舗（切り替え可能、未選択時は全店舗）
-  #
-  # 【技術的判断】
-  # セッション管理とDB参照を分離し、権限レベルに応じた柔軟なデータアクセスを実現
-  # マルチテナント: 現在のストア
-  #
-  # 【権限による動作の違い】
   # - 一般ユーザー/店舗管理者: 所属店舗固定（変更不可）
   # - 会社管理者: セッションで選択した店舗（切り替え可能、未選択時は全店舗=nil）
   #
@@ -95,20 +87,16 @@ class ApplicationController < ActionController::Base
 
     if current_user.can_manage_company?
       if current_store
-        # 店舗指定時: その店舗のみ
         Resources::Product.where(tenant_id: current_tenant.id, store_id: current_store.id)
       else
-        # 「全店舗」選択時: テナント全体
         Resources::Product.where(tenant_id: current_tenant.id)
       end
     else
-      # 一般ユーザー/店舗管理者: 自店舗のみ
       Resources::Product.where(tenant_id: current_tenant.id, store_id: current_store&.id)
     end
   end
 
   # マルチテナント: Materials のデータスコープ
-  # Products と同じスコープロジックを適用
   def scoped_materials
     return Resources::Material.none unless current_tenant
 
@@ -124,7 +112,6 @@ class ApplicationController < ActionController::Base
   end
 
   # マルチテナント: Plans のデータスコープ
-  # Products と同じスコープロジックを適用
   def scoped_plans
     return Resources::Plan.none unless current_tenant
 
@@ -140,7 +127,6 @@ class ApplicationController < ActionController::Base
   end
 
   # マルチテナント: Categories のデータスコープ
-  # Products と同じスコープロジックを適用
   def scoped_categories
     return Resources::Category.none unless current_tenant
 
@@ -156,7 +142,6 @@ class ApplicationController < ActionController::Base
   end
 
   # マルチテナント: Units のデータスコープ
-  # Products と同じスコープロジックを適用
   def scoped_units
     return Resources::Unit.none unless current_tenant
 
@@ -172,7 +157,6 @@ class ApplicationController < ActionController::Base
   end
 
   # マルチテナント: MaterialOrderGroups のデータスコープ
-  # Products と同じスコープロジックを適用
   def scoped_material_order_groups
     return Resources::MaterialOrderGroup.none unless current_tenant
 
@@ -242,6 +226,43 @@ class ApplicationController < ActionController::Base
     else
       Planning::PlanSchedule.where(tenant_id: current_tenant.id, store_id: current_store&.id)
     end
+  end
+
+  # マルチテナント: 新規登録・編集可能かどうか判定
+  #
+  # 【業務要件】
+  # 会社管理者が「全店舗」選択中は新規登録・編集を禁止
+  # データは必ず特定の店舗に紐づける必要がある
+  #
+  # 【なぜこの制約か】
+  # store_id = nil のデータは「どの店舗にも属さない」状態となり、
+  # データの所有権が曖昧になるため、業務上認められない
+  #
+  # 【View での使用】
+  # helper_method として公開され、View 側で新規登録ボタンの表示/非表示を制御
+  def can_register?
+    return true unless current_user&.can_manage_company?
+    current_store.present?
+  end
+  helper_method :can_register?
+
+  # 新規登録・編集前チェック: 店舗が選択されていない場合はリダイレクト
+  #
+  # 【適用対象アクション】
+  # - new, edit: フォーム画面へのアクセス制限
+  # - create, update: データ登録・更新の実行制限
+  # - copy: データコピーの実行制限
+  #
+  # 【リダイレクト先】
+  # 各コントローラの index ページ（一覧画面）に統一
+  def require_store_selected
+    return if can_register?
+
+    flash[:alert] = t("flash_messages.require_store_selected")
+
+    controller_name = self.class.name.underscore.gsub('_controller', '')
+    index_path = url_for(controller: controller_name, action: :index, only_path: true)
+    redirect_to index_path
   end
 
   private
