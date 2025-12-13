@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_12_090452) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_13_040110) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,8 +56,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_090452) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["name", "category_type"], name: "index_categories_on_name_and_category_type", unique: true
-    t.index ["reading", "category_type"], name: "index_categories_on_reading_and_category_type", unique: true
+    t.index ["name", "category_type", "store_id"], name: "index_categories_on_name_type_store", unique: true
+    t.index ["reading", "category_type", "store_id"], name: "index_categories_on_reading_type_store", unique: true
     t.index ["store_id"], name: "index_categories_on_store_id"
     t.index ["tenant_id"], name: "index_categories_on_tenant_id"
     t.index ["user_id"], name: "index_categories_on_user_id"
@@ -90,8 +90,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_090452) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["name"], name: "index_material_order_groups_on_name", unique: true
-    t.index ["reading"], name: "index_material_order_groups_on_reading", unique: true
+    t.index ["name", "store_id"], name: "index_material_order_groups_on_name_store", unique: true
+    t.index ["reading", "store_id"], name: "index_material_order_groups_on_reading_store", unique: true
     t.index ["store_id"], name: "index_material_order_groups_on_store_id"
     t.index ["tenant_id"], name: "index_material_order_groups_on_tenant_id"
     t.index ["user_id"], name: "index_material_order_groups_on_user_id"
@@ -119,10 +119,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_090452) do
     t.bigint "user_id"
     t.index ["category_id"], name: "index_materials_on_category_id"
     t.index ["measurement_type"], name: "index_materials_on_measurement_type"
-    t.index ["name", "category_id"], name: "index_materials_on_name_and_category_id", unique: true
+    t.index ["name", "category_id", "store_id"], name: "index_materials_on_name_category_store", unique: true
     t.index ["order_group_id"], name: "index_materials_on_order_group_id"
     t.index ["production_unit_id"], name: "index_materials_on_production_unit_id"
-    t.index ["reading", "category_id"], name: "index_materials_on_reading_and_category_id", unique: true
+    t.index ["reading", "category_id", "store_id"], name: "index_materials_on_reading_category_store", unique: true
     t.index ["store_id"], name: "index_materials_on_store_id"
     t.index ["tenant_id"], name: "index_materials_on_tenant_id"
     t.index ["unit_for_order_id"], name: "index_materials_on_unit_for_order_id"
@@ -141,9 +141,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_090452) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["budget_month", "store_id"], name: "index_monthly_budgets_on_budget_month_and_store_id", unique: true
     t.index ["store_id"], name: "index_monthly_budgets_on_store_id"
     t.index ["tenant_id"], name: "index_monthly_budgets_on_tenant_id"
-    t.index ["user_id", "budget_month"], name: "index_monthly_budgets_on_user_id_and_budget_month", unique: true
     t.index ["user_id"], name: "index_monthly_budgets_on_user_id"
   end
 
@@ -193,8 +193,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_090452) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["category_id"], name: "index_plans_on_category_id"
-    t.index ["name", "category_id"], name: "index_plans_on_name_and_category_id", unique: true
-    t.index ["reading", "category_id"], name: "index_plans_on_reading_and_category_id", unique: true
+    t.index ["name", "category_id", "store_id"], name: "index_plans_on_name_category_store", unique: true
+    t.index ["reading", "category_id", "store_id"], name: "index_plans_on_reading_category_store", unique: true
     t.index ["store_id"], name: "index_plans_on_store_id"
     t.index ["tenant_id"], name: "index_plans_on_tenant_id"
     t.index ["user_id"], name: "index_plans_on_user_id"
@@ -231,9 +231,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_090452) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["category_id"], name: "index_products_on_category_id"
-    t.index ["item_number", "category_id"], name: "index_products_on_item_number_and_category_id", unique: true
-    t.index ["name", "category_id"], name: "index_products_on_name_and_category_id", unique: true
-    t.index ["reading", "category_id"], name: "index_products_on_reading_and_category_id", unique: true
+    t.index ["item_number", "category_id", "store_id"], name: "index_products_on_item_number_category_store", unique: true
+    t.index ["name", "category_id", "store_id"], name: "index_products_on_name_category_store", unique: true
+    t.index ["reading", "category_id", "store_id"], name: "index_products_on_reading_category_store", unique: true
     t.index ["store_id"], name: "index_products_on_store_id"
     t.index ["tenant_id"], name: "index_products_on_tenant_id"
     t.index ["user_id"], name: "index_products_on_user_id"
@@ -270,8 +270,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_090452) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["name", "category"], name: "index_units_on_name_and_category", unique: true
-    t.index ["reading", "category"], name: "index_units_on_reading_and_category", unique: true
+    t.index ["name", "category", "store_id"], name: "index_units_on_name_category_store", unique: true
+    t.index ["reading", "category", "store_id"], name: "index_units_on_reading_category_store", unique: true
     t.index ["store_id"], name: "index_units_on_store_id"
     t.index ["tenant_id"], name: "index_units_on_tenant_id"
     t.index ["user_id"], name: "index_units_on_user_id"
