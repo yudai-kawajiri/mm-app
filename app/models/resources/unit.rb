@@ -4,33 +4,23 @@
 #
 # 単位モデル - 材料の製造単位、発注単位、使用単位を管理
 #
-# 使用例:
-#   Unit.create(name: "g", category: :production)
-#   Unit.filter_by_category(:production)
-#   Unit.search_by_name("g")
-#
 # 単位カテゴリー:
 #   - production: 製造単位（商品製造で使う単位: g, 本など）
 #   - ordering: 発注単位（発注時の単位: kg, 箱など）
 #   - manufacturing: 使用単位（印刷時に表示する数え方: 枚, カン, 本, 切れなど）
 class Resources::Unit < ApplicationRecord
-  # 変更履歴の記録
   has_paper_trail
 
-  # フォーム定数
   DESCRIPTION_MAX_LENGTH = 500
   DESCRIPTION_ROWS = 3
 
-  # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
   include Copyable
   include HasReading
 
-  # 単位のカテゴリー定義
   enum :category, { production: 0, ordering: 1, manufacturing: 2 }
 
-  # 関連付け（この単位を参照している材料がある場合は削除を制限）
   has_many :materials_as_product_unit,
             class_name: "Material",
             foreign_key: "unit_for_product_id",
@@ -46,28 +36,42 @@ class Resources::Unit < ApplicationRecord
             foreign_key: "production_unit_id",
             dependent: :restrict_with_error
 
-  # バリデーション
   validates :name, presence: true, uniqueness: { scope: [:category, :store_id] }
   validates :reading, presence: true, uniqueness: { scope: [:category, :store_id] }
   validates :category, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
-  # 名前順で取得
-  scope :for_index, -> { order(created_at: :desc) }
+  # 使用中の単位はカテゴリー変更不可（データ整合性を保つため）
+  validate :prevent_category_change_if_in_use, on: :update
 
+  scope :for_index, -> { order(created_at: :desc) }
   scope :ordered, -> { order(:name) }
 
-  # カテゴリーで絞り込み
-  #
-  # @param category [String, Symbol, nil] カテゴリー名
-  # @return [ActiveRecord::Relation] 絞り込み結果
   scope :filter_by_category, lambda { |category|
     where(category: category) if category.present? && categories.key?(category.to_s)
   }
 
-  # Copyable設定
   copyable_config(
     uniqueness_scope: [:category, :store_id],
-    uniqueness_check_attributes: [ :name ]
+    uniqueness_check_attributes: [:name]
   )
+
+  private
+
+  def prevent_category_change_if_in_use
+    return unless category_changed?
+
+    usage_details = []
+    unit_for_product_count = Resources::Material.where(unit_for_product_id: id).count
+    unit_for_order_count = Resources::Material.where(unit_for_order_id: id).count
+    product_materials_count = Planning::ProductMaterial.where(unit_id: id).count
+
+    usage_details << I18n.t('activerecord.errors.usage_formats.unit_for_product', count: unit_for_product_count) if unit_for_product_count > 0
+    usage_details << I18n.t('activerecord.errors.usage_formats.unit_for_order', count: unit_for_order_count) if unit_for_order_count > 0
+    usage_details << I18n.t('activerecord.errors.usage_formats.product_materials', count: product_materials_count) if product_materials_count > 0
+
+    return if usage_details.empty?
+
+    errors.add(:category, I18n.t('activerecord.errors.models.resources/unit.category_in_use', usage: usage_details.join('、')))
+  end
 end

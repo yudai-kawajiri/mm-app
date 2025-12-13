@@ -4,66 +4,49 @@
 #
 # カテゴリーモデル - 材料、製品、計画の分類を管理
 #
-# 使用例:
-#   Category.create(name: "生ネタ", category_type: :material)
-#   Category.material.for_index
-#   Category.search_by_name("生")
-#
 # カテゴリー種別:
 #   - material: 材料カテゴリー (0)
 #   - product: 製品カテゴリー (1)
 #   - plan: 計画カテゴリー (2)
 class Resources::Category < ApplicationRecord
-  # 変更履歴の記録
   has_paper_trail
 
-  # 共通機能の組み込み
   include NameSearchable
   include UserAssociatable
   include Copyable
   include HasReading
 
-  # カテゴリー種別の定義（データベースには0, 1, 2として保存）
   enum :category_type, { material: 0, product: 1, plan: 2 }
 
-  # フォーム定数
   DESCRIPTION_MAX_LENGTH = 500
   DESCRIPTION_ROWS = 3
 
-  # 関連付け（削除時は関連データの存在をチェック）
   has_many :materials, class_name: "Resources::Material", dependent: :restrict_with_error
   has_many :products, class_name: "Resources::Product", dependent: :restrict_with_error
   has_many :plans, class_name: "Resources::Plan", dependent: :restrict_with_error
 
-  # バリデーション
   validates :name, presence: true, uniqueness: { scope: [:category_type, :store_id] }
-  # 読み仮名の一意性をstore_id込みでチェック
-
   validates :category_type, presence: true
   validates :reading, presence: true
   validate :reading_uniqueness_within_store_and_type
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
-  # 一覧画面用：登録順（新しい順）
+  # 使用中のカテゴリーは種別変更不可（データ整合性を保つため）
+  validate :prevent_category_type_change_if_in_use, on: :update
+
   scope :for_index, -> { order(created_at: :desc) }
-
-  # セレクトボックス用：名前順
   scope :ordered, -> { order(:name) }
-
-  # カテゴリータイプで絞り込み
   scope :for_materials, -> { where(category_type: :material) }
   scope :for_products, -> { where(category_type: :product) }
   scope :for_plans, -> { where(category_type: :plan) }
 
-  # Copyable設定
   copyable_config(
     uniqueness_scope: [:category_type, :store_id],
-    uniqueness_check_attributes: [ :name, :reading ]
+    uniqueness_check_attributes: [:name, :reading]
   )
 
-end
+  private
 
-  # 読み仮名の一意性を店舗スコープ内でチェック
   def reading_uniqueness_within_store_and_type
     return if reading.blank?
 
@@ -74,3 +57,17 @@ end
 
     errors.add(:reading, :taken) if existing
   end
+
+  def prevent_category_type_change_if_in_use
+    return unless category_type_changed?
+
+    usage_details = []
+    usage_details << I18n.t('activerecord.errors.usage_formats.products', count: products.count) if products.exists?
+    usage_details << I18n.t('activerecord.errors.usage_formats.materials', count: materials.count) if materials.exists?
+    usage_details << I18n.t('activerecord.errors.usage_formats.plans', count: plans.count) if plans.exists?
+
+    return if usage_details.empty?
+
+    errors.add(:category_type, I18n.t('activerecord.errors.models.resources/category.category_type_in_use', usage: usage_details.join('、')))
+  end
+end
