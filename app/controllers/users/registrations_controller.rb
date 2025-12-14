@@ -1,4 +1,59 @@
+# frozen_string_literal: true
+
 class Users::RegistrationsController < Devise::RegistrationsController
-  #  編集画面 と更新処理 にのみ 'authenticated_layout' を適用
-  layout "authenticated_layout", only: [ :edit, :update ]
+  before_action :configure_sign_up_params, only: [:create]
+
+  # POST /resource
+  def create
+    build_resource(sign_up_params)
+
+    # テナントを設定
+    resource.tenant = current_tenant
+    resource.approved = false
+
+    resource.save
+    yield resource if block_given?
+
+    if resource.persisted?
+      # 承認リクエストを作成
+      create_admin_request(resource)
+
+      # 未承認なので自動ログインはしない
+      set_flash_message! :notice, :signed_up_but_not_approved
+      expire_data_after_sign_in!
+      respond_with resource, location: after_inactive_sign_up_path_for(resource)
+    else
+      clean_up_passwords resource
+      set_minimum_password_length
+      respond_with resource
+    end
+  end
+
+  protected
+
+  def configure_sign_up_params
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :invitation_code, :store_id])
+  end
+
+  def after_sign_up_path_for(resource)
+    new_user_session_path
+  end
+
+  def after_inactive_sign_up_path_for(resource)
+    new_user_session_path
+  end
+
+  private
+
+  # 承認リクエストを作成
+  def create_admin_request(user)
+    AdminRequest.create!(
+      tenant: user.tenant,
+      store: user.store,
+      user: user,
+      request_type: 'user_registration',
+      status: 'pending',
+      message: "#{user.name} (#{user.email}) が新規登録を申請しました"
+    )
+  end
 end
