@@ -212,6 +212,15 @@ ja:
           draft: "下書き"
           active: "実施中"
           completed: "完了"
+
+      admin_request:
+        request_type:
+          store_admin_request: "店舗管理者昇格"
+          user_registration: "ユーザー登録"
+        status:
+          pending: "承認待ち"
+          approved: "承認済み"
+          rejected: "却下"
       tenant:
         name: "企業名"
         subdomain: "サブドメイン"

@@ -21,6 +21,7 @@ ja:
         submit: "確認メールを再送信"
 
     failure:
+      not_approved: "アカウントは承認待ちです。管理者の承認をお待ちください。"
       unauthenticated: "アカウント登録もしくはログインが必要です"
       invalid: "メールアドレスまたはパスワードが違います"
       not_found_in_database: "メールアドレスまたはパスワードが違います"
@@ -33,6 +34,7 @@ ja:
         title: "新規登録"
         invitation_code_placeholder: "招待コードを入力してください"
         invitation_code_hint: "お店の招待コードを入力してください"
+        store_hint: "所属する店舗を選択してください"
       edit:
         title: "アカウント編集"
         email_placeholder: "example@example.com"
@@ -42,6 +44,7 @@ ja:
         password_placeholder: "変更しない場合は空欄"
         password_help: "空白の場合は変更しません"
         current_password_help: "変更を確定するには現在のパスワードが必要です"
+      signed_up_but_not_approved: "登録が完了しました。管理者の承認をお待ちください。承認後にログイン可能になります。"
       signed_up: "アカウント登録が完了しました"
       pending_reconfirmation: "現在、%{unconfirmed_email}の確認待ちです"
       user:
