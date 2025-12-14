@@ -58,3 +58,7 @@ cookies.txt
 
 # Ruby debugging
 /.byebug_history
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+

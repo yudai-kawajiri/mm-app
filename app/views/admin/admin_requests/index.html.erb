@@ -1,21 +1,25 @@
 <%= content_for(:title, t('admin.admin_requests.index.title')) %>
 
-<div class="container-fluid py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3"><%= t('admin.admin_requests.index.title') %></h1>
-  </div>
+<div data-controller="resource-search">
+  <%= render 'shared/layouts/header_with_actions',
+      title: t('admin.admin_requests.index.title'),
+      resource: nil,
+      is_index_page: true,
+      is_form_page: false,
+      is_show_page: false,
+      new_path: nil %>
 
   <% if @admin_requests.any? %>
     <div class="table-responsive">
-      <table class="table table-hover">
-        <thead>
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
           <tr>
             <th><%= t('admin.admin_requests.index.table_headers.user') %></th>
             <th><%= t('admin.admin_requests.index.table_headers.store') %></th>
             <th><%= t('admin.admin_requests.index.table_headers.request_type') %></th>
             <th><%= t('admin.admin_requests.index.table_headers.status') %></th>
             <th><%= t('admin.admin_requests.index.table_headers.created_at') %></th>
-            <th><%= t('admin.admin_requests.index.table_headers.actions') %></th>
+            <th class="text-center"><%= t('admin.admin_requests.index.table_headers.actions') %></th>
           </tr>
         </thead>
         <tbody>
@@ -23,19 +27,24 @@
             <tr>
               <td><%= request.user.name %></td>
               <td><%= request.store&.name || '-' %></td>
-              <td><%= t("admin.admin_requests.request_type.#{request.request_type}") %></td>
+              <td><%= t("activerecord.enums.admin_request.request_type.#{request.request_type}") %></td>
               <td>
-                <% if request.status_pending? %>
-                  <span class="badge bg-warning"><%= t('admin.admin_requests.status.pending') %></span>
-                <% elsif request.status_approved? %>
-                  <span class="badge bg-success"><%= t('admin.admin_requests.status.approved') %></span>
+                <% if request.pending? %>
+                  <span class="badge bg-warning text-dark"><%= t('activerecord.enums.admin_request.status.pending') %></span>
+                <% elsif request.approved? %>
+                  <span class="badge bg-success"><%= t('activerecord.enums.admin_request.status.approved') %></span>
                 <% else %>
-                  <span class="badge bg-danger"><%= t('admin.admin_requests.status.rejected') %></span>
+                  <span class="badge bg-danger"><%= t('activerecord.enums.admin_request.status.rejected') %></span>
                 <% end %>
               </td>
-              <td><%= l(request.created_at, format: :short) %></td>
-              <td>
-                <%= link_to t('common.show'), admin_admin_request_path(request), class: 'btn btn-sm btn-outline-primary' %>
+              <td><%= l(request.created_at, format: :long) %></td>
+              <td class="text-center">
+                <%= link_to admin_admin_request_path(request),
+                    class: 'btn btn-sm btn-outline-primary',
+                    title: t('common.show'),
+                    data: { turbo: false } do %>
+                  <i class="bi bi-eye"></i>
+                <% end %>
               </td>
             </tr>
           <% end %>
@@ -45,7 +54,8 @@
 
     <%= paginate @admin_requests, theme: 'bootstrap-5' %>
   <% else %>
-    <div class="alert alert-info">
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+      <i class="bi bi-info-circle me-2"></i>
       <%= t('admin.admin_requests.index.no_requests') %>
     </div>
   <% end %>

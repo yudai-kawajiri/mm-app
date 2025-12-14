@@ -69,6 +69,20 @@ class User < ApplicationRecord
     Store.where(id: store_id)
   end
 
+  # Devise: 未承認ユーザーのログイン制御
+  # Deviseのメソッドを確実にオーバーライドするため、モジュールを定義して prepend
+  module AuthenticationControl
+    def active_for_authentication?
+      approved?
+    end
+
+    def inactive_message
+      approved? ? super : :not_approved
+    end
+  end
+
+  prepend AuthenticationControl
+
   private
 
   def set_default_role
@@ -82,12 +96,3 @@ class User < ApplicationRecord
     errors.add(:invitation_code, :invalid) if invitation_code != valid_code
   end
 end
-
-  # Devise: 未承認ユーザーのログイン制御
-  def active_for_authentication?
-    super && approved?
-  end
-
-  def inactive_message
-    approved? ? super : :not_approved
-  end

@@ -148,8 +148,8 @@ ja:
           store: "対象店舗"
           request_type: "リクエスト種別"
           status: "ステータス"
-          created_at: "作成日"
-          actions: "操作"
+          created_at: "登録日時"
+          actions: "アクション"
       request_types:
         store_admin_request: "店舗管理者昇格"
         user_registration: "ユーザー登録"
@@ -163,3 +163,11 @@ ja:
         rejected: "リクエストを却下しました"
         already_processed: "このリクエストは既に処理されています"
         user_approved: "%{name} さんのユーザー登録を承認しました。ログインが可能になりました。"
+      show:
+        title: "承認リクエスト詳細"
+        approve: "承認する"
+        reject: "却下する"
+        rejection_reason_label: "却下理由"
+        rejection_reason_placeholder: "却下理由を入力してください"
+      confirm:
+        approve: "%{name} さんのリクエストを承認しますか？"

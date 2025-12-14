@@ -35,22 +35,21 @@
     </div>
 
     <div class="mb-4">
-    <div class="mb-4">
       <%= f.label :store_id, class: "form-label h5" do %>
         <%= User.human_attribute_name(:store) %><%= raw(t('helpers.required_mark')) %>
       <% end %>
-      <%= f.collection_select :store_id, \
-          current_tenant&.stores&.order(:name) || [], \
-          :id, \
-          :name, \
-          { prompt: t('helpers.prompt.select') }, \
+      <%= f.collection_select :store_id, 
+          current_tenant&.stores&.order(:name) || [], 
+          :id, 
+          :name, 
+          { prompt: t('helpers.prompt.select') }, 
           { class: 'form-select form-select-lg', required: true, data: { 'form-validation-target': 'field' } } %>
       <small class="form-text text-muted">
         <%= t('devise.registrations.new.store_hint') %>
       </small>
     </div>
 
-
+    <div class="mb-4">
       <%= f.label :invitation_code, class: "form-label h5" do %>
         <%= User.human_attribute_name(:invitation_code) %><%= raw(t('helpers.required_mark')) %>
       <% end %>

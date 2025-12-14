@@ -4,6 +4,8 @@
 <% partial_locals = local_assigns.fetch(:partial_locals, {}) %>
 <% scope = local_assigns[:scope] %>
 <% additional_actions = local_assigns.fetch(:additional_actions, []) %>
+<% show_edit_button = local_assigns.fetch(:show_edit_button, true) %>
+<% show_delete_button = local_assigns.fetch(:show_delete_button, true) %>
 
 <%= content_for(:title, title) %>
 
@@ -16,7 +18,9 @@
         <%= render 'shared/actions/show_action_links',
           resource: resource,
           additional_actions: additional_actions,
-          scope: scope %>
+          scope: scope,
+          show_edit_button: show_edit_button,
+          show_delete_button: show_delete_button %>
       </div>
     </div>
 
