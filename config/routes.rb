@@ -50,6 +50,12 @@ Rails.application.routes.draw do
   # 会社管理者のみアクセス可能
   # ユーザー管理、店舗管理、システムログを提供
   namespace :admin do
+    resources :admin_requests, only: [:index, :new, :create, :show] do
+      member do
+        post :approve
+        post :reject
+      end
+    end
     resources :users, only: [:index, :new, :create, :edit, :update, :destroy]
     resources :stores
     resources :system_logs, only: [:index]

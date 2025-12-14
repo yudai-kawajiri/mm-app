@@ -1,0 +1,52 @@
+<%= content_for(:title, t('admin.admin_requests.new.title')) %>
+
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="h4 mb-0"><%= t('admin.admin_requests.new.title') %></h2>
+        </div>
+        <div class="card-body">
+          <p class="text-muted mb-4">
+            <%= t('admin.admin_requests.new.description') %>
+          </p>
+
+          <%= form_with model: @admin_request, url: admin_admin_requests_path, local: true do |f| %>
+            <% if @admin_request.errors.any? %>
+              <div class="alert alert-danger">
+                <ul class="mb-0">
+                  <% @admin_request.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= f.label :store_id, t('activerecord.attributes.admin_request.store_id'), class: 'form-label' %>
+              <%= f.collection_select :store_id, 
+                  Store.where(tenant: current_tenant).order(:name), 
+                  :id, :name, 
+                  { prompt: t('helpers.select.prompt') }, 
+                  { class: 'form-select', required: true } %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :message, t('admin.admin_requests.new.message_label'), class: 'form-label' %>
+              <%= f.text_area :message, 
+                  rows: 4, 
+                  class: 'form-control', 
+                  placeholder: t('admin.admin_requests.new.message_placeholder') %>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <%= link_to t('common.back'), :back, class: 'btn btn-secondary' %>
+              <%= f.submit t('admin.admin_requests.new.submit'), class: 'btn btn-primary' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

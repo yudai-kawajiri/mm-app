@@ -45,6 +45,7 @@ module ApplicationHelper
     return "" if value.blank?
 
     I18n.t("activerecord.enums.#{record.model_name.i18n_key}.#{attribute}.#{value}")
+
   end
 
   # ============================================================
@@ -129,21 +130,21 @@ module ApplicationHelper
       }
     ]
 
-    # Admin専用メニューを追加
-    if current_user&.store_admin? || current_user&.can_manage_company?
+    # 管理メニュー (会社管理者・システム管理者のみ)
+    if current_user.company_admin? || current_user.super_admin?
       items << {
-        name: t("dashboard.menu.admin_management"),
-        path: admin_users_path,
+        name: '管理',
         submenu: [
-          { name: t("dashboard.menu.user_management"), path: admin_users_path },
-          { name: t("dashboard.menu.system_logs"), path: admin_system_logs_path }
+          { name: '承認リクエスト', path: admin_admin_requests_path },
+          { name: 'ユーザー管理', path: admin_users_path },
+          { name: '店舗管理', path: admin_stores_path },
+          { name: 'システムログ', path: admin_system_logs_path }
         ]
       }
     end
 
-    items
-  end
 
+  end
   #
   # サイドバーリンクがアクティブかどうかを判定
   #
@@ -175,6 +176,7 @@ module ApplicationHelper
     else
       false
     end
+
   end
   #
   # サイドバーリンクのCSSクラスを返す
@@ -189,6 +191,7 @@ module ApplicationHelper
   def sidebar_link_class(path)
     base_class = "list-group-item list-group-item-action"
     current_page?(path) ? "#{base_class} active" : base_class
+
   end
 
   #
@@ -204,6 +207,7 @@ module ApplicationHelper
   def sidebar_submenu_link_class(path)
     base_class = "list-group-item list-group-item-action ps-5"
     current_page?(path) ? "#{base_class} active" : base_class
+
   end
 
   #
@@ -217,6 +221,7 @@ module ApplicationHelper
   #
   def submenu_indicator
     content_tag(:span, "└ ", class: "submenu-indicator")
+
   end
 
   # ============================================================
@@ -267,6 +272,7 @@ module ApplicationHelper
       # 通常のカラムの処理
       resource.send(data)
     end
+
   end
 
   # ============================================================
@@ -291,6 +297,7 @@ module ApplicationHelper
     else
       form.label(attribute, options)
     end
+
   end
 
   #
@@ -304,6 +311,7 @@ module ApplicationHelper
   def form_text_field_lg(form, attribute, options = {})
     options[:class] = "form-control form-control-lg #{options[:class]}".strip
     form.text_field(attribute, options)
+
   end
 
   #
@@ -317,6 +325,7 @@ module ApplicationHelper
   def form_number_field_lg(form, attribute, options = {})
     options[:class] = "form-control form-control-lg #{options[:class]}".strip
     form.number_field(attribute, options)
+
   end
 
   #
@@ -332,6 +341,7 @@ module ApplicationHelper
   def form_select_lg(form, attribute, choices, select_options = {}, html_options = {})
     html_options[:class] = "form-select form-select-lg #{html_options[:class]}".strip
     form.select(attribute, choices, select_options, html_options)
+
   end
 
   #
@@ -349,6 +359,7 @@ module ApplicationHelper
   def form_collection_select_lg(form, attribute, collection, value_method, text_method, select_options = {}, html_options = {})
     html_options[:class] = "form-select form-select-lg #{html_options[:class]}".strip
     form.collection_select(attribute, collection, value_method, text_method, select_options, html_options)
+
   end
 
   #
@@ -362,6 +373,7 @@ module ApplicationHelper
   def form_text_area_lg(form, attribute, options = {})
     options[:class] = "form-control form-control-lg #{options[:class]}".strip
     form.text_area(attribute, options)
+
   end
 
   # ============================================================
@@ -540,6 +552,7 @@ module ApplicationHelper
 
       label_html + field_html + counter_and_help_html + error_html
     end
+
   end
 
   # ============================================================
@@ -560,6 +573,7 @@ module ApplicationHelper
   #
   def format_currency(amount)
     number_to_currency(amount || 0, unit: "¥", precision: 0, delimiter: ",")
+
   end
 
   #
@@ -589,6 +603,7 @@ module ApplicationHelper
     return "text-warning" if achievement_rate >= 80
 
     "text-danger"
+
   end
 
   # ============================================================
@@ -609,5 +624,6 @@ module ApplicationHelper
   def resource_partial_path(resource, partial_name = "fields")
     model_name = resource.class.name.underscore
     "#{model_name.pluralize}/#{partial_name}"
+
   end
 end

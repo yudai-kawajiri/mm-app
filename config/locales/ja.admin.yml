@@ -104,3 +104,43 @@ ja:
         updated: "店舗を更新しました"
         deleted: "店舗を削除しました"
         cannot_delete_with_users: "ユーザーが所属している店舗は削除できません"
+
+    admin_requests:
+      confirm:
+        approve: "%{name}さんを店舗管理者として承認しますか？"
+      index:
+        title: "承認リクエスト一覧"
+        pending: "承認待ち"
+        approved: "承認済み"
+        rejected: "却下"
+        no_requests: "リクエストはありません"
+        table_headers:
+          user: "リクエスト送信者"
+          store: "対象店舗"
+          request_type: "種別"
+          status: "ステータス"
+          created_at: "送信日時"
+          actions: "操作"
+      new:
+        title: "店舗管理者リクエスト"
+        description: "店舗管理者になるには、会社管理者の承認が必要です。"
+        message_label: "メッセージ（任意）"
+        message_placeholder: "店舗管理者になりたい理由を入力してください"
+        submit: "リクエストを送信"
+      show:
+        title: "リクエスト詳細"
+        approve: "承認する"
+        reject: "却下する"
+        rejection_reason_label: "却下理由"
+        rejection_reason_placeholder: "却下理由を入力してください"
+      messages:
+        created: "リクエストを送信しました"
+        approved: "リクエストを承認しました。%{name}さんが店舗管理者になりました。"
+        rejected: "リクエストを却下しました"
+        already_processed: "このリクエストは既に処理されています"
+      status:
+        pending: "承認待ち"
+        approved: "承認済み"
+        rejected: "却下"
+      request_type:
+        store_admin_request: "店舗管理者昇格"

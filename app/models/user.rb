@@ -20,6 +20,10 @@ class User < ApplicationRecord
   belongs_to :tenant
   belongs_to :store, optional: true  # 会社管理者はストア未所属の場合あり
 
+  # AdminRequest関連
+  has_many :admin_requests, dependent: :destroy
+  has_many :approved_requests, class_name: 'AdminRequest', foreign_key: :approved_by_id
+
   # 4段階の権限管理
   enum :role, {
     general: 0,
