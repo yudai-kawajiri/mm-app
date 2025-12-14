@@ -1,14 +1,15 @@
-<%# リソースのバリデーションエラー表示 %>
 <% if resource.errors.any? %>
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <h5 class="alert-heading">
-      <%= t('errors.template.header', count: resource.errors.count, model: resource.class.model_name.human) %>
-    </h5>
-    <ul class="mb-0">
+  <div id="error_explanation" data-turbo-cache="false">
+    <h2>
+      <%= I18n.t("errors.messages.not_saved",
+                 count: resource.errors.count,
+                 resource: resource.class.model_name.human.downcase)
+       %>
+    </h2>
+    <ul>
       <% resource.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
     </ul>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t('common.close') %>"></button>
   </div>
 <% end %>

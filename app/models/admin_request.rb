@@ -16,9 +16,9 @@ class AdminRequest < ApplicationRecord
   }
 
   enum :status, {
-    pending: 0,   # 承認待ち
-    approved: 1,  # 承認済み
-    rejected: 2   # 却下
+    pending: 0,
+    approved: 1,
+    rejected: 2
   }
 
   validates :request_type, presence: true
@@ -27,7 +27,6 @@ class AdminRequest < ApplicationRecord
   validates :store, presence: true, if: :store_admin_request?
   validates :rejection_reason, presence: true, if: :rejected?
 
-  # Scopes
   scope :for_tenant, ->(tenant) { where(tenant: tenant) }
   scope :for_user, ->(user) { where(user: user) }
   scope :recent, -> { order(created_at: :desc) }
@@ -42,16 +41,15 @@ class AdminRequest < ApplicationRecord
 
       case request_type
       when 'store_admin_request'
-        # 店舗管理者リクエストの場合、ユーザーを店舗管理者に昇格
         user.update!(role: :store_admin)
       when 'user_registration'
-        # ユーザー登録リクエストの場合、承認フラグを立てる
         user.update!(approved: true)
       end
+
+      ApplicationRequestMailer.approval_notification(self).deliver_later
     end
   end
 
-  # 却下処理
   def reject!(rejected_by_user, reason:)
     update!(
       status: :rejected,
@@ -59,9 +57,10 @@ class AdminRequest < ApplicationRecord
       approved_at: Time.current,
       rejection_reason: reason
     )
+
+    ApplicationRequestMailer.rejection_notification(self).deliver_later
   end
 
-  # 承認可能か
   def can_be_approved?
     pending?
   end
