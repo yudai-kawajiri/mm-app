@@ -2,6 +2,8 @@
 <% resource = local_assigns[:resource] %>
 <% additional_actions = local_assigns.fetch(:additional_actions, []) %>
 <% scope = local_assigns[:scope] %>
+<% show_edit_button = local_assigns.fetch(:show_edit_button, true) %>
+<% show_delete_button = local_assigns.fetch(:show_delete_button, true) %>
 
 <div class="d-flex gap-2">
   <%= link_to (scope ? polymorphic_path([scope, resource.class]) : polymorphic_path(resource.class)), 
@@ -10,10 +12,12 @@
     <i class="bi bi-arrow-left"></i>
   <% end %>
 
-  <%= link_to (scope ? [:edit, scope, resource] : [:edit, resource]), 
-      class: 'btn btn-light btn-sm', 
-      title: t('helpers.link.edit') do %>
-    <i class="bi bi-pencil"></i>
+  <% if show_edit_button %>
+    <%= link_to (scope ? [:edit, scope, resource] : [:edit, resource]), 
+        class: 'btn btn-light btn-sm', 
+        title: t('helpers.link.edit') do %>
+      <i class="bi bi-pencil"></i>
+    <% end %>
   <% end %>
 
   <% additional_actions.each do |action| %>
@@ -29,11 +33,13 @@
     <% end %>
   <% end %>
 
-  <%= button_to (scope ? [scope, resource] : resource), 
-      method: :delete,
-      data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource.class.model_name.human) },
-      class: 'btn btn-danger btn-sm',
-      title: t('helpers.link.destroy') do %>
-    <i class="bi bi-trash"></i>
+  <% if show_delete_button %>
+    <%= button_to (scope ? [scope, resource] : resource), 
+        method: :delete,
+        data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource.class.model_name.human) },
+        class: 'btn btn-danger btn-sm',
+        title: t('helpers.link.destroy') do %>
+      <i class="bi bi-trash"></i>
+    <% end %>
   <% end %>
 </div>
