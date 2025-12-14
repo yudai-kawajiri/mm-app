@@ -6,7 +6,7 @@ class Admin::UsersController < AuthenticatedController
   before_action :set_stores, only: [:new, :create, :edit, :update]
 
   def index
-    @users = accessible_users.order(created_at: :desc)
+    @users = accessible_users.order(created_at: :desc).page(params[:page])
   end
 
   def new

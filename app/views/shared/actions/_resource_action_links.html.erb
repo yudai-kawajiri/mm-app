@@ -5,21 +5,21 @@
 <% show_copy = local_assigns.fetch(:show_copy, false) %>
 <% copy_url = local_assigns[:copy_url] %>
 <% icon_mode = local_assigns.fetch(:icon_mode, false) %>
+<% scope = local_assigns.fetch(:scope, nil) %>
 
 <% return if resource.nil? %>
 
 <div class="d-flex">
   <% if icon_mode %>
-
     <% if show_link %>
-      <%= link_to resource,
+      <%= link_to resource_path_with_scope(resource, scope),
           class: 'btn btn-sm btn-outline-primary me-1',
           title: t('helpers.link.show') do %>
         <i class="bi bi-eye"></i>
       <% end %>
     <% end %>
 
-    <%= link_to url_for([:edit, resource]),
+    <%= link_to resource_path_with_scope(resource, scope, :edit),
         class: 'btn btn-sm btn-outline-secondary me-1',
         title: t('helpers.link.edit') do %>
       <i class="bi bi-pencil"></i>
@@ -28,53 +28,43 @@
     <% if show_copy && copy_url.present? %>
       <%= button_to copy_url,
           method: :post,
-          class: 'btn btn-sm btn-secondary me-1',
-          data: { turbo_confirm: t('helpers.confirm.copy', resource: resource_name) },
-          title: t('helpers.link.copy') do %>
+          class: 'btn btn-sm btn-outline-info me-1',
+          title: t('helpers.link.copy'),
+          form: { style: 'display: inline-block;' } do %>
         <i class="bi bi-files"></i>
       <% end %>
     <% end %>
 
     <% if show_print && print_url.present? %>
       <%= link_to print_url,
-          class: 'btn btn-sm btn-light me-1',
-          target: '_blank',
-          title: t('plans.actions.preview') do %>
+          class: 'btn btn-sm btn-outline-success me-1',
+          title: t('helpers.link.print'),
+          target: '_blank' do %>
         <i class="bi bi-printer"></i>
       <% end %>
     <% end %>
 
-    <%= button_to resource,
+    <%= button_to resource_path_with_scope(resource, scope),
         method: :delete,
-        data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource_name) },
-        class: 'btn btn-sm btn-danger',
-        form: { style: 'display: inline-block;' },
-        title: t('helpers.link.destroy') do %>
+        class: 'btn btn-sm btn-outline-danger',
+        title: t('helpers.link.destroy'),
+        form: { 
+          style: 'display: inline-block;',
+          data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource_name) }
+        } do %>
       <i class="bi bi-trash"></i>
     <% end %>
-
   <% else %>
-
     <% if show_link %>
-      <%= render 'shared/actions/show_link',
-          url: resource,
-          custom_class: 'me-2' %>
+      <%= link_to t('helpers.link.show'), resource_path_with_scope(resource, scope), class: 'btn btn-sm btn-outline-primary me-1' %>
     <% end %>
-
-    <%= render 'shared/actions/edit_link',
-        url: url_for([:edit, resource]),
-        custom_class: 'me-2' %>
-
+    <%= link_to t('helpers.link.edit'), resource_path_with_scope(resource, scope, :edit), class: 'btn btn-sm btn-outline-secondary me-1' %>
     <% if show_copy && copy_url.present? %>
-      <%= render 'shared/actions/copy_link',
-          url: copy_url,
-          custom_class: 'me-2',
-          confirm_message: t('helpers.confirm.copy', resource: resource_name) %>
+      <%= button_to t('helpers.link.copy'), copy_url, method: :post, class: 'btn btn-sm btn-outline-info me-1' %>
     <% end %>
-
-    <%= render 'shared/actions/delete_link',
-        url: resource,
-        resource_name: resource_name
-    %>
+    <% if show_print && print_url.present? %>
+      <%= link_to t('helpers.link.print'), print_url, class: 'btn btn-sm btn-outline-success me-1', target: '_blank' %>
+    <% end %>
+    <%= button_to t('helpers.link.destroy'), resource_path_with_scope(resource, scope), method: :delete, class: 'btn btn-sm btn-outline-danger', data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource_name) } %>
   <% end %>
 </div>

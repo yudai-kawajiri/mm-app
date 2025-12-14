@@ -1,0 +1,7 @@
+<%# テナント編集画面 %>
+<% content_for :title, t('admin.tenants.edit.title') %>
+
+<%= render 'resource_form',
+            resource: @tenant,
+            form_title: t('admin.tenants.edit.title'),
+            submit_label: t('helpers.submit.update') %>

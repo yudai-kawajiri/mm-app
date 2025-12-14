@@ -1,0 +1,36 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <h2 class="h4 mb-0"><%= t('admin.tenants.show.title') %></h2>
+            <div>
+              <%= link_to edit_admin_tenant_path(@tenant), class: 'btn btn-sm btn-outline-secondary me-2' do %>
+                <i class="bi bi-pencil me-1"></i><%= t('common.edit') %>
+              <% end %>
+              <%= link_to admin_tenants_path, class: 'btn btn-sm btn-outline-primary' do %>
+                <i class="bi bi-arrow-left me-1"></i><%= t('common.back') %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <dl class="row">
+            <dt class="col-sm-3"><%= Tenant.human_attribute_name(:name) %></dt>
+            <dd class="col-sm-9"><%= @tenant.name %></dd>
+
+            <dt class="col-sm-3"><%= Tenant.human_attribute_name(:subdomain) %></dt>
+            <dd class="col-sm-9"><code><%= @tenant.subdomain %></code></dd>
+
+            <dt class="col-sm-3"><%= Tenant.human_attribute_name(:created_at) %></dt>
+            <dd class="col-sm-9"><%= l(@tenant.created_at.to_date) %></dd>
+
+            <dt class="col-sm-3"><%= Tenant.human_attribute_name(:updated_at) %></dt>
+            <dd class="col-sm-9"><%= l(@tenant.updated_at.to_date) %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

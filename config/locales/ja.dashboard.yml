@@ -38,6 +38,9 @@ ja:
       terms: "利用規約"
       privacy_policy: "プライバシーポリシー"
       logout: "ログアウト"
+      tenant_management: "テナント管理"
+      approval_requests: "承認リクエスト"
+      store_management: "店舗管理"
 
     welcome_message: "ようこそ！ %{name} さんのダッシュボード"
     display_month_label: "表示月："

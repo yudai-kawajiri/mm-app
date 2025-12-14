@@ -20,7 +20,9 @@
   <div <%= 'data-sortable-table-target="sortForm"' if sortable %>>
     <%
       route_key = resource_class.model_name.route_key
-      form_path = send("#{route_key}_path")
+      scope = local_assigns[:scope]
+      scope_prefix = scope.is_a?(Array) ? scope.first : scope
+      form_path = scope_prefix.present? ? send("#{scope_prefix}_#{route_key}_path") : send("#{route_key}_path")
     %>
     <%= render 'shared/forms/search_form',
         form_path: form_path,
@@ -92,7 +94,8 @@
               show_print: show_print,
               print_url: show_print && print_url_method.present? ?
               send(print_url_method, resource) : nil,
-              icon_mode: icon_mode
+              icon_mode: icon_mode,
+              scope: scope
           %>
         </td>
       </tr>
