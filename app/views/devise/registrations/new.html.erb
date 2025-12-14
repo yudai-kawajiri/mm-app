@@ -1,19 +1,6 @@
 <% content_for :title, t('devise.registrations.new.title') %>
 <%= render layout: 'devise/shared/auth_card_frame' do %>
 
-  <% if Rails.env.development? %>
-    <div class="alert alert-warning mb-3">
-      <strong>🔍 Debug Info:</strong><br>
-      Request Host: <%= request.host %><br>
-      Request Subdomain: <%= request.subdomain.inspect %><br>
-      Current Tenant: <%= current_tenant&.name || "nil" %><br>
-      Stores Count: <%= current_tenant&.stores&.count || 0 %><br>
-      <% if current_tenant %>
-        Stores: <%= current_tenant.stores.pluck(:name).join(", ") %>
-      <% end %>
-    </div>
-  <% end %>
-
   <%= render "devise/shared/tabs" %>
 
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { data: { controller: 'form-validation' } }) do |f| %>
