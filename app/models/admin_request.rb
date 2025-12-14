@@ -13,19 +13,19 @@ class AdminRequest < ApplicationRecord
   enum :request_type, {
     store_admin_request: 0,
     user_registration: 1
-  }, prefix: true
+  }
 
   enum :status, {
     pending: 0,   # 承認待ち
     approved: 1,  # 承認済み
     rejected: 2   # 却下
-  }, prefix: true
+  }
 
   validates :request_type, presence: true
   validates :status, presence: true
   validates :user, presence: true
   validates :store, presence: true, if: :store_admin_request?
-  validates :rejection_reason, presence: true, if: :status_rejected?
+  validates :rejection_reason, presence: true, if: :rejected?
 
   # Scopes
   scope :for_tenant, ->(tenant) { where(tenant: tenant) }
@@ -63,6 +63,6 @@ class AdminRequest < ApplicationRecord
 
   # 承認可能か
   def can_be_approved?
-    status_pending?
+    pending?
   end
 end
