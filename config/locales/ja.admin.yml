@@ -3,15 +3,17 @@ ja:
     users:
       index:
         title: "ユーザー管理"
+        role_badges:
+          super_admin: "システム管理者"
+          company_admin: "会社管理者"
+          store_admin: "店舗管理者"
+          general: "一般"
         table_headers:
           name: "名前"
           email: "メールアドレス"
           role: "権限"
           registered_date: "登録日"
           actions: "操作"
-        role_badges:
-          admin: "管理者"
-          staff: "スタッフ"
         actions:
           delete: "削除"
           self: "(自分)"
@@ -136,6 +138,11 @@ ja:
       index:
         title: "承認リクエスト"
         no_requests: "承認リクエストはありません"
+        role_badges:
+          super_admin: "システム管理者"
+          company_admin: "会社管理者"
+          store_admin: "店舗管理者"
+          general: "一般"
         table_headers:
           user: "リクエスト送信者"
           store: "対象店舗"

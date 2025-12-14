@@ -78,6 +78,10 @@ ja:
         password_confirmation: "パスワード(確認)"
         current_password: "現在のパスワード"
         invitation_code: "招待コード"
+        role: "権限"
+        store: "店舗"
+        store_id: "店舗"
+        created_at: "登録日"
 
       "resources/category":
         name: "カテゴリー名"
