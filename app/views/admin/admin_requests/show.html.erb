@@ -16,30 +16,30 @@
             <dd class="col-sm-9"><%= @admin_request.store&.name || '-' %></dd>
 
             <dt class="col-sm-3"><%= t('activerecord.attributes.admin_request.request_type') %></dt>
-            <dd class="col-sm-9"><%= t("admin.admin_requests.request_type.#{@admin_request.request_type}") %></dd>
+            <dd class="col-sm-9"><%= t("activerecord.enums.admin_request.request_type.#{@admin_request.request_type}") %></dd>
 
             <dt class="col-sm-3"><%= t('activerecord.attributes.admin_request.status') %></dt>
             <dd class="col-sm-9">
-              <% if @admin_request.status_pending? %>
-                <span class="badge bg-warning"><%= t('admin.admin_requests.status.pending') %></span>
-              <% elsif @admin_request.status_approved? %>
-                <span class="badge bg-success"><%= t('admin.admin_requests.status.approved') %></span>
+              <% if @admin_request.pending? %>
+                <span class="badge bg-warning"><%= t('activerecord.enums.admin_request.status.pending') %></span>
+              <% elsif @admin_request.approved? %>
+                <span class="badge bg-success"><%= t('activerecord.enums.admin_request.status.approved') %></span>
               <% else %>
-                <span class="badge bg-danger"><%= t('admin.admin_requests.status.rejected') %></span>
+                <span class="badge bg-danger"><%= t('activerecord.enums.admin_request.status.rejected') %></span>
               <% end %>
             </dd>
 
             <dt class="col-sm-3"><%= t('activerecord.attributes.admin_request.message') %></dt>
             <dd class="col-sm-9"><%= @admin_request.message.presence || '-' %></dd>
 
-            <% if @admin_request.status_approved? || @admin_request.status_rejected? %>
+            <% if @admin_request.approved? || @admin_request.rejected? %>
               <dt class="col-sm-3"><%= t('activerecord.attributes.admin_request.approved_by_id') %></dt>
               <dd class="col-sm-9"><%= @admin_request.approved_by&.name || '-' %></dd>
 
               <dt class="col-sm-3"><%= t('activerecord.attributes.admin_request.approved_at') %></dt>
               <dd class="col-sm-9"><%= l(@admin_request.approved_at, format: :long) if @admin_request.approved_at %></dd>
 
-              <% if @admin_request.status_rejected? %>
+              <% if @admin_request.rejected? %>
                 <dt class="col-sm-3"><%= t('activerecord.attributes.admin_request.rejection_reason') %></dt>
                 <dd class="col-sm-9"><%= @admin_request.rejection_reason %></dd>
               <% end %>

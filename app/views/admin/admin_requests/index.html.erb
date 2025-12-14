@@ -23,14 +23,14 @@
             <tr>
               <td><%= request.user.name %></td>
               <td><%= request.store&.name || '-' %></td>
-              <td><%= t("admin.admin_requests.request_type.#{request.request_type}") %></td>
+              <td><%= t("activerecord.enums.admin_request.request_type.#{request.request_type}") %></td>
               <td>
-                <% if request.status_pending? %>
-                  <span class="badge bg-warning"><%= t('admin.admin_requests.status.pending') %></span>
-                <% elsif request.status_approved? %>
-                  <span class="badge bg-success"><%= t('admin.admin_requests.status.approved') %></span>
+                <% if request.pending? %>
+                  <span class="badge bg-warning"><%= t('activerecord.enums.admin_request.status.pending') %></span>
+                <% elsif request.approved? %>
+                  <span class="badge bg-success"><%= t('activerecord.enums.admin_request.status.approved') %></span>
                 <% else %>
-                  <span class="badge bg-danger"><%= t('admin.admin_requests.status.rejected') %></span>
+                  <span class="badge bg-danger"><%= t('activerecord.enums.admin_request.status.rejected') %></span>
                 <% end %>
               </td>
               <td><%= l(request.created_at, format: :short) %></td>
