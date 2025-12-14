@@ -132,16 +132,26 @@ module ApplicationHelper
 
     # 管理メニュー (会社管理者・システム管理者のみ)
     if current_user.company_admin? || current_user.super_admin?
+      admin_submenu = []
+      
+      # システム管理者のみテナント管理を表示
+      if current_user.super_admin?
+        admin_submenu << { name: t("common.menu.tenant_management"), path: admin_tenants_path }
+      end
+      
+      admin_submenu += [
+        { name: t("common.menu.approval_requests"), path: admin_admin_requests_path },
+        { name: t("common.menu.user_management"), path: admin_users_path },
+        { name: t("common.menu.store_management"), path: admin_stores_path },
+        { name: t("common.menu.system_logs"), path: admin_system_logs_path }
+      ]
+      
       items << {
-        name: '管理',
-        submenu: [
-          { name: '承認リクエスト', path: admin_admin_requests_path },
-          { name: 'ユーザー管理', path: admin_users_path },
-          { name: '店舗管理', path: admin_stores_path },
-          { name: 'システムログ', path: admin_system_logs_path }
-        ]
+        name: t("common.menu.admin_management"),
+        submenu: admin_submenu
       }
     end
+
 
 
   end
@@ -627,3 +637,43 @@ module ApplicationHelper
 
   end
 end
+
+
+  # scopeとresourceから正しいパスを生成
+  def resource_path_with_scope(resource, scope = nil, action = nil)
+    scope_array = Array(scope).compact
+    route_key = resource.class.model_name.route_key.singularize
+    
+    Rails.logger.debug "=== resource_path_with_scope DEBUG ==="
+    Rails.logger.debug "Resource: #{resource.class.name}"
+    Rails.logger.debug "Scope: #{scope.inspect}"
+    Rails.logger.debug "Scope Array: #{scope_array.inspect}"
+    Rails.logger.debug "Route Key: #{route_key}"
+    Rails.logger.debug "Action: #{action.inspect}"
+    
+    if scope_array.any?
+      scope_prefix = scope_array.join('_')
+      action_prefix = action ? "#{action}_" : ""
+      path_method = "#{action_prefix}#{scope_prefix}_#{route_key}_path"
+      
+      Rails.logger.debug "Path Method: #{path_method}"
+      Rails.logger.debug "Respond to? #{respond_to?(path_method)}"
+      
+      # メソッドが存在するか確認
+      if respond_to?(path_method)
+        send(path_method, resource)
+      else
+        # フォールバック: polymorphic_path を使用
+        args = [action, *scope_array, resource].compact
+        Rails.logger.debug "Polymorphic args: #{args.inspect}"
+        polymorphic_path(args)
+      end
+    else
+      # scopeがない場合はpolymorphic_pathを使用
+      polymorphic_path([action, resource].compact)
+    end
+  rescue => e
+    Rails.logger.error "Path generation failed: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    "#"
+  end
