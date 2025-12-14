@@ -736,3 +736,67 @@ ja:
 
   errors:
     unauthorized: "権限がありません"
+
+  # Devise メーラー
+  devise:
+    mailer:
+      reset_password_instructions:
+        subject: 'パスワードリセット'
+        greeting: 'こんにちは！'
+        instruction: 'パスワードのリセットがリクエストされました。以下のボタンをクリックしてパスワードを変更してください。'
+        action: 'パスワードを変更する'
+        instruction_2: 'もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください:'
+        instruction_3: '※パスワードリセットをリクエストしていない場合は、このメールを無視してください。'
+      confirmation_instructions:
+        subject: 'メールアドレスの確認'
+        greeting: 'ようこそ、MM-Appへ！'
+        instruction: '以下のボタンをクリックして、メールアドレスを確認してください。'
+        action: 'メールアドレスを確認する'
+        instruction_2: 'もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください:'
+      email_changed:
+        subject: 'メールアドレスが変更されました'
+        greeting: 'こんにちは！'
+        message: 'メールアドレスが %{email} に変更されました。'
+        message_unconfirmed: '新しいメールアドレス %{email} への変更が保留中です。'
+      password_change:
+        subject: 'パスワードが変更されました'
+        greeting: 'こんにちは！'
+        message: 'パスワードが正常に変更されました。'
+      unlock_instructions:
+        subject: 'アカウントのロック解除'
+        greeting: 'こんにちは！'
+        message: 'アカウントがロックされました。'
+        instruction: '以下のボタンをクリックしてロックを解除してください。'
+        action: 'アカウントをロック解除する'
+        instruction_2: 'もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください:'
+
+  # アプリケーション責任者依頼メーラー
+  application_request_mailer:
+    invitation_email:
+      subject: '【MM-App】アプリケーション責任者招待のご案内'
+      greeting: '%{name} 様'
+      introduction: 'この度は、MM-Appのアプリケーション責任者としてご登録いただき、ありがとうございます。'
+      company_info: '会社情報'
+      company_name: '会社名'
+      email: 'メールアドレス'
+      phone: '電話番号'
+      instruction: '以下のボタンをクリックして、アカウントの登録を完了してください。'
+      action: 'アカウント登録を完了する'
+      expiration_notice: '※このURLは7日間有効です。期限を過ぎた場合は、再度依頼をお願いいたします。'
+      instruction_2: 'もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください:'
+      footer: 'このメールに心当たりがない場合は、破棄していただいて構いません。'
+    approval_notification:
+      subject: '【MM-App】ユーザー登録が承認されました'
+      greeting: '%{name} 様'
+      approved_message: 'ユーザー登録申請が承認されました。'
+      instruction: '以下のログインページからアクセスしてください。'
+      action: 'ログインする'
+      login_info: 'ログイン情報:'
+      email: 'メールアドレス: %{email}'
+      password: 'パスワード: 登録時に設定したパスワード'
+    rejection_notification:
+      subject: '【MM-App】ユーザー登録申請について'
+      greeting: '%{name} 様'
+      rejected_message: 'ユーザー登録申請が却下されました。'
+      reason_label: '却下理由:'
+      contact_message: 'ご不明な点がございましたら、管理者までお問い合わせください。'

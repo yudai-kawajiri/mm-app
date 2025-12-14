@@ -1,8 +1,7 @@
-<%# メールアドレス変更通知 %>
-<p><%= t('devise.mailer.email_changed.greeting', email: @email) %></p>
+<p>Hello <%= @email %>!</p>
 
 <% if @resource.try(:unconfirmed_email?) %>
-  <p><%= t('devise.mailer.email_changed.message_unconfirmed', unconfirmed_email: @resource.unconfirmed_email) %></p>
+  <p>We're contacting you to notify you that your email is being changed to <%= @resource.unconfirmed_email %>.</p>
 <% else %>
-  <p><%= t('devise.mailer.email_changed.message_confirmed', email: @resource.email) %></p>
+  <p>We're contacting you to notify you that your email has been changed to <%= @resource.email %>.</p>
 <% end %>

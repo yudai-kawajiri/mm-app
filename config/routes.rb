@@ -2,6 +2,16 @@
 
 Rails.application.routes.draw do
   # ========================================
+  # アプリケーション責任者依頼（公開ページ）
+  # ========================================
+  resources :application_requests, only: [:new, :create] do
+    collection do
+      get 'accept', to: 'application_requests#accept'
+      post 'accept', to: 'application_requests#accept_confirm'
+    end
+  end
+
+  # ========================================
   # 認証 (Devise)
   # ========================================
   # カスタム登録コントローラで tenant_id の自動設定を実装

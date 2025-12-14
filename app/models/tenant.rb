@@ -8,6 +8,7 @@
 class Tenant < ApplicationRecord
   has_many :stores, dependent: :destroy
   has_many :users, dependent: :destroy
+  has_one :application_request, dependent: :destroy
   has_many :products, class_name: 'Resources::Product', dependent: :destroy
   has_many :materials, class_name: 'Resources::Material', dependent: :destroy
   has_many :categories, class_name: 'Resources::Category', dependent: :destroy
