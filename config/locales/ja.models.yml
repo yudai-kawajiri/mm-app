@@ -53,6 +53,7 @@ ja:
               blank: "を選択してください"
 
     models:
+      admin_request: "承認リクエスト"
       user: "アカウント"
       "resources/category": "カテゴリー"
       "resources/unit": "単位"
@@ -86,6 +87,15 @@ ja:
         products: "商品"
         plans: "製造計画"
 
+      admin_request:
+        user_id: "リクエスト送信者"
+        store_id: "対象店舗"
+        request_type: "リクエスト種別"
+        status: "ステータス"
+        message: "メッセージ"
+        rejection_reason: "却下理由"
+        approved_by_id: "承認者"
+        approved_at: "承認日時"
       "resources/unit":
         name: "単位名"
         reading: "読み仮名"
