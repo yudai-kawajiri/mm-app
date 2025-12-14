@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_13_134255) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_14_023155) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,6 +44,26 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_13_134255) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "admin_requests", force: :cascade do |t|
+    t.datetime "approved_at", comment: "承認日時"
+    t.bigint "approved_by_id", comment: "承認者のUser ID"
+    t.datetime "created_at", null: false
+    t.text "message", comment: "リクエストメッセージ"
+    t.text "rejection_reason", comment: "却下理由"
+    t.integer "request_type", default: 0, null: false, comment: "0: store_admin_request"
+    t.integer "status", default: 0, null: false, comment: "0: pending, 1: approved, 2: rejected"
+    t.bigint "store_id", comment: "対象店舗（店舗管理者リクエストの場合）"
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false, comment: "リクエスト送信者"
+    t.index ["approved_by_id"], name: "index_admin_requests_on_approved_by_id"
+    t.index ["store_id"], name: "index_admin_requests_on_store_id"
+    t.index ["tenant_id", "status"], name: "index_admin_requests_on_tenant_id_and_status"
+    t.index ["tenant_id"], name: "index_admin_requests_on_tenant_id"
+    t.index ["user_id", "status"], name: "index_admin_requests_on_user_id_and_status"
+    t.index ["user_id"], name: "index_admin_requests_on_user_id"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -314,6 +334,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_13_134255) do
   add_foreign_key "active_storage_attachments", "stores"
   add_foreign_key "active_storage_attachments", "tenants"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "admin_requests", "stores"
+  add_foreign_key "admin_requests", "tenants"
+  add_foreign_key "admin_requests", "users"
+  add_foreign_key "admin_requests", "users", column: "approved_by_id"
   add_foreign_key "categories", "stores"
   add_foreign_key "categories", "tenants"
   add_foreign_key "categories", "users"
