@@ -103,18 +103,6 @@
     <%= render 'shared/actions/new_link',
                 url: new_path,
                 custom_class: 'btn-sm' %>
-  <% else %>
-    <%
-      if defined?(resource) && resource
-        resource_name = resource.class.model_name.singular_route_key.to_sym
-        fallback_new_path = polymorphic_path([:new, resource_name])
-      else
-        fallback_new_path = '#'
-      end
-    %>
-    <%= render 'shared/actions/new_link',
-                url: fallback_new_path,
-                custom_class: 'btn-sm' %>
   <% end %>
 
 <% end %>
