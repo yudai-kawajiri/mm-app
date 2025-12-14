@@ -7,44 +7,53 @@ ja:
           name: "名前"
           email: "メールアドレス"
           role: "権限"
-          store: "所属店舗"
           registered_date: "登録日"
           actions: "操作"
         role_badges:
-          super_admin: "システム管理者"
-          company_admin: "会社管理者"
-          store_admin: "店舗管理者"
-          general: "一般"
+          admin: "管理者"
+          staff: "スタッフ"
         actions:
-          invite: "新規ユーザー招待"
-          edit: "編集"
           delete: "削除"
-          self: "（自分）"
+          self: "(自分)"
         confirm:
-          delete: "%{name}のアカウントを削除してもよろしいですか？\nこの操作は取り消せません"
+          delete: "%{name}を削除してもよろしいですか?"
         empty_message: "ユーザーが登録されていません"
+        sort_options:
+          name: "名前"
+          email: "メールアドレス"
+          role: "権限"
+          created_at: "登録日"
+        sort_placeholder: "並び替え"
       new:
-        title: "新規ユーザー招待"
+        title: "新規ユーザー登録"
       edit:
         title: "ユーザー編集"
+      show:
+        title: "ユーザー詳細"
       form:
         name: "名前"
-        name_placeholder: "例: 山田太郎"
+        name_placeholder: "山田 太郎"
         email: "メールアドレス"
-        email_placeholder: "例: yamada@example.com"
+        email_placeholder: "user@example.com"
+        password: "パスワード"
+        password_placeholder: "8文字以上"
+        password_confirmation: "パスワード(確認)"
+        password_confirmation_placeholder: "パスワードを再入力"
         role: "権限"
-        store: "所属店舗"
-        submit_create: "招待"
+        role_placeholder: "権限を選択"
+        submit_create: "登録"
         submit_update: "更新"
-        cancel: "キャンセル"
-        role_help: "店舗管理者は自店舗のユーザー管理、会社管理者は全店舗を管理できます"
       messages:
-        cannot_delete_self: "自分自身は削除できません"
         user_deleted: "%{name}を削除しました"
-        invited: "%{name}を招待しました"
-        updated: "%{name}を更新しました"
-        user_not_found: "ユーザーが見つかりません"
-
+        user_delete_failed: "%{name}の削除に失敗しました"
+        created: "ユーザーを登録しました"
+        updated: "ユーザーを更新しました"
+        destroyed: "ユーザーを削除しました"
+      roles:
+        super_admin: "システム管理者"
+        company_admin: "会社管理者"
+        store_admin: "店舗管理者"
+        general: "一般"
     system_logs:
       index:
         title: "システムログ"
@@ -52,95 +61,85 @@ ja:
         user: "ユーザー"
         date_from: "開始日"
         date_to: "終了日"
-        filter: "絞り込み"
+        filter: "絞り込む"
         datetime: "日時"
-        action: "アクション"
+        action: "操作"
         record_id: "レコードID"
         detail: "詳細"
-        no_detail: "詳細なし"
-        deleted_record: "（削除済み）"
-        no_logs: "ログが見つかりませんでした"
-        unknown_user: "不明なユーザー"
-        system: "システム"
-      events:
-        create: "登録"
-        update: "更新"
-        destroy: "削除"
-      auto_delete:
-        no_logs_to_delete: "%{retention_days}日より古いログは見つかりませんでした"
-        success: "%{deleted_count}件のシステムログを削除しました（%{retention_days}日より古いログ、%{cutoff_date}以前）"
-      deleted_record: "削除済みレコード"
-
+        no_logs: "ログが見つかりません"
     stores:
       index:
         title: "店舗管理"
-        table_headers:
+        sort_options:
           code: "店舗コード"
           name: "店舗名"
-          users_count: "所属ユーザー数"
-          created_date: "登録日"
-          actions: "操作"
-        actions:
-          new: "新規店舗登録"
-          edit: "編集"
-          delete: "削除"
-        confirm:
-          delete: "%{name}を削除してもよろしいですか？\nこの操作は取り消せません"
-        empty_message: "店舗が登録されていません"
+          created_at: "登録日"
+        sort_placeholder: "並び替え"
       new:
         title: "新規店舗登録"
       edit:
         title: "店舗編集"
+      show:
+        title: "店舗詳細"
       form:
         code: "店舗コード"
-        code_placeholder: "例: HQ, STORE01"
+        code_placeholder: "001"
         name: "店舗名"
-        name_placeholder: "例: 本社、渋谷店"
+        name_placeholder: "○○店"
         submit_create: "登録"
         submit_update: "更新"
-        cancel: "キャンセル"
       messages:
         created: "店舗を登録しました"
         updated: "店舗を更新しました"
-        deleted: "店舗を削除しました"
-        cannot_delete_with_users: "ユーザーが所属している店舗は削除できません"
-
-    admin_requests:
-      confirm:
-        approve: "%{name}さんを店舗管理者として承認しますか？"
+        destroyed: "店舗を削除しました"
+    tenants:
       index:
-        title: "承認リクエスト一覧"
-        pending: "承認待ち"
-        approved: "承認済み"
-        rejected: "却下"
-        no_requests: "リクエストはありません"
+        title: "テナント管理"
+        sort_options:
+          name: "名前順"
+          subdomain: "サブドメイン名順"
+          created_at: "登録順"
+        sort_placeholder: "並び替え"
+        new_tenant: "新規テナント作成"
+      new:
+        title: "新規テナント作成"
+      edit:
+        title: "テナント編集"
+      show:
+        title: "テナント詳細"
+      form:
+        name: "テナント名"
+        name_placeholder: "株式会社サンプル"
+        subdomain: "サブドメイン"
+        subdomain_placeholder: "sample-company"
+        subdomain_hint: "半角英数字とハイフンのみ使用可能です(例: example-company)"
+        submit_create: "登録"
+        submit_update: "更新"
+      messages:
+        created: "テナントを作成しました"
+        updated: "テナントを更新しました"
+        destroyed: "テナントを削除しました"
+      confirm:
+        delete: "%{name} を削除してもよろしいですか?"
+    tenants:
+      index:
+        title: "テナント管理"
+      show:
+        title: "テナント詳細"
+      new:
+        title: "新規テナント作成"
+      edit:
+        title: "テナント編集"
+      messages:
+        destroyed: "テナントを削除しました"
+    admin_requests:
+      index:
+        title: "承認リクエスト"
+        no_requests: "承認リクエストはありません"
         table_headers:
           user: "リクエスト送信者"
           store: "対象店舗"
-          request_type: "種別"
+          request_type: "リクエスト種別"
           status: "ステータス"
-          created_at: "送信日時"
+          created_at: "作成日"
           actions: "操作"
-      new:
-        title: "店舗管理者リクエスト"
-        description: "店舗管理者になるには、会社管理者の承認が必要です。"
-        message_label: "メッセージ（任意）"
-        message_placeholder: "店舗管理者になりたい理由を入力してください"
-        submit: "リクエストを送信"
-      show:
-        title: "リクエスト詳細"
-        approve: "承認する"
-        reject: "却下する"
-        rejection_reason_label: "却下理由"
-        rejection_reason_placeholder: "却下理由を入力してください"
-      messages:
-        created: "リクエストを送信しました"
-        approved: "リクエストを承認しました。%{name}さんが店舗管理者になりました。"
-        rejected: "リクエストを却下しました"
-        already_processed: "このリクエストは既に処理されています"
-      status:
-        pending: "承認待ち"
-        approved: "承認済み"
-        rejected: "却下"
-      request_type:
-        store_admin_request: "店舗管理者昇格"

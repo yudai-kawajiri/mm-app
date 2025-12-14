@@ -88,6 +88,14 @@ ja:
     not_authorized: この操作を実行する権限がありません
     require_store_selected: この操作を実行するには店舗を選択してください。
   common:
+    menu:
+      tenant_management: "テナント管理"
+      approval_requests: "承認リクエスト"
+      user_management: "ユーザー管理"
+      store_management: "店舗管理"
+      system_logs: "システムログ"
+      admin_management: "管理者メニュー"
+
     search: 検索
     clear: クリア
     action: アクション
@@ -516,18 +524,13 @@ ja:
         detail: 詳細
         no_logs: ログが見つかりません
   activerecord:
+    errors:
+      models:
+        tenant:
+          attributes:
+            subdomain:
+              taken: "はすでに存在します"
     models:
-      user: ユーザー
-      resources/category: カテゴリー
-      resources/unit: 単位
-      resources/material_order_group: 発注グループ
-      resources/material: 原材料
-      resources/product: 商品
-      resources/product_material: 商品原材料
-      resources/plan: 計画
-      planning/plan_product: 計画商品
-      planning/plan_schedule: 計画スケジュール
-      management/monthly_budget: 月間予算
       management/daily_target: 日別目標
     attributes:
       contact:
@@ -535,6 +538,11 @@ ja:
         email: メールアドレス
         subject: 件名
         message: お問い合わせ内容
+      tenant:
+        name: "テナント名"
+        subdomain: "サブドメイン"
+        created_at: "作成日"
+        updated_at: "更新日"
   landing:
     title: MM-App
     subtitle: 製造業向けの包括的な生産管理・数値管理システム
@@ -694,6 +702,11 @@ ja:
       subject: 件名
       subject_placeholder: お問い合わせ内容の件名
       message: お問い合わせ内容
+      tenant:
+        name: "テナント名"
+        subdomain: "サブドメイン"
+        created_at: "作成日"
+        updated_at: "更新日"
       message_placeholder: 具体的なお問い合わせ内容をご記入ください
       message_hint: 最大5000文字まで入力できます
       message_max_length: '5000'
@@ -723,11 +736,3 @@ ja:
 
   errors:
     unauthorized: "権限がありません"
-
-  common:
-    show: "詳細"
-    edit: "編集"
-    delete: "削除"
-    back: "戻る"
-    submit: "送信"
-    cancel: "キャンセル"

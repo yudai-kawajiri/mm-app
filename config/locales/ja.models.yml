@@ -53,6 +53,7 @@ ja:
               blank: "を選択してください"
 
     models:
+      tenant: "テナント"
       admin_request: "承認リクエスト"
       user: "アカウント"
       "resources/category": "カテゴリー"
@@ -153,7 +154,7 @@ ja:
         production_count: "製造数"
         price: "単価"
         subtotal: "小計"
-        created_at: "作成日時"
+        created_at: "登録日時"
         updated_at: "更新日時"
 
       "resources/plan":
@@ -207,3 +208,8 @@ ja:
           draft: "下書き"
           active: "実施中"
           completed: "完了"
+      tenant:
+        name: "企業名"
+        subdomain: "サブドメイン"
+        created_at: "登録日時"
+        updated_at: "更新日時"
