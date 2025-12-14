@@ -51,11 +51,19 @@ class ApplicationController < ActionController::Base
   end
 
   # 未ログイン時（自己登録画面など）でサブドメインからテナントを判別
+  # 未ログイン時（自己登録画面など）でサブドメインからテナントを判別
   def tenant_from_subdomain
     return @tenant_from_subdomain if defined?(@tenant_from_subdomain)
-
-    subdomain = request.subdomain
-    @tenant_from_subdomain = if subdomain.present? && subdomain != 'www'
+    
+    # localhost の場合、最初のセグメントをサブドメインとして扱う
+    host = request.host
+    subdomain = if host.include?(".localhost")
+      host.split(".").first
+    else
+      request.subdomain
+    end
+    
+    @tenant_from_subdomain = if subdomain.present? && subdomain != "www"
       Tenant.find_by(subdomain: subdomain)
     else
       nil
