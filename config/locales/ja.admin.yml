@@ -150,3 +150,16 @@ ja:
           status: "ステータス"
           created_at: "作成日"
           actions: "操作"
+      request_types:
+        store_admin_request: "店舗管理者昇格"
+        user_registration: "ユーザー登録"
+      statuses:
+        pending: "承認待ち"
+        approved: "承認済み"
+        rejected: "却下"
+      messages:
+        created: "承認リクエストを送信しました"
+        approved: "%{name} さんのリクエストを承認しました"
+        rejected: "リクエストを却下しました"
+        already_processed: "このリクエストは既に処理されています"
+        user_approved: "%{name} さんのユーザー登録を承認しました。ログインが可能になりました。"

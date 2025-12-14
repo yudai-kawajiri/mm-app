@@ -3,7 +3,7 @@
 # AdminRequest
 #
 # 管理者承認リクエストモデル
-# 店舗管理者昇格などの承認フローを管理
+# 店舗管理者昇格、ユーザー登録などの承認フローを管理
 class AdminRequest < ApplicationRecord
   belongs_to :tenant
   belongs_to :user
@@ -11,7 +11,8 @@ class AdminRequest < ApplicationRecord
   belongs_to :approved_by, class_name: 'User', optional: true
 
   enum :request_type, {
-    store_admin_request: 0
+    store_admin_request: 0,
+    user_registration: 1
   }, prefix: true
 
   enum :status, {
@@ -31,7 +32,6 @@ class AdminRequest < ApplicationRecord
   scope :for_user, ->(user) { where(user: user) }
   scope :recent, -> { order(created_at: :desc) }
 
-
   def approve!(approved_by_user)
     transaction do
       update!(
@@ -40,9 +40,13 @@ class AdminRequest < ApplicationRecord
         approved_at: Time.current
       )
 
-      # 店舗管理者リクエストの場合、ユーザーを店舗管理者に昇格
-      if store_admin_request?
+      case request_type
+      when 'store_admin_request'
+        # 店舗管理者リクエストの場合、ユーザーを店舗管理者に昇格
         user.update!(role: :store_admin)
+      when 'user_registration'
+        # ユーザー登録リクエストの場合、承認フラグを立てる
+        user.update!(approved: true)
       end
     end
   end
