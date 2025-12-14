@@ -2,6 +2,7 @@
 <% content_right_partial = local_assigns[:content_right_partial] %>
 <% content_right_title = local_assigns[:content_right_title] %>
 <% partial_locals = local_assigns.fetch(:partial_locals, {}) %>
+<% scope = local_assigns[:scope] %>
 <% additional_actions = local_assigns.fetch(:additional_actions, []) %>
 
 <%= content_for(:title, title) %>
@@ -14,7 +15,8 @@
 
         <%= render 'shared/actions/show_action_links',
           resource: resource,
-          additional_actions: additional_actions %>
+          additional_actions: additional_actions,
+          scope: scope %>
       </div>
     </div>
 
