@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_14_084230) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_14_134907) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -64,6 +64,20 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_14_084230) do
     t.index ["tenant_id"], name: "index_admin_requests_on_tenant_id"
     t.index ["user_id", "status"], name: "index_admin_requests_on_user_id_and_status"
     t.index ["user_id"], name: "index_admin_requests_on_user_id"
+  end
+
+  create_table "application_requests", force: :cascade do |t|
+    t.string "admin_email"
+    t.string "admin_name"
+    t.string "company_email"
+    t.string "company_name"
+    t.string "company_phone"
+    t.datetime "created_at", null: false
+    t.datetime "invitation_sent_at"
+    t.string "invitation_token"
+    t.integer "status"
+    t.integer "tenant_id"
+    t.datetime "updated_at", null: false
   end
 
   create_table "categories", force: :cascade do |t|
@@ -273,7 +287,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_14_084230) do
 
   create_table "tenants", force: :cascade do |t|
     t.boolean "active", default: true, null: false
+    t.string "company_email"
+    t.string "company_phone"
     t.datetime "created_at", null: false
+    t.datetime "invitation_accepted_at"
+    t.datetime "invitation_sent_at"
+    t.string "invitation_token"
     t.string "name", null: false
     t.string "subdomain", null: false
     t.datetime "updated_at", null: false
