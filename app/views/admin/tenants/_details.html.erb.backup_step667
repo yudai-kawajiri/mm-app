@@ -1,0 +1,14 @@
+<%# テナント詳細情報の表示 %>
+<dl class="row mb-0">
+  <dt class="col-sm-3"><%= Tenant.human_attribute_name(:name) %></dt>
+  <dd class="col-sm-9"><%= tenant.name %></dd>
+
+  <dt class="col-sm-3"><%= Tenant.human_attribute_name(:subdomain) %></dt>
+  <dd class="col-sm-9"><code class="text-primary"><%= tenant.subdomain %></code></dd>
+
+  <dt class="col-sm-3"><%= Tenant.human_attribute_name(:created_at) %></dt>
+  <dd class="col-sm-9"><%= l(tenant.created_at.to_date) %></dd>
+
+  <dt class="col-sm-3"><%= Tenant.human_attribute_name(:updated_at) %></dt>
+  <dd class="col-sm-9"><%= l(tenant.updated_at.to_date) %></dd>
+</dl>
