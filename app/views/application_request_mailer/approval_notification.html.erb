@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #28a745; color: white; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
+    .content { background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; }
+    .info-box { background-color: #d4edda; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+    .button { display: inline-block; padding: 12px 30px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6; text-align: center; font-size: 12px; color: #6c757d; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>ユーザー登録が承認されました</h2>
+    </div>
+
+    <div class="content">
+      <p><%= @user.name %> 様</p>
+      
+      <div class="info-box">
+        <p style="margin: 0; font-weight: bold;">
+          <i>✓</i> ユーザー登録申請が承認されました。
+        </p>
+      </div>
+      
+      <p>以下のログインページからアクセスしてください。</p>
+      
+      <div style="text-align: center;">
+        <a href="<%= @login_url %>" class="button">ログインする</a>
+      </div>
+      
+      <p>ログイン情報:</p>
+      <ul>
+        <li><strong>メールアドレス:</strong> <%= @user.email %></li>
+        <li><strong>パスワード:</strong> 登録時に設定したパスワード</li>
+      </ul>
+      
+      <p style="font-size: 14px; color: #6c757d;">
+        ログインURL: <%= @login_url %>
+      </p>
+      
+      <div class="footer">
+        <p>&copy; <%= Time.current.year %> MM-App. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

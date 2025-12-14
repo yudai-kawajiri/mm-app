@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #dc3545; color: white; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
+    .content { background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; }
+    .info-box { background-color: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; margin: 20px 0; }
+    .reason-box { background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; }
+    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6; text-align: center; font-size: 12px; color: #6c757d; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>ユーザー登録申請について</h2>
+    </div>
+
+    <div class="content">
+      <p><%= @user.name %> 様</p>
+      
+      <div class="info-box">
+        <p style="margin: 0;">
+          ユーザー登録申請が却下されました。
+        </p>
+      </div>
+      
+      <% if @admin_request.rejection_reason.present? %>
+        <div class="reason-box">
+          <p style="margin: 0 0 10px 0; font-weight: bold;">却下理由:</p>
+          <p style="margin: 0; white-space: pre-wrap;"><%= @admin_request.rejection_reason %></p>
+        </div>
+      <% end %>
+      
+      <p>ご不明な点がございましたら、管理者までお問い合わせください。</p>
+      
+      <div class="footer">
+        <p>&copy; <%= Time.current.year %> MM-App. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

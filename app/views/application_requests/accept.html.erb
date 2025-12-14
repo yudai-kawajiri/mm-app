@@ -1,0 +1,50 @@
+<% content_for :title, 'アカウント登録' %>
+<%= render layout: 'devise/shared/auth_card_frame' do %>
+
+  <h2 class="text-center mb-4">アカウント登録</h2>
+
+  <div class="alert alert-info mb-4">
+    <h6 class="mb-2"><i class="bi bi-info-circle me-2"></i>登録情報</h6>
+    <p class="mb-1"><strong>会社名:</strong> <%= @application_request.company_name %></p>
+    <p class="mb-1"><strong>お名前:</strong> <%= @application_request.admin_name %></p>
+    <p class="mb-0"><strong>メールアドレス:</strong> <%= @application_request.admin_email %></p>
+  </div>
+
+  <%= form_with url: accept_application_requests_path(token: params[:token]), method: :post, html: { data: { controller: 'form-validation' } } do |f| %>
+    <% if @error %>
+      <div class="alert alert-danger">
+        <%= @error %>
+      </div>
+    <% end %>
+
+    <div class="mb-4">
+      <%= label_tag :password, class: "form-label h5" do %>
+        パスワード<%= raw(t('helpers.required_mark')) %>
+      <% end %>
+      <%= password_field_tag :password, nil, 
+          autofocus: true,
+          autocomplete: "new-password",
+          class: "form-control form-control-lg", 
+          placeholder: t('devise.shared.minimum_password_length', count: 6),
+          required: true,
+          data: { 'form-validation-target': 'field' } %>
+    </div>
+
+    <div class="mb-4">
+      <%= label_tag :password_confirmation, class: "form-label h5" do %>
+        パスワード（確認）<%= raw(t('helpers.required_mark')) %>
+      <% end %>
+      <%= password_field_tag :password_confirmation, nil, 
+          autocomplete: "new-password",
+          class: "form-control form-control-lg", 
+          placeholder: t('devise.shared.minimum_password_length', count: 6),
+          required: true,
+          data: { 'form-validation-target': 'field' } %>
+    </div>
+
+    <div class="d-grid gap-2">
+      <%= f.submit "登録する", class: "btn btn-success btn-lg" %>
+    </div>
+  <% end %>
+
+<% end %>
