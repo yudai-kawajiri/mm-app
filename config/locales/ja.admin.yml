@@ -148,8 +148,8 @@ ja:
           store: "対象店舗"
           request_type: "リクエスト種別"
           status: "ステータス"
-          created_at: "作成日"
-          actions: "操作"
+          created_at: "登録日"
+          actions: "アクション"
       request_types:
         store_admin_request: "店舗管理者昇格"
         user_registration: "ユーザー登録"

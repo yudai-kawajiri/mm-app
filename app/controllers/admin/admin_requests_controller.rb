@@ -10,7 +10,7 @@ module Admin
     def index
       @admin_requests = AdminRequest
         .for_tenant(current_tenant)
-        .includes(:user, :store, :approved_by)
+        .includes(:user, :store)
         .recent
         .page(params[:page])
     end
