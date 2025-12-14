@@ -1,0 +1,46 @@
+<%= form_with(model: [:admin, user], local: true) do |form| %>
+  <% if user.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h4>
+      <ul>
+        <% user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :name, class: 'form-label' %>
+    <%= form.text_field :name, class: 'form-control', placeholder: t('admin.users.form.name_placeholder') %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :email, class: 'form-label' %>
+    <%= form.email_field :email, class: 'form-control', placeholder: t('admin.users.form.email_placeholder') %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :role, class: 'form-label' %>
+    <%= form.select :role, 
+        options_for_select([
+          [t('admin.users.roles.general'), 'general'],
+          [t('admin.users.roles.store_admin'), 'store_admin'],
+          [t('admin.users.roles.company_admin'), 'company_admin']
+        ], user.role),
+        { prompt: t('admin.users.form.role_placeholder') },
+        class: 'form-select' %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :store_id, class: 'form-label' %>
+    <%= form.collection_select :store_id, @stores, :id, :name,
+        { prompt: t('helpers.prompt.select'), include_blank: true },
+        class: 'form-select' %>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <%= link_to t('common.back'), admin_users_path, class: 'btn btn-secondary' %>
+    <%= form.submit t('admin.users.form.submit_create'), class: 'btn btn-primary' %>
+  </div>
+<% end %>
