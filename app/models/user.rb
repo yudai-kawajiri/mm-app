@@ -82,3 +82,12 @@ class User < ApplicationRecord
     errors.add(:invitation_code, :invalid) if invitation_code != valid_code
   end
 end
+
+  # Devise: 未承認ユーザーのログイン制御
+  def active_for_authentication?
+    super && approved?
+  end
+
+  def inactive_message
+    approved? ? super : :not_approved
+  end
