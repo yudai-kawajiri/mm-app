@@ -40,11 +40,11 @@ module Admin
     def system_log_event_badge(event)
       badge_class, label_key = case event
       when "create"
-                                 [ "bg-success", "admin.system_logs.events.create" ]
+                                 [ "bg-success", "admin.system_logs.actions.create" ]
       when "update"
-                                 [ "bg-warning", "admin.system_logs.events.update" ]
+                                 [ "bg-warning", "admin.system_logs.actions.update" ]
       when "destroy"
-                                 [ "bg-danger", "admin.system_logs.events.destroy" ]
+                                 [ "bg-danger", "admin.system_logs.actions.destroy" ]
       else
                                  [ "bg-secondary", "common.unknown" ]
       end

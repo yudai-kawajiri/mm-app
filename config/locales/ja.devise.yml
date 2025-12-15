@@ -40,7 +40,7 @@ ja:
         email_placeholder: "example@example.com"
         unhappy: "アカウントの使用をやめる場合"
         cancel_my_account: "アカウントを削除する"
-        cancel_confirm: "本当にアカウントを削除してもよろしいですか？この操作は取り消せません"
+        cancel_confirm: "本当にアカウントを削除してもよろしいですか？このアクションは取り消せません"
         password_placeholder: "変更しない場合は空欄"
         password_help: "空白の場合は変更しません"
         current_password_help: "変更を確定するには現在のパスワードが必要です"

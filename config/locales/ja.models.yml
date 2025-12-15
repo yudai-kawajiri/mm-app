@@ -55,7 +55,6 @@ ja:
     models:
       tenant: "テナント"
       admin_request: "承認リクエスト"
-      user: "アカウント"
       "resources/category": "カテゴリー"
       "resources/unit": "単位"
       material_order_group: "発注グループ"
@@ -69,6 +68,8 @@ ja:
       "planning/daily_target": "日別予算"
       "planning/actual_revenue": "実績売上"
       "management/monthly_budget": "月間予算"
+      store: "店舗"
+      user: "ユーザー"
 
     attributes:
       user:
@@ -101,6 +102,7 @@ ja:
         rejection_reason: "却下理由"
         approved_by_id: "承認者"
         approved_at: "承認日時"
+
       "resources/unit":
         name: "単位名"
         reading: "読み仮名"
@@ -181,11 +183,24 @@ ja:
       "planning/actual_revenue":
         revenue_date: "実績日"
         amount: "売上額"
-        description: "概要"
+        store_id: "店舗"
+        created_at: "登録日時"
+        updated_at: "更新日時"
 
       "management/monthly_budget":
         target_month: "対象月"
         target_amount: "予算額"
+        store_id: "店舗"
+        description: "概要"
+        created_at: "登録日時"
+        updated_at: "更新日時"
+
+      store:
+        code: "コード"
+        name: "店舗名"
+        invitation_code: "招待コード"
+        created_at: "登録日"
+        updated_at: "更新日"
         description: "概要"
 
     enums:
@@ -221,8 +236,26 @@ ja:
           pending: "承認待ち"
           approved: "承認済み"
           rejected: "却下"
+
       tenant:
         name: "企業名"
         subdomain: "サブドメイン"
         created_at: "登録日時"
         updated_at: "更新日時"
+
+  errors:
+    models:
+      store:
+        attributes:
+          code:
+            blank: "を入力してください"
+            taken: "は既に使用されています"
+          name:
+            blank: "を入力してください"
+            taken: "は既に使用されています"
+      user:
+        attributes:
+          email:
+            blank: "を入力してください"
+            taken: "は既に使用されています"
+            invalid: "は有効なメールアドレスではありません"

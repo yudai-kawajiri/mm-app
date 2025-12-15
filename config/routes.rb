@@ -67,8 +67,12 @@ Rails.application.routes.draw do
         post :reject
       end
     end
-    resources :users, only: [:index, :new, :create, :edit, :update, :destroy]
-    resources :stores
+    resources :users, only: [:index, :new, :create, :show, :edit, :update, :destroy]
+    resources :stores do
+      member do
+        post :regenerate_invitation_code
+      end
+    end
     resources :system_logs, only: [:index]
   end
 

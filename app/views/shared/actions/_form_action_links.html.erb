@@ -2,22 +2,21 @@
 <% 
   resource = local_assigns[:resource]
   back_url = local_assigns[:back_url]
-  scope = local_assigns[:scope] # 追加: scope を受け取る
-  form_object = local_assigns[:f] # 追加: form object を受け取る
+  scope = local_assigns[:scope]
+  form_object = local_assigns[:f]
 %>
 
-<% if resource.persisted? %>
-  <% final_back_url = back_url.presence || resource %>
+<% if back_url.present? %>
+  <% final_back_url = back_url %>
 <% else %>
   <% if scope.present? %>
-    <% resource_list_path = send([scope, resource.class.model_name.route_key].flatten.join('_') + '_path') %>
+    <% final_back_url = send("#{scope}_#{resource.class.model_name.route_key}_path") %>
   <% else %>
-    <% resource_list_path = send(resource.class.model_name.route_key + '_path') %>
+    <% final_back_url = send("#{resource.class.model_name.route_key}_path") %>
   <% end %>
-  <% final_back_url = back_url.presence || resource_list_path %>
 <% end %>
 
-<div class="d-flex gap-2">
-  <%= link_to t('helpers.link.cancel'), final_back_url, class: 'btn btn-secondary' %>
-  <%= form_object.submit resource.persisted? ? t('helpers.submit.update') : t('helpers.submit.create'), class: 'btn btn-primary' %>
+<div class="d-flex justify-content-end gap-2 mt-4">
+  <%= link_to t('common.cancel'), final_back_url, class: 'btn btn-secondary' %>
+  <%= form_object.submit resource.persisted? ? t('common.update') : t('common.create'), class: 'btn btn-primary' %>
 </div>

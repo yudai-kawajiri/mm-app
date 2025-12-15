@@ -1,0 +1,22 @@
+<%# 店舗フォームのフィールド部分 %>
+<div class="row">
+  <div class="col-md-6">
+    <div class="mb-3">
+      <%= f.label :code, class: 'form-label h5' do %>
+        <%= Store.human_attribute_name(:code) %>
+        <span class="text-danger">*</span>
+      <% end %>
+      <%= f.text_field :code, class: 'form-control', placeholder: t('admin.stores.form.code_placeholder'), required: true %>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="mb-3">
+      <%= f.label :name, class: 'form-label h5' do %>
+        <%= Store.human_attribute_name(:name) %>
+        <span class="text-danger">*</span>
+      <% end %>
+      <%= f.text_field :name, class: 'form-control', placeholder: t('admin.stores.form.name_placeholder'), required: true %>
+    </div>
+  </div>
+</div>

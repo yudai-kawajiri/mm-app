@@ -1,13 +1,6 @@
-<%= content_for(:title, t('admin.users.new.title')) %>
+<%= content_for :title, t('admin.users.new.title') %>
 
-<div class="container mt-4">
-  <div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-      <h2 class="mb-0"><%= t('admin.users.new.title') %></h2>
-    </div>
-
-    <div class="card-body">
-      <%= render 'form', user: @user %>
-    </div>
-  </div>
-</div>
+<%= render 'shared/resource_form',
+  resource: @user,
+  form_title: t('admin.users.new.title'),
+  scope: :admin %>

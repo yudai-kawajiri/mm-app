@@ -13,14 +13,14 @@
   <% if icon_mode %>
     <% if show_link %>
       <%= link_to resource_path_with_scope(resource, scope),
-          class: 'btn btn-sm btn-outline-primary me-1',
+          class: 'btn btn-sm btn-light me-1',
           title: t('helpers.link.show') do %>
         <i class="bi bi-eye"></i>
       <% end %>
     <% end %>
 
     <%= link_to resource_path_with_scope(resource, scope, :edit),
-        class: 'btn btn-sm btn-outline-secondary me-1',
+        class: 'btn btn-sm btn-light me-1',
         title: t('helpers.link.edit') do %>
       <i class="bi bi-pencil"></i>
     <% end %>
@@ -28,7 +28,7 @@
     <% if show_copy && copy_url.present? %>
       <%= button_to copy_url,
           method: :post,
-          class: 'btn btn-sm btn-outline-info me-1',
+          class: 'btn btn-sm btn-light me-1',
           title: t('helpers.link.copy'),
           form: { style: 'display: inline-block;' } do %>
         <i class="bi bi-files"></i>
@@ -37,7 +37,7 @@
 
     <% if show_print && print_url.present? %>
       <%= link_to print_url,
-          class: 'btn btn-sm btn-outline-success me-1',
+          class: 'btn btn-sm btn-light me-1',
           title: t('helpers.link.print'),
           target: '_blank' do %>
         <i class="bi bi-printer"></i>
@@ -46,25 +46,25 @@
 
     <%= button_to resource_path_with_scope(resource, scope),
         method: :delete,
-        class: 'btn btn-sm btn-outline-danger',
+        class: 'btn btn-sm btn-danger',
         title: t('helpers.link.destroy'),
         form: { 
           style: 'display: inline-block;',
-          data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource_name) }
+          data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource.class.model_name.human) }
         } do %>
       <i class="bi bi-trash"></i>
     <% end %>
   <% else %>
     <% if show_link %>
-      <%= link_to t('helpers.link.show'), resource_path_with_scope(resource, scope), class: 'btn btn-sm btn-outline-primary me-1' %>
+      <%= link_to t('helpers.link.show'), resource_path_with_scope(resource, scope), class: 'btn btn-sm btn-light me-1' %>
     <% end %>
-    <%= link_to t('helpers.link.edit'), resource_path_with_scope(resource, scope, :edit), class: 'btn btn-sm btn-outline-secondary me-1' %>
+    <%= link_to t('helpers.link.edit'), resource_path_with_scope(resource, scope, :edit), class: 'btn btn-sm btn-light me-1' %>
     <% if show_copy && copy_url.present? %>
-      <%= button_to t('helpers.link.copy'), copy_url, method: :post, class: 'btn btn-sm btn-outline-info me-1' %>
+      <%= button_to t('helpers.link.copy'), copy_url, method: :post, class: 'btn btn-sm btn-light me-1' %>
     <% end %>
     <% if show_print && print_url.present? %>
-      <%= link_to t('helpers.link.print'), print_url, class: 'btn btn-sm btn-outline-success me-1', target: '_blank' %>
+      <%= link_to t('helpers.link.print'), print_url, class: 'btn btn-sm btn-light me-1', target: '_blank' %>
     <% end %>
-    <%= button_to t('helpers.link.destroy'), resource_path_with_scope(resource, scope), method: :delete, class: 'btn btn-sm btn-outline-danger', data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource_name) } %>
+    <%= button_to t('helpers.link.destroy'), resource_path_with_scope(resource, scope), method: :delete, class: 'btn btn-sm btn-danger', data: { turbo_confirm: t('helpers.confirm.destroy', resource: resource.class.model_name.human) } %>
   <% end %>
 </div>

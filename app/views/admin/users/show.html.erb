@@ -1,0 +1,10 @@
+<%# ユーザー詳細画面 %>
+<%= render 'shared/details/resource_show',
+  resource: @user,
+  title: t('admin.users.show.title'),
+  content_left_partial: 'admin/users/details',
+  content_left_title: nil,
+  partial_locals: { user: @user },
+  scope: :admin,
+  show_edit_button: true,
+  show_delete_button: true %>
