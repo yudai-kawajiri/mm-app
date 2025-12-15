@@ -1,72 +1,70 @@
-<% content_for :title, 'アプリケーション責任者依頼' %>
+<% content_for :title, t('application_requests.new.title') %>
+
 <%= render layout: 'devise/shared/auth_card_frame' do %>
+  <h2 class="text-center mb-4"><%= t('application_requests.new.heading') %></h2>
 
-  <h2 class="text-center mb-4">アプリケーション責任者依頼</h2>
-
-  <%= form_with model: @application_request, url: application_requests_path, html: { data: { controller: 'form-validation' } } do |f| %>
+  <%= form_with model: @application_request, url: application_requests_path, 
+                data: { turbo: false, controller: 'form-validation' } do |f| %>
+    
     <%= render "devise/shared/error_messages", resource: @application_request %>
 
+    <!-- 会社情報 -->
     <div class="mb-4 pb-3 border-bottom">
-      <h5 class="text-muted mb-3">
-        <i class="bi bi-building me-2"></i>会社情報
-      </h5>
-
-      <div class="mb-4">
-        <%= f.label :company_name, class: "form-label h5" do %>
-          会社名<%= raw(t('helpers.required_mark')) %>
-        <% end %>
-        <%= f.text_field :company_name, autofocus: true, class: "form-control form-control-lg", placeholder: "株式会社サンプル", required: true, data: { 'form-validation-target': 'field' } %>
+      <h5 class="text-muted mb-3"><%= t('application_requests.new.company_info') %></h5>
+      
+      <div class="form-floating mb-3">
+        <%= f.text_field :company_name, 
+                         class: "form-control", 
+                         placeholder: t('application_requests.new.company_name_placeholder'),
+                         autofocus: true %>
+        <%= f.label :company_name, t('application_requests.new.company_name') %>
       </div>
 
-      <div class="mb-4">
-        <%= f.label :company_email, class: "form-label h5" do %>
-          会社メールアドレス<%= raw(t('helpers.required_mark')) %>
-        <% end %>
-        <%= f.email_field :company_email, class: "form-control form-control-lg", placeholder: "info@example.com", required: true, data: { 'form-validation-target': 'field' } %>
+      <div class="form-floating mb-3">
+        <%= f.email_field :company_email, 
+                          class: "form-control", 
+                          placeholder: t('application_requests.new.company_email_placeholder') %>
+        <%= f.label :company_email, t('application_requests.new.company_email') %>
       </div>
 
-      <div class="mb-4">
-        <%= f.label :company_phone, class: "form-label h5" do %>
-          電話番号
-        <% end %>
-        <%= f.text_field :company_phone, class: "form-control form-control-lg", placeholder: "03-1234-5678", data: { 'form-validation-target': 'field' } %>
-        <small class="form-text text-muted">任意項目です</small>
+      <div class="form-floating mb-2">
+        <%= f.telephone_field :company_phone, 
+                              class: "form-control", 
+                              placeholder: t('application_requests.new.company_phone_placeholder') %>
+        <%= f.label :company_phone, t('application_requests.new.company_phone') %>
       </div>
+      <small class="text-muted"><%= t('application_requests.new.optional_field') %></small>
     </div>
 
+    <!-- 責任者情報 -->
     <div class="mb-4">
-      <h5 class="text-muted mb-3">
-        <i class="bi bi-person-badge me-2"></i>責任者情報
-      </h5>
-
-      <div class="mb-4">
-        <%= f.label :admin_name, class: "form-label h5" do %>
-          責任者氏名<%= raw(t('helpers.required_mark')) %>
-        <% end %>
-        <%= f.text_field :admin_name, class: "form-control form-control-lg", placeholder: "山田太郎", required: true, data: { 'form-validation-target': 'field' } %>
+      <h5 class="text-muted mb-3"><%= t('application_requests.new.admin_info') %></h5>
+      
+      <div class="form-floating mb-3">
+        <%= f.text_field :admin_name, 
+                         class: "form-control", 
+                         placeholder: t('application_requests.new.admin_name_placeholder') %>
+        <%= f.label :admin_name, t('application_requests.new.admin_name') %>
       </div>
 
-      <div class="mb-4">
-        <%= f.label :admin_email, class: "form-label h5" do %>
-          責任者メールアドレス<%= raw(t('helpers.required_mark')) %>
-        <% end %>
-        <%= f.email_field :admin_email, class: "form-control form-control-lg", placeholder: "admin@example.com", required: true, data: { 'form-validation-target': 'field' } %>
-        <small class="form-text text-muted">
-          招待URLがこのメールアドレスに送信されます
-        </small>
+      <div class="form-floating mb-2">
+        <%= f.email_field :admin_email, 
+                          class: "form-control", 
+                          placeholder: t('application_requests.new.admin_email_placeholder') %>
+        <%= f.label :admin_email, t('application_requests.new.admin_email') %>
       </div>
+      <small class="text-muted"><%= t('application_requests.new.admin_email_hint') %></small>
     </div>
 
-    <div class="d-grid gap-2">
-      <%= f.submit "招待メールを送信", class: "btn btn-success btn-lg" %>
+    <!-- 送信ボタン -->
+    <div class="d-grid">
+      <%= f.submit t('application_requests.new.submit'), class: 'btn btn-primary btn-lg' %>
     </div>
   <% end %>
 
-  <div class="text-end mt-4">
-    <%= link_to root_path, class: "btn btn-outline-secondary btn-sm" do %>
-      <i class="bi bi-arrow-left"></i>
-      <%= t('landing.back_to_top') %>
-    <% end %>
+  <!-- 利用規約・プライバシーポリシーリンク -->
+  <div class="mt-3 text-center small text-muted">
+    <%= link_to t('common.terms'), terms_path, class: 'text-decoration-none' %> | 
+    <%= link_to t('common.privacy'), privacy_path, class: 'text-decoration-none' %>
   </div>
-
 <% end %>

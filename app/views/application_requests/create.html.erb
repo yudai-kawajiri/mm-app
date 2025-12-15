@@ -1,2 +1,23 @@
-<h1>ApplicationRequests#create</h1>
-<p>Find me in app/views/application_requests/create.html.erb</p>
+<%# 企業利用申請完了画面 %>
+<%= content_for :title, '利用申請完了' %>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+          <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+          <h2 class="mt-4 mb-3"><%= t('application_requests.create.title') %></h2>
+          <p class="text-muted mb-4">
+            <%= t('application_requests.create.message_html') %>
+          </p>
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            <%= t('application_requests.create.notice') %>
+          </div>
+          <%= link_to t('landing.back_to_top'), root_path, class: 'btn btn-primary mt-3' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

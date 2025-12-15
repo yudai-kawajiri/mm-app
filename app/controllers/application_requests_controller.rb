@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 class ApplicationRequestsController < ApplicationController
+  layout 'application'  # ナビゲーションバーなしのレイアウトを明示的に指定
+  
   before_action :find_application_request_by_token, only: [:accept, :accept_confirm]
 
   def new
@@ -11,19 +15,19 @@ class ApplicationRequestsController < ApplicationController
 
     if @application_request.save
       ApplicationRequestMailer.invitation_email(@application_request).deliver_later
-      redirect_to root_path, notice: 'アプリケーション責任者に招待メールを送信しました。'
+      redirect_to root_path, notice: t('application_requests.create.notice')
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def accept
-    return redirect_to root_path, alert: '招待URLが無効です。' unless @application_request&.acceptable?
-    return redirect_to root_path, alert: '招待の有効期限が切れています。' if @application_request.expired?
+    return redirect_to root_path, alert: t('application_requests.accept.errors.invalid_token') unless @application_request&.acceptable?
+    return redirect_to root_path, alert: t('application_requests.accept.errors.expired') if @application_request.expired?
   end
 
   def accept_confirm
-    return redirect_to root_path, alert: t('application_requests.errors.invalid_token') unless @application_request&.acceptable?
+    return redirect_to root_path, alert: t('application_requests.accept.errors.invalid_token') unless @application_request&.acceptable?
 
     ActiveRecord::Base.transaction do
       subdomain = generate_subdomain(@application_request.company_name)
@@ -37,7 +41,7 @@ class ApplicationRequestsController < ApplicationController
 
       store = tenant.stores.create!(
         name: "#{@application_request.company_name}本店",
-        code: '001'  # ← デフォルトのコードを設定
+        code: '001'
       )
 
       user = User.create!(
@@ -56,23 +60,17 @@ class ApplicationRequestsController < ApplicationController
         status: :completed
       )
 
-      # ログイン処理
       sign_in(user)
       
-      # ダッシュボードにリダイレクト
-      redirect_to authenticated_root_url(subdomain: subdomain), notice: t('application_requests.messages.registration_complete')
+      redirect_to authenticated_root_url(subdomain: subdomain), 
+                  notice: t('application_requests.accept.messages.registration_complete'),
+                  allow_other_host: true
     end
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error("ApplicationRequest accept_confirm failed: #{e.message}")
-    flash.now[:alert] = t('application_requests.errors.registration_failed')
+    flash.now[:alert] = t('application_requests.accept.errors.registration_failed')
     render :accept, status: :unprocessable_entity
   end
-
-
-
-
-
-
 
   private
 
