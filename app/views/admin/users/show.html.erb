@@ -1,0 +1,42 @@
+<%= content_for(:title, t('admin.users.show.title')) %>
+
+<div class="container-fluid">
+  <%= render 'shared/layouts/header_with_actions',
+      title: @user.name,
+      resource: @user,
+      is_index_page: false,
+      is_form_page: false,
+      is_show_page: true,
+      edit_path: edit_admin_user_path(@user) %>
+
+  <div class="card">
+    <div class="card-body">
+      <dl class="row mb-0">
+        <dt class="col-sm-3"><%= User.human_attribute_name(:name) %></dt>
+        <dd class="col-sm-9"><%= @user.name %></dd>
+
+        <dt class="col-sm-3"><%= User.human_attribute_name(:email) %></dt>
+        <dd class="col-sm-9"><%= @user.email %></dd>
+
+        <dt class="col-sm-3"><%= User.human_attribute_name(:role) %></dt>
+        <dd class="col-sm-9">
+          <% if @user.super_admin? %>
+            <span class="badge bg-danger"><%= t('admin.users.roles.super_admin') %></span>
+          <% elsif @user.company_admin? %>
+            <span class="badge bg-warning"><%= t('admin.users.roles.company_admin') %></span>
+          <% elsif @user.store_admin? %>
+            <span class="badge bg-info"><%= t('admin.users.roles.store_admin') %></span>
+          <% else %>
+            <span class="badge bg-secondary"><%= t('admin.users.roles.general') %></span>
+          <% end %>
+        </dd>
+
+        <dt class="col-sm-3"><%= User.human_attribute_name(:store) %></dt>
+        <dd class="col-sm-9"><%= @user.store&.name || '-' %></dd>
+
+        <dt class="col-sm-3"><%= User.human_attribute_name(:created_at) %></dt>
+        <dd class="col-sm-9"><%= l(@user.created_at, format: :long) %></dd>
+      </dl>
+    </div>
+  </div>
+</div>
