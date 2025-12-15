@@ -1,7 +1,7 @@
 <%= form_with(model: [:admin, user], local: true) do |form| %>
   <% if user.errors.any? %>
     <div class="alert alert-danger">
-      <h4><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h4>
+      <h4><%= t('errors.template.header', count: user.errors.count, model: User.model_name.human) %></h4>
       <ul>
         <% user.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -39,8 +39,8 @@
         class: 'form-select' %>
   </div>
 
-  <div class="d-flex justify-content-between">
-    <%= link_to t('common.back'), admin_users_path, class: 'btn btn-secondary' %>
-    <%= form.submit t('admin.users.form.submit_create'), class: 'btn btn-primary' %>
+  <div class="d-flex justify-content-end gap-2 mt-4">
+    <%= link_to t('common.cancel'), admin_users_path, class: 'btn btn-secondary' %>
+    <%= form.submit user.new_record? ? t('admin.users.form.submit_create') : t('admin.users.form.submit_update'), class: 'btn btn-primary' %>
   </div>
 <% end %>

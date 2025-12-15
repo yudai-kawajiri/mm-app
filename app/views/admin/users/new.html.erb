@@ -1,9 +1,14 @@
-<%= content_for(:title, t('admin.users.new.title')) %>
+<%= content_for :title, t('admin.users.new.title') %>
 
 <div class="container mt-4">
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white">
-      <h2 class="mb-0"><%= t('admin.users.new.title') %></h2>
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0"><%= t('admin.users.new.title') %></h2>
+        <%= link_to admin_users_path, class: 'text-white text-decoration-none' do %>
+          <i class="bi bi-arrow-left"></i>
+        <% end %>
+      </div>
     </div>
 
     <div class="card-body">
