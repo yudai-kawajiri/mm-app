@@ -85,8 +85,8 @@ ja:
     copy:
       success: '%{resource}をコピーしました'
       failure: '%{resource}のコピーに失敗しました'
-    not_authorized: この操作を実行する権限がありません
-    require_store_selected: この操作を実行するには店舗を選択してください。
+    not_authorized: このアクションを実行する権限がありません
+    require_store_selected: このアクションを実行するには店舗を選択してください。
   common:
     menu:
       tenant_management: "テナント管理"
@@ -177,12 +177,6 @@ ja:
     label:
       user:
         remember_me: ログイン情報を記憶する
-  errors:
-    template:
-      header:
-        one: '%{model}にエラーが発生しました'
-        other: '%{count}件のエラーが発生したため、%{model}を保存できませんでした'
-      body: '以下の項目を確認してください:'
     messages:
       budget_created: 予算を設定しました
       budget_create_failed: 予算の設定に失敗しました
@@ -267,7 +261,7 @@ ja:
       videos: 使い方動画
       faq: よくある質問
     categories:
-      basic_operations: 基本操作
+      basic_operations: 基本アクション
       numerical_management: 数値管理
       resource_management: リソース管理
       production_planning: 製造計画
@@ -285,7 +279,7 @@ ja:
         description: 一覧画面からのステータス変更方法
         youtube_id: eSg2Ner68Fs
       crud_operations:
-        title: 基本操作の使い方
+        title: 基本アクションの使い方
         description: 一覧、登録、詳細、編集、削除の操作方法
         youtube_id: lO3DTU1I-D4
       print_function:
@@ -336,7 +330,7 @@ ja:
       search_function: 検索 フィルター 絞り込み キーワード
       copy_function: コピー 複製 データ
       status_update: ステータス 状態 更新 変更 一覧
-      crud_operations: '基本操作 一覧 登録 詳細 編集 更新 削除 '
+      crud_operations: '基本アクション 一覧 登録 詳細 編集 更新 削除 '
       print_function: 印刷 出力 プリント PDF
       monthly_budget: 月間 予算 設定 売上
       daily_budget_and_actual: 日別予算 実績入力 一括編集 モーダル 数値管理 予算編集 実績登録
@@ -488,63 +482,7 @@ ja:
       previous: '&laquo; 前'
       next: 次 &raquo;
       truncate: '&hellip;'
-  admin:
-    users:
-      index:
-        title: ユーザー管理
-        table_headers:
-          name: 名前
-          email: メールアドレス
-          role: 権限
-          registered_date: 登録日
-          actions: 操作
-        role_badges:
-          admin: 管理者
-          staff: スタッフ
-        actions:
-          delete: 削除
-          self: (自分)
-        confirm:
-          delete: '%{name}を削除してもよろしいですか?'
-        empty_message: ユーザーが登録されていません
-      messages:
-        user_deleted: '%{name}を削除しました'
-        user_delete_failed: '%{name}の削除に失敗しました'
-    system_logs:
-      index:
-        title: システムログ
-        model: モデル
-        user: ユーザー
-        date_from: 開始日
-        date_to: 終了日
-        filter: 絞り込む
-        datetime: 日時
-        action: 操作
-        record_id: レコードID
-        detail: 詳細
-        no_logs: ログが見つかりません
-  activerecord:
-    errors:
-      models:
-        tenant:
-          attributes:
-            subdomain:
-              taken: "はすでに存在します"
-    models:
-      management/daily_target: 日別目標
-    attributes:
-      contact:
-        name: お名前
-        email: メールアドレス
-        subject: 件名
-        message: お問い合わせ内容
-      tenant:
-        name: "テナント名"
-        subdomain: "サブドメイン"
-        created_at: "作成日"
-        updated_at: "更新日"
   landing:
-    title: MM-App
     subtitle: 製造業向けの包括的な生産管理・数値管理システム
     welcome: ようこそ
     description: 原材料管理から製造計画、売上予測まで一元管理
@@ -706,7 +644,6 @@ ja:
         name: "テナント名"
         subdomain: "サブドメイン"
         created_at: "作成日"
-        updated_at: "更新日"
       message_placeholder: 具体的なお問い合わせ内容をご記入ください
       message_hint: 最大5000文字まで入力できます
       message_max_length: '5000'
@@ -728,14 +665,7 @@ ja:
       all_stores: 全店舗表示に切り替えました
       not_found: 店舗が見つかりませんでした
       unauthorized: この機能を利用する権限がありません
-  dashboard:
-    sidebar:
-      company: 会社
-      store: 店舗
-      all_stores: 全店舗
-
-  errors:
-    unauthorized: "権限がありません"
+      unauthorized: "権限がありません"
 
   # Devise メーラー
   devise:
@@ -800,3 +730,12 @@ ja:
       rejected_message: 'ユーザー登録申請が却下されました。'
       reason_label: '却下理由:'
       contact_message: 'ご不明な点がございましたら、管理者までお問い合わせください。'
+
+
+  activerecord:
+    errors:
+      template:
+        header:
+          one: "%{model}の保存に失敗しました"
+          other: "%{count}件のエラーが発生したため、%{model}の保存に失敗しました"
+        body: "以下の項目を確認してください:"
