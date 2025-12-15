@@ -5,10 +5,11 @@
   back_path: admin_users_path %>
 
 <div class="row">
+  <!-- Left: User Details -->
   <div class="col-md-6">
     <div class="card mb-4">
       <div class="card-header">
-        <h5 class="mb-0"><%= t('admin.users.show.title') %></h5>
+        <h5 class="mb-0"><%= t('admin.users.show.user_info') %></h5>
       </div>
       <div class="card-body">
         <dl class="row mb-0">
@@ -38,15 +39,6 @@
           <dd class="col-sm-8"><%= l(@user.created_at, format: :long) %></dd>
         </dl>
       </div>
-    </div>
-
-    <div class="d-flex gap-2">
-      <%= link_to edit_admin_user_path(@user), class: 'btn btn-primary' do %>
-        <i class="bi bi-pencil"></i> <%= t('common.edit') %>
-      <% end %>
-      <%= link_to admin_users_path, class: 'btn btn-secondary' do %>
-        <i class="bi bi-arrow-left"></i> <%= t('common.back') %>
-      <% end %>
     </div>
   </div>
 </div>
