@@ -1,11 +1,3 @@
-<%= content_for :title, t('admin.stores.edit.title') %>
-
-<div class="mb-4">
-  <h1 class="h3"><%= t('admin.stores.edit.title') %></h1>
-</div>
-
-<div class="card">
-  <div class="card-body">
-    <%= render 'form' %>
-  </div>
-</div>
+<%= render 'shared/resource_form',
+  resource: @store,
+  form_title: t('admin.stores.edit.title') %>

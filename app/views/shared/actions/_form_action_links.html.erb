@@ -2,8 +2,8 @@
 <% 
   resource = local_assigns[:resource]
   back_url = local_assigns[:back_url]
-  scope = local_assigns[:scope] # 追加: scope を受け取る
-  form_object = local_assigns[:f] # 追加: form object を受け取る
+  scope = local_assigns[:scope]
+  form_object = local_assigns[:f]
 %>
 
 <% if resource.persisted? %>
@@ -17,7 +17,7 @@
   <% final_back_url = back_url.presence || resource_list_path %>
 <% end %>
 
-<div class="d-flex gap-2">
-  <%= link_to t('helpers.link.cancel'), final_back_url, class: 'btn btn-secondary' %>
-  <%= form_object.submit resource.persisted? ? t('helpers.submit.update') : t('helpers.submit.create'), class: 'btn btn-primary' %>
+<div class="d-flex justify-content-end gap-2 mt-4">
+  <%= link_to t('common.cancel'), final_back_url, class: 'btn btn-secondary' %>
+  <%= form_object.submit resource.persisted? ? t('common.update') : t('common.create'), class: 'btn btn-primary' %>
 </div>
