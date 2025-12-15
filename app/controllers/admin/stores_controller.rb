@@ -2,10 +2,18 @@
 
 class Admin::StoresController < AuthenticatedController
   before_action :require_company_admin
-  before_action :set_store, only: [:edit, :update, :destroy]
+  before_action :set_store, only: [:show, :edit, :update, :destroy, :regenerate_invitation_code]
 
   def index
-    @stores = current_user.tenant.stores.order(:code)
+    @stores = current_user.tenant.stores
+                         .left_joins(:users)
+                         .select('stores.*, COUNT(users.id) as users_count')
+                         .group('stores.id')
+                         .order(:code)
+  end
+
+  def show
+    @users = @store.users.includes(:tenant).order(:created_at)
   end
 
   def new
@@ -37,8 +45,13 @@ class Admin::StoresController < AuthenticatedController
       redirect_to admin_stores_path, alert: t('admin.stores.cannot_delete_with_users')
     else
       @store.destroy
-      redirect_to admin_stores_path, notice: t('admin.stores.deleted')
+      redirect_to admin_stores_path, notice: t('admin.stores.destroyed')
     end
+  end
+
+  def regenerate_invitation_code
+    @store.regenerate_invitation_code!
+    redirect_to admin_store_path(@store), notice: t('admin.stores.invitation_code_regenerated')
   end
 
   private
