@@ -1,42 +1,52 @@
-<%= content_for(:title, t('admin.users.show.title')) %>
+<%= content_for :title, @user.name %>
 
-<div class="container-fluid">
-  <%= render 'shared/layouts/header_with_actions',
-      title: @user.name,
-      resource: @user,
-      is_index_page: false,
-      is_form_page: false,
-      is_show_page: true,
-      edit_path: edit_admin_user_path(@user) %>
+<%= render 'shared/layouts/header_with_actions',
+  title: @user.name,
+  back_path: admin_users_path %>
 
-  <div class="card">
-    <div class="card-body">
-      <dl class="row mb-0">
-        <dt class="col-sm-3"><%= User.human_attribute_name(:name) %></dt>
-        <dd class="col-sm-9"><%= @user.name %></dd>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0"><%= t('admin.users.show.title') %></h5>
+      </div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-sm-4"><%= User.human_attribute_name(:name) %></dt>
+          <dd class="col-sm-8"><%= @user.name %></dd>
 
-        <dt class="col-sm-3"><%= User.human_attribute_name(:email) %></dt>
-        <dd class="col-sm-9"><%= @user.email %></dd>
+          <dt class="col-sm-4"><%= User.human_attribute_name(:email) %></dt>
+          <dd class="col-sm-8"><%= @user.email %></dd>
 
-        <dt class="col-sm-3"><%= User.human_attribute_name(:role) %></dt>
-        <dd class="col-sm-9">
-          <% if @user.super_admin? %>
-            <span class="badge bg-danger"><%= t('admin.users.roles.super_admin') %></span>
-          <% elsif @user.company_admin? %>
-            <span class="badge bg-warning"><%= t('admin.users.roles.company_admin') %></span>
-          <% elsif @user.store_admin? %>
-            <span class="badge bg-info"><%= t('admin.users.roles.store_admin') %></span>
-          <% else %>
-            <span class="badge bg-secondary"><%= t('admin.users.roles.general') %></span>
-          <% end %>
-        </dd>
+          <dt class="col-sm-4"><%= User.human_attribute_name(:role) %></dt>
+          <dd class="col-sm-8">
+            <% if @user.super_admin? %>
+              <span class="badge bg-danger"><%= t('admin.users.roles.super_admin') %></span>
+            <% elsif @user.company_admin? %>
+              <span class="badge bg-warning"><%= t('admin.users.roles.company_admin') %></span>
+            <% elsif @user.store_admin? %>
+              <span class="badge bg-info"><%= t('admin.users.roles.store_admin') %></span>
+            <% else %>
+              <span class="badge bg-secondary"><%= t('admin.users.roles.general') %></span>
+            <% end %>
+          </dd>
 
-        <dt class="col-sm-3"><%= User.human_attribute_name(:store) %></dt>
-        <dd class="col-sm-9"><%= @user.store&.name || '-' %></dd>
+          <dt class="col-sm-4"><%= User.human_attribute_name(:store) %></dt>
+          <dd class="col-sm-8"><%= @user.store&.name || '-' %></dd>
 
-        <dt class="col-sm-3"><%= User.human_attribute_name(:created_at) %></dt>
-        <dd class="col-sm-9"><%= l(@user.created_at, format: :long) %></dd>
-      </dl>
+          <dt class="col-sm-4"><%= User.human_attribute_name(:created_at) %></dt>
+          <dd class="col-sm-8"><%= l(@user.created_at, format: :long) %></dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <%= link_to edit_admin_user_path(@user), class: 'btn btn-primary' do %>
+        <i class="bi bi-pencil"></i> <%= t('common.edit') %>
+      <% end %>
+      <%= link_to admin_users_path, class: 'btn btn-secondary' do %>
+        <i class="bi bi-arrow-left"></i> <%= t('common.back') %>
+      <% end %>
     </div>
   </div>
 </div>

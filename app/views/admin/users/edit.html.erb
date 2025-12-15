@@ -1,16 +1,11 @@
-<%= content_for(:title, t('admin.users.edit.title')) %>
+<%= content_for :title, t('admin.users.edit.title') %>
 
-<div class="container-fluid">
-  <%= render 'shared/layouts/header_with_actions',
-      title: t('admin.users.edit.title'),
-      resource: @user,
-      is_index_page: false,
-      is_form_page: true,
-      is_show_page: false %>
+<%= render 'shared/layouts/header_with_actions',
+  title: t('admin.users.edit.title'),
+  back_path: admin_users_path %>
 
-  <div class="card">
-    <div class="card-body">
-      <%= render 'form', user: @user %>
-    </div>
+<div class="card">
+  <div class="card-body">
+    <%= render 'form', user: @user %>
   </div>
 </div>
