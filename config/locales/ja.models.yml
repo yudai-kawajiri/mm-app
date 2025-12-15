@@ -179,11 +179,26 @@ ja:
         description: "概要"
 
       "planning/actual_revenue":
+      "management/monthly_budget":
+        target_month: "対象月"
+        target_amount: "予算額"
+        description: "概要"
+
+      store:
+        code: "コード"
+        name: "店舗名"
+        invitation_code: "招待コード"
+        created_at: "登録日"
+        updated_at: "更新日"
         revenue_date: "実績日"
         amount: "売上額"
         description: "概要"
 
-      "management/monthly_budget":
+        code: "コード"
+        name: "店舗名"
+        invitation_code: "招待コード"
+        created_at: "登録日"
+        updated_at: "更新日"
         target_month: "対象月"
         target_amount: "予算額"
         description: "概要"
@@ -226,3 +241,20 @@ ja:
         subdomain: "サブドメイン"
         created_at: "登録日時"
         updated_at: "更新日時"
+
+  errors:
+    models:
+      store:
+        attributes:
+          code:
+            blank: "を入力してください"
+            taken: "は既に使用されています"
+          name:
+            blank: "を入力してください"
+            taken: "は既に使用されています"
+      user:
+        attributes:
+          email:
+            blank: "を入力してください"
+            taken: "は既に使用されています"
+            invalid: "は有効なメールアドレスではありません"

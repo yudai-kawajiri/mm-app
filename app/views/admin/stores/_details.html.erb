@@ -1,0 +1,115 @@
+<%# 店舗詳細表示 %>
+<% store = local_assigns[:store] || local_assigns[:resource] %>
+<% store_class = store.class %>
+
+<div class="pt-1">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
+          <%= store_class.human_attribute_name(:code) %>
+        </label>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= store.code %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
+          <%= store_class.human_attribute_name(:name) %>
+        </label>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= store.name %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
+          <%= store_class.human_attribute_name(:invitation_code) %>
+        </label>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <code class="fs-5"><%= store.invitation_code %></code>
+          <%= button_to t('admin.stores.show.regenerate_code'),
+                        regenerate_invitation_code_admin_store_path(store),
+                        method: :post,
+                        form: { data: { turbo_confirm: t('admin.stores.show.confirm_regenerate') } },
+                        class: 'btn btn-sm btn-outline-secondary mt-2' %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
+          <%= store_class.human_attribute_name(:created_at) %>
+        </label>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= l(store.created_at, format: :long) %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="mb-3 py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
+          <%= t('admin.stores.show.statistics') %>
+        </label>
+        <div class="row text-center mt-2">
+          <div class="col-6">
+            <div class="border rounded p-3">
+              <div class="fs-2 fw-bold text-primary"><%= store.users.count %></div>
+              <div class="text-muted small"><%= t('admin.stores.show.total_users') %></div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="border rounded p-3">
+              <div class="fs-2 fw-bold text-success"><%= store.users.where(approved: true).count %></div>
+              <div class="text-muted small"><%= t('admin.stores.show.approved_users') %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-light">
+          <h6 class="mb-0"><%= t('admin.stores.show.users_list') %></h6>
+        </div>
+        <div class="card-body">
+          <% if store.users.any? %>
+            <div class="list-group list-group-flush">
+              <% store.users.each do |user| %>
+                <div class="list-group-item px-0">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <div class="fw-semibold"><%= user.name %></div>
+                      <small class="text-muted"><%= user.email %></small>
+                    </div>
+                    <div>
+                      <% if user.approved %>
+                        <span class="badge bg-success"><%= t('admin.stores.show.approved') %></span>
+                      <% else %>
+                        <span class="badge bg-warning"><%= t('admin.stores.show.pending') %></span>
+                      <% end %>
+                      <span class="badge bg-secondary ms-1"><%= t("admin.stores.show.role_badges.#{user.role}") %></span>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="text-center text-muted py-4">
+              <i class="bi bi-people" style="font-size: 2rem;"></i>
+              <p class="mt-2 mb-0"><%= t('admin.stores.show.no_users') %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

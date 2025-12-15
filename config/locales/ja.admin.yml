@@ -13,7 +13,7 @@ ja:
           email: "メールアドレス"
           role: "権限"
           registered_date: "登録日"
-          actions: "操作"
+          actions: "アクション"
         actions:
           delete: "削除"
           self: "(自分)"
@@ -27,12 +27,15 @@ ja:
           created_at: "登録日"
         sort_placeholder: "並び替え"
       new:
-        title: "新規ユーザー登録"
+        title: "ユーザー登録"
       edit:
         title: "ユーザー編集"
       show:
         user_info: "ユーザー情報"
         title: "ユーザー詳細"
+      created: "ユーザーを登録しました"
+      updated: "ユーザーを更新しました"
+      destroyed: "ユーザーを削除しました"
       form:
         name: "名前"
         name_placeholder: "山田 太郎"
@@ -50,9 +53,6 @@ ja:
       messages:
         user_deleted: "%{name}を削除しました"
         user_delete_failed: "%{name}の削除に失敗しました"
-        created: "ユーザーを登録しました"
-        updated: "ユーザーを更新しました"
-        destroyed: "ユーザーを削除しました"
       roles:
         super_admin: "システム管理者"
         company_admin: "会社管理者"
@@ -68,10 +68,14 @@ ja:
         date_to: "終了日"
         filter: "絞り込む"
         datetime: "日時"
-        action: "操作"
+        action: "アクション"
         record_id: "レコードID"
         detail: "詳細"
         no_logs: "ログが見つかりません"
+      actions:
+        create: "登録"
+        update: "更新"
+        destroy: "削除"
 
     tenants:
       index:
@@ -81,14 +85,17 @@ ja:
           subdomain: "サブドメイン名順"
           created_at: "登録順"
         sort_placeholder: "並び替え"
-        new_tenant: "新規テナント作成"
+        new_tenant: "テナント作成"
       new:
-        title: "新規テナント作成"
+        title: "テナント作成"
       edit:
         title: "テナント編集"
       show:
         user_info: "ユーザー情報"
         title: "テナント詳細"
+      created: "テナントを作成しました"
+      updated: "テナントを更新しました"
+      destroyed: "テナントを削除しました"
       form:
         name: "テナント名"
         name_placeholder: "株式会社サンプル"
@@ -98,10 +105,6 @@ ja:
         submit_create: "登録"
         submit_update: "更新"
         cancel: "キャンセル"
-      messages:
-        created: "テナントを作成しました"
-        updated: "テナントを更新しました"
-        destroyed: "テナントを削除しました"
       confirm:
         delete: "%{name} を削除してもよろしいですか?"
 
@@ -128,12 +131,7 @@ ja:
         pending: "承認待ち"
         approved: "承認済み"
         rejected: "却下"
-      messages:
-        created: "承認リクエストを送信しました"
-        approved: "%{name} さんのリクエストを承認しました"
-        rejected: "リクエストを却下しました"
-        already_processed: "このリクエストは既に処理されています"
-        user_approved: "%{name} さんのユーザー登録を承認しました。ログインが可能になりました。"
+      created: "承認リクエストを送信しました"
       show:
         user_info: "ユーザー情報"
         title: "承認リクエスト詳細"
@@ -141,6 +139,11 @@ ja:
         reject: "却下する"
         rejection_reason_label: "却下理由"
         rejection_reason_placeholder: "却下理由を入力してください"
+      messages:
+        approved: "%{name} さんのリクエストを承認しました"
+        rejected: "リクエストを却下しました"
+        already_processed: "このリクエストは既に処理されています"
+        user_approved: "%{name} さんのユーザー登録を承認しました。ログインが可能になりました。"
       confirm:
         approve: "%{name} さんのリクエストを承認しますか？"
 
@@ -156,9 +159,12 @@ ja:
           created_at: "登録日"
           actions: "アクション"
       new:
-        title: "新規店舗登録"
+        title: "店舗登録"
       edit:
         title: "店舗編集"
+      created: "店舗を登録しました"
+      updated: "店舗を更新しました"
+      destroyed: "店舗を削除しました"
       form:
         code: "店舗コード"
         code_placeholder: "例: STORE01"
@@ -191,11 +197,9 @@ ja:
           user_status: "承認状態"
           user_role: "権限"
       messages:
-        created: "店舗を作成しました"
-        updated: "店舗を更新しました"
-        deleted: "店舗を削除しました"
         cannot_delete_with_users: "ユーザーが所属している店舗は削除できません"
         invitation_code_regenerated: "招待コードを再発行しました"
         invitation_code_regenerate_failed: "招待コードの再発行に失敗しました"
       confirm:
         regenerate_code: "招待コードを再発行しますか？現在のコードは無効になります。"
+

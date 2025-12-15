@@ -18,10 +18,30 @@ class Store < ApplicationRecord
   has_many :plan_schedules, dependent: :nullify
   has_many :units, dependent: :nullify
 
-  validates :name, presence: true
-  validates :code, uniqueness: { scope: :tenant_id }, allow_blank: true
+  validates :name, presence: true, uniqueness: { scope: :tenant_id }
+  validates :code, presence: true, uniqueness: { scope: :tenant_id }
+  validates :invitation_code, uniqueness: true, allow_nil: true
 
   attribute :active, :boolean, default: true
 
-  scope :active, -> { where(active: true) }
+  before_create :generate_invitation_code
+
+  def regenerate_invitation_code!
+    loop do
+      self.invitation_code = SecureRandom.alphanumeric(8).upcase
+      break unless Store.exists?(invitation_code: invitation_code)
+    end
+    save!
+  end
+
+  private
+
+  def generate_invitation_code
+    return if invitation_code.present?
+    
+    loop do
+      self.invitation_code = SecureRandom.alphanumeric(8).upcase
+      break unless Store.exists?(invitation_code: invitation_code)
+    end
+  end
 end
