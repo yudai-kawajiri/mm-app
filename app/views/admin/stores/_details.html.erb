@@ -32,12 +32,16 @@
           <%= store_class.human_attribute_name(:invitation_code) %>
         </label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <code class="fs-5"><%= store.invitation_code %></code>
-          <%= button_to t('admin.stores.show.regenerate_code'),
-                        regenerate_invitation_code_admin_store_path(store),
-                        method: :post,
-                        form: { data: { turbo_confirm: t('admin.stores.show.confirm_regenerate') } },
-                        class: 'btn btn-sm btn-outline-secondary mt-2' %>
+          <div class="d-flex align-items-center justify-content-center gap-2">
+            <code class="fs-5"><%= store.invitation_code %></code>
+            <%= button_to regenerate_invitation_code_admin_store_path(store),
+                          method: :post,
+                          form: { data: { turbo_confirm: t('admin.stores.show.confirm_regenerate') } },
+                          class: 'btn btn-sm btn-outline-secondary' do %>
+              <i class="bi bi-arrow-clockwise me-1"></i>
+              <%= t('admin.stores.show.regenerate_code') %>
+            <% end %>
+          </div>
         </div>
       </div>
     </div>

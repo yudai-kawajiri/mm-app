@@ -8,25 +8,28 @@
   必須引数:
   - resource: フォーム対象のモデルインスタンス
   - form_title: ページタイトル
-  - submit_label: 送信ボタンのラベル
+
+  オプション引数:
+  - scope: ルーティングのスコープ（例: :admin）
 
   Stimulusコントローラー:
   - form-validation: フォームバリデーション
   - form--submit: 二重送信防止
 %>
+<% scope = local_assigns[:scope] %>
+
 <div class="container mt-4">
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white">
-      <h2 class="mb-0">
-        <%= form_title %>
-      </h2>
+      <h2 class="mb-0"><%= form_title %></h2>
     </div>
 
     <div class="card-body">
       <%= render 'shared/forms/error_messages', resource: resource %>
 
+      <% model_for_form = scope.present? ? [scope, resource] : resource %>
       <%= form_with(
-            model: resource,
+            model: model_for_form,
             local: true,
             class: "needs-validation",
             data: {
@@ -35,8 +38,10 @@
               form__submit_target: "form"
             }
           ) do |f| %>
-        <%= render resource_partial_path(resource, 'fields'), f: f %>
-        <%= render 'shared/actions/form_action_links', f: f, resource: resource %>
+        <% # scopeがある場合は scope/model_name/_fields.html.erb を探す %>
+        <% fields_partial = scope.present? ? "#{scope}/#{resource.class.model_name.route_key}/fields" : resource_partial_path(resource, 'fields') %>
+        <%= render fields_partial, f: f, resource: resource %>
+        <%= render 'shared/actions/form_action_links', f: f, resource: resource, scope: scope %>
       <% end %>
     </div>
   </div>

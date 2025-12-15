@@ -1,3 +1,6 @@
+<%= content_for :title, t('admin.users.new.title') %>
+
 <%= render 'shared/resource_form',
   resource: @user,
-  form_title: t('admin.users.new.title') %>
+  form_title: t('admin.users.new.title'),
+  scope: :admin %>

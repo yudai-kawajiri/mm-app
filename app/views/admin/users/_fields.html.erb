@@ -1,31 +1,49 @@
 <%# ユーザーフォームのフィールド部分 %>
 <% user = local_assigns[:resource] || @user %>
 
-<div class="mb-3">
-  <%= f.label :name, class: 'form-label' %>
-  <%= f.text_field :name, class: 'form-control', placeholder: t('admin.users.form.name_placeholder') %>
-</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="mb-3">
+      <%= f.label :name, class: 'form-label h5' do %>
+        <%= User.human_attribute_name(:name) %>
+        <span class="text-danger">*</span>
+      <% end %>
+      <%= f.text_field :name, class: 'form-control', placeholder: t('admin.users.form.name_placeholder'), required: true %>
+    </div>
 
-<div class="mb-3">
-  <%= f.label :email, class: 'form-label' %>
-  <%= f.email_field :email, class: 'form-control', placeholder: t('admin.users.form.email_placeholder') %>
-</div>
+    <div class="mb-3">
+      <%= f.label :role, class: 'form-label h5' do %>
+        <%= User.human_attribute_name(:role) %>
+        <span class="text-danger">*</span>
+      <% end %>
+      <%= f.select :role, 
+          options_for_select([
+            [t('admin.users.roles.general'), 'general'],
+            [t('admin.users.roles.store_admin'), 'store_admin'],
+            [t('admin.users.roles.company_admin'), 'company_admin']
+          ], user.role),
+          { prompt: t('admin.users.form.role_placeholder') },
+          class: 'form-select',
+          required: true %>
+    </div>
+  </div>
 
-<div class="mb-3">
-  <%= f.label :role, class: 'form-label' %>
-  <%= f.select :role, 
-      options_for_select([
-        [t('admin.users.roles.general'), 'general'],
-        [t('admin.users.roles.store_admin'), 'store_admin'],
-        [t('admin.users.roles.company_admin'), 'company_admin']
-      ], user.role),
-      { prompt: t('admin.users.form.role_placeholder') },
-      class: 'form-select' %>
-</div>
+  <div class="col-md-6">
+    <div class="mb-3">
+      <%= f.label :email, class: 'form-label h5' do %>
+        <%= User.human_attribute_name(:email) %>
+        <span class="text-danger">*</span>
+      <% end %>
+      <%= f.email_field :email, class: 'form-control', placeholder: t('admin.users.form.email_placeholder'), required: true %>
+    </div>
 
-<div class="mb-3">
-  <%= f.label :store_id, class: 'form-label' %>
-  <%= f.collection_select :store_id, @stores, :id, :name,
-      { prompt: t('helpers.prompt.select'), include_blank: true },
-      class: 'form-select' %>
+    <div class="mb-3">
+      <%= f.label :store_id, class: 'form-label h5' do %>
+        <%= User.human_attribute_name(:store) %>
+      <% end %>
+      <%= f.collection_select :store_id, @stores, :id, :name,
+          { prompt: t('helpers.prompt.select'), include_blank: true },
+          class: 'form-select' %>
+    </div>
+  </div>
 </div>

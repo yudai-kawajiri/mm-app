@@ -1,65 +1,10 @@
-<%= content_for :title, t('admin.users.show.title') %>
-
-<div class="container-fluid">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0"><%= t('admin.users.show.title') %></h2>
-    <div>
-      <%= link_to t('common.edit'), edit_admin_user_path(@user), class: 'btn btn-primary me-2' %>
-      <%= link_to t('common.delete'), admin_user_path(@user), 
-          method: :delete, 
-          data: { confirm: t('admin.users.confirm.delete', name: @user.name) }, 
-          class: 'btn btn-danger me-2' %>
-      <%= link_to t('common.back'), admin_users_path, class: 'btn btn-secondary' %>
-    </div>
-  </div>
-
-  <div class="card shadow-sm border-0">
-    <div class="card-header bg-primary text-white">
-      <h5 class="mb-0"><%= t('admin.users.show.user_info') %></h5>
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <!-- 左カラム -->
-        <div class="col-md-6">
-          <div class="mb-4">
-            <div class="text-muted small mb-1"><%= User.human_attribute_name(:name) %></div>
-            <div class="fs-5"><%= @user.name %></div>
-          </div>
-
-          <div class="mb-4">
-            <div class="text-muted small mb-1"><%= User.human_attribute_name(:role) %></div>
-            <div>
-              <% if @user.super_admin? %>
-                <span class="badge bg-danger"><%= t('admin.users.roles.super_admin') %></span>
-              <% elsif @user.company_admin? %>
-                <span class="badge bg-warning text-dark"><%= t('admin.users.roles.company_admin') %></span>
-              <% elsif @user.store_admin? %>
-                <span class="badge bg-info"><%= t('admin.users.roles.store_admin') %></span>
-              <% else %>
-                <span class="badge bg-secondary"><%= t('admin.users.roles.general') %></span>
-              <% end %>
-            </div>
-          </div>
-
-          <div class="mb-4">
-            <div class="text-muted small mb-1"><%= User.human_attribute_name(:created_at) %></div>
-            <div class="fs-5"><%= l(@user.created_at, format: :long) %></div>
-          </div>
-        </div>
-
-        <!-- 右カラム -->
-        <div class="col-md-6">
-          <div class="mb-4">
-            <div class="text-muted small mb-1"><%= User.human_attribute_name(:email) %></div>
-            <div class="fs-5"><%= @user.email %></div>
-          </div>
-
-          <div class="mb-4">
-            <div class="text-muted small mb-1"><%= User.human_attribute_name(:store) %></div>
-            <div class="fs-5"><%= @user.store&.name || '-' %></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<%# ユーザー詳細画面 %>
+<%= render 'shared/details/resource_show',
+  resource: @user,
+  title: t('admin.users.show.title'),
+  content_left_partial: 'admin/users/details',
+  content_left_title: nil,
+  partial_locals: { user: @user },
+  scope: :admin,
+  show_edit_button: true,
+  show_delete_button: true %>
