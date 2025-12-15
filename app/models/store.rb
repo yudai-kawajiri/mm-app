@@ -8,15 +8,15 @@
 class Store < ApplicationRecord
   belongs_to :tenant
   has_many :users, dependent: :nullify
-  has_many :products, dependent: :nullify
-  has_many :materials, dependent: :nullify
-  has_many :categories, dependent: :nullify
-  has_many :plans, dependent: :nullify
-  has_many :material_order_groups, dependent: :nullify
-  has_many :daily_targets, dependent: :nullify
-  has_many :monthly_budgets, dependent: :nullify
-  has_many :plan_schedules, dependent: :nullify
-  has_many :units, dependent: :nullify
+  has_many :products, class_name: 'Resources::Product', dependent: :nullify
+  has_many :materials, class_name: 'Resources::Material', dependent: :nullify
+  has_many :categories, class_name: 'Resources::Category', dependent: :nullify
+  has_many :plans, class_name: 'Resources::Plan', dependent: :nullify
+  has_many :material_order_groups, class_name: 'Resources::MaterialOrderGroup', dependent: :nullify
+  has_many :daily_targets, class_name: 'Management::DailyTarget', dependent: :nullify
+  has_many :monthly_budgets, class_name: 'Management::MonthlyBudget', dependent: :nullify
+  has_many :plan_schedules, class_name: 'Planning::PlanSchedule', dependent: :nullify
+  has_many :units, class_name: 'Resources::Unit', dependent: :nullify
 
   validates :name, presence: true, uniqueness: { scope: :tenant_id }
   validates :code, presence: true, uniqueness: { scope: :tenant_id }
