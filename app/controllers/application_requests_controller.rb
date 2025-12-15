@@ -23,7 +23,7 @@ class ApplicationRequestsController < ApplicationController
   end
 
   def accept_confirm
-    return redirect_to root_path, alert: '招待URLが無効です。' unless @application_request&.acceptable?
+    return redirect_to root_path, alert: t('application_requests.errors.invalid_token') unless @application_request&.acceptable?
 
     ActiveRecord::Base.transaction do
       subdomain = generate_subdomain(@application_request.company_name)
@@ -36,7 +36,8 @@ class ApplicationRequestsController < ApplicationController
       )
 
       store = tenant.stores.create!(
-        name: "#{@application_request.company_name}本店"
+        name: "#{@application_request.company_name}本店",
+        code: '001'  # ← デフォルトのコードを設定
       )
 
       user = User.create!(
@@ -55,13 +56,23 @@ class ApplicationRequestsController < ApplicationController
         status: :completed
       )
 
+      # ログイン処理
       sign_in(user)
-      redirect_to authenticated_root_path, notice: '登録が完了しました。'
+      
+      # ダッシュボードにリダイレクト
+      redirect_to authenticated_root_url(subdomain: subdomain), notice: t('application_requests.messages.registration_complete')
     end
   rescue ActiveRecord::RecordInvalid => e
-    @error = e.message
+    Rails.logger.error("ApplicationRequest accept_confirm failed: #{e.message}")
+    flash.now[:alert] = t('application_requests.errors.registration_failed')
     render :accept, status: :unprocessable_entity
   end
+
+
+
+
+
+
 
   private
 
