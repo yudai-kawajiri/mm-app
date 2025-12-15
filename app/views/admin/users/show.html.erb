@@ -5,39 +5,90 @@
   back_path: admin_users_path %>
 
 <div class="row">
-  <!-- Left: User Details -->
-  <div class="col-md-6">
-    <div class="card mb-4">
+  <div class="col-md-12">
+    <div class="card">
       <div class="card-header">
         <h5 class="mb-0"><%= t('admin.users.show.user_info') %></h5>
       </div>
       <div class="card-body">
-        <dl class="row mb-0">
-          <dt class="col-sm-4"><%= User.human_attribute_name(:name) %></dt>
-          <dd class="col-sm-8"><%= @user.name %></dd>
+        <div class="pt-1">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3 border-bottom py-3">
+                <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
+                  <%= User.human_attribute_name(:name) %>
+                </label>
+                <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+                  <%= @user.name %>
+                </div>
+              </div>
+            </div>
 
-          <dt class="col-sm-4"><%= User.human_attribute_name(:email) %></dt>
-          <dd class="col-sm-8"><%= @user.email %></dd>
+            <div class="col-md-6">
+              <div class="mb-3 border-bottom py-3">
+                <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
+                  <%= User.human_attribute_name(:email) %>
+                </label>
+                <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+                  <%= @user.email %>
+                </div>
+              </div>
+            </div>
 
-          <dt class="col-sm-4"><%= User.human_attribute_name(:role) %></dt>
-          <dd class="col-sm-8">
-            <% if @user.super_admin? %>
-              <span class="badge bg-danger"><%= t('admin.users.roles.super_admin') %></span>
-            <% elsif @user.company_admin? %>
-              <span class="badge bg-warning"><%= t('admin.users.roles.company_admin') %></span>
-            <% elsif @user.store_admin? %>
-              <span class="badge bg-info"><%= t('admin.users.roles.store_admin') %></span>
-            <% else %>
-              <span class="badge bg-secondary"><%= t('admin.users.roles.general') %></span>
-            <% end %>
-          </dd>
+            <div class="col-md-6">
+              <div class="mb-3 border-bottom py-3">
+                <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
+                  <%= User.human_attribute_name(:role) %>
+                </label>
+                <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+                  <% if @user.super_admin? %>
+                    <span class="badge bg-danger">
+                      <i class="bi bi-shield-fill-check me-1"></i>
+                      <%= t('admin.users.roles.super_admin') %>
+                    </span>
+                  <% elsif @user.company_admin? %>
+                    <span class="badge bg-warning">
+                      <i class="bi bi-building me-1"></i>
+                      <%= t('admin.users.roles.company_admin') %>
+                    </span>
+                  <% elsif @user.store_admin? %>
+                    <span class="badge bg-info">
+                      <i class="bi bi-shop me-1"></i>
+                      <%= t('admin.users.roles.store_admin') %>
+                    </span>
+                  <% else %>
+                    <span class="badge bg-secondary">
+                      <i class="bi bi-person me-1"></i>
+                      <%= t('admin.users.roles.general') %>
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
 
-          <dt class="col-sm-4"><%= User.human_attribute_name(:store) %></dt>
-          <dd class="col-sm-8"><%= @user.store&.name || '-' %></dd>
+            <div class="col-md-6">
+              <div class="mb-3 border-bottom py-3">
+                <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
+                  <%= User.human_attribute_name(:store) %>
+                </label>
+                <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+                  <%= @user.store&.name || '-' %>
+                </div>
+              </div>
+            </div>
 
-          <dt class="col-sm-4"><%= User.human_attribute_name(:created_at) %></dt>
-          <dd class="col-sm-8"><%= l(@user.created_at, format: :long) %></dd>
-        </dl>
+            <div class="col-md-6">
+              <div class="mb-3 py-3">
+                <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
+                  <%= User.human_attribute_name(:created_at) %>
+                </label>
+                <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+                  <%= l(@user.created_at, format: :long) %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
