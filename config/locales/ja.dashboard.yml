@@ -65,3 +65,12 @@ ja:
       achievement_rate: "月間売上達成率"
       remaining_target: "残りの売上予算"
       target_achieved: "売上予算達成"
+
+    welcome_modal:
+      title: "アカウント登録完了"
+      message: "アカウント登録が完了しました。次回以降は以下のURLからログインしてください。"
+      bookmark_title: "次回以降のアクセス方法"
+      bookmark_message: "このURLをブックマークに保存することをお勧めします。"
+      copy_button: "コピー"
+      copied: "コピーしました"
+      start_button: "はじめる"
