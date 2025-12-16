@@ -72,3 +72,8 @@ pin "@kurkle/color", to: "https://ga.jspm.io/npm:@kurkle/color@0.3.4/dist/color.
 
 # Welcome Modal Controller
 pin "controllers/welcome_modal_controller", to: "controllers/welcome_modal_controller.js"
+# Subdomain Redirect Controller
+pin 'controllers/subdomain_redirect_controller', to: 'controllers/subdomain_redirect_controller.js'
+
+# Subdomain Redirect Controller
+pin 'controllers/subdomain_redirect_controller', to: 'controllers/subdomain_redirect_controller.js'

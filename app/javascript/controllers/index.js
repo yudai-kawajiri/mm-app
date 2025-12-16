@@ -153,3 +153,8 @@ application.register(CONTROLLER_NAMES.RESOURCE_SEARCH, ResourceSearchController)
 
 // Welcome Modal Controller
 application.register(CONTROLLER_NAMES.WELCOME_MODAL, WelcomeModalController)
+
+
+// Subdomain Redirect Controller
+import SubdomainRedirectController from "controllers/subdomain_redirect_controller"
+application.register("subdomain-redirect", SubdomainRedirectController)

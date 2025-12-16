@@ -262,26 +262,6 @@ ja:
       next: 次 &raquo;
       truncate: "&hellip;"
   landing:
-    subtitle: 製造業向けの包括的な生産管理・数値管理システム
-    welcome: ようこそ
-    description: 原材料管理から製造計画、売上予測まで一元管理
-    login_button: ログイン
-    signup_button: 新規登録
-    back_to_top: トップページへ戻る
-    features:
-      title: 主な機能
-      resources:
-        title: リソース管理
-        description: 原材料・商品・カテゴリー
-      planning:
-        title: 製造計画
-        description: 日別計画・商品紐付け
-      management:
-        title: 数値管理
-        description: 予算・目標・実績
-      forecast:
-        title: 月末予測
-        description: 売上予測・追加額計算
   terms:
     title: 利用規約
     last_updated: 最終更新日
@@ -495,3 +475,31 @@ ja:
           one: "%{model}の保存に失敗しました"
           other: "%{count}件のエラーが発生したため、%{model}の保存に失敗しました"
         body: '以下の項目を確認してください:'
+
+  landing:
+    title: 'MM-App'
+    back_to_top: トップページへ戻る
+    subtitle: '製造業向けの包括的な生産管理・数値管理システム'
+    description: '原材料管理から製造計画、売上予測まで一元管理'
+    login_button: 'ログイン'
+    signup_button: '新規登録'
+    subdomain_label: '会社のサブドメインを入力してください（半角英数字とハイフン）'
+    subdomain_placeholder: 'your-company'
+    subdomain_required: 'サブドメインを入力してください'
+    subdomain_hint: 既存の会社にログイン・登録する場合のみ入力してください
+    or: 'または'
+    new_company_button: '新規会社登録を申請'
+    features:
+      title: '主な機能'
+      resources:
+        title: 'リソース管理'
+        description: '原材料・商品・カテゴリー'
+      planning:
+        title: '製造計画'
+        description: '日別計画・商品紐付け'
+      management:
+        title: '数値管理'
+        description: '予算・目標・実績'
+      forecast:
+        title: '売上予測'
+        description: 'データに基づく経営判断'
