@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   end
 
   constraints subdomain: /.+/ do
-    devise_for :users, controllers: { registrations: "users/registrations" }
+    devise_for :users, controllers: { registrations: "users/registrations", sessions: "users/sessions" }
 
     authenticated :user do
       root to: "dashboards#index", as: :authenticated_root

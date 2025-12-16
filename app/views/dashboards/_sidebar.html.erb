@@ -163,7 +163,7 @@
       <% end %>
     </div>
 
-    <%= button_to destroy_user_session_path, method: :delete, class: "list-group-item list-group-item-action text-danger mt-2" do %>
+    <%= button_to destroy_user_session_path, method: :delete, data: { turbo: false }, class: "list-group-item list-group-item-action text-danger mt-2" do %>
       <%= t('devise.sessions.sign_out') %>
     <% end %>
 

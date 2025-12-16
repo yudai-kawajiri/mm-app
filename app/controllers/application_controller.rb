@@ -17,17 +17,24 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
+
     if resource.can_manage_company? && session[:current_store_id].blank?
+
       first_store = resource.tenant&.stores&.first
+
       session[:current_store_id] = first_store&.id if first_store
+
     end
 
+
+
     authenticated_root_path
+
   end
 
-  def after_sign_out_path_for(resource_or_scope)
-    root_path
-  end
+
+
+
 
   def layout_by_resource
     return "print" if action_name == "print"
