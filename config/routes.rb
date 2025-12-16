@@ -1,50 +1,34 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  # ========================================
-  # アプリケーション責任者依頼（全サブドメイン共通）
-  # ========================================
-  resources :application_requests, only: [:new, :create] do
-    collection do
-      get 'accept', to: 'application_requests#accept'
-      post 'accept', to: 'application_requests#accept_confirm'
+  constraints subdomain: '' do
+    root to: "landing#index"
+
+    get :terms, to: 'static_pages#terms'
+    get :privacy, to: 'static_pages#privacy'
+
+    resources :contacts, only: [:new, :create]
+
+    resources :application_requests, only: [:new, :create] do
+      collection do
+        get :thanks
+        get :accept
+        post :accept, action: :accept_confirm
+      end
     end
   end
 
-  # ========================================
-  # サブドメインなし: 公開ページ
-  # ========================================
-  constraints subdomain: '' do
-    # 未認証ユーザー用ルート
-    root to: "landing#index"
-
-    # 静的ページ
-    get 'terms', to: 'static_pages#terms', as: :terms
-    get 'privacy', to: 'static_pages#privacy', as: :privacy
-
-    # お問い合わせ
-    resources :contacts, only: [:new, :create]
-  end
-
-  # ========================================
-  # サブドメインあり: テナント専用ページ
-  # ========================================
   constraints subdomain: /.+/ do
-    # 認証 (Devise)
     devise_for :users, controllers: { registrations: "users/registrations" }
 
-    # 認証済みユーザー用ルート
     authenticated :user do
       root to: "dashboards#index", as: :authenticated_root
 
-      # 店舗切り替え
-      post 'switch_store', to: 'stores#switch'
+      post :switch_store, to: 'stores#switch'
 
-      # ユーザー設定・ヘルプ
-      get "/settings", to: "settings#index", as: :settings
-      get "/help", to: "help#index", as: :help
+      get :settings, to: "settings#index"
+      get :help, to: "help#index"
 
-      # 管理者メニュー (Admin Namespace)
       namespace :admin do
         resources :tenants
         resources :admin_requests, only: [:index, :new, :create, :show] do
@@ -62,7 +46,6 @@ Rails.application.routes.draw do
         resources :system_logs, only: [:index]
       end
 
-      # 数値管理 (Management Namespace)
       namespace :management do
         resources :numerical_managements, only: [:index] do
           collection do
@@ -86,7 +69,6 @@ Rails.application.routes.draw do
         end
       end
 
-      # リソース管理 (Resources Namespace)
       namespace :resources do
         resources :categories do
           member do
@@ -139,7 +121,6 @@ Rails.application.routes.draw do
         end
       end
 
-      # API (API Namespace)
       namespace :api do
         namespace :v1 do
           resources :products, only: [:index, :show] do
@@ -163,7 +144,6 @@ Rails.application.routes.draw do
       end
     end
 
-    # 未認証ユーザーはログインページへリダイレクト
     unauthenticated :user do
       root to: "devise/sessions#new", as: :unauthenticated_root
     end
