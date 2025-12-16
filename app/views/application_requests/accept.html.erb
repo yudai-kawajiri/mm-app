@@ -1,44 +1,49 @@
-<%# アカウント登録画面 %>
-<%= content_for :title, t('application_requests.accept.title', default: 'アカウント登録') %>
+<%= content_for :title, t('application_requests.accept.title') %>
 
-<%= render 'devise/shared/auth_card_frame' do %>
-  <h1 class="h3 mb-4 text-center"><%= t('application_requests.accept.title', default: 'アカウント登録') %></h1>
+<%= render layout: 'devise/shared/auth_card_frame' do %>
+  <h2 class="text-center mb-4"><%= t('application_requests.accept.title') %></h2>
 
-  <%# 登録情報の表示 %>
   <div class="alert alert-info mb-4">
-    <h6 class="alert-heading"><i class="bi bi-info-circle me-2"></i><%= t('application_requests.accept.registration_info', default: '登録情報') %></h6>
+    <h5 class="mb-3"><i class="bi bi-info-circle me-2"></i><%= t('application_requests.accept.registration_info') %></h5>
     <div class="mb-2">
-      <strong><%= t('application_requests.form.company_name', default: '会社名') %>:</strong>
+      <strong><%= t('application_requests.new.company_name') %>:</strong>
       <%= @application_request.company_name %>
     </div>
     <div class="mb-2">
-      <strong><%= t('application_requests.form.admin_name', default: 'お名前') %>:</strong>
-      <%= @application_request.admin_name %>
+      <strong><%= t('application_requests.new.admin_name') %>:</strong>
+      <%= @application_request.contact_name %>
     </div>
     <div>
-      <strong><%= t('application_requests.form.admin_email', default: 'メールアドレス') %>:</strong>
-      <%= @application_request.admin_email %>
+      <strong><%= t('application_requests.new.admin_email') %>:</strong>
+      <%= @application_request.contact_email %>
     </div>
   </div>
 
-  <%= form_with url: accept_application_requests_path(token: params[:token]), method: :post, local: true, data: { turbo: false } do |f| %>
-    <%# パスワード入力 %>
+  <%= form_with scope: :application_request, url: accept_application_requests_path(token: params[:token]), method: :post, local: true, data: { turbo: false } do |f| %>
+    <%= render "devise/shared/error_messages", resource: @application_request %>
+
     <div class="mb-3">
       <%= f.label :password, class: 'form-label' do %>
-        <%= t('application_requests.accept.password', default: 'パスワード') %><%= raw(t('helpers.required_mark')) %>
+        <%= t('application_requests.accept.password') %><span class="text-danger">*</span>
       <% end %>
-      <%= f.password_field :password, class: 'form-control', placeholder: t('devise.shared.minimum_password_length', count: 6), required: true, minlength: 6 %>
+      <%= f.password_field :password,
+                           class: "form-control",
+                           placeholder: t('application_requests.accept.password_placeholder'),
+                           required: true,
+                           minlength: 6 %>
     </div>
 
-    <%# パスワード確認 %>
     <div class="mb-4">
       <%= f.label :password_confirmation, class: 'form-label' do %>
-        <%= t('application_requests.accept.password_confirmation', default: 'パスワード（確認）') %><%= raw(t('helpers.required_mark')) %>
+        <%= t('application_requests.accept.password_confirmation') %><span class="text-danger">*</span>
       <% end %>
-      <%= f.password_field :password_confirmation, class: 'form-control', placeholder: t('devise.shared.minimum_password_length', count: 6), required: true, minlength: 6 %>
+      <%= f.password_field :password_confirmation,
+                           class: "form-control",
+                           placeholder: t('application_requests.accept.password_placeholder'),
+                           required: true,
+                           minlength: 6 %>
     </div>
 
-    <%# 登録ボタン %>
-    <%= f.submit t('application_requests.accept.submit', default: '登録する'), class: 'btn btn-success w-100' %>
+    <%= f.submit t('application_requests.accept.submit'), class: 'btn btn-success w-100 btn-lg' %>
   <% end %>
 <% end %>
