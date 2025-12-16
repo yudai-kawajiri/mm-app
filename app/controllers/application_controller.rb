@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ApplicationController < ActionController::Base
   layout :layout_by_resource
 
@@ -9,15 +7,16 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_tenant, :current_store
 
+  before_action :auto_login_pending_user
+
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [ :name, :invitation_code, :store_id ])
-    devise_parameter_sanitizer.permit(:account_update, keys: [ :name ])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :invitation_code, :store_id])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:name])
   end
 
   def after_sign_in_path_for(resource)
-    # 会社管理者の初回ログイン時、最初の店舗を自動選択
     if resource.can_manage_company? && session[:current_store_id].blank?
       first_store = resource.tenant&.stores&.first
       session[:current_store_id] = first_store&.id if first_store
@@ -50,19 +49,16 @@ class ApplicationController < ActionController::Base
     { store_id: current_store&.id }
   end
 
-  # 未ログイン時（自己登録画面など）でサブドメインからテナントを判別
-  # 未ログイン時（自己登録画面など）でサブドメインからテナントを判別
   def tenant_from_subdomain
     return @tenant_from_subdomain if defined?(@tenant_from_subdomain)
-    
-    # localhost の場合、最初のセグメントをサブドメインとして扱う
+
     host = request.host
     subdomain = if host.include?(".localhost")
       host.split(".").first
     else
       request.subdomain
     end
-    
+
     @tenant_from_subdomain = if subdomain.present? && subdomain != "www"
       Tenant.find_by(subdomain: subdomain)
     else
@@ -74,8 +70,6 @@ class ApplicationController < ActionController::Base
     @current_tenant ||= current_user&.tenant || tenant_from_subdomain
   end
 
-  # 会社管理者: セッションで選択された店舗（切り替え可能）
-  # その他: 所属店舗固定
   def current_store
     @current_store ||= if current_user&.can_manage_company?
       current_tenant&.stores&.find_by(id: session[:current_store_id])
@@ -124,6 +118,21 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def auto_login_pending_user
+    return unless session[:pending_user_id].present?
+    return if user_signed_in?
+    
+    user = User.find_by(id: session[:pending_user_id])
+    if user
+      sign_in(user)
+      session.delete(:pending_user_id)
+      flash[:notice] = 'アカウント登録が完了しました' if session[:first_login]
+      session.delete(:first_login)
+    else
+      session.delete(:pending_user_id)
+    end
+  end
 
   def redirect_if_authenticated
     return unless user_signed_in?
