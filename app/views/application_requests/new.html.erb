@@ -1,43 +1,49 @@
 <% content_for :title, t('application_requests.new.title') %>
 
 <%= render layout: 'devise/shared/auth_card_frame' do %>
+  <div class="text-start mb-3">
+    <%= link_to root_path, class: "text-decoration-none text-muted" do %>
+      <i class="bi bi-arrow-left"></i> <%= t('landing.back_to_top') %>
+    <% end %>
+  </div>
+
   <h2 class="text-center mb-4"><%= t('application_requests.new.heading') %></h2>
 
-  <%= form_with model: @application_request, url: application_requests_path, 
+  <%= form_with model: @application_request, url: application_requests_path,
                 data: { turbo: false } do |f| %>
-    
-    <%= render "devise/shared/error_messages", resource: @application_request %>
+
+    <%= render 'devise/shared/error_messages', resource: @application_request %>
 
     <div class="mb-4 pb-3 border-bottom">
       <h5 class="text-muted mb-3"><%= t('application_requests.new.company_info') %></h5>
-      
-      <div class="mb-3">
-        <%= f.label :company_name, class: 'form-label' do %>
-          <%= t('application_requests.new.company_name') %><span class="text-danger">*</span>
+
+      <div class="mb-4">
+        <%= f.label :company_name, class: 'form-label h5' do %>
+          <%= t('application_requests.new.company_name') %><%= raw(t('helpers.required_mark')) %>
         <% end %>
-        <%= f.text_field :company_name, 
-                         class: "form-control #{'is-invalid' if @application_request.errors[:company_name].any?}", 
+        <%= f.text_field :company_name,
+                         class: "form-control form-control-lg #{'is-invalid' if @application_request.errors[:company_name].any?}",
                          placeholder: t('application_requests.new.company_name_placeholder'),
                          autofocus: true,
                          required: true %>
       </div>
 
-      <div class="mb-3">
-        <%= f.label :company_email, class: 'form-label' do %>
-          <%= t('application_requests.new.company_email') %><span class="text-danger">*</span>
+      <div class="mb-4">
+        <%= f.label :company_email, class: 'form-label h5' do %>
+          <%= t('application_requests.new.company_email') %><%= raw(t('helpers.required_mark')) %>
         <% end %>
-        <%= f.email_field :company_email, 
-                          class: "form-control #{'is-invalid' if @application_request.errors[:company_email].any?}", 
+        <%= f.email_field :company_email,
+                          class: "form-control form-control-lg #{'is-invalid' if @application_request.errors[:company_email].any?}",
                           placeholder: t('application_requests.new.company_email_placeholder'),
                           required: true %>
       </div>
 
-      <div class="mb-3">
-        <%= f.label :company_phone, class: 'form-label' do %>
+      <div class="mb-4">
+        <%= f.label :company_phone, class: 'form-label h5' do %>
           <%= t('application_requests.new.company_phone') %>
         <% end %>
-        <%= f.telephone_field :company_phone, 
-                              class: "form-control", 
+        <%= f.telephone_field :company_phone,
+                              class: 'form-control form-control-lg',
                               placeholder: t('application_requests.new.company_phone_placeholder') %>
         <small class="text-muted"><%= t('application_requests.new.optional_field') %></small>
       </div>
@@ -46,22 +52,22 @@
     <div class="mb-4">
       <h5 class="text-muted mb-3"><%= t('application_requests.new.admin_info') %></h5>
       
-      <div class="mb-3">
-        <%= f.label :contact_name, class: 'form-label' do %>
-          <%= t('application_requests.new.admin_name') %><span class="text-danger">*</span>
+      <div class="mb-4">
+        <%= f.label :contact_name, class: 'form-label h5' do %>
+          <%= t('application_requests.new.admin_name') %><%= raw(t('helpers.required_mark')) %>
         <% end %>
-        <%= f.text_field :contact_name, 
-                         class: "form-control #{'is-invalid' if @application_request.errors[:contact_name].any?}", 
-                         placeholder: t('application_requests.new.admin_name_placeholder'),
-                         required: true %>
+        <%= f.text_field :contact_name,
+                          class: "form-control form-control-lg #{'is-invalid' if @application_request.errors[:contact_name].any?}",
+                          placeholder: t('application_requests.new.admin_name_placeholder'),
+                          required: true %>
       </div>
 
-      <div class="mb-3">
-        <%= f.label :contact_email, class: 'form-label' do %>
-          <%= t('application_requests.new.admin_email') %><span class="text-danger">*</span>
+      <div class="mb-4">
+        <%= f.label :contact_email, class: 'form-label h5' do %>
+          <%= t('application_requests.new.admin_email') %><%= raw(t('helpers.required_mark')) %>
         <% end %>
-        <%= f.email_field :contact_email, 
-                          class: "form-control #{'is-invalid' if @application_request.errors[:contact_email].any?}", 
+        <%= f.email_field :contact_email,
+                          class: "form-control form-control-lg #{'is-invalid' if @application_request.errors[:contact_email].any?}",
                           placeholder: t('application_requests.new.admin_email_placeholder'),
                           required: true %>
         <small class="text-muted d-block mt-1"><%= t('application_requests.new.admin_email_hint') %></small>
@@ -74,7 +80,7 @@
   <% end %>
 
   <div class="mt-3 text-center small text-muted">
-    <%= link_to t('common.terms'), terms_path, class: 'text-decoration-none' %> | 
+    <%= link_to t('common.terms'), terms_path, class: 'text-decoration-none' %> |
     <%= link_to t('common.privacy'), privacy_path, class: 'text-decoration-none' %>
   </div>
 <% end %>

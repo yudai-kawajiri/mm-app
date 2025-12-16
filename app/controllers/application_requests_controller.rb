@@ -9,7 +9,7 @@ class ApplicationRequestsController < ApplicationController
 
   def create
     @application_request = ApplicationRequest.new(application_request_params)
-    
+
     if @application_request.save
       @application_request.generate_invitation_token!
       ApplicationRequestMailer.invitation_email(@application_request).deliver_later
@@ -28,7 +28,7 @@ class ApplicationRequestsController < ApplicationController
   def accept_confirm
     ActiveRecord::Base.transaction do
       subdomain = generate_unique_subdomain(@application_request.company_name)
-      
+
       tenant = Tenant.create!(
         name: @application_request.company_name,
         subdomain: subdomain,
@@ -52,7 +52,7 @@ class ApplicationRequestsController < ApplicationController
         subdomain: tenant.subdomain,
         host: request.host,
         port: request.port
-      ), 
+      ),
       notice: 'アカウント登録が完了しました。ログインしてください',
       allow_other_host: true
     end
@@ -81,15 +81,14 @@ class ApplicationRequestsController < ApplicationController
   def generate_unique_subdomain(company_name)
     base = company_name.to_s.gsub(/[^a-zA-Z0-9]/, '').downcase[0..20]
     base = 'company' if base.blank?
-    
+
     subdomain = base
     counter = 0
-    
+
     while Tenant.exists?(subdomain: subdomain)
       counter += 1
       subdomain = "#{base}-#{counter}"
     end
-    
     subdomain
   end
 end
