@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 class ApplicationRequestsController < ApplicationController
-  layout 'application'  # ナビゲーションバーなしのレイアウトを明示的に指定
-  
+  layout "application"
   before_action :find_application_request_by_token, only: [:accept, :accept_confirm]
+  skip_before_action :verify_authenticity_token, only: [:create]
 
   def new
     @application_request = ApplicationRequest.new
@@ -11,64 +9,56 @@ class ApplicationRequestsController < ApplicationController
 
   def create
     @application_request = ApplicationRequest.new(application_request_params)
-    @application_request.status = :pending
-
+    
     if @application_request.save
+      @application_request.generate_invitation_token!
       ApplicationRequestMailer.invitation_email(@application_request).deliver_later
-      redirect_to root_path, notice: t('application_requests.create.notice')
+      redirect_to thanks_application_requests_path, notice: '招待メールを送信しました'
     else
       render :new, status: :unprocessable_entity
     end
   end
 
+  def thanks
+  end
+
   def accept
-    return redirect_to root_path, alert: t('application_requests.accept.errors.invalid_token') unless @application_request&.acceptable?
-    return redirect_to root_path, alert: t('application_requests.accept.errors.expired') if @application_request.expired?
   end
 
   def accept_confirm
-    return redirect_to root_path, alert: t('application_requests.accept.errors.invalid_token') unless @application_request&.acceptable?
-
     ActiveRecord::Base.transaction do
-      subdomain = generate_subdomain(@application_request.company_name)
+      subdomain = generate_unique_subdomain(@application_request.company_name)
       
       tenant = Tenant.create!(
         name: @application_request.company_name,
         subdomain: subdomain,
-        company_email: @application_request.company_email,
-        company_phone: @application_request.company_phone
-      )
-
-      store = tenant.stores.create!(
-        name: "#{@application_request.company_name}本店",
-        code: '001'
+        active: true
       )
 
       user = User.create!(
-        name: @application_request.admin_name,
-        email: @application_request.admin_email,
-        password: params[:password],
-        password_confirmation: params[:password_confirmation],
+        email: @application_request.contact_email,
+        password: params[:application_request][:password],
+        password_confirmation: params[:application_request][:password_confirmation],
+        name: @application_request.contact_name,
         tenant: tenant,
-        store: store,
         role: :company_admin,
         approved: true
       )
 
-      @application_request.update!(
-        tenant: tenant,
-        status: :completed
-      )
+      @application_request.update!(status: :accepted, user: user)
 
-      sign_in(user)
-      
-      redirect_to authenticated_root_url(subdomain: subdomain), 
-                  notice: t('application_requests.accept.messages.registration_complete'),
-                  allow_other_host: true
+      # 手動ログインに誘導
+      redirect_to new_user_session_url(
+        subdomain: tenant.subdomain,
+        host: request.host,
+        port: request.port
+      ), 
+      notice: 'アカウント登録が完了しました。ログインしてください',
+      allow_other_host: true
     end
   rescue ActiveRecord::RecordInvalid => e
-    Rails.logger.error("ApplicationRequest accept_confirm failed: #{e.message}")
-    flash.now[:alert] = t('application_requests.accept.errors.registration_failed')
+    error_msg = e.record.errors.full_messages.join(', ')
+    flash[:alert] = "登録に失敗しました: #{error_msg}"
     render :accept, status: :unprocessable_entity
   end
 
@@ -79,25 +69,27 @@ class ApplicationRequestsController < ApplicationController
       :company_name,
       :company_email,
       :company_phone,
-      :admin_name,
-      :admin_email
+      :contact_name,
+      :contact_email
     )
   end
 
   def find_application_request_by_token
-    @application_request = ApplicationRequest.find_by(invitation_token: params[:token])
+    @application_request = ApplicationRequest.find_by!(invitation_token: params[:token])
   end
 
-  def generate_subdomain(company_name)
-    base = company_name.gsub(/[^a-zA-Z0-9]/, '-').downcase[0..10]
+  def generate_unique_subdomain(company_name)
+    base = company_name.to_s.gsub(/[^a-zA-Z0-9]/, '').downcase[0..20]
+    base = 'company' if base.blank?
+    
     subdomain = base
-    counter = 1
-
+    counter = 0
+    
     while Tenant.exists?(subdomain: subdomain)
-      subdomain = "#{base}-#{counter}"
       counter += 1
+      subdomain = "#{base}-#{counter}"
     end
-
+    
     subdomain
   end
 end
