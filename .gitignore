@@ -62,3 +62,5 @@ cookies.txt
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
+server_logs.txt
+{
