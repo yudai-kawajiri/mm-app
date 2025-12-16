@@ -50,6 +50,9 @@ import VideoModalController from "controllers/video_modal_controller"
 // Resource Search Controller
 import ResourceSearchController from "controllers/resource_search_controller"
 
+// Welcome Modal Controller
+import WelcomeModalController from "controllers/welcome_modal_controller"
+
 // コントローラー名定数
 // data-controller 属性で使用される識別子
 const CONTROLLER_NAMES = {
@@ -96,7 +99,10 @@ const CONTROLLER_NAMES = {
   VIDEO_MODAL: 'video-modal',
 
   // Resource Search
-  RESOURCE_SEARCH: 'resource-search'
+  RESOURCE_SEARCH: 'resource-search',
+
+  // Welcome Modal
+  WELCOME_MODAL: 'welcome-modal'
 }
 
 // コントローラー登録
@@ -144,3 +150,6 @@ application.register(CONTROLLER_NAMES.VIDEO_MODAL, VideoModalController)
 
 // Resource Search Controller
 application.register(CONTROLLER_NAMES.RESOURCE_SEARCH, ResourceSearchController)
+
+// Welcome Modal Controller
+application.register(CONTROLLER_NAMES.WELCOME_MODAL, WelcomeModalController)
