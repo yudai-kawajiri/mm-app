@@ -22,7 +22,7 @@ class User < ApplicationRecord
 
   # AdminRequest関連
   has_many :admin_requests, dependent: :destroy
-  has_many :approved_requests, class_name: 'AdminRequest', foreign_key: :approved_by_id
+  has_many :approved_requests, class_name: "AdminRequest", foreign_key: :approved_by_id
 
   # 4段階の権限管理
   enum :role, {
@@ -37,9 +37,12 @@ class User < ApplicationRecord
 
   # バリデーション
   validates :name, presence: true, length: { maximum: NAME_MAX_LENGTH }
+  validates :phone, format: { with: /\A\d{10,11}\z/, message: :invalid_phone_format }, allow_blank: true
   validate :invitation_code_valid, on: :create
+  validate :store_required_for_store_admin
 
-  # 初期化時のデフォルト値
+  # Callbacks
+  before_validation :normalize_phone
   after_initialize :set_default_role, if: :new_record?
 
   # 月次予算を取得
@@ -70,7 +73,6 @@ class User < ApplicationRecord
   end
 
   # Devise: 未承認ユーザーのログイン制御
-  # Deviseのメソッドを確実にオーバーライドするため、モジュールを定義して prepend
   module AuthenticationControl
     def active_for_authentication?
       approved?
@@ -85,14 +87,27 @@ class User < ApplicationRecord
 
   private
 
+  def normalize_phone
+    self.phone = phone.gsub(/[-\s()]/, "") if phone.present?
+  end
+
   def set_default_role
     self.role ||= :general
   end
 
   def invitation_code_valid
     return if invitation_code.blank?
+    return unless store_id.present?
 
-    valid_code = Rails.application.credentials.dig(:invitation_code)
-    errors.add(:invitation_code, :invalid) if invitation_code != valid_code
+    store = Store.find_by(id: store_id)
+    unless store && store.invitation_code == invitation_code
+      errors.add(:invitation_code, :invalid)
+    end
+  end
+
+  def store_required_for_store_admin
+    if store_admin? && store_id.blank?
+      errors.add(:store_id, :blank)
+    end
   end
 end

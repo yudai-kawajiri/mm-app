@@ -24,7 +24,7 @@ class Admin::UsersController < AuthenticatedController
     @user.password = SecureRandom.hex(16)
 
     if @user.save
-      redirect_to admin_users_path, notice: t('admin.users.messages.invited', name: @user.name)
+      redirect_to admin_user_path(@user), notice: t('admin.users.messages.invited', name: @user.name)
     else
       render :new, status: :unprocessable_entity
     end
@@ -34,7 +34,7 @@ class Admin::UsersController < AuthenticatedController
 
   def update
     if @user.update(user_params_for_update)
-      redirect_to admin_users_path, notice: t('admin.users.messages.updated', name: @user.name)
+      redirect_to admin_user_path(@user), notice: t('admin.users.messages.updated', name: @user.name)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -45,7 +45,7 @@ class Admin::UsersController < AuthenticatedController
       redirect_to admin_users_path, alert: t('admin.users.messages.cannot_delete_self')
     else
       @user.destroy
-      redirect_to admin_users_path, notice: t('admin.users.messages.user_deleted', name: @user.name)
+      redirect_to admin_user_path(@user), notice: t('admin.users.messages.user_deleted', name: @user.name)
     end
   end
 
@@ -54,14 +54,13 @@ class Admin::UsersController < AuthenticatedController
   def accessible_users
     case current_user.role
     when 'store_admin'
+      # 店舗管理者: 自分の店舗のユーザーのみ
       current_user.store.users
     when 'company_admin'
-      if current_store.present?
-        current_store.users
-      else
-        current_user.tenant.users.includes(:store)
-      end
+      # 会社管理者: 全ユーザー（current_store に関わらず）
+      current_user.tenant.users.includes(:store)
     when 'super_admin'
+      # システム管理者: 全ユーザー
       User.all.includes(:store)
     else
       User.none
@@ -88,10 +87,10 @@ class Admin::UsersController < AuthenticatedController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :role, :store_id)
+    params.require(:user).permit(:name, :email, :role, :store_id, :phone)
   end
 
   def user_params_for_update
-    params.require(:user).permit(:name, :email, :role, :store_id)
+    params.require(:user).permit(:name, :email, :role, :store_id, :phone)
   end
 end

@@ -37,13 +37,7 @@
     </div>
   <% end %>
 
-  <%# TOPへ戻るボタン（カード内の右下） %>
-  <div class="text-end mt-4">
-    <%= link_to root_path, class: "btn btn-outline-secondary btn-sm" do %>
-      <i class="bi bi-arrow-left"></i>
-      <%= t('landing.back_to_top') %>
-    <% end %>
-  </div>
-
   <%= render 'shared/terms_privacy_links' %>
+  <%= render "devise/shared/back_to_landing" %>
+
 <% end %>

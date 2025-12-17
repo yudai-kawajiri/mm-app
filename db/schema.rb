@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_15_020225) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_16_121700) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -67,17 +67,20 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_15_020225) do
   end
 
   create_table "application_requests", force: :cascade do |t|
-    t.string "admin_email"
-    t.string "admin_name"
     t.string "company_email"
     t.string "company_name"
     t.string "company_phone"
+    t.string "contact_email"
+    t.string "contact_name"
     t.datetime "created_at", null: false
     t.datetime "invitation_sent_at"
     t.string "invitation_token"
     t.integer "status"
     t.integer "tenant_id"
     t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["invitation_token"], name: "index_application_requests_on_invitation_token", unique: true
+    t.index ["user_id"], name: "index_application_requests_on_user_id"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -323,6 +326,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_15_020225) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "name"
+    t.string "phone"
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"

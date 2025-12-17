@@ -1,6 +1,54 @@
-<%# ダッシュボードメイン画面 %>
-
 <%= content_for :title, t('dashboard.menu.dashboard') %>
+
+<% if @show_welcome_modal %>
+  <div class="modal fade show d-block"
+       id="welcomeModal"
+       tabindex="-1"
+       role="dialog"
+       style="background-color: rgba(0,0,0,0.5);"
+       data-controller="welcome-modal">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <%= t('dashboard.welcome_modal.title') %>
+          </h5>
+        </div>
+        <div class="modal-body">
+          <p class="mb-3"><%= t('dashboard.welcome_modal.message') %></p>
+
+          <div class="alert alert-info mb-0">
+            <h6 class="alert-heading">
+              <i class="bi bi-bookmark-star me-2"></i>
+              <%= t('dashboard.welcome_modal.bookmark_title') %>
+            </h6>
+            <p class="mb-2"><%= t('dashboard.welcome_modal.bookmark_message') %></p>
+            <div class="input-group">
+              <input type="text"
+                     class="form-control"
+                     value="<%= root_url %>"
+                     data-welcome-modal-target="urlInput"
+                     readonly>
+              <button class="btn btn-outline-primary"
+                      type="button"
+                      data-action="click->welcome-modal#copy">
+                <i class="bi bi-clipboard"></i> <%= t('dashboard.welcome_modal.copy_button') %>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button"
+                  class="btn btn-success"
+                  data-action="click->welcome-modal#close">
+            <%= t('dashboard.welcome_modal.start_button') %>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1 class="h3 mb-0"><%= t('dashboard.welcome_message', name: current_user.name) %></h1>

@@ -2,6 +2,7 @@
 
 class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_sign_up_params, only: [:create]
+  before_action :configure_account_update_params, only: [:update]
 
   # POST /resource
   def create
@@ -35,6 +36,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :invitation_code, :store_id])
   end
 
+  def configure_account_update_params
+    devise_parameter_sanitizer.permit(:account_update, keys: [:name, :phone])
+  end
+
   def after_sign_up_path_for(resource)
     new_user_session_path
   end
@@ -45,14 +50,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   private
 
-  # 承認リクエストを作成
   def create_admin_request(user)
     AdminRequest.create!(
       tenant: user.tenant,
       store: user.store,
       user: user,
-      request_type: 'user_registration',
-      status: 'pending',
+      request_type: "user_registration",
+      status: "pending",
       message: "#{user.name} (#{user.email}) が新規登録を申請しました"
     )
   end

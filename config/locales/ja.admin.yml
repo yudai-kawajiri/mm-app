@@ -40,7 +40,7 @@ ja:
         name: "名前"
         name_placeholder: "山田 太郎"
         email: "メールアドレス"
-        email_placeholder: "user@example.com"
+        email_placeholder: "example@example.com"
         password: "パスワード"
         password_placeholder: "8文字以上"
         password_confirmation: "パスワード(確認)"

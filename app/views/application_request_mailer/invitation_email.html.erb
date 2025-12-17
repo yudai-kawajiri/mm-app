@@ -17,47 +17,47 @@
 <body>
   <div class="container">
     <div class="header">
-      <h2>MM-App アプリケーション責任者招待</h2>
+      <h2><%= t('application_request_mailer.invitation_email.header') %></h2>
     </div>
 
     <div class="content">
-      <p><%= @application_request.admin_name %> 様</p>
-      
-      <p>この度は、MM-Appのアプリケーション責任者としてご登録いただき、ありがとうございます。</p>
-      
+      <p><%= t('application_request_mailer.invitation_email.greeting', name: @application_request.contact_name) %></p>
+
+      <p><%= t('application_request_mailer.invitation_email.introduction') %></p>
+
       <div class="info-box">
-        <h3 style="margin-top: 0;">会社情報</h3>
+        <h3 style="margin-top: 0;"><%= t('application_request_mailer.invitation_email.company_info') %></h3>
         <div class="field">
-          <span class="label">会社名:</span> <%= @application_request.company_name %>
+          <span class="label"><%= t('application_request_mailer.invitation_email.company_name') %>:</span> <%= @application_request.company_name %>
         </div>
         <div class="field">
-          <span class="label">メールアドレス:</span> <%= @application_request.company_email %>
+          <span class="label"><%= t('application_request_mailer.invitation_email.company.email') %>:</span> <%= @application_request.company_email %>
         </div>
         <% if @application_request.company_phone.present? %>
           <div class="field">
-            <span class="label">電話番号:</span> <%= @application_request.company_phone %>
+            <span class="label"><%= t('application_request_mailer.invitation_email.company.phone') %>:</span> <%= @application_request.company_phone %>
           </div>
         <% end %>
       </div>
-      
-      <p>以下のボタンをクリックして、アカウントの登録を完了してください。</p>
-      
+
+      <p><%= t('application_request_mailer.invitation_email.instruction') %></p>
+
       <div style="text-align: center;">
-        <a href="<%= @invitation_url %>" class="button">アカウント登録を完了する</a>
+        <a href="<%= @invitation_url %>" class="button"><%= t('application_request_mailer.invitation_email.action') %></a>
       </div>
-      
+
       <p style="font-size: 14px; color: #6c757d;">
-        ※このURLは7日間有効です。期限を過ぎた場合は、再度依頼をお願いいたします。
+        <%= t('application_request_mailer.invitation_email.expiry_notice') %>
       </p>
-      
+
       <p style="font-size: 14px; color: #6c757d;">
-        もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください:<br>
+        <%= t('application_request_mailer.invitation_email.fallback_instruction') %><br>
         <%= @invitation_url %>
       </p>
-      
+
       <div class="footer">
-        <p>このメールに心当たりがない場合は、破棄していただいて構いません。</p>
-        <p>&copy; <%= Time.current.year %> MM-App. All rights reserved.</p>
+        <p><%= t('application_request_mailer.invitation_email.footer_notice') %></p>
+        <p><%= t('application_request_mailer.invitation_email.copyright', year: Time.current.year) %></p>
       </div>
     </div>
   </div>

@@ -24,7 +24,7 @@ module CrudResponderConcern
                         resource: resource_name,
                         name: resource_display_name)
 
-      redirect_to success_path, status: :see_other
+      redirect_to success_path, status: :see_other, allow_other_host: true
     else
       action = resource.new_record? ? :create : :update
 
@@ -52,11 +52,11 @@ module CrudResponderConcern
                         resource: resource_name,
                         name: resource_display_name)
 
-      redirect_to success_path, status: :see_other
+      redirect_to success_path, status: :see_other, allow_other_host: true
     else
       # 削除失敗 → エラー (赤)
       flash[:alert] = resource.errors.full_messages.to_sentence
-      redirect_to destroy_failure_path, status: :see_other
+      redirect_to destroy_failure_path, status: :see_other, allow_other_host: true
     end
   end
 end

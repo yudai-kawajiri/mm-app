@@ -8,7 +8,7 @@ class ApplicationRequestMailer < ApplicationMailer
     )
 
     mail(
-      to: application_request.admin_email,
+      to: application_request.contact_email,
       subject: '【MM-App】アプリケーション責任者招待のご案内'
     )
   end

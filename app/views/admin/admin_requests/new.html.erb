@@ -25,18 +25,18 @@
 
             <div class="mb-3">
               <%= f.label :store_id, t('activerecord.attributes.admin_request.store_id'), class: 'form-label' %>
-              <%= f.collection_select :store_id, 
-                  Store.where(tenant: current_tenant).order(:name), 
-                  :id, :name, 
-                  { prompt: t('helpers.select.prompt') }, 
+              <%= f.collection_select :store_id,
+                  Store.where(tenant: current_tenant).order(:name),
+                  :id, :name,
+                  { prompt: t('helpers.select.prompt') },
                   { class: 'form-select', required: true } %>
             </div>
 
             <div class="mb-3">
               <%= f.label :message, t('admin.admin_requests.new.message_label'), class: 'form-label' %>
-              <%= f.text_area :message, 
-                  rows: 4, 
-                  class: 'form-control', 
+              <%= f.text_area :message,
+                  rows: 4,
+                  class: 'form-control',
                   placeholder: t('admin.admin_requests.new.message_placeholder') %>
             </div>
 
