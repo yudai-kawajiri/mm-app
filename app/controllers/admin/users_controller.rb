@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-class Admin::UsersController < AuthenticatedController
-  before_action :require_admin
+class Admin::UsersController < Admin::BaseController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
   before_action :set_stores, only: [:new, :create, :edit, :update]
 

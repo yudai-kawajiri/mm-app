@@ -3,11 +3,9 @@
 # Admin System Logs Controller
 #
 # システムログ（監査ログ）管理
-class Admin::SystemLogsController < AuthenticatedController
+class Admin::SystemLogsController < Admin::BaseController
   LOGS_PER_PAGE = 50
 
-  before_action :require_admin
-  before_action :authorize_system_or_company_admin!
 
   def index
     @versions = accessible_versions

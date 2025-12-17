@@ -9,7 +9,7 @@
 #   - 月次予算の削除（日別目標・計画スケジュールも連動）
 #   - 実績入力済みスケジュールの保護
 #   - 見切率の更新
-class Management::MonthlyBudgetsController < ApplicationController
+class Management::MonthlyBudgetsController < Management::BaseController
   include NumericSanitizer
 
   before_action :authenticate_user!

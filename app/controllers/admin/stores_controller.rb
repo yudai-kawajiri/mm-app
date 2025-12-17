@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-class Admin::StoresController < AuthenticatedController
-  before_action :require_company_admin
+class Admin::StoresController < Admin::BaseController
   before_action :set_store, only: [:show, :edit, :update, :destroy, :regenerate_invitation_code]
 
   def index
