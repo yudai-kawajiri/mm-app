@@ -5,18 +5,18 @@ class Admin::UsersController < ApplicationController
   before_action :authorize_user_management
 
   def index
-  users_scope = current_user.tenant.users
-  
-  # 店舗管理者は自店舗のユーザーのみ表示
-  if current_user.store_admin? && current_store
-    users_scope = users_scope.where(store_id: current_store.id)
-  # 会社管理者は選択中の店舗でフィルタ
-  elsif current_user.company_admin? && session[:current_store_id].present?
-    users_scope = users_scope.where(store_id: session[:current_store_id])
+    users_scope = current_user.tenant.users
+    
+    # 店舗管理者は自店舗のユーザーのみ表示
+    if current_user.store_admin? && current_store
+      users_scope = users_scope.where(store_id: current_store.id)
+    # 会社管理者は選択中の店舗でフィルタ
+    elsif current_user.company_admin? && session[:current_store_id].present?
+      users_scope = users_scope.where(store_id: session[:current_store_id])
+    end
+    
+    @users = users_scope.page(params[:page]).per(20)
   end
-  
-  @users = users_scope.page(params[:page]).per(20)
-end
 
 
   def show
