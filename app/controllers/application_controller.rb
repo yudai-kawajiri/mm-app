@@ -78,39 +78,69 @@ class ApplicationController < ActionController::Base
   end
 
   def current_store
-    @current_store ||= if current_user&.can_manage_company?
-      current_tenant&.stores&.find_by(id: session[:current_store_id])
-    else
-      current_user&.store
-    end
+    return nil unless session[:current_store_id]
+    @current_store ||= current_user.tenant.stores.find_by(id: session[:current_store_id])
   end
 
   def scoped_monthly_budgets
     return Management::MonthlyBudget.none unless current_tenant
-    Management::MonthlyBudget.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+    if session[:current_store_id].present?
+    Management::MonthlyBudget.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+  else
+    Management::MonthlyBudget.where(tenant_id: current_tenant.id)
+  end
   end
 
   def scoped_categories
-    Resources::Category.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+    if session[:current_store_id].present?
+    Resources::Category.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+  else
+    Resources::Category.where(tenant_id: current_tenant.id)
+  end
   end
 
   def scoped_products
+    if session[:current_store_id].present?
+      Resources::Product.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Resources::Product.where(tenant_id: current_tenant.id)
+    end
     Resources::Product.where(tenant_id: current_tenant.id, store_id: current_store&.id)
   end
 
   def scoped_materials
+    if session[:current_store_id].present?
+      Resources::Material.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Resources::Material.where(tenant_id: current_tenant.id)
+    end
     Resources::Material.where(tenant_id: current_tenant.id, store_id: current_store&.id)
   end
 
   def scoped_plans
+    if session[:current_store_id].present?
+      Resources::Plan.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Resources::Plan.where(tenant_id: current_tenant.id)
+    end
     Resources::Plan.where(tenant_id: current_tenant.id, store_id: current_store&.id)
   end
 
   def scoped_material_order_groups
+    if session[:current_store_id].present?
+      Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id)
+    end
     Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id, store_id: current_store&.id)
   end
 
   def scoped_units
+    if session[:current_store_id].present?
+      Resources::Unit.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Resources::Unit.where(tenant_id: current_tenant.id)
+    end
     Resources::Unit.where(tenant_id: current_tenant.id, store_id: current_store&.id)
   end
 
