@@ -1,4 +1,3 @@
----
 ja:
   application_name: MM-App
   meta:
@@ -89,6 +88,7 @@ ja:
     not_authorized: このアクションを実行する権限がありません
     require_store_selected: このアクションを実行するには店舗を選択してください。
   common:
+    deleted_plan: (削除された計画)
     menu:
       tenant_management: テナント管理
       approval_requests: 承認リクエスト
@@ -182,31 +182,9 @@ ja:
         remember_me: ログイン情報を記憶する
     messages:
       budget_created: 予算を設定しました
-      budget_create_failed: 予算の設定に失敗しました
-      not_saved:
-        one: "%{resource}の保存に失敗しました"
-        other: "%{count}件のエラーが発生したため、%{resource}の保存に失敗しました"
-      hiragana_only: はひらがなのみで入力してください
-      blank: を入力してください
-      required: を入力してください
-      not_a_number: は数値で入力してください
-      greater_than: "%{count}より大きい値を入力してください"
-      greater_than_or_equal_to: は%{count}以上の値にしてください
-      less_than: は%{count}より小さい値にしてください
-      less_than_or_equal_to: は%{count}以下の値にしてください
-      too_long:
-        one: は%{count}文字以内で入力してください
-        other: は%{count}文字以内で入力してください
-      too_short:
-        one: "%{count}文字以上で入力してください"
-        other: "%{count}文字以上で入力してください"
-      taken: は既に使用されています
-      confirmation: と%{attribute}の入力が一致しません
-      invalid: が正しくありません
-      not_found: が見つかりません
       restrict_dependent_destroy:
-        has_one: "%{record}で使用しているため、この%{model}を削除できません"
-        has_many: "%{record}で使用しているため、この%{model}を削除できません"
+        has_one: "%{record}で使用されているため削除できません"
+        has_many: "%{record}で使用されているため削除できません"
   api:
     errors:
       unauthorized: 認証が必要です
@@ -289,27 +267,6 @@ ja:
       forecast:
         title: 売上予測
         description: データに基づく経営判断
-    stores:
-      invitation_code_regenerated: 招待コードを再発行しました
-      show:
-        confirm_regenerate: 招待コードを再発行しますか？既存の招待コードは無効になります。
-        regenerate_code: 招待コード再発行
-        statistics: 統計情報
-        total_users: 所属ユーザー数
-        approved_users: 承認済みユーザー数
-        users_list: 所属ユーザー一覧
-        approved: 承認済み
-        pending: 承認待ち
-        no_users: 所属ユーザーがいません
-        role_badges:
-          general: 一般
-          store_admin: 店舗管理者
-          company_admin: 会社管理者
-        user: ユーザー
-        store: 店舗
-        status: ステータス
-        message: メッセージ
-        request_type: リクエスト種別
   terms:
     title: 利用規約
     last_updated: 最終更新日
@@ -356,6 +313,26 @@ ja:
       success: "%{store_name}に切り替えました"
       all_stores: 全店舗表示に切り替えました
       not_found: 店舗が見つかりませんでした
+    invitation_code_regenerated: 招待コードを再発行しました
+    show:
+      confirm_regenerate: 招待コードを再発行しますか？既存の招待コードは無効になります。
+      regenerate_code: 招待コード再発行
+      statistics: 統計情報
+      total_users: 所属ユーザー数
+      approved_users: 承認済みユーザー数
+      users_list: 所属ユーザー一覧
+      approved: 承認済み
+      pending: 承認待ち
+      no_users: 所属ユーザーがいません
+      role_badges:
+        general: 一般
+        store_admin: 店舗管理者
+        company_admin: 会社管理者
+      user: ユーザー
+      store: 店舗
+      status: ステータス
+      message: メッセージ
+      request_type: リクエスト種別
   devise:
     mailer:
       reset_password_instructions:
@@ -414,11 +391,28 @@ ja:
           attributes:
             phone:
               invalid_phone_format: は10桁または11桁の数字で入力してください
+        resources/category:
+          category_type_in_use: "%{record}で使用しています"
+          category_in_use: "%{record}で使用しています"
+        resources/material:
+          category_in_use: "%{record}で使用しています"
+        resources/unit:
+          category_in_use: "%{record}で使用しています"
+          unit_in_use: "%{record}で使用しています"
     models:
       user: ユーザー
       store: 店舗
       tenant: テナント
       admin_request: 承認リクエスト
+      resources/material: 原材料
+      resources/product: 商品
+      resources/plan: 計画
+      resources/product_material: 商品原材料
+      resources/plan_product: 計画商品
+      resources/category: カテゴリー
+      resources/order: 発注
+      resources/order_group: 発注グループ
+      resources/unit: 単位
     attributes:
       user:
         name: 名前
@@ -445,6 +439,60 @@ ja:
         request_type: リクエスト種別
         status: ステータス
         reason: 理由
+      resources/material:
+        name: 原材料名
+        code: 原材料コード
+        description: 説明
+        category_id: カテゴリー
+        production_unit_id: 使用単位
+        order_unit_id: 発注単位
+        conversion_rate: 換算レート
+        standard_unit_price: 標準単価
+      resources/product:
+        name: 商品名
+        code: 商品コード
+        description: 説明
+        category_id: カテゴリー
+      resources/plan:
+        name: 計画名
+        code: 計画コード
+        plan_date: 計画日
+        status: ステータス
+        category_id: カテゴリー
+        actual_revenue_data: 実績売上データ
+      resources/order_group:
+        name: 発注グループ名
+        code: 発注グループコード
+        order_date: 発注日
+        status: ステータス
+        category_id: カテゴリー
+      resources/category:
+        name: カテゴリー名
+        category_type: タイプ
+      resources/unit:
+        name: 単位名
+    enums:
+      resources/plan:
+        status:
+          draft: 下書き
+          confirmed: 確定
+          completed: 完了
+      resources/order_group:
+        status:
+          draft: 下書き
+          ordered: 発注済み
+          received: 入荷済み
+      resources/category:
+        category_type:
+          material: 原材料
+          product: 商品
+          plan: 計画
+          order_group: 発注グループ
+    associations:
+      resources/unit:
+        materials_as_product_unit: 商品単位として使用している原材料
+        materials_as_order_unit: 発注単位として使用している原材料
+        materials_as_production_unit: 使用単位として使用している原材料
   admin:
     users:
       messages:
@@ -484,3 +532,5 @@ ja:
           company_admin: 会社管理者
       store_id:
         blank: を選択してください
+    categories: カテゴリー管理
+    units: 単位管理
