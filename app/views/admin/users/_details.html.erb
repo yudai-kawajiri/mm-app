@@ -1,3 +1,16 @@
+<% if session[:generated_password] %>
+<div class="alert alert-warning mb-4" role="alert">
+  <h5 class="alert-heading"><i class="bi bi-key-fill"></i> 初期パスワードが生成されました</h5>
+  <hr>
+  <p class="mb-0">
+    <strong class="fs-4 text-danger"><%= session.delete(:generated_password) %></strong>
+  </p>
+  <small class="text-muted d-block mt-2">
+    このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
+  </small>
+</div>
+<% end %>
+
 <%# ユーザー詳細表示 %>
 <% user = local_assigns[:user] || local_assigns[:resource] %>
 <% user_class = user.class %>
