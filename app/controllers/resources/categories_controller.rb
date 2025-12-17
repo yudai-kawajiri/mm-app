@@ -15,7 +15,9 @@ class Resources::CategoriesController < AuthenticatedController
   before_action :set_category, only: [ :show, :edit, :update, :destroy, :copy ]
 
   def index
+    Rails.logger.info "[DEBUG INDEX] @categories count before scoped: (calling scoped_categories now)"
     @categories = scoped_categories
+    Rails.logger.info "[DEBUG INDEX] @categories count after scoped: #{@categories.count}"
 
     @categories = apply_sort(@categories, default: "name")
 
@@ -41,7 +43,7 @@ class Resources::CategoriesController < AuthenticatedController
     @category = Resources::Category.new(category_params)
     @category.user_id = current_user.id
     @category.tenant_id = current_tenant.id
-    @category.store_id = current_store&.id
+    @category.store_id = current_store&.id || current_user.store_id
 
     respond_to_save(@category)
   end
@@ -79,17 +81,18 @@ class Resources::CategoriesController < AuthenticatedController
 
 
   def scoped_categories
+    Rails.logger.info "[DEBUG CONTROLLER SCOPED] current_user.role = #{current_user.role}"
+    Rails.logger.info "[DEBUG CONTROLLER SCOPED] session[:current_store_id] = #{session[:current_store_id].inspect}"
+    
     case current_user.role
-    when 'store_admin'
-      Resources::Category.where(store_id: current_store.id)
+    when 'store_admin', 'general'
+      Resources::Category.where(store_id: current_user.store_id)
     when 'company_admin'
       if session[:current_store_id].present?
         Resources::Category.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
       else
         Resources::Category.where(tenant_id: current_tenant.id)
       end
-    when 'super_admin'
-      Resources::Category.all
     else
       Resources::Category.none
     end
@@ -97,7 +100,7 @@ class Resources::CategoriesController < AuthenticatedController
   private
 
   def set_category
-    @category = scoped_categories.find(params[:id])
+    @category = current_user.tenant.categories.find(params[:id])
   end
 
   def category_params
