@@ -201,6 +201,7 @@ export default class extends Controller {
     const dateDisplay = button.dataset[DATA_ATTRIBUTE.DATE_DISPLAY]
     const date = button.dataset[DATA_ATTRIBUTE.DATE]
     const snapshot = button.dataset[DATA_ATTRIBUTE.SNAPSHOT]
+    const planName = button.dataset.planName
 
     Logger.log(LOG_MESSAGES.MODAL_DATA_SET, scheduleId)
 
@@ -217,12 +218,52 @@ export default class extends Controller {
     this.showInfoAlert()
 
     if (scheduleId) {
-      Logger.log(LOG_MESSAGES.EDIT_MODE)
-      this.setupEditMode(scheduleId, categoryName, planId, plannedRevenue, snapshot)
+      if (planName && planName.includes("削除された計画")) {
+        Logger.log("Deleted plan detected, showing snapshot")
+        this.setupDeletedPlanMode(scheduleId, snapshot, plannedRevenue)
+      } else {
+        Logger.log(LOG_MESSAGES.EDIT_MODE)
+        this.setupEditMode(scheduleId, categoryName, planId, plannedRevenue, snapshot)
+      }
     } else {
       Logger.log(LOG_MESSAGES.CREATE_MODE)
       this.setupCreateMode()
     }
+  }
+
+
+  // 削除された計画モード設定
+  setupDeletedPlanMode(scheduleId, snapshot, plannedRevenue) {
+    if (this.hasModalTitleTarget) { this.modalTitleTarget.textContent = this.i18nEditTitleValue }
+    if (this.hasSubmitBtnTarget) { this.submitBtnTarget.value = this.i18nUpdateLabelValue }
+    if (this.hasFormTarget) {
+      this.formTarget.action = `${URL_PATH.PLAN_SCHEDULES}/${scheduleId}`
+      this.updateMethodInput(HTTP_METHOD.PATCH)
+      this.updateCsrfToken()
+    }
+    if (this.hasCategorySelectTarget) { this.categorySelectTarget.value = DEFAULT_VALUE.EMPTY_STRING }
+    if (this.hasPlanSelectTarget) {
+      this.planSelectTarget.innerHTML = `<option value="">${this.i18nSelectPlanAfterCategoryValue}</option>`
+      this.planSelectTarget[ELEMENT_PROPERTY.DISABLED] = true
+    }
+    if (snapshot && snapshot !== "null" && snapshot !== "undefined") {
+      try {
+        const snapshotData = JSON.parse(snapshot)
+        const snapshotProducts = snapshotData.products || []
+        if (snapshotProducts.length > 0) {
+          const products = snapshotProducts.map(sp => ({
+            product_id: sp.product_id,
+            product_name: sp.name,
+            production_count: sp.production_count,
+            price: sp.price
+          }))
+          this.currentPlanProducts = products
+          this.displayProducts(products)
+        }
+      } catch (e) { Logger.error("Snapshot parse error:", e) }
+    }
+    if (this.hasPlannedRevenueTarget) { this.plannedRevenueTarget.value = plannedRevenue || DEFAULT_VALUE.ZERO }
+    this.hideInfoAlert()
   }
 
   // 編集モード設定
