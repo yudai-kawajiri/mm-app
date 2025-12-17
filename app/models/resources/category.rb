@@ -9,6 +9,7 @@
 #   - product: 製品カテゴリー (1)
 #   - plan: 計画カテゴリー (2)
 class Resources::Category < ApplicationRecord
+  include TranslatableAssociations
   has_paper_trail
 
   include NameSearchable
@@ -67,6 +68,6 @@ class Resources::Category < ApplicationRecord
 
     return if usage_details.empty?
 
-    errors.add(:category_type, I18n.t('activerecord.errors.models.resources/category.category_type_in_use', record: usage_details.join('、')))
+    errors.add(:category_type, :in_use, record: usage_details.join("、"))
   end
 end

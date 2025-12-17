@@ -16,7 +16,7 @@ class Planning::PlanSchedule < ApplicationRecord
   include UserAssociatable
 
   # 計画との関連
-  belongs_to :plan, class_name: "Resources::Plan"
+  belongs_to :plan, class_name: "Resources::Plan", optional: true
 
   # バリデーション
   validates :scheduled_date, presence: true, uniqueness: { scope: :store_id }
@@ -274,3 +274,19 @@ class Planning::PlanSchedule < ApplicationRecord
   end
 
 end
+
+  # 計画名を取得（削除済みの場合は代替テキスト）
+  def plan_name_or_deleted
+    plan&.name || I18n.t("common.deleted_plan")
+  end
+
+  # 予定売上を取得（計画削除済みでもスナップショットから取得）
+  def expected_revenue
+    if has_snapshot?
+      snapshot_total_cost
+    elsif plan
+      plan.expected_revenue
+    else
+      0
+    end
+  end
