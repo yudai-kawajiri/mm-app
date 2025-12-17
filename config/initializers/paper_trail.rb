@@ -3,21 +3,23 @@
 # PaperTrail の設定
 PaperTrail.config.enabled = true
 
-# Version モデルに store_id を自動記録
-if defined?(PaperTrail)
-  module PaperTrail
-    class Version < ActiveRecord::Base
-      # store_id を自動設定
-      before_create :set_store_id
+# カスタム Version モデル
+class PaperTrail::Version < ActiveRecord::Base
+  before_create :set_store_and_tenant_id
 
-      private
+  private
 
-      def set_store_id
-        # item (変更されたレコード) から store_id を取得
-        if item.respond_to?(:store_id)
-          self.store_id = item.store_id
-        end
-      end
+  def set_store_and_tenant_id
+    return unless item
+
+    # store_id を設定
+    self.store_id = item.store_id if item.respond_to?(:store_id)
+
+    # tenant_id を設定
+    if item.respond_to?(:tenant_id)
+      self.tenant_id = item.tenant_id
+    elsif item.respond_to?(:tenant)
+      self.tenant_id = item.tenant&.id
     end
   end
 end

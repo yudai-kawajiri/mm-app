@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # 数値管理機能のコントローラー
-class Management::NumericalManagementsController < ApplicationController
+class Management::NumericalManagementsController < Management::BaseController
   include NumericSanitizer
 
   # 年月の範囲チェック用定数

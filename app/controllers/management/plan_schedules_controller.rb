@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Management::PlanSchedulesController < AuthenticatedController
+class Management::PlanSchedulesController < Management::BaseController
   include NumericSanitizer
 
   def create

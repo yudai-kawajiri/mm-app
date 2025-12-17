@@ -26,15 +26,21 @@
     <% end %>
 
     <% if show_copy && copy_url.present? %>
-      <%= link_to copy_url,
-          method: :post,
-          class: 'btn btn-sm btn-light me-1',
-          title: t('helpers.link.copy'),
-          data: { 
-            turbo_method: :post,
-            turbo_confirm: t('helpers.confirm.copy', resource: resource.class.model_name.human) 
-          } do %>
-        <i class="bi bi-files"></i>
+      <% if can_create_store_resource? %>
+        <%= link_to copy_url,
+            method: :post,
+            class: 'btn btn-sm btn-light me-1',
+            title: t('helpers.link.copy'),
+            data: { 
+              turbo_method: :post,
+              turbo_confirm: t('helpers.confirm.copy', resource: resource.class.model_name.human) 
+            } do %>
+          <i class="bi bi-files"></i>
+        <% end %>
+      <% else %>
+        <button class="btn btn-sm btn-light me-1" disabled title="<%= t('helpers.select_store_to_create') %>">
+          <i class="bi bi-files"></i>
+        </button>
       <% end %>
     <% end %>
 
@@ -62,12 +68,18 @@
     <% end %>
     <%= link_to t('helpers.link.edit'), resource_path_with_scope(resource, scope, :edit), class: 'btn btn-sm btn-light me-1' %>
     <% if show_copy && copy_url.present? %>
-      <%= link_to t('helpers.link.copy'), copy_url, 
-          class: 'btn btn-sm btn-light me-1',
-          data: { 
-            turbo_method: :post,
-            turbo_confirm: t('helpers.confirm.copy', resource: resource.class.model_name.human) 
-          } %>
+      <% if can_create_store_resource? %>
+        <%= link_to t('helpers.link.copy'), copy_url, 
+            class: 'btn btn-sm btn-light me-1',
+            data: { 
+              turbo_method: :post,
+              turbo_confirm: t('helpers.confirm.copy', resource: resource.class.model_name.human) 
+            } %>
+      <% else %>
+        <button class="btn btn-sm btn-light me-1" disabled>
+          <%= t('helpers.link.copy') %>
+        </button>
+      <% end %>
     <% end %>
     <% if show_print && print_url.present? %>
       <%= link_to t('helpers.link.print'), print_url, class: 'btn btn-sm btn-light me-1', target: '_blank' %>

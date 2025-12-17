@@ -71,6 +71,10 @@ ja:
         action: "アクション"
         record_id: "レコードID"
         detail: "詳細"
+        no_detail: "詳細なし"
+        deleted_record: "削除済みレコード"
+        unknown_user: "不明なユーザー"
+        system: "システム"
         no_logs: "ログが見つかりません"
       actions:
         create: "登録"

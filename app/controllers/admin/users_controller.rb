@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-class Admin::UsersController < AuthenticatedController
-  before_action :require_admin
+class Admin::UsersController < Admin::BaseController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
   before_action :set_stores, only: [:new, :create, :edit, :update]
 
@@ -57,8 +56,12 @@ class Admin::UsersController < AuthenticatedController
       # 店舗管理者: 自分の店舗のユーザーのみ
       current_user.store.users
     when 'company_admin'
-      # 会社管理者: 全ユーザー（current_store に関わらず）
-      current_user.tenant.users.includes(:store)
+      # 会社管理者: 選択中の店舗 or 全店舗
+      if current_store.present?
+        current_user.tenant.users.where(store_id: current_store.id).includes(:store)
+      else
+        current_user.tenant.users.includes(:store)
+      end
     when 'super_admin'
       # システム管理者: 全ユーザー
       User.all.includes(:store)
@@ -68,7 +71,13 @@ class Admin::UsersController < AuthenticatedController
   end
 
   def set_user
-    @user = accessible_users.find(params[:id])
+    # 会社管理者は店舗フィルタを無視して全ユーザーにアクセス可能
+    users_scope = if current_user.company_admin?
+                    current_user.tenant.users
+                  else
+                    accessible_users
+                  end
+    @user = users_scope.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     redirect_to admin_users_path, alert: t('admin.users.messages.user_not_found')
   end

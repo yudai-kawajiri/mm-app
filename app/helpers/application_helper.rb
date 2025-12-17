@@ -124,6 +124,7 @@ module ApplicationHelper
       {
         name: t("dashboard.menu.numerical_management"),
         path: management_numerical_managements_path,
+        disabled: session[:current_store_id].blank?,
         submenu: [
           { name: t("dashboard.menu.numerical_dashboard"), path: management_numerical_managements_path }
         ]
@@ -674,4 +675,9 @@ end
     Rails.logger.error "Path generation failed: #{e.message}"
     Rails.logger.error e.backtrace.join("\n")
     "#"
+  end
+
+  def can_create_store_resource?
+    return true unless current_user.company_admin?
+    session[:current_store_id].present?
   end

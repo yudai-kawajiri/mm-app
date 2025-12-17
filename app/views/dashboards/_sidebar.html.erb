@@ -24,7 +24,7 @@
         <%= form_with url: switch_store_path, method: :post, local: true do |f| %>
           <%= f.select :store_id,
               options_for_select(
-                current_tenant.stores.pluck(:name, :id),
+                [['全店舗', nil]] + current_tenant.stores.pluck(:name, :id),
                 session[:current_store_id]
               ),
               {},
@@ -58,17 +58,24 @@
         <% collapse_id = "collapse-menu-#{index}" %>
         <% is_active = sidebar_link_active?(item) %>
 
-        <a href="#"
-            class="list-group-item list-group-item-action <%= 'active' if is_active %>"
-            data-bs-toggle="collapse"
-            data-bs-target="#<%= collapse_id %>"
-            role="button"
-            aria-expanded="<%= is_active %>"
-            aria-controls="<%= collapse_id %>"
-            onclick="event.preventDefault();">
-          <%= item[:name] %>
-          <i class="bi bi-chevron-down float-end"></i>
-        </a>
+        <% if item[:disabled] %>
+          <a href="#" class="list-group-item list-group-item-action disabled" title="店舗を選択してください" onclick="return false;">
+            <%= item[:name] %>
+            <i class="bi bi-lock-fill float-end text-muted"></i>
+          </a>
+        <% else %>
+          <a href="#"
+              class="list-group-item list-group-item-action <%= 'active' if is_active %>"
+              data-bs-toggle="collapse"
+              data-bs-target="#<%= collapse_id %>"
+              role="button"
+              aria-expanded="<%= is_active %>"
+              aria-controls="<%= collapse_id %>"
+              onclick="event.preventDefault();">
+            <%= item[:name] %>
+            <i class="bi bi-chevron-down float-end"></i>
+          </a>
+        <% end %>
 
         <div class="collapse <%= 'show' if is_active %>"
               id="<%= collapse_id %>"
