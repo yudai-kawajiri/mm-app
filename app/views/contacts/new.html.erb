@@ -13,60 +13,48 @@
         <div class="card-body p-4">
           <p class="text-muted mb-4"><%= t('contacts.new.subtitle') %></p>
 
-          <%= form_with model: @contact, url: contacts_path, local: true do |f| %>
+          <%= form_with model: @contact, 
+                        url: contacts_path, 
+                        local: true,
+                        html: { 
+                          data: { controller: "form-validation" }
+                        } do |f| %>
             <%= render 'shared/forms/error_messages', resource: f.object %>
 
-            <div class="mb-4">
-              <%= f.label :name, class: 'form-label h5' do %>
-                <%= t('contacts.form.name') %><%= t('helpers.required_mark').html_safe %>
-              <% end %>
-              <%= f.text_field :name, class: 'form-control form-control-lg', placeholder: t('contacts.form.name_placeholder'), autofocus: true, required: true %>
-            </div>
+            <%= form_group_lg(f, :name,
+              required: true,
+              label: raw([t('contacts.form.name'), t('helpers.required_mark')].join(' ')),
+              placeholder: t('contacts.form.name_placeholder')
+            ) %>
 
-            <div class="mb-4">
-              <%= f.label :email, class: 'form-label h5' do %>
-                <%= t('contacts.form.email') %><%= t('helpers.required_mark').html_safe %>
-              <% end %>
-              <%= f.email_field :email, class: 'form-control form-control-lg', placeholder: t('contacts.form.email_placeholder'), required: true %>
-            </div>
+            <%= form_group_lg(f, :email,
+              required: true,
+              label: raw([t('contacts.form.email'), t('helpers.required_mark')].join(' ')),
+              placeholder: t('contacts.form.email_placeholder'),
+              input_type: 'email'
+            ) %>
 
-            <div class="mb-4">
-              <%= f.label :subject, class: 'form-label h5' do %>
-                <%= t('contacts.form.subject') %><%= t('helpers.required_mark').html_safe %>
-              <% end %>
-              <%= f.text_field :subject, class: 'form-control form-control-lg', placeholder: t('contacts.form.subject_placeholder'), required: true %>
-            </div>
+            <%= form_group_lg(f, :subject,
+              required: true,
+              label: raw([t('contacts.form.subject'), t('helpers.required_mark')].join(' ')),
+              placeholder: t('contacts.form.subject_placeholder')
+            ) %>
 
-            <div class="mb-4"
-                  data-controller="input--character-counter"
-                  data-input--character-counter-max-value="<%= t('contacts.form.message_max_length') %>">
-              <%= f.label :message, class: 'form-label h5' do %>
-                <%= t('contacts.form.message') %><%= t('helpers.required_mark').html_safe %>
-              <% end %>
-              <%= f.text_area :message,
-                  rows: 8,
-                  class: 'form-control form-control-lg',
-                  placeholder: t('contacts.form.message_placeholder'),
-                  maxlength: t('contacts.form.message_max_length'),
-                  required: true,
-                  data: {
-                    input__character_counter_target: "input",
-                    action: "input->input--character-counter#updateCount"
-                  } %>
-              <div class="form-text d-flex justify-content-between align-items-center mt-1">
-                <span><%= t('contacts.form.message_hint') %></span>
-                <span>
-                  <span data-input--character-counter-target="count" class="text-muted"></span> / <%= t('contacts.form.message_max_length') %> <%= t('common.characters') %>
-                  (<%= t('common.remaining') %> <span data-input--character-counter-target="remaining" class="text-muted"></span> <%= t('common.characters') %>)
-                </span>
-              </div>
-            </div>
+            <%= form_group_lg(f, :message,
+              field_type: :text_area,
+              required: true,
+              label: raw([t('contacts.form.message'), t('helpers.required_mark')].join(' ')),
+              placeholder: t('contacts.form.message_placeholder'),
+              character_counter: true,
+              max_length: 2000,
+              rows: 8
+            ) %>
 
             <div class="d-flex justify-content-end gap-2">
               <% if user_signed_in? %>
                 <%= link_to t('helpers.link.back'), help_path, class: 'btn btn-outline-secondary btn-lg' %>
               <% else %>
-                <%= link_to t('helpers.link.back'), "root_path", class: 'btn btn-outline-secondary btn-lg' %>
+                <%= link_to t('helpers.link.back'), root_path, class: 'btn btn-outline-secondary btn-lg' %>
               <% end %>
               <%= f.submit t('contacts.form.submit'), class: 'btn btn-primary btn-lg' %>
             </div>

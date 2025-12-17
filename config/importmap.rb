@@ -17,7 +17,6 @@ pin "controllers/admin/user_role_controller", to: "controllers/admin/user_role_c
 pin "controllers/form/nested_form_controller", to: "controllers/form/nested_form_controller.js"
 pin "controllers/form/nested_form_item_controller", to: "controllers/form/nested_form_item_controller.js"
 pin "controllers/form/submit_controller", to: "controllers/form/submit_controller.js"
-pin "controllers/form_validation_controller", to: "controllers/form_validation_controller.js"
 
 # Input Controllers
 pin "controllers/input/character_counter_controller", to: "controllers/input/character_counter_controller.js"
