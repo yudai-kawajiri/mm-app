@@ -45,6 +45,7 @@
     <div class="mb-3" data-admin--user-role-target="storeField">
       <%= f.label :store_id, class: 'form-label h5' do %>
         <%= User.human_attribute_name(:store) %>
+        <span class="text-danger">*</span>
         <span class="text-danger" id="store-required-mark" style="display: none;">*</span>
       <% end %>
       <%= f.collection_select :store_id, @stores, :id, :name,
@@ -54,6 +55,29 @@
             'form-validation-target': 'field',
             'admin--user-role-target': 'storeSelect'
           } %>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-6">
+    <div class="mb-3">
+      <%= f.label :password, class: 'form-label h5' do %>
+        <%= user.new_record? ? User.human_attribute_name(:password) : t('devise.registrations.edit.new_password') %>
+      <% end %>
+      <%= f.password_field :password, class: 'form-control', autocomplete: 'new-password', placeholder: t('devise.shared.minimum_password_length', count: 6) %>
+      <small class="text-muted">
+        <%= user.new_record? ? t('admin.users.form.password_hint') : t('devise.registrations.edit.leave_blank_if_you_don_t_want_to_change_it') %>
+      </small>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="mb-3">
+      <%= f.label :password_confirmation, class: 'form-label h5' do %>
+        <%= User.human_attribute_name(:password_confirmation) %>
+      <% end %>
+      <%= f.password_field :password_confirmation, class: 'form-control', autocomplete: 'new-password', placeholder: t('devise.shared.minimum_password_length', count: 6) %>
     </div>
   </div>
 </div>
