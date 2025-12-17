@@ -118,6 +118,23 @@ class Resources::MaterialsController < AuthenticatedController
     @material = scoped_materials.find(params[:id])
   end
 
+
+  def scoped_materials
+    case current_user.role
+    when 'store_admin'
+      Resources::Material.where(store_id: current_store.id)
+    when 'company_admin'
+      if session[:current_store_id].present?
+        Resources::Material.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+      else
+        Resources::Material.where(tenant_id: current_tenant.id)
+      end
+    when 'super_admin'
+      Resources::Material.all
+    else
+      Resources::Material.none
+    end
+  end
   private
 
   def material_params

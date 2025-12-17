@@ -1,20 +1,26 @@
 <%# ソート可能ボタン %>
-<div class="d-flex gap-2">
-  <button data-sortable-table-target="toggleBtn"
-          data-action="click->sortable-table#toggleReorderMode"
-          class="btn btn-sm btn-secondary">
+<% if can_create_store_resource? %>
+  <div class="d-flex gap-2">
+    <button data-sortable-table-target="toggleBtn"
+            data-action="click->sortable-table#toggleReorderMode"
+            class="btn btn-sm btn-secondary">
+      <%= local_assigns[:button_text] || t('common.actions.reorder_print_order') %>
+    </button>
+
+    <button data-sortable-table-target="saveBtn"
+            data-action="click->sortable-table#save"
+            class="btn btn-sm btn-success d-none">
+      <%= t('common.save_order') %>
+    </button>
+
+    <button data-sortable-table-target="cancelBtn"
+            data-action="click->sortable-table#cancel"
+            class="btn btn-sm btn-outline-secondary d-none">
+      <%= t('common.cancel') %>
+    </button>
+  </div>
+<% else %>
+  <button class="btn btn-sm btn-secondary disabled" disabled title="<%= t('helpers.select_store_to_create') %>">
     <%= local_assigns[:button_text] || t('common.actions.reorder_print_order') %>
   </button>
-
-  <button data-sortable-table-target="saveBtn"
-          data-action="click->sortable-table#save"
-          class="btn btn-sm btn-success d-none">
-    <%= t('common.save_order') %>
-  </button>
-
-  <button data-sortable-table-target="cancelBtn"
-          data-action="click->sortable-table#cancel"
-          class="btn btn-sm btn-outline-secondary d-none">
-    <%= t('common.cancel') %>
-  </button>
-</div>
+<% end %>

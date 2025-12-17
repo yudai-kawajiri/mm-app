@@ -2,10 +2,16 @@
 <% custom_class = local_assigns.fetch(:custom_class, '') %>
 <% confirm_message = local_assigns.fetch(:confirm_message, t('helpers.confirm.copy')) %>
 
-<%= button_to url,
-    method: :post,
-    class: "btn btn-sm btn-secondary #{custom_class}",
-    data: { confirm: confirm_message },
-    title: t('helpers.link.copy') do %>
-  <i class="bi bi-files"></i> <%= t('helpers.link.copy') %>
+<% if can_create_store_resource? %>
+  <%= button_to url,
+      method: :post,
+      class: "btn btn-sm btn-secondary #{custom_class}",
+      data: { confirm: confirm_message },
+      title: t('helpers.link.copy') do %>
+    <i class="bi bi-files"></i> <%= t('helpers.link.copy') %>
+  <% end %>
+<% else %>
+  <button class="btn btn-sm btn-secondary disabled" disabled title="<%= t('helpers.select_store_to_create') %>">
+    <i class="bi bi-files"></i> <%= t('helpers.link.copy') %>
+  </button>
 <% end %>

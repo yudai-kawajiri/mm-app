@@ -77,6 +77,23 @@ class Resources::CategoriesController < AuthenticatedController
                                                 resource: @category.class.model_name.human)
   end
 
+
+  def scoped_categories
+    case current_user.role
+    when 'store_admin'
+      Resources::Category.where(store_id: current_store.id)
+    when 'company_admin'
+      if session[:current_store_id].present?
+        Resources::Category.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+      else
+        Resources::Category.where(tenant_id: current_tenant.id)
+      end
+    when 'super_admin'
+      Resources::Category.all
+    else
+      Resources::Category.none
+    end
+  end
   private
 
   def set_category

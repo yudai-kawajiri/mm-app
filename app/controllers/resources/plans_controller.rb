@@ -157,6 +157,23 @@ class Resources::PlansController < AuthenticatedController
     @plan = scoped_plans.find(params[:id])
   end
 
+
+  def scoped_plans
+    case current_user.role
+    when 'store_admin'
+      Resources::Plan.where(store_id: current_store.id)
+    when 'company_admin'
+      if session[:current_store_id].present?
+        Resources::Plan.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+      else
+        Resources::Plan.where(tenant_id: current_tenant.id)
+      end
+    when 'super_admin'
+      Resources::Plan.all
+    else
+      Resources::Plan.none
+    end
+  end
   private
 
   def plan_params

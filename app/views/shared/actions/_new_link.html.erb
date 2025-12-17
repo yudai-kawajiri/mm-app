@@ -1,6 +1,7 @@
-<%# 新規作成リンク %>
-<% custom_class = local_assigns[:custom_class] %>
-<% default_class = "btn btn-primary" %>
-<% final_class = [default_class, custom_class].compact.join(' ') %>
-
-<%= link_to t('helpers.link.new'), url, class: final_class %>
+<% if can_create_store_resource? %>
+  <%= link_to t('helpers.link.new'), url, class: 'btn btn-primary' %>
+<% else %>
+  <button class='btn btn-primary' disabled>
+    <%= t('helpers.link.new') %>
+  </button>
+<% end %>

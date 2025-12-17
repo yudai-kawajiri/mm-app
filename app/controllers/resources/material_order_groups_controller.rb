@@ -69,6 +69,23 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
     @material_order_group = scoped_material_order_groups.find(params[:id])
   end
 
+
+  def scoped_material_order_groups
+    case current_user.role
+    when 'store_admin'
+      Resources::MaterialOrderGroup.where(store_id: current_store.id)
+    when 'company_admin'
+      if session[:current_store_id].present?
+        Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+      else
+        Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id)
+      end
+    when 'super_admin'
+      Resources::MaterialOrderGroup.all
+    else
+      Resources::MaterialOrderGroup.none
+    end
+  end
   private
 
   def material_order_group_params
