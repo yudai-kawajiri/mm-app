@@ -74,6 +74,11 @@ class User < ApplicationRecord
 
   # Devise: 未承認ユーザーのログイン制御
   module AuthenticationControl
+  # 承認システムを無効化
+  def approved?
+    true
+  end
+
     def active_for_authentication?
       approved?
     end
@@ -110,4 +115,11 @@ class User < ApplicationRecord
       errors.add(:store_id, :blank)
     end
   end
+
+# 管理者作成ユーザーは自動承認
 end
+
+  # 承認システムを無効化（管理者作成ユーザーは即座にログイン可能）
+  def approved?
+    true
+  end
