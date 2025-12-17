@@ -1,14 +1,14 @@
 <%# ユーザーフォームのフィールド部分 %>
 <% user = local_assigns[:resource] || @user %>
 
-<div class="row">
+<div class="row" data-controller="admin--user-role">
   <div class="col-md-6">
     <div class="mb-3">
       <%= f.label :name, class: 'form-label h5' do %>
         <%= User.human_attribute_name(:name) %>
         <span class="text-danger">*</span>
       <% end %>
-      <%= f.text_field :name, class: 'form-control', placeholder: t('admin.users.form.name_placeholder'), required: true %>
+      <%= f.text_field :name, class: 'form-control', placeholder: t('admin.users.form.name_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
     <div class="mb-3">
@@ -24,7 +24,12 @@
           ], user.role),
           { prompt: t('admin.users.form.role_placeholder') },
           class: 'form-select',
-          required: true %>
+          required: true,
+          data: { 
+            'form-validation-target': 'field',
+            'admin--user-role-target': 'roleSelect',
+            'action': 'change->admin--user-role#toggleStoreField'
+          } %>
     </div>
   </div>
 
@@ -34,16 +39,21 @@
         <%= User.human_attribute_name(:email) %>
         <span class="text-danger">*</span>
       <% end %>
-      <%= f.email_field :email, class: 'form-control', placeholder: t('admin.users.form.email_placeholder'), required: true %>
+      <%= f.email_field :email, class: 'form-control', placeholder: t('admin.users.form.email_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3" data-admin--user-role-target="storeField">
       <%= f.label :store_id, class: 'form-label h5' do %>
         <%= User.human_attribute_name(:store) %>
+        <span class="text-danger" id="store-required-mark" style="display: none;">*</span>
       <% end %>
       <%= f.collection_select :store_id, @stores, :id, :name,
-          { prompt: t('helpers.prompt.select'), include_blank: true },
-          class: 'form-select' %>
+          { prompt: t('helpers.prompt.select') },
+          class: 'form-select',
+          data: { 
+            'form-validation-target': 'field',
+            'admin--user-role-target': 'storeSelect'
+          } %>
     </div>
   </div>
 </div>
