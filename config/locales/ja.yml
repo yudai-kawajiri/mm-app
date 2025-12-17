@@ -149,9 +149,9 @@ ja:
   helpers:
     no_setting: 未設定
     required_mark: "<span class=\"text-danger\">*</span>"
+    select_store_to_create: 店舗を選択してください
     prompt:
       select: 選択してください
-    submit:
       create: 登録
       update: 更新
     links:
@@ -172,6 +172,7 @@ ja:
       copy: コピー
       back_to_dashboard: ダッシュボードへ戻る
       add_item: "+ %{resource}を登録"
+      print: 印刷
       delete_image: 画像削除
       cancel_new_image: 選択をキャンセル
     forms:
@@ -483,3 +484,9 @@ ja:
           company_admin: 会社管理者
       store_id:
         blank: を選択してください
+
+  stores:
+    switch:
+      success: '%{store_name}に切り替えました'
+      all_stores: '全店舗表示に切り替えました'
+      not_found: '店舗が見つかりませんでした'

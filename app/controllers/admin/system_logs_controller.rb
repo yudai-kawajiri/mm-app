@@ -70,17 +70,11 @@ class Admin::SystemLogsController < Admin::BaseController
 
   # アクセス可能なユーザー
   def accessible_users
-    case current_user.role
-    when 'company_admin'
-      if current_store.present?
-        User.where(store_id: current_store.id)
-      else
-        current_user.tenant.users
-      end
-    when 'super_admin'
-      User.all
+    user_ids = accessible_versions.pluck(:whodunnit).compact.uniq
+    if current_user.super_admin?
+      User.where(id: user_ids)
     else
-      User.none
+      User.where(id: user_ids, tenant_id: current_user.tenant_id)
     end
   end
 end
