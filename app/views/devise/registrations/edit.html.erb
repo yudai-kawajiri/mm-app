@@ -1,5 +1,5 @@
 <%# プロフィール編集 %>
-<%= content_for :title, t('devise.registrations.edit.title') %>
+<%= content_for :title, t("devise.registrations.edit.title") %>
 
 <div class="container">
   <div class="row justify-content-center">
@@ -8,30 +8,41 @@
         <div class="card-header bg-primary text-white">
           <h4 class="mb-0">
             <i class="bi bi-person-gear me-2"></i>
-            <%= t('devise.registrations.edit.title') %>
+            <%= t("devise.registrations.edit.title") %>
           </h4>
         </div>
         <div class="card-body p-4">
-          <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, data: { controller: 'form-validation' } }) do |f| %>
+          <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, data: { controller: "form-validation" } }) do |f| %>
             <%= render "devise/shared/error_messages", resource: resource %>
 
             <div class="mb-4">
               <%= f.label :name, class: "form-label h5" do %>
-                <%= User.human_attribute_name(:name) %><%= raw(t('helpers.required_mark')) %>
+                <%= User.human_attribute_name(:name) %><%= raw(t("helpers.required_mark")) %>
               <% end %>
-              <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control form-control-lg", required: true, data: { 'form-validation-target': 'field' } %>
+              <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control form-control-lg", required: true, data: { "form-validation-target": "field" } %>
             </div>
 
             <div class="mb-4">
               <%= f.label :email, class: "form-label h5" do %>
-                <%= User.human_attribute_name(:email) %><%= raw(t('helpers.required_mark')) %>
+                <%= User.human_attribute_name(:email) %><%= raw(t("helpers.required_mark")) %>
               <% end %>
-              <%= f.email_field :email, autocomplete: "email", class: "form-control form-control-lg", placeholder: t('devise.registrations.edit.email_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
+              <%= f.email_field :email, autocomplete: "email", class: "form-control form-control-lg", placeholder: t("devise.registrations.edit.email_placeholder"), required: true, data: { "form-validation-target": "field" } %>
             </div>
+
+            <%# 会社管理者のみ電話番号を表示 %>
+            <% if current_user.company_admin? %>
+              <div class="mb-4">
+                <%= f.label :phone, class: "form-label h5" do %>
+                  <%= User.human_attribute_name(:phone) %>
+                <% end %>
+                <%= f.telephone_field :phone, autocomplete: "tel", class: "form-control form-control-lg", placeholder: "09012345678" %>
+                <small class="form-text text-muted">10桁または11桁の数字で入力してください（任意）</small>
+              </div>
+            <% end %>
 
             <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
               <div class="alert alert-info">
-                <%= t('devise.registrations.pending_reconfirmation', unconfirmed_email: resource.unconfirmed_email) %>
+                <%= t("devise.registrations.pending_reconfirmation", unconfirmed_email: resource.unconfirmed_email) %>
               </div>
             <% end %>
 
@@ -39,25 +50,25 @@
               <div class="col-md-6">
                 <div class="mb-4">
                   <%= f.label :password, class: "form-label h5" %>
-                  <%= f.password_field :password, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
-                  <small class="form-text text-muted"><%= t('devise.registrations.edit.password_placeholder') %></small>
+                  <%= f.password_field :password, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t("devise.shared.minimum_password_length", count: @minimum_password_length) %>
+                  <small class="form-text text-muted"><%= t("devise.registrations.edit.password_placeholder") %></small>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="mb-4">
                   <%= f.label :password_confirmation, class: "form-label h5" %>
-                  <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t('devise.shared.minimum_password_length', count: @minimum_password_length) %>
-                  <small class="form-text text-muted"><%= t('devise.registrations.edit.password_placeholder') %></small>
+                  <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg", placeholder: t("devise.shared.minimum_password_length", count: @minimum_password_length) %>
+                  <small class="form-text text-muted"><%= t("devise.registrations.edit.password_placeholder") %></small>
                 </div>
               </div>
             </div>
 
             <div class="mb-4">
               <%= f.label :current_password, class: "form-label h5" do %>
-                <%= User.human_attribute_name(:current_password) %><%= raw(t('helpers.required_mark')) %>
+                <%= User.human_attribute_name(:current_password) %><%= raw(t("helpers.required_mark")) %>
               <% end %>
-              <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control form-control-lg", required: true, data: { 'form-validation-target': 'field' } %>
-              <small class="form-text text-muted"><%= t('devise.registrations.edit.current_password_help') %></small>
+              <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control form-control-lg", required: true, data: { "form-validation-target": "field" } %>
+              <small class="form-text text-muted"><%= t("devise.registrations.edit.current_password_help") %></small>
             </div>
 
             <div class="d-flex justify-content-end gap-2">
@@ -66,16 +77,20 @@
             </div>
           <% end %>
         </div>
-        <div class="card-footer bg-light text-end">
-          <%= button_to t("devise.registrations.edit.cancel_my_account"),
-                registration_path(resource_name),
-                method: :delete,
-                data: {
-                  confirm: t("devise.registrations.edit.cancel_confirm"),
-                  turbo_confirm: t("devise.registrations.edit.cancel_confirm")
-                },
-                class: "btn btn-outline-danger" %>
-        </div>
+
+        <%# 会社管理者・システム管理者以外のみアカウント削除ボタンを表示 %>
+        <% unless current_user.company_admin? || current_user.super_admin? %>
+          <div class="card-footer bg-light text-end">
+            <%= button_to t("devise.registrations.edit.cancel_my_account"),
+                  registration_path(resource_name),
+                  method: :delete,
+                  data: {
+                    confirm: t("devise.registrations.edit.cancel_confirm"),
+                    turbo_confirm: t("devise.registrations.edit.cancel_confirm")
+                  },
+                  class: "btn btn-outline-danger" %>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>
