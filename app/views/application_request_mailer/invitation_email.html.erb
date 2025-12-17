@@ -22,39 +22,39 @@
 
     <div class="content">
       <p><%= t('application_request_mailer.invitation_email.greeting', name: @application_request.contact_name) %></p>
-      
+
       <p><%= t('application_request_mailer.invitation_email.introduction') %></p>
-      
+
       <div class="info-box">
         <h3 style="margin-top: 0;"><%= t('application_request_mailer.invitation_email.company_info') %></h3>
         <div class="field">
           <span class="label"><%= t('application_request_mailer.invitation_email.company_name') %>:</span> <%= @application_request.company_name %>
         </div>
         <div class="field">
-          <span class="label"><%= t('application_request_mailer.invitation_email.email') %>:</span> <%= @application_request.company_email %>
+          <span class="label"><%= t('application_request_mailer.invitation_email.company.email') %>:</span> <%= @application_request.company_email %>
         </div>
         <% if @application_request.company_phone.present? %>
           <div class="field">
-            <span class="label"><%= t('application_request_mailer.invitation_email.phone') %>:</span> <%= @application_request.company_phone %>
+            <span class="label"><%= t('application_request_mailer.invitation_email.company.phone') %>:</span> <%= @application_request.company_phone %>
           </div>
         <% end %>
       </div>
-      
+
       <p><%= t('application_request_mailer.invitation_email.instruction') %></p>
-      
+
       <div style="text-align: center;">
         <a href="<%= @invitation_url %>" class="button"><%= t('application_request_mailer.invitation_email.action') %></a>
       </div>
-      
+
       <p style="font-size: 14px; color: #6c757d;">
         <%= t('application_request_mailer.invitation_email.expiry_notice') %>
       </p>
-      
+
       <p style="font-size: 14px; color: #6c757d;">
         <%= t('application_request_mailer.invitation_email.fallback_instruction') %><br>
         <%= @invitation_url %>
       </p>
-      
+
       <div class="footer">
         <p><%= t('application_request_mailer.invitation_email.footer_notice') %></p>
         <p><%= t('application_request_mailer.invitation_email.copyright', year: Time.current.year) %></p>

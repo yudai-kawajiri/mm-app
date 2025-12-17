@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  # 利用規約、プライバシーポリシー、お問い合わせは全環境で共通
+  get :terms, to: 'static_pages#terms'
+  get :privacy, to: 'static_pages#privacy'
+  resources :contacts, only: [:new, :create]
+
   constraints subdomain: '' do
     root to: "landing#index"
-
-    get :terms, to: 'static_pages#terms'
-    get :privacy, to: 'static_pages#privacy'
-
-    resources :contacts, only: [:new, :create]
 
     resources :application_requests, only: [:new, :create] do
       collection do
@@ -145,7 +145,7 @@ Rails.application.routes.draw do
     end
 
     unauthenticated :user do
-      root to: "devise/sessions#new", as: :unauthenticated_root
+      root to: redirect('/users/sign_in'), as: :unauthenticated_root
     end
   end
 end

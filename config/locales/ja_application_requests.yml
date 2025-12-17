@@ -8,15 +8,15 @@ ja:
       company_name: 会社名
       company_name_placeholder: 株式会社サンプル
       company_email: 会社メールアドレス
-      company_email_placeholder: info@example.com
+      company_email_placeholder: example@example.com
       company_phone: 電話番号
-      company_phone_placeholder: 03-1234-5678
+      company_phone_placeholder: "09012345678"
       optional_field: 任意項目です
       admin_info: 責任者情報
       admin_name: 責任者氏名
       admin_name_placeholder: 山田太郎
       admin_email: 責任者メールアドレス
-      admin_email_placeholder: admin@example.com
+      admin_email_placeholder: example@example.com
       admin_email_hint: 招待URLがこのメールアドレスに送信されます
       submit: 招待メールを送信
     create:
@@ -49,8 +49,8 @@ ja:
       introduction: この度は、MM-Appのアプリケーション責任者としてご登録いただき、ありがとうございます。
       company_info: 会社情報
       company_name: 会社名
-      email: メールアドレス
-      phone: 電話番号
+      company_email: メールアドレス
+      company_phone: 電話番号
       instruction: 以下のボタンをクリックして、アカウントの登録を完了してください。
       action: アカウント登録を完了する
       expiry_notice: "※このURLは7日間有効です。期限を過ぎた場合は、再度依頼をお願いいたします。"

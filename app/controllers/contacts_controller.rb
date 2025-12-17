@@ -8,10 +8,12 @@ class ContactsController < ApplicationController
     @contact = Contact.new(contact_params)
 
     if @contact.valid?
-      # メール送信処理（後で実装）
+      # メール送信処理
       ContactMailer.contact_email(@contact).deliver_now
 
-      redirect_to authenticated_root_path, notice: t('contacts.messages.success_with_response_time')
+      # ログイン状態に応じてリダイレクト先を変更
+      redirect_path = user_signed_in? ? help_path : root_path
+      redirect_to redirect_path, notice: t('contacts.messages.success_with_response_time')
     else
       render :new, status: :unprocessable_entity
     end

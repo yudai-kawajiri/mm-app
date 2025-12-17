@@ -1,4 +1,23 @@
-<div class="container mt-5" data-controller="subdomain-redirect" data-subdomain-redirect-error-message="<%= t('landing.subdomain_required') %>">
+<% if params[:logout] == 'success' %>
+  <div class="alert alert-success alert-dismissible fade show m-3" role="alert" id="logout-alert">
+    <i class="bi bi-check-circle-fill me-2"></i>ログアウトしました
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  <script>
+    // URLからクエリパラメータを削除
+    const url = new URL(window.location);
+    url.searchParams.delete('logout');
+    window.history.replaceState({}, '', url);
+    
+    // 3秒後に自動で消す
+    setTimeout(() => {
+      const alert = document.getElementById('logout-alert');
+      if (alert) alert.remove();
+    }, 3000);
+  </script>
+<% end %>
+
+<div class="container mt-5" data-controller="subdomain-redirect" data-subdomain-redirect-error-message-value="<%= t('landing.subdomain_required') %>">
   <div class="row justify-content-center">
     <div class="col-md-10 col-lg-8">
       <div class="text-center mb-5">
@@ -40,7 +59,7 @@
 
           <div class="text-center mt-4">
             <p class="text-muted small mb-2"><%= t('landing.or') %></p>
-            <%= link_to t('landing.new_company_button'), new_application_request_path, class: "btn btn-success w-100" %>
+            <%= link_to t('landing.new_company_button'), new_application_request_path, class: 'btn btn-success w-100' %>
           </div>
         </div>
       </div>
