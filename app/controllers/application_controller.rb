@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
       session[:current_store_id] = current_user.store_id
     end
     
-    dashboards_path
+    authenticated_root_path
   end
 
   def layout_by_resource
