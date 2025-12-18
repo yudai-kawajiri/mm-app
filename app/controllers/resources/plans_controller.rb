@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "ostruct"
 class Resources::PlansController < AuthenticatedController
   include SortableController
 
@@ -13,7 +14,7 @@ class Resources::PlansController < AuthenticatedController
   )
 
   find_resource :plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ]
-  before_action :set_plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ]
+  before_action :set_plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ], unless: -> { action_name == "print" && params[:plan_schedule_id].present? }
 
   # 【Eager Loading】
   # N+1クエリを防ぐため、category を事前ロード
@@ -102,6 +103,16 @@ class Resources::PlansController < AuthenticatedController
   # 【達成率の計算】
   # 日別詳細からの印刷時のみ、目標額との達成率を表示
   def print
+    # 削除済みプランの印刷処理
+    if params[:plan_schedule_id].present?
+      @plan_schedule = Planning::PlanSchedule.find(params[:plan_schedule_id])
+      @scheduled_date = params[:date].present? ? Date.parse(params[:date]) : Date.current
+      daily_target = Management::DailyTarget.find_by(target_date: @scheduled_date)
+      @budget = daily_target&.target_amount
+      render_deleted_plan_print
+      return
+    end
+
     from_daily = params[:from_daily] == "true" || params[:date].present?
 
     if from_daily
@@ -174,6 +185,44 @@ class Resources::PlansController < AuthenticatedController
       Resources::Plan.none
     end
   end
+  # 削除済みプランの印刷レンダリング
+  def render_deleted_plan_print
+    snapshot = @plan_schedule.plan_products_snapshot
+
+    @plan_products_for_print = (snapshot["products"] || []).map do |product|
+      {
+        product: OpenStruct.new(
+          name: product["name"],
+          item_number: product["item_number"],
+          image: OpenStruct.new(attached?: false)
+        ),
+        production_count: product["production_count"],
+        price: product["price"],
+        subtotal: product["subtotal"] || (product["production_count"] * product["price"])
+      }
+    end
+
+    @planned_revenue = @plan_products_for_print.sum { |item| item[:subtotal] }
+
+    if @budget && @budget > 0
+      @achievement_rate = ((@planned_revenue.to_f / @budget) * 100).round(1)
+    else
+      @achievement_rate = nil
+    end
+
+    @plan = OpenStruct.new(
+      name: snapshot["plan_name"] || "(削除された計画)",
+      category: OpenStruct.new(name: snapshot["category_name"] || "-")
+    )
+
+    @materials_summary = if snapshot["materials_summary"].present?
+                        snapshot["materials_summary"].map(&:deep_symbolize_keys)
+                          else
+                            []
+                          end
+      render layout: "print"
+  end
+
   private
 
   def plan_params

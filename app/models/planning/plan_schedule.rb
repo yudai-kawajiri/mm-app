@@ -164,6 +164,9 @@ class Planning::PlanSchedule < ApplicationRecord
   # @return [Boolean] 保存成功の可否
   def update_products_snapshot(products_data)
     snapshot = build_products_snapshot(products_data)
+    if plan.present?
+      snapshot["materials_summary"] = plan.calculate_materials_summary || []
+    end
     update(plan_products_snapshot: snapshot)
   end
 
