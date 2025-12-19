@@ -11,26 +11,41 @@
       <%= f.text_field :name, class: 'form-control', placeholder: t('admin.users.form.name_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
-    <div class="mb-3">
-      <%= f.label :role, class: 'form-label h5' do %>
-        <%= User.human_attribute_name(:role) %>
-        <span class="text-danger">*</span>
-      <% end %>
-      <%= f.select :role, 
-          options_for_select([
-            [t('admin.users.roles.general'), 'general'],
-            [t('admin.users.roles.store_admin'), 'store_admin'],
-            [t('admin.users.roles.company_admin'), 'company_admin']
-          ], user.role),
-          { prompt: t('admin.users.form.role_placeholder') },
-          class: 'form-select',
-          required: true,
-          data: { 
-            'form-validation-target': 'field',
-            'admin--user-role-target': 'roleSelect',
-            'action': 'change->admin--user-role#toggleStoreField'
-          } %>
-    </div>
+    <% if current_user.store_admin? %>
+      <%# 店舗管理者: 権限は「一般」固定、非表示 %>
+      <%= f.hidden_field :role, value: 'general' %>
+      <div class="mb-3">
+        <%= f.label :role, class: 'form-label h5' do %>
+          <%= User.human_attribute_name(:role) %>
+        <% end %>
+        <div class="form-control bg-light text-muted" style="cursor: not-allowed;">
+          <%= t('admin.users.roles.general') %>
+        </div>
+        <small class="text-muted"><%= t('admin.users.form.store_admin_role_hint') %></small>
+      </div>
+    <% else %>
+      <%# 会社管理者・システム管理者: 権限選択可能 %>
+      <div class="mb-3">
+        <%= f.label :role, class: 'form-label h5' do %>
+          <%= User.human_attribute_name(:role) %>
+          <span class="text-danger">*</span>
+        <% end %>
+        <%= f.select :role,
+            options_for_select([
+              [t('admin.users.roles.general'), 'general'],
+              [t('admin.users.roles.store_admin'), 'store_admin'],
+              [t('admin.users.roles.company_admin'), 'company_admin']
+            ], user.role),
+            { prompt: t('admin.users.form.role_placeholder') },
+            class: 'form-select',
+            required: true,
+            data: {
+              'form-validation-target': 'field',
+              'admin--user-role-target': 'roleSelect',
+              'action': 'change->admin--user-role#toggleStoreField'
+            } %>
+      </div>
+    <% end %>
   </div>
 
   <div class="col-md-6">
@@ -42,20 +57,34 @@
       <%= f.email_field :email, class: 'form-control', placeholder: t('admin.users.form.email_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
-    <div class="mb-3" data-admin--user-role-target="storeField">
-      <%= f.label :store_id, class: 'form-label h5' do %>
-        <%= User.human_attribute_name(:store) %>
-        <span class="text-danger">*</span>
-        <span class="text-danger" id="store-required-mark" style="display: none;">*</span>
-      <% end %>
-      <%= f.collection_select :store_id, @stores, :id, :name,
-          { prompt: t('helpers.prompt.select') },
-          class: 'form-select',
-          data: { 
-            'form-validation-target': 'field',
-            'admin--user-role-target': 'storeSelect'
-          } %>
-    </div>
+    <% if current_user.store_admin? %>
+      <%# 店舗管理者: 店舗は固定、非表示 %>
+      <%= f.hidden_field :store_id, value: current_user.store_id %>
+      <div class="mb-3">
+        <%= f.label :store_id, class: 'form-label h5' do %>
+          <%= User.human_attribute_name(:store) %>
+        <% end %>
+        <div class="form-control bg-light text-muted" style="cursor: not-allowed;">
+          <%= current_user.store.name %>
+        </div>
+        <small class="text-muted"><%= t('admin.users.form.store_admin_store_hint') %></small>
+      </div>
+    <% else %>
+      <%# 会社管理者・システム管理者: 店舗選択可能 %>
+      <div class="mb-3" data-admin--user-role-target="storeField">
+        <%= f.label :store_id, class: 'form-label h5' do %>
+          <%= User.human_attribute_name(:store) %>
+          <span class="text-danger">*</span>
+        <% end %>
+        <%= f.collection_select :store_id, @stores, :id, :name,
+            { prompt: t('helpers.prompt.select') },
+            class: 'form-select',
+            data: {
+              'form-validation-target': 'field',
+              'admin--user-role-target': 'storeSelect'
+            } %>
+      </div>
+    <% end %>
   </div>
 </div>
 
