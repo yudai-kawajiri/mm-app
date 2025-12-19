@@ -2,17 +2,25 @@
 
 class Admin::StoresController < Admin::BaseController
   before_action :set_store, only: [:show, :edit, :update, :destroy, :regenerate_invitation_code]
+  before_action :authorize_store_management, only: [:new, :create, :edit, :update, :destroy, :regenerate_invitation_code]
 
   def index
-    @stores = current_user.tenant.stores
-                         .left_joins(:users)
-                         .select('stores.*, COUNT(users.id) as users_count')
-                         .group('stores.id')
-                         .order(:code)
+    # 店舗管理者は自店舗のみ表示
+    if current_user.store_admin?
+      @stores = current_user.tenant.stores.where(id: current_user.store_id)
+    else
+      @stores = current_user.tenant.stores
+    end
+
+    @stores = @stores.left_joins(:users)
+                      .select('stores.*, COUNT(users.id) as users_count')
+                      .group('stores.id')
+                      .order(:code)
   end
 
   def show
-    @users = @store.users.includes(:tenant).order(:created_at)
+    # 承認済みユーザーのみ表示
+    @users = @store.users.where(approved: true).includes(:tenant).order(:created_at)
   end
 
   def new
@@ -44,7 +52,7 @@ class Admin::StoresController < Admin::BaseController
       redirect_to admin_store_path(@store), alert: t('admin.stores.cannot_delete_with_users')
     else
       @store.destroy
-      redirect_to admin_store_path(@store), notice: t('admin.stores.destroyed')
+      redirect_to admin_stores_path, notice: t('admin.stores.destroyed')
     end
   end
 
@@ -55,13 +63,25 @@ class Admin::StoresController < Admin::BaseController
 
   private
 
-def set_store
-  @store = current_user.tenant.stores.find(params[:id])
-rescue ActiveRecord::RecordNotFound
-  redirect_to admin_stores_path, alert: '店舗が見つかりません'
-end
+  def set_store
+    # 店舗管理者は自店舗のみアクセス可能
+    if current_user.store_admin?
+      @store = current_user.tenant.stores.where(id: current_user.store_id).find(params[:id])
+    else
+      @store = current_user.tenant.stores.find(params[:id])
+    end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to admin_stores_path, alert: t('admin.stores.not_found_or_unauthorized')
+  end
 
   def store_params
     params.require(:store).permit(:name, :code)
+  end
+
+  def authorize_store_management
+    # 店舗管理者は作成・編集・削除不可
+    if current_user.store_admin?
+      redirect_to admin_stores_path, alert: t('errors.messages.unauthorized')
+    end
   end
 end

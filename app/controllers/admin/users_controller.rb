@@ -6,24 +6,31 @@ class Admin::UsersController < ApplicationController
 
   def index
     users_scope = current_user.tenant.users
-    
+
     # 店舗管理者は自店舗のユーザーのみ表示
-    if current_user.store_admin? && current_store
-      users_scope = users_scope.where(store_id: current_store.id)
+    if current_user.store_admin?
+      users_scope = users_scope.where(store_id: current_user.store_id)
     # 会社管理者は選択中の店舗でフィルタ
     elsif current_user.company_admin? && session[:current_store_id].present?
       users_scope = users_scope.where(store_id: session[:current_store_id])
     end
-    
+
+    # 承認済みユーザーのみ表示
+    users_scope = users_scope.where(approved: true)
+
     @users = users_scope.page(params[:page]).per(20)
   end
-
 
   def show
   end
 
   def new
     @user = User.new
+    # 店舗管理者は自店舗のユーザーのみ作成可能
+    if current_user.store_admin?
+      @user.store_id = current_user.store_id
+      @user.role = :general # デフォルトで一般ユーザー
+    end
   end
 
   def edit
@@ -32,8 +39,14 @@ class Admin::UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.tenant = current_user.tenant
-    @user.approved_at = Time.current if @user.respond_to?(:approved_at)
-    
+    @user.approved = true
+
+    # 店舗管理者の制限
+    if current_user.store_admin?
+      @user.store_id = current_user.store_id
+      @user.role = :general # 一般ユーザーのみ作成可能
+    end
+
     # パスワード未入力時はランダム生成
     generated_password = nil
     if params[:user][:password].blank?
@@ -44,13 +57,19 @@ class Admin::UsersController < ApplicationController
 
     if @user.save
       session[:generated_password] = generated_password if generated_password.present?
-      redirect_to admin_user_path(@user), notice: "ユーザー #{@user.name} を作成しました"
+      redirect_to admin_user_path(@user), notice: t('admin.users.created', name: @user.name)
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def update
+    # 店舗管理者は自店舗のユーザーのみ編集可能
+    if current_user.store_admin? && @user.store_id != current_user.store_id
+      redirect_to admin_users_path, alert: t('errors.messages.unauthorized')
+      return
+    end
+
     # パスワードが空欄の場合は更新しない
     update_params = user_params
     if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
@@ -58,16 +77,22 @@ class Admin::UsersController < ApplicationController
     end
 
     if @user.update(update_params)
-      redirect_to admin_user_path(@user), notice: "ユーザー #{@user.name} を更新しました"
+      redirect_to admin_user_path(@user), notice: t('admin.users.updated', name: @user.name)
     else
       render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
+    # 店舗管理者は自店舗のユーザーのみ削除可能
+    if current_user.store_admin? && @user.store_id != current_user.store_id
+      redirect_to admin_users_path, alert: t('errors.messages.unauthorized')
+      return
+    end
+
     @user.destroy
     reset_session if current_user == @user
-    redirect_to admin_users_path, notice: "ユーザー #{@user.name} を削除しました"
+    redirect_to admin_users_path, notice: t('admin.users.destroyed', name: @user.name)
   end
 
   private
@@ -77,16 +102,28 @@ class Admin::UsersController < ApplicationController
   end
 
   def set_stores
-    @stores = current_user.tenant.stores
+    # 店舗管理者は自店舗のみ選択可能
+    if current_user.store_admin?
+      @stores = current_user.tenant.stores.where(id: current_user.store_id)
+    else
+      @stores = current_user.tenant.stores
+    end
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :role, :store_id, :password, :password_confirmation)
+    permitted = [:name, :email, :password, :password_confirmation]
+
+    # 店舗管理者は role と store_id を変更できない
+    unless current_user.store_admin?
+      permitted += [:role, :store_id]
+    end
+
+    params.require(:user).permit(*permitted)
   end
 
   def authorize_user_management
-    unless current_user.super_admin? || current_user.company_admin?
-      redirect_to root_path, alert: "この操作を行う権限がありません"
+    unless current_user.store_admin? || current_user.company_admin? || current_user.super_admin?
+      redirect_to root_path, alert: t('errors.messages.unauthorized')
     end
   end
 end
