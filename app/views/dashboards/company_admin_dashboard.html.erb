@@ -40,60 +40,14 @@
 
   <!-- 最近のアクティビティ -->
   <div class="card shadow-sm">
-    <div class="card-header bg-white">
+    <div class="card-header bg-primary text-white">
       <h5 class="mb-0">
-        <i class="fas fa-history me-2"></i>
+        <i class="bi bi-clock-history me-2"></i>
         <%= t('dashboard.company_admin.recent_logs') %>
       </h5>
     </div>
-    <div class="card-body">
-      <% if @recent_logs.present? %>
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead class="table-light">
-              <tr>
-                <th><%= t('activerecord.attributes.system_log.created_at') %></th>
-                <th><%= t('common.action') %></th>
-                <th><%= t('dashboard.company_admin.logs.target') %></th>
-                <th><%= t('activerecord.attributes.system_log.user') %></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @recent_logs.each do |log| %>
-                <tr>
-                  <td class="text-nowrap">
-                    <small><%= log.created_at.strftime('%Y/%m/%d %H:%M') %></small>
-                  </td>
-                  <td>
-                    <% case log.event %>
-                    <% when 'create' %>
-                      <span class="badge bg-success"><%= t('common.create') %></span>
-                    <% when 'update' %>
-                      <span class="badge bg-primary"><%= t('common.update') %></span>
-                    <% when 'destroy' %>
-                      <span class="badge bg-danger"><%= t('common.destroy') %></span>
-                    <% else %>
-                      <span class="badge bg-secondary"><%= log.event %></span>
-                    <% end %>
-                  </td>
-                  <td>
-                    <%= t("activerecord.models.#{log.item_type.underscore}", default: log.item_type) %>
-                  </td>
-                  <td>
-                    <% user = User.find_by(id: log.whodunnit) %>
-                    <%= user&.name || t('common.system') %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      <% else %>
-        <div class="text-center text-muted py-5">
-          <i class="fas fa-inbox fs-1 mb-3 d-block"></i>
-          <p><%= t('dashboard.company_admin.no_logs') %></p>
-        </div>
-      <% end %>
+    <div class="card-body p-0">
+      <%= render 'shared/components/system_logs_table', logs: @recent_logs %>
     </div>
   </div>
 </div>

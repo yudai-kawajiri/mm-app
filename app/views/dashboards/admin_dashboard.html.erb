@@ -1,113 +1,49 @@
-<%= content_for :title, t('dashboard.admin.title') %>
-
-<div class="container-fluid py-4">
-  <!-- ページヘッダー -->
-  <div class="d-flex align-items-center mb-4">
-    <i class="fas fa-user-shield fs-2 text-primary me-3"></i>
-    <h1 class="h3 mb-0"><%= t('dashboard.admin.title') %></h1>
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="display-4 fw-bold text-primary"><%= t('dashboard.admin.title') %></h1>
+    </div>
   </div>
 
-  <!-- サマリーカード -->
-  <div class="row g-3 mb-4">
-    <!-- 承認待ちユーザー -->
+  <div class="row g-4 mb-4">
     <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-        <div class="card-body text-white">
-          <div class="d-flex align-items-center mb-3">
-            <i class="fas fa-user-clock fs-4 me-2"></i>
-            <h5 class="card-title mb-0"><%= t('dashboard.admin.pending_users') %></h5>
-          </div>
-          <p class="display-4 mb-3 fw-bold"><%= @pending_users_count %></p>
-          <%= link_to t('dashboard.admin.view_users'), admin_users_path, class: 'btn btn-light btn-sm' %>
+      <div class="card text-white h-100 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-person-check me-2"></i><%= t('dashboard.admin.pending_users') %></h5>
+          <p class="card-text display-6"><%= @pending_users_count %></p>
         </div>
       </div>
     </div>
 
-    <!-- テナント数 -->
     <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-        <div class="card-body text-white">
-          <div class="d-flex align-items-center mb-3">
-            <i class="fas fa-building fs-4 me-2"></i>
-            <h5 class="card-title mb-0"><%= t('dashboard.admin.total_tenants') %></h5>
-          </div>
-          <p class="display-4 mb-3 fw-bold"><%= @tenants_count %></p>
-          <%= link_to t('dashboard.admin.view_tenants'), admin_tenants_path, class: 'btn btn-light btn-sm' %>
+      <div class="card text-white h-100 shadow-sm" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-building me-2"></i><%= t('dashboard.admin.total_tenants') %></h5>
+          <p class="card-text display-6"><%= @tenants_count %></p>
         </div>
       </div>
     </div>
 
-    <!-- 店舗数 -->
     <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-        <div class="card-body text-white">
-          <div class="d-flex align-items-center mb-3">
-            <i class="fas fa-store fs-4 me-2"></i>
-            <h5 class="card-title mb-0"><%= t('dashboard.admin.total_stores') %></h5>
-          </div>
-          <p class="display-4 mb-3 fw-bold"><%= @stores_count %></p>
-          <%= link_to t('dashboard.admin.view_stores'), admin_stores_path, class: 'btn btn-light btn-sm' %>
+      <div class="card text-white h-100 shadow-sm" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-shop me-2"></i><%= t('dashboard.admin.total_stores') %></h5>
+          <p class="card-text display-6"><%= @stores_count %></p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 最近のアクティビティ -->
-  <div class="card shadow-sm">
-    <div class="card-header bg-white">
-      <h5 class="mb-0">
-        <i class="fas fa-history me-2"></i>
-        <%= t('dashboard.admin.recent_logs') %>
-      </h5>
-    </div>
-    <div class="card-body">
-      <% if @recent_logs.present? %>
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead class="table-light">
-              <tr>
-                <th><%= t('activerecord.attributes.system_log.created_at') %></th>
-                <th><%= t('common.action') %></th>
-                <th><%= t('dashboard.admin.logs.target') %></th>
-                <th><%= t('activerecord.attributes.system_log.user') %></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @recent_logs.each do |log| %>
-                <tr>
-                  <td class="text-nowrap">
-                    <small><%= log.created_at.strftime('%Y/%m/%d %H:%M') %></small>
-                  </td>
-                  <td>
-                    <% case log.event %>
-                    <% when 'create' %>
-                      <span class="badge bg-success"><%= t('common.create') %></span>
-                    <% when 'update' %>
-                      <span class="badge bg-primary"><%= t('common.update') %></span>
-                    <% when 'destroy' %>
-                      <span class="badge bg-danger"><%= t('common.destroy') %></span>
-                    <% else %>
-                      <span class="badge bg-secondary"><%= log.event %></span>
-                    <% end %>
-                  </td>
-                  <td>
-                    <%= t("activerecord.models.#{log.item_type.underscore}", default: log.item_type) %>
-                  </td>
-                  <td>
-                    <% user = User.find_by(id: log.whodunnit) %>
-                    <%= user&.name || t('common.system') %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i><%= t('dashboard.admin.recent_logs') %></h5>
         </div>
-      <% else %>
-        <div class="text-center text-muted py-5">
-          <i class="fas fa-inbox fs-1 mb-3 d-block"></i>
-          <p><%= t('dashboard.admin.no_logs') %></p>
+        <div class="card-body p-0">
+          <%= render 'shared/components/system_logs_table', logs: @recent_logs, show_detail: false %>
         </div>
-      <% end %>
+      </div>
     </div>
   </div>
 </div>
