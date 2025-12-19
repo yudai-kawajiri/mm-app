@@ -97,9 +97,10 @@ ja:
       show:
         user_info: "ユーザー情報"
         title: "テナント詳細"
-      created: "テナントを作成しました"
-      updated: "テナントを更新しました"
-      destroyed: "テナントを削除しました"
+      messages:
+        created: "テナントを作成しました"
+        updated: "テナントを更新しました"
+        destroyed: "テナントを削除しました"
       form:
         name: "テナント名"
         name_placeholder: "株式会社サンプル"
