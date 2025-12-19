@@ -82,8 +82,7 @@ module ApplicationHelper
         ]
       },
       {
-        name: t("dashboard.menu.material_management"),
-        path: resources_materials_path,
+        name: t("dashboard.menu.material_master_management"),
         submenu: [
           {
             name: t("dashboard.menu.unit_management"),
@@ -101,8 +100,14 @@ module ApplicationHelper
               { name: t("dashboard.menu.new_order_group"), path: new_resources_material_order_group_path }
             ]
           },
-          { name: t("dashboard.menu.material_list"), path: resources_materials_path },
-          { name: t("dashboard.menu.new_material"), path: new_resources_material_path }
+          {
+            name: t("dashboard.menu.material_management"),
+            path: resources_materials_path,
+            submenu: [
+              { name: t("dashboard.menu.material_list"), path: resources_materials_path },
+              { name: t("dashboard.menu.new_material"), path: new_resources_material_path }
+            ]
+          }
         ]
       },
       {
@@ -135,19 +140,14 @@ module ApplicationHelper
     if current_user.store_admin? || current_user.company_admin? || current_user.super_admin?
       admin_submenu = []
 
-      # システム管理者のみテナント管理を表示
       if current_user.super_admin?
         admin_submenu << { name: t("common.menu.tenant_management"), path: admin_tenants_path }
       end
 
-      # 全ての管理者に表示
       admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
       admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
-
-      # 店舗管理は全ての管理者に表示（コントローラー側で権限制御）
       admin_submenu << { name: t("common.menu.store_management"), path: admin_stores_path }
 
-      # システムログは店舗管理者には無効化
       if current_user.store_admin?
         admin_submenu << { name: t("common.menu.system_logs"), path: "#", disabled: true }
       else
