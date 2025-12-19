@@ -136,6 +136,7 @@ ja:
         approved: "承認済み"
         rejected: "却下"
       created: "承認リクエストを送信しました"
+      default_reject_reason: "管理者により却下されました"  # ← 追加
       show:
         user_info: "ユーザー情報"
         title: "承認リクエスト詳細"
@@ -146,6 +147,8 @@ ja:
       messages:
         approved: "%{name} さんのリクエストを承認しました"
         rejected: "リクエストを却下しました"
+        approve_failed: "承認に失敗しました"
+        reject_failed: "却下に失敗しました"
         already_processed: "このリクエストは既に処理されています"
         user_approved: "%{name} さんのユーザー登録を承認しました。ログインが可能になりました。"
       confirm:

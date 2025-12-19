@@ -69,6 +69,9 @@ ja:
       format:
         unit: "¥"
         format: "%u%n"
+  errors:
+    messages:
+      unauthorized: この操作を行う権限がありません
   flash_messages:
     create:
       success: "%{resource}を登録しました"
@@ -510,6 +513,8 @@ ja:
         email_placeholder: user@example.com
         role_placeholder: 権限を選択してください
         password_hint: 空欄の場合は安全なランダムパスワードを自動生成します
+        store_admin_role_hint: "店舗管理者は一般ユーザーのみ作成できます"
+        store_admin_store_hint: "自店舗のユーザーのみ作成できます"
       roles:
         general: 一般
         store_admin: 店舗管理者
