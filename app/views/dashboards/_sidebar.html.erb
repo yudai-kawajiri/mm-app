@@ -79,8 +79,6 @@
     <% end %>
   </div>
 
-  <%# 以下のアコーディオンメニューはそのまま %>
-
   <%#
     アコーディオンメニュー:
     - 親メニュー（カテゴリ管理、商品管理など）
@@ -92,6 +90,7 @@
 
     <% sidebar_menu_items.each_with_index do |item, index| %>
       <% if item[:submenu] %>
+        <%# サブメニューがある項目 %>
         <% collapse_id = "collapse-menu-#{index}" %>
         <% is_active = sidebar_link_active?(item) %>
 
@@ -120,6 +119,7 @@
 
           <% item[:submenu].each_with_index do |sub_item, sub_index| %>
             <% if sub_item[:submenu] %>
+              <%# 3階層目のサブメニュー %>
               <% sub_collapse_id = "collapse-submenu-#{index}-#{sub_index}" %>
               <% sub_is_active = sub_item[:submenu].any? { |s| current_page?(s[:path]) } %>
 
@@ -146,6 +146,7 @@
                 <% end %>
               </div>
             <% else %>
+              <%# 2階層目のサブメニュー %>
               <% if sub_item[:disabled] %>
                 <a href="#" class="list-group-item list-group-item-action ps-4 disabled text-muted" title="この機能は利用できません" onclick="return false;">
                   <%= submenu_indicator %><%= sub_item[:name] %>
@@ -161,8 +162,10 @@
           <% end %>
         </div>
       <% else %>
+        <%# サブメニューがない項目（ダッシュボードなど） %>
+        <% item_is_active = sidebar_link_active?(item) %>
         <%= link_to item[:name], item[:path],
-            class: sidebar_link_class(item[:path]) %>
+            class: "list-group-item list-group-item-action #{'active' if item_is_active}" %>
       <% end %>
     <% end %>
 
