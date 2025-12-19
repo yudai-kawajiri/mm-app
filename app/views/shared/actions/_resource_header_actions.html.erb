@@ -100,9 +100,14 @@
 <% elsif is_index_page %>
 
   <% if new_path.present? %>
+    <%
+      # 管理メニュー（admin scope）の場合は店舗チェックをスキップ
+      skip_store_check = local_assigns[:skip_store_check] || false
+    %>
     <%= render 'shared/actions/new_link',
                 url: new_path,
-                custom_class: 'btn-sm' %>
+                custom_class: 'btn-sm',
+                skip_store_check: skip_store_check %>
   <% end %>
 
 <% end %>

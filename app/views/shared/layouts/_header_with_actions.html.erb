@@ -7,6 +7,7 @@
   is_index_page ||= local_assigns[:is_index_page] || false
   new_path ||= local_assigns[:new_path]
   sortable ||= local_assigns[:sortable] || false
+  skip_store_check ||= local_assigns[:skip_store_check] || false
 %>
 
 <div class="mb-4">
@@ -24,7 +25,8 @@
           is_form_page: is_form_page,
           is_show_page: is_show_page,
           is_index_page: is_index_page,
-          new_path: new_path
+          new_path: new_path,
+          skip_store_check: skip_store_check
       %>
     </div>
   </div>

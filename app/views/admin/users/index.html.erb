@@ -2,13 +2,14 @@
 
 <div data-controller="resource-search">
   <%= render 'shared/layouts/header_with_actions',
-      title: t('admin.users.index.title'),
-      resource: nil,
-      is_index_page: true,
-      is_form_page: false,
-      is_show_page: false,
-      new_path: new_admin_user_path,
-      new_button_text: t('admin.users.index.actions.invite') %>
+    title: t('admin.users.index.title'),
+    resource: nil,
+    is_index_page: true,
+    is_form_page: false,
+    is_show_page: false,
+    new_path: new_admin_user_path,
+    new_button_text: t('admin.users.index.actions.invite'),
+    skip_store_check: true %>
 
   <%= render 'shared/components/resource_list',
       resources: @users,
