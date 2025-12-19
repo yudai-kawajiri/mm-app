@@ -194,7 +194,7 @@ ja:
       unauthorized: 認証が必要です
       plan_not_found: 計画が見つかりません
       plan_schedule_not_found: 計画スケジュールが見つかりません
-      daily_target_not_found: 日別予算が見つかりません、またはアクセスが拒否されました
+      daily_target_not_found: 日別予算が見つかりませんでした、またはアクセスが拒否されました
       product_not_found: 商品が見つかりません、またはアクセスが拒否されました
       material_not_found: 原材料が見つかりません、またはアクセスが拒否されました
       server_error: サーバーエラーが発生しました
@@ -409,20 +409,34 @@ ja:
           category_in_use: "%{record}で使用しています"
           unit_in_use: "%{record}で使用しています"
     models:
-      user: ユーザー
-      store: 店舗
-      tenant: テナント
-      admin_request: 承認リクエスト
-      resources/material: 原材料
-      resources/product: 商品
-      resources/plan: 計画
-      resources/product_material: 商品原材料
-      resources/plan_product: 計画商品
-      resources/category: カテゴリー
-      resources/order: 発注
-      resources/order_group: 発注グループ
-      resources/unit: 単位
+      user: "ユーザー"
+      store: "店舗"
+      tenant: "テナント"
+      admin_request: "承認リクエスト"
+      category: "カテゴリー"
+      resource: "資源"
+      material: "原材料"
+      product: "商品"
+      plan: "計画"
+      planning/plan_schedule: "計画スケジュール"
+      planning/plan_product: "計画商品"
+      management/daily_target: "日別予算"
+      management/monthly_budget: "月間予算"
+      resources/plan: "製造計画"
+      resources/material: "原材料"
+      resources/product: "商品"
+      resources/product_material: "商品原材料"
+      resources/plan_product: "計画商品"
+      resources/category: "カテゴリー"
+      resources/order: "発注"
+      resources/order_group: "発注グループ"
+      resources/unit: "単位"
     attributes:
+      system_log:
+        created_at: "日時"
+        action: "アクション"
+        user: "ユーザー"
+        details: "詳細"
       user:
         name: 名前
         email: メールアドレス
@@ -545,11 +559,3 @@ ja:
         blank: を選択してください
     categories: カテゴリー管理
     units: 単位管理
-
-  activerecord:
-    attributes:
-      system_log:
-        created_at: "日時"
-        action: "アクション"
-        user: "ユーザー"
-        details: "詳細"
