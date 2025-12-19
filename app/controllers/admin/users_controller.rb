@@ -5,14 +5,26 @@ class Admin::UsersController < ApplicationController
   before_action :authorize_user_management
 
   def index
-    users_scope = current_user.tenant.users
+    # システム管理者の場合
+    if current_user.super_admin?
+      # session[:current_tenant_id] でフィルタ
+      if session[:current_tenant_id].present?
+        users_scope = Tenant.find(session[:current_tenant_id]).users
+      else
+        # 全テナントのユーザーを表示
+        users_scope = User.all
+      end
+    else
+      # 会社管理者・店舗管理者
+      users_scope = current_user.tenant.users
 
-    # 店舗管理者は自店舗のユーザーのみ表示
-    if current_user.store_admin?
-      users_scope = users_scope.where(store_id: current_user.store_id)
-    # 会社管理者は選択中の店舗でフィルタ
-    elsif current_user.company_admin? && session[:current_store_id].present?
-      users_scope = users_scope.where(store_id: session[:current_store_id])
+      # 店舗管理者は自店舗のユーザーのみ表示
+      if current_user.store_admin?
+        users_scope = users_scope.where(store_id: current_user.store_id)
+      # 会社管理者は選択中の店舗でフィルタ
+      elsif current_user.company_admin? && session[:current_store_id].present?
+        users_scope = users_scope.where(store_id: session[:current_store_id])
+      end
     end
 
     # 承認済みユーザーのみ表示
@@ -105,22 +117,33 @@ class Admin::UsersController < ApplicationController
   private
 
   def set_user
-    @user = current_user.tenant.users.find(params[:id])
-  end
-
-  def set_stores
-    # 店舗管理者は自店舗のみ選択可能
-    if current_user.store_admin?
-      @stores = current_user.tenant.stores.where(id: current_user.store_id)
-    # 会社管理者が特定店舗を選択している場合
-    elsif current_user.company_admin? && session[:current_store_id].present?
-      @stores = current_user.tenant.stores.where(id: session[:current_store_id])
+    if current_user.super_admin?
+      # システム管理者は全ユーザーから検索
+      if session[:current_tenant_id].present?
+        @user = Tenant.find(session[:current_tenant_id]).users.find(params[:id])
+      else
+        @user = User.find(params[:id])
+      end
     else
-      # 全店舗選択時またはシステム管理者
-      @stores = current_user.tenant.stores
+      # 会社管理者・店舗管理者は自分のテナント内のみ
+      @user = current_user.tenant.users.find(params[:id])
     end
   end
 
+  def set_stores
+    if current_user.super_admin?
+      # システム管理者は選択中のテナントの店舗を取得
+      if session[:current_tenant_id].present?
+        @stores = Tenant.find(session[:current_tenant_id]).stores
+      else
+        @stores = Store.all
+      end
+    elsif current_user.tenant.present?
+      @stores = current_user.tenant.stores
+    else
+      @stores = Store.none
+    end
+  end
   def user_params
     permitted = [:name, :email, :password, :password_confirmation]
 

@@ -5,10 +5,23 @@ class Admin::StoresController < Admin::BaseController
   before_action :authorize_store_management, only: [:new, :create, :edit, :update, :destroy, :regenerate_invitation_code]
 
   def index
-    # 店舗管理者は自店舗のみ表示
-    if current_user.store_admin?
+    Rails.logger.info "DEBUG: Stores#index - current_user.super_admin? = #{current_user.super_admin?}"
+    Rails.logger.info "DEBUG: Stores#index - session[:current_tenant_id] = #{session[:current_tenant_id].inspect}"
+    Rails.logger.info "DEBUG: Stores#index - current_tenant = #{current_tenant&.name rescue nil}"
+    # システム管理者の場合
+    if current_user.super_admin?
+      # session[:current_tenant_id] でフィルタ
+      if session[:current_tenant_id].present?
+        @stores = Tenant.find(session[:current_tenant_id]).stores
+      else
+        # 全テナントの店舗を表示
+        @stores = Store.all
+      end
+    elsif current_user.store_admin?
+      # 店舗管理者は自店舗のみ表示
       @stores = current_user.tenant.stores.where(id: current_user.store_id)
     else
+      # 会社管理者
       @stores = current_user.tenant.stores
     end
 
@@ -17,7 +30,6 @@ class Admin::StoresController < Admin::BaseController
                       .group('stores.id')
                       .order(:code)
   end
-
   def show
     # 承認済みユーザーのみ表示
     @users = @store.users.where(approved: true).includes(:tenant).order(:created_at)
