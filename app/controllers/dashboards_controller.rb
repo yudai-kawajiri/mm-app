@@ -22,7 +22,8 @@ class DashboardsController < AuthenticatedController
     @pending_users_count = User.where(approved: false).count
     @tenants_count = Tenant.count
     @stores_count = Store.count
-    @recent_logs = SystemLog.order(created_at: :desc).limit(10)
+    # PaperTrailの変更履歴を表示
+    @recent_logs = PaperTrail::Version.order(created_at: :desc).limit(10)
 
     render 'dashboards/admin_dashboard'
   end
@@ -31,7 +32,12 @@ class DashboardsController < AuthenticatedController
   def render_company_admin_dashboard
     @pending_users_count = current_user.tenant.users.where(approved: false).count
     @stores_count = current_user.tenant.stores.count
-    @recent_logs = SystemLog.where(tenant_id: current_user.tenant_id).order(created_at: :desc).limit(10)
+    # 自社の変更履歴のみ表示（テナントに関連するもの）
+    @recent_logs = PaperTrail::Version.where(
+      "item_type IN (?) OR whodunnit = ?", 
+      ['User', 'Store', 'Tenant'], 
+      current_user.id.to_s
+    ).order(created_at: :desc).limit(10)
 
     render 'dashboards/company_admin_dashboard'
   end
