@@ -4,8 +4,9 @@
 #
 # システムログ（監査ログ）管理
 class Admin::SystemLogsController < Admin::BaseController
-  LOGS_PER_PAGE = 50
+  before_action :authorize_system_or_company_admin!
 
+  LOGS_PER_PAGE = 50
 
   def index
     @versions = accessible_versions
@@ -37,10 +38,10 @@ class Admin::SystemLogsController < Admin::BaseController
 
   private
 
-  # システム管理者または会社管理者のみアクセス可能
+  # システム管理者または会社管理者のみアクセス可能（店舗管理者は不可）
   def authorize_system_or_company_admin!
     unless current_user.super_admin? || current_user.company_admin?
-      redirect_to root_path, alert: t('errors.unauthorized')
+      redirect_to authenticated_root_path, alert: t('errors.messages.unauthorized')
     end
   end
 

@@ -1,4 +1,3 @@
----
 ja:
   application_name: MM-App
   meta:
@@ -70,6 +69,9 @@ ja:
       format:
         unit: "¥"
         format: "%u%n"
+  errors:
+    messages:
+      unauthorized: この操作を行う権限がありません
   flash_messages:
     create:
       success: "%{resource}を登録しました"
@@ -89,6 +91,7 @@ ja:
     not_authorized: このアクションを実行する権限がありません
     require_store_selected: このアクションを実行するには店舗を選択してください。
   common:
+    deleted_plan: (削除された計画)
     menu:
       tenant_management: テナント管理
       approval_requests: 承認リクエスト
@@ -148,7 +151,7 @@ ja:
       enter_name: 名前を入力
   helpers:
     no_setting: 未設定
-    required_mark: "<span class=\"text-danger\">*</span>"
+    required_mark: <span class="text-danger">*</span>
     select_store_to_create: 店舗を選択してください
     prompt:
       select: 選択してください
@@ -182,31 +185,9 @@ ja:
         remember_me: ログイン情報を記憶する
     messages:
       budget_created: 予算を設定しました
-      budget_create_failed: 予算の設定に失敗しました
-      not_saved:
-        one: "%{resource}の保存に失敗しました"
-        other: "%{count}件のエラーが発生したため、%{resource}の保存に失敗しました"
-      hiragana_only: はひらがなのみで入力してください
-      blank: を入力してください
-      required: を入力してください
-      not_a_number: は数値で入力してください
-      greater_than: "%{count}より大きい値を入力してください"
-      greater_than_or_equal_to: は%{count}以上の値にしてください
-      less_than: は%{count}より小さい値にしてください
-      less_than_or_equal_to: は%{count}以下の値にしてください
-      too_long:
-        one: は%{count}文字以内で入力してください
-        other: は%{count}文字以内で入力してください
-      too_short:
-        one: "%{count}文字以上で入力してください"
-        other: "%{count}文字以上で入力してください"
-      taken: は既に使用されています
-      confirmation: と%{attribute}の入力が一致しません
-      invalid: が正しくありません
-      not_found: が見つかりません
       restrict_dependent_destroy:
-        has_one: "%{record}で使用しているため、この%{model}を削除できません"
-        has_many: "%{record}で使用しているため、この%{model}を削除できません"
+        has_one: "%{record}で使用されているため削除できません"
+        has_many: "%{record}で使用されているため削除できません"
   api:
     errors:
       unauthorized: 認証が必要です
@@ -224,19 +205,19 @@ ja:
     saved: 並び替えを保存しました
     not_found: 指定されたデータが見つかりませんでした。
     save_failed: 並び替えの保存に失敗しました
-    error: "エラーが発生しました: %{message}"
+    error: 'エラーが発生しました: %{message}'
   services:
     numerical_data_bulk_update:
       errors:
-        monthly_budget_update_failed: "月次予算ID %{id}: %{errors}"
-        daily_target_update_failed: "日別目標ID %{id}: %{errors}"
-        daily_target_save_failed: "日別目標 %{date}: %{errors}"
-        invalid_date: "日別目標: 無効な日付 %{date}"
-        plan_schedule_update_failed: "計画スケジュールID %{id}: %{errors}"
+        monthly_budget_update_failed: '月次予算ID %{id}: %{errors}'
+        daily_target_update_failed: '日別目標ID %{id}: %{errors}'
+        daily_target_save_failed: '日別目標 %{date}: %{errors}'
+        invalid_date: '日別目標: 無効な日付 %{date}'
+        plan_schedule_update_failed: '計画スケジュールID %{id}: %{errors}'
     weather:
       errors:
-        api_error: "天気予報API エラー: %{code} - %{body}"
-        service_error: "天気予報サービス エラー: %{message}"
+        api_error: '天気予報API エラー: %{code} - %{body}'
+        service_error: '天気予報サービス エラー: %{message}'
   components:
     category_tabs:
       confirm_delete: このカテゴリ―タブを削除しますか?
@@ -263,53 +244,32 @@ ja:
       next: 次 &raquo;
       truncate: "&hellip;"
   landing:
-    title: "MM-App"
+    title: MM-App
     back_to_top: トップページへ戻る
-    subtitle: "製造業向けの包括的な生産管理・数値管理システム"
-    description: "原材料管理から製造計画、売上予測まで一元管理"
-    login_button: "ログイン"
-    signup_button: "新規登録"
-    subdomain_label: "会社のサブドメインを入力してください（半角英数字とハイフン）"
-    subdomain_placeholder: "your-company"
-    subdomain_required: "サブドメインを入力してください"
+    subtitle: 製造業向けの包括的な生産管理・数値管理システム
+    description: 原材料管理から製造計画、売上予測まで一元管理
+    login_button: ログイン
+    signup_button: 新規登録
+    subdomain_label: 会社のサブドメインを入力してください（半角英数字とハイフン）
+    subdomain_placeholder: your-company
+    subdomain_required: サブドメインを入力してください
     subdomain_hint: 既存の会社にログイン・登録する場合のみ入力してください
-    or: "または"
-    new_company_button: "新規会社登録を申請"
+    or: または
+    new_company_button: 新規会社登録を申請
     features:
-      title: "主な機能"
+      title: 主な機能
       resources:
-        title: "リソース管理"
-        description: "原材料・商品・カテゴリー"
+        title: リソース管理
+        description: 原材料・商品・カテゴリー
       planning:
-        title: "製造計画"
-        description: "日別計画・商品紐付け"
+        title: 製造計画
+        description: 日別計画・商品紐付け
       management:
-        title: "数値管理"
-        description: "予算・目標・実績"
+        title: 数値管理
+        description: 予算・目標・実績
       forecast:
-        title: "売上予測"
-        description: "データに基づく経営判断"
-    stores:
-      invitation_code_regenerated: 招待コードを再発行しました
-      show:
-        confirm_regenerate: 招待コードを再発行しますか？既存の招待コードは無効になります。
-        regenerate_code: 招待コード再発行
-        statistics: 統計情報
-        total_users: 所属ユーザー数
-        approved_users: 承認済みユーザー数
-        users_list: 所属ユーザー一覧
-        approved: 承認済み
-        pending: 承認待ち
-        no_users: 所属ユーザーがいません
-        role_badges:
-          general: 一般
-          store_admin: 店舗管理者
-          company_admin: 会社管理者
-        user: ユーザー
-        store: 店舗
-        status: ステータス
-        message: メッセージ
-        request_type: リクエスト種別
+        title: 売上予測
+        description: データに基づく経営判断
   terms:
     title: 利用規約
     last_updated: 最終更新日
@@ -338,7 +298,7 @@ ja:
         created_at: 作成日
       message_placeholder: 具体的なお問い合わせ内容をご記入ください
       message_hint: 最大5000文字まで入力できます
-      message_max_length: "5000"
+      message_max_length: '5000'
       submit: 送信
     messages:
       success_with_response_time: お問い合わせを送信しました。通常2〜3営業日以内にご返信いたします。
@@ -356,7 +316,26 @@ ja:
       success: "%{store_name}に切り替えました"
       all_stores: 全店舗表示に切り替えました
       not_found: 店舗が見つかりませんでした
-      unauthorized: この機能を利用する権限がありません
+    invitation_code_regenerated: 招待コードを再発行しました
+    show:
+      confirm_regenerate: 招待コードを再発行しますか？既存の招待コードは無効になります。
+      regenerate_code: 招待コード再発行
+      statistics: 統計情報
+      total_users: 所属ユーザー数
+      approved_users: 承認済みユーザー数
+      users_list: 所属ユーザー一覧
+      approved: 承認済み
+      pending: 承認待ち
+      no_users: 所属ユーザーがいません
+      role_badges:
+        general: 一般
+        store_admin: 店舗管理者
+        company_admin: 会社管理者
+      user: ユーザー
+      store: 店舗
+      status: ステータス
+      message: メッセージ
+      request_type: リクエスト種別
   devise:
     mailer:
       reset_password_instructions:
@@ -364,14 +343,14 @@ ja:
         greeting: こんにちは！
         instruction: パスワードのリセットがリクエストされました。以下のボタンをクリックしてパスワードを変更してください。
         action: パスワードを変更する
-        instruction_2: "もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください:"
+        instruction_2: 'もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください:'
         instruction_3: "※パスワードリセットをリクエストしていない場合は、このメールを無視してください。"
       confirmation_instructions:
         subject: メールアドレスの確認
         greeting: ようこそ、MM-Appへ！
         instruction: 以下のボタンをクリックして、メールアドレスを確認してください。
         action: メールアドレスを確認する
-        instruction_2: "もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください:"
+        instruction_2: 'もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください:'
       email_changed:
         subject: メールアドレスが変更されました
         greeting: こんにちは！
@@ -387,21 +366,21 @@ ja:
         message: アカウントがロックされました。
         instruction: 以下のボタンをクリックしてロックを解除してください。
         action: アカウントをロック解除する
-        instruction_2: "もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください:"
+        instruction_2: 'もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください:'
     approval_notification:
       subject: "【MM-App】ユーザー登録が承認されました"
       greeting: "%{name} 様"
       approved_message: ユーザー登録申請が承認されました。
       instruction: 以下のログインページからアクセスしてください。
       action: ログインする
-      login_info: "ログイン情報:"
-      email: "メールアドレス: %{email}"
-      password: "パスワード: 登録時に設定したパスワード"
+      login_info: 'ログイン情報:'
+      email: 'メールアドレス: %{email}'
+      password: 'パスワード: 登録時に設定したパスワード'
     rejection_notification:
       subject: "【MM-App】ユーザー登録申請について"
       greeting: "%{name} 様"
       rejected_message: ユーザー登録申請が却下されました。
-      reason_label: "却下理由:"
+      reason_label: '却下理由:'
       contact_message: ご不明な点がございましたら、管理者までお問い合わせください。
   activerecord:
     errors:
@@ -409,17 +388,34 @@ ja:
         header:
           one: "%{model}の保存に失敗しました"
           other: "%{count}件のエラーが発生したため、%{model}の保存に失敗しました"
-        body: "以下の項目を確認してください:"
+        body: '以下の項目を確認してください:'
       models:
         user:
           attributes:
             phone:
               invalid_phone_format: は10桁または11桁の数字で入力してください
+        resources/category:
+          category_type_in_use: "%{record}で使用しています"
+          category_in_use: "%{record}で使用しています"
+        resources/material:
+          category_in_use: "%{record}で使用しています"
+        resources/unit:
+          category_in_use: "%{record}で使用しています"
+          unit_in_use: "%{record}で使用しています"
     models:
       user: ユーザー
       store: 店舗
       tenant: テナント
       admin_request: 承認リクエスト
+      resources/material: 原材料
+      resources/product: 商品
+      resources/plan: 計画
+      resources/product_material: 商品原材料
+      resources/plan_product: 計画商品
+      resources/category: カテゴリー
+      resources/order: 発注
+      resources/order_group: 発注グループ
+      resources/unit: 単位
     attributes:
       user:
         name: 名前
@@ -446,6 +442,60 @@ ja:
         request_type: リクエスト種別
         status: ステータス
         reason: 理由
+      resources/material:
+        name: 原材料名
+        code: 原材料コード
+        description: 説明
+        category_id: カテゴリー
+        production_unit_id: 使用単位
+        order_unit_id: 発注単位
+        conversion_rate: 換算レート
+        standard_unit_price: 標準単価
+      resources/product:
+        name: 商品名
+        code: 商品コード
+        description: 説明
+        category_id: カテゴリー
+      resources/plan:
+        name: 計画名
+        code: 計画コード
+        plan_date: 計画日
+        status: ステータス
+        category_id: カテゴリー
+        actual_revenue_data: 実績売上データ
+      resources/order_group:
+        name: 発注グループ名
+        code: 発注グループコード
+        order_date: 発注日
+        status: ステータス
+        category_id: カテゴリー
+      resources/category:
+        name: カテゴリー名
+        category_type: タイプ
+      resources/unit:
+        name: 単位名
+    enums:
+      resources/plan:
+        status:
+          draft: 下書き
+          confirmed: 確定
+          completed: 完了
+      resources/order_group:
+        status:
+          draft: 下書き
+          ordered: 発注済み
+          received: 入荷済み
+      resources/category:
+        category_type:
+          material: 原材料
+          product: 商品
+          plan: 計画
+          order_group: 発注グループ
+    associations:
+      resources/unit:
+        materials_as_product_unit: 商品単位として使用している原材料
+        materials_as_order_unit: 発注単位として使用している原材料
+        materials_as_production_unit: 使用単位として使用している原材料
   admin:
     users:
       messages:
@@ -457,11 +507,14 @@ ja:
       edit:
         title: ユーザー編集
       new:
-        title: 新規ユーザー登録
+        title: ユーザー登録
       form:
         name_placeholder: 山田 太郎
         email_placeholder: user@example.com
         role_placeholder: 権限を選択してください
+        password_hint: 空欄の場合は安全なランダムパスワードを自動生成します
+        store_admin_role_hint: "店舗管理者は一般ユーザーのみ作成できます"
+        store_admin_store_hint: "自店舗のユーザーのみ作成できます"
       roles:
         general: 一般
         store_admin: 店舗管理者
@@ -484,9 +537,5 @@ ja:
           company_admin: 会社管理者
       store_id:
         blank: を選択してください
-
-  stores:
-    switch:
-      success: '%{store_name}に切り替えました'
-      all_stores: '全店舗表示に切り替えました'
-      not_found: '店舗が見つかりませんでした'
+    categories: カテゴリー管理
+    units: 単位管理

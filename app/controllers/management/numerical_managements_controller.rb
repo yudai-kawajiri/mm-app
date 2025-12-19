@@ -36,7 +36,7 @@ class Management::NumericalManagementsController < Management::BaseController
       store_id: current_store&.id
     ).calculate
 
-    @plans_by_category = scoped_plans
+    @plans_by_category = scoped_plans.where(status: :active)
                           .includes(:category, plan_products: :product)
                           .group_by { |plan| plan.category.name }
   end

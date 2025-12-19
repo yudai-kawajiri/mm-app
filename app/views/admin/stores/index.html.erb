@@ -7,7 +7,7 @@
       is_index_page: true,
       is_form_page: false,
       is_show_page: false,
-      new_path: new_admin_store_path %>
+      new_path: (current_user.store_admin? ? nil : new_admin_store_path) %>
 
   <% if @stores.any? %>
     <div class="table-responsive">
@@ -31,13 +31,21 @@
               <td><%= store.users_count %></td>
               <td><%= l(store.created_at, format: :long) %></td>
               <td class="text-center">
-                <%= render 'shared/actions/resource_action_links',
-                    resource: store,
-                    scope: :admin,
-                    icon_mode: true,
-                    show_link: true,
-                    show_copy: false,
-                    show_print: false %>
+                <% if current_user.store_admin? %>
+                  <%# 店舗管理者: 閲覧のみ %>
+                  <%= link_to admin_store_path(store), class: "btn btn-sm btn-outline-primary", title: t('helpers.links.show') do %>
+                    <i class="bi bi-eye"></i>
+                  <% end %>
+                <% else %>
+                  <%# 会社管理者・システム管理者: 全アクション可能 %>
+                  <%= render 'shared/actions/resource_action_links',
+                      resource: store,
+                      scope: :admin,
+                      icon_mode: true,
+                      show_link: true,
+                      show_copy: false,
+                      show_print: false %>
+                <% end %>
               </td>
             </tr>
           <% end %>

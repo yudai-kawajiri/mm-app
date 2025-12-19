@@ -47,7 +47,7 @@ class Resources::Plan < ApplicationRecord
   # 保存前コールバック（重複商品を除外）
   before_save :reject_duplicate_plan_products
 
-  has_many :plan_schedules, class_name: "Planning::PlanSchedule", dependent: :destroy
+  has_many :plan_schedules, class_name: "Planning::PlanSchedule", dependent: :nullify
 
   # 計画のステータス定義
   enum :status, {

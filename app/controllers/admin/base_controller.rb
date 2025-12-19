@@ -7,9 +7,8 @@ class Admin::BaseController < ApplicationController
   private
 
   def require_admin
-    unless current_user&.can_manage_company?
+    unless current_user&.store_admin? || current_user&.company_admin? || current_user&.super_admin?
       redirect_to authenticated_root_path, alert: t("errors.messages.unauthorized")
     end
   end
 end
-

@@ -14,7 +14,7 @@ class Admin::AdminRequestsController < Admin::BaseController
       # 一般ユーザー: アクセス不可
       AdminRequest.none
     end
-    
+
     @admin_requests = @admin_requests.includes(:user, :store).recent.page(params[:page])
   end
 
@@ -39,7 +39,7 @@ class Admin::AdminRequestsController < Admin::BaseController
   end
 
   def approve
-    if @admin_request.approve!
+    if @admin_request.approve!(current_user)
       redirect_to admin_admin_requests_path, notice: t('admin.admin_requests.messages.approved')
     else
       redirect_to admin_admin_requests_path, alert: t('admin.admin_requests.messages.approve_failed')
@@ -47,7 +47,10 @@ class Admin::AdminRequestsController < Admin::BaseController
   end
 
   def reject
-    if @admin_request.reject!
+    # 却下理由を取得（パラメータになければデフォルト値）
+    reason = params[:reason].presence || t('admin.admin_requests.default_reject_reason')
+
+    if @admin_request.reject!(current_user, reason: reason)
       redirect_to admin_admin_requests_path, notice: t('admin.admin_requests.messages.rejected')
     else
       redirect_to admin_admin_requests_path, alert: t('admin.admin_requests.messages.reject_failed')

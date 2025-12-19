@@ -9,6 +9,7 @@
 #   - ordering: 発注単位（発注時の単位: kg, 箱など）
 #   - manufacturing: 使用単位（印刷時に表示する数え方: 枚, カン, 本, 切れなど）
 class Resources::Unit < ApplicationRecord
+  include TranslatableAssociations
   has_paper_trail
 
   DESCRIPTION_MAX_LENGTH = 500

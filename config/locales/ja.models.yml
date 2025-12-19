@@ -53,8 +53,13 @@ ja:
               blank: "を選択してください"
 
     models:
-      tenant: "テナント"
-      admin_request: "承認リクエスト"
+      materials: "原材料"
+      products: "商品"
+      plans: "計画"
+      product_materials: "商品"
+      plan_products: "計画"
+      materials_as_production_unit: "製造単位"
+      materials_as_order_unit: "発注単位"
       "resources/category": "カテゴリー"
       "resources/unit": "単位"
       material_order_group: "発注グループ"
@@ -243,8 +248,6 @@ ja:
         created_at: "登録日時"
         updated_at: "更新日時"
 
-  errors:
-    models:
       store:
         attributes:
           code:
@@ -259,3 +262,5 @@ ja:
             blank: "を入力してください"
             taken: "は既に使用されています"
             invalid: "は有効なメールアドレスではありません"
+
+

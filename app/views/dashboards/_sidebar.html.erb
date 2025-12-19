@@ -25,7 +25,7 @@
           <%= f.select :store_id,
               options_for_select(
                 [['全店舗', nil]] + current_tenant.stores.pluck(:name, :id),
-                session[:current_store_id]
+                session[:current_store_id].presence
               ),
               {},
               {
@@ -39,7 +39,7 @@
         <small class="text-muted d-block mb-1">
           <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
         </small>
-        <div class="fw-semibold"><%= current_store&.name %></div>
+        <div class="fw-semibold"><%= current_user.store&.name || "未設定" %></div>
       </div>
     <% end %>
   </div>
@@ -109,9 +109,16 @@
                 <% end %>
               </div>
             <% else %>
-              <%= link_to sub_item[:path],
-                  class: sidebar_submenu_link_class(sub_item[:path]) do %>
-                <%= submenu_indicator %><%= sub_item[:name] %>
+              <% if sub_item[:disabled] %>
+                <a href="#" class="list-group-item list-group-item-action ps-4 disabled text-muted" title="この機能は利用できません" onclick="return false;">
+                  <%= submenu_indicator %><%= sub_item[:name] %>
+                  <i class="bi bi-lock-fill float-end"></i>
+                </a>
+              <% else %>
+                <%= link_to sub_item[:path],
+                    class: sidebar_submenu_link_class(sub_item[:path]) do %>
+                  <%= submenu_indicator %><%= sub_item[:name] %>
+                <% end %>
               <% end %>
             <% end %>
           <% end %>

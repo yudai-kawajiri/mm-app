@@ -1,45 +1,43 @@
 <%# 日別明細テーブル(一括編集機能付き) %>
-<div class="card" data-controller="management--daily-details numerical-modal" data-management--daily-details-monthly-budget-value="<%= @monthly_budget&.target_amount || 0 %>" data-management--daily-details-shortage-text-value="<%= t('numerical_managements.bulk_edit.shortage') %>" data-management--daily-details-excess-text-value="<%= t('numerical_managements.bulk_edit.excess') %>">
+<div class="card" data-controller="management--daily-details numerical-modal" data-management--daily-details-monthly-budget-value="<%= @monthly_budget&.target_amount || 0 %>" data-management--daily-details-shortage-text-value="<%= t("numerical_managements.bulk_edit.shortage") %>" data-management--daily-details-excess-text-value="<%= t("numerical_managements.bulk_edit.excess") %>">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0"><%= t('numerical_managements.index.daily_details') %></h5>
+    <h5 class="mb-0"><%= t("numerical_managements.index.daily_details") %></h5>
     <button type="button"
             class="btn btn-primary btn-sm"
             data-management--daily-details-target="toggleBtn"
             data-action="click->management--daily-details#toggleEditMode">
-      <i class="bi bi-pencil-square"></i> <%= t('numerical_managements.bulk_edit.toggle_edit_mode') %></button>
+      <i class="bi bi-pencil-square"></i> <%= t("numerical_managements.bulk_edit.toggle_edit_mode") %></button>
   </div>
 
   <div data-management--daily-details-target="summary" class="card-body bg-light border-bottom" style="display: none;">
     <%
-      # 日別予算の合計を計算
       daily_target_sum = daily_data.sum { |day| day[:target] || 0 }
-      # 月間予算との差分を計算
       monthly_budget_amount = @monthly_budget&.target_amount || 0
       budget_diff = monthly_budget_amount - daily_target_sum
     %>
     <div class="row">
       <div class="col-md-4">
-        <strong><%= t('numerical_managements.bulk_edit.monthly_budget_label') %></strong>
+        <strong><%= t("numerical_managements.bulk_edit.monthly_budget_label") %></strong>
         <span class="text-primary"><%= format_currency(monthly_budget_amount) %></span>
       </div>
       <div class="col-md-4">
-        <strong><%= t('numerical_managements.bulk_edit.daily_target_sum') %></strong>
+        <strong><%= t("numerical_managements.bulk_edit.daily_target_sum") %></strong>
         <span data-management--daily-details-target="dailyTargetSum" class="fw-bold"><%= format_currency(daily_target_sum) %></span>
       </div>
       <div class="col-md-4">
-        <strong><%= t('numerical_managements.bulk_edit.budget_diff_label') %></strong>
+        <strong><%= t("numerical_managements.bulk_edit.budget_diff_label") %></strong>
         <%
           diff_class = if budget_diff > 0
-                        'fw-bold text-warning'
+                        "fw-bold text-warning"
                       elsif budget_diff < 0
-                        'fw-bold text-danger'
+                        "fw-bold text-danger"
                       else
-                        'fw-bold text-success'
+                        "fw-bold text-success"
                       end
           diff_text = if budget_diff > 0
-                        "-#{format_currency(budget_diff.abs)} #{t('numerical_managements.bulk_edit.shortage')}"
+                        "-#{format_currency(budget_diff.abs)} #{t("numerical_managements.bulk_edit.shortage")}"
                       elsif budget_diff < 0
-                        "+#{format_currency(budget_diff.abs)} #{t('numerical_managements.bulk_edit.excess')}"
+                        "+#{format_currency(budget_diff.abs)} #{t("numerical_managements.bulk_edit.excess")}"
                       else
                         format_currency(0)
                       end
@@ -58,13 +56,13 @@
         <table class="table table-sm table-hover mb-0">
           <thead class="table-light sticky-top">
             <tr>
-              <th style="width: 80px;"><%= t('labels.date') %></th>
-              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.budget') %></th>
-              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.planned') %></th>
-              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.actual') %></th>
-              <th class="text-end" style="width: 80px;"><%= t('numerical_managements.table_headers.achievement_rate') %></th>
-              <th class="text-end" style="width: 100px;"><%= t('numerical_managements.table_headers.budget_diff') %></th>
-              <th class="text-center bulk-edit-hidden" style="width: 180px;"><%= t('common.action') %></th>
+              <th style="width: 80px;"><%= t("labels.date") %></th>
+              <th class="text-end" style="width: 100px;"><%= t("numerical_managements.table_headers.budget") %></th>
+              <th class="text-end" style="width: 100px;"><%= t("numerical_managements.table_headers.planned") %></th>
+              <th class="text-end" style="width: 100px;"><%= t("numerical_managements.table_headers.actual") %></th>
+              <th class="text-end" style="width: 80px;"><%= t("numerical_managements.table_headers.achievement_rate") %></th>
+              <th class="text-end" style="width: 100px;"><%= t("numerical_managements.table_headers.budget_diff") %></th>
+              <th class="text-center bulk-edit-hidden" style="width: 180px;"><%= t("common.action") %></th>
             </tr>
           </thead>
           <tbody>
@@ -75,9 +73,9 @@
                 is_past = day[:date] < Date.current
               %>
 
-              <tr class="<%= 'table-secondary' unless is_past %>">
+              <tr class="<%= "table-secondary" unless is_past %>">
                 <td style="width: 80px;" rowspan="2" class="align-middle">
-                  <%= day[:date].strftime('%-m/%-d') %>
+                  <%= day[:date].strftime("%-m/%-d") %>
                 </td>
 
                 <td class="text-end">
@@ -90,13 +88,13 @@
                               class: "form-control form-control-sm text-end bulk-edit-target",
                               data: {
                                 original: day[:target].to_i,
-                                controller: 'input--number-input',
-                                'number-input-remove-comma-on-focus': 'true',
-                                action: 'input->input--number-input#handleInput input->management--daily-details#calculateDailyTargetSum paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur keydown->input--number-input#handleKeydown'
+                                controller: "input--number-input",
+                                "number-input-remove-comma-on-focus": "true",
+                                action: "input->input--number-input#handleInput input->management--daily-details#calculateDailyTargetSum paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur keydown->input--number-input#handleKeydown"
                               },
                               placeholder: "0",
                               inputmode: "numeric" %>
-                    <%= hidden_field_tag "daily_data[#{index}][date]", day[:date].strftime('%Y-%m-%d') %>
+                    <%= hidden_field_tag "daily_data[#{index}][date]", day[:date].strftime("%Y-%m-%d") %>
                     <%= hidden_field_tag "daily_data[#{index}][target_id]", target_id %>
                   </div>
                 </td>
@@ -116,7 +114,7 @@
                               class: "form-control form-control-sm text-end bulk-edit-actual",
                               data: {
                                 controller: "input--number-input",
-                                'number-input-remove-comma-on-focus': 'true',
+                                "number-input-remove-comma-on-focus": "true",
                                 action: "input->input--number-input#handleInput paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur keydown->input--number-input#handleKeydown"
                               },
                               disabled: day[:plan_schedules].empty?,
@@ -128,12 +126,12 @@
 
                 <td class="text-end">
                   <% rate = day[:achievement_rate] || 0 %>
-                  <span class="<%= rate >= 100 ? 'text-success' : (rate >= 80 ? 'text-warning' : 'text-danger') %>">
+                  <span class="<%= rate >= 100 ? "text-success" : (rate >= 80 ? "text-warning" : "text-danger") %>">
                     <%= number_to_percentage(rate, precision: 1) %>
                   </span>
                 </td>
 
-                <td class="text-end <%= (day[:diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
+                <td class="text-end <%= (day[:diff] || 0) >= 0 ? "text-success" : "text-danger" %>">
                   <%= format_currency(day[:diff] || 0) %>
                 </td>
 
@@ -143,32 +141,35 @@
                             class="btn btn-outline-secondary"
                             data-bs-toggle="modal"
                             data-bs-target="#editDailyTargetModal"
-                            data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
-                            data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
+                            data-date="<%= day[:date].strftime("%Y-%m-%d") %>"
+                            data-date-display="<%= day[:date].strftime("%-m月%-d日") %>"
                             data-target-id="<%= target_id %>"
                             data-target-amount="<%= day[:target].to_i %>"
-                            title="<%= t('numerical_managements.actions.edit_target') %>">
+                            title="<%= t("numerical_managements.actions.edit_target") %>">
                       <i class="bi bi-pencil"></i>
                     </button>
 
                     <% first_schedule = day[:plan_schedules].first %>
+                    <%
+                      snapshot_plan_name = first_schedule&.snapshot_products.is_a?(Hash) ? first_schedule.snapshot_products["plan_name"] : nil rescue nil
+                      snapshot_category_name = first_schedule&.snapshot_products.is_a?(Hash) ? first_schedule.snapshot_products["category_name"] : nil rescue nil
+                    %>
                     <button type="button"
-                            class="btn <%= first_schedule ? 'btn-outline-warning' : 'btn-outline-info' %> plan-add-btn"
+                            class="btn <%= first_schedule ? "btn-outline-warning" : "btn-outline-info" %> plan-add-btn"
                             data-bs-toggle="modal"
                             data-bs-target="#assignPlanModal"
-                            data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
-                            data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
+                            data-date="<%= day[:date].strftime("%Y-%m-%d") %>"
+                            data-date-display="<%= day[:date].strftime("%-m月%-d日") %>"
                             data-year="<%= day[:date].year %>"
                             data-month="<%= day[:date].month %>"
                             data-day="<%= day[:date].day %>"
                             data-schedule-id="<%= first_schedule&.id %>"
                             data-plan-id="<%= first_schedule&.plan_id %>"
-                            data-plan-name="<%= first_schedule&.plan&.name %>"
-                            data-category-name="<%= first_schedule&.plan&.category&.name %>"
-                            data-planned-revenue="<%= first_schedule&.snapshot_total_cost || 0 %>"
-                            data-snapshot="<%= first_schedule&.snapshot_products_for_json&.to_json %>"
-                            title="<%= first_schedule ? t('numerical_managements.actions.edit_plan') : t('numerical_managements.actions.add_plan') %>">
-                      <i class="bi bi-<%= first_schedule ? 'pencil-square' : 'calendar-plus' %>"></i>
+                                                        data-plan-name="<%= first_schedule&.plan&.name || first_schedule&.plan_products_snapshot&.dig("plan_name") || t("common.deleted_plan") %>"
+                            data-category-name="<%= first_schedule&.plan&.category&.name || first_schedule&.plan_products_snapshot&.dig("category_name") || "-" %>"
+                            data-snapshot="<%= first_schedule&.plan_products_snapshot&.to_json %>"
+                            title="<%= first_schedule ? t("numerical_managements.actions.edit_plan") : t("numerical_managements.actions.add_plan") %>">
+                      <i class="bi bi-<%= first_schedule ? "pencil-square" : "calendar-plus" %>"></i>
                     </button>
 
                     <% if day[:plan_schedules].present? %>
@@ -177,23 +178,35 @@
                               class="btn btn-outline-success"
                               data-bs-toggle="modal"
                               data-bs-target="#actualRevenueModal"
-                              data-date="<%= day[:date].strftime('%Y-%m-%d') %>"
-                              data-date-display="<%= day[:date].strftime('%-m月%-d日') %>"
+                              data-date="<%= day[:date].strftime("%Y-%m-%d") %>"
+                              data-date-display="<%= day[:date].strftime("%-m月%-d日") %>"
                               data-plan-schedule-id="<%= first_schedule.id %>"
                               data-actual-revenue="<%= (first_schedule.actual_revenue || 0).to_i %>"
-                              title="<%= t('numerical_managements.actions.input_actual') %>">
+                              title="<%= t("numerical_managements.actions.input_actual") %>">
                         <i class="bi bi-currency-yen"></i>
                       </button>
                     <% end %>
 
                     <% if day[:plan_schedules].present? %>
                       <% if day[:plan_schedules].count == 1 %>
-                        <%= link_to "/resources/plans/#{day[:plan_schedules].first.plan.id}/print?date=#{day[:date]}",
-                                    class: "btn btn-outline-primary",
-                                    target: "_blank",
-                                    data: { turbo: false },
-                                    title: t('numerical_managements.actions.print_plan') do %>
-                          <i class="bi bi-printer"></i>
+                        <% plan = day[:plan_schedules].first.plan %>
+                        <% if plan.present? %>
+                          <%= link_to print_resources_plan_path(plan, date: day[:date]),
+                                      class: "btn btn-outline-primary",
+                                      target: "_blank",
+                                      data: { turbo: false },
+                                      title: t("numerical_managements.actions.print_plan") do %>
+                            <i class="bi bi-printer"></i>
+                          <% end %>
+                        <% else %>
+                          <% ps = day[:plan_schedules].first %>
+                          <%= link_to print_resources_plan_path("deleted", date: day[:date], plan_schedule_id: ps.id),
+                                      class: "btn btn-outline-primary",
+                                      target: "_blank",
+                                      data: { turbo: false },
+                                      title: t("common.deleted_plan") do %>
+                            <i class="bi bi-printer"></i>
+                          <% end %>
                         <% end %>
                       <% else %>
                         <div class="btn-group" role="group">
@@ -201,17 +214,21 @@
                                   class="btn btn-outline-primary dropdown-toggle"
                                   data-bs-toggle="dropdown"
                                   aria-expanded="false"
-                                  title="<%= t('numerical_managements.actions.select_plan_to_print') %>">
+                                  title="<%= t("numerical_managements.actions.select_plan_to_print") %>">
                             <i class="bi bi-printer"></i>
                           </button>
                           <ul class="dropdown-menu dropdown-menu-end">
                             <% day[:plan_schedules].each do |ps| %>
                               <li>
-                                <%= link_to "/resources/plans/#{ps.plan.id}/print?date=#{day[:date]}",
-                                            class: "dropdown-item",
-                                            target: "_blank",
-                                            data: { turbo: false } do %>
-                                  <%= ps.plan.name %>
+                                <% if ps.plan.present? %>
+                                  <%= link_to print_resources_plan_path(ps.plan, date: day[:date]),
+                                              class: "dropdown-item",
+                                              target: "_blank",
+                                              data: { turbo: false } do %>
+                                    <%= ps.plan.name %>
+                                  <% end %>
+                                <% else %>
+                                  <span class="dropdown-item disabled"><%= t("common.deleted_plan") %></span>
                                 <% end %>
                               </li>
                             <% end %>
@@ -223,32 +240,32 @@
                 </td>
               </tr>
 
-              <tr class="table-light <%= 'table-secondary' unless is_past %>">
+              <tr class="table-light <%= "table-secondary" unless is_past %>">
                 <td class="text-end">
-                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
+                  <small class="text-muted"><%= t("numerical_managements.labels.cumulative") %></small>
                   <%= format_currency(day[:cumulative_target] || 0) %>
                 </td>
 
                 <td class="text-end">
-                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
+                  <small class="text-muted"><%= t("numerical_managements.labels.cumulative") %></small>
                   <%= format_currency(day[:cumulative_planned] || 0) %>
                 </td>
 
                 <td class="text-end">
-                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
+                  <small class="text-muted"><%= t("numerical_managements.labels.cumulative") %></small>
                   <%= format_currency(day[:cumulative_actual] || 0) %>
                 </td>
 
                 <td class="text-end">
                   <% cum_rate = day[:cumulative_achievement_rate] || 0 %>
-                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
-                  <span class="<%= cum_rate >= 100 ? 'text-success' : (cum_rate >= 80 ? 'text-warning' : 'text-danger') %>">
+                  <small class="text-muted"><%= t("numerical_managements.labels.cumulative") %></small>
+                  <span class="<%= cum_rate >= 100 ? "text-success" : (cum_rate >= 80 ? "text-warning" : "text-danger") %>">
                     <%= number_to_percentage(cum_rate, precision: 1) %>
                   </span>
                 </td>
 
-                <td class="text-end <%= (day[:cumulative_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">
-                  <small class="text-muted"><%= t('numerical_managements.labels.cumulative') %></small>
+                <td class="text-end <%= (day[:cumulative_diff] || 0) >= 0 ? "text-success" : "text-danger" %>">
+                  <small class="text-muted"><%= t("numerical_managements.labels.cumulative") %></small>
                   <%= format_currency(day[:cumulative_diff] || 0) %>
                 </td>
               </tr>
@@ -260,10 +277,10 @@
       <div class="card-footer bulk-edit-actions" style="display: none;">
         <div class="d-flex justify-content-end gap-2">
           <button type="button" class="btn btn-secondary" data-action="click->management--daily-details#toggleEditMode">
-            <i class="bi bi-x-lg"></i> <%= t('common.cancel') %>
+            <i class="bi bi-x-lg"></i> <%= t("common.cancel") %>
           </button>
           <button type="submit" class="btn btn-success" data-management--daily-details-target="saveButton">
-            <i class="bi bi-check-lg"></i> <%= t('numerical_managements.bulk_edit.bulk_save') %>
+            <i class="bi bi-check-lg"></i> <%= t("numerical_managements.bulk_edit.bulk_save") %>
           </button>
         </div>
       </div>

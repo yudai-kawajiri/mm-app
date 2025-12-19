@@ -4,6 +4,7 @@
 #
 # 製品モデル - 寿司メニューなどの販売製品を管理
 class Resources::Product < ApplicationRecord
+  include TranslatableAssociations
   ITEM_NUMBER_MIN = 1
   ITEM_NUMBER_DIGITS = 4
   ITEM_NUMBER_MAX = 10**ITEM_NUMBER_DIGITS - 1

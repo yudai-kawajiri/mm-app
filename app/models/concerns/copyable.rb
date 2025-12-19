@@ -61,9 +61,6 @@ module Copyable
   # @return [ActiveRecord::Base] 新しいレコード
   # @raise [ActiveRecord::RecordInvalid] 保存に失敗した場合
   def create_copy(user:)
-    Rails.logger.debug "=== CREATE_COPY CALLED ==="
-    Rails.logger.debug "user: #{user.inspect}"
-    Rails.logger.debug "self: #{inspect}"
     ActiveRecord::Base.transaction do
       # 新しい名前と読み仮名を生成
       unique_attrs = generate_unique_attributes
@@ -106,10 +103,6 @@ module Copyable
   #
   # @return [Hash] 一意な属性のハッシュ
   def generate_unique_attributes
-    Rails.logger.debug "=== COPYABLE DEBUG ==="
-    Rails.logger.debug "base_name: #{name}"
-    Rails.logger.debug "base_reading: #{reading if respond_to?(:reading)}"
-    Rails.logger.debug "uniqueness_scope: #{copy_config[:uniqueness_scope]}"
     base_name = name
     base_reading = reading if respond_to?(:reading)
 
@@ -117,24 +110,27 @@ module Copyable
     original_name = base_name.sub(/\s*\(コピー\d+\).*\z/, "")
 
     # 元の読み仮名から「こぴー」部分を削除して、真のベース読み仮名を取得
-    original_reading = base_reading ? base_reading.sub(/こぴー.*\z/, "") : nil
-
+    original_reading = base_reading ? base_reading.sub(/こぴー.*\z/, "").strip : nil
+    
     copy_count = 1
+    result = nil
 
     loop do
       # 元の名前（コピー部分を除去したもの）をベースに生成
       new_name = copy_config[:name_format].call(original_name, copy_count)
       # 元の読み仮名（こぴー部分を除去したもの）をベースに生成
       new_reading = original_reading ? generate_reading_for_copy(original_reading, copy_count) : nil
-      Rails.logger.debug "copy_count: #{copy_count}, new_name: #{new_name}, new_reading: #{new_reading}"
-      Rails.logger.debug "checking existence..."
-
+      
       # 一意性チェック
-      exists = attributes_exist?(new_name, new_reading)
-      Rails.logger.debug "exists? #{exists}"
-      break { name: new_name, reading: new_reading } unless attributes_exist?(new_name, new_reading)
+      unless attributes_exist?(new_name, new_reading)
+        result = { name: new_name, reading: new_reading }
+        break
+      end
+      
       copy_count += 1
     end
+    
+    result
   end
 
   # コピー用の読み仮名を生成

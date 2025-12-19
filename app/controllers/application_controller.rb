@@ -17,24 +17,14 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-
-    if resource.can_manage_company? && session[:current_store_id].blank?
-
-      first_store = resource.tenant&.stores&.first
-
-      session[:current_store_id] = first_store&.id if first_store
-
+    if current_user.company_admin?
+      session[:current_store_id] = current_user.tenant.stores.first&.id
+    elsif current_user.store_id.present?
+      session[:current_store_id] = current_user.store_id
     end
-
-
-
+    
     authenticated_root_path
-
   end
-
-
-
-
 
   def layout_by_resource
     return "print" if action_name == "print"
@@ -78,40 +68,69 @@ class ApplicationController < ActionController::Base
   end
 
   def current_store
-    @current_store ||= if current_user&.can_manage_company?
-      current_tenant&.stores&.find_by(id: session[:current_store_id])
-    else
-      current_user&.store
-    end
+    return nil unless session[:current_store_id]
+    @current_store ||= current_user.tenant.stores.find_by(id: session[:current_store_id])
   end
 
   def scoped_monthly_budgets
     return Management::MonthlyBudget.none unless current_tenant
-    Management::MonthlyBudget.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+    if session[:current_store_id].present?
+      Management::MonthlyBudget.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Management::MonthlyBudget.where(tenant_id: current_tenant.id)
+    end
   end
 
   def scoped_categories
-    Resources::Category.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+    Rails.logger.info "[DEBUG SCOPED] session[:current_store_id] = #{session[:current_store_id].inspect}"
+    Rails.logger.info "[DEBUG SCOPED] current_tenant.id = #{current_tenant&.id}"
+    result = if session[:current_store_id].present?
+      Resources::Category.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Resources::Category.where(tenant_id: current_tenant.id)
+    end
+    Rails.logger.info "[DEBUG SCOPED] result.count = #{result.count}"
+    result
   end
 
   def scoped_products
-    Resources::Product.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+    if session[:current_store_id].present?
+      Resources::Product.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Resources::Product.where(tenant_id: current_tenant.id)
+    end
   end
 
   def scoped_materials
-    Resources::Material.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+    if session[:current_store_id].present?
+      Resources::Material.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Resources::Material.where(tenant_id: current_tenant.id)
+    end
   end
 
   def scoped_plans
-    Resources::Plan.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+    if session[:current_store_id].present?
+      Resources::Plan.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Resources::Plan.where(tenant_id: current_tenant.id)
+    end
   end
 
   def scoped_material_order_groups
-    Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+    if session[:current_store_id].present?
+      Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id)
+    end
   end
 
   def scoped_units
-    Resources::Unit.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+    if session[:current_store_id].present?
+      Resources::Unit.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+    else
+      Resources::Unit.where(tenant_id: current_tenant.id)
+    end
   end
 
   def scoped_daily_targets

@@ -4,6 +4,7 @@
 #
 # 材料モデル - 寿司ネタなどの原材料を管理
 class Resources::Material < ApplicationRecord
+  include TranslatableAssociations
   has_paper_trail
 
   include NameSearchable

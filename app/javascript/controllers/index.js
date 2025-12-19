@@ -31,7 +31,6 @@ import ResourcesMaterialFormController from "controllers/resources/material_form
 
 // UI Controllers
 import FlashController from "controllers/ui/flash_controller"
-import FormValidationController from "controllers/form_validation_controller"
 import ImagePreviewController from "controllers/ui/image_preview_controller"
 import SortableTableController from "controllers/ui/sortable_table_controller"
 import TabsCategoryTabsController from "controllers/ui/tabs/category_tabs_controller"
@@ -65,7 +64,6 @@ application.register("resources--plan-product--sync", ResourcesPlanProductSyncCo
 application.register("resources--product-material--material", ResourcesProductMaterialMaterialController)
 application.register("resources--material-form", ResourcesMaterialFormController)
 application.register("flash", FlashController)
-application.register("form-validation", FormValidationController)
 application.register("image-preview", ImagePreviewController)
 application.register("sortable-table", SortableTableController)
 application.register("tabs--category-tabs", TabsCategoryTabsController)

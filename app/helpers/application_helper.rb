@@ -124,15 +124,15 @@ module ApplicationHelper
       {
         name: t("dashboard.menu.numerical_management"),
         path: management_numerical_managements_path,
-        disabled: session[:current_store_id].blank?,
+        disabled: current_user.company_admin? && session[:current_store_id].blank?,
         submenu: [
           { name: t("dashboard.menu.numerical_dashboard"), path: management_numerical_managements_path }
         ]
       }
     ]
 
-    # 管理メニュー (会社管理者・システム管理者のみ)
-    if current_user.company_admin? || current_user.super_admin?
+    # 管理メニュー (店舗管理者・会社管理者・システム管理者)
+    if current_user.store_admin? || current_user.company_admin? || current_user.super_admin?
       admin_submenu = []
 
       # システム管理者のみテナント管理を表示
@@ -140,12 +140,19 @@ module ApplicationHelper
         admin_submenu << { name: t("common.menu.tenant_management"), path: admin_tenants_path }
       end
 
-      admin_submenu += [
-        { name: t("common.menu.approval_requests"), path: admin_admin_requests_path },
-        { name: t("common.menu.user_management"), path: admin_users_path },
-        { name: t("common.menu.store_management"), path: admin_stores_path },
-        { name: t("common.menu.system_logs"), path: admin_system_logs_path }
-      ]
+      # 全ての管理者に表示
+      admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
+      admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
+
+      # 店舗管理は全ての管理者に表示（コントローラー側で権限制御）
+      admin_submenu << { name: t("common.menu.store_management"), path: admin_stores_path }
+
+      # システムログは店舗管理者には無効化
+      if current_user.store_admin?
+        admin_submenu << { name: t("common.menu.system_logs"), path: "#", disabled: true }
+      else
+        admin_submenu << { name: t("common.menu.system_logs"), path: admin_system_logs_path }
+      end
 
       items << {
         name: t("common.menu.admin_management"),
@@ -635,8 +642,6 @@ module ApplicationHelper
     "#{model_name.pluralize}/#{partial_name}"
 
   end
-end
-
 
   # scopeとresourceから正しいパスを生成
   def resource_path_with_scope(resource, scope = nil, action = nil)
@@ -681,3 +686,4 @@ end
     return true unless current_user.company_admin?
     session[:current_store_id].present?
   end
+end

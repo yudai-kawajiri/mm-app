@@ -126,8 +126,8 @@ class Resources::ProductsController < AuthenticatedController
 
   def scoped_products
     case current_user.role
-    when 'store_admin'
-      Resources::Product.where(store_id: current_store.id)
+    when 'store_admin', 'general'
+      Resources::Product.where(store_id: current_user.store_id)
     when 'company_admin'
       if session[:current_store_id].present?
         Resources::Product.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
