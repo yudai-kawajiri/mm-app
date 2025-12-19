@@ -293,14 +293,14 @@ ja:
       subject: 件名
       subject_placeholder: お問い合わせ内容の件名
       message: お問い合わせ内容
-      tenant:
-        name: テナント名
-        subdomain: サブドメイン
-        created_at: 作成日
       message_placeholder: 具体的なお問い合わせ内容をご記入ください
       message_hint: 最大5000文字まで入力できます
       message_max_length: '5000'
       submit: 送信
+      tenant:
+        name: テナント名
+        subdomain: サブドメイン
+        created_at: 作成日
     messages:
       success_with_response_time: お問い合わせを送信しました。通常2〜3営業日以内にご返信いたします。
       failure: お問い合わせの送信に失敗しました。
@@ -440,6 +440,7 @@ ja:
       user:
         name: 名前
         email: メールアドレス
+        tenant: 会社名
         password: パスワード
         password_confirmation: パスワード（確認）
         current_password: 現在のパスワード

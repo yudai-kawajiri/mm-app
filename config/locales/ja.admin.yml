@@ -3,6 +3,7 @@ ja:
     users:
       index:
         title: "ユーザー管理"
+        not_set: （未設定）
         role_badges:
           super_admin: "システム管理者"
           company_admin: "会社管理者"
@@ -11,6 +12,7 @@ ja:
         table_headers:
           name: "名前"
           email: "メールアドレス"
+          tenant: 会社名
           role: "権限"
           registered_date: "登録日"
           actions: "アクション"
@@ -33,6 +35,9 @@ ja:
       show:
         user_info: "ユーザー情報"
         title: "ユーザー詳細"
+        generated_password:
+          title: 初期パスワードが生成されました
+          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
       created: "ユーザーを登録しました"
       updated: "ユーザーを更新しました"
       destroyed: "ユーザーを削除しました"
@@ -95,7 +100,6 @@ ja:
       edit:
         title: "テナント編集"
       show:
-        user_info: "ユーザー情報"
         title: "テナント詳細"
       messages:
         created: "テナントを作成しました"
@@ -117,11 +121,6 @@ ja:
       index:
         title: "承認リクエスト"
         no_requests: "承認リクエストはありません"
-        role_badges:
-          super_admin: "システム管理者"
-          company_admin: "会社管理者"
-          store_admin: "店舗管理者"
-          general: "一般"
         table_headers:
           user: "リクエスト送信者"
           store: "対象店舗"
@@ -137,9 +136,8 @@ ja:
         approved: "承認済み"
         rejected: "却下"
       created: "承認リクエストを送信しました"
-      default_reject_reason: "管理者により却下されました"  # ← 追加
+      default_reject_reason: "管理者により却下されました"
       show:
-        user_info: "ユーザー情報"
         title: "承認リクエスト詳細"
         approve: "承認する"
         reject: "却下する"
@@ -182,7 +180,6 @@ ja:
         submit_update: "更新"
         cancel: "キャンセル"
       show:
-        user_info: "ユーザー情報"
         title: "店舗詳細"
         store_info: "店舗情報"
         regenerate_code: "コード再発行"
@@ -210,4 +207,3 @@ ja:
         invitation_code_regenerate_failed: "招待コードの再発行に失敗しました"
       confirm:
         regenerate_code: "招待コードを再発行しますか？現在のコードは無効になります。"
-
