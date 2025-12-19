@@ -22,7 +22,8 @@ class DashboardsController < AuthenticatedController
     @pending_users_count = User.where(approved: false).count
     @tenants_count = Tenant.count
     @stores_count = Store.count
-    # PaperTrailの変更履歴を表示
+
+    # システム管理者: 全ログ表示
     @recent_logs = PaperTrail::Version.order(created_at: :desc).limit(10)
 
     render 'dashboards/admin_dashboard'
@@ -32,12 +33,24 @@ class DashboardsController < AuthenticatedController
   def render_company_admin_dashboard
     @pending_users_count = current_user.tenant.users.where(approved: false).count
     @stores_count = current_user.tenant.stores.count
-    # 自社の変更履歴のみ表示（テナントに関連するもの）
-    @recent_logs = PaperTrail::Version.where(
-      "item_type IN (?) OR whodunnit = ?", 
-      ['User', 'Store', 'Tenant'], 
-      current_user.id.to_s
-    ).order(created_at: :desc).limit(10)
+    
+    # 会社管理者: テナント内のログをフィルタ
+    if session[:current_store_id].present?
+      # 特定店舗選択時: その店舗に関連するログのみ
+      store = Store.find(session[:current_store_id])
+      @recent_logs = PaperTrail::Version
+        .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+        .where("users.store_id = ? OR versions.whodunnit IS NULL", store.id)
+        .order("versions.created_at DESC")
+        .limit(10)
+    else
+      # 全店舗選択時: 会社全体のログ
+      @recent_logs = PaperTrail::Version
+        .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+        .where("users.tenant_id = ? OR versions.whodunnit IS NULL", current_tenant.id)
+        .order("versions.created_at DESC")
+        .limit(10)
+    end
 
     render 'dashboards/company_admin_dashboard'
   end
