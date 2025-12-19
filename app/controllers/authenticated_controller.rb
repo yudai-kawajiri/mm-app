@@ -35,4 +35,11 @@ class AuthenticatedController < ApplicationController
       redirect_to root_path, alert: t("flash_messages.not_authorized")
     end
   end
+
+  # 店舗ユーザー専用（システム管理者・会社管理者は不可）
+  def require_store_user
+    if current_user.super_admin? || current_user.company_admin?
+      redirect_to authenticated_root_path, alert: t("flash_messages.not_authorized")
+    end
+  end
 end

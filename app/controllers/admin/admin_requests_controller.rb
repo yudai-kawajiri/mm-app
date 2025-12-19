@@ -4,9 +4,24 @@ class Admin::AdminRequestsController < Admin::BaseController
   before_action :set_admin_request, only: [:show, :approve, :reject]
 
   def index
-    @admin_requests = if current_user.company_admin?
-      # 会社管理者: 全店舗のリクエストを表示
-      AdminRequest.for_tenant(current_tenant)
+    @admin_requests = if current_user.super_admin?
+      # システム管理者: 選択したテナントのリクエストを表示（テナント未選択時は全て）
+      if session[:current_tenant_id].present?
+        AdminRequest.for_tenant(current_tenant)
+      else
+        AdminRequest.all
+      end
+    elsif current_user.company_admin?
+      # 会社管理者: 店舗選択状態に応じてフィルタリング
+      base_scope = AdminRequest.for_tenant(current_tenant)
+
+      if session[:current_store_id].present?
+        # 特定店舗選択時: その店舗のリクエストのみ
+        base_scope.where(store_id: session[:current_store_id])
+      else
+        # 全店舗選択時: 全店舗のリクエストを表示
+        base_scope
+      end
     elsif current_user.store_admin?
       # 店舗管理者: 自分の店舗のリクエストのみ
       AdminRequest.for_tenant(current_tenant).where(store_id: current_user.store_id)

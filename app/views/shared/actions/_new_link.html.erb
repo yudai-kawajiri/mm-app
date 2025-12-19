@@ -1,7 +1,12 @@
-<% if can_create_store_resource? %>
-  <%= link_to t('helpers.link.new'), url, class: 'btn btn-primary' %>
+<%
+  # 店舗チェックをスキップするかどうか（デフォルトは false）
+  skip_store_check ||= local_assigns[:skip_store_check] || false
+%>
+
+<% if skip_store_check || can_create_store_resource? %>
+  <%= link_to t('helpers.link.new'), url, class: "btn btn-primary #{local_assigns[:custom_class]}" %>
 <% else %>
-  <button class='btn btn-primary' disabled>
+  <button class='btn btn-primary <%= local_assigns[:custom_class] %>' disabled title="<%= t('dashboard.sidebar.store_selection_required') %>">
     <%= t('helpers.link.new') %>
   </button>
 <% end %>

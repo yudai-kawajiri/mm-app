@@ -76,14 +76,15 @@ module ApplicationHelper
       {
         name: t("dashboard.menu.category_management"),
         path: resources_categories_path,
+        disabled: current_user.super_admin? || current_user.company_admin?,
         submenu: [
           { name: t("dashboard.menu.category_list"), path: resources_categories_path },
           { name: t("dashboard.menu.new_category"), path: new_resources_category_path }
         ]
       },
       {
-        name: t("dashboard.menu.material_management"),
-        path: resources_materials_path,
+        name: t("dashboard.menu.material_master_management"),
+        disabled: current_user.super_admin? || current_user.company_admin?,
         submenu: [
           {
             name: t("dashboard.menu.unit_management"),
@@ -101,13 +102,20 @@ module ApplicationHelper
               { name: t("dashboard.menu.new_order_group"), path: new_resources_material_order_group_path }
             ]
           },
-          { name: t("dashboard.menu.material_list"), path: resources_materials_path },
-          { name: t("dashboard.menu.new_material"), path: new_resources_material_path }
+          {
+            name: t("dashboard.menu.material_management"),
+            path: resources_materials_path,
+            submenu: [
+              { name: t("dashboard.menu.material_list"), path: resources_materials_path },
+              { name: t("dashboard.menu.new_material"), path: new_resources_material_path }
+            ]
+          }
         ]
       },
       {
         name: t("dashboard.menu.product_management"),
         path: resources_products_path,
+        disabled: current_user.super_admin? || current_user.company_admin?,
         submenu: [
           { name: t("dashboard.menu.product_list"), path: resources_products_path },
           { name: t("dashboard.menu.new_product"), path: new_resources_product_path }
@@ -116,38 +124,34 @@ module ApplicationHelper
       {
         name: t("dashboard.menu.plan_management"),
         path: resources_plans_path,
+        disabled: current_user.super_admin? || current_user.company_admin?,
         submenu: [
           { name: t("dashboard.menu.plan_list"), path: resources_plans_path },
           { name: t("dashboard.menu.new_plan"), path: new_resources_plan_path }
         ]
       },
       {
-        name: t("dashboard.menu.numerical_management"),
-        path: management_numerical_managements_path,
-        disabled: current_user.company_admin? && session[:current_store_id].blank?,
-        submenu: [
-          { name: t("dashboard.menu.numerical_dashboard"), path: management_numerical_managements_path }
-        ]
-      }
+      name: t("dashboard.menu.numerical_management"),
+      path: management_numerical_managements_path,
+      disabled: current_user.super_admin? || current_user.company_admin?,
+      submenu: [
+        { name: t("dashboard.menu.numerical_dashboard"), path: management_numerical_managements_path }
+      ]
+    }
     ]
 
     # 管理メニュー (店舗管理者・会社管理者・システム管理者)
     if current_user.store_admin? || current_user.company_admin? || current_user.super_admin?
       admin_submenu = []
 
-      # システム管理者のみテナント管理を表示
       if current_user.super_admin?
         admin_submenu << { name: t("common.menu.tenant_management"), path: admin_tenants_path }
       end
 
-      # 全ての管理者に表示
       admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
       admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
-
-      # 店舗管理は全ての管理者に表示（コントローラー側で権限制御）
       admin_submenu << { name: t("common.menu.store_management"), path: admin_stores_path }
 
-      # システムログは店舗管理者には無効化
       if current_user.store_admin?
         admin_submenu << { name: t("common.menu.system_logs"), path: "#", disabled: true }
       else
@@ -175,24 +179,42 @@ module ApplicationHelper
   #
   # @example
   #   sidebar_link_active?(item) ? "active" : ""
+    #
+  # サイドバーリンクがアクティブかどうかを判定
+  #
+    #
+  # サイドバーリンクがアクティブかどうかを判定
   #
   def sidebar_link_active?(item)
-    if item[:submenu]
-      # サブメニューのいずれかがアクティブか判定（3階層対応）
-      item[:submenu].any? do |sub|
-        if sub[:submenu]
-          # 第3階層をチェック
-          sub[:submenu].any? { |third| current_page?(third[:path]) }
-        else
-          current_page?(sub[:path])
-        end
-      end
-    elsif item[:path]
-      current_page?(item[:path])
-    else
-      false
+    current_path = request.path
+
+    # ダッシュボードの場合の特別処理（メニュー名で判定）
+    if item[:name] == t("dashboard.menu.dashboard")
+      # ダッシュボード関連のパスを厳密にチェック
+      dashboard_paths = [
+        authenticated_root_path,
+        dashboards_path,
+        "/dashboards"
+      ].compact
+
+      # 完全一致のみをチェック（他のパスとの衝突を防ぐ）
+      return dashboard_paths.include?(current_path)
     end
 
+    # サブメニューがある場合、いずれかのサブメニューがアクティブならtrueを返す
+    if item[:submenu].present?
+      return item[:submenu].any? do |submenu_item|
+        if submenu_item[:submenu].present?
+          # 3階層目のサブメニュー
+          submenu_item[:submenu].any? { |sub| sub[:path].present? && current_path.start_with?(sub[:path]) }
+        else
+          submenu_item[:path].present? && current_path.start_with?(submenu_item[:path])
+        end
+      end
+    end
+
+    # メインパスとの比較
+    item[:path].present? && current_path.start_with?(item[:path])
   end
   #
   # サイドバーリンクのCSSクラスを返す

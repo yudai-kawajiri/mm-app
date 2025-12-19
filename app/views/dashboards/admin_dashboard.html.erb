@@ -1,0 +1,49 @@
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="display-4 fw-bold text-primary"><%= t('dashboard.admin.title') %></h1>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-md-4">
+      <div class="card text-white h-100 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-person-check me-2"></i><%= t('dashboard.admin.pending_users') %></h5>
+          <p class="card-text display-6"><%= @pending_users_count %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-white h-100 shadow-sm" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-building me-2"></i><%= t('dashboard.admin.total_tenants') %></h5>
+          <p class="card-text display-6"><%= @tenants_count %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-white h-100 shadow-sm" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-shop me-2"></i><%= t('dashboard.admin.total_stores') %></h5>
+          <p class="card-text display-6"><%= @stores_count %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i><%= t('dashboard.admin.recent_logs') %></h5>
+        </div>
+        <div class="card-body p-0">
+          <%= render 'shared/components/system_logs_table', logs: @recent_logs, show_detail: false %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

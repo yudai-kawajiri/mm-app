@@ -1,0 +1,53 @@
+<%= content_for :title, t('dashboard.company_admin.title') %>
+
+<div class="container-fluid py-4">
+  <!-- ページヘッダー -->
+  <div class="d-flex align-items-center mb-4">
+    <i class="fas fa-building fs-2 text-primary me-3"></i>
+    <h1 class="h3 mb-0"><%= t('dashboard.company_admin.title') %></h1>
+  </div>
+
+  <!-- サマリーカード -->
+  <div class="row g-3 mb-4">
+    <!-- 承認待ちユーザー -->
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="card-body text-white">
+          <div class="d-flex align-items-center mb-3">
+            <i class="fas fa-user-clock fs-4 me-2"></i>
+            <h5 class="card-title mb-0"><%= t('dashboard.company_admin.pending_users') %></h5>
+          </div>
+          <p class="display-4 mb-3 fw-bold"><%= @pending_users_count %></p>
+          <%= link_to t('dashboard.company_admin.view_users'), admin_users_path, class: 'btn btn-light btn-sm' %>
+        </div>
+      </div>
+    </div>
+
+    <!-- 店舗数 -->
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm border-0" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+        <div class="card-body text-white">
+          <div class="d-flex align-items-center mb-3">
+            <i class="fas fa-store fs-4 me-2"></i>
+            <h5 class="card-title mb-0"><%= t('dashboard.company_admin.total_stores') %></h5>
+          </div>
+          <p class="display-4 mb-3 fw-bold"><%= @stores_count %></p>
+          <%= link_to t('dashboard.company_admin.view_stores'), admin_stores_path, class: 'btn btn-light btn-sm' %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 最近のアクティビティ -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        <i class="bi bi-clock-history me-2"></i>
+        <%= t('dashboard.company_admin.recent_logs') %>
+      </h5>
+    </div>
+    <div class="card-body p-0">
+      <%= render 'shared/components/system_logs_table', logs: @recent_logs %>
+    </div>
+  </div>
+</div>

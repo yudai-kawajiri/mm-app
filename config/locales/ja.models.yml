@@ -264,3 +264,13 @@ ja:
             invalid: "は有効なメールアドレスではありません"
 
 
+
+  common:
+    view_detail: "詳細を見る"
+  common:
+    view_detail: "詳細を見る"
+  admin:
+    system_logs:
+      index:
+        more_changes: "他%{count}件"
+        filter: "絞り込み"

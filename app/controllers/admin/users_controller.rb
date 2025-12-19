@@ -26,10 +26,14 @@ class Admin::UsersController < ApplicationController
 
   def new
     @user = User.new
+
     # 店舗管理者は自店舗のユーザーのみ作成可能
     if current_user.store_admin?
       @user.store_id = current_user.store_id
       @user.role = :general # デフォルトで一般ユーザー
+    # 会社管理者が特定店舗を選択している場合
+    elsif current_user.company_admin? && session[:current_store_id].present?
+      @user.store_id = session[:current_store_id]
     end
   end
 
@@ -45,6 +49,9 @@ class Admin::UsersController < ApplicationController
     if current_user.store_admin?
       @user.store_id = current_user.store_id
       @user.role = :general # 一般ユーザーのみ作成可能
+    # 会社管理者が特定店舗を選択している場合
+    elsif current_user.company_admin? && session[:current_store_id].present?
+      @user.store_id = session[:current_store_id]
     end
 
     # パスワード未入力時はランダム生成
@@ -105,7 +112,11 @@ class Admin::UsersController < ApplicationController
     # 店舗管理者は自店舗のみ選択可能
     if current_user.store_admin?
       @stores = current_user.tenant.stores.where(id: current_user.store_id)
+    # 会社管理者が特定店舗を選択している場合
+    elsif current_user.company_admin? && session[:current_store_id].present?
+      @stores = current_user.tenant.stores.where(id: session[:current_store_id])
     else
+      # 全店舗選択時またはシステム管理者
       @stores = current_user.tenant.stores
     end
   end

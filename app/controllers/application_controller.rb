@@ -18,11 +18,13 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource)
     if current_user.company_admin?
-      session[:current_store_id] = current_user.tenant.stores.first&.id
+      # 会社管理者はデフォルトで全店舗モード（session[:current_store_id] = nil）
+      session[:current_store_id] = nil
     elsif current_user.store_id.present?
+      # 店舗管理者は自店舗を設定
       session[:current_store_id] = current_user.store_id
     end
-    
+
     authenticated_root_path
   end
 
@@ -148,7 +150,7 @@ class ApplicationController < ActionController::Base
   def auto_login_pending_user
     return unless session[:pending_user_id].present?
     return if user_signed_in?
-    
+
     user = User.find_by(id: session[:pending_user_id])
     if user
       sign_in(user)

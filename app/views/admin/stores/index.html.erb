@@ -2,12 +2,13 @@
 
 <div data-controller="resource-search">
   <%= render 'shared/layouts/header_with_actions',
-      title: t('admin.stores.index.title'),
-      resource: nil,
-      is_index_page: true,
-      is_form_page: false,
-      is_show_page: false,
-      new_path: (current_user.store_admin? ? nil : new_admin_store_path) %>
+    title: t('admin.stores.index.title'),
+    resource: nil,
+    is_index_page: true,
+    is_form_page: false,
+    is_show_page: false,
+    new_path: (current_user.store_admin? ? nil : new_admin_store_path),
+    skip_store_check: true %>
 
   <% if @stores.any? %>
     <div class="table-responsive">
