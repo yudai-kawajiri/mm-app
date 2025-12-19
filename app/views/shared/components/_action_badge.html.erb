@@ -1,0 +1,28 @@
+<%
+  # 操作バッジの共通パーシャル
+  # 使用例: <%= render 'shared/components/action_badge', event: 'create' %>
+  
+  badge_class = case event
+                when 'create'
+                  'bg-primary'
+                when 'update'
+                  'bg-success'
+                when 'destroy'
+                  'bg-danger'
+                else
+                  'bg-secondary'
+                end
+  
+  badge_text = case event
+               when 'create'
+                 t('common.create')
+               when 'update'
+                 t('common.update')
+               when 'destroy'
+                 t('common.destroy')
+               else
+                 event
+               end
+%>
+
+<span class="badge <%= badge_class %>"><%= badge_text %></span>
