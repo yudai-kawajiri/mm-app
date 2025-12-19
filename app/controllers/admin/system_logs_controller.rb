@@ -47,18 +47,23 @@ class Admin::SystemLogsController < Admin::BaseController
 
   # 権限に応じてアクセス可能なログを返す
   def accessible_versions
-    case current_user.role
-    when 'company_admin'
-      # 会社管理者: 店舗選択時はその店舗のみ、未選択時は全店舗
-      if current_store.present?
-        PaperTrail::Version.where(store_id: current_store.id)
-      else
-        store_ids = current_user.tenant.stores.pluck(:id)
-        PaperTrail::Version.where(store_id: store_ids)
-      end
-    when 'super_admin'
-      # スーパー管理者: 全履歴
+    if current_user.super_admin?
+      # システム管理者: 全ログ表示
       PaperTrail::Version.all
+    elsif current_user.company_admin?
+      # 会社管理者: テナント内のログをフィルタ
+      if session[:current_store_id].present?
+        # 特定店舗選択時: その店舗に関連するログのみ
+        store = Store.find(session[:current_store_id])
+        PaperTrail::Version
+          .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+          .where("users.store_id = ? OR versions.whodunnit IS NULL", store.id)
+      else
+        # 全店舗選択時: 会社全体のログ
+        PaperTrail::Version
+          .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+          .where("users.tenant_id = ? OR versions.whodunnit IS NULL", current_tenant.id)
+      end
     else
       PaperTrail::Version.none
     end
