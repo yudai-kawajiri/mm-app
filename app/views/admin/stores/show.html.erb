@@ -6,5 +6,5 @@
   content_left_title: nil,
   partial_locals: { store: @store },
   scope: :admin,
-  show_edit_button: true,
-  show_delete_button: true %>
+  show_edit_button: !current_user.store_admin?,
+  show_delete_button: !current_user.store_admin? %>

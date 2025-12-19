@@ -26,25 +26,28 @@
       </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="mb-3 border-bottom py-3">
-        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
-          <%= store_class.human_attribute_name(:invitation_code) %>
-        </label>
-        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <div class="d-flex align-items-center justify-content-center gap-2">
-            <code class="fs-5"><%= store.invitation_code %></code>
-            <%= button_to regenerate_invitation_code_admin_store_path(store),
-                          method: :post,
-                          form: { data: { turbo_confirm: t('admin.stores.show.confirm_regenerate') } },
-                          class: 'btn btn-sm btn-outline-secondary' do %>
-              <i class="bi bi-arrow-clockwise me-1"></i>
-              <%= t('admin.stores.show.regenerate_code') %>
-            <% end %>
+    <%# 招待コード（会社管理者・システム管理者のみ表示） %>
+    <% unless current_user.store_admin? %>
+      <div class="col-md-6">
+        <div class="mb-3 border-bottom py-3">
+          <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
+            <%= store_class.human_attribute_name(:invitation_code) %>
+          </label>
+          <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+            <div class="d-flex align-items-center justify-content-center gap-2">
+              <code class="fs-5"><%= store.invitation_code %></code>
+              <%= button_to regenerate_invitation_code_admin_store_path(store),
+                            method: :post,
+                            form: { data: { turbo_confirm: t('admin.stores.show.confirm_regenerate') } },
+                            class: 'btn btn-sm btn-outline-secondary' do %>
+                <i class="bi bi-arrow-clockwise me-1"></i>
+                <%= t('admin.stores.show.regenerate_code') %>
+              <% end %>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    <% end %>
 
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
@@ -85,9 +88,9 @@
           <h6 class="mb-0"><%= t('admin.stores.show.users_list') %></h6>
         </div>
         <div class="card-body">
-          <% if store.users.any? %>
+          <% if @users.any? %>
             <div class="list-group list-group-flush">
-              <% store.users.each do |user| %>
+              <% @users.each do |user| %>
                 <div class="list-group-item px-0">
                   <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -95,12 +98,20 @@
                       <small class="text-muted"><%= user.email %></small>
                     </div>
                     <div>
-                      <% if user.approved %>
-                        <span class="badge bg-success"><%= t('admin.stores.show.approved') %></span>
+                      <% if user.approved? %>
+                        <span class="badge bg-success">
+                          <i class="bi bi-check-circle me-1"></i>
+                          <%= t('admin.stores.show.approved') %>
+                        </span>
                       <% else %>
-                        <span class="badge bg-warning"><%= t('admin.stores.show.pending') %></span>
+                        <span class="badge bg-warning text-dark">
+                          <i class="bi bi-hourglass-split me-1"></i>
+                          <%= t('admin.stores.show.pending') %>
+                        </span>
                       <% end %>
-                      <span class="badge bg-secondary ms-1"><%= t("admin.stores.show.role_badges.#{user.role}") %></span>
+                      <span class="badge bg-secondary ms-1">
+                        <%= t("admin.stores.show.role_badges.#{user.role}") %>
+                      </span>
                     </div>
                   </div>
                 </div>
