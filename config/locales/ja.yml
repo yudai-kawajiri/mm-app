@@ -125,6 +125,7 @@ ja:
     not_set: 未設定
     calculation_unavailable: 計算不可
     count_suffix: 件
+    system: "システム"
     remaining: 残り
     save_order: 並び順を保存
     reorder_mode: 並び替えモード
@@ -544,3 +545,11 @@ ja:
         blank: を選択してください
     categories: カテゴリー管理
     units: 単位管理
+
+  activerecord:
+    attributes:
+      system_log:
+        created_at: "日時"
+        action: "アクション"
+        user: "ユーザー"
+        details: "詳細"

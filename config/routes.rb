@@ -22,10 +22,13 @@ Rails.application.routes.draw do
     devise_for :users, controllers: { registrations: "users/registrations", sessions: "users/sessions" }
 
     authenticated :user do
-      root to: "dashboards#index", as: :authenticated_root
+      root to: "router#index", as: :authenticated_root
 
       post :switch_store, to: 'stores#switch'
       post :switch_tenant, to: 'tenants#switch'
+
+      # ダッシュボード
+      resources :dashboards, only: [:index]
 
       get :settings, to: "settings#index"
       get :help, to: "help#index"
