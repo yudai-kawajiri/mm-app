@@ -336,6 +336,11 @@ ja:
       status: ステータス
       message: メッセージ
       request_type: リクエスト種別
+  tenants:
+    switch:
+      success: "%{tenant_name} に切り替えました"
+      not_found: "テナントが見つかりませんでした"
+      all_tenants: "システム管理モード（全テナント）に切り替えました"
   devise:
     mailer:
       reset_password_instructions:

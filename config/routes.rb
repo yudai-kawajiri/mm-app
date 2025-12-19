@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       root to: "dashboards#index", as: :authenticated_root
 
       post :switch_store, to: 'stores#switch'
+      post :switch_tenant, to: 'tenants#switch'
 
       get :settings, to: "settings#index"
       get :help, to: "help#index"
