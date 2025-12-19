@@ -51,14 +51,26 @@ class AdminRequest < ApplicationRecord
   end
 
   def reject!(rejected_by_user, reason:)
-    update!(
-      status: :rejected,
-      approved_by: rejected_by_user,
-      approved_at: Time.current,
-      rejection_reason: reason
-    )
+    transaction do
+      update!(
+        status: :rejected,
+        approved_by: rejected_by_user,
+        approved_at: Time.current,
+        rejection_reason: reason
+      )
 
-    ApplicationRequestMailer.rejection_notification(self).deliver_later
+      # 却下時の処理: ユーザーの状態を元に戻す
+      case request_type
+      when 'store_admin_request'
+        # 店舗管理者昇格リクエストを却下 → 役割を一般ユーザーに戻す
+        user.update!(role: :general) if user.store_admin?
+      when 'user_registration'
+        # ユーザー登録リクエストを却下 → 承認を取り消す
+        user.update!(approved: false)
+      end
+
+      ApplicationRequestMailer.rejection_notification(self).deliver_later
+    end
   end
 
   def can_be_approved?
