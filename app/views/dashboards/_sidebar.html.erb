@@ -4,27 +4,61 @@
   </h2>
 
   <%#
-    会社管理者: 店舗切り替えドロップダウン（全店舗選択可能）
-    一般ユーザー: 所属店舗名のみ表示（変更不可）
+    システム管理者: テナント選択 + 店舗選択（グレーアウト）
+    会社管理者: 会社固定 + 店舗選択（全店舗選択可能）
+    店舗管理者・一般ユーザー: 会社固定 + 店舗固定
   %>
   <div class="mb-3 p-3 bg-white border rounded">
+    <%# === 会社（テナント）選択 === %>
     <div class="mb-2">
       <small class="text-muted d-block mb-1">
         <i class="bi bi-building"></i> <%= t('dashboard.sidebar.company') %>
       </small>
-      <div class="fw-semibold"><%= current_tenant&.name %></div>
+
+      <% if current_user.super_admin? %>
+        <%# システム管理者: テナント選択ドロップダウン %>
+        <%= form_with url: switch_tenant_path, method: :post, local: true do |f| %>
+          <%= f.select :tenant_id,
+              options_for_select(
+                [[t('dashboard.sidebar.system_admin_mode'), nil]] + Tenant.order(:name).pluck(:name, :id),
+                session[:current_tenant_id].presence
+              ),
+              {},
+              {
+                class: "form-select form-select-sm",
+                onchange: "this.form.submit()"
+              } %>
+        <% end %>
+      <% else %>
+        <%# 会社管理者以下: テナント名を固定表示 %>
+        <div class="fw-semibold"><%= current_tenant&.name %></div>
+      <% end %>
     </div>
 
-    <% if current_user.can_manage_company? %>
+    <%# === 店舗選択 === %>
+    <% if current_user.super_admin? %>
+      <%# システム管理者: 店舗選択をグレーアウト %>
       <div>
         <small class="text-muted d-block mb-1">
           <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
         </small>
-        <%# onchange で自動送信: JavaScript 不要で店舗切り替えを実現 %>
+        <select class="form-select form-select-sm" disabled>
+          <option><%= t('dashboard.sidebar.all_stores') %></option>
+        </select>
+        <small class="text-muted d-block mt-1">
+          <%= t('dashboard.sidebar.store_disabled_for_super_admin') %>
+        </small>
+      </div>
+    <% elsif current_user.can_manage_company? %>
+      <%# 会社管理者: 店舗選択ドロップダウン（全店舗選択可能） %>
+      <div>
+        <small class="text-muted d-block mb-1">
+          <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
+        </small>
         <%= form_with url: switch_store_path, method: :post, local: true do |f| %>
           <%= f.select :store_id,
               options_for_select(
-                [['全店舗', nil]] + current_tenant.stores.pluck(:name, :id),
+                [[t('dashboard.sidebar.all_stores'), nil]] + current_tenant.stores.order(:name).pluck(:name, :id),
                 session[:current_store_id].presence
               ),
               {},
@@ -35,14 +69,17 @@
         <% end %>
       </div>
     <% else %>
+      <%# 店舗管理者・一般ユーザー: 店舗名を固定表示 %>
       <div>
         <small class="text-muted d-block mb-1">
           <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
         </small>
-        <div class="fw-semibold"><%= current_user.store&.name || "未設定" %></div>
+        <div class="fw-semibold"><%= current_user.store&.name || t('dashboard.sidebar.store_not_set') %></div>
       </div>
     <% end %>
   </div>
+
+  <%# 以下のアコーディオンメニューはそのまま %>
 
   <%#
     アコーディオンメニュー:
