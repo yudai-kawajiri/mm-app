@@ -18,7 +18,7 @@
       <% if current_user.super_admin? %>
         <%# システム管理者: テナント選択ドロップダウン %>
         <%= form_with url: switch_tenant_path, method: :post, local: true do |f| %>
-          <%= f.select :tenant_id,
+          <%= f.select :current_tenant_id,
               options_for_select(
                 [[t('dashboard.sidebar.system_admin_mode'), nil]] + Tenant.order(:name).pluck(:name, :id),
                 session[:current_tenant_id].presence
@@ -37,18 +37,39 @@
 
     <%# === 店舗選択 === %>
     <% if current_user.super_admin? %>
-      <%# システム管理者: 店舗選択をグレーアウト %>
-      <div>
-        <small class="text-muted d-block mb-1">
-          <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
-        </small>
-        <select class="form-select form-select-sm" disabled>
-          <option><%= t('dashboard.sidebar.all_stores') %></option>
-        </select>
-        <small class="text-muted d-block mt-1">
-          <%= t('dashboard.sidebar.store_disabled_for_super_admin') %>
-        </small>
-      </div>
+      <% if session[:current_tenant_id].present? %>
+        <%# システム管理者 + テナント選択済み: 店舗選択可能 %>
+        <div>
+          <small class="text-muted d-block mb-1">
+            <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
+          </small>
+          <%= form_with url: switch_store_path, method: :post, local: true, data: { turbo: false } do |f| %>
+            <%= f.select :store_id,
+                options_for_select(
+                  [[t('dashboard.sidebar.all_stores'), nil]] + current_tenant.stores.order(:name).pluck(:name, :id),
+                  session[:current_store_id].presence
+                ),
+                {},
+                {
+                  class: "form-select form-select-sm",
+                  onchange: "this.form.submit()"
+                } %>
+          <% end %>
+        </div>
+      <% else %>
+        <%# システム管理者 + テナント未選択: 店舗選択をグレーアウト %>
+        <div>
+          <small class="text-muted d-block mb-1">
+            <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
+          </small>
+          <select class="form-select form-select-sm" disabled>
+            <option><%= t('dashboard.sidebar.all_stores') %></option>
+          </select>
+          <small class="text-muted d-block mt-1">
+            <%= t('dashboard.sidebar.store_disabled_for_super_admin') %>
+          </small>
+        </div>
+      <% end %>
     <% elsif current_user.can_manage_company? %>
       <%# 会社管理者: 店舗選択ドロップダウン（全店舗選択可能） %>
       <div>
