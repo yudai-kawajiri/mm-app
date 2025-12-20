@@ -27,7 +27,7 @@ class AddCompanyAndStoreToUsers < ActiveRecord::Migration[8.1]
       end
     end
 
-    # 3. tenant_id を NOT NULL に変更
+    # 3. company_id を NOT NULL に変更
     change_column_null :users, :company_id, false
   end
 end
