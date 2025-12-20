@@ -138,6 +138,21 @@ ja:
           status: "ステータス"
           created_at: "登録日時"
           actions: "アクション"
+      show:
+        title: "承認リクエスト詳細"
+        approve: "承認する"
+        reject: "却下する"
+        rejection_reason_label: "却下理由"
+        rejection_reason_placeholder: "却下する理由を入力してください"
+      confirm:
+        approve: "%{name}の申請を承認しますか?"
+
+      messages:
+        approved: "承認リクエストを承認しました"
+        rejected: "承認リクエストを却下しました"
+        approve_failed: "承認に失敗しました"
+        reject_failed: "却下に失敗しました"
+
     stores:
       index:
         title: "店舗管理"
