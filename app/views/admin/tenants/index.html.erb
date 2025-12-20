@@ -12,7 +12,8 @@
   <%= render 'shared/components/resource_list',
       resources: @tenants,
       resource_class: Tenant,
-      search_target: nil,
+      search_target: "name",
+      search_name_proc: Proc.new { |tenant| "#{tenant.name} #{tenant.subdomain}" },
       sort_options: [
         [t('admin.tenants.index.sort_options.name'), 'name'],
         [t('admin.tenants.index.sort_options.subdomain'), 'subdomain'],
