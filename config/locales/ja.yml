@@ -1,3 +1,4 @@
+---
 ja:
   application_name: MM-App
   meta:
@@ -91,9 +92,9 @@ ja:
     not_authorized: このアクションを実行する権限がありません
     require_store_selected: このアクションを実行するには店舗を選択してください。
   common:
-    deleted_plan: (削除された計画)
+    deleted_plan: "(削除された計画)"
     menu:
-      tenant_management: テナント管理
+      tenant_management: 会社管理
       approval_requests: 承認リクエスト
       user_management: ユーザー管理
       store_management: 店舗管理
@@ -125,7 +126,7 @@ ja:
     not_set: 未設定
     calculation_unavailable: 計算不可
     count_suffix: 件
-    system: "システム"
+    system: システム
     remaining: 残り
     save_order: 並び順を保存
     reorder_mode: 並び替えモード
@@ -293,14 +294,14 @@ ja:
       subject: 件名
       subject_placeholder: お問い合わせ内容の件名
       message: お問い合わせ内容
-      tenant:
-        name: テナント名
-        subdomain: サブドメイン
-        created_at: 作成日
       message_placeholder: 具体的なお問い合わせ内容をご記入ください
       message_hint: 最大5000文字まで入力できます
       message_max_length: '5000'
       submit: 送信
+      tenant:
+        name: 会社名
+        subdomain: サブドメイン
+        created_at: 登録日
     messages:
       success_with_response_time: お問い合わせを送信しました。通常2〜3営業日以内にご返信いたします。
       failure: お問い合わせの送信に失敗しました。
@@ -340,8 +341,8 @@ ja:
   tenants:
     switch:
       success: "%{tenant_name} に切り替えました"
-      not_found: "テナントが見つかりませんでした"
-      all_tenants: "システム管理モード（全テナント）に切り替えました"
+      not_found: 会社が見つかりませんでした
+      all_tenants: システム管理モード（全会社）に切り替えました
   devise:
     mailer:
       reset_password_instructions:
@@ -409,37 +410,38 @@ ja:
           category_in_use: "%{record}で使用しています"
           unit_in_use: "%{record}で使用しています"
     models:
-      user: "ユーザー"
-      store: "店舗"
-      tenant: "テナント"
-      admin_request: "承認リクエスト"
-      category: "カテゴリー"
-      resource: "資源"
-      material: "原材料"
-      product: "商品"
-      plan: "計画"
-      planning/plan_schedule: "計画スケジュール"
-      planning/plan_product: "計画商品"
-      management/daily_target: "日別予算"
-      management/monthly_budget: "月間予算"
-      resources/plan: "製造計画"
-      resources/material: "原材料"
-      resources/product: "商品"
-      resources/product_material: "商品原材料"
-      resources/plan_product: "計画商品"
-      resources/category: "カテゴリー"
-      resources/order: "発注"
-      resources/order_group: "発注グループ"
-      resources/unit: "単位"
+      user: ユーザー
+      store: 店舗
+      tenant: 会社
+      admin_request: 承認リクエスト
+      category: カテゴリー
+      resource: 資源
+      material: 原材料
+      product: 商品
+      plan: 計画
+      planning/plan_schedule: 計画スケジュール
+      planning/plan_product: 計画商品
+      management/daily_target: 日別予算
+      management/monthly_budget: 月間予算
+      resources/plan: 製造計画
+      resources/material: 原材料
+      resources/product: 商品
+      resources/product_material: 商品原材料
+      resources/plan_product: 計画商品
+      resources/category: カテゴリー
+      resources/order: 発注
+      resources/order_group: 発注グループ
+      resources/unit: 単位
     attributes:
       system_log:
-        created_at: "日時"
-        action: "アクション"
-        user: "ユーザー"
-        details: "詳細"
+        created_at: 日時
+        action: アクション
+        user: ユーザー
+        details: 詳細
       user:
         name: 名前
         email: メールアドレス
+        tenant: 会社名
         password: パスワード
         password_confirmation: パスワード（確認）
         current_password: 現在のパスワード
@@ -452,13 +454,15 @@ ja:
         name: 店舗名
         code: 店舗コード
         invitation_code: 招待コード
+        created_at: 登録日
       tenant:
-        name: テナント名
+        name: 会社名
         subdomain: サブドメイン
+        created_at: 登録日
       admin_request:
         user: ユーザー
         store: 店舗
-        tenant: テナント
+        tenant: 会社
         request_type: リクエスト種別
         status: ステータス
         reason: 理由
@@ -533,8 +537,8 @@ ja:
         email_placeholder: user@example.com
         role_placeholder: 権限を選択してください
         password_hint: 空欄の場合は安全なランダムパスワードを自動生成します
-        store_admin_role_hint: "店舗管理者は一般ユーザーのみ作成できます"
-        store_admin_store_hint: "自店舗のユーザーのみ作成できます"
+        store_admin_role_hint: 店舗管理者は一般ユーザーのみ作成できます
+        store_admin_store_hint: 自店舗のユーザーのみ作成できます
       roles:
         general: 一般
         store_admin: 店舗管理者
@@ -558,4 +562,43 @@ ja:
       store_id:
         blank: を選択してください
     categories: カテゴリー管理
-    units: 単位管理
+  dashboard:
+    sidebar:
+      company: 会社
+      store: 店舗
+      system_admin_mode: システム管理
+      all_stores: 全店舗
+      select_company_first: 会社を選択してください
+      store_selection_note: "※ 会社選択時に店舗を選択できます"
+      no_store: 店舗未設定
+    menu:
+      title: メニュー
+      settings: 設定
+      account_settings: アカウント設定
+      help: ヘルプ
+      contact: お問い合わせ
+      terms: 利用規約
+      privacy_policy: プライバシーポリシー
+    users:
+      index:
+        search:
+          placeholder: "名前またはメールアドレスで検索"
+        table_headers:
+          tenant: "会社名"
+          store: "店舗名"
+    stores:
+      index:
+        search:
+          placeholder: "店舗コードまたは店舗名で検索"
+        table_headers:
+          tenant: "会社名"
+    tenants:
+      index:
+        search:
+          placeholder: "会社名で検索"
+    admin_requests:
+      index:
+        search:
+          placeholder: "申請者名で検索"
+        table_headers:
+          tenant: "会社名"

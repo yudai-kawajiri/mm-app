@@ -66,7 +66,17 @@ class ApplicationController < ActionController::Base
   end
 
   def current_tenant
-    @current_tenant ||= current_user&.tenant || tenant_from_subdomain
+    return @current_tenant if defined?(@current_tenant)
+    
+    # システム管理者の場合: session[:current_tenant_id] でテナントを切り替え
+    if current_user&.super_admin?
+      @current_tenant = session[:current_tenant_id].present? ? Tenant.find_by(id: session[:current_tenant_id]) : nil
+    else
+      # 会社管理者・店舗管理者: 所属テナント、またはサブドメインから取得
+      @current_tenant = current_user&.tenant || tenant_from_subdomain
+    end
+    
+    @current_tenant
   end
 
   def current_store

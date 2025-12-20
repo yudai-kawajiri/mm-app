@@ -4,33 +4,28 @@ class Admin::AdminRequestsController < Admin::BaseController
   before_action :set_admin_request, only: [:show, :approve, :reject]
 
   def index
-    @admin_requests = if current_user.super_admin?
-      # システム管理者: 選択したテナントのリクエストを表示（テナント未選択時は全て）
-      if session[:current_tenant_id].present?
-        AdminRequest.for_tenant(current_tenant)
-      else
-        AdminRequest.all
-      end
-    elsif current_user.company_admin?
-      # 会社管理者: 店舗選択状態に応じてフィルタリング
-      base_scope = AdminRequest.for_tenant(current_tenant)
-
-      if session[:current_store_id].present?
-        # 特定店舗選択時: その店舗のリクエストのみ
-        base_scope.where(store_id: session[:current_store_id])
-      else
-        # 全店舗選択時: 全店舗のリクエストを表示
-        base_scope
-      end
-    elsif current_user.store_admin?
-      # 店舗管理者: 自分の店舗のリクエストのみ
-      AdminRequest.for_tenant(current_tenant).where(store_id: current_user.store_id)
-    else
-      # 一般ユーザー: アクセス不可
-      AdminRequest.none
+    @admin_requests = accessible_admin_requests
+    
+    # 検索処理
+    if params[:q].present?
+      search_term = "%#{params[:q]}%"
+      @admin_requests = @admin_requests.joins(:user).where(
+        'users.name LIKE ? OR users.email LIKE ?',
+        search_term, search_term
+      )
     end
 
-    @admin_requests = @admin_requests.includes(:user, :store).recent.page(params[:page])
+    # ソート処理
+    @admin_requests = case params[:sort_by]
+    when 'store'
+      @admin_requests.joins(:store).order('stores.name ASC')
+    when 'created_at'
+      @admin_requests.order(created_at: :desc)
+    else
+      @admin_requests.order(created_at: :desc)
+    end
+
+    @admin_requests = @admin_requests.includes(:user, :store).page(params[:page]).per(20)
   end
 
   def show
@@ -62,7 +57,6 @@ class Admin::AdminRequestsController < Admin::BaseController
   end
 
   def reject
-    # 却下理由を取得（パラメータになければデフォルト値）
     reason = params[:reason].presence || t('admin.admin_requests.default_reject_reason')
 
     if @admin_request.reject!(current_user, reason: reason)
@@ -80,5 +74,22 @@ class Admin::AdminRequestsController < Admin::BaseController
 
   def admin_request_params
     params.require(:admin_request).permit(:store_id, :message)
+  end
+
+  def accessible_admin_requests
+    if current_user.super_admin?
+      if session[:current_tenant_id].present?
+        AdminRequest.for_tenant(Tenant.find(session[:current_tenant_id]))
+      else
+        AdminRequest.all
+      end
+    elsif current_user.company_admin?
+      base_scope = AdminRequest.for_tenant(current_tenant)
+      session[:current_store_id].present? ? base_scope.where(store_id: session[:current_store_id]) : base_scope
+    elsif current_user.store_admin?
+      AdminRequest.for_tenant(current_tenant).where(store_id: current_user.store_id)
+    else
+      AdminRequest.none
+    end
   end
 end

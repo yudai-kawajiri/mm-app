@@ -4,21 +4,21 @@
   </h2>
 
   <%#
-    システム管理者: テナント選択 + 店舗選択（グレーアウト）
+    システム管理者: 会社選択 + 店舗選択（グレーアウト）
     会社管理者: 会社固定 + 店舗選択（全店舗選択可能）
     店舗管理者・一般ユーザー: 会社固定 + 店舗固定
   %>
   <div class="mb-3 p-3 bg-white border rounded">
-    <%# === 会社（テナント）選択 === %>
+    <%# === 会社選択 === %>
     <div class="mb-2">
       <small class="text-muted d-block mb-1">
         <i class="bi bi-building"></i> <%= t('dashboard.sidebar.company') %>
       </small>
 
       <% if current_user.super_admin? %>
-        <%# システム管理者: テナント選択ドロップダウン %>
+        <%# システム管理者: 会社選択ドロップダウン %>
         <%= form_with url: switch_tenant_path, method: :post, local: true do |f| %>
-          <%= f.select :tenant_id,
+          <%= f.select :current_tenant_id,
               options_for_select(
                 [[t('dashboard.sidebar.system_admin_mode'), nil]] + Tenant.order(:name).pluck(:name, :id),
                 session[:current_tenant_id].presence
@@ -30,118 +30,122 @@
               } %>
         <% end %>
       <% else %>
-        <%# 会社管理者以下: テナント名を固定表示 %>
+        <%# 会社管理者以下: 会社名を固定表示 %>
         <div class="fw-semibold"><%= current_tenant&.name %></div>
       <% end %>
     </div>
-
     <%# === 店舗選択 === %>
     <% if current_user.super_admin? %>
-      <%# システム管理者: 店舗選択をグレーアウト %>
-      <div>
-        <small class="text-muted d-block mb-1">
-          <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
-        </small>
-        <select class="form-select form-select-sm" disabled>
-          <option><%= t('dashboard.sidebar.all_stores') %></option>
-        </select>
-        <small class="text-muted d-block mt-1">
-          <%= t('dashboard.sidebar.store_disabled_for_super_admin') %>
-        </small>
-      </div>
-    <% elsif current_user.can_manage_company? %>
-      <%# 会社管理者: 店舗選択ドロップダウン（全店舗選択可能） %>
+      <%
+        # システム管理テナント(subdomain: 'admin')の場合はグレーアウト
+        current_tenant_obj = session[:current_tenant_id].present? ? Tenant.find_by(id: session[:current_tenant_id]) : nil
+        is_system_tenant = current_tenant_obj&.subdomain == 'admin'
+        can_select_store = session[:current_tenant_id].present? && !is_system_tenant
+      %>
+
+      <% if can_select_store %>
+        <%# 一般会社選択時のみ店舗選択可能 %>
+        <div>
+          <small class="text-muted d-block mb-1">
+            <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
+          </small>
+          <%= form_with url: switch_store_path, method: :post, local: true do |f| %>
+            <%= f.select :current_store_id,
+                options_for_select(
+                  [[t('dashboard.sidebar.all_stores'), '']] + current_tenant.stores.map { |s| [s.name, s.id] },
+                  session[:current_store_id]
+                ),
+                {},
+                { class: 'form-select form-select-sm', onchange: 'this.form.submit();' } %>
+          <% end %>
+        </div>
+      <% else %>
+        <%# テナント未選択 or システム管理テナント: グレーアウト %>
+        <div>
+          <small class="text-muted d-block mb-1">
+            <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
+          </small>
+          <select class="form-select form-select-sm" disabled>
+            <option><%= t('dashboard.sidebar.select_company_first') %></option>
+          </select>
+          <small class="text-muted"><%= t('dashboard.sidebar.store_selection_note') %></small>
+        </div>
+      <% end %>
+    <% elsif current_user.company_admin? %>
+      <%# 会社管理者: 店舗選択可能 %>
       <div>
         <small class="text-muted d-block mb-1">
           <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
         </small>
         <%= form_with url: switch_store_path, method: :post, local: true do |f| %>
-          <%= f.select :store_id,
+          <%= f.select :current_store_id,
               options_for_select(
-                [[t('dashboard.sidebar.all_stores'), nil]] + current_tenant.stores.order(:name).pluck(:name, :id),
-                session[:current_store_id].presence
+                [[t('dashboard.sidebar.all_stores'), '']] + current_tenant.stores.map { |s| [s.name, s.id] },
+                session[:current_store_id]
               ),
               {},
-              {
-                class: "form-select form-select-sm",
-                onchange: "this.form.submit()"
-              } %>
+              { class: 'form-select form-select-sm', onchange: 'this.form.submit();' } %>
         <% end %>
       </div>
     <% else %>
-      <%# 店舗管理者・一般ユーザー: 店舗名を固定表示 %>
+      <%# 店舗管理者・一般: 店舗固定表示 %>
       <div>
         <small class="text-muted d-block mb-1">
           <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
         </small>
-        <div class="fw-semibold"><%= current_user.store&.name || t('dashboard.sidebar.store_not_set') %></div>
+        <div class="fw-semibold"><%= current_user.store&.name || t('dashboard.sidebar.no_store') %></div>
       </div>
     <% end %>
   </div>
 
-  <%#
-    アコーディオンメニュー:
-    - 親メニュー（カテゴリ管理、商品管理など）
-    - 子メニュー（カテゴリ一覧、新規登録など）
-    - 孫メニュー（原材料マスタ管理配下の3階層構造）
-    Bootstrap Collapse を利用し、1つのメニューのみ展開可能
-  %>
+  <%# === メニュー === %>
   <div class="list-group" id="sidebar-accordion">
-
-    <% sidebar_menu_items.each_with_index do |item, index| %>
+    <% sidebar_menu_items.each do |item| %>
       <% if item[:submenu] %>
         <%# サブメニューがある項目 %>
-        <% collapse_id = "collapse-menu-#{index}" %>
-        <% is_active = sidebar_link_active?(item) %>
+        <% collapse_id = "collapse-#{item[:name].parameterize}" %>
+        <% parent_is_active = item[:submenu].any? { |sub| sidebar_link_active?(sub) } %>
 
-        <% if item[:disabled] %>
-          <a href="#" class="list-group-item list-group-item-action disabled" title="店舗を選択してください" onclick="return false;">
-            <%= item[:name] %>
-            <i class="bi bi-lock-fill float-end text-muted"></i>
-          </a>
-        <% else %>
-          <a href="#"
-              class="list-group-item list-group-item-action <%= 'active' if is_active %>"
-              data-bs-toggle="collapse"
-              data-bs-target="#<%= collapse_id %>"
-              role="button"
-              aria-expanded="<%= is_active %>"
-              aria-controls="<%= collapse_id %>"
-              onclick="event.preventDefault();">
-            <%= item[:name] %>
-            <i class="bi bi-chevron-down float-end"></i>
-          </a>
-        <% end %>
+        <a href="#"
+           class="list-group-item list-group-item-action <%= 'active' if parent_is_active %>"
+           data-bs-toggle="collapse"
+           data-bs-target="#<%= collapse_id %>"
+           role="button"
+           aria-expanded="<%= parent_is_active %>"
+           aria-controls="<%= collapse_id %>"
+           onclick="event.preventDefault();">
+          <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
+          <i class="bi bi-chevron-down float-end"></i>
+        </a>
 
-        <div class="collapse <%= 'show' if is_active %>"
-              id="<%= collapse_id %>"
-              data-bs-parent="#sidebar-accordion">
-
-          <% item[:submenu].each_with_index do |sub_item, sub_index| %>
+        <div class="collapse <%= 'show' if parent_is_active %>"
+             id="<%= collapse_id %>"
+             data-bs-parent="#sidebar-accordion">
+          <% item[:submenu].each do |sub_item| %>
             <% if sub_item[:submenu] %>
               <%# 3階層目のサブメニュー %>
-              <% sub_collapse_id = "collapse-submenu-#{index}-#{sub_index}" %>
-              <% sub_is_active = sub_item[:submenu].any? { |s| current_page?(s[:path]) } %>
+              <% sub_collapse_id = "collapse-#{sub_item[:name].parameterize}" %>
+              <% sub_parent_is_active = sub_item[:submenu].any? { |s| sidebar_link_active?(s) } %>
 
               <a href="#"
-                  class="list-group-item list-group-item-action ps-4 <%= 'active' if sub_is_active %>"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#<%= sub_collapse_id %>"
-                  role="button"
-                  aria-expanded="<%= sub_is_active %>"
-                  aria-controls="<%= sub_collapse_id %>"
-                  onclick="event.preventDefault();">
+                 class="list-group-item list-group-item-action ps-4 <%= 'active' if sub_parent_is_active %>"
+                 data-bs-toggle="collapse"
+                 data-bs-target="#<%= sub_collapse_id %>"
+                 role="button"
+                 aria-expanded="<%= sub_parent_is_active %>"
+                 aria-controls="<%= sub_collapse_id %>"
+                 onclick="event.preventDefault();">
                 <%= submenu_indicator %><%= sub_item[:name] %>
                 <i class="bi bi-chevron-down float-end"></i>
               </a>
 
-              <div class="collapse <%= 'show' if sub_is_active %>"
-                    id="<%= sub_collapse_id %>"
-                    data-bs-parent="#<%= collapse_id %>">
+              <div class="collapse <%= 'show' if sub_parent_is_active %>"
+                   id="<%= sub_collapse_id %>"
+                   data-bs-parent="#<%= collapse_id %>">
                 <% sub_item[:submenu].each do |third_item| %>
                   <%= link_to third_item[:path],
-                      class: "list-group-item list-group-item-action ps-5 #{sidebar_submenu_link_class(third_item[:path])}" do %>
-                    <span class="ms-3">└ <%= third_item[:name] %></span>
+                      class: "list-group-item list-group-item-action ps-5 #{sidebar_link_active?(third_item) ? 'active' : ''}" do %>
+                    <%= submenu_indicator %><%= third_item[:name] %>
                   <% end %>
                 <% end %>
               </div>

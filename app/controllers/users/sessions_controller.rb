@@ -13,6 +13,25 @@ class Users::SessionsController < Devise::SessionsController
     super
   end
   
+  # POST /users/sign_in
+  def create
+    # システム管理者の場合、サブドメインチェックをスキップ
+    email = params.dig(:user, :email)
+    user = User.find_by(email: email) if email.present?
+    
+    if user&.super_admin?
+      # システム管理者用のログイン処理
+      self.resource = warden.authenticate!(auth_options)
+      set_flash_message!(:notice, :signed_in)
+      sign_in(resource_name, resource)
+      yield resource if block_given?
+      respond_with resource, location: after_sign_in_path_for(resource)
+    else
+      # 通常のログイン処理（サブドメインチェックあり）
+      super
+    end
+  end
+  
   # DELETE /users/sign_out
   def destroy
     signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))

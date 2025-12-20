@@ -1,8 +1,10 @@
-<div class="container-fluid">
-  <div class="row mb-4">
-    <div class="col-12">
-      <h1 class="display-4 fw-bold text-primary"><%= t('dashboard.admin.title') %></h1>
-    </div>
+<%= content_for :title, t('dashboard.admin.title') %>
+
+<div class="container-fluid py-4">
+  <!-- ページヘッダー -->
+  <div class="d-flex align-items-center mb-4">
+    <i class="fas fa-user-shield fs-2 text-primary me-3"></i>
+    <h1 class="h3 mb-0"><%= t('dashboard.admin.title') %></h1>
   </div>
 
   <div class="row g-4 mb-4">

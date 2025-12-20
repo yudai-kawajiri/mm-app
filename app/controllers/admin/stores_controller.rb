@@ -4,23 +4,40 @@ class Admin::StoresController < Admin::BaseController
   before_action :set_store, only: [:show, :edit, :update, :destroy, :regenerate_invitation_code]
   before_action :authorize_store_management, only: [:new, :create, :edit, :update, :destroy, :regenerate_invitation_code]
 
-  def index
-    # 店舗管理者は自店舗のみ表示
-    if current_user.store_admin?
-      @stores = current_user.tenant.stores.where(id: current_user.store_id)
+def index
+  # システム管理者の場合
+  if current_user.super_admin?
+    if session[:current_tenant_id].present?
+      @stores = Tenant.find(session[:current_tenant_id]).stores
     else
-      @stores = current_user.tenant.stores
+      @stores = Store.all
     end
-
-    @stores = @stores.left_joins(:users)
-                      .select('stores.*, COUNT(users.id) as users_count')
-                      .group('stores.id')
-                      .order(:code)
+  elsif current_user.store_admin?
+    @stores = current_user.tenant.stores.where(id: current_user.store_id)
+  else
+    @stores = current_user.tenant.stores
   end
+
+  # ソート処理
+  case params[:sort_by]
+  when 'code'
+    @stores = @stores.order(code: :asc)
+  when 'created_at'
+    @stores = @stores.order(created_at: :desc)
+  else
+    @stores = @stores.order(code: :asc) # デフォルト: 店舗コード昇順
+  end
+
+  @stores = @stores.left_joins(:users)
+                    .select('stores.*, COUNT(users.id) as users_count')
+                    .group('stores.id')
+      .page(params[:page]).per(20)
+end
 
   def show
     # 承認済みユーザーのみ表示
     @users = @store.users.where(approved: true).includes(:tenant).order(:created_at)
+      .page(params[:page]).per(20)
   end
 
   def new

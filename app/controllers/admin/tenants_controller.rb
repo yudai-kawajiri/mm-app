@@ -4,8 +4,21 @@ class Admin::TenantsController < ApplicationController
   before_action :set_tenant, only: [:show, :edit, :update, :destroy]
 
   def index
-    @tenants = Tenant.order(created_at: :desc).page(params[:page])
+    @tenants = Tenant.all
+
+    # ソート処理
+    case params[:sort_by]
+    when 'subdomain'
+      @tenants = @tenants.order(subdomain: :asc)
+    when 'created_at'
+      @tenants = @tenants.order(created_at: :desc)
+    else
+      @tenants = @tenants.order(created_at: :desc) # デフォルト: 登録日降順
+    end
+
+    @tenants = @tenants.page(params[:page]).per(20)
   end
+
 
   def show
   end

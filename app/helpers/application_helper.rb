@@ -144,18 +144,30 @@ module ApplicationHelper
     if current_user.store_admin? || current_user.company_admin? || current_user.super_admin?
       admin_submenu = []
 
+      # システム管理者専用メニュー
       if current_user.super_admin?
-        admin_submenu << { name: t("common.menu.tenant_management"), path: admin_tenants_path }
+        # システム管理モード（全テナント）のときだけ表示
+        if session[:current_tenant_id].nil?
+          admin_submenu << { name: t("common.menu.tenant_management"), path: admin_tenants_path }
+          admin_submenu << { name: t("common.menu.system_logs"), path: admin_system_logs_path }
+        else
+          # 特定テナント選択時: システムログのみ表示
+          admin_submenu << { name: t("common.menu.system_logs"), path: admin_system_logs_path }
+        end
       end
 
-      admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
-      admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
-      admin_submenu << { name: t("common.menu.store_management"), path: admin_stores_path }
+      # 会社管理者・システム管理者共通メニュー
+      if current_user.company_admin? || current_user.super_admin?
+        admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
+        admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
+        admin_submenu << { name: t("common.menu.store_management"), path: admin_stores_path }
+      end
 
+      # 店舗管理者専用メニュー
       if current_user.store_admin?
+        admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
+        admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
         admin_submenu << { name: t("common.menu.system_logs"), path: "#", disabled: true }
-      else
-        admin_submenu << { name: t("common.menu.system_logs"), path: admin_system_logs_path }
       end
 
       items << {

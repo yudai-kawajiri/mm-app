@@ -19,6 +19,7 @@ class DashboardsController < AuthenticatedController
 
   # システム管理者用ダッシュボード
   def render_admin_dashboard
+    # 承認待ちユーザー数: 全テナント
     @pending_users_count = User.where(approved: false).count
     @tenants_count = Tenant.count
     @stores_count = Store.count
@@ -31,9 +32,10 @@ class DashboardsController < AuthenticatedController
 
   # 会社管理者用ダッシュボード
   def render_company_admin_dashboard
+    # 承認待ちユーザー数: 自テナントのみ
     @pending_users_count = current_user.tenant.users.where(approved: false).count
     @stores_count = current_user.tenant.stores.count
-    
+
     # 会社管理者: テナント内のログをフィルタ
     if session[:current_store_id].present?
       # 特定店舗選択時: その店舗に関連するログのみ
@@ -44,10 +46,10 @@ class DashboardsController < AuthenticatedController
         .order("versions.created_at DESC")
         .limit(10)
     else
-      # 全店舗選択時: 会社全体のログ
+      # 全店舗選択時: テナント内の全ログ
       @recent_logs = PaperTrail::Version
         .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
-        .where("users.tenant_id = ? OR versions.whodunnit IS NULL", current_tenant.id)
+        .where("users.tenant_id = ? OR versions.whodunnit IS NULL", current_user.tenant_id)
         .order("versions.created_at DESC")
         .limit(10)
     end

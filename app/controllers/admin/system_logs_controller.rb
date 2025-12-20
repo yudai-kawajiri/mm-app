@@ -1,86 +1,74 @@
-# frozen_string_literal: true
-
-# Admin System Logs Controller
-#
-# システムログ（監査ログ）管理
 class Admin::SystemLogsController < Admin::BaseController
-  before_action :authorize_system_or_company_admin!
-
+  before_action :authorize_super_admin!
+  
   LOGS_PER_PAGE = 50
 
   def index
     @versions = accessible_versions
-      .order(created_at: :desc)
-      .page(params[:page])
-      .per(LOGS_PER_PAGE)
+                  .order(created_at: :desc)
 
-    # モデル種別でフィルタ
-    @versions = @versions.where(item_type: params[:item_type]) if params[:item_type].present?
+    # フィルタ処理
+    if params[:item_type].present?
+      @versions = @versions.where(item_type: params[:item_type])
+    end
 
-    # ユーザーでフィルタ
-    @versions = @versions.where(whodunnit: params[:whodunnit]) if params[:whodunnit].present?
+    if params[:whodunnit].present?
+      @versions = @versions.where(whodunnit: params[:whodunnit])
+    end
 
-    # 開始日でフィルタ
     if params[:date_from].present?
-      date_from = Date.parse(params[:date_from])
-      @versions = @versions.where("created_at >= ?", date_from.beginning_of_day)
+      date_from = Date.parse(params[:date_from]).beginning_of_day
+      @versions = @versions.where('created_at >= ?', date_from)
     end
 
-    # 終了日でフィルタ
     if params[:date_to].present?
-      date_to = Date.parse(params[:date_to])
-      @versions = @versions.where("created_at <= ?", date_to.end_of_day)
+      date_to = Date.parse(params[:date_to]).end_of_day
+      @versions = @versions.where('created_at <= ?', date_to)
     end
 
-    @model_types = accessible_model_types
-    @users = accessible_users
+    # ページネーション
+    @versions = @versions.page(params[:page]).per(LOGS_PER_PAGE)
+
+    # フィルタ用のデータ
+    @model_types = accessible_versions.distinct.pluck(:item_type).compact.sort
+    @users = User.where(id: accessible_versions.pluck(:whodunnit).compact.uniq)
   end
 
   private
 
-  # システム管理者または会社管理者のみアクセス可能（店舗管理者は不可）
-  def authorize_system_or_company_admin!
-    unless current_user.super_admin? || current_user.company_admin?
+  def authorize_super_admin!
+    unless current_user&.super_admin?
       redirect_to authenticated_root_path, alert: t('errors.messages.unauthorized')
     end
   end
 
-  # 権限に応じてアクセス可能なログを返す
   def accessible_versions
     if current_user.super_admin?
-      # システム管理者: 全ログ表示
-      PaperTrail::Version.all
+      # システム管理(全会社)モード: 全ログ表示
+      return PaperTrail::Version.all if session[:current_tenant_id].blank?
+
+      # 特定テナント選択時: そのテナントのユーザーが実行したログのみ
+      tenant = Tenant.find(session[:current_tenant_id])
+      
+      # テナントに所属するユーザーのID一覧(文字列)
+      tenant_user_ids = tenant.users.pluck(:id).map(&:to_s)
+      
+      # whodunnit(実行ユーザー)がこのテナントのユーザーのログのみ
+      PaperTrail::Version.where(whodunnit: tenant_user_ids)
     elsif current_user.company_admin?
-      # 会社管理者: テナント内のログをフィルタ
-      if session[:current_store_id].present?
-        # 特定店舗選択時: その店舗に関連するログのみ
-        store = Store.find(session[:current_store_id])
-        PaperTrail::Version
-          .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
-          .where("users.store_id = ? OR versions.whodunnit IS NULL", store.id)
-      else
-        # 全店舗選択時: 会社全体のログ
-        PaperTrail::Version
-          .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
-          .where("users.tenant_id = ? OR versions.whodunnit IS NULL", current_tenant.id)
-      end
+      # 会社管理者: 自社ユーザーが実行したログのみ
+      tenant = current_user.tenant
+      tenant_user_ids = tenant.users.pluck(:id).map(&:to_s)
+      
+      PaperTrail::Version.where(whodunnit: tenant_user_ids)
+    elsif current_user.store_admin?
+      # 店舗管理者: 自店舗ユーザーが実行したログのみ
+      store = current_user.store
+      store_user_ids = store.users.pluck(:id).map(&:to_s)
+      
+      PaperTrail::Version.where(whodunnit: store_user_ids)
     else
       PaperTrail::Version.none
-    end
-  end
-
-  # アクセス可能なモデル種別
-  def accessible_model_types
-    accessible_versions.distinct.pluck(:item_type).compact.sort
-  end
-
-  # アクセス可能なユーザー
-  def accessible_users
-    user_ids = accessible_versions.pluck(:whodunnit).compact.uniq
-    if current_user.super_admin?
-      User.where(id: user_ids)
-    else
-      User.where(id: user_ids, tenant_id: current_user.tenant_id)
     end
   end
 end
