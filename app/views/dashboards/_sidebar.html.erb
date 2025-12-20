@@ -125,6 +125,7 @@
       </a>
     <% end %>
 
+        <% unless item[:disabled] %>
         <div class="collapse <%= 'show' if parent_is_active %>"
              id="<%= collapse_id %>"
              data-bs-parent="#sidebar-accordion">
@@ -172,6 +173,7 @@
             <% end %>
           <% end %>
         </div>
+        <% end %>
       <% else %>
         <%# サブメニューがない項目（ダッシュボードなど） %>
         <% item_is_active = sidebar_link_active?(item) %>
