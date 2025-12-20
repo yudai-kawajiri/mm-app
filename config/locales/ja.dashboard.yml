@@ -4,8 +4,8 @@ ja:
       company: "会社"
       store: "店舗"
       all_stores: "全店舗"
-      system_admin_mode: "システム管理（全テナント）"
-      tenant_management: "テナント管理"
+      system_admin_mode: "システム管理（全会社）"
+      tenant_management: "会社管理"
       user_management: "ユーザー管理"
       store_management: "店舗管理"
       system_logs: "システムログ"
@@ -25,9 +25,9 @@ ja:
       monthly_budget: "月間予算管理"
       daily_targets: "日次目標管理"
       plan_schedule: "計画スケジュール"
-      store_disabled_for_super_admin: "※ テナント選択時は店舗を選択できません"
+      store_disabled_for_super_admin: "※ 会社選択時は店舗を選択できません"
       store_not_set: "未設定"
-    
+
     menu:
       title: "MM-App"
       dashboard: "ダッシュボード"
@@ -63,11 +63,11 @@ ja:
     admin:
       title: "システム管理者ダッシュボード"
       pending_users: "承認待ちユーザー"
-      total_tenants: "登録テナント数"
+      total_tenants: "登録会社数"
       total_stores: "登録店舗数"
       recent_logs: "最近のシステムログ"
       view_users: "ユーザー一覧を見る"
-      view_tenants: "テナント一覧を見る"
+      view_tenants: "会社一覧を見る"
       view_stores: "店舗一覧を見る"
       view_all_logs: "すべてのログを見る"
       no_logs: "ログがありません"
@@ -98,13 +98,13 @@ ja:
           <li>月間予算の入力</li>
         </ul>
       get_started: "今すぐ始める"
-    
+
     welcome_modal:
       title: "ログインに成功しました"
       message: "MM-Appへようこそ！"
       bookmark_title: "ブックマークのお願い"
       bookmark_message: "次回から簡単にアクセスできるよう、このページをブックマークしてください。"
-    
+
     weather:
       title: "週間天気予報"
       conditions:
@@ -112,7 +112,7 @@ ja:
         cloudy: "曇り"
         rainy: "雨"
         snowy: "雪"
-    
+
     kpi:
       monthly_target: "月間売上予算"
       monthly_actual: "月間売上実績"

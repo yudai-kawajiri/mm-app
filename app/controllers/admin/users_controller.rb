@@ -5,34 +5,31 @@ class Admin::UsersController < Admin::BaseController
   before_action :set_stores, only: [:new, :create, :edit, :update]
 
   def index
-    # システム管理者の場合
-    if current_user.super_admin?
-      # session[:current_tenant_id] でフィルタ
-      if session[:current_tenant_id].present?
-        users_scope = Tenant.find(session[:current_tenant_id]).users
-        # 店舗選択がある場合はさらにフィルタ
-        if session[:current_store_id].present?
-          users_scope = users_scope.where(store_id: session[:current_store_id])
-        end
-      else
-        # 全テナントのユーザーを表示
-        users_scope = User.all
-      end
-    else
-      # 会社管理者・店舗管理者
-      users_scope = current_user.tenant.users
-
-      # 店舗管理者は自店舗のユーザーのみ表示
-      if current_user.store_admin?
-        users_scope = users_scope.where(store_id: current_user.store_id)
-      # 会社管理者は選択中の店舗でフィルタ
-      elsif current_user.company_admin? && session[:current_store_id].present?
+  # システム管理者の場合
+  if current_user.super_admin?
+    if session[:current_tenant_id].present?
+      # 特定テナント選択時: そのテナントのユーザーのみ
+      users_scope = Tenant.find(session[:current_tenant_id]).users
+      if session[:current_store_id].present?
         users_scope = users_scope.where(store_id: session[:current_store_id])
       end
+    else
+      # システム管理(全会社)モード: 全ユーザー
+      users_scope = User.all
     end
+  else
+    # 会社管理者・店舗管理者
+    users_scope = current_user.tenant.users
 
-    # 承認済みユーザーのみ表示
-    users_scope = users_scope.where(approved: true)# ソート処理
+    if current_user.store_admin?
+      users_scope = users_scope.where(store_id: current_user.store_id)
+    elsif current_user.company_admin? && session[:current_store_id].present?
+      users_scope = users_scope.where(store_id: session[:current_store_id])
+    end
+  end
+
+  # 承認済みユーザーのみ表示
+  users_scope = users_scope.where(approved: true)# ソート処理
 case params[:sort_by]
 when 'email'
   users_scope = users_scope.order(email: :asc)

@@ -87,9 +87,9 @@ ja:
 
     tenants:
       index:
-        title: "テナント管理"
+        title: "会社管理"
         table_headers:
-          name: "テナント名"
+          name: "会社名"
           subdomain: "サブドメイン"
           created_at: "登録日"
           actions: "アクション"
@@ -97,20 +97,20 @@ ja:
           subdomain: "サブドメイン名順"
           created_at: "登録順"
         search:
-          placeholder: "テナント名またはサブドメインで検索"
-        new_tenant: "テナント作成"
+          placeholder: "会社名またはサブドメインで検索"
+        new_tenant: "会社作成"
       new:
-        title: "テナント作成"
+        title: "会社作成"
       edit:
-        title: "テナント編集"
+        title: "会社編集"
       show:
-        title: "テナント詳細"
+        title: "会社詳細"
       messages:
-        created: "テナントを作成しました"
-        updated: "テナントを更新しました"
-        destroyed: "テナントを削除しました"
+        created: "会社を作成しました"
+        updated: "会社を更新しました"
+        destroyed: "会社を削除しました"
       form:
-        name: "テナント名"
+        name: "会社名"
         name_placeholder: "株式会社サンプル"
         subdomain: "サブドメイン"
         subdomain_placeholder: "sample-company"
