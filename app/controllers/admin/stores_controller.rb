@@ -36,6 +36,7 @@ end
   def show
     # 承認済みユーザーのみ表示
     @users = @store.users.where(approved: true).includes(:tenant).order(:created_at)
+      .page(params[:page]).per(20)
   end
 
   def new
