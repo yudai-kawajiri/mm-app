@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :store do
-    tenant { nil }
+    company { nil }
     name { "MyString" }
     code { "MyString" }
     address { "MyText" }

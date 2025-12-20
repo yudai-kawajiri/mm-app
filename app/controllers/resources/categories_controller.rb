@@ -42,7 +42,7 @@ class Resources::CategoriesController < AuthenticatedController
   def create
     @category = Resources::Category.new(category_params)
     @category.user_id = current_user.id
-    @category.tenant_id = current_tenant.id
+    @category.company_id = current_company.id
     @category.store_id = current_store&.id || current_user.store_id
 
     respond_to_save(@category)
@@ -89,9 +89,9 @@ class Resources::CategoriesController < AuthenticatedController
       Resources::Category.where(store_id: current_user.store_id)
     when 'company_admin'
       if session[:current_store_id].present?
-        Resources::Category.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+        Resources::Category.where(company_id: current_company.id, store_id: session[:current_store_id])
       else
-        Resources::Category.where(tenant_id: current_tenant.id)
+        Resources::Category.where(company_id: current_company.id)
       end
     else
       Resources::Category.none
@@ -100,7 +100,7 @@ class Resources::CategoriesController < AuthenticatedController
   private
 
   def set_category
-    @category = current_user.tenant.categories.find(params[:id])
+    @category = current_user.company.categories.find(params[:id])
   end
 
   def category_params

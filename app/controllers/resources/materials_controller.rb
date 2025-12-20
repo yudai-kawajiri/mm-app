@@ -37,7 +37,7 @@ class Resources::MaterialsController < AuthenticatedController
   # 新規原材料作成フォーム
   #
   # 【自動設定】
-  # user_id, tenant_id, store_id を自動設定
+  # user_id, company_id, store_id を自動設定
   def new
     @material_categories = scoped_categories.for_materials
     @production_units = scoped_units.where(category: :production).ordered
@@ -46,14 +46,14 @@ class Resources::MaterialsController < AuthenticatedController
     @material_order_groups = scoped_material_order_groups.ordered
     @material = Resources::Material.new
     @material.user_id = current_user.id
-    @material.tenant_id = current_tenant.id
+    @material.company_id = current_company.id
     @material.store_id = current_store&.id
   end
 
   # 原材料を作成
   #
   # 【自動設定】
-  # user_id, tenant_id, store_id を自動設定（store_id が空の場合のみ）
+  # user_id, company_id, store_id を自動設定（store_id が空の場合のみ）
   def create
     @material_categories = scoped_categories.for_materials
     @production_units = scoped_units.where(category: :production).ordered
@@ -62,7 +62,7 @@ class Resources::MaterialsController < AuthenticatedController
     @material_order_groups = scoped_material_order_groups.ordered
     @material = Resources::Material.new(material_params)
     @material.user_id = current_user.id
-    @material.tenant_id = current_tenant.id
+    @material.company_id = current_company.id
     @material.store_id = current_store&.id if @material.store_id.blank?
     respond_to_save(@material)
   end
@@ -125,9 +125,9 @@ class Resources::MaterialsController < AuthenticatedController
       Resources::Material.where(store_id: current_user.store_id)
     when 'company_admin'
       if session[:current_store_id].present?
-        Resources::Material.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+        Resources::Material.where(company_id: current_company.id, store_id: session[:current_store_id])
       else
-        Resources::Material.where(tenant_id: current_tenant.id)
+        Resources::Material.where(company_id: current_company.id)
       end
     when 'super_admin'
       Resources::Material.all

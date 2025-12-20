@@ -27,7 +27,7 @@ class Resources::Product < ApplicationRecord
 
   enum :status, { draft: 0, selling: 1, discontinued: 2 }
 
-  belongs_to :tenant
+  belongs_to :company
   belongs_to :store, optional: true
   belongs_to :category, class_name: "Resources::Category"
   has_many :product_materials, class_name: "Planning::ProductMaterial", dependent: :destroy

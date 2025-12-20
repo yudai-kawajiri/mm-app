@@ -1,0 +1,7 @@
+<%# 会社新規作成画面 %>
+<% content_for :title, t('admin.companies.new.title') %>
+
+<%= render 'resource_form',
+            resource: @company,
+            form_title: t('admin.companies.new.title'),
+            submit_label: t('helpers.submit.create') %>

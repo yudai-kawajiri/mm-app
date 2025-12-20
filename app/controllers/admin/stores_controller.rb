@@ -7,15 +7,15 @@ class Admin::StoresController < Admin::BaseController
 def index
   # システム管理者の場合
   if current_user.super_admin?
-    if session[:current_tenant_id].present?
-      @stores = Tenant.find(session[:current_tenant_id]).stores
+    if session[:current_company_id].present?
+      @stores = Company.find(session[:current_company_id]).stores
     else
       @stores = Store.all
     end
   elsif current_user.store_admin?
-    @stores = current_user.tenant.stores.where(id: current_user.store_id)
+    @stores = current_user.company.stores.where(id: current_user.store_id)
   else
-    @stores = current_user.tenant.stores
+    @stores = current_user.company.stores
   end
 
   # ソート処理
@@ -36,16 +36,16 @@ end
 
   def show
     # 承認済みユーザーのみ表示
-    @users = @store.users.where(approved: true).includes(:tenant).order(:created_at)
+    @users = @store.users.where(approved: true).includes(:company).order(:created_at)
       .page(params[:page]).per(20)
   end
 
   def new
-    @store = current_user.tenant.stores.build
+    @store = current_user.company.stores.build
   end
 
   def create
-    @store = current_user.tenant.stores.build(store_params)
+    @store = current_user.company.stores.build(store_params)
 
     if @store.save
       redirect_to admin_store_path(@store), notice: t('admin.stores.created')
@@ -83,9 +83,9 @@ end
   def set_store
     # 店舗管理者は自店舗のみアクセス可能
     if current_user.store_admin?
-      @store = current_user.tenant.stores.where(id: current_user.store_id).find(params[:id])
+      @store = current_user.company.stores.where(id: current_user.store_id).find(params[:id])
     else
-      @store = current_user.tenant.stores.find(params[:id])
+      @store = current_user.company.stores.find(params[:id])
     end
   rescue ActiveRecord::RecordNotFound
     redirect_to admin_stores_path, alert: t('admin.stores.not_found_or_unauthorized')

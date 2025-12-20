@@ -25,7 +25,7 @@ Rails.application.routes.draw do
       root to: "router#index", as: :authenticated_root
 
       post :switch_store, to: 'stores#switch'
-      post :switch_tenant, to: 'tenants#switch'
+      post :switch_company, to: 'companies#switch'
 
       # ダッシュボード
       resources :dashboards, only: [:index]
@@ -34,7 +34,7 @@ Rails.application.routes.draw do
       get :help, to: "help#index"
 
       namespace :admin do
-        resources :tenants
+        resources :companies
         resources :admin_requests, only: [:index, :new, :create, :show] do
           member do
             post :approve

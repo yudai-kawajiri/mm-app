@@ -71,10 +71,10 @@
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
         <label class="form-label mb-0 text-muted" style="font-size: 1.0em;">
-          <%= user_class.human_attribute_name(:tenant) %>
+          <%= user_class.human_attribute_name(:company) %>
         </label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= user.tenant&.name || t('common.not_set') %>
+          <%= user.company&.name || t('common.not_set') %>
         </div>
       </div>
     </div>

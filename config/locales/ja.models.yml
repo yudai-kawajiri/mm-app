@@ -242,7 +242,7 @@ ja:
           approved: "承認済み"
           rejected: "却下"
 
-      tenant:
+      company:
         name: "企業名"
         subdomain: "サブドメイン"
         created_at: "登録日時"

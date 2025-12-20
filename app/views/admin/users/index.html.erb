@@ -34,7 +34,7 @@
       scope: [:admin],
 
       columns: [
-        { header: :tenant, data: Proc.new { |user| user.tenant&.name || t('admin.users.index.not_set') } },
+        { header: :company, data: Proc.new { |user| user.company&.name || t('admin.users.index.not_set') } },
         { header: :name, data: Proc.new { |user| user.name } },
         { header: :email, data: Proc.new { |user| user.email } },
         {

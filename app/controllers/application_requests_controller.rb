@@ -29,7 +29,7 @@ class ApplicationRequestsController < ApplicationController
     ActiveRecord::Base.transaction do
       subdomain = generate_unique_subdomain(@application_request.company_name)
 
-      tenant = Tenant.create!(
+      company = Company.create!(
         name: @application_request.company_name,
         subdomain: subdomain,
         active: true
@@ -40,7 +40,7 @@ class ApplicationRequestsController < ApplicationController
         password: params[:application_request][:password],
         password_confirmation: params[:application_request][:password_confirmation],
         name: @application_request.contact_name,
-        tenant: tenant,
+        company: company,
         role: :company_admin,
         approved: true
       )
@@ -49,7 +49,7 @@ class ApplicationRequestsController < ApplicationController
 
       # 手動ログインに誘導
       redirect_to new_user_session_url(
-        subdomain: tenant.subdomain,
+        subdomain: company.subdomain,
         host: request.host,
         port: request.port
       ),
@@ -85,7 +85,7 @@ class ApplicationRequestsController < ApplicationController
     subdomain = base
     counter = 0
 
-    while Tenant.exists?(subdomain: subdomain)
+    while Company.exists?(subdomain: subdomain)
       counter += 1
       subdomain = "#{base}-#{counter}"
     end

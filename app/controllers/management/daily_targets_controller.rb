@@ -17,7 +17,7 @@ class Management::DailyTargetsController < Management::BaseController
     )
     @daily_target.user_id ||= current_user.id
     @daily_target.store_id ||= current_store&.id
-    @daily_target.tenant_id ||= current_tenant.id
+    @daily_target.company_id ||= current_company.id
 
     @daily_target.assign_attributes(permitted.except(:target_date))
 

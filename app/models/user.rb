@@ -17,7 +17,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   # マルチテナント対応: 会社とストアへの所属
-  belongs_to :tenant
+  belongs_to :company
   belongs_to :store, optional: true  # 会社管理者はストア未所属の場合あり
 
   # AdminRequest関連
@@ -57,18 +57,18 @@ class User < ApplicationRecord
 
   def can_manage_store?(target_store)
     return true if super_admin?
-    return true if company_admin? && target_store.tenant_id == tenant_id
+    return true if company_admin? && target_store.company_id == company_id
     store_admin? && store_id == target_store.id
   end
 
   # アクセス可能なテナント
-  def accessible_tenants
-    super_admin? ? Tenant.all : Tenant.where(id: tenant_id)
+  def accessible_companies
+    super_admin? ? Company.all : Company.where(id: company_id)
   end
 
   # アクセス可能なストア
   def accessible_stores
-    return tenant.stores if company_admin? || super_admin?
+    return company.stores if company_admin? || super_admin?
     Store.where(id: store_id)
   end
 

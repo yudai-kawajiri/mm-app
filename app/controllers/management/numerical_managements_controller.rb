@@ -23,7 +23,7 @@ class Management::NumericalManagementsController < Management::BaseController
       budget_month: @selected_date.beginning_of_month
     )
     @monthly_budget.user_id ||= current_user.id
-    @monthly_budget.tenant_id ||= current_tenant.id
+    @monthly_budget.company_id ||= current_company.id
     @monthly_budget.store_id ||= current_store&.id
 
     calendar_data = CalendarDataBuilderService.new(year, month, store_id: current_store&.id).build
@@ -76,7 +76,7 @@ class Management::NumericalManagementsController < Management::BaseController
       budget_month: date.beginning_of_month
     )
     monthly_budget.user_id ||= current_user.id
-    monthly_budget.tenant_id ||= current_tenant.id
+    monthly_budget.company_id ||= current_company.id
     monthly_budget.store_id ||= current_store&.id
     monthly_budget.target_amount ||= 0
     monthly_budget.save! if monthly_budget.new_record?

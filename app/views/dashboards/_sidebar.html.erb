@@ -17,11 +17,11 @@
 
       <% if current_user.super_admin? %>
         <%# システム管理者: 会社選択ドロップダウン %>
-        <%= form_with url: switch_tenant_path, method: :post, local: true do |f| %>
-          <%= f.select :current_tenant_id,
+        <%= form_with url: switch_company_path, method: :post, local: true do |f| %>
+          <%= f.select :current_company_id,
               options_for_select(
-                [[t('dashboard.sidebar.system_admin_mode'), nil]] + Tenant.order(:name).pluck(:name, :id),
-                session[:current_tenant_id].presence
+                [[t('dashboard.sidebar.system_admin_mode'), nil]] + Company.order(:name).pluck(:name, :id),
+                session[:current_company_id].presence
               ),
               {},
               {
@@ -31,16 +31,16 @@
         <% end %>
       <% else %>
         <%# 会社管理者以下: 会社名を固定表示 %>
-        <div class="fw-semibold"><%= current_tenant&.name %></div>
+        <div class="fw-semibold"><%= current_company&.name %></div>
       <% end %>
     </div>
     <%# === 店舗選択 === %>
     <% if current_user.super_admin? %>
       <%
         # システム管理テナント(subdomain: 'admin')の場合はグレーアウト
-        current_tenant_obj = session[:current_tenant_id].present? ? Tenant.find_by(id: session[:current_tenant_id]) : nil
-        is_system_tenant = current_tenant_obj&.subdomain == 'admin'
-        can_select_store = session[:current_tenant_id].present? && !is_system_tenant
+        current_company_obj = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
+        is_system_company = current_company_obj&.subdomain == 'admin'
+        can_select_store = session[:current_company_id].present? && !is_system_company
       %>
 
       <% if can_select_store %>
@@ -52,7 +52,7 @@
           <%= form_with url: switch_store_path, method: :post, local: true do |f| %>
             <%= f.select :current_store_id,
                 options_for_select(
-                  [[t('dashboard.sidebar.all_stores'), '']] + current_tenant.stores.map { |s| [s.name, s.id] },
+                  [[t('dashboard.sidebar.all_stores'), '']] + current_company.stores.map { |s| [s.name, s.id] },
                   session[:current_store_id]
                 ),
                 {},
@@ -80,7 +80,7 @@
         <%= form_with url: switch_store_path, method: :post, local: true do |f| %>
           <%= f.select :current_store_id,
               options_for_select(
-                [[t('dashboard.sidebar.all_stores'), '']] + current_tenant.stores.map { |s| [s.name, s.id] },
+                [[t('dashboard.sidebar.all_stores'), '']] + current_company.stores.map { |s| [s.name, s.id] },
                 session[:current_store_id]
               ),
               {},

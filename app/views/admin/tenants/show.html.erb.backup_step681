@@ -1,8 +1,0 @@
-<%# テナント詳細画面 %>
-<%= render 'shared/details/resource_show',
-  resource: @tenant,
-  title: t('admin.tenants.show.title'),
-  content_left_partial: 'admin/tenants/details',
-  content_left_title: nil,
-  partial_locals: { tenant: @tenant },
-  scope: :admin %>

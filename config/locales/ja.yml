@@ -94,7 +94,7 @@ ja:
   common:
     deleted_plan: "(削除された計画)"
     menu:
-      tenant_management: 会社管理
+      company_management: 会社管理
       approval_requests: 承認リクエスト
       user_management: ユーザー管理
       store_management: 店舗管理
@@ -298,7 +298,7 @@ ja:
       message_hint: 最大5000文字まで入力できます
       message_max_length: '5000'
       submit: 送信
-      tenant:
+      company:
         name: 会社名
         subdomain: サブドメイン
         created_at: 登録日
@@ -338,11 +338,11 @@ ja:
       status: ステータス
       message: メッセージ
       request_type: リクエスト種別
-  tenants:
+  companies:
     switch:
-      success: "%{tenant_name} に切り替えました"
+      success: "%{company_name} に切り替えました"
       not_found: 会社が見つかりませんでした
-      all_tenants: システム管理モード（全会社）に切り替えました
+      all_companies: システム管理モード（全会社）に切り替えました
   devise:
     mailer:
       reset_password_instructions:
@@ -412,7 +412,7 @@ ja:
     models:
       user: ユーザー
       store: 店舗
-      tenant: 会社
+      company: 会社
       admin_request: 承認リクエスト
       category: カテゴリー
       resource: 資源
@@ -441,7 +441,7 @@ ja:
       user:
         name: 名前
         email: メールアドレス
-        tenant: 会社名
+        company: 会社名
         password: パスワード
         password_confirmation: パスワード（確認）
         current_password: 現在のパスワード
@@ -455,14 +455,14 @@ ja:
         code: 店舗コード
         invitation_code: 招待コード
         created_at: 登録日
-      tenant:
+      company:
         name: 会社名
         subdomain: サブドメイン
         created_at: 登録日
       admin_request:
         user: ユーザー
         store: 店舗
-        tenant: 会社
+        company: 会社
         request_type: リクエスト種別
         status: ステータス
         reason: 理由
@@ -584,15 +584,15 @@ ja:
         search:
           placeholder: "名前またはメールアドレスで検索"
         table_headers:
-          tenant: "会社名"
+          company: "会社名"
           store: "店舗名"
     stores:
       index:
         search:
           placeholder: "店舗コードまたは店舗名で検索"
         table_headers:
-          tenant: "会社名"
-    tenants:
+          company: "会社名"
+    companies:
       index:
         search:
           placeholder: "会社名で検索"
@@ -601,4 +601,4 @@ ja:
         search:
           placeholder: "申請者名で検索"
         table_headers:
-          tenant: "会社名"
+          company: "会社名"

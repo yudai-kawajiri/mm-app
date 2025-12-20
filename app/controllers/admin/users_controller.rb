@@ -7,9 +7,9 @@ class Admin::UsersController < Admin::BaseController
   def index
   # システム管理者の場合
   if current_user.super_admin?
-    if session[:current_tenant_id].present?
+    if session[:current_company_id].present?
       # 特定テナント選択時: そのテナントのユーザーのみ
-      users_scope = Tenant.find(session[:current_tenant_id]).users
+      users_scope = Company.find(session[:current_company_id]).users
       if session[:current_store_id].present?
         users_scope = users_scope.where(store_id: session[:current_store_id])
       end
@@ -19,7 +19,7 @@ class Admin::UsersController < Admin::BaseController
     end
   else
     # 会社管理者・店舗管理者
-    users_scope = current_user.tenant.users
+    users_scope = current_user.company.users
 
     if current_user.store_admin?
       users_scope = users_scope.where(store_id: current_user.store_id)
@@ -46,15 +46,15 @@ end
 
   def show
     # 承認済みユーザーのみ表示
-    @users = @user.store.users.where(approved: true).includes(:tenant).order(:created_at) if @user.store
+    @users = @user.store.users.where(approved: true).includes(:company).order(:created_at) if @user.store
   end
 
   def new
-    @user = current_user.tenant.users.build
+    @user = current_user.company.users.build
   end
 
   def create
-    @user = current_user.tenant.users.build(user_params)
+    @user = current_user.company.users.build(user_params)
     @user.approved = false
 
     if @user.save
@@ -86,28 +86,28 @@ end
   def set_user
     # システム管理者の場合
     if current_user.super_admin?
-      if session[:current_tenant_id].present?
-        @user = Tenant.find(session[:current_tenant_id]).users.find(params[:id])
+      if session[:current_company_id].present?
+        @user = Company.find(session[:current_company_id]).users.find(params[:id])
       else
         @user = User.find(params[:id])
       end
     else
       # 会社管理者・店舗管理者
-      @user = current_user.tenant.users.find(params[:id])
+      @user = current_user.company.users.find(params[:id])
     end
   end
 
   def set_stores
     # システム管理者の場合
     if current_user.super_admin?
-      if session[:current_tenant_id].present?
-        @stores = Tenant.find(session[:current_tenant_id]).stores
+      if session[:current_company_id].present?
+        @stores = Company.find(session[:current_company_id]).stores
       else
         @stores = Store.all
       end
     else
       # 会社管理者・店舗管理者
-      @stores = current_user.tenant.stores
+      @stores = current_user.company.stores
     end
   end
 

@@ -1,6 +1,6 @@
-class CreateTenants < ActiveRecord::Migration[8.1]
+class CreateCompanies < ActiveRecord::Migration[8.1]
   def change
-    create_table :tenants do |t|
+    create_table :companies do |t|
       t.string :name, null: false
       t.string :subdomain, null: false
       t.boolean :active, default: true, null: false
@@ -8,6 +8,6 @@ class CreateTenants < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :tenants, :subdomain, unique: true
+    add_index :companies, :subdomain, unique: true
   end
 end

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :admin_request do
-    tenant { nil }
+    company { nil }
     user { nil }
     store { nil }
     request_type { 1 }

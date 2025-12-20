@@ -9,7 +9,7 @@ class CreateApplicationRequests < ActiveRecord::Migration[8.1]
       t.integer :status
       t.string :invitation_token
       t.datetime :invitation_sent_at
-      t.integer :tenant_id
+      t.integer :company_id
 
       t.timestamps
     end

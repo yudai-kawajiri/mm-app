@@ -38,7 +38,7 @@ class Admin::AdminRequestsController < Admin::BaseController
   def create
     @admin_request = AdminRequest.new(admin_request_params)
     @admin_request.user = current_user
-    @admin_request.tenant = current_tenant
+    @admin_request.company = current_company
     @admin_request.request_type = :store_admin_request
 
     if @admin_request.save
@@ -78,16 +78,16 @@ class Admin::AdminRequestsController < Admin::BaseController
 
   def accessible_admin_requests
     if current_user.super_admin?
-      if session[:current_tenant_id].present?
-        AdminRequest.for_tenant(Tenant.find(session[:current_tenant_id]))
+      if session[:current_company_id].present?
+        AdminRequest.for_company(Company.find(session[:current_company_id]))
       else
         AdminRequest.all
       end
     elsif current_user.company_admin?
-      base_scope = AdminRequest.for_tenant(current_tenant)
+      base_scope = AdminRequest.for_company(current_company)
       session[:current_store_id].present? ? base_scope.where(store_id: session[:current_store_id]) : base_scope
     elsif current_user.store_admin?
-      AdminRequest.for_tenant(current_tenant).where(store_id: current_user.store_id)
+      AdminRequest.for_company(current_company).where(store_id: current_user.store_id)
     else
       AdminRequest.none
     end

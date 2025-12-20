@@ -5,7 +5,7 @@
 # 製品材料中間モデル - 製品と材料の多対多の関連を管理
 #
 # 【マルチテナント対応】
-# 親モデル（Product）から tenant_id を自動的に継承
+# 親モデル（Product）から company_id を自動的に継承
 # ネストされた属性として保存される際も、親のスコープを維持
 class Planning::ProductMaterial < ApplicationRecord
   has_paper_trail
@@ -13,19 +13,19 @@ class Planning::ProductMaterial < ApplicationRecord
   belongs_to :product, class_name: "Resources::Product"
   belongs_to :material, class_name: "Resources::Material"
   belongs_to :unit, class_name: "Resources::Unit"
-  belongs_to :tenant, optional: true
+  belongs_to :company, optional: true
 
   validates :material_id, presence: true, uniqueness: { scope: :product_id, message: :already_registered }
   validates :unit_id, presence: true
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :unit_weight, presence: true, numericality: { greater_than: 0 }
 
-  # マルチテナント: 親の Product から tenant_id を自動継承
+  # マルチテナント: 親の Product から company_id を自動継承
   #
   # 【なぜ before_validation か】
   # NOT NULL制約エラーを防ぐため、バリデーション前に設定
   # accepts_nested_attributes_for 経由での保存時も確実に実行される
-  before_validation :inherit_tenant_from_product
+  before_validation :inherit_company_from_product
 
   before_save :normalize_numeric_fields
 
@@ -87,15 +87,15 @@ class Planning::ProductMaterial < ApplicationRecord
 
   private
 
-  # 親の Product から tenant_id を継承
+  # 親の Product から company_id を継承
   #
   # 【実装意図】
   # ネストされた属性として保存される ProductMaterial に対し、
-  # 親の Product が持つ tenant_id を自動コピーし、データ整合性を保証
-  def inherit_tenant_from_product
+  # 親の Product が持つ company_id を自動コピーし、データ整合性を保証
+  def inherit_company_from_product
     return unless product
 
-    self.tenant_id ||= product.tenant_id if product.tenant_id.present?
+    self.company_id ||= product.company_id if product.company_id.present?
   end
 
   # 数値フィールドを正規化（全角→半角、カンマ削除）

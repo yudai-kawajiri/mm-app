@@ -8,7 +8,7 @@ class StoresController < AuthenticatedController
   # システム管理者または会社管理者が店舗を切り替える
   def switch
     if params[:store_id].present?
-      store = current_tenant&.stores&.find_by(id: params[:store_id])
+      store = current_company&.stores&.find_by(id: params[:store_id])
       if store
         session[:current_store_id] = store.id
         flash[:notice] = t('stores.switch.success', store_name: store.name)

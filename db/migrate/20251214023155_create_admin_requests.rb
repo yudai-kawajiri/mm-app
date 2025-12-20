@@ -1,7 +1,7 @@
 class CreateAdminRequests < ActiveRecord::Migration[8.1]
   def change
     create_table :admin_requests do |t|
-      t.references :tenant, null: false, foreign_key: true
+      t.references :company, null: false, foreign_key: true
       t.references :user, null: false, foreign_key: true, comment: 'リクエスト送信者'
       t.references :store, foreign_key: true, comment: '対象店舗（店舗管理者リクエストの場合）'
       
@@ -19,7 +19,7 @@ class CreateAdminRequests < ActiveRecord::Migration[8.1]
     
     add_foreign_key :admin_requests, :users, column: :approved_by_id
     add_index :admin_requests, :approved_by_id
-    add_index :admin_requests, [:tenant_id, :status]
+    add_index :admin_requests, [:company_id, :status]
     add_index :admin_requests, [:user_id, :status]
   end
 end
