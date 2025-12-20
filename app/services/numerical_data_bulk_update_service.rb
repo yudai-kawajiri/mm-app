@@ -86,7 +86,7 @@ class NumericalDataBulkUpdateService
         # 修正: tenant_id と store_id を追加
         monthly_budget = Management::MonthlyBudget.find_or_create_by!(
           budget_month: target_date.beginning_of_month,
-          tenant_id: @user.tenant_id,
+          company_id: @user.company_id,
           store_id: @store_id
         ) do |budget|
           budget.target_amount = 0

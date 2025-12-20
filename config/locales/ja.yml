@@ -94,7 +94,7 @@ ja:
   common:
     deleted_plan: "(削除された計画)"
     menu:
-      tenant_management: 会社管理
+      company_management: 会社管理
       approval_requests: 承認リクエスト
       user_management: ユーザー管理
       store_management: 店舗管理
@@ -340,7 +340,7 @@ ja:
       request_type: リクエスト種別
   companies:
     switch:
-      success: "%{tenant_name} に切り替えました"
+      success: "%{company_name} に切り替えました"
       not_found: 会社が見つかりませんでした
       all_companies: システム管理モード（全会社）に切り替えました
   devise:

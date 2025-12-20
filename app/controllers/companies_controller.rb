@@ -13,7 +13,7 @@ class CompaniesController < AuthenticatedController
       if company
         session[:current_company_id] = company.id
         session[:current_store_id] = nil # テナント変更時は店舗選択をリセット
-        flash[:notice] = t('companies.switch.success', tenant_name: company.name)
+        flash[:notice] = t('companies.switch.success', company_name: company.name)
       else
         flash[:alert] = t('companies.switch.not_found')
       end

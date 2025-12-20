@@ -5,7 +5,7 @@ ja:
       store: "店舗"
       all_stores: "全店舗"
       system_admin_mode: "システム管理（全会社）"
-      tenant_management: "会社管理"
+      company_management: "会社管理"
       user_management: "ユーザー管理"
       store_management: "店舗管理"
       system_logs: "システムログ"

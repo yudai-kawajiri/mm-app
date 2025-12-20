@@ -57,13 +57,13 @@ class User < ApplicationRecord
 
   def can_manage_store?(target_store)
     return true if super_admin?
-    return true if company_admin? && target_store.company_id == tenant_id
+    return true if company_admin? && target_store.company_id == company_id
     store_admin? && store_id == target_store.id
   end
 
   # アクセス可能なテナント
   def accessible_companies
-    super_admin? ? Company.all : Company.where(id: tenant_id)
+    super_admin? ? Company.all : Company.where(id: company_id)
   end
 
   # アクセス可能なストア

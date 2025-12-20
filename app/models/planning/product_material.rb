@@ -25,7 +25,7 @@ class Planning::ProductMaterial < ApplicationRecord
   # 【なぜ before_validation か】
   # NOT NULL制約エラーを防ぐため、バリデーション前に設定
   # accepts_nested_attributes_for 経由での保存時も確実に実行される
-  before_validation :inherit_tenant_from_product
+  before_validation :inherit_company_from_product
 
   before_save :normalize_numeric_fields
 
@@ -92,7 +92,7 @@ class Planning::ProductMaterial < ApplicationRecord
   # 【実装意図】
   # ネストされた属性として保存される ProductMaterial に対し、
   # 親の Product が持つ tenant_id を自動コピーし、データ整合性を保証
-  def inherit_tenant_from_product
+  def inherit_company_from_product
     return unless product
 
     self.company_id ||= product.company_id if product.company_id.present?
