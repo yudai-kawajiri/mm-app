@@ -17,7 +17,7 @@ class ApplicationRequestMailer < ApplicationMailer
     @admin_request = admin_request
     @user = admin_request.user
     @login_url = new_user_session_url(
-      host: "#{admin_request.user.tenant.subdomain}.#{ENV.fetch('APP_DOMAIN', 'localhost:3000')}",
+      host: "#{admin_request.user.company.subdomain}.#{ENV.fetch('APP_DOMAIN', 'localhost:3000')}",
       protocol: ENV.fetch('APP_PROTOCOL', 'http')
     )
 

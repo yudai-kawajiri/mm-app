@@ -17,7 +17,7 @@
 
       <% if current_user.super_admin? %>
         <%# システム管理者: 会社選択ドロップダウン %>
-        <%= form_with url: switch_tenant_path, method: :post, local: true do |f| %>
+        <%= form_with url: switch_company_path, method: :post, local: true do |f| %>
           <%= f.select :current_company_id,
               options_for_select(
                 [[t('dashboard.sidebar.system_admin_mode'), nil]] + Company.order(:name).pluck(:name, :id),
