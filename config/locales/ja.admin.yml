@@ -89,10 +89,9 @@ ja:
     tenants:
       index:
         title: "テナント管理"
-        sort_options:
-          name: "名前順"
-          subdomain: "サブドメイン名順"
-          created_at: "登録順"
+sort_options:
+  subdomain: "サブドメイン順"
+  created_at: "登録順"
         sort_placeholder: "並び替え"
         new_tenant: "テナント作成"
       new:
@@ -162,23 +161,23 @@ stores:
     sort_options:
       code: "店舗コード順"
       created_at: "登録順"
-    sort_placeholder: "並び替え"
-        no_stores: "店舗が登録されていません"
-        table_headers:
-          code: "コード"
-          name: "店舗名"
-          invitation_code: "招待コード"
-          users_count: "ユーザー数"
-          created_at: "登録日"
-          actions: "アクション"
-      new:
-        title: "店舗登録"
-      edit:
-        title: "店舗編集"
-      created: "店舗を登録しました"
-      updated: "店舗を更新しました"
-      destroyed: "店舗を削除しました"
-      form:
+            sort_placeholder: "並び替え"
+                no_stores: "店舗が登録されていません"
+                table_headers:
+                  code: "コード"
+                  name: "店舗名"
+                  invitation_code: "招待コード"
+                  users_count: "ユーザー数"
+                  created_at: "登録日"
+                  actions: "アクション"
+              new:
+                title: "店舗登録"
+              edit:
+                title: "店舗編集"
+              created: "店舗を登録しました"
+              updated: "店舗を更新しました"
+              destroyed: "店舗を削除しました"
+              form:
         code: "店舗コード"
         code_placeholder: "例: STORE01"
         name: "店舗名"
