@@ -12,7 +12,7 @@ ja:
         table_headers:
           name: "名前"
           email: "メールアドレス"
-          tenant: 会社名
+          company: 会社名
           role: "権限"
           registered_date: "登録日"
           actions: "アクション"
@@ -85,7 +85,7 @@ ja:
         update: "更新"
         destroy: "削除"
 
-    tenants:
+    companies:
       index:
         title: "会社管理"
         table_headers:
@@ -98,7 +98,7 @@ ja:
           created_at: "登録順"
         search:
           placeholder: "会社名またはサブドメインで検索"
-        new_tenant: "会社作成"
+        new_company: "会社作成"
       new:
         title: "会社作成"
       edit:

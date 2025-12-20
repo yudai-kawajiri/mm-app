@@ -33,14 +33,14 @@ class Resources::UnitsController < AuthenticatedController
   def new
     @unit = Resources::Unit.new
     @unit.user_id = current_user.id
-    @unit.tenant_id = current_tenant.id
+    @unit.company_id = current_company.id
     @unit.store_id = current_store&.id
   end
 
   def create
     @unit = Resources::Unit.new(unit_params)
     @unit.user_id = current_user.id
-    @unit.tenant_id = current_tenant.id
+    @unit.company_id = current_company.id
     @unit.store_id = current_store&.id if @unit.store_id.blank?
     respond_to_save(@unit)
   end
@@ -74,9 +74,9 @@ class Resources::UnitsController < AuthenticatedController
       Resources::Unit.where(store_id: current_user.store_id)
     when 'company_admin'
       if session[:current_store_id].present?
-        Resources::Unit.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+        Resources::Unit.where(company_id: current_company.id, store_id: session[:current_store_id])
       else
-        Resources::Unit.where(tenant_id: current_tenant.id)
+        Resources::Unit.where(company_id: current_company.id)
       end
     when 'super_admin'
       Resources::Unit.all

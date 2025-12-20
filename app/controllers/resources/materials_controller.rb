@@ -46,7 +46,7 @@ class Resources::MaterialsController < AuthenticatedController
     @material_order_groups = scoped_material_order_groups.ordered
     @material = Resources::Material.new
     @material.user_id = current_user.id
-    @material.tenant_id = current_tenant.id
+    @material.company_id = current_company.id
     @material.store_id = current_store&.id
   end
 
@@ -62,7 +62,7 @@ class Resources::MaterialsController < AuthenticatedController
     @material_order_groups = scoped_material_order_groups.ordered
     @material = Resources::Material.new(material_params)
     @material.user_id = current_user.id
-    @material.tenant_id = current_tenant.id
+    @material.company_id = current_company.id
     @material.store_id = current_store&.id if @material.store_id.blank?
     respond_to_save(@material)
   end
@@ -125,9 +125,9 @@ class Resources::MaterialsController < AuthenticatedController
       Resources::Material.where(store_id: current_user.store_id)
     when 'company_admin'
       if session[:current_store_id].present?
-        Resources::Material.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+        Resources::Material.where(company_id: current_company.id, store_id: session[:current_store_id])
       else
-        Resources::Material.where(tenant_id: current_tenant.id)
+        Resources::Material.where(company_id: current_company.id)
       end
     when 'super_admin'
       Resources::Material.all

@@ -32,7 +32,7 @@ class Resources::ProductsController < AuthenticatedController
   def new
     @product = Resources::Product.new
     @product.user_id = current_user.id
-    @product.tenant_id = current_tenant.id
+    @product.company_id = current_company.id
     @product.store_id = current_store&.id
     @product_categories = scoped_categories.for_products.ordered
     @material_categories = scoped_categories.for_materials
@@ -42,7 +42,7 @@ class Resources::ProductsController < AuthenticatedController
   def create
     @product = Resources::Product.new(product_params)
     @product.user_id = current_user.id
-    @product.tenant_id = current_tenant.id
+    @product.company_id = current_company.id
     @product.store_id = current_store&.id if @product.store_id.blank?
 
     @product_categories = scoped_categories.for_products.ordered
@@ -130,9 +130,9 @@ class Resources::ProductsController < AuthenticatedController
       Resources::Product.where(store_id: current_user.store_id)
     when 'company_admin'
       if session[:current_store_id].present?
-        Resources::Product.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+        Resources::Product.where(company_id: current_company.id, store_id: session[:current_store_id])
       else
-        Resources::Product.where(tenant_id: current_tenant.id)
+        Resources::Product.where(company_id: current_company.id)
       end
     when 'super_admin'
       Resources::Product.all

@@ -63,11 +63,11 @@ ja:
     admin:
       title: "システム管理者ダッシュボード"
       pending_users: "承認待ちユーザー"
-      total_tenants: "登録会社数"
+      total_companies: "登録会社数"
       total_stores: "登録店舗数"
       recent_logs: "最近のシステムログ"
       view_users: "ユーザー一覧を見る"
-      view_tenants: "会社一覧を見る"
+      view_companies: "会社一覧を見る"
       view_stores: "店舗一覧を見る"
       view_all_logs: "すべてのログを見る"
       no_logs: "ログがありません"

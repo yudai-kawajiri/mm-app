@@ -1,0 +1,18 @@
+<%# 会社フォームフィールド %>
+<div class="row">
+  <div class="col-md-6">
+    <%= form_group_lg(f, :name,
+        required: true,
+        label: raw([t('activerecord.attributes.company.name'), t('helpers.required_mark')].join(' ')),
+        placeholder: t('admin.companies.form.name_placeholder')
+    ) %>
+  </div>
+  <div class="col-md-6">
+    <%= form_group_lg(f, :subdomain,
+        required: true,
+        label: raw([t('activerecord.attributes.company.subdomain'), t('helpers.required_mark')].join(' ')),
+        placeholder: t('admin.companies.form.subdomain_placeholder'),
+        help_text: t('admin.companies.form.subdomain_hint')
+    ) %>
+  </div>
+</div>

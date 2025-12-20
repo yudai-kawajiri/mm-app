@@ -30,7 +30,7 @@ class Resources::PlansController < AuthenticatedController
   def new
     @plan = Resources::Plan.new
     @plan.user_id = current_user.id
-    @plan.tenant_id = current_tenant.id
+    @plan.company_id = current_company.id
     @plan.store_id = current_store&.id
     @plan_categories = scoped_categories.for_plans.ordered
     @product_categories = scoped_categories.for_products.ordered
@@ -39,7 +39,7 @@ class Resources::PlansController < AuthenticatedController
   def create
     @plan = Resources::Plan.new(plan_params)
     @plan.user_id = current_user.id
-    @plan.tenant_id = current_tenant.id
+    @plan.company_id = current_company.id
     @plan.store_id = current_store&.id if @plan.store_id.blank?
 
     @plan_categories = scoped_categories.for_plans.ordered
@@ -175,9 +175,9 @@ class Resources::PlansController < AuthenticatedController
       Resources::Plan.where(store_id: current_user.store_id)
     when 'company_admin'
       if session[:current_store_id].present?
-        Resources::Plan.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+        Resources::Plan.where(company_id: current_company.id, store_id: session[:current_store_id])
       else
-        Resources::Plan.where(tenant_id: current_tenant.id)
+        Resources::Plan.where(company_id: current_company.id)
       end
     when 'super_admin'
       Resources::Plan.all

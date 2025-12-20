@@ -147,8 +147,8 @@ module ApplicationHelper
       # システム管理者専用メニュー
       if current_user.super_admin?
         # システム管理モード（全テナント）のときだけ表示
-        if session[:current_tenant_id].nil?
-          admin_submenu << { name: t("common.menu.tenant_management"), path: admin_tenants_path }
+        if session[:current_company_id].nil?
+          admin_submenu << { name: t("common.menu.company_management"), path: admin_tenants_path }
           admin_submenu << { name: t("common.menu.system_logs"), path: admin_system_logs_path }
         else
           # 特定テナント選択時: システムログのみ表示

@@ -39,7 +39,7 @@
         <%= User.human_attribute_name(:store) %><%= raw(t('helpers.required_mark')) %>
       <% end %>
       <%= f.collection_select :store_id, 
-          current_tenant&.stores&.order(:name) || [], 
+          current_company&.stores&.order(:name) || [], 
           :id, 
           :name, 
           { prompt: t('helpers.prompt.select') }, 

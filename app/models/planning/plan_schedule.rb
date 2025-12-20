@@ -272,7 +272,7 @@ class Planning::PlanSchedule < ApplicationRecord
   end
   # tenant_id と store_id を plan から自動設定
   def set_tenant_and_store_id
-    self.tenant_id ||= plan&.tenant_id
+    self.company_id ||= plan&.company_id
     self.store_id ||= plan&.store_id
   end
 

@@ -1,27 +1,27 @@
 # frozen_string_literal: true
 
-class TenantsController < AuthenticatedController
+class CompaniesController < AuthenticatedController
   before_action :authorize_super_admin!
 
   # テナント切替（システム管理者専用）
   def switch
     # 空文字列の場合もnilとして扱う
-    tenant_id = params[:current_tenant_id].presence
+    tenant_id = params[:current_company_id].presence
     
     if tenant_id
-      tenant = Tenant.find_by(id: tenant_id)
-      if tenant
-        session[:current_tenant_id] = tenant.id
+      company = Company.find_by(id: tenant_id)
+      if company
+        session[:current_company_id] = company.id
         session[:current_store_id] = nil # テナント変更時は店舗選択をリセット
-        flash[:notice] = t('tenants.switch.success', tenant_name: tenant.name)
+        flash[:notice] = t('companies.switch.success', tenant_name: company.name)
       else
-        flash[:alert] = t('tenants.switch.not_found')
+        flash[:alert] = t('companies.switch.not_found')
       end
     else
       # システム管理モード（全テナント）
-      session[:current_tenant_id] = nil
+      session[:current_company_id] = nil
       session[:current_store_id] = nil
-      flash[:notice] = t('tenants.switch.all_tenants')
+      flash[:notice] = t('companies.switch.all_companies')
     end
 
     redirect_to request.referer || authenticated_root_path

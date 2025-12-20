@@ -9,7 +9,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
 
     # テナントを設定
-    resource.tenant = current_tenant
+    resource.company = current_company
     resource.approved = false
 
     resource.save
@@ -52,7 +52,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def create_admin_request(user)
     AdminRequest.create!(
-      tenant: user.tenant,
+      company: user.company,
       store: user.store,
       user: user,
       request_type: "user_registration",

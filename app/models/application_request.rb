@@ -1,5 +1,5 @@
 class ApplicationRequest < ApplicationRecord
-  belongs_to :tenant, optional: true
+  belongs_to :company, optional: true
   belongs_to :user, optional: true
 
   enum :status, { pending: 0, accepted: 1 }

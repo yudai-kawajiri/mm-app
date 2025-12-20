@@ -30,14 +30,14 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   def new
     @material_order_group = Resources::MaterialOrderGroup.new
     @material_order_group.user_id = current_user.id
-    @material_order_group.tenant_id = current_tenant.id
+    @material_order_group.company_id = current_company.id
     @material_order_group.store_id = current_store&.id
   end
 
   def create
     @material_order_group = Resources::MaterialOrderGroup.new(material_order_group_params)
     @material_order_group.user_id = current_user.id
-    @material_order_group.tenant_id = current_tenant.id
+    @material_order_group.company_id = current_company.id
     @material_order_group.store_id = current_store&.id if @material_order_group.store_id.blank?
     respond_to_save(@material_order_group)
   end
@@ -76,9 +76,9 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
       Resources::MaterialOrderGroup.where(store_id: current_user.store_id)
     when 'company_admin'
       if session[:current_store_id].present?
-        Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+        Resources::MaterialOrderGroup.where(company_id: current_company.id, store_id: session[:current_store_id])
       else
-        Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id)
+        Resources::MaterialOrderGroup.where(company_id: current_company.id)
       end
     when 'super_admin'
       Resources::MaterialOrderGroup.all

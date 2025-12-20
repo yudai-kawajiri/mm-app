@@ -45,20 +45,20 @@ class Admin::SystemLogsController < Admin::BaseController
   def accessible_versions
     if current_user.super_admin?
       # システム管理(全会社)モード: 全ログ表示
-      return PaperTrail::Version.all if session[:current_tenant_id].blank?
+      return PaperTrail::Version.all if session[:current_company_id].blank?
 
       # 特定テナント選択時: そのテナントのユーザーが実行したログのみ
-      tenant = Tenant.find(session[:current_tenant_id])
+      company = Company.find(session[:current_company_id])
       
       # テナントに所属するユーザーのID一覧(文字列)
-      tenant_user_ids = tenant.users.pluck(:id).map(&:to_s)
+      tenant_user_ids = company.users.pluck(:id).map(&:to_s)
       
       # whodunnit(実行ユーザー)がこのテナントのユーザーのログのみ
       PaperTrail::Version.where(whodunnit: tenant_user_ids)
     elsif current_user.company_admin?
       # 会社管理者: 自社ユーザーが実行したログのみ
-      tenant = current_user.tenant
-      tenant_user_ids = tenant.users.pluck(:id).map(&:to_s)
+      company = current_user.company
+      tenant_user_ids = company.users.pluck(:id).map(&:to_s)
       
       PaperTrail::Version.where(whodunnit: tenant_user_ids)
     elsif current_user.store_admin?

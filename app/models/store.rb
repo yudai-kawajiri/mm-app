@@ -3,10 +3,10 @@
 # Store
 #
 # 店舗モデル
-# - 1つの会社（Tenant）に複数の店舗が所属
+# - 1つの会社（Company）に複数の店舗が所属
 # - データは店舗ごとに完全分離（他店舗のデータは閲覧不可）
 class Store < ApplicationRecord
-  belongs_to :tenant
+  belongs_to :company
   has_many :users, dependent: :nullify
   has_many :products, class_name: 'Resources::Product', dependent: :nullify
   has_many :materials, class_name: 'Resources::Material', dependent: :nullify
@@ -18,8 +18,8 @@ class Store < ApplicationRecord
   has_many :plan_schedules, class_name: 'Planning::PlanSchedule', dependent: :nullify
   has_many :units, class_name: 'Resources::Unit', dependent: :nullify
 
-  validates :name, presence: true, uniqueness: { scope: :tenant_id }
-  validates :code, presence: true, uniqueness: { scope: :tenant_id }
+  validates :name, presence: true, uniqueness: { scope: :company_id }
+  validates :code, presence: true, uniqueness: { scope: :company_id }
   validates :invitation_code, uniqueness: true, allow_nil: true
 
   attribute :active, :boolean, default: true

@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :set_paper_trail_whodunnit
   before_action :redirect_if_authenticated, if: -> { devise_controller? && action_name == "new" && controller_name == "sessions" }
 
-  helper_method :current_tenant, :current_store
+  helper_method :current_company, :current_store
 
   before_action :auto_login_pending_user
 
@@ -59,47 +59,47 @@ class ApplicationController < ActionController::Base
     end
 
     @tenant_from_subdomain = if subdomain.present? && subdomain != "www"
-      Tenant.find_by(subdomain: subdomain)
+      Company.find_by(subdomain: subdomain)
     else
       nil
     end
   end
 
-  def current_tenant
-    return @current_tenant if defined?(@current_tenant)
+  def current_company
+    return @current_company if defined?(@current_company)
     
-    # システム管理者の場合: session[:current_tenant_id] でテナントを切り替え
+    # システム管理者の場合: session[:current_company_id] でテナントを切り替え
     if current_user&.super_admin?
-      @current_tenant = session[:current_tenant_id].present? ? Tenant.find_by(id: session[:current_tenant_id]) : nil
+      @current_company = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
     else
       # 会社管理者・店舗管理者: 所属テナント、またはサブドメインから取得
-      @current_tenant = current_user&.tenant || tenant_from_subdomain
+      @current_company = current_user&.company || tenant_from_subdomain
     end
     
-    @current_tenant
+    @current_company
   end
 
   def current_store
     return nil unless session[:current_store_id]
-    @current_store ||= current_user.tenant.stores.find_by(id: session[:current_store_id])
+    @current_store ||= current_user.company.stores.find_by(id: session[:current_store_id])
   end
 
   def scoped_monthly_budgets
-    return Management::MonthlyBudget.none unless current_tenant
+    return Management::MonthlyBudget.none unless current_company
     if session[:current_store_id].present?
-      Management::MonthlyBudget.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+      Management::MonthlyBudget.where(company_id: current_company.id, store_id: session[:current_store_id])
     else
-      Management::MonthlyBudget.where(tenant_id: current_tenant.id)
+      Management::MonthlyBudget.where(company_id: current_company.id)
     end
   end
 
   def scoped_categories
     Rails.logger.info "[DEBUG SCOPED] session[:current_store_id] = #{session[:current_store_id].inspect}"
-    Rails.logger.info "[DEBUG SCOPED] current_tenant.id = #{current_tenant&.id}"
+    Rails.logger.info "[DEBUG SCOPED] current_company.id = #{current_company&.id}"
     result = if session[:current_store_id].present?
-      Resources::Category.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+      Resources::Category.where(company_id: current_company.id, store_id: session[:current_store_id])
     else
-      Resources::Category.where(tenant_id: current_tenant.id)
+      Resources::Category.where(company_id: current_company.id)
     end
     Rails.logger.info "[DEBUG SCOPED] result.count = #{result.count}"
     result
@@ -107,52 +107,52 @@ class ApplicationController < ActionController::Base
 
   def scoped_products
     if session[:current_store_id].present?
-      Resources::Product.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+      Resources::Product.where(company_id: current_company.id, store_id: session[:current_store_id])
     else
-      Resources::Product.where(tenant_id: current_tenant.id)
+      Resources::Product.where(company_id: current_company.id)
     end
   end
 
   def scoped_materials
     if session[:current_store_id].present?
-      Resources::Material.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+      Resources::Material.where(company_id: current_company.id, store_id: session[:current_store_id])
     else
-      Resources::Material.where(tenant_id: current_tenant.id)
+      Resources::Material.where(company_id: current_company.id)
     end
   end
 
   def scoped_plans
     if session[:current_store_id].present?
-      Resources::Plan.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+      Resources::Plan.where(company_id: current_company.id, store_id: session[:current_store_id])
     else
-      Resources::Plan.where(tenant_id: current_tenant.id)
+      Resources::Plan.where(company_id: current_company.id)
     end
   end
 
   def scoped_material_order_groups
     if session[:current_store_id].present?
-      Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+      Resources::MaterialOrderGroup.where(company_id: current_company.id, store_id: session[:current_store_id])
     else
-      Resources::MaterialOrderGroup.where(tenant_id: current_tenant.id)
+      Resources::MaterialOrderGroup.where(company_id: current_company.id)
     end
   end
 
   def scoped_units
     if session[:current_store_id].present?
-      Resources::Unit.where(tenant_id: current_tenant.id, store_id: session[:current_store_id])
+      Resources::Unit.where(company_id: current_company.id, store_id: session[:current_store_id])
     else
-      Resources::Unit.where(tenant_id: current_tenant.id)
+      Resources::Unit.where(company_id: current_company.id)
     end
   end
 
   def scoped_daily_targets
-    return Management::DailyTarget.none unless current_tenant
-    Management::DailyTarget.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+    return Management::DailyTarget.none unless current_company
+    Management::DailyTarget.where(company_id: current_company.id, store_id: current_store&.id)
   end
 
   def scoped_plan_schedules
-    return Planning::PlanSchedule.none unless current_tenant
-    Planning::PlanSchedule.where(tenant_id: current_tenant.id, store_id: current_store&.id)
+    return Planning::PlanSchedule.none unless current_company
+    Planning::PlanSchedule.where(company_id: current_company.id, store_id: current_store&.id)
   end
 
   private

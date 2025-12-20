@@ -25,7 +25,7 @@ class Management::PlanSchedulesController < Management::BaseController
       store_id: current_store&.id
     )
     @plan_schedule.user_id ||= current_user.id
-    @plan_schedule.tenant_id ||= current_tenant.id
+    @plan_schedule.company_id ||= current_company.id
 
     @plan_schedule.assign_attributes(
       plan: plan,

@@ -13,7 +13,7 @@ class Planning::ProductMaterial < ApplicationRecord
   belongs_to :product, class_name: "Resources::Product"
   belongs_to :material, class_name: "Resources::Material"
   belongs_to :unit, class_name: "Resources::Unit"
-  belongs_to :tenant, optional: true
+  belongs_to :company, optional: true
 
   validates :material_id, presence: true, uniqueness: { scope: :product_id, message: :already_registered }
   validates :unit_id, presence: true
@@ -95,7 +95,7 @@ class Planning::ProductMaterial < ApplicationRecord
   def inherit_tenant_from_product
     return unless product
 
-    self.tenant_id ||= product.tenant_id if product.tenant_id.present?
+    self.company_id ||= product.company_id if product.company_id.present?
   end
 
   # 数値フィールドを正規化（全角→半角、カンマ削除）

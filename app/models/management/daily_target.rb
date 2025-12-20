@@ -43,6 +43,6 @@ class Management::DailyTarget < ApplicationRecord
 
   # tenant_id を monthly_budget から自動設定
   def set_tenant_id
-    self.tenant_id ||= monthly_budget&.tenant_id
+    self.company_id ||= monthly_budget&.company_id
   end
 end

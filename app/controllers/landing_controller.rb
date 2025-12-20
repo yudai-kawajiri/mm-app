@@ -14,8 +14,8 @@ class LandingController < ApplicationController
       return if params[:logout] == 'success'
       
       # テナントが存在する場合は、そのサブドメインにリダイレクト
-      if current_user.tenant
-        redirect_to authenticated_root_url(subdomain: current_user.tenant.subdomain), allow_other_host: true
+      if current_user.company
+        redirect_to authenticated_root_url(subdomain: current_user.company.subdomain), allow_other_host: true
       else
         # テナントがない場合はログアウト
         sign_out(current_user)

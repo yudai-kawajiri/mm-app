@@ -5,7 +5,7 @@
 # 管理者承認リクエストモデル
 # 店舗管理者昇格、ユーザー登録などの承認フローを管理
 class AdminRequest < ApplicationRecord
-  belongs_to :tenant
+  belongs_to :company
   belongs_to :user
   belongs_to :store, optional: true
   belongs_to :approved_by, class_name: 'User', optional: true
@@ -27,7 +27,7 @@ class AdminRequest < ApplicationRecord
   validates :store, presence: true, if: :store_admin_request?
   validates :rejection_reason, presence: true, if: :rejected?
 
-  scope :for_tenant, ->(tenant) { where(tenant: tenant) }
+  scope :for_company, ->(company) { where(company: company) }
   scope :for_user, ->(user) { where(user: user) }
   scope :recent, -> { order(created_at: :desc) }
 

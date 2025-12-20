@@ -12,7 +12,7 @@ class Resources::Material < ApplicationRecord
   include Copyable
   include HasReading
 
-  belongs_to :tenant
+  belongs_to :company
   belongs_to :store, optional: true
 
   DESCRIPTION_MAX_LENGTH = 500

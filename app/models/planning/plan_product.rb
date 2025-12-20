@@ -49,7 +49,7 @@ class Planning::PlanProduct < ApplicationRecord
 
   # tenant_id を plan から自動設定
   def set_tenant_id
-    self.tenant_id ||= plan&.tenant_id
+    self.company_id ||= plan&.company_id
   end
 
   # 数値フィールドを正規化（全角→半角、カンマ・スペース削除）

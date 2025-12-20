@@ -28,7 +28,7 @@ class Management::MonthlyBudgetsController < Management::BaseController
       budget_month: budget_month
     )
     @monthly_budget.user_id ||= current_user.id
-    @monthly_budget.tenant_id ||= current_tenant.id
+    @monthly_budget.company_id ||= current_company.id
     @monthly_budget.store_id ||= current_store&.id
 
     @monthly_budget.assign_attributes(sanitized_monthly_budget_params)

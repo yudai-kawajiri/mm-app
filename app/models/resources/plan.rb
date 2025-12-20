@@ -35,7 +35,7 @@ class Resources::Plan < ApplicationRecord
 
   # 関連付け
   # マルチテナント対応
-  belongs_to :tenant
+  belongs_to :company
   belongs_to :store, optional: true
 
   belongs_to :category, class_name: "Resources::Category"
