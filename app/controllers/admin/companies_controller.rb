@@ -28,10 +28,10 @@ class Admin::CompaniesController < ApplicationController
   end
 
   def create
-    @company = Company.new(tenant_params)
+    @company = Company.new(company_params)
     
     if @company.save
-      redirect_to admin_tenant_path(@company), notice: t('admin.companies.messages.created')
+      redirect_to admin_company_path(@company), notice: t('admin.companies.messages.created')
     else
       render :new, status: :unprocessable_entity
     end
@@ -41,8 +41,8 @@ class Admin::CompaniesController < ApplicationController
   end
 
   def update
-    if @company.update(tenant_params)
-      redirect_to admin_tenant_path(@company), notice: t('admin.companies.messages.updated')
+    if @company.update(company_params)
+      redirect_to admin_company_path(@company), notice: t('admin.companies.messages.updated')
     else
       render :edit, status: :unprocessable_entity
     end
@@ -52,7 +52,7 @@ class Admin::CompaniesController < ApplicationController
     if @company.destroy
       redirect_to admin_companies_path, notice: t('admin.companies.messages.destroyed')
     else
-      redirect_to admin_tenant_path(@company), alert: @company.errors.full_messages.join(', ')
+      redirect_to admin_company_path(@company), alert: @company.errors.full_messages.join(', ')
     end
   end
 
@@ -62,7 +62,7 @@ class Admin::CompaniesController < ApplicationController
     @company = Company.find(params[:id])
   end
 
-  def tenant_params
+  def company_params
     params.require(:company).permit(:name, :subdomain)
   end
 

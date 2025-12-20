@@ -51,16 +51,16 @@ class Admin::SystemLogsController < Admin::BaseController
       company = Company.find(session[:current_company_id])
       
       # テナントに所属するユーザーのID一覧(文字列)
-      tenant_user_ids = company.users.pluck(:id).map(&:to_s)
+      company_user_ids = company.users.pluck(:id).map(&:to_s)
       
       # whodunnit(実行ユーザー)がこのテナントのユーザーのログのみ
-      PaperTrail::Version.where(whodunnit: tenant_user_ids)
+      PaperTrail::Version.where(whodunnit: company_user_ids)
     elsif current_user.company_admin?
       # 会社管理者: 自社ユーザーが実行したログのみ
       company = current_user.company
-      tenant_user_ids = company.users.pluck(:id).map(&:to_s)
+      company_user_ids = company.users.pluck(:id).map(&:to_s)
       
-      PaperTrail::Version.where(whodunnit: tenant_user_ids)
+      PaperTrail::Version.where(whodunnit: company_user_ids)
     elsif current_user.store_admin?
       # 店舗管理者: 自店舗ユーザーが実行したログのみ
       store = current_user.store

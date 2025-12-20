@@ -48,8 +48,8 @@ class ApplicationController < ActionController::Base
     { store_id: current_store&.id }
   end
 
-  def tenant_from_subdomain
-    return @tenant_from_subdomain if defined?(@tenant_from_subdomain)
+  def company_from_subdomain
+    return @company_from_subdomain if defined?(@company_from_subdomain)
 
     host = request.host
     subdomain = if host.include?(".localhost")
@@ -58,7 +58,7 @@ class ApplicationController < ActionController::Base
       request.subdomain
     end
 
-    @tenant_from_subdomain = if subdomain.present? && subdomain != "www"
+    @company_from_subdomain = if subdomain.present? && subdomain != "www"
       Company.find_by(subdomain: subdomain)
     else
       nil
@@ -73,7 +73,7 @@ class ApplicationController < ActionController::Base
       @current_company = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
     else
       # 会社管理者・店舗管理者: 所属テナント、またはサブドメインから取得
-      @current_company = current_user&.company || tenant_from_subdomain
+      @current_company = current_user&.company || company_from_subdomain
     end
     
     @current_company

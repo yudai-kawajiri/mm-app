@@ -38,8 +38,8 @@
     <% if current_user.super_admin? %>
       <%
         # システム管理テナント(subdomain: 'admin')の場合はグレーアウト
-        current_tenant_obj = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
-        is_system_company = current_tenant_obj&.subdomain == 'admin'
+        current_company_obj = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
+        is_system_company = current_company_obj&.subdomain == 'admin'
         can_select_store = session[:current_company_id].present? && !is_system_company
       %>
 

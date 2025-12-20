@@ -6,10 +6,10 @@ class CompaniesController < AuthenticatedController
   # テナント切替（システム管理者専用）
   def switch
     # 空文字列の場合もnilとして扱う
-    tenant_id = params[:current_company_id].presence
+    company_id = params[:current_company_id].presence
     
-    if tenant_id
-      company = Company.find_by(id: tenant_id)
+    if company_id
+      company = Company.find_by(id: company_id)
       if company
         session[:current_company_id] = company.id
         session[:current_store_id] = nil # テナント変更時は店舗選択をリセット
