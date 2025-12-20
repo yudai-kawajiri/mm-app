@@ -48,8 +48,26 @@ class Admin::SystemLogsController < Admin::BaseController
   # 権限に応じてアクセス可能なログを返す
   def accessible_versions
     if current_user.super_admin?
-      # システム管理者: 全ログ表示
-      PaperTrail::Version.all
+      # システム管理者: session[:current_tenant_id]でフィルタ
+      if session[:current_tenant_id].present?
+        # 特定テナント選択時
+        tenant = Tenant.find(session[:current_tenant_id])
+        if session[:current_store_id].present?
+          # 特定店舗選択時
+          store = Store.find(session[:current_store_id])
+          PaperTrail::Version
+            .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+            .where("users.store_id = ? OR versions.whodunnit IS NULL", store.id)
+        else
+          # テナント全体のログ
+          PaperTrail::Version
+            .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+            .where("users.tenant_id = ? OR versions.whodunnit IS NULL", tenant.id)
+        end
+      else
+        # 全テナントのログ
+        PaperTrail::Version.all
+      end
     elsif current_user.company_admin?
       # 会社管理者: テナント内のログをフィルタ
       if session[:current_store_id].present?
@@ -78,7 +96,13 @@ class Admin::SystemLogsController < Admin::BaseController
   def accessible_users
     user_ids = accessible_versions.pluck(:whodunnit).compact.uniq
     if current_user.super_admin?
-      User.where(id: user_ids)
+      if session[:current_tenant_id].present?
+        # テナント選択時: そのテナントのユーザーのみ
+        User.where(id: user_ids, tenant_id: session[:current_tenant_id])
+      else
+        # 全テナント
+        User.where(id: user_ids)
+      end
     else
       User.where(id: user_ids, tenant_id: current_user.tenant_id)
     end
