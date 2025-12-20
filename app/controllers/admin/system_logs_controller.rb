@@ -16,6 +16,16 @@ class Admin::SystemLogsController < Admin::BaseController
       @versions = @versions.where(whodunnit: params[:whodunnit])
     end
 
+    if params[:company_id].present?
+      company_user_ids = User.where(company_id: params[:company_id]).pluck(:id).map(&:to_s)
+      @versions = @versions.where(whodunnit: company_user_ids)
+    end
+
+    if params[:store_id].present?
+      store_user_ids = User.where(store_id: params[:store_id]).pluck(:id).map(&:to_s)
+      @versions = @versions.where(whodunnit: store_user_ids)
+    end
+
     if params[:date_from].present?
       date_from = Date.parse(params[:date_from]).beginning_of_day
       @versions = @versions.where('created_at >= ?', date_from)
@@ -32,6 +42,8 @@ class Admin::SystemLogsController < Admin::BaseController
     # フィルタ用のデータ
     @model_types = accessible_versions.distinct.pluck(:item_type).compact.sort
     @users = User.where(id: accessible_versions.pluck(:whodunnit).compact.uniq)
+    @companies = Company.where(id: @users.pluck(:company_id).compact.uniq).order(:name)
+    @stores = Store.where(id: @users.pluck(:store_id).compact.uniq).order(:name)
   end
 
   private

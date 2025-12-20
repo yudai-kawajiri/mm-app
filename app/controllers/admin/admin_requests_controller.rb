@@ -9,23 +9,25 @@ class Admin::AdminRequestsController < Admin::BaseController
     # 検索処理
     if params[:q].present?
       search_term = "%#{params[:q]}%"
-      @admin_requests = @admin_requests.joins(:user).where(
-        'users.name LIKE ? OR users.email LIKE ?',
-        search_term, search_term
-      )
+      @admin_requests = @admin_requests.joins(:user, :company).where(
+        'users.name LIKE ? OR companies.name LIKE ? OR companies.subdomain LIKE ?',
+        search_term, search_term, search_term
+      ).distinct
     end
 
     # ソート処理
     @admin_requests = case params[:sort_by]
+    when 'company'
+      @admin_requests.joins(:company).order('companies.name ASC')
     when 'store'
       @admin_requests.joins(:store).order('stores.name ASC')
     when 'created_at'
       @admin_requests.order(created_at: :desc)
     else
-      @admin_requests.order(created_at: :desc)
+      @admin_requests.joins(:company).order('companies.name ASC')
     end
 
-    @admin_requests = @admin_requests.includes(:user, :store).page(params[:page]).per(20)
+    @admin_requests = @admin_requests.includes(:user, :store, :company).page(params[:page]).per(20)
   end
 
   def show

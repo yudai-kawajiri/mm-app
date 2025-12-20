@@ -8,14 +8,24 @@
 
   <%# フィルタフォーム（枠なし） %>
   <%= form_with url: admin_system_logs_path, method: :get, local: true, class: 'row g-3 mb-4' do |f| %>
-    <div class="col-md-3">
-      <%= f.label :item_type, t('admin.system_logs.index.model'), class: 'form-label' %>
-      <%= f.select :item_type, options_for_select(@model_types.map { |m| [t("activerecord.models.#{m.underscore}", default: m), m] }, params[:item_type]), { include_blank: t('helpers.prompt.select') }, class: 'form-select' %>
+    <div class="col-md-2">
+      <%= f.label :company_id, t('admin.system_logs.table_headers.company'), class: 'form-label' %>
+      <%= f.select :company_id, options_for_select(@companies.map { |c| [c.name, c.id.to_s] }, params[:company_id]), { include_blank: t('helpers.prompt.select') }, class: 'form-select' %>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
+      <%= f.label :store_id, t('admin.system_logs.table_headers.store'), class: 'form-label' %>
+      <%= f.select :store_id, options_for_select(@stores.map { |s| [s.name, s.id.to_s] }, params[:store_id]), { include_blank: t('helpers.prompt.select') }, class: 'form-select' %>
+    </div>
+
+    <div class="col-md-2">
       <%= f.label :whodunnit, t('admin.system_logs.index.user'), class: 'form-label' %>
       <%= f.select :whodunnit, options_for_select(@users.map { |u| [u.name, u.id.to_s] }, params[:whodunnit]), { include_blank: t('helpers.prompt.select') }, class: 'form-select' %>
+    </div>
+
+    <div class="col-md-2">
+      <%= f.label :item_type, t('admin.system_logs.index.model'), class: 'form-label' %>
+      <%= f.select :item_type, options_for_select(@model_types.map { |m| [t("activerecord.models.#{m.underscore}", default: m), m] }, params[:item_type]), { include_blank: t('helpers.prompt.select') }, class: 'form-select' %>
     </div>
 
     <div class="col-md-2">
@@ -23,12 +33,12 @@
       <%= f.date_field :date_from, value: params[:date_from], class: 'form-control' %>
     </div>
 
-    <div class="col-md-2">
+    <div class="col-md-1">
       <%= f.label :date_to, t('admin.system_logs.index.date_to'), class: 'form-label' %>
       <%= f.date_field :date_to, value: params[:date_to], class: 'form-control' %>
     </div>
 
-    <div class="col-md-2 d-flex align-items-end">
+    <div class="col-md-1 d-flex align-items-end">
       <%= f.submit t('admin.system_logs.index.filter'), class: 'btn btn-primary w-100' %>
     </div>
   <% end %>

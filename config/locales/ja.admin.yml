@@ -23,6 +23,7 @@ ja:
           delete: "%{name}を削除してもよろしいですか?"
         empty_message: "ユーザーが登録されていません"
         sort_options:
+          company: "会社順"
           email: "メールアドレス順"
           created_at: "登録順"
         search:
@@ -125,28 +126,47 @@ ja:
       index:
         title: "承認リクエスト"
         search:
-          placeholder: "名前またはメールアドレスで検索"
+          placeholder: "会社名またはリクエスト送信者名で検索"
         sort_options:
+          company: "会社順"
           store: "店舗順"
           created_at: "申請日順"
         no_requests: "承認リクエストはありません"
         table_headers:
+          company: "会社名"
           user: "リクエスト送信者"
           store: "対象店舗"
           request_type: "リクエスト種別"
           status: "ステータス"
           created_at: "登録日時"
           actions: "アクション"
+      show:
+        title: "承認リクエスト詳細"
+        approve: "承認する"
+        reject: "却下する"
+        rejection_reason_label: "却下理由"
+        rejection_reason_placeholder: "却下する理由を入力してください"
+      confirm:
+        approve: "%{name}の申請を承認しますか?"
+
+      messages:
+        approved: "承認リクエストを承認しました"
+        rejected: "承認リクエストを却下しました"
+        approve_failed: "承認に失敗しました"
+        reject_failed: "却下に失敗しました"
+
     stores:
       index:
         title: "店舗管理"
         search:
           placeholder: "店舗名またはコードで検索"
         sort_options:
+          company: "会社順"
           code: "店舗コード順"
           created_at: "登録順"
         no_stores: "店舗が登録されていません"
         table_headers:
+          company: "会社名"
           code: "コード"
           name: "店舗名"
           invitation_code: "招待コード"

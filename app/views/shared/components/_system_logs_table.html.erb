@@ -7,6 +7,8 @@
       <thead class="table-light">
         <tr>
           <th><%= t('activerecord.attributes.system_log.created_at') %></th>
+          <th><%= t('admin.system_logs.table_headers.company') %></th>
+          <th><%= t('admin.system_logs.table_headers.store') %></th>
           <th><%= t('admin.system_logs.index.user') %></th>
           <th><%= t('admin.system_logs.index.model') %></th>
           <th><%= t('common.action') %></th>
@@ -17,6 +19,22 @@
         <% logs.each do |log| %>
           <tr>
             <td><%= l(log.created_at, format: :long) %></td>
+            <td>
+              <% if log.whodunnit.present? %>
+                <% user = User.find_by(id: log.whodunnit) %>
+                <%= user&.company&.name || '-' %>
+              <% else %>
+                -
+              <% end %>
+            </td>
+            <td>
+              <% if log.whodunnit.present? %>
+                <% user = User.find_by(id: log.whodunnit) %>
+                <%= user&.store&.name || '-' %>
+              <% else %>
+                -
+              <% end %>
+            </td>
             <td>
               <% if log.whodunnit.present? %>
                 <% user = User.find_by(id: log.whodunnit) %>
