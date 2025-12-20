@@ -131,6 +131,7 @@ ja:
           created_at: "申請日順"
         no_requests: "承認リクエストはありません"
         table_headers:
+          company: "会社名"
           user: "リクエスト送信者"
           store: "対象店舗"
           request_type: "リクエスト種別"
