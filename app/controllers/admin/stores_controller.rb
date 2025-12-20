@@ -31,6 +31,7 @@ def index
   @stores = @stores.left_joins(:users)
                     .select('stores.*, COUNT(users.id) as users_count')
                     .group('stores.id')
+      .page(params[:page]).per(20)
 end
 
   def show

@@ -30,7 +30,27 @@ class Admin::AdminRequestsController < Admin::BaseController
       AdminRequest.none
     end
 
-    @admin_requests = @admin_requests.includes(:user, :store).recent.page(params[:page])
+    
+    # 検索処理
+    if params[:q].present?
+      search_term = "%#{params[:q]}%"
+      @admin_requests = @admin_requests.joins(:user).where(
+        'users.name LIKE ? OR users.email LIKE ?',
+        search_term, search_term
+      )
+    end
+
+    # ソート処理
+    @admin_requests = case params[:sort_by]
+    when 'store'
+      @admin_requests.joins(:store).order('stores.name ASC')
+    when 'created_at'
+      @admin_requests.order(created_at: :desc)
+    else
+      @admin_requests.order(created_at: :desc) # デフォルト: 申請日降順
+    end
+
+    @admin_requests = @admin_requests.includes(:user, :store).page(params[:page])
   end
 
   def show
