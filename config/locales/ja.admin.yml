@@ -3,6 +3,13 @@ ja:
     users:
       index:
         title: "ユーザー管理"
+        search:
+          label: "名前"
+          placeholder: "名前を入力"
+        sort_options:
+          email: "メールアドレス順"
+          created_at: "登録順"
+        sort_placeholder: "並び替え"
         not_set: （未設定）
         role_badges:
           super_admin: "システム管理者"
@@ -89,9 +96,9 @@ ja:
     tenants:
       index:
         title: "テナント管理"
-sort_options:
-  subdomain: "サブドメイン順"
-  created_at: "登録順"
+        sort_options:
+          subdomain: "サブドメイン名順"
+          created_at: "登録順"
         sort_placeholder: "並び替え"
         new_tenant: "テナント作成"
       new:
@@ -119,6 +126,13 @@ sort_options:
     admin_requests:
       index:
         title: "承認リクエスト"
+        search:
+          label: "名前"
+          placeholder: "ユーザー名を入力"
+        sort_options:
+          email: "メールアドレス順"
+          created_at: "申請日順"
+        sort_placeholder: "並び替え"
         no_requests: "承認リクエストはありません"
         table_headers:
           user: "リクエスト送信者"
@@ -161,23 +175,23 @@ stores:
     sort_options:
       code: "店舗コード順"
       created_at: "登録順"
-            sort_placeholder: "並び替え"
-                no_stores: "店舗が登録されていません"
-                table_headers:
-                  code: "コード"
-                  name: "店舗名"
-                  invitation_code: "招待コード"
-                  users_count: "ユーザー数"
-                  created_at: "登録日"
-                  actions: "アクション"
-              new:
-                title: "店舗登録"
-              edit:
-                title: "店舗編集"
-              created: "店舗を登録しました"
-              updated: "店舗を更新しました"
-              destroyed: "店舗を削除しました"
-              form:
+    sort_placeholder: "並び替え"
+        no_stores: "店舗が登録されていません"
+        table_headers:
+          code: "コード"
+          name: "店舗名"
+          invitation_code: "招待コード"
+          users_count: "ユーザー数"
+          created_at: "登録日"
+          actions: "アクション"
+      new:
+        title: "店舗登録"
+      edit:
+        title: "店舗編集"
+      created: "店舗を登録しました"
+      updated: "店舗を更新しました"
+      destroyed: "店舗を削除しました"
+      form:
         code: "店舗コード"
         code_placeholder: "例: STORE01"
         name: "店舗名"
