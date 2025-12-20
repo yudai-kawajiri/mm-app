@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :tenant do
+  factory :company do
     name { "MyString" }
     subdomain { "MyString" }
     plan { "MyString" }

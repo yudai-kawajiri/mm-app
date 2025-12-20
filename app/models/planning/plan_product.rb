@@ -19,7 +19,7 @@ class Planning::PlanProduct < ApplicationRecord
   validates :production_count, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :product_id, uniqueness: { scope: :plan_id }
   validates :product_id, presence: true
-  # tenant_id を plan から自動設定
+  # company_id を plan から自動設定
   before_validation :set_company_id, on: :create
 
   # 保存前に数値フィールドを正規化（全角→半角変換）
@@ -47,7 +47,7 @@ class Planning::PlanProduct < ApplicationRecord
 
   private
 
-  # tenant_id を plan から自動設定
+  # company_id を plan から自動設定
   def set_company_id
     self.company_id ||= plan&.company_id
   end

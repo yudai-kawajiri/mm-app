@@ -5,7 +5,7 @@
 # 製品材料中間モデル - 製品と材料の多対多の関連を管理
 #
 # 【マルチテナント対応】
-# 親モデル（Product）から tenant_id を自動的に継承
+# 親モデル（Product）から company_id を自動的に継承
 # ネストされた属性として保存される際も、親のスコープを維持
 class Planning::ProductMaterial < ApplicationRecord
   has_paper_trail
@@ -20,7 +20,7 @@ class Planning::ProductMaterial < ApplicationRecord
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :unit_weight, presence: true, numericality: { greater_than: 0 }
 
-  # マルチテナント: 親の Product から tenant_id を自動継承
+  # マルチテナント: 親の Product から company_id を自動継承
   #
   # 【なぜ before_validation か】
   # NOT NULL制約エラーを防ぐため、バリデーション前に設定
@@ -91,7 +91,7 @@ class Planning::ProductMaterial < ApplicationRecord
   #
   # 【実装意図】
   # ネストされた属性として保存される ProductMaterial に対し、
-  # 親の Product が持つ tenant_id を自動コピーし、データ整合性を保証
+  # 親の Product が持つ company_id を自動コピーし、データ整合性を保証
   def inherit_company_from_product
     return unless product
 

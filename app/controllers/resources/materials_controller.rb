@@ -37,7 +37,7 @@ class Resources::MaterialsController < AuthenticatedController
   # 新規原材料作成フォーム
   #
   # 【自動設定】
-  # user_id, tenant_id, store_id を自動設定
+  # user_id, company_id, store_id を自動設定
   def new
     @material_categories = scoped_categories.for_materials
     @production_units = scoped_units.where(category: :production).ordered
@@ -53,7 +53,7 @@ class Resources::MaterialsController < AuthenticatedController
   # 原材料を作成
   #
   # 【自動設定】
-  # user_id, tenant_id, store_id を自動設定（store_id が空の場合のみ）
+  # user_id, company_id, store_id を自動設定（store_id が空の場合のみ）
   def create
     @material_categories = scoped_categories.for_materials
     @production_units = scoped_units.where(category: :production).ordered

@@ -22,7 +22,7 @@ class Management::DailyTarget < ApplicationRecord
   validates :target_date, presence: true, uniqueness: { scope: :monthly_budget_id }
   validates :target_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-  # tenant_id を monthly_budget から自動設定
+  # company_id を monthly_budget から自動設定
   before_validation :set_company_id, on: :create
 
   # 指定された年月の日別目標を取得
@@ -41,7 +41,7 @@ class Management::DailyTarget < ApplicationRecord
 
   private
 
-  # tenant_id を monthly_budget から自動設定
+  # company_id を monthly_budget から自動設定
   def set_company_id
     self.company_id ||= monthly_budget&.company_id
   end

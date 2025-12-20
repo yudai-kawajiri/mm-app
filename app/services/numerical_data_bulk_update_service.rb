@@ -83,7 +83,7 @@ class NumericalDataBulkUpdateService
         # 新規作成(キーは日付文字列)
         target_date = Date.parse(attributes[:target_date])
 
-        # 修正: tenant_id と store_id を追加
+        # 修正: company_id と store_id を追加
         monthly_budget = Management::MonthlyBudget.find_or_create_by!(
           budget_month: target_date.beginning_of_month,
           company_id: @user.company_id,

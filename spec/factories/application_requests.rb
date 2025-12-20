@@ -8,6 +8,6 @@ FactoryBot.define do
     status { 1 }
     invitation_token { "MyString" }
     invitation_sent_at { "2025-12-14 22:49:07" }
-    tenant_id { 1 }
+    company_id { 1 }
   end
 end
