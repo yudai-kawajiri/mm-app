@@ -433,6 +433,13 @@ ja:
       resources/order_group: 発注グループ
       resources/unit: 単位
     attributes:
+      store:
+        code: 店舗コード
+        name: 店舗名
+        company: 会社名
+        users_count: ユーザー数
+        invitation_code: 招待コード
+        created_at: 登録日時
       system_log:
         created_at: 日時
         action: アクション
@@ -456,6 +463,7 @@ ja:
         code: 店舗コード
         invitation_code: 招待コード
         created_at: 登録日
+        users_count: ユーザー数
       company:
         name: 会社名
         subdomain: サブドメイン
