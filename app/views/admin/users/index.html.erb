@@ -6,8 +6,8 @@
 
   <div class="card shadow-sm">
     <div class="card-body">
-      <!-- 検索フォーム -->
-      <%= form_with url: admin_users_path, method: :get, class: "mb-4", data: { controller: "resource-search", turbo_frame: "users_list" } do |f| %>
+      <!-- 検索・ソートフォーム -->
+      <%= form_with url: admin_users_path, method: :get, class: "mb-4", data: { controller: "resource-search" } do |f| %>
         <div class="row g-3">
           <div class="col-md-3">
             <label class="form-label"><%= t('admin.users.index.sort_placeholder') %></label>
@@ -22,11 +22,11 @@
                 onchange: "this.form.requestSubmit()" %>
           </div>
           <div class="col-md-6">
-            <label class="form-label"><%= t('admin.users.index.search.label') %></label>
+            <label class="form-label"><%= t('common.name') %></label>
             <%= f.text_field :q, 
                 value: params[:q],
                 class: "form-control",
-                placeholder: t('admin.users.index.search.placeholder'),
+                placeholder: t('search.placeholders.enter_name'),
                 data: { 
                   resource_search_target: "input",
                   action: "input->resource-search#filter"
@@ -38,6 +38,7 @@
       <!-- ユーザー一覧 -->
       <%= render 'shared/components/resource_list',
         resources: @users,
+        resource_class: User,
         resource_name: 'user',
         columns: [
           { key: :name, label: User.human_attribute_name(:name) },

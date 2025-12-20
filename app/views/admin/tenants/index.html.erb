@@ -5,11 +5,11 @@
 
   <div class="card shadow-sm">
     <div class="card-body">
-      <!-- 検索フォーム -->
-      <%= form_with url: admin_tenants_path, method: :get, class: "mb-4", data: { controller: "resource-search", turbo_frame: "tenants_list" } do |f| %>
+      <!-- 検索・ソートフォーム -->
+      <%= form_with url: admin_tenants_path, method: :get, class: "mb-4", data: { controller: "resource-search" } do |f| %>
         <div class="row g-3">
           <div class="col-md-3">
-            <label class="form-label"><%= t('admin.tenants.index.sort_options.created_at') %></label>
+            <label class="form-label"><%= t('admin.tenants.index.sort_placeholder') %></label>
             <%= f.select :sort_by, 
                 options_for_select([
                   [t('admin.tenants.index.sort_placeholder'), ''],
@@ -21,11 +21,11 @@
                 onchange: "this.form.requestSubmit()" %>
           </div>
           <div class="col-md-6">
-            <label class="form-label"><%= t('admin.tenants.index.search.label') %></label>
+            <label class="form-label"><%= t('common.name') %></label>
             <%= f.text_field :q, 
                 value: params[:q],
                 class: "form-control",
-                placeholder: t('admin.tenants.index.search.placeholder'),
+                placeholder: t('search.placeholders.enter_name'),
                 data: { 
                   resource_search_target: "input",
                   action: "input->resource-search#filter"
@@ -37,6 +37,7 @@
       <!-- テナント一覧 -->
       <%= render 'shared/components/resource_list',
         resources: @tenants,
+        resource_class: Tenant,
         resource_name: 'tenant',
         columns: [
           { key: :name, label: Tenant.human_attribute_name(:name) },
