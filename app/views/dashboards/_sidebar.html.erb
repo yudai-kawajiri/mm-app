@@ -106,17 +106,24 @@
         <% collapse_id = "collapse-#{item[:name].parameterize}" %>
         <% parent_is_active = item[:submenu].any? { |sub| sidebar_link_active?(sub) } %>
 
-        <a href="#"
-           class="list-group-item list-group-item-action <%= 'active' if parent_is_active %>"
-           data-bs-toggle="collapse"
-           data-bs-target="#<%= collapse_id %>"
-           role="button"
-           aria-expanded="<%= parent_is_active %>"
-           aria-controls="<%= collapse_id %>"
-           onclick="event.preventDefault();">
-          <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
-          <i class="bi bi-chevron-down float-end"></i>
-        </a>
+        <% if item[:disabled] %>
+      <a href="#" class="list-group-item list-group-item-action <%= 'active' if parent_is_active %> disabled text-muted" title="<%= t('dashboard.menu.disabled_menu') %>" onclick="return false;">
+        <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
+        <i class="bi bi-lock-fill float-end"></i>
+      </a>
+    <% else %>
+      <a href="#"
+         class="list-group-item list-group-item-action <%= 'active' if parent_is_active %>"
+         data-bs-toggle="collapse"
+         data-bs-target="#<%= collapse_id %>"
+         role="button"
+         aria-expanded="<%= parent_is_active %>"
+         aria-controls="<%= collapse_id %>"
+         onclick="event.preventDefault();">
+        <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
+        <i class="bi bi-chevron-down float-end"></i>
+      </a>
+    <% end %>
 
         <div class="collapse <%= 'show' if parent_is_active %>"
              id="<%= collapse_id %>"
