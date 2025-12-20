@@ -8,7 +8,7 @@ class AddCompanyAndStoreToUsers < ActiveRecord::Migration[8.1]
     reversible do |dir|
       dir.up do
         # デフォルト会社作成
-        default_tenant = Tenant.create!(
+        default_company = Company.create!(
           name: "デフォルト会社",
           subdomain: "default",
           active: true
@@ -16,14 +16,14 @@ class AddCompanyAndStoreToUsers < ActiveRecord::Migration[8.1]
 
         # デフォルト店舗作成
         default_store = Store.create!(
-          tenant: default_tenant,
+          company: default_company,
           name: "本社",
           code: "HQ",
           active: true
         )
 
         # 既存ユーザーに付与
-        User.update_all(tenant_id: default_tenant.id, store_id: default_store.id)
+        User.update_all(company_id: default_company.id, store_id: default_store.id)
       end
     end
 
