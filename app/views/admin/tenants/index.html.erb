@@ -1,53 +1,60 @@
-<div class="container-fluid py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0"><%= t('admin.tenants.index.title') %></h1>
-  </div>
+<%= content_for(:title, t('admin.tenants.index.title')) %>
 
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <!-- 検索・ソートフォーム -->
-      <%= form_with url: admin_tenants_path, method: :get, class: "mb-4", data: { controller: "resource-search" } do |f| %>
-        <div class="row g-3">
-          <div class="col-md-3">
-            <label class="form-label"><%= t('admin.tenants.index.sort_placeholder') %></label>
-            <%= f.select :sort_by, 
-                options_for_select([
-                  [t('admin.tenants.index.sort_placeholder'), ''],
-                  [t('admin.tenants.index.sort_options.subdomain'), 'subdomain'],
-                  [t('admin.tenants.index.sort_options.created_at'), 'created_at']
-                ], params[:sort_by]),
-                {}, 
-                class: "form-select",
-                onchange: "this.form.requestSubmit()" %>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label"><%= t('common.name') %></label>
-            <%= f.text_field :q, 
-                value: params[:q],
-                class: "form-control",
-                placeholder: t('search.placeholders.enter_name'),
-                data: { 
-                  resource_search_target: "input",
-                  action: "input->resource-search#filter"
-                } %>
-          </div>
-        </div>
-      <% end %>
+<div data-controller="resource-search">
+  <%= render 'shared/layouts/header_with_actions',
+    title: t('admin.tenants.index.title'),
+    resource: nil,
+    is_index_page: true,
+    is_form_page: false,
+    is_show_page: false,
+    new_path: nil,
+    new_button_text: nil,
+    skip_store_check: true %>
 
-      <!-- テナント一覧 -->
-      <%= render 'shared/components/resource_list',
-        resources: @tenants,
-        resource_class: Tenant,
-        resource_name: 'tenant',
-        columns: [
-          { key: :name, label: Tenant.human_attribute_name(:name) },
-          { key: :subdomain, label: Tenant.human_attribute_name(:subdomain) },
-          { key: :created_at, label: Tenant.human_attribute_name(:created_at), format: ->(tenant) { l(tenant.created_at.to_date) } }
-        ],
-        search_name_proc: ->(tenant) { "#{tenant.name} #{tenant.subdomain}" },
-        actions: ->(tenant) {
-          link_to '詳細', admin_tenant_path(tenant), class: 'btn btn-sm btn-outline-primary'
-        } %>
+  <!-- 検索・ソートフォーム -->
+  <%= form_with url: admin_tenants_path, method: :get, class: "mb-3" do |f| %>
+    <div class="row g-2">
+      <div class="col-md-3">
+        <%= f.select :sort_by, 
+            options_for_select([
+              [t('admin.tenants.index.sort_placeholder'), ''],
+              [t('admin.tenants.index.sort_options.subdomain'), 'subdomain'],
+              [t('admin.tenants.index.sort_options.created_at'), 'created_at']
+            ], params[:sort_by]),
+            {}, 
+            class: "form-select form-select-sm",
+            onchange: "this.form.requestSubmit()" %>
+      </div>
+      <div class="col-md-6">
+        <%= f.text_field :q, 
+            value: params[:q],
+            class: "form-control form-control-sm",
+            placeholder: "テナント名またはサブドメインで検索",
+            data: { 
+              resource_search_target: "input",
+              action: "input->resource-search#filter"
+            } %>
+      </div>
     </div>
-  </div>
+  <% end %>
+
+  <%= render 'shared/components/resource_list',
+      resources: @tenants,
+      resource_class: Tenant,
+      search_target: nil,
+      sort_options: nil,
+      sort_placeholder: nil,
+      icon_mode: true,
+      show_copy: false,
+      show_print: false,
+      scope: [:admin],
+
+      columns: [
+        { header: :name, data: Proc.new { |tenant| tenant.name } },
+        { header: :subdomain, data: Proc.new { |tenant| tenant.subdomain } },
+        { header: :created_at, data: Proc.new { |tenant| l(tenant.created_at.to_date, format: :default) } }
+      ]
+  %>
+
+  <%= paginate @tenants, theme: 'bootstrap-5' %>
 </div>
