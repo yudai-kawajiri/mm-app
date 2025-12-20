@@ -23,11 +23,10 @@ ja:
           delete: "%{name}を削除してもよろしいですか?"
         empty_message: "ユーザーが登録されていません"
         sort_options:
-          name: "名前"
-          email: "メールアドレス"
-          role: "権限"
-          created_at: "登録日"
-        sort_placeholder: "並び替え"
+          email: "メールアドレス順"
+          created_at: "登録順"
+        search:
+          placeholder: "名前またはメールアドレスで検索"
       new:
         title: "ユーザー登録"
       edit:
@@ -89,10 +88,16 @@ ja:
     tenants:
       index:
         title: "テナント管理"
+        table_headers:
+          name: "テナント名"
+          subdomain: "サブドメイン"
+          created_at: "登録日"
+          actions: "アクション"
         sort_options:
           subdomain: "サブドメイン名順"
           created_at: "登録順"
-        sort_placeholder: "並び替え"
+        search:
+          placeholder: "テナント名またはサブドメインで検索"
         new_tenant: "テナント作成"
       new:
         title: "テナント作成"
@@ -119,6 +124,11 @@ ja:
     admin_requests:
       index:
         title: "承認リクエスト"
+        search:
+          placeholder: "名前またはメールアドレスで検索"
+        sort_options:
+          store: "店舗順"
+          created_at: "申請日順"
         no_requests: "承認リクエストはありません"
         table_headers:
           user: "リクエスト送信者"
@@ -127,34 +137,14 @@ ja:
           status: "ステータス"
           created_at: "登録日時"
           actions: "アクション"
-      request_types:
-        store_admin_request: "店舗管理者昇格"
-        user_registration: "ユーザー登録"
-      statuses:
-        pending: "承認待ち"
-        approved: "承認済み"
-        rejected: "却下"
-      created: "承認リクエストを送信しました"
-      default_reject_reason: "管理者により却下されました"
-      show:
-        title: "承認リクエスト詳細"
-        approve: "承認する"
-        reject: "却下する"
-        rejection_reason_label: "却下理由"
-        rejection_reason_placeholder: "却下理由を入力してください"
-      messages:
-        approved: "%{name} さんのリクエストを承認しました"
-        rejected: "リクエストを却下しました"
-        approve_failed: "承認に失敗しました"
-        reject_failed: "却下に失敗しました"
-        already_processed: "このリクエストは既に処理されています"
-        user_approved: "%{name} さんのユーザー登録を承認しました。ログインが可能になりました。"
-      confirm:
-        approve: "%{name} さんのリクエストを承認しますか？"
-
     stores:
       index:
         title: "店舗管理"
+        search:
+          placeholder: "店舗名またはコードで検索"
+        sort_options:
+          code: "店舗コード順"
+          created_at: "登録順"
         no_stores: "店舗が登録されていません"
         table_headers:
           code: "コード"
@@ -204,5 +194,9 @@ ja:
         cannot_delete_with_users: "ユーザーが所属している店舗は削除できません"
         invitation_code_regenerated: "招待コードを再発行しました"
         invitation_code_regenerate_failed: "招待コードの再発行に失敗しました"
+        not_found_or_unauthorized: "指定された店舗が見つからないか、アクセス権限がありません"
       confirm:
         regenerate_code: "招待コードを再発行しますか？現在のコードは無効になります。"
+
+    common:
+      not_found_or_unauthorized: "指定されたリソースが見つからないか、アクセス権限がありません"
