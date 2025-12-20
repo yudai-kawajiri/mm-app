@@ -32,7 +32,17 @@ class Admin::UsersController < Admin::BaseController
     end
 
     # 承認済みユーザーのみ表示
-    users_scope = users_scope.where(approved: true)
+    users_scope = users_scope.where(approved: true)# ソート処理
+case params[:sort_by]
+when 'email'
+  users_scope = users_scope.order(email: :asc)
+when 'created_at'
+  users_scope = users_scope.order(created_at: :desc)
+else
+  users_scope = users_scope.order(created_at: :desc)
+end
+
+
 
     @users = users_scope.page(params[:page]).per(20)
   end

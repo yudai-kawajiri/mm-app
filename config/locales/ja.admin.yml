@@ -153,9 +153,16 @@ ja:
       confirm:
         approve: "%{name} さんのリクエストを承認しますか？"
 
-    stores:
-      index:
-        title: "店舗管理"
+stores:
+  index:
+    title: "店舗管理"
+    search:
+      label: "店舗名"
+      placeholder: "店舗名を入力"
+    sort_options:
+      code: "店舗コード順"
+      created_at: "登録順"
+    sort_placeholder: "並び替え"
         no_stores: "店舗が登録されていません"
         table_headers:
           code: "コード"
