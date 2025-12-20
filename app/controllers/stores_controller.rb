@@ -11,7 +11,6 @@ class StoresController < AuthenticatedController
       store = current_tenant&.stores&.find_by(id: params[:store_id])
       if store
         session[:current_store_id] = store.id
-        Rails.logger.debug "DEBUG: StoresController#switch - session[:current_store_id] = #{session[:current_store_id]}"
         flash[:notice] = t('stores.switch.success', store_name: store.name)
       else
         flash[:alert] = t('stores.switch.not_found')
@@ -19,7 +18,6 @@ class StoresController < AuthenticatedController
     else
       # 全店舗を選択
       session[:current_store_id] = nil
-      Rails.logger.debug "DEBUG: StoresController#switch - session[:current_store_id] = nil (all stores)"
       flash[:notice] = t('stores.switch.all_stores')
     end
 
