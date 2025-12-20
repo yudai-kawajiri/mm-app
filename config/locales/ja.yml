@@ -462,6 +462,7 @@ ja:
       admin_request:
         user: ユーザー
         store: 店舗
+        company_id: 会社名
         company: 会社
         request_type: リクエスト種別
         status: ステータス
