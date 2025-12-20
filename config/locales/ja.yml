@@ -579,3 +579,26 @@ ja:
       contact: お問い合わせ
       terms: 利用規約
       privacy_policy: プライバシーポリシー
+    users:
+      index:
+        search:
+          placeholder: "名前またはメールアドレスで検索"
+        table_headers:
+          tenant: "会社名"
+          store: "店舗名"
+    stores:
+      index:
+        search:
+          placeholder: "店舗コードまたは店舗名で検索"
+        table_headers:
+          tenant: "会社名"
+    tenants:
+      index:
+        search:
+          placeholder: "会社名で検索"
+    admin_requests:
+      index:
+        search:
+          placeholder: "申請者名で検索"
+        table_headers:
+          tenant: "会社名"
