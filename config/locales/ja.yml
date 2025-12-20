@@ -300,7 +300,7 @@ ja:
       tenant:
         name: テナント名
         subdomain: サブドメイン
-        created_at: 作成日
+        created_at: 登録日
     messages:
       success_with_response_time: お問い合わせを送信しました。通常2〜3営業日以内にご返信いたします。
       failure: お問い合わせの送信に失敗しました。
