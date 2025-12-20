@@ -27,7 +27,7 @@ ja:
           email: "メールアドレス順"
           created_at: "登録順"
         search:
-          placeholder: "会社名またはリクエスト送信者名で検索"
+          placeholder: "名前またはメールアドレスで検索"
       new:
         title: "ユーザー登録"
       edit:

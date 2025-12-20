@@ -33,9 +33,9 @@ class Admin::UsersController < Admin::BaseController
   # 検索処理
   if params[:q].present?
     search_term = "%#{params[:q]}%"
-    users_scope = users_scope.left_joins(:company).where(
-      'users.name LIKE ? OR users.email LIKE ? OR companies.subdomain LIKE ?',
-      search_term, search_term, search_term
+    users_scope = users_scope.where(
+      'users.name LIKE ? OR users.email LIKE ?',
+      search_term, search_term
     )
   end
 

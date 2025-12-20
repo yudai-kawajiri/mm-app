@@ -5,46 +5,46 @@ class Admin::StoresController < Admin::BaseController
   before_action :authorize_store_management, only: [:new, :create, :edit, :update, :destroy, :regenerate_invitation_code]
 
 def index
-  # システム管理者の場合
-  if current_user.super_admin?
-    if session[:current_company_id].present?
-      @stores = Company.find(session[:current_company_id]).stores
+    # システム管理者の場合
+    if current_user.super_admin?
+      if session[:current_company_id].present?
+        @stores = Company.find(session[:current_company_id]).stores
+      else
+        @stores = Store.all
+      end
+    elsif current_user.store_admin?
+      @stores = current_user.company.stores.where(id: current_user.store_id)
     else
-      @stores = Store.all
+      @stores = current_user.company.stores
     end
-  elsif current_user.store_admin?
-    @stores = current_user.company.stores.where(id: current_user.store_id)
-  else
-    @stores = current_user.company.stores
+
+    # 検索処理
+    if params[:q].present?
+      search_term = "%#{params[:q]}%"
+      @stores = @stores.left_joins(:company).where(
+        'stores.name LIKE ? OR stores.code LIKE ? OR companies.subdomain LIKE ?',
+        search_term, search_term, search_term
+      ).distinct
+    end
+
+    # ソート処理（users_count 計算の前に実行）
+    case params[:sort_by]
+    when 'company'
+      @stores = @stores.left_joins(:company).order('companies.name ASC')
+    when 'code'
+      @stores = @stores.order('stores.code ASC')
+    when 'created_at'
+      @stores = @stores.order('stores.created_at DESC')
+    else
+      @stores = @stores.order('stores.code ASC')
+    end
+
+    # users_count を最後に計算（すでに left_joins(:company) されている場合も考慮）
+    @stores = @stores.left_joins(:users)
+                     .select('stores.*, COUNT(DISTINCT users.id) as users_count')
+                     .group('stores.id')
+                     .page(params[:page]).per(20)
   end
-
-# 検索処理
-if params[:q].present?
-  search_term = "%#{params[:q]}%"
-  @stores = @stores.left_joins(:company).where(
-    'stores.name LIKE ? OR stores.code LIKE ? OR companies.subdomain LIKE ?',
-    search_term, search_term, search_term
-  )
-end
-
-  # users_count を先に計算
-  @stores = @stores.left_joins(:users)
-                    .select('stores.*, COUNT(users.id) as users_count')
-                    .group('stores.id')
-
-  # ソート処理
-  case params[:sort_by]
-  when 'company'
-    @stores = @stores.joins(:company).order('companies.name ASC')
-  when 'code'
-    @stores = @stores.order('stores.code ASC')
-  when 'created_at'
-    @stores = @stores.order('stores.created_at DESC')
-  else
-    @stores = @stores.order('stores.code ASC') # デフォルト: 店舗コード昇順
-  end
-      .page(params[:page]).per(20)
-end
 
   def show
     # 承認済みユーザーのみ表示
@@ -81,7 +81,7 @@ end
       redirect_to admin_store_path(@store), alert: t('admin.stores.cannot_delete_with_users')
     else
       @store.destroy
-      redirect_to admin_stores_path, notice: t('admin.stores.destroyed')
+      redirect_to admin_stores_path, notice: t('admin.stores.deleted')
     end
   end
 
@@ -93,14 +93,7 @@ end
   private
 
   def set_store
-    # 店舗管理者は自店舗のみアクセス可能
-    if current_user.store_admin?
-      @store = current_user.company.stores.where(id: current_user.store_id).find(params[:id])
-    else
-      @store = current_user.company.stores.find(params[:id])
-    end
-  rescue ActiveRecord::RecordNotFound
-    redirect_to admin_stores_path, alert: t('admin.stores.not_found_or_unauthorized')
+    @store = Store.find(params[:id])
   end
 
   def store_params
@@ -108,9 +101,8 @@ end
   end
 
   def authorize_store_management
-    # 店舗管理者は作成・編集・削除不可
-    if current_user.store_admin?
-      redirect_to admin_stores_path, alert: t('errors.messages.unauthorized')
+    unless current_user.company_admin? || current_user.super_admin?
+      redirect_to admin_stores_path, alert: t('admin.stores.unauthorized')
     end
   end
 end

@@ -27,6 +27,7 @@
       resources: @stores,
       resource_class: Store,
       search_target: nil,
+      search_name_proc: Proc.new { |store| "#{store.code} #{store.name}" },
       sort_options: nil,
       sort_placeholder: nil,
       icon_mode: true,

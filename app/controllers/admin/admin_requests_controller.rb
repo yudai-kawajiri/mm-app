@@ -12,7 +12,7 @@ class Admin::AdminRequestsController < Admin::BaseController
       @admin_requests = @admin_requests.joins(:user, :company).where(
         'users.name LIKE ? OR companies.name LIKE ? OR companies.subdomain LIKE ?',
         search_term, search_term, search_term
-      )
+      ).distinct
     end
 
     # ソート処理

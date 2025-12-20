@@ -12,7 +12,7 @@ class Admin::CompaniesController < ApplicationController
       @companies = @companies.where(
         'companies.name LIKE ? OR companies.subdomain LIKE ?',
         search_term, search_term
-      )
+      ).distinct
     end
 
     # ソート処理
