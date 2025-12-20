@@ -451,6 +451,7 @@ ja:
         invitation_code: 招待コード
         approved: 承認状態
       store:
+        company: 会社名
         name: 店舗名
         code: 店舗コード
         invitation_code: 招待コード

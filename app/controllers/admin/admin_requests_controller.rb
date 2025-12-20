@@ -10,7 +10,7 @@ class Admin::AdminRequestsController < Admin::BaseController
     if params[:q].present?
       search_term = "%#{params[:q]}%"
       @admin_requests = @admin_requests.joins(:user, :company).where(
-        'users.name LIKE ? OR users.email LIKE ? OR companies.subdomain LIKE ?',
+        'users.name LIKE ? OR companies.name LIKE ? OR companies.subdomain LIKE ?',
         search_term, search_term, search_term
       )
     end
@@ -24,7 +24,7 @@ class Admin::AdminRequestsController < Admin::BaseController
     when 'created_at'
       @admin_requests.order(created_at: :desc)
     else
-      @admin_requests.order(created_at: :desc)
+      @admin_requests.joins(:company).order('companies.name ASC')
     end
 
     @admin_requests = @admin_requests.includes(:user, :store, :company).page(params[:page]).per(20)

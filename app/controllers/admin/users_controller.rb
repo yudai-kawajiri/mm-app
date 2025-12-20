@@ -50,9 +50,6 @@ class Admin::UsersController < Admin::BaseController
   else
     users_scope = users_scope.order(created_at: :desc)
   end
-end
-
-
 
     @users = users_scope.page(params[:page]).per(20)
   end

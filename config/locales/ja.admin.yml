@@ -27,7 +27,7 @@ ja:
           email: "メールアドレス順"
           created_at: "登録順"
         search:
-          placeholder: "名前またはメールアドレスで検索"
+          placeholder: "会社名またはリクエスト送信者名で検索"
       new:
         title: "ユーザー登録"
       edit:
@@ -126,7 +126,7 @@ ja:
       index:
         title: "承認リクエスト"
         search:
-          placeholder: "名前またはメールアドレスで検索"
+          placeholder: "会社名またはリクエスト送信者名で検索"
         sort_options:
           company: "会社順"
           store: "店舗順"

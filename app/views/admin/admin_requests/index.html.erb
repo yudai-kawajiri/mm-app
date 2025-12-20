@@ -14,6 +14,7 @@
       form_path: admin_admin_requests_path,
       search_placeholder: t('admin.admin_requests.index.search.placeholder'),
       sort_options: [
+        [t('admin.admin_requests.index.sort_options.company'), 'company'],
         [t('admin.admin_requests.index.sort_options.store'), 'store'],
         [t('admin.admin_requests.index.sort_options.created_at'), 'created_at']
       ],
@@ -37,7 +38,7 @@
         </thead>
         <tbody>
           <% @admin_requests.each do |request| %>
-            <tr data-resource-search-target="row" data-search-name="<%= request.user.name %>" data-search-email="<%= request.user.email %>">
+            <tr data-resource-search-target="row" data-search-name="<%= request.user.company&.name %> <%= request.user.name %>">
               <td><%= request.user.company&.name || '-' %></td>
               <td><%= request.user.name %></td>
               <td><%= request.store&.name || '-' %></td>

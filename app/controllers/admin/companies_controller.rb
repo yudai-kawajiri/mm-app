@@ -6,6 +6,15 @@ class Admin::CompaniesController < ApplicationController
   def index
     @companies = Company.all
 
+    # 検索処理
+    if params[:q].present?
+      search_term = "%#{params[:q]}%"
+      @companies = @companies.where(
+        'companies.name LIKE ? OR companies.subdomain LIKE ?',
+        search_term, search_term
+      )
+    end
+
     # ソート処理
     case params[:sort_by]
     when 'subdomain'

@@ -27,21 +27,22 @@ if params[:q].present?
   )
 end
 
-  # ソート処理
-  case params[:sort_by]
-  when 'company'
-    @stores = @stores.left_joins(:company).order('companies.name ASC')
-  when 'code'
-    @stores = @stores.order(code: :asc)
-  when 'created_at'
-    @stores = @stores.order(created_at: :desc)
-  else
-    @stores = @stores.order(code: :asc) # デフォルト: 店舗コード昇順
-  end
-
+  # users_count を先に計算
   @stores = @stores.left_joins(:users)
                     .select('stores.*, COUNT(users.id) as users_count')
                     .group('stores.id')
+
+  # ソート処理
+  case params[:sort_by]
+  when 'company'
+    @stores = @stores.joins(:company).order('companies.name ASC')
+  when 'code'
+    @stores = @stores.order('stores.code ASC')
+  when 'created_at'
+    @stores = @stores.order('stores.created_at DESC')
+  else
+    @stores = @stores.order('stores.code ASC') # デフォルト: 店舗コード昇順
+  end
       .page(params[:page]).per(20)
 end
 
