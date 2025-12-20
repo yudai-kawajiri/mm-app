@@ -87,7 +87,7 @@ class Planning::ProductMaterial < ApplicationRecord
 
   private
 
-  # 親の Product から tenant_id を継承
+  # 親の Product から company_id を継承
   #
   # 【実装意図】
   # ネストされた属性として保存される ProductMaterial に対し、
