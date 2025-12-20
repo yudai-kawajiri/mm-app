@@ -5,9 +5,6 @@ class Admin::StoresController < Admin::BaseController
   before_action :authorize_store_management, only: [:new, :create, :edit, :update, :destroy, :regenerate_invitation_code]
 
   def index
-    Rails.logger.info "DEBUG: Stores#index - current_user.super_admin? = #{current_user.super_admin?}"
-    Rails.logger.info "DEBUG: Stores#index - session[:current_tenant_id] = #{session[:current_tenant_id].inspect}"
-    Rails.logger.info "DEBUG: Stores#index - current_tenant = #{current_tenant&.name rescue nil}"
     # システム管理者の場合
     if current_user.super_admin?
       # session[:current_tenant_id] でフィルタ
