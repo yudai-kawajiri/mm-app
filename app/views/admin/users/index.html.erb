@@ -11,10 +11,42 @@
     new_button_text: t('admin.users.index.actions.invite'),
     skip_store_check: true %>
 
+  <%= form_with url: admin_users_path, method: :get, html: { class: "mb-3" } do |f| %>
+    <div class="d-flex flex-row align-items-end">
+      <div class="p-1" style="min-width: 300px;">
+        <label class="form-label mb-1 small text-muted"><%= t('common.name') %></label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <%= f.text_field :q,
+            value: params[:q],
+            class: "form-control",
+            placeholder: t('search.placeholders.enter_name'),
+            autocomplete: "off",
+            data: {
+              resource_search_target: "input",
+              action: "input->resource-search#search keydown->resource-search#search"
+            } %>
+        </div>
+      </div>
+
+      <% has_params = params[:q].present? %>
+      <div class="p-1 <%= 'd-none' unless has_params %>" data-resource-search-target="clearButton">
+        <label class="form-label mb-1 small text-muted">&nbsp;</label>
+        <%= link_to t('common.clear'),
+            admin_users_path,
+            class: "btn btn-outline-secondary d-block",
+            data: {
+              action: "click->resource-search#clear",
+              turbo: false
+            } %>
+      </div>
+    </div>
+  <% end %>
+
   <%= render 'shared/components/resource_list',
       resources: @users,
       resource_class: User,
-      search_target: "name",
+      search_target: nil,
       search_name_proc: Proc.new { |user| "#{user.name} #{user.email}" },
       sort_options: nil,
       sort_placeholder: nil,

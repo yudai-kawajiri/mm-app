@@ -9,17 +9,57 @@
       is_show_page: false,
       new_path: new_admin_tenant_path %>
 
+  <%= form_with url: admin_tenants_path, method: :get, html: { class: "mb-3" } do |f| %>
+    <div class="d-flex flex-row align-items-end">
+      <div class="p-1 me-3" style="min-width: 250px;">
+        <label class="form-label mb-1 small text-muted"><%= t('common.sort_by') %></label>
+        <%= f.select :sort_by,
+              options_for_select([
+                [t('admin.tenants.index.sort_options.name'), 'name'],
+                [t('admin.tenants.index.sort_options.subdomain'), 'subdomain'],
+                [t('admin.tenants.index.sort_options.created_at'), 'created_at']
+              ], params[:sort_by]),
+              { include_blank: t('helpers.prompt.select') },
+              { class: "form-select", onchange: "this.form.requestSubmit()" } %>
+      </div>
+
+      <div class="p-1" style="min-width: 300px;">
+        <label class="form-label mb-1 small text-muted"><%= t('common.name') %></label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <%= f.text_field :q,
+            value: params[:q],
+            class: "form-control",
+            placeholder: t('search.placeholders.enter_name'),
+            autocomplete: "off",
+            data: {
+              resource_search_target: "input",
+              action: "input->resource-search#search keydown->resource-search#search"
+            } %>
+        </div>
+      </div>
+
+      <% has_params = params[:q].present? || params[:sort_by].present? %>
+      <div class="p-1 <%= 'd-none' unless has_params %>" data-resource-search-target="clearButton">
+        <label class="form-label mb-1 small text-muted">&nbsp;</label>
+        <%= link_to t('common.clear'),
+            admin_tenants_path,
+            class: "btn btn-outline-secondary d-block",
+            data: {
+              action: "click->resource-search#clear",
+              turbo: false
+            } %>
+      </div>
+    </div>
+  <% end %>
+
   <%= render 'shared/components/resource_list',
       resources: @tenants,
       resource_class: Tenant,
-      search_target: "name",
+      search_target: nil,
       search_name_proc: Proc.new { |tenant| "#{tenant.name} #{tenant.subdomain}" },
-      sort_options: [
-        [t('admin.tenants.index.sort_options.name'), 'name'],
-        [t('admin.tenants.index.sort_options.subdomain'), 'subdomain'],
-        [t('admin.tenants.index.sort_options.created_at'), 'created_at']
-      ],
-      sort_placeholder: t('admin.tenants.index.sort_placeholder'),
+      sort_options: nil,
+      sort_placeholder: nil,
       icon_mode: true,
       show_copy: false,
       scope: [:admin],
