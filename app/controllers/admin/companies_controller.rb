@@ -50,7 +50,7 @@ class Admin::CompaniesController < ApplicationController
 
   def destroy
     if @company.destroy
-      redirect_to admin_tenants_path, notice: t('admin.companies.messages.destroyed')
+      redirect_to admin_companies_path, notice: t('admin.companies.messages.destroyed')
     else
       redirect_to admin_tenant_path(@company), alert: @company.errors.full_messages.join(', ')
     end

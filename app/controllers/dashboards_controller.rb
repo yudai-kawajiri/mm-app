@@ -21,7 +21,7 @@ class DashboardsController < AuthenticatedController
   def render_admin_dashboard
     # 承認待ちユーザー数: 全テナント
     @pending_users_count = User.where(approved: false).count
-    @tenants_count = Company.count
+    @companies_count = Company.count
     @stores_count = Store.count
 
     # システム管理者: 全ログ表示

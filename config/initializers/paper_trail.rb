@@ -18,8 +18,8 @@ class PaperTrail::Version < ActiveRecord::Base
     # tenant_id を設定
     if item.respond_to?(:tenant_id)
       self.tenant_id = item.tenant_id
-    elsif item.respond_to?(:tenant)
-      self.tenant_id = item.tenant&.id
+    elsif item.respond_to?(:company)
+      self.tenant_id = item.company&.id
     end
   end
 end
