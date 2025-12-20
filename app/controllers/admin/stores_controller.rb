@@ -18,8 +18,19 @@ def index
     @stores = current_user.company.stores
   end
 
+# 検索処理
+if params[:q].present?
+  search_term = "%#{params[:q]}%"
+  @stores = @stores.left_joins(:company).where(
+    'stores.name LIKE ? OR stores.code LIKE ? OR companies.subdomain LIKE ?',
+    search_term, search_term, search_term
+  )
+end
+
   # ソート処理
   case params[:sort_by]
+  when 'company'
+    @stores = @stores.left_joins(:company).order('companies.name ASC')
   when 'code'
     @stores = @stores.order(code: :asc)
   when 'created_at'

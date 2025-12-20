@@ -28,15 +28,28 @@ class Admin::UsersController < Admin::BaseController
     end
   end
 
-  # 承認済みユーザーのみ表示
-  users_scope = users_scope.where(approved: true)# ソート処理
-case params[:sort_by]
-when 'email'
-  users_scope = users_scope.order(email: :asc)
-when 'created_at'
-  users_scope = users_scope.order(created_at: :desc)
-else
-  users_scope = users_scope.order(created_at: :desc)
+  users_scope = users_scope.where(approved: true)
+
+  # 検索処理
+  if params[:q].present?
+    search_term = "%#{params[:q]}%"
+    users_scope = users_scope.left_joins(:company).where(
+      'users.name LIKE ? OR users.email LIKE ? OR companies.subdomain LIKE ?',
+      search_term, search_term, search_term
+    )
+  end
+
+  # ソート処理
+  case params[:sort_by]
+  when 'company'
+    users_scope = users_scope.left_joins(:company).order('companies.name ASC')
+  when 'email'
+    users_scope = users_scope.order(email: :asc)
+  when 'created_at'
+    users_scope = users_scope.order(created_at: :desc)
+  else
+    users_scope = users_scope.order(created_at: :desc)
+  end
 end
 
 

@@ -23,6 +23,7 @@ ja:
           delete: "%{name}を削除してもよろしいですか?"
         empty_message: "ユーザーが登録されていません"
         sort_options:
+          company: "会社順"
           email: "メールアドレス順"
           created_at: "登録順"
         search:
@@ -127,6 +128,7 @@ ja:
         search:
           placeholder: "名前またはメールアドレスで検索"
         sort_options:
+          company: "会社順"
           store: "店舗順"
           created_at: "申請日順"
         no_requests: "承認リクエストはありません"
@@ -159,10 +161,12 @@ ja:
         search:
           placeholder: "店舗名またはコードで検索"
         sort_options:
+          company: "会社順"
           code: "店舗コード順"
           created_at: "登録順"
         no_stores: "店舗が登録されていません"
         table_headers:
+          company: "会社名"
           code: "コード"
           name: "店舗名"
           invitation_code: "招待コード"
