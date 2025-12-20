@@ -1,6 +1,6 @@
-class AddTenantToVersions < ActiveRecord::Migration[8.1]
+class AddCompanyToVersions < ActiveRecord::Migration[8.1]
   def change
-    add_reference :versions, :tenant, null: true, foreign_key: true
+    add_reference :versions, :company, null: true, foreign_key: true
     
     reversible do |dir|
       dir.up do

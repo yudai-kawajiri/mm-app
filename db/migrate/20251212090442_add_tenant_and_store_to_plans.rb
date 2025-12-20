@@ -1,6 +1,6 @@
-class AddTenantAndStoreToPlans < ActiveRecord::Migration[8.1]
+class AddCompanyAndStoreToPlans < ActiveRecord::Migration[8.1]
   def change
-    add_reference :plans, :tenant, null: true, foreign_key: true
+    add_reference :plans, :company, null: true, foreign_key: true
     add_reference :plans, :store, null: true, foreign_key: true
     
     reversible do |dir|
@@ -14,6 +14,6 @@ class AddTenantAndStoreToPlans < ActiveRecord::Migration[8.1]
       end
     end
     
-    change_column_null :plans, :tenant_id, false
+    change_column_null :plans, :company_id, false
   end
 end

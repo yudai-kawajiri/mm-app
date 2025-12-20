@@ -1,7 +1,7 @@
-class AddTenantAndStoreToUsers < ActiveRecord::Migration[8.1]
+class AddCompanyAndStoreToUsers < ActiveRecord::Migration[8.1]
   def change
     # 1. まず null: true でカラム追加
-    add_reference :users, :tenant, null: true, foreign_key: true
+    add_reference :users, :company, null: true, foreign_key: true
     add_reference :users, :store, null: true, foreign_key: true
 
     # 2. デフォルト会社 & 店舗を作成
@@ -28,6 +28,6 @@ class AddTenantAndStoreToUsers < ActiveRecord::Migration[8.1]
     end
 
     # 3. tenant_id を NOT NULL に変更
-    change_column_null :users, :tenant_id, false
+    change_column_null :users, :company_id, false
   end
 end

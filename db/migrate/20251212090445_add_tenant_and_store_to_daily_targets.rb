@@ -1,6 +1,6 @@
-class AddTenantAndStoreToDailyTargets < ActiveRecord::Migration[8.1]
+class AddCompanyAndStoreToDailyTargets < ActiveRecord::Migration[8.1]
   def change
-    add_reference :daily_targets, :tenant, null: true, foreign_key: true
+    add_reference :daily_targets, :company, null: true, foreign_key: true
     add_reference :daily_targets, :store, null: true, foreign_key: true
     
     reversible do |dir|
@@ -14,6 +14,6 @@ class AddTenantAndStoreToDailyTargets < ActiveRecord::Migration[8.1]
       end
     end
     
-    change_column_null :daily_targets, :tenant_id, false
+    change_column_null :daily_targets, :company_id, false
   end
 end

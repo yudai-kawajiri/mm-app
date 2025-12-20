@@ -1,6 +1,6 @@
-class AddTenantAndStoreToActiveStorageAttachments < ActiveRecord::Migration[8.1]
+class AddCompanyAndStoreToActiveStorageAttachments < ActiveRecord::Migration[8.1]
   def change
-    add_reference :active_storage_attachments, :tenant, null: true, foreign_key: true
+    add_reference :active_storage_attachments, :company, null: true, foreign_key: true
     add_reference :active_storage_attachments, :store, null: true, foreign_key: true
     
     reversible do |dir|

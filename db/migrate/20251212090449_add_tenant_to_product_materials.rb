@@ -1,6 +1,6 @@
-class AddTenantToProductMaterials < ActiveRecord::Migration[8.1]
+class AddCompanyToProductMaterials < ActiveRecord::Migration[8.1]
   def change
-    add_reference :product_materials, :tenant, null: true, foreign_key: true
+    add_reference :product_materials, :company, null: true, foreign_key: true
     
     reversible do |dir|
       dir.up do
@@ -12,6 +12,6 @@ class AddTenantToProductMaterials < ActiveRecord::Migration[8.1]
       end
     end
     
-    change_column_null :product_materials, :tenant_id, false
+    change_column_null :product_materials, :company_id, false
   end
 end

@@ -1,6 +1,6 @@
-class AddTenantAndStoreToMaterialOrderGroups < ActiveRecord::Migration[8.1]
+class AddCompanyAndStoreToMaterialOrderGroups < ActiveRecord::Migration[8.1]
   def change
-    add_reference :material_order_groups, :tenant, null: true, foreign_key: true
+    add_reference :material_order_groups, :company, null: true, foreign_key: true
     add_reference :material_order_groups, :store, null: true, foreign_key: true
     
     reversible do |dir|
@@ -14,6 +14,6 @@ class AddTenantAndStoreToMaterialOrderGroups < ActiveRecord::Migration[8.1]
       end
     end
     
-    change_column_null :material_order_groups, :tenant_id, false
+    change_column_null :material_order_groups, :company_id, false
   end
 end
