@@ -6,11 +6,11 @@ class AddCompanyAndStoreToProducts < ActiveRecord::Migration[8.1]
     reversible do |dir|
       dir.up do
         # SQL で直接 company_id と store_id を取得
-        tenant_id = execute("SELECT id FROM companies ORDER BY id LIMIT 1").first&.fetch('id')
+        company_id = execute("SELECT id FROM companies ORDER BY id LIMIT 1").first&.fetch('id')
         store_id = execute("SELECT id FROM stores ORDER BY id LIMIT 1").first&.fetch('id')
         
-        if tenant_id && store_id
-          execute "UPDATE products SET tenant_id = #{tenant_id}, store_id = #{store_id} WHERE tenant_id IS NULL"
+        if company_id && store_id
+          execute "UPDATE products SET company_id = #{company_id}, store_id = #{store_id} WHERE company_id IS NULL"
         end
       end
     end
