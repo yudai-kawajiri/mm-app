@@ -7,10 +7,22 @@
       is_index_page: true,
       is_form_page: false,
       is_show_page: false,
-      new_path: nil %>
+      new_path: nil,
+      skip_store_check: true %>
+
+  <%= render 'shared/forms/search_form',
+      form_path: admin_admin_requests_path,
+      search_placeholder: t('admin.admin_requests.index.search.placeholder'),
+      sort_options: [
+        [t('admin.admin_requests.index.sort_options.store'), 'store'],
+        [t('admin.admin_requests.index.sort_options.created_at'), 'created_at']
+      ],
+      sort_by: params[:sort_by],
+      category_options: nil,
+      hide_category: true %>
 
   <% if @admin_requests.any? %>
-    <div class="table-responsive">
+    <div class="table-responsive" data-resource-search-target="results">
       <table class="table table-hover align-middle">
         <thead class="table-light">
           <tr>
@@ -24,7 +36,7 @@
         </thead>
         <tbody>
           <% @admin_requests.each do |request| %>
-            <tr>
+            <tr data-resource-search-target="row" data-search-name="<%= request.user.name %>" data-search-email="<%= request.user.email %>">
               <td><%= request.user.name %></td>
               <td><%= request.store&.name || '-' %></td>
               <td><%= t("activerecord.enums.admin_request.request_type.#{request.request_type}") %></td>

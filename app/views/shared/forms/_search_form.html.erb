@@ -67,7 +67,7 @@
         <%= f.text_field :q,
           value: params[:q],
           class: "form-control",
-          placeholder: t('search.placeholders.enter_name'),
+          placeholder: (local_assigns[:search_placeholder] || t('search.placeholders.enter_name')),
           autocomplete: "off",
           data: {
             resource_search_target: "input",
