@@ -12,13 +12,14 @@
     skip_store_check: true %>
 
   <%= render 'shared/forms/search_form',
-      search_path: admin_tenants_path,
+      form_path: admin_tenants_path,
       search_placeholder: t('admin.tenants.index.search.placeholder'),
       sort_options: [
-        ['subdomain', t('admin.tenants.index.sort_options.subdomain')],
-        ['created_at', t('admin.tenants.index.sort_options.created_at')]
+        [t('admin.tenants.index.sort_placeholder'), ''],
+        [t('admin.tenants.index.sort_options.subdomain'), 'subdomain'],
+        [t('admin.tenants.index.sort_options.created_at'), 'created_at']
       ],
-      sort_placeholder: t('admin.tenants.index.sort_placeholder'),
+      sort_by: params[:sort_by],
       category_options: nil,
       hide_category: true %>
 
