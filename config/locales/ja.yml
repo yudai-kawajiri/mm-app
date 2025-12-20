@@ -595,6 +595,7 @@ ja:
       store_selection_note: "※ 会社選択時に店舗を選択できます"
       no_store: 店舗未設定
     menu:
+      disabled_menu: "この機能は利用できません"
       title: メニュー
       settings: 設定
       account_settings: アカウント設定
