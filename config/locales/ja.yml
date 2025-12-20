@@ -566,7 +566,7 @@ ja:
     sidebar:
       company: 会社
       store: 店舗
-      system_admin_mode: システム管理
+      system_admin_mode: "システム管理（全会社）"
       all_stores: 全店舗
       select_company_first: 会社を選択してください
       store_selection_note: "※ 会社選択時に店舗を選択できます"
@@ -600,5 +600,16 @@ ja:
       index:
         search:
           placeholder: "申請者名で検索"
-        table_headers:
-          company: "会社名"
+    system_logs:
+      index:
+        title: システムログ
+        model: モデル
+        user: ユーザー
+        date_from: 開始日
+        date_to: 終了日
+        filter: フィルタ
+        record_id: レコードID
+        no_logs: ログがありません
+      table_headers:
+        company: 会社名
+        store: 店舗名
