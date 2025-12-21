@@ -725,20 +725,42 @@ end
   #   scoped_path(:resources_material_path, @material)
   #   # => "/c/company-subdomain/resources/materials/123"
   #
-  def scoped_path(path_method, *args, **options)
+
+  # ============================================================
+  # パスベース対応ヘルパー
+  # ============================================================
+
+  #
+  # パスベース対応: 会社スコープ付きのパスを自動生成
+  #
+  # @param path_method [Symbol] パスメソッド名（例: :admin_users_path）
+  # @param args [Array] パスメソッドの引数
+  # @return [String] 会社スコープ付きパス
+  #
+  # @example
+  #   scoped_path(:admin_users_path)
+  #   # => "/c/company-subdomain/admin/users"
+  #
+  #   scoped_path(:resources_material_path, @material)
+  #   # => "/c/company-subdomain/resources/materials/123"
+  #
+end
+  def scoped_path(path_method, *args)
     if current_company.present?
       method_name = "company_#{path_method}"
       if respond_to?(method_name)
-        send(method_name, company_subdomain: current_company.subdomain, *args, **options)
+        # キーワード引数は位置引数の後に配置
+        send(method_name, *args, company_subdomain: current_company.subdomain)
       else
         # company_ プレフィックスが不要な場合（例: root_path）
-        send(path_method, *args, **options)
+        send(path_method, *args)
       end
     else
       # 会社が取得できない場合
-      send(path_method, *args, **options)
+      send(path_method, *args)
     end
   rescue NoMethodError => e
     Rails.logger.error "Path generation failed for #{path_method}: #{e.message}"
     "#"
   end
+end
