@@ -13,7 +13,7 @@ class ApplicationRequestsController < ApplicationController
     if @application_request.save
       @application_request.generate_invitation_token!
       ApplicationRequestMailer.invitation_email(@application_request).deliver_later
-      redirect_to thanks_application_requests_path, notice: "招待メールを送信しました"
+      redirect_to thanks_application_requests_path, notice: t("application_requests.create.success")
     else
       render :new, status: :unprocessable_entity
     end

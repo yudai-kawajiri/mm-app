@@ -645,3 +645,5 @@ ja:
     accept_confirm:
       success: "アカウント登録が完了しました。ログインしてください"
       failure: "登録に失敗しました: %{error}"
+    create:
+      success: "招待メールを送信しました"

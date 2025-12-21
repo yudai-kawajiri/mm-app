@@ -723,22 +723,26 @@ module ApplicationHelper
   #   scoped_path(:resources_material_path, @material)
   #   # => "/c/company-subdomain/resources/materials/123"
   #
-  def scoped_path(path_method, *args)
-    if current_company.present?
-      method_name = "company_#{path_method}"
-      if respond_to?(method_name)
-        # キーワード引数は位置引数の後に配置
-        send(method_name, *args, company_subdomain: current_company.subdomain)
-      else
-        # company_ プレフィックスが不要な場合（例: root_path）
-        send(path_method, *args)
-      end
-    else
-      # 会社が取得できない場合
-      send(path_method, *args)
-    end
-  rescue NoMethodError => e
-    Rails.logger.error "Path generation failed for #{path_method}: #{e.message}"
-    "#"
-  end
 end
+
+  # パスベース対応: 動的に company_ プレフィックス付きパスを生成
+  def scoped_path(path_method, *args)
+    return send(path_method, *args) unless current_company.present?
+
+    # company_ プレフィックス付きメソッド名を試す
+    company_method_name = "company_#{path_method}"
+    
+    begin
+      # まず company_ プレフィックス付きを試す
+      send(company_method_name, *args, company_subdomain: current_company.subdomain)
+    rescue NoMethodError => e
+      # company_ プレフィックスが不要な場合（例: root_path, terms_path）
+      Rails.logger.debug "Path fallback for #{path_method}: #{e.message}"
+      begin
+        send(path_method, *args)
+      rescue NoMethodError => fallback_error
+        Rails.logger.error "Path generation completely failed for #{path_method}: #{fallback_error.message}"
+        "#"
+      end
+    end
+  end
