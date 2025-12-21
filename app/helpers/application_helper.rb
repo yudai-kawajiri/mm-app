@@ -71,14 +71,14 @@ module ApplicationHelper
   #
   def sidebar_menu_items
     items = [
-      { name: t("dashboard.menu.dashboard"), path: authenticated_root_path },
+      { name: t("dashboard.menu.dashboard"), path: company_root_path(company_subdomain: current_company.subdomain) },
       {
         name: t("dashboard.menu.category_management"),
         path: scoped_path(:resources_categories_path),
         disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
           { name: t("dashboard.menu.category_list"), path: scoped_path(:resources_categories_path) },
-          { name: t("dashboard.menu.new_category"), path: new_resources_category_path }
+          { name: t("dashboard.menu.new_category"), path: scoped_path(:new_resources_category_path) }
         ]
       },
       {
@@ -90,7 +90,7 @@ module ApplicationHelper
             path: scoped_path(:resources_units_path),
             submenu: [
               { name: t("dashboard.menu.unit_list"), path: scoped_path(:resources_units_path) },
-              { name: t("dashboard.menu.new_unit"), path: new_resources_unit_path }
+              { name: t("dashboard.menu.new_unit"), path: scoped_path(:new_resources_unit_path) }
             ]
           },
           {
@@ -98,7 +98,7 @@ module ApplicationHelper
             path: scoped_path(:resources_material_order_groups_path),
             submenu: [
               { name: t("dashboard.menu.order_group_list"), path: scoped_path(:resources_material_order_groups_path) },
-              { name: t("dashboard.menu.new_order_group"), path: new_resources_material_order_group_path }
+              { name: t("dashboard.menu.new_order_group"), path: scoped_path(:new_resources_material_order_group_path) }
             ]
           },
           {
@@ -106,7 +106,7 @@ module ApplicationHelper
             path: scoped_path(:resources_materials_path),
             submenu: [
               { name: t("dashboard.menu.material_list"), path: scoped_path(:resources_materials_path) },
-              { name: t("dashboard.menu.new_material"), path: new_resources_material_path }
+              { name: t("dashboard.menu.new_material"), path: scoped_path(:new_resources_material_path) }
             ]
           }
         ]
@@ -117,7 +117,7 @@ module ApplicationHelper
         disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
           { name: t("dashboard.menu.product_list"), path: scoped_path(:resources_products_path) },
-          { name: t("dashboard.menu.new_product"), path: new_resources_product_path }
+          { name: t("dashboard.menu.new_product"), path: scoped_path(:new_resources_product_path) }
         ]
       },
       {
@@ -126,7 +126,7 @@ module ApplicationHelper
         disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
           { name: t("dashboard.menu.plan_list"), path: scoped_path(:resources_plans_path) },
-          { name: t("dashboard.menu.new_plan"), path: new_resources_plan_path }
+          { name: t("dashboard.menu.new_plan"), path: scoped_path(:new_resources_plan_path) }
         ]
       },
       {
@@ -202,8 +202,8 @@ module ApplicationHelper
     if item[:name] == t("dashboard.menu.dashboard")
       # ダッシュボード関連のパスを厳密にチェック
       dashboard_paths = [
-        authenticated_root_path,
-        dashboards_path,
+        company_root_path(company_subdomain: current_company.subdomain),
+        company_dashboards_path(company_subdomain: current_company.subdomain),
         "/dashboards"
       ].compact
 
