@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Admin::Users", type: :request do
-  let(:super_admin_user) { create(:user, :super_admin) }
+  let(:super_admin_user) { create(:user, :super_admin, approved: true) }
   let(:general_user) { create(:user, :general) }
 
   describe 'GET /admin/users' do
@@ -14,8 +14,8 @@ RSpec.describe "Admin::Users", type: :request do
       end
 
       it '@usersに全ユーザーを割り当てること' do
-        user1 = create(:user)
-        user2 = create(:user)
+        user1 = create(:user, approved: true)
+        user2 = create(:user, approved: true)
         get admin_users_path
         expect(assigns(:users)).to include(user1, user2, super_admin_user)
       end
