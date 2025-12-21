@@ -8,7 +8,7 @@ class Users::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
-    # パラメータからユーザーを取得してチェック(ログイン前)
+    # ログイン前にチェック
     if params[:user] && params[:user][:email].present?
       user = User.find_by(email: params[:user][:email])
       if user&.super_admin? && request.subdomain != 'admin'
