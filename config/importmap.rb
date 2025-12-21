@@ -46,7 +46,6 @@ pin "controllers/ui/flash_controller", to: "controllers/ui/flash_controller.js"
 pin "controllers/ui/image_preview_controller", to: "controllers/ui/image_preview_controller.js"
 
 # Chart Controllers
-pin "controllers/charts/budget_chart_controller", to: "controllers/charts/budget_chart_controller.js"
 
 # Help Controllers
 pin "controllers/help_search_controller", to: "controllers/help_search_controller.js"
