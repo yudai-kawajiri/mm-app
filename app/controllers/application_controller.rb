@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_company, :current_store
 
   before_action :auto_login_pending_user
+  before_action :check_super_admin_subdomain
 
   protected
 
@@ -153,6 +154,14 @@ class ApplicationController < ActionController::Base
   def scoped_plan_schedules
     return Planning::PlanSchedule.none unless current_company
     Planning::PlanSchedule.where(company_id: current_company.id, store_id: current_store&.id)
+  end
+
+  # システム管理者は admin サブドメインのみアクセス可能
+  def check_super_admin_subdomain
+    if current_user&.super_admin? && request.subdomain != 'admin'
+      sign_out current_user
+      redirect_to 'http://admin.localhost:3000/users/sign_in', alert: 'システム管理者はadminサブドメインからログインしてください', allow_other_host: true
+    end
   end
 
   private
