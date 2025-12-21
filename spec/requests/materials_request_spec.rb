@@ -5,7 +5,7 @@ RSpec.describe "Materials", type: :request do
   let(:general_user) { create(:user, :general) }
   let(:category) { create(:category, :material, user: super_admin_user) }
   let(:unit) { create(:unit, user: super_admin_user) }
-  let!(:material) { create(:material, user: super_admin_user, category: category, unit_for_product: unit, unit_for_order: unit) }
+  let!(:material) { create(:material, user: general_user, category: category, unit_for_product: unit, unit_for_order: unit) }
 
   describe 'GET /materials' do
     context 'ログインしている場合' do

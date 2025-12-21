@@ -14,9 +14,10 @@ class Resources::MaterialsController < AuthenticatedController
     created_at: -> { order(created_at: :desc) }
   )
 
-  find_resource :material, only: [ :show, :edit, :update, :destroy, :copy ]
-  before_action :set_material, only: [ :show, :edit, :update, :destroy, :copy ]
+  skip_before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :require_store_user
+  before_action :set_material, only: [:show, :edit, :update, :destroy, :copy]
 
   # 原材料一覧
   #
@@ -115,9 +116,6 @@ class Resources::MaterialsController < AuthenticatedController
     render json: { error: t("sortable_table.not_found") }, status: :not_found
   end
 
-  def set_material
-    @material = scoped_materials.find(params[:id])
-  end
 
 
   def scoped_materials
@@ -155,3 +153,12 @@ class Resources::MaterialsController < AuthenticatedController
     )
   end
 end
+
+  private
+
+  def set_material
+    @material = scoped_materials.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    flash[:alert] = t("flash_messages.not_authorized")
+    redirect_to authenticated_root_path
+  end
