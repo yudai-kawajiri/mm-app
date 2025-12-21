@@ -7,9 +7,9 @@ class Users::SessionsController < Devise::SessionsController
     if user_signed_in? && current_user.super_admin? && request.subdomain != 'admin'
       sign_out current_user
       flash[:alert] = t('errors.invalid_subdomain_access')
-      redirect_to new_user_session_url(subdomain: 'admin'), allow_other_host: true and return
+      return redirect_to new_user_session_url(subdomain: 'admin'), allow_other_host: true
     end
-    
+
     super
   end
 
@@ -19,11 +19,13 @@ class Users::SessionsController < Devise::SessionsController
     if params[:user] && params[:user][:email].present?
       user = User.find_by(email: params[:user][:email])
       if user&.super_admin? && request.subdomain != 'admin'
-        flash[:alert] = t('errors.invalid_subdomain_access')
-        redirect_to new_user_session_url(subdomain: 'admin'), allow_other_host: true and return
+        flash.now[:alert] = t('errors.invalid_subdomain_access')
+        self.resource = resource_class.new(sign_in_params)
+        render :new, status: :unprocessable_entity
+        return
       end
     end
-    
+
     super
   end
 
