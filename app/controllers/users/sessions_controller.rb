@@ -2,7 +2,7 @@
 
 class Users::SessionsController < Devise::SessionsController
   # before_action :configure_sign_in_params, only: [:create]
-  before_action :check_admin_subdomain_for_login, only: [:new, :create]
+  before_action :check_admin_subdomain_for_login, only: [:create]
 
   # GET /resource/sign_in
   # def new
@@ -10,16 +10,9 @@ class Users::SessionsController < Devise::SessionsController
   # end
 
   # POST /resource/sign_in
-  def create
-    super do |user|
-      # ログイン成功後にサブドメインチェック
-      if user.super_admin? && request.subdomain != 'admin'
-        sign_out user
-        flash[:alert] = t('errors.invalid_subdomain_access')
-        redirect_to new_user_session_url(subdomain: 'admin'), allow_other_host: true and return
-      end
-    end
-  end
+  # def create
+  #   super
+  # end
 
   # DELETE /resource/sign_out
   # def destroy
@@ -36,12 +29,14 @@ class Users::SessionsController < Devise::SessionsController
   private
 
   def check_admin_subdomain_for_login
-    # システム管理者がadmin以外のサブドメインでログイン画面を開こうとした場合
-    if params[:user] && params[:user][:email].present?
-      user = User.find_by(email: params[:user][:email])
-      if user&.super_admin? && request.subdomain != 'admin'
-        flash.now[:alert] = t('errors.invalid_subdomain_access')
-      end
+    # ログイン試行前にチェック
+    return unless params[:user] && params[:user][:email].present?
+    
+    user = User.find_by(email: params[:user][:email])
+    if user&.super_admin? && request.subdomain != 'admin'
+      # ログインを中断
+      flash[:alert] = t('errors.invalid_subdomain_access')
+      redirect_to new_user_session_url(subdomain: 'admin'), allow_other_host: true
     end
   end
 end
