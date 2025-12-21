@@ -74,10 +74,10 @@ module ApplicationHelper
       { name: t("dashboard.menu.dashboard"), path: authenticated_root_path },
       {
         name: t("dashboard.menu.category_management"),
-        path: resources_categories_path,
+        path: scoped_path(:resources_categories_path),
         disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
-          { name: t("dashboard.menu.category_list"), path: resources_categories_path },
+          { name: t("dashboard.menu.category_list"), path: scoped_path(:resources_categories_path) },
           { name: t("dashboard.menu.new_category"), path: new_resources_category_path }
         ]
       },
@@ -87,25 +87,25 @@ module ApplicationHelper
         submenu: [
           {
             name: t("dashboard.menu.unit_management"),
-            path: resources_units_path,
+            path: scoped_path(:resources_units_path),
             submenu: [
-              { name: t("dashboard.menu.unit_list"), path: resources_units_path },
+              { name: t("dashboard.menu.unit_list"), path: scoped_path(:resources_units_path) },
               { name: t("dashboard.menu.new_unit"), path: new_resources_unit_path }
             ]
           },
           {
             name: t("dashboard.menu.order_group_management"),
-            path: resources_material_order_groups_path,
+            path: scoped_path(:resources_material_order_groups_path),
             submenu: [
-              { name: t("dashboard.menu.order_group_list"), path: resources_material_order_groups_path },
+              { name: t("dashboard.menu.order_group_list"), path: scoped_path(:resources_material_order_groups_path) },
               { name: t("dashboard.menu.new_order_group"), path: new_resources_material_order_group_path }
             ]
           },
           {
             name: t("dashboard.menu.material_management"),
-            path: resources_materials_path,
+            path: scoped_path(:resources_materials_path),
             submenu: [
-              { name: t("dashboard.menu.material_list"), path: resources_materials_path },
+              { name: t("dashboard.menu.material_list"), path: scoped_path(:resources_materials_path) },
               { name: t("dashboard.menu.new_material"), path: new_resources_material_path }
             ]
           }
@@ -113,28 +113,28 @@ module ApplicationHelper
       },
       {
         name: t("dashboard.menu.product_management"),
-        path: resources_products_path,
+        path: scoped_path(:resources_products_path),
         disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
-          { name: t("dashboard.menu.product_list"), path: resources_products_path },
+          { name: t("dashboard.menu.product_list"), path: scoped_path(:resources_products_path) },
           { name: t("dashboard.menu.new_product"), path: new_resources_product_path }
         ]
       },
       {
         name: t("dashboard.menu.plan_management"),
-        path: resources_plans_path,
+        path: scoped_path(:resources_plans_path),
         disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
-          { name: t("dashboard.menu.plan_list"), path: resources_plans_path },
+          { name: t("dashboard.menu.plan_list"), path: scoped_path(:resources_plans_path) },
           { name: t("dashboard.menu.new_plan"), path: new_resources_plan_path }
         ]
       },
       {
       name: t("dashboard.menu.numerical_management"),
-      path: management_numerical_managements_path,
+      path: scoped_path(:management_numerical_managements_path),
       disabled: (current_user.super_admin? || current_user.company_admin?),
       submenu: [
-        { name: t("dashboard.menu.numerical_dashboard"), path: management_numerical_managements_path }
+        { name: t("dashboard.menu.numerical_dashboard"), path: scoped_path(:management_numerical_managements_path) }
       ]
     }
     ]
@@ -147,26 +147,26 @@ module ApplicationHelper
       if current_user.super_admin?
         # システム管理モード（全テナント）のときだけ表示
         if session[:current_company_id].nil?
-          admin_submenu << { name: t("common.menu.company_management"), path: admin_companies_path }
-          admin_submenu << { name: t("common.menu.system_logs"), path: admin_system_logs_path }
+          admin_submenu << { name: t("common.menu.company_management"), path: scoped_path(:admin_companies_path) }
+          admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
         else
           # 特定テナント選択時: システムログのみ表示
-          admin_submenu << { name: t("common.menu.system_logs"), path: admin_system_logs_path }
+          admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
         end
       end
 
       # 会社管理者・システム管理者共通メニュー
       if current_user.company_admin? || current_user.super_admin?
-        admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
-        admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
-        admin_submenu << { name: t("common.menu.store_management"), path: admin_stores_path }
+        admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
+        admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
+        admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
       end
 
       # 店舗管理者専用メニュー
       if current_user.store_admin?
-        admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
-        admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
-        admin_submenu << { name: t("common.menu.store_management"), path: admin_stores_path }
+        admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
+        admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
+        admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
       end
       items << {
         name: t("common.menu.admin_management"),
@@ -705,3 +705,40 @@ module ApplicationHelper
     session[:current_store_id].present?
   end
 end
+
+  # ============================================================
+  # パスベース対応ヘルパー
+  # ============================================================
+
+  #
+  # パスベース対応: 会社スコープ付きのパスを自動生成
+  #
+  # @param path_method [Symbol] パスメソッド名（例: :admin_users_path）
+  # @param args [Array] パスメソッドの引数
+  # @param options [Hash] パスメソッドのオプション
+  # @return [String] 会社スコープ付きパス
+  #
+  # @example
+  #   scoped_path(:admin_users_path)
+  #   # => "/c/company-subdomain/admin/users"
+  #
+  #   scoped_path(:resources_material_path, @material)
+  #   # => "/c/company-subdomain/resources/materials/123"
+  #
+  def scoped_path(path_method, *args, **options)
+    if current_company.present?
+      method_name = "company_#{path_method}"
+      if respond_to?(method_name)
+        send(method_name, company_subdomain: current_company.subdomain, *args, **options)
+      else
+        # company_ プレフィックスが不要な場合（例: root_path）
+        send(path_method, *args, **options)
+      end
+    else
+      # 会社が取得できない場合
+      send(path_method, *args, **options)
+    end
+  rescue NoMethodError => e
+    Rails.logger.error "Path generation failed for #{path_method}: #{e.message}"
+    "#"
+  end

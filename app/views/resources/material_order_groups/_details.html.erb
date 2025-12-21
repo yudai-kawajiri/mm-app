@@ -41,7 +41,7 @@
             <% material_order_group.materials.each do |material| %>
               <tr>
                 <td>
-                  <%= link_to material.name, resources_material_path(material), class: 'text-decoration-none' %>
+                  <%= link_to material.name, scoped_path(:resources_material_path)(material), class: 'text-decoration-none' %>
                 </td>
                 <td>
                   <small class="text-muted">

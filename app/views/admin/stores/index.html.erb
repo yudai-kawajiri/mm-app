@@ -12,7 +12,7 @@
     skip_store_check: true %>
 
   <%= render 'shared/forms/search_form',
-      form_path: admin_stores_path,
+      form_path: scoped_path(:admin_stores_path),
       search_placeholder: t('admin.stores.index.search.placeholder'),
       sort_options: [
         [t('admin.stores.index.sort_options.company'), 'company'],

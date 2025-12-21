@@ -7,6 +7,12 @@ class RouterController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    redirect_to "/dashboards"
+    if current_company.present?
+      # パスベース: /c/:company_subdomain/dashboards へリダイレクト
+      redirect_to company_dashboards_path(company_subdomain: current_company.subdomain)
+    else
+      # 会社が取得できない場合は選択画面へ
+      redirect_to select_company_path, alert: "会社を選択してください"
+    end
   end
 end

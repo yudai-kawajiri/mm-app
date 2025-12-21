@@ -48,21 +48,25 @@ class ApplicationController < ActionController::Base
     { store_id: current_store&.id }
   end
 
-  def company_from_subdomain
-    return @company_from_subdomain if defined?(@company_from_subdomain)
 
-    host = request.host
-    subdomain = if host.include?(".localhost")
-      host.split(".").first
+  # パスベース: params[:company_subdomain]から会社を取得
+  def company_from_path
+    return nil unless params[:company_subdomain].present?
+    @company_from_path ||= Company.find_by(subdomain: params[:company_subdomain])
+  end
+
+  def current_company
+    return @current_company if defined?(@current_company)
+
+    # システム管理者の場合: session[:current_company_id] でテナントを切り替え
+    if current_user&.super_admin?
+      @current_company = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
     else
-      request.subdomain
+      # 会社管理者・店舗管理者: 所属テナント、またはパスから取得
+      @current_company = current_user&.company || company_from_path
     end
 
-    @company_from_subdomain = if subdomain.present? && subdomain != "www"
-      Company.find_by(subdomain: subdomain)
-    else
-      nil
-    end
+    @current_company
   end
 
   def current_company

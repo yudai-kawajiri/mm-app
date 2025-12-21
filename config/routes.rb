@@ -1,28 +1,37 @@
-# frozen_string_literal: true
-
 Rails.application.routes.draw do
-  # 利用規約、プライバシーポリシー、お問い合わせは全環境で共通
+  # ヘルスチェック
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  # PWA
+  get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
+
+  # ルートドメイン: ランディングページと新規会社申請
+  root to: "landing#index"
+  
+  resources :application_requests, only: [ :new, :create ] do
+    collection do
+      get :thanks
+      get :accept
+      post :accept, action: :accept_confirm
+    end
+  end
+
   get :terms, to: "static_pages#terms"
   get :privacy, to: "static_pages#privacy"
   resources :contacts, only: [ :new, :create ]
 
-  constraints subdomain: "" do
-    root to: "landing#index"
+  # Devise認証（グローバル）
+  devise_for :users, controllers: { registrations: "users/registrations", sessions: "users/sessions" }
 
-    resources :application_requests, only: [ :new, :create ] do
-      collection do
-        get :thanks
-        get :accept
-        post :accept, action: :accept_confirm
-      end
-    end
-  end
-
-  constraints subdomain: /.+/ do
-    devise_for :users, controllers: { registrations: "users/registrations", sessions: "users/sessions" }
-
-    authenticated :user do
-      root to: "router#index", as: :authenticated_root
+  # 認証後のルーティング（会社スコープ）
+  authenticated :user do
+    # 会社選択前のルート
+    get "/companies/select", to: "companies#select", as: :select_company
+    
+    # 会社スコープ内のルーティング
+    scope "/c/:company_subdomain", as: :company do
+      root to: "router#index", as: :root
 
       post :switch_store, to: "stores#switch"
       post :switch_company, to: "companies#switch"
@@ -50,106 +59,74 @@ Rails.application.routes.draw do
         resources :system_logs, only: [ :index ]
       end
 
-      namespace :management do
-        resources :numerical_managements, only: [ :index ] do
+      namespace :resources do
+        resources :materials do
+          post :copy, on: :member
           collection do
-            patch :bulk_update
-            patch :update_daily_target
+            post :reorder
           end
         end
-
-        resources :monthly_budgets, only: [ :create, :update, :destroy ] do
+        resources :products do
+          post :copy, on: :member
           member do
-            patch :update_discount_rates
+            delete :purge_image
+          end
+          collection do
+            post :reorder
           end
         end
+        resources :categories
+        resources :units
+        resources :product_materials, only: [ :index, :edit, :update ]
+        resources :material_order_groups do
+          post :copy, on: :member
+        end
+      end
 
-        resources :daily_targets, only: [ :create, :update ]
-
-        resources :plan_schedules, only: [ :create, :update, :destroy ] do
+      namespace :planning do
+        resources :plans do
+          resources :plan_products, only: [ :index, :create, :update, :destroy, :edit ]
+          resources :plan_schedules, only: [ :index, :create, :update, :destroy ]
+          post :copy, on: :member
           member do
-            patch :actual_revenue
+            patch :update_status
           end
         end
       end
 
-      namespace :resources do
-        resources :categories do
-          member do
-            post :copy
-          end
-        end
-
-        resources :units do
-          member do
-            post :copy
-          end
-        end
-
-        resources :materials do
+      namespace :management do
+        resources :monthly_budgets, only: [ :index, :create, :update ] do
           collection do
-            post :reorder
-          end
-
-          member do
-            post :copy
+            patch :update_discount_rates
           end
         end
-
-        resources :material_order_groups do
-          member do
-            post :copy
-          end
-        end
-
-        resources :products do
-          collection do
-            post :reorder
-          end
-
-          member do
-            patch :update_status
-            delete :purge_image
-            post :copy
-          end
-
-          resources :product_materials, only: [ :index, :edit, :update ]
-        end
-
-        resources :plans do
-          member do
-            patch :update_status
-            post :copy
-            get :print
-          end
-        end
+        resources :daily_targets, only: [ :index, :create, :update ]
+        resources :numerical_managements, only: [ :index ]
       end
 
       namespace :api do
         namespace :v1 do
-          resources :products, only: [ :index, :show ] do
+          resources :plans, only: [] do
             member do
-              get :fetch_plan_details
+              get :revenue
             end
           end
-
+          resources :plan_schedules, only: [] do
+            member do
+              get :revenue
+            end
+          end
+          resources :daily_targets, only: [ :show, :update ]
+          resources :products, only: [ :show ]
           resources :materials, only: [ :index, :show ] do
             member do
               get :fetch_product_unit_data
             end
           end
-
-          resources :plans, only: [ :index, :show ] do
-            member do
-              get :revenue
-            end
-          end
         end
       end
     end
-
-    unauthenticated :user do
-      root to: redirect("/users/sign_in"), as: :unauthenticated_root
-    end
   end
+
+  resource :user_settings, only: [ :show, :update, :edit ]
 end
