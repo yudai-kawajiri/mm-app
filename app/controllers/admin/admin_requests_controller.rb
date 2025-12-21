@@ -1,30 +1,30 @@
 # frozen_string_literal: true
 
 class Admin::AdminRequestsController < Admin::BaseController
-  before_action :set_admin_request, only: [:show, :approve, :reject]
+  before_action :set_admin_request, only: [ :show, :approve, :reject ]
 
   def index
     @admin_requests = accessible_admin_requests
-    
+
     # 検索処理
     if params[:q].present?
       search_term = "%#{params[:q]}%"
       @admin_requests = @admin_requests.joins(:user, :company).where(
-        'users.name LIKE ? OR companies.name LIKE ? OR companies.subdomain LIKE ?',
+        "users.name LIKE ? OR companies.name LIKE ? OR companies.subdomain LIKE ?",
         search_term, search_term, search_term
       ).distinct
     end
 
     # ソート処理
     @admin_requests = case params[:sort_by]
-    when 'company'
-      @admin_requests.joins(:company).order('companies.name ASC')
-    when 'store'
-      @admin_requests.joins(:store).order('stores.name ASC')
-    when 'created_at'
+    when "company"
+      @admin_requests.joins(:company).order("companies.name ASC")
+    when "store"
+      @admin_requests.joins(:store).order("stores.name ASC")
+    when "created_at"
       @admin_requests.order(created_at: :desc)
     else
-      @admin_requests.joins(:company).order('companies.name ASC')
+      @admin_requests.joins(:company).order("companies.name ASC")
     end
 
     @admin_requests = @admin_requests.includes(:user, :store, :company).page(params[:page]).per(20)
@@ -44,7 +44,7 @@ class Admin::AdminRequestsController < Admin::BaseController
     @admin_request.request_type = :store_admin_request
 
     if @admin_request.save
-      redirect_to admin_admin_requests_path, notice: t('admin.admin_requests.messages.created')
+      redirect_to admin_admin_requests_path, notice: t("admin.admin_requests.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -52,19 +52,19 @@ class Admin::AdminRequestsController < Admin::BaseController
 
   def approve
     if @admin_request.approve!(current_user)
-      redirect_to admin_admin_requests_path, notice: t('admin.admin_requests.messages.approved')
+      redirect_to admin_admin_requests_path, notice: t("admin.admin_requests.messages.approved")
     else
-      redirect_to admin_admin_requests_path, alert: t('admin.admin_requests.messages.approve_failed')
+      redirect_to admin_admin_requests_path, alert: t("admin.admin_requests.messages.approve_failed")
     end
   end
 
   def reject
-    reason = params[:reason].presence || t('admin.admin_requests.default_reject_reason')
+    reason = params[:reason].presence || t("admin.admin_requests.default_reject_reason")
 
     if @admin_request.reject!(current_user, reason: reason)
-      redirect_to admin_admin_requests_path, notice: t('admin.admin_requests.messages.rejected')
+      redirect_to admin_admin_requests_path, notice: t("admin.admin_requests.messages.rejected")
     else
-      redirect_to admin_admin_requests_path, alert: t('admin.admin_requests.messages.reject_failed')
+      redirect_to admin_admin_requests_path, alert: t("admin.admin_requests.messages.reject_failed")
     end
   end
 

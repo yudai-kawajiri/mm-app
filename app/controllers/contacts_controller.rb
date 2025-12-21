@@ -1,5 +1,4 @@
 class ContactsController < ApplicationController
-
   def new
     @contact = Contact.new
   end
@@ -13,7 +12,7 @@ class ContactsController < ApplicationController
 
       # ログイン状態に応じてリダイレクト先を変更
       redirect_path = user_signed_in? ? help_path : root_path
-      redirect_to redirect_path, notice: t('contacts.messages.success_with_response_time')
+      redirect_to redirect_path, notice: t("contacts.messages.success_with_response_time")
     else
       render :new, status: :unprocessable_entity
     end

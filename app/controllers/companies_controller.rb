@@ -7,21 +7,21 @@ class CompaniesController < AuthenticatedController
   def switch
     # 空文字列の場合もnilとして扱う
     company_id = params[:current_company_id].presence
-    
+
     if company_id
       company = Company.find_by(id: company_id)
       if company
         session[:current_company_id] = company.id
         session[:current_store_id] = nil # テナント変更時は店舗選択をリセット
-        flash[:notice] = t('companies.switch.success', company_name: company.name)
+        flash[:notice] = t("companies.switch.success", company_name: company.name)
       else
-        flash[:alert] = t('companies.switch.not_found')
+        flash[:alert] = t("companies.switch.not_found")
       end
     else
       # システム管理モード（全テナント）
       session[:current_company_id] = nil
       session[:current_store_id] = nil
-      flash[:notice] = t('companies.switch.all_companies')
+      flash[:notice] = t("companies.switch.all_companies")
     end
 
     redirect_to request.referer || authenticated_root_path
@@ -31,7 +31,7 @@ class CompaniesController < AuthenticatedController
 
   def authorize_super_admin!
     unless current_user&.super_admin?
-      redirect_to authenticated_root_path, alert: t('errors.messages.unauthorized')
+      redirect_to authenticated_root_path, alert: t("errors.messages.unauthorized")
     end
   end
 end

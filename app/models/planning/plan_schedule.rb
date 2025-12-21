@@ -275,7 +275,6 @@ class Planning::PlanSchedule < ApplicationRecord
     self.company_id ||= plan&.company_id
     self.store_id ||= plan&.store_id
   end
-
 end
 
   # 計画名を取得（削除済みの場合は代替テキスト）

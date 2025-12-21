@@ -27,7 +27,7 @@ class DashboardsController < AuthenticatedController
     # システム管理者: 全ログ表示
     @recent_logs = PaperTrail::Version.order(created_at: :desc).limit(10)
 
-    render 'dashboards/admin_dashboard'
+    render "dashboards/admin_dashboard"
   end
 
   # 会社管理者用ダッシュボード
@@ -54,7 +54,7 @@ class DashboardsController < AuthenticatedController
         .limit(10)
     end
 
-    render 'dashboards/company_admin_dashboard'
+    render "dashboards/company_admin_dashboard"
   end
 
   # 店舗ユーザー用ダッシュボード（現在の数値管理）
@@ -79,6 +79,6 @@ class DashboardsController < AuthenticatedController
       @pending_users_count = current_user.store.users.where(approved: false).count
     end
 
-    render 'dashboards/index'
+    render "dashboards/index"
   end
 end

@@ -172,15 +172,15 @@ class Resources::PlansController < AuthenticatedController
 
   def scoped_plans
     case current_user.role
-    when 'store_admin', 'general'
+    when "store_admin", "general"
       Resources::Plan.where(store_id: current_user.store_id)
-    when 'company_admin'
+    when "company_admin"
       if session[:current_store_id].present?
         Resources::Plan.where(company_id: current_company.id, store_id: session[:current_store_id])
       else
         Resources::Plan.where(company_id: current_company.id)
       end
-    when 'super_admin'
+    when "super_admin"
       Resources::Plan.all
     else
       Resources::Plan.none
@@ -218,9 +218,9 @@ class Resources::PlansController < AuthenticatedController
 
     @materials_summary = if snapshot["materials_summary"].present?
                         snapshot["materials_summary"].map(&:deep_symbolize_keys)
-                          else
+    else
                             []
-                          end
+    end
       render layout: "print"
   end
 

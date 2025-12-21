@@ -37,8 +37,8 @@ class Resources::Unit < ApplicationRecord
             foreign_key: "production_unit_id",
             dependent: :restrict_with_error
 
-  validates :name, presence: true, uniqueness: { scope: [:category, :store_id] }
-  validates :reading, presence: true, uniqueness: { scope: [:category, :store_id] }
+  validates :name, presence: true, uniqueness: { scope: [ :category, :store_id ] }
+  validates :reading, presence: true, uniqueness: { scope: [ :category, :store_id ] }
   validates :category, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
@@ -52,8 +52,8 @@ class Resources::Unit < ApplicationRecord
   }
 
   copyable_config(
-    uniqueness_scope: [:category, :store_id],
-    uniqueness_check_attributes: [:name]
+    uniqueness_scope: [ :category, :store_id ],
+    uniqueness_check_attributes: [ :name ]
   )
 
   private
@@ -62,12 +62,12 @@ class Resources::Unit < ApplicationRecord
     return unless category_changed?
 
     usage_details = []
-    usage_details << "原材料" if Resources::Material.where(unit_for_product_id: id).exists? || 
+    usage_details << "原材料" if Resources::Material.where(unit_for_product_id: id).exists? ||
                                   Resources::Material.where(unit_for_order_id: id).exists?
     usage_details << "商品原材料" if Planning::ProductMaterial.where(unit_id: id).exists?
 
     return if usage_details.empty?
 
-    errors.add(:category, I18n.t('activerecord.errors.models.resources/unit.category_in_use', record: usage_details.join('、')))
+    errors.add(:category, I18n.t("activerecord.errors.models.resources/unit.category_in_use", record: usage_details.join("、")))
   end
 end

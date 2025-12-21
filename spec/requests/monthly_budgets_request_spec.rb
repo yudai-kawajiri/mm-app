@@ -38,7 +38,6 @@ RSpec.describe "MonthlyBudgets", type: :request do
           post management_monthly_budgets_path, params: valid_params
           expect(flash[:notice]).to be_present
         end
-
       end
 
       context '無効なパラメータの場合' do
@@ -135,7 +134,6 @@ RSpec.describe "MonthlyBudgets", type: :request do
           patch management_monthly_budget_path(monthly_budget), params: valid_params
           expect(flash[:notice]).to be_present
         end
-
       end
 
       context '無効なパラメータの場合' do

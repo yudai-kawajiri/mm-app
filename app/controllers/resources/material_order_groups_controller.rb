@@ -73,15 +73,15 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
 
   def scoped_material_order_groups
     case current_user.role
-    when 'store_admin', 'general'
+    when "store_admin", "general"
       Resources::MaterialOrderGroup.where(store_id: current_user.store_id)
-    when 'company_admin'
+    when "company_admin"
       if session[:current_store_id].present?
         Resources::MaterialOrderGroup.where(company_id: current_company.id, store_id: session[:current_store_id])
       else
         Resources::MaterialOrderGroup.where(company_id: current_company.id)
       end
-    when 'super_admin'
+    when "super_admin"
       Resources::MaterialOrderGroup.all
     else
       Resources::MaterialOrderGroup.none

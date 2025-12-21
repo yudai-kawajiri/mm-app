@@ -122,15 +122,15 @@ class Resources::MaterialsController < AuthenticatedController
 
   def scoped_materials
     case current_user.role
-    when 'store_admin', 'general'
+    when "store_admin", "general"
       Resources::Material.where(store_id: current_user.store_id)
-    when 'company_admin'
+    when "company_admin"
       if session[:current_store_id].present?
         Resources::Material.where(company_id: current_company.id, store_id: session[:current_store_id])
       else
         Resources::Material.where(company_id: current_company.id)
       end
-    when 'super_admin'
+    when "super_admin"
       Resources::Material.all
     else
       Resources::Material.none

@@ -57,7 +57,7 @@ class Resources::CategoriesController < AuthenticatedController
     Rails.logger.debug "Before assign: store_id = #{@category.store_id.inspect}"
     @category.assign_attributes(category_params)
     Rails.logger.debug "After assign: store_id = #{@category.store_id.inspect}"
-    
+
     # 強制的に store_id を設定（念のため）
     @category.store_id ||= current_store&.id
     Rails.logger.debug "After force: store_id = #{@category.store_id.inspect}"
@@ -84,11 +84,11 @@ class Resources::CategoriesController < AuthenticatedController
   def scoped_categories
     Rails.logger.info "[DEBUG CONTROLLER SCOPED] current_user.role = #{current_user.role}"
     Rails.logger.info "[DEBUG CONTROLLER SCOPED] session[:current_store_id] = #{session[:current_store_id].inspect}"
-    
+
     case current_user.role
-    when 'store_admin', 'general'
+    when "store_admin", "general"
       Resources::Category.where(store_id: current_user.store_id)
-    when 'company_admin'
+    when "company_admin"
       if session[:current_store_id].present?
         Resources::Category.where(company_id: current_company.id, store_id: session[:current_store_id])
       else

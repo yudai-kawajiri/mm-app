@@ -29,12 +29,12 @@ class AddUniqueIndexToReading < ActiveRecord::Migration[7.0]
 
   def down
     # ユニークインデックスを削除
-    remove_index :products, name: 'index_products_on_reading_and_category_id' if index_exists?(:products, [:reading, :category_id], name: 'index_products_on_reading_and_category_id')
-    remove_index :materials, name: 'index_materials_on_reading_and_category_id' if index_exists?(:materials, [:reading, :category_id], name: 'index_materials_on_reading_and_category_id')
-    remove_index :categories, name: 'index_categories_on_reading_and_category_type' if index_exists?(:categories, [:reading, :category_type], name: 'index_categories_on_reading_and_category_type')
-    remove_index :units, name: 'index_units_on_reading_and_category' if index_exists?(:units, [:reading, :category], name: 'index_units_on_reading_and_category')
+    remove_index :products, name: 'index_products_on_reading_and_category_id' if index_exists?(:products, [ :reading, :category_id ], name: 'index_products_on_reading_and_category_id')
+    remove_index :materials, name: 'index_materials_on_reading_and_category_id' if index_exists?(:materials, [ :reading, :category_id ], name: 'index_materials_on_reading_and_category_id')
+    remove_index :categories, name: 'index_categories_on_reading_and_category_type' if index_exists?(:categories, [ :reading, :category_type ], name: 'index_categories_on_reading_and_category_type')
+    remove_index :units, name: 'index_units_on_reading_and_category' if index_exists?(:units, [ :reading, :category ], name: 'index_units_on_reading_and_category')
     remove_index :material_order_groups, name: 'index_material_order_groups_on_reading' if index_exists?(:material_order_groups, :reading, name: 'index_material_order_groups_on_reading')
-    remove_index :plans, name: 'index_plans_on_reading_and_category_id' if index_exists?(:plans, [:reading, :category_id], name: 'index_plans_on_reading_and_category_id')
+    remove_index :plans, name: 'index_plans_on_reading_and_category_id' if index_exists?(:plans, [ :reading, :category_id ], name: 'index_plans_on_reading_and_category_id')
 
     # 元の非ユニークインデックスを復元
     add_index :products, :reading, name: 'index_products_on_reading' unless index_exists?(:products, :reading, name: 'index_products_on_reading')

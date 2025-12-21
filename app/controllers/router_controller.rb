@@ -7,6 +7,6 @@ class RouterController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    redirect_to '/dashboards'
+    redirect_to "/dashboards"
   end
 end

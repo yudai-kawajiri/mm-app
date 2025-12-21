@@ -1,6 +1,6 @@
 class Admin::SystemLogsController < Admin::BaseController
   before_action :authorize_system_logs_access!
-  
+
   LOGS_PER_PAGE = 50
 
   def index
@@ -28,12 +28,12 @@ class Admin::SystemLogsController < Admin::BaseController
 
     if params[:date_from].present?
       date_from = Date.parse(params[:date_from]).beginning_of_day
-      @versions = @versions.where('created_at >= ?', date_from)
+      @versions = @versions.where("created_at >= ?", date_from)
     end
 
     if params[:date_to].present?
       date_to = Date.parse(params[:date_to]).end_of_day
-      @versions = @versions.where('created_at <= ?', date_to)
+      @versions = @versions.where("created_at <= ?", date_to)
     end
 
     # ページネーション
@@ -50,7 +50,7 @@ class Admin::SystemLogsController < Admin::BaseController
 
   def authorize_system_logs_access!
     unless current_user&.super_admin? || current_user&.company_admin?
-      redirect_to authenticated_root_path, alert: t('errors.messages.unauthorized')
+      redirect_to authenticated_root_path, alert: t("errors.messages.unauthorized")
     end
   end
 
@@ -61,23 +61,23 @@ class Admin::SystemLogsController < Admin::BaseController
 
       # 特定テナント選択時: そのテナントのユーザーが実行したログのみ
       company = Company.find(session[:current_company_id])
-      
+
       # テナントに所属するユーザーのID一覧(文字列)
       company_user_ids = company.users.pluck(:id).map(&:to_s)
-      
+
       # whodunnit(実行ユーザー)がこのテナントのユーザーのログのみ
       PaperTrail::Version.where(whodunnit: company_user_ids)
     elsif current_user.company_admin?
       # 会社管理者: 自社ユーザーが実行したログのみ
       company = current_user.company
       company_user_ids = company.users.pluck(:id).map(&:to_s)
-      
+
       PaperTrail::Version.where(whodunnit: company_user_ids)
     elsif current_user.store_admin?
       # 店舗管理者: 自店舗ユーザーが実行したログのみ
       store = current_user.store
       store_user_ids = store.users.pluck(:id).map(&:to_s)
-      
+
       PaperTrail::Version.where(whodunnit: store_user_ids)
     else
       PaperTrail::Version.none

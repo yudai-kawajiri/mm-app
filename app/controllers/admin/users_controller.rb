@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Admin::UsersController < Admin::BaseController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_action :set_stores, only: [:new, :create, :edit, :update]
+  before_action :set_user, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_stores, only: [ :new, :create, :edit, :update ]
 
   def index
   # システム管理者の場合
@@ -34,18 +34,18 @@ class Admin::UsersController < Admin::BaseController
   if params[:q].present?
     search_term = "%#{params[:q]}%"
     users_scope = users_scope.where(
-      'users.name LIKE ? OR users.email LIKE ?',
+      "users.name LIKE ? OR users.email LIKE ?",
       search_term, search_term
     )
   end
 
   # ソート処理
   case params[:sort_by]
-  when 'company'
-    users_scope = users_scope.left_joins(:company).order('companies.name ASC')
-  when 'email'
+  when "company"
+    users_scope = users_scope.left_joins(:company).order("companies.name ASC")
+  when "email"
     users_scope = users_scope.order(email: :asc)
-  when 'created_at'
+  when "created_at"
     users_scope = users_scope.order(created_at: :desc)
   else
     users_scope = users_scope.order(created_at: :desc)
@@ -69,7 +69,7 @@ class Admin::UsersController < Admin::BaseController
 
     if @user.save
       AdminMailer.new_user_notification(@user).deliver_later
-      redirect_to [:admin, @user], notice: t('helpers.notice.created', resource: User.model_name.human)
+      redirect_to [ :admin, @user ], notice: t("helpers.notice.created", resource: User.model_name.human)
     else
       render :new, status: :unprocessable_entity
     end
@@ -80,7 +80,7 @@ class Admin::UsersController < Admin::BaseController
 
   def update
     if @user.update(user_params)
-      redirect_to [:admin, @user], notice: t('helpers.notice.updated', resource: User.model_name.human)
+      redirect_to [ :admin, @user ], notice: t("helpers.notice.updated", resource: User.model_name.human)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -88,7 +88,7 @@ class Admin::UsersController < Admin::BaseController
 
   def destroy
     @user.destroy!
-    redirect_to admin_users_url, notice: t('helpers.notice.destroyed', resource: User.model_name.human), status: :see_other
+    redirect_to admin_users_url, notice: t("helpers.notice.destroyed", resource: User.model_name.human), status: :see_other
   end
 
   private

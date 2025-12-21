@@ -71,15 +71,15 @@ class Resources::UnitsController < AuthenticatedController
 
   def scoped_units
     case current_user.role
-    when 'store_admin', 'general'
+    when "store_admin", "general"
       Resources::Unit.where(store_id: current_user.store_id)
-    when 'company_admin'
+    when "company_admin"
       if session[:current_store_id].present?
         Resources::Unit.where(company_id: current_company.id, store_id: session[:current_store_id])
       else
         Resources::Unit.where(company_id: current_company.id)
       end
-    when 'super_admin'
+    when "super_admin"
       Resources::Unit.all
     else
       Resources::Unit.none

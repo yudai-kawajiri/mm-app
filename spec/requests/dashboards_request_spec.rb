@@ -60,7 +60,6 @@ RSpec.describe "Dashboards", type: :request do
       context 'グラフデータの生成' do
         let!(:monthly_budget) { create(:monthly_budget, user: admin_user, budget_month: Date.new(year, month, 1)) }
         let!(:daily_target) { create(:daily_target, user: admin_user, target_date: Date.new(year, month, 15), target_amount: 10000) }
-
     end
       it '正常にレスポンスを返すこと' do
         get authenticated_root_path
