@@ -7,7 +7,7 @@ RSpec.describe "Categories", type: :request do
 
   describe 'GET /categories' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_categories_path
@@ -47,7 +47,7 @@ RSpec.describe "Categories", type: :request do
 
   describe 'GET /categories/new' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get new_resources_category_path
@@ -75,7 +75,7 @@ RSpec.describe "Categories", type: :request do
 
   describe 'POST /categories' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -134,7 +134,7 @@ RSpec.describe "Categories", type: :request do
 
   describe 'GET /categories/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_category_path(category)
@@ -162,7 +162,7 @@ RSpec.describe "Categories", type: :request do
 
   describe 'GET /categories/:id/edit' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get edit_resources_category_path(category)
@@ -190,7 +190,7 @@ RSpec.describe "Categories", type: :request do
 
   describe 'PATCH /categories/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -259,7 +259,7 @@ RSpec.describe "Categories", type: :request do
 
   describe 'DELETE /categories/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it 'カテゴリ―が削除されること' do
         category_to_delete = create(:category, user: super_admin_user)

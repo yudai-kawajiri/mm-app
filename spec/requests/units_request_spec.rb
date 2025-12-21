@@ -7,7 +7,7 @@ RSpec.describe "Units", type: :request do
 
   describe 'GET /units' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_units_path
@@ -47,7 +47,7 @@ RSpec.describe "Units", type: :request do
 
   describe 'GET /units/new' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get new_resources_unit_path
@@ -75,7 +75,7 @@ RSpec.describe "Units", type: :request do
 
   describe 'POST /units' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -134,7 +134,7 @@ RSpec.describe "Units", type: :request do
 
   describe 'GET /units/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_unit_path(unit)
@@ -162,7 +162,7 @@ RSpec.describe "Units", type: :request do
 
   describe 'GET /units/:id/edit' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get edit_resources_unit_path(unit)
@@ -190,7 +190,7 @@ RSpec.describe "Units", type: :request do
 
   describe 'PATCH /units/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -247,7 +247,7 @@ RSpec.describe "Units", type: :request do
 
   describe 'DELETE /units/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '単位が削除されること' do
         unit_to_delete = create(:unit, user: super_admin_user)

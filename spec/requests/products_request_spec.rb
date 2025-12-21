@@ -10,7 +10,7 @@ RSpec.describe "Products", type: :request do
 
   describe 'GET /products' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_products_path
@@ -55,7 +55,7 @@ RSpec.describe "Products", type: :request do
 
   describe 'GET /products/new' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get new_resources_product_path
@@ -98,7 +98,7 @@ RSpec.describe "Products", type: :request do
 
   describe 'POST /products' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -165,7 +165,7 @@ RSpec.describe "Products", type: :request do
 
   describe 'GET /products/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_product_path(product)
@@ -194,7 +194,7 @@ RSpec.describe "Products", type: :request do
 
   describe 'GET /products/:id/edit' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get edit_resources_product_path(product)
@@ -232,7 +232,7 @@ RSpec.describe "Products", type: :request do
 
   describe 'PATCH /products/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -294,7 +294,7 @@ RSpec.describe "Products", type: :request do
 
   describe 'DELETE /products/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '商品が削除されること' do
         product_to_delete = create(:product, user: super_admin_user, category: product_category)
@@ -324,7 +324,7 @@ RSpec.describe "Products", type: :request do
 
   describe 'DELETE /products/:id/purge_image' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '画像が添付されている場合' do
         before do
@@ -367,7 +367,7 @@ RSpec.describe "Products", type: :request do
 
   describe 'POST /products/:id/copy' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '商品がコピーされること' do
         expect {
@@ -402,7 +402,7 @@ RSpec.describe "Products", type: :request do
 
   describe 'POST /products/reorder' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       let(:product1) { create(:product, user: super_admin_user, category: product_category, display_order: 1) }
       let(:product2) { create(:product, user: super_admin_user, category: product_category, display_order: 2) }

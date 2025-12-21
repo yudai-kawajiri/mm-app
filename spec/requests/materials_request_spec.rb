@@ -9,7 +9,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'GET /materials' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_materials_path
@@ -54,7 +54,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'GET /materials/new' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get new_resources_material_path
@@ -87,7 +87,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'POST /materials' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -152,7 +152,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'GET /materials/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_material_path(material)
@@ -180,7 +180,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'GET /materials/:id/edit' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get edit_resources_material_path(material)
@@ -213,7 +213,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'PATCH /materials/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -270,7 +270,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'DELETE /materials/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '材料が削除されること' do
         material_to_delete = create(:material, user: super_admin_user, category: category, unit_for_product: unit, unit_for_order: unit)
@@ -300,7 +300,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'POST /materials/reorder' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       let(:material1) { create(:material, user: super_admin_user, category: category, unit_for_product: unit, unit_for_order: unit, display_order: 1) }
       let(:material2) { create(:material, user: super_admin_user, category: category, unit_for_product: unit, unit_for_order: unit, display_order: 2) }
