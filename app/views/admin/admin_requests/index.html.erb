@@ -54,7 +54,7 @@
               </td>
               <td><%= l(request.created_at, format: :long) %></td>
               <td class="text-center">
-                <%= link_to scoped_path(:admin_admin_request_path)(request),
+                <%= link_to scoped_path(:admin_admin_request_path, request),
                     class: 'btn btn-sm btn-outline-primary',
                     title: t('common.show'),
                     data: { turbo: false } do %>

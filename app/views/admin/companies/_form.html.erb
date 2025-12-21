@@ -10,9 +10,9 @@
   <div class="col-md-6">
     <%= form_group_lg(f, :subdomain,
         required: true,
-        label: raw([t('activerecord.attributes.company.subdomain'), t('helpers.required_mark')].join(' ')),
-        placeholder: t('admin.companies.form.subdomain_placeholder'),
-        help_text: t('admin.companies.form.subdomain_hint')
+        label: raw([t('activerecord.attributes.company.slug'), t('helpers.required_mark')].join(' ')),
+        placeholder: t('admin.companies.form.slug_placeholder'),
+        help_text: t('admin.companies.form.slug_hint')
     ) %>
   </div>
 </div>

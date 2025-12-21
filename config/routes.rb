@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     get "/companies/select", to: "companies#select", as: :select_company
     
     # 会社スコープ内のルーティング
-    scope "/c/:company_subdomain", as: :company do
+    scope "/c/:company_slug", as: :company do
       root to: "router#index", as: :root
 
       post :switch_store, to: "stores#switch"

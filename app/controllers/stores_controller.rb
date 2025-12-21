@@ -21,7 +21,7 @@ class StoresController < AuthenticatedController
       flash[:notice] = t("stores.switch.all_stores")
     end
 
-    redirect_to request.referer || authenticated_root_path
+    redirect_to request.referer || company_dashboards_path(company_slug: current_company.slug)
   end
 
   private
@@ -29,7 +29,7 @@ class StoresController < AuthenticatedController
   def require_super_admin_or_company_admin
     unless current_user.super_admin? || current_user.company_admin?
       flash[:alert] = t("errors.unauthorized")
-      redirect_to authenticated_root_path
+      redirect_to company_dashboards_path(company_slug: current_company.slug)
     end
   end
 end

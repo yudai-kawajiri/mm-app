@@ -71,7 +71,7 @@ module ApplicationHelper
   #
   def sidebar_menu_items
     items = [
-      { name: t("dashboard.menu.dashboard"), path: company_root_path(company_subdomain: current_company.subdomain) },
+      { name: t("dashboard.menu.dashboard"), path: company_root_path(company_slug: current_company.slug) },
       {
         name: t("dashboard.menu.category_management"),
         path: scoped_path(:resources_categories_path),
@@ -202,8 +202,8 @@ module ApplicationHelper
     if item[:name] == t("dashboard.menu.dashboard")
       # ダッシュボード関連のパスを厳密にチェック
       dashboard_paths = [
-        company_root_path(company_subdomain: current_company.subdomain),
-        company_dashboards_path(company_subdomain: current_company.subdomain),
+        company_root_path(company_slug: current_company.slug),
+        company_dashboards_path(company_slug: current_company.slug),
         "/dashboards"
       ].compact
 
@@ -662,43 +662,6 @@ module ApplicationHelper
   end
 
   # scopeとresourceから正しいパスを生成
-  def resource_path_with_scope(resource, scope = nil, action = nil)
-    scope_array = Array(scope).compact
-    route_key = resource.class.model_name.route_key.singularize
-
-    Rails.logger.debug "=== resource_path_with_scope DEBUG ==="
-    Rails.logger.debug "Resource: #{resource.class.name}"
-    Rails.logger.debug "Scope: #{scope.inspect}"
-    Rails.logger.debug "Scope Array: #{scope_array.inspect}"
-    Rails.logger.debug "Route Key: #{route_key}"
-    Rails.logger.debug "Action: #{action.inspect}"
-
-    if scope_array.any?
-      scope_prefix = scope_array.join("_")
-      action_prefix = action ? "#{action}_" : ""
-      path_method = "#{action_prefix}#{scope_prefix}_#{route_key}_path"
-
-      Rails.logger.debug "Path Method: #{path_method}"
-      Rails.logger.debug "Respond to? #{respond_to?(path_method)}"
-
-      # メソッドが存在するか確認
-      if respond_to?(path_method)
-        send(path_method, resource)
-      else
-        # フォールバック: polymorphic_path を使用
-        args = [ action, *scope_array, resource ].compact
-        Rails.logger.debug "Polymorphic args: #{args.inspect}"
-        polymorphic_path(args)
-      end
-    else
-      # scopeがない場合はpolymorphic_pathを使用
-      polymorphic_path([ action, resource ].compact)
-    end
-  rescue => e
-    Rails.logger.error "Path generation failed: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
-    "#"
-  end
 
   def can_create_store_resource?
     return true unless current_user.company_admin?
@@ -723,20 +686,17 @@ module ApplicationHelper
   #   scoped_path(:resources_material_path, @material)
   #   # => "/c/company-subdomain/resources/materials/123"
   #
-end
 
   # パスベース対応: 動的に company_ プレフィックス付きパスを生成
+
   def scoped_path(path_method, *args)
     return send(path_method, *args) unless current_company.present?
 
-    # company_ プレフィックス付きメソッド名を試す
     company_method_name = "company_#{path_method}"
     
     begin
-      # まず company_ プレフィックス付きを試す
-      send(company_method_name, *args, company_subdomain: current_company.subdomain)
+      send(company_method_name, *args, company_slug: current_company.slug)
     rescue NoMethodError => e
-      # company_ プレフィックスが不要な場合（例: root_path, terms_path）
       Rails.logger.debug "Path fallback for #{path_method}: #{e.message}"
       begin
         send(path_method, *args)
@@ -746,3 +706,23 @@ end
       end
     end
   end
+  def resource_path_with_scope(resource, scope = nil, action = nil)
+    scope_array = Array(scope).compact
+    route_key = resource.class.model_name.route_key.singularize
+
+    if scope_array.any?
+      scope_prefix = scope_array.join("_")
+      action_prefix = action ? "#{action}_" : ""
+      path_method = "#{action_prefix}#{scope_prefix}_#{route_key}_path".to_sym
+    else
+      action_prefix = action ? "#{action}_" : ""
+      path_method = "#{action_prefix}#{route_key}_path".to_sym
+    end
+
+    # scoped_pathを使用してパス生成
+    scoped_path(path_method, resource)
+  rescue => e
+    Rails.logger.error "Path generation failed for #{path_method}: #{e.message}"
+    "#"
+  end
+end

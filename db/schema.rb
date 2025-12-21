@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_20_062840) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_21_130855) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -79,8 +79,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_20_062840) do
     t.integer "status"
     t.datetime "updated_at", null: false
     t.integer "user_id"
-    t.index ["invitation_token"], name: "index_application_requests_on_invitation_token", unique: true
-    t.index ["user_id"], name: "index_application_requests_on_user_id"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -301,6 +299,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_20_062840) do
     t.datetime "updated_at", null: false
     t.index ["company_id", "code"], name: "index_stores_on_company_id_and_code", unique: true
     t.index ["company_id"], name: "index_stores_on_company_id"
+    t.index ["invitation_code"], name: "index_stores_on_invitation_code", unique: true
   end
 
   create_table "units", force: :cascade do |t|

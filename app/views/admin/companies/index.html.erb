@@ -15,7 +15,7 @@
       form_path: scoped_path(:admin_companies_path),
       search_placeholder: t('admin.companies.index.search.placeholder'),
       sort_options: [
-        [t('admin.companies.index.sort_options.subdomain'), 'subdomain'],
+        [t('admin.companies.index.sort_options.slug'), 'subdomain'],
         [t('admin.companies.index.sort_options.created_at'), 'created_at']
       ],
       sort_by: params[:sort_by],
@@ -35,7 +35,7 @@
 
       columns: [
         { header: :name, data: Proc.new { |company| company.name } },
-        { header: :subdomain, data: Proc.new { |company| company.subdomain } },
+        { header: :subdomain, data: Proc.new { |company| company.slug } },
         { header: :created_at, data: Proc.new { |company| l(company.created_at.to_date, format: :default) } }
       ]
   %>

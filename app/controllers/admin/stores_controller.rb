@@ -22,7 +22,7 @@ def index
     if params[:q].present?
       search_term = "%#{params[:q]}%"
       @stores = @stores.left_joins(:company).where(
-        "stores.name LIKE ? OR stores.code LIKE ? OR companies.subdomain LIKE ?",
+        "stores.name LIKE ? OR stores.code LIKE ? OR companies.slug LIKE ?",
         search_term, search_term, search_term
       ).distinct
     end
@@ -60,7 +60,7 @@ def index
     @store = current_user.company.stores.build(store_params)
 
     if @store.save
-      redirect_to admin_store_path(@store), notice: t("admin.stores.created")
+      redirect_to scoped_path(:admin_store_path, @store), notice: t("helpers.notice.created", resource: Store.model_name.human)
     else
       render :new, status: :unprocessable_entity
     end
@@ -70,7 +70,7 @@ def index
 
   def update
     if @store.update(store_params)
-      redirect_to admin_store_path(@store), notice: t("admin.stores.updated")
+      redirect_to scoped_path(:admin_store_path, @store), notice: t("helpers.notice.updated", resource: Store.model_name.human)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -78,16 +78,16 @@ def index
 
   def destroy
     if @store.users.exists?
-      redirect_to admin_store_path(@store), alert: t("admin.stores.cannot_delete_with_users")
+      redirect_to scoped_path(:admin_store_path, @store), alert: t("admin.stores.cannot_delete_with_users")
     else
       @store.destroy
-      redirect_to admin_stores_path, notice: t("admin.stores.deleted")
+      redirect_to scoped_path(:admin_stores_path), notice: t("helpers.notice.destroyed", resource: Store.model_name.human)
     end
   end
 
   def regenerate_invitation_code
     @store.regenerate_invitation_code!
-    redirect_to admin_store_path(@store), notice: t("admin.stores.invitation_code_regenerated")
+    redirect_to scoped_path(:admin_store_path, @store), notice: t("admin.stores.invitation_code_regenerated")
   end
 
   private
@@ -102,7 +102,7 @@ def index
 
   def authorize_store_management
     unless current_user.company_admin? || current_user.super_admin?
-      redirect_to admin_stores_path, alert: t("admin.stores.unauthorized")
+      redirect_to scoped_path(:admin_stores_path), alert: t("admin.stores.unauthorized")
     end
   end
 end

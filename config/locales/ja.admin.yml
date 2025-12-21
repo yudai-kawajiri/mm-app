@@ -33,14 +33,14 @@ ja:
       edit:
         title: "ユーザー編集"
       show:
+        generated_password:
+          title: 初期パスワードが生成されました
+          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
         user_info: "ユーザー情報"
         title: "ユーザー詳細"
         generated_password:
           title: 初期パスワードが生成されました
           note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
-      created: "ユーザーを登録しました"
-      updated: "ユーザーを更新しました"
-      destroyed: "ユーザーを削除しました"
       form:
         name: "名前"
         name_placeholder: "山田 太郎"
@@ -48,6 +48,7 @@ ja:
         email_placeholder: "example@example.com"
         password: "パスワード"
         password_placeholder: "8文字以上"
+        password_hint: "空欄の場合、ランダムパスワードが自動生成されます"
         password_confirmation: "パスワード(確認)"
         password_confirmation_placeholder: "パスワードを再入力"
         role: "権限"
@@ -55,9 +56,6 @@ ja:
         submit_create: "登録"
         submit_update: "更新"
         cancel: "キャンセル"
-      messages:
-        user_deleted: "%{name}を削除しました"
-        user_delete_failed: "%{name}の削除に失敗しました"
       roles:
         super_admin: "システム管理者"
         company_admin: "会社管理者"
@@ -105,11 +103,10 @@ ja:
       edit:
         title: "会社編集"
       show:
+        generated_password:
+          title: 初期パスワードが生成されました
+          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
         title: "会社詳細"
-      messages:
-        created: "会社を作成しました"
-        updated: "会社を更新しました"
-        destroyed: "会社を削除しました"
       form:
         name: "会社名"
         name_placeholder: "株式会社サンプル"
@@ -123,6 +120,7 @@ ja:
         delete: "%{name} を削除してもよろしいですか?"
 
     admin_requests:
+      default_reject_reason: "承認基準を満たしていません"
       index:
         title: "承認リクエスト"
         search:
@@ -141,6 +139,9 @@ ja:
           created_at: "登録日時"
           actions: "アクション"
       show:
+        generated_password:
+          title: 初期パスワードが生成されました
+          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
         title: "承認リクエスト詳細"
         approve: "承認する"
         reject: "却下する"
@@ -149,7 +150,6 @@ ja:
       confirm:
         approve: "%{name}の申請を承認しますか?"
 
-      messages:
         approved: "承認リクエストを承認しました"
         rejected: "承認リクエストを却下しました"
         approve_failed: "承認に失敗しました"
@@ -177,9 +177,6 @@ ja:
         title: "店舗登録"
       edit:
         title: "店舗編集"
-      created: "店舗を登録しました"
-      updated: "店舗を更新しました"
-      destroyed: "店舗を削除しました"
       form:
         code: "店舗コード"
         code_placeholder: "例: STORE01"
@@ -189,6 +186,9 @@ ja:
         submit_update: "更新"
         cancel: "キャンセル"
       show:
+        generated_password:
+          title: 初期パスワードが生成されました
+          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
         title: "店舗詳細"
         store_info: "店舗情報"
         regenerate_code: "コード再発行"
@@ -210,13 +210,9 @@ ja:
           user_email: "メールアドレス"
           user_status: "承認状態"
           user_role: "権限"
-      messages:
         cannot_delete_with_users: "ユーザーが所属している店舗は削除できません"
         invitation_code_regenerated: "招待コードを再発行しました"
-        invitation_code_regenerate_failed: "招待コードの再発行に失敗しました"
-        not_found_or_unauthorized: "指定された店舗が見つからないか、アクセス権限がありません"
       confirm:
         regenerate_code: "招待コードを再発行しますか？現在のコードは無効になります。"
 
     common:
-      not_found_or_unauthorized: "指定されたリソースが見つからないか、アクセス権限がありません"

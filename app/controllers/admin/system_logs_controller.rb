@@ -50,7 +50,7 @@ class Admin::SystemLogsController < Admin::BaseController
 
   def authorize_system_logs_access!
     unless current_user&.super_admin? || current_user&.company_admin?
-      redirect_to authenticated_root_path, alert: t("errors.messages.unauthorized")
+      redirect_to company_dashboards_path(company_slug: current_company.slug), alert: t("errors.messages.unauthorized")
     end
   end
 

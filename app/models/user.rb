@@ -43,6 +43,7 @@ class User < ApplicationRecord
 
   # Callbacks
   before_validation :normalize_phone
+  before_validation :generate_random_password, on: :create, if: -> { password.blank? }
   after_initialize :set_default_role, if: :new_record?
 
   # 月次予算を取得
@@ -91,6 +92,11 @@ class User < ApplicationRecord
   prepend AuthenticationControl
 
   private
+
+  def generate_random_password
+    self.password = SecureRandom.alphanumeric(12)
+    self.password_confirmation = self.password
+  end
 
   def normalize_phone
     self.phone = phone.gsub(/[-\s()]/, "") if phone.present?

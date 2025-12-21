@@ -39,7 +39,7 @@
       <%
         # システム管理テナント(subdomain: 'admin')の場合はグレーアウト
         current_company_obj = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
-        is_system_company = current_company_obj&.subdomain == 'admin'
+        is_system_company = current_company_obj&.slug == 'admin'
         can_select_store = session[:current_company_id].present? && !is_system_company
       %>
 

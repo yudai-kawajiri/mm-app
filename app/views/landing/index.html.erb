@@ -17,7 +17,7 @@
   </script>
 <% end %>
 
-<div class="container mt-5" data-controller="subdomain-redirect" data-subdomain-redirect-error-message-value="<%= t('landing.subdomain_required') %>">
+<div class="container mt-5" data-controller="subdomain-redirect" data-subdomain-redirect-error-message-value="<%= t('landing.slug_required') %>">
   <div class="row justify-content-center">
     <div class="col-md-10 col-lg-8">
       <div class="text-center mb-5">
@@ -36,12 +36,12 @@
           </p>
 
           <div class="mb-4">
-            <label for="subdomain" class="form-label fw-bold"><%= t('landing.subdomain_label') %></label>
+            <label for="subdomain" class="form-label fw-bold"><%= t('landing.slug_label') %></label>
             <div class="input-group">
-              <input type="text" id="subdomain" class="form-control" placeholder="<%= t('landing.subdomain_placeholder') %>" aria-label="<%= t('landing.subdomain_label') %>" data-subdomain-redirect-target="input">
+              <input type="text" id="subdomain" class="form-control" placeholder="<%= t('landing.slug_placeholder') %>" aria-label="<%= t('landing.slug_label') %>" data-subdomain-redirect-target="input">
               <span class="input-group-text">.localhost:3000</span>
             </div>
-            <small class="text-muted d-block mt-1"><%= t('landing.subdomain_hint') %></small>
+            <small class="text-muted d-block mt-1"><%= t('landing.slug_hint') %></small>
           </div>
 
           <div class="row g-3">

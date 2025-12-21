@@ -153,6 +153,11 @@ ja:
     placeholders:
       enter_name: 名前を入力
   helpers:
+    notice:
+      account_registered: "アカウント登録が完了しました"
+      created: "%{resource}を作成しました"
+      updated: "%{resource}を更新しました"
+      destroyed: "%{resource}を削除しました"
     no_setting: 未設定
     required_mark: <span class="text-danger">*</span>
     select_store_to_create: 店舗を選択してください
@@ -642,6 +647,9 @@ ja:
     errors:
       company_not_found: "会社が見つかりません。再度ログインしてください。"
   application_requests:
+  admin:
+    admin_requests:
+      default_reject_reason: "承認基準を満たしていません"
     accept_confirm:
       success: "アカウント登録が完了しました。ログインしてください"
       failure: "登録に失敗しました: %{error}"

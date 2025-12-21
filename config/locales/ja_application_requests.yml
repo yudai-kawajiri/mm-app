@@ -34,7 +34,6 @@ ja:
         expired: 招待の有効期限が切れています。
         registration_failed: アカウント登録に失敗しました。もう一度お試しください。
       messages:
-        registration_complete: アカウント登録が完了しました。ようこそ！
       password_placeholder: 6文字以上で入力してください
     thanks:
       title: 招待メール送信完了

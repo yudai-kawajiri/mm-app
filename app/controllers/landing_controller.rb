@@ -11,7 +11,7 @@ class LandingController < ApplicationController
 
       # 会社が存在する場合は、ダッシュボードにリダイレクト
       if current_user.company
-        redirect_to company_root_path(company_subdomain: current_user.company.subdomain)
+        redirect_to company_root_path(company_slug: current_user.company.slug)
       else
         # 会社がない場合はログアウト
         sign_out(current_user)

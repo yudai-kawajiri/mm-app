@@ -7,7 +7,7 @@
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: (current_user.company_admin? || current_user.super_admin?) ? new_admin_store_path : nil,
+    new_path: (current_user.company_admin? || current_user.super_admin?) ? scoped_path(:new_admin_store_path) : nil,
     new_button_text: t('admin.stores.new.title'),
     skip_store_check: true %>
 

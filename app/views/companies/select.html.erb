@@ -11,9 +11,9 @@
         <p class="text-muted mb-3">アクセスする会社を選択してください:</p>
         <div class="list-group">
           <% @companies.each do |company| %>
-            <%= link_to company_dashboards_path(company_subdomain: company.subdomain), class: "list-group-item list-group-item-action" do %>
+            <%= link_to company_dashboards_path(company_slug: company.slug), class: "list-group-item list-group-item-action" do %>
               <h5 class="mb-1"><%= company.name %></h5>
-              <small class="text-muted"><%= company.subdomain %></small>
+              <small class="text-muted"><%= company.slug %></small>
             <% end %>
           <% end %>
         </div>

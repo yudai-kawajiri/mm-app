@@ -5,7 +5,31 @@ class ApplicationController < ActionController::Base
   before_action :set_paper_trail_whodunnit
   before_action :redirect_if_authenticated, if: -> { devise_controller? && action_name == "new" && controller_name == "sessions" }
 
-  helper_method :current_company, :current_store
+  helper_method :current_company, :current_store, :scoped_path
+
+  def scoped_path(path_method, *args)
+    return send(path_method, *args) unless current_company.present?
+
+    if path_method.to_s =~ /\A(new|edit)_(.+)/
+      prefix = $1
+      rest = $2
+      company_method_name = "#{prefix}_company_#{rest}"
+    else
+      company_method_name = "company_#{path_method}"
+    end
+    
+    begin
+      send(company_method_name, *args, company_slug: current_company.slug)
+    rescue NoMethodError => e
+      Rails.logger.debug "Path fallback for #{path_method}: #{e.message}"
+      begin
+        send(path_method, *args)
+      rescue NoMethodError => fallback_error
+        Rails.logger.error "Path generation completely failed for #{path_method}: #{fallback_error.message}"
+        "#"
+      end
+    end
+  end
 
   before_action :auto_login_pending_user
 
@@ -25,20 +49,33 @@ class ApplicationController < ActionController::Base
       session[:current_store_id] = current_user.store_id
     end
 
-    authenticated_root_path
+    company_dashboards_path(company_slug: current_company.slug)
   end
 
   def layout_by_resource
     return "print" if action_name == "print"
 
-    if devise_controller? && !user_signed_in?
+    if devise_controller?
       "application"
-    elsif user_signed_in?
+    elsif request.env['warden']&.user
       "authenticated_layout"
     else
       "application"
     end
   end
+
+  def layout_by_resource
+    return "print" if action_name == "print"
+
+    if devise_controller?
+      "application"
+    elsif request.env['warden']&.user
+      "authenticated_layout"
+    else
+      "application"
+    end
+  end
+
 
   def user_for_paper_trail
     user_signed_in? ? current_user.id : nil
@@ -49,10 +86,10 @@ class ApplicationController < ActionController::Base
   end
 
 
-  # パスベース: params[:company_subdomain]から会社を取得
+  # パスベース: params[:company_slug]から会社を取得
   def company_from_path
-    return nil unless params[:company_subdomain].present?
-    @company_from_path ||= Company.find_by(subdomain: params[:company_subdomain])
+    return nil unless params[:company_slug].present?
+    @company_from_path ||= Company.find_by(slug: params[:company_slug])
   end
 
   def current_company
@@ -179,6 +216,6 @@ class ApplicationController < ActionController::Base
     return unless user_signed_in?
 
     flash[:notice] = t("devise.failure.already_authenticated")
-    redirect_to authenticated_root_path
+    redirect_to company_dashboards_path(company_slug: current_company.slug)
   end
 end

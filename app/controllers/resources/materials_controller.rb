@@ -160,5 +160,5 @@ end
     @material = scoped_materials.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     flash[:alert] = t("flash_messages.not_authorized")
-    redirect_to authenticated_root_path
+    redirect_to company_dashboards_path(company_slug: current_company.slug)
   end

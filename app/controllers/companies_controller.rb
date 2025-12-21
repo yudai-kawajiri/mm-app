@@ -25,7 +25,7 @@ class CompaniesController < AuthenticatedController
         session[:current_store_id] = nil # テナント変更時は店舗選択をリセット
         flash[:notice] = t("companies.switch.success", company_name: company.name)
         # パスベース対応: リダイレクト先を修正
-        redirect_to company_dashboards_path(company_subdomain: company.subdomain)
+        redirect_to company_dashboards_path(company_slug: company.slug)
         return
       else
         flash[:alert] = t("companies.switch.not_found")
@@ -37,14 +37,14 @@ class CompaniesController < AuthenticatedController
       flash[:notice] = t("companies.switch.all_companies")
     end
 
-    redirect_to request.referer || authenticated_root_path
+    redirect_to request.referer || company_dashboards_path(company_slug: current_company.slug)
   end
 
   private
 
   def authorize_super_admin!
     unless current_user&.super_admin?
-      redirect_to authenticated_root_path, alert: t("errors.messages.unauthorized")
+      redirect_to company_dashboards_path(company_slug: current_company.slug), alert: t("errors.messages.unauthorized")
     end
   end
 end
