@@ -33,6 +33,8 @@
       icon_mode: true,
       show_copy: false,
       show_print: false,
+      edit_link: !current_user.store_admin?,
+      destroy_link: !current_user.store_admin?,
       scope: [:admin],
 
       columns: [

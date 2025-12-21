@@ -167,9 +167,8 @@ module ApplicationHelper
       if current_user.store_admin?
         admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
         admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
-        admin_submenu << { name: t("common.menu.system_logs"), path: "#", disabled: true }
+        admin_submenu << { name: t("common.menu.store_management"), path: admin_stores_path }
       end
-
       items << {
         name: t("common.menu.admin_management"),
         submenu: admin_submenu

@@ -1,5 +1,7 @@
 <%# リソースアクションリンク %>
 <% show_link = local_assigns.fetch(:show_link, true) %>
+<% edit_link = local_assigns.fetch(:edit_link, true) %>
+<% destroy_link = local_assigns.fetch(:destroy_link, true) %>
 <% show_print = local_assigns.fetch(:show_print, false) %>
 <% print_url = local_assigns[:print_url] %>
 <% show_copy = local_assigns.fetch(:show_copy, false) %>
@@ -19,10 +21,12 @@
       <% end %>
     <% end %>
 
-    <%= link_to resource_path_with_scope(resource, scope, :edit),
-        class: 'btn btn-sm btn-light me-1',
-        title: t('helpers.link.edit') do %>
-      <i class="bi bi-pencil"></i>
+    <% if edit_link %>
+      <%= link_to resource_path_with_scope(resource, scope, :edit),
+          class: 'btn btn-sm btn-light me-1',
+          title: t('helpers.link.edit') do %>
+        <i class="bi bi-pencil"></i>
+      <% end %>
     <% end %>
 
     <% if show_copy && copy_url.present? %>
@@ -53,20 +57,24 @@
       <% end %>
     <% end %>
 
-    <%= link_to resource_path_with_scope(resource, scope),
-        class: 'btn btn-sm btn-danger',
-        title: t('helpers.link.destroy'),
-        data: { 
-          turbo_method: :delete,
-          turbo_confirm: t('helpers.confirm.destroy', resource: resource.class.model_name.human) 
-        } do %>
-      <i class="bi bi-trash"></i>
+    <% if destroy_link %>
+      <%= link_to resource_path_with_scope(resource, scope),
+          class: 'btn btn-sm btn-danger',
+          title: t('helpers.link.destroy'),
+          data: { 
+            turbo_method: :delete,
+            turbo_confirm: t('helpers.confirm.destroy', resource: resource.class.model_name.human) 
+          } do %>
+        <i class="bi bi-trash"></i>
+      <% end %>
     <% end %>
   <% else %>
     <% if show_link %>
       <%= link_to t('helpers.link.show'), resource_path_with_scope(resource, scope), class: 'btn btn-sm btn-light me-1' %>
     <% end %>
-    <%= link_to t('helpers.link.edit'), resource_path_with_scope(resource, scope, :edit), class: 'btn btn-sm btn-light me-1' %>
+    <% if edit_link %>
+      <%= link_to t('helpers.link.edit'), resource_path_with_scope(resource, scope, :edit), class: 'btn btn-sm btn-light me-1' %>
+    <% end %>
     <% if show_copy && copy_url.present? %>
       <% if can_create_store_resource? %>
         <%= link_to t('helpers.link.copy'), copy_url, 
@@ -84,11 +92,13 @@
     <% if show_print && print_url.present? %>
       <%= link_to t('helpers.link.print'), print_url, class: 'btn btn-sm btn-light me-1', target: '_blank' %>
     <% end %>
-    <%= link_to t('helpers.link.destroy'), resource_path_with_scope(resource, scope), 
-        class: 'btn btn-sm btn-danger',
-        data: { 
-          turbo_method: :delete,
-          turbo_confirm: t('helpers.confirm.destroy', resource: resource.class.model_name.human) 
-        } %>
+    <% if destroy_link %>
+      <%= link_to t('helpers.link.destroy'), resource_path_with_scope(resource, scope), 
+          class: 'btn btn-sm btn-danger',
+          data: { 
+            turbo_method: :delete,
+            turbo_confirm: t('helpers.confirm.destroy', resource: resource.class.model_name.human) 
+          } %>
+    <% end %>
   <% end %>
 </div>

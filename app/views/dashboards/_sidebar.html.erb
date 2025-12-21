@@ -103,36 +103,38 @@
     <% sidebar_menu_items.each do |item| %>
       <% if item[:submenu] %>
         <%# サブメニューがある項目 %>
-        <% collapse_id = "collapse-#{item[:name].parameterize}" %>
+        <% collapse_id = "collapse-#{item[:name].parameterize(separator: '-', locale: :en).presence || item[:name].hash.abs}" %>
         <% parent_is_active = item[:submenu].any? { |sub| sidebar_link_active?(sub) } %>
 
         <% if item[:disabled] %>
-      <a href="#" class="list-group-item list-group-item-action <%= 'active' if parent_is_active %> disabled text-muted" title="<%= t('dashboard.menu.disabled_menu') %>" onclick="return false;">
-        <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
-        <i class="bi bi-lock-fill float-end"></i>
-      </a>
-    <% else %>
-      <a href="#"
-         class="list-group-item list-group-item-action <%= 'active' if parent_is_active %>"
-         data-bs-toggle="collapse"
-         data-bs-target="#<%= collapse_id %>"
-         role="button"
-         aria-expanded="<%= parent_is_active %>"
-         aria-controls="<%= collapse_id %>"
-         onclick="event.preventDefault();">
-        <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
-        <i class="bi bi-chevron-down float-end"></i>
-      </a>
-    <% end %>
+          <%# disabled の場合: 展開機能なし、鍵アイコン表示 %>
+          <a href="#" class="list-group-item list-group-item-action disabled text-muted" title="<%= t('dashboard.menu.disabled_menu') %>" onclick="return false;">
+            <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
+            <i class="bi bi-lock-fill float-end"></i>
+          </a>
+        <% else %>
+          <%# 通常: 展開機能あり %>
+          <a href="#"
+             class="list-group-item list-group-item-action <%= 'active' if parent_is_active %>"
+             data-bs-toggle="collapse"
+             data-bs-target="#<%= collapse_id %>"
+             role="button"
+             aria-expanded="<%= parent_is_active %>"
+             aria-controls="<%= collapse_id %>"
+             onclick="event.preventDefault();">
+            <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
+            <i class="bi bi-chevron-down float-end"></i>
+          </a>
+        <% end %>
 
         <% unless item[:disabled] %>
         <div class="collapse <%= 'show' if parent_is_active %>"
              id="<%= collapse_id %>"
-             data-bs-parent="#sidebar-accordion">
+             >
           <% item[:submenu].each do |sub_item| %>
             <% if sub_item[:submenu] %>
               <%# 3階層目のサブメニュー %>
-              <% sub_collapse_id = "collapse-#{sub_item[:name].parameterize}" %>
+              <% sub_collapse_id = "collapse-sub-#{sub_item[:name].parameterize(separator: '-', locale: :en).presence || sub_item[:name].hash.abs}" %>
               <% sub_parent_is_active = sub_item[:submenu].any? { |s| sidebar_link_active?(s) } %>
 
               <a href="#"
@@ -202,7 +204,7 @@
 
     <div class="collapse <%= 'show' if settings_is_active %>"
           id="<%= settings_collapse_id %>"
-          data-bs-parent="#sidebar-accordion">
+          >
 
       <%= link_to edit_user_registration_path,
           class: "list-group-item list-group-item-action ps-4 #{current_page?(edit_user_registration_path) ? 'active' : ''}" do %>
