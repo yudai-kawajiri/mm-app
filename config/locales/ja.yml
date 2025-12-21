@@ -641,3 +641,7 @@ ja:
   landing:
     errors:
       company_not_found: "会社が見つかりません。再度ログインしてください。"
+  application_requests:
+    accept_confirm:
+      success: "アカウント登録が完了しました。ログインしてください"
+      failure: "登録に失敗しました: %{error}"

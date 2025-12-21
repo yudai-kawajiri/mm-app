@@ -47,18 +47,11 @@ class ApplicationRequestsController < ApplicationController
 
       @application_request.update!(status: :accepted, user: user)
 
-      # 手動ログインに誘導
-      redirect_to new_user_session_url(
-        subdomain: company.subdomain,
-        host: request.host,
-        port: request.port
-      ),
-      notice: "アカウント登録が完了しました。ログインしてください",
-      allow_other_host: true
+      redirect_to new_user_session_path,
+        notice: t("application_requests.accept_confirm.success")
     end
   rescue ActiveRecord::RecordInvalid => e
-    error_msg = e.record.errors.full_messages.join(", ")
-    flash[:alert] = "登録に失敗しました: #{error_msg}"
+    flash[:alert] = t("application_requests.accept_confirm.failure", error: e.record.errors.full_messages.join(", "))
     render :accept, status: :unprocessable_entity
   end
 
