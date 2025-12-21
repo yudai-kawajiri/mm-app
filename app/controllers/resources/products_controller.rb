@@ -13,6 +13,7 @@ class Resources::ProductsController < AuthenticatedController
   )
 
   find_resource :product, only: [ :show, :edit, :update, :destroy, :copy, :purge_image, :update_status ]
+  before_action :require_store_user
 
   # 商品一覧
   #

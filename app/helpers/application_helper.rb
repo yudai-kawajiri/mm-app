@@ -76,7 +76,7 @@ module ApplicationHelper
       {
         name: t("dashboard.menu.category_management"),
         path: resources_categories_path,
-        disabled: current_user.super_admin?,
+        disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
           { name: t("dashboard.menu.category_list"), path: resources_categories_path },
           { name: t("dashboard.menu.new_category"), path: new_resources_category_path }
@@ -84,7 +84,7 @@ module ApplicationHelper
       },
       {
         name: t("dashboard.menu.material_master_management"),
-        disabled: current_user.super_admin?,
+        disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
           {
             name: t("dashboard.menu.unit_management"),
@@ -115,7 +115,7 @@ module ApplicationHelper
       {
         name: t("dashboard.menu.product_management"),
         path: resources_products_path,
-        disabled: current_user.super_admin?,
+        disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
           { name: t("dashboard.menu.product_list"), path: resources_products_path },
           { name: t("dashboard.menu.new_product"), path: new_resources_product_path }
@@ -124,7 +124,7 @@ module ApplicationHelper
       {
         name: t("dashboard.menu.plan_management"),
         path: resources_plans_path,
-        disabled: current_user.super_admin?,
+        disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
           { name: t("dashboard.menu.plan_list"), path: resources_plans_path },
           { name: t("dashboard.menu.new_plan"), path: new_resources_plan_path }
@@ -133,7 +133,7 @@ module ApplicationHelper
       {
       name: t("dashboard.menu.numerical_management"),
       path: management_numerical_managements_path,
-      disabled: current_user.super_admin?,
+      disabled: (current_user.super_admin? || current_user.company_admin?),
       submenu: [
         { name: t("dashboard.menu.numerical_dashboard"), path: management_numerical_managements_path }
       ]
@@ -167,9 +167,8 @@ module ApplicationHelper
       if current_user.store_admin?
         admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
         admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
-        admin_submenu << { name: t("common.menu.system_logs"), path: "#", disabled: true }
+        admin_submenu << { name: t("common.menu.store_management"), path: admin_stores_path }
       end
-
       items << {
         name: t("common.menu.admin_management"),
         submenu: admin_submenu

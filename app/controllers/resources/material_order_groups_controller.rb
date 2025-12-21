@@ -18,6 +18,7 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
   )
 
   find_resource :material_order_group, only: [ :show, :edit, :update, :destroy, :copy ]
+  before_action :require_store_user
   before_action :set_material_order_group, only: [ :show, :edit, :update, :destroy, :copy ]
 
   def index

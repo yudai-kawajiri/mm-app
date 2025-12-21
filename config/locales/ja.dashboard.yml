@@ -123,3 +123,12 @@ ja:
       daily_actual: "本日の売上実績"
       remaining_days: "残り営業日数"
       calculation_error: "計算エラー"
+
+    # ダッシュボード表示用
+    welcome_message: "%{name}さん、こんにちは"
+    display_month_label: "表示月"
+    display_button: "表示"
+
+    welcome_modal:
+      copy_button: "コピー"
+      start_button: "始める"

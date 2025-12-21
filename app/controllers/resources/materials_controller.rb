@@ -16,6 +16,7 @@ class Resources::MaterialsController < AuthenticatedController
 
   find_resource :material, only: [ :show, :edit, :update, :destroy, :copy ]
   before_action :set_material, only: [ :show, :edit, :update, :destroy, :copy ]
+  before_action :require_store_user
 
   # 原材料一覧
   #

@@ -13,6 +13,7 @@ class Resources::CategoriesController < AuthenticatedController
 
   find_resource :category, only: [ :show, :edit, :update, :destroy, :copy ]
   before_action :set_category, only: [ :show, :edit, :update, :destroy, :copy ]
+  before_action :require_store_user
 
   def index
     Rails.logger.info "[DEBUG INDEX] @categories count before scoped: (calling scoped_categories now)"

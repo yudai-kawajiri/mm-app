@@ -7,6 +7,8 @@
 <% show_print = local_assigns.fetch(:show_print, false) %>
 <% print_url_method = local_assigns[:print_url_method] %>
 <% icon_mode = local_assigns.fetch(:icon_mode, false) %>
+<% edit_link = local_assigns.fetch(:edit_link, true) %>
+<% destroy_link = local_assigns.fetch(:destroy_link, true) %>
 <% sortable = local_assigns.fetch(:sortable, false) %>
 <% sort_options = local_assigns[:sort_options] %>
 <% sort_placeholder = local_assigns[:sort_placeholder] %>
@@ -95,6 +97,8 @@
               print_url: show_print && print_url_method.present? ?
               send(print_url_method, resource) : nil,
               icon_mode: icon_mode,
+              edit_link: edit_link,
+              destroy_link: destroy_link,
               scope: scope
           %>
         </td>
