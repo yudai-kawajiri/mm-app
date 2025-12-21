@@ -160,7 +160,7 @@ class ApplicationController < ActionController::Base
   def check_super_admin_subdomain
     if current_user&.super_admin? && request.subdomain != 'admin'
       sign_out current_user
-      redirect_to 'http://admin.localhost:3000/users/sign_in', alert: 'システム管理者はadminサブドメインからログインしてください', allow_other_host: true
+      redirect_to 'http://admin.localhost:3000/users/sign_in', alert: t('errors.messages.invalid_subdomain_access'), allow_other_host: true
     end
   end
 
