@@ -8,7 +8,7 @@ RSpec.describe "Dashboards", type: :request do
 
   describe 'GET /' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get authenticated_root_path

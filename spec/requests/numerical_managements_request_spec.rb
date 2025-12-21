@@ -9,7 +9,7 @@ RSpec.describe "NumericalManagements", type: :request do
 
   describe 'GET /numerical_managements' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get management_numerical_managements_path, params: { year: year, month: month }

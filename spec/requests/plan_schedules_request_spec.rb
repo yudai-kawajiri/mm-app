@@ -11,7 +11,7 @@ RSpec.describe "PlanSchedules", type: :request do
 
   describe 'POST /plan_schedules' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -130,7 +130,7 @@ RSpec.describe "PlanSchedules", type: :request do
     let!(:plan_schedule) { create(:plan_schedule, user: super_admin_user, plan: plan, scheduled_date: scheduled_date) }
 
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -172,7 +172,7 @@ RSpec.describe "PlanSchedules", type: :request do
     let!(:plan_schedule) { create(:plan_schedule, user: super_admin_user, plan: plan, scheduled_date: scheduled_date) }
 
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
