@@ -4,22 +4,18 @@ class LandingController < ApplicationController
   layout "application"
 
   def index
-    # params[:logout] == 'success' の場合のメッセージ表示は
-    # app/views/landing/index.html.erb で ERB により行われるため、
-    # ここでは flash.now への設定は不要
-
-    # サブドメインなし環境でログイン済みの場合
-    if user_signed_in? && request.subdomain.blank?
-      # params[:logout] がある場合はリダイレクトしない（ログアウト直後）
+    # ログイン済みの場合
+    if user_signed_in?
+      # ログアウト直後はリダイレクトしない
       return if params[:logout] == "success"
 
-      # テナントが存在する場合は、そのサブドメインにリダイレクト
+      # 会社が存在する場合は、ダッシュボードにリダイレクト
       if current_user.company
-        redirect_to authenticated_root_url(subdomain: current_user.company.subdomain), allow_other_host: true
+        redirect_to company_root_path(company_subdomain: current_user.company.subdomain)
       else
-        # テナントがない場合はログアウト
+        # 会社がない場合はログアウト
         sign_out(current_user)
-        flash[:alert] = "テナントが見つかりません。再度ログインしてください。"
+        flash[:alert] = t("landing.errors.company_not_found")
       end
     end
   end

@@ -704,27 +704,6 @@ module ApplicationHelper
     return true unless current_user.company_admin?
     session[:current_store_id].present?
   end
-end
-
-  # ============================================================
-  # パスベース対応ヘルパー
-  # ============================================================
-
-  #
-  # パスベース対応: 会社スコープ付きのパスを自動生成
-  #
-  # @param path_method [Symbol] パスメソッド名（例: :admin_users_path）
-  # @param args [Array] パスメソッドの引数
-  # @param options [Hash] パスメソッドのオプション
-  # @return [String] 会社スコープ付きパス
-  #
-  # @example
-  #   scoped_path(:admin_users_path)
-  #   # => "/c/company-subdomain/admin/users"
-  #
-  #   scoped_path(:resources_material_path, @material)
-  #   # => "/c/company-subdomain/resources/materials/123"
-  #
 
   # ============================================================
   # パスベース対応ヘルパー
@@ -744,7 +723,6 @@ end
   #   scoped_path(:resources_material_path, @material)
   #   # => "/c/company-subdomain/resources/materials/123"
   #
-end
   def scoped_path(path_method, *args)
     if current_company.present?
       method_name = "company_#{path_method}"

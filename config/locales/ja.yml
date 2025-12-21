@@ -638,3 +638,6 @@ ja:
       table_headers:
         company: 会社名
         store: 店舗名
+  landing:
+    errors:
+      company_not_found: "会社が見つかりません。再度ログインしてください。"
