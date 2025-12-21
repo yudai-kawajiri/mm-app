@@ -9,6 +9,7 @@
 #   MaterialOrderGroup.search_by_name("マグロ")
 #   group.materials
 class Resources::MaterialOrderGroup < ApplicationRecord
+  belongs_to :company
   # 変更履歴の記録
   has_paper_trail
 

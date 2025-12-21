@@ -6,12 +6,12 @@ RSpec.describe "PlanSchedules", type: :request do
   let(:year) { Date.current.year }
   let(:month) { Date.current.month }
   let(:scheduled_date) { Date.new(year, month, 15) }
-  let(:plan_category) { create(:category, :plan, user: admin_user) }
-  let(:plan) { create(:plan, :active, user: admin_user, category: plan_category) }
+  let(:plan_category) { create(:category, :plan, user: super_admin_user) }
+  let(:plan) { create(:plan, :active, user: super_admin_user, category: plan_category) }
 
   describe 'POST /plan_schedules' do
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -48,7 +48,7 @@ RSpec.describe "PlanSchedules", type: :request do
       end
 
       context '同じ日に既に計画がある場合' do
-        let!(:existing_schedule) { create(:plan_schedule, user: admin_user, plan: plan, scheduled_date: scheduled_date) }
+        let!(:existing_schedule) { create(:plan_schedule, user: super_admin_user, plan: plan, scheduled_date: scheduled_date) }
 
         let(:update_params) do
           {
@@ -127,10 +127,10 @@ RSpec.describe "PlanSchedules", type: :request do
   end
 
   describe 'PATCH /plan_schedules/:id' do
-    let!(:plan_schedule) { create(:plan_schedule, user: admin_user, plan: plan, scheduled_date: scheduled_date) }
+    let!(:plan_schedule) { create(:plan_schedule, user: super_admin_user, plan: plan, scheduled_date: scheduled_date) }
 
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -169,10 +169,10 @@ RSpec.describe "PlanSchedules", type: :request do
   end
 
   describe 'PATCH /plan_schedules/:id/actual_revenue' do
-    let!(:plan_schedule) { create(:plan_schedule, user: admin_user, plan: plan, scheduled_date: scheduled_date) }
+    let!(:plan_schedule) { create(:plan_schedule, user: super_admin_user, plan: plan, scheduled_date: scheduled_date) }
 
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do

@@ -11,7 +11,7 @@ RSpec.describe "Management::DailyTargets", type: :request do
 
   describe 'POST /daily_targets' do
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -144,7 +144,7 @@ RSpec.describe "Management::DailyTargets", type: :request do
     let!(:daily_target) { create(:daily_target, monthly_budget: monthly_budget, target_date: target_date, target_amount: 8000) }
 
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do

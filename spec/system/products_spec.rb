@@ -53,7 +53,7 @@ RSpec.describe '製品管理', type: :system do
       click_button '登録'
 
       expect(page).to have_content('商品の登録に失敗しました')
-      expect(page).to have_content('商品名 を入力してください')
+      expect(page).to have_content('商品名を入力してください')
     end
 
     scenario '価格が負の値の場合は作成できない' do
@@ -64,7 +64,7 @@ RSpec.describe '製品管理', type: :system do
       click_button '登録'
 
       expect(page).to have_content('商品の登録に失敗しました')
-      expect(page).to have_content('0より大きい値を入力してください')
+      expect(page).to have_content('は0より大きい値にしてください')
     end
   end
 
@@ -95,7 +95,7 @@ RSpec.describe '製品管理', type: :system do
       click_button '更新'
 
       expect(page).to have_content('商品の更新に失敗しました')
-      expect(page).to have_content('商品名 を入力してください')
+      expect(page).to have_content('商品名を入力してください')
     end
   end
 

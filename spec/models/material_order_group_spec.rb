@@ -21,7 +21,7 @@ RSpec.describe Resources::MaterialOrderGroup, type: :model do
       create(:material_order_group, name: 'マグロ類', user: user)
       duplicate_group = build(:material_order_group, name: 'マグロ類', user: user)
       expect(duplicate_group).not_to be_valid
-      expect(duplicate_group.errors[:name]).to include('は既に使用されています')
+      expect(duplicate_group.errors[:name]).to include('はすでに存在します')
     end
 
     it 'readingが存在すること' do

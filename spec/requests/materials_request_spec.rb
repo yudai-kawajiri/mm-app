@@ -3,13 +3,13 @@ require 'rails_helper'
 RSpec.describe "Materials", type: :request do
   let(:super_admin_user) { create(:user, :super_admin) }
   let(:general_user) { create(:user, :general) }
-  let(:category) { create(:category, :material, user: admin_user) }
-  let(:unit) { create(:unit, user: admin_user) }
-  let!(:material) { create(:material, user: admin_user, category: category, unit_for_product: unit, unit_for_order: unit) }
+  let(:category) { create(:category, :material, user: super_admin_user) }
+  let(:unit) { create(:unit, user: super_admin_user) }
+  let!(:material) { create(:material, user: general_user, category: category, unit_for_product: unit, unit_for_order: unit) }
 
   describe 'GET /materials' do
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_materials_path
@@ -54,7 +54,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'GET /materials/new' do
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get new_resources_material_path
@@ -87,7 +87,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'POST /materials' do
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -152,7 +152,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'GET /materials/:id' do
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_material_path(material)
@@ -180,7 +180,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'GET /materials/:id/edit' do
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get edit_resources_material_path(material)
@@ -213,7 +213,7 @@ RSpec.describe "Materials", type: :request do
 
   describe 'PATCH /materials/:id' do
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -270,10 +270,10 @@ RSpec.describe "Materials", type: :request do
 
   describe 'DELETE /materials/:id' do
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '材料が削除されること' do
-        material_to_delete = create(:material, user: admin_user, category: category, unit_for_product: unit, unit_for_order: unit)
+        material_to_delete = create(:material, user: super_admin_user, category: category, unit_for_product: unit, unit_for_order: unit)
         expect {
           delete resources_material_path(material_to_delete)
         }.to change(Resources::Material, :count).by(-1)
@@ -300,11 +300,11 @@ RSpec.describe "Materials", type: :request do
 
   describe 'POST /materials/reorder' do
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
-      let(:material1) { create(:material, user: admin_user, category: category, unit_for_product: unit, unit_for_order: unit, display_order: 1) }
-      let(:material2) { create(:material, user: admin_user, category: category, unit_for_product: unit, unit_for_order: unit, display_order: 2) }
-      let(:material3) { create(:material, user: admin_user, category: category, unit_for_product: unit, unit_for_order: unit, display_order: 3) }
+      let(:material1) { create(:material, user: super_admin_user, category: category, unit_for_product: unit, unit_for_order: unit, display_order: 1) }
+      let(:material2) { create(:material, user: super_admin_user, category: category, unit_for_product: unit, unit_for_order: unit, display_order: 2) }
+      let(:material3) { create(:material, user: super_admin_user, category: category, unit_for_product: unit, unit_for_order: unit, display_order: 3) }
 
       it '正常にレスポンスを返すこと' do
         post reorder_resources_materials_path, params: { material_ids: [ material3.id, material1.id, material2.id ] }

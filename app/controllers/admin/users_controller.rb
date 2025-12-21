@@ -87,6 +87,12 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def destroy
+    # 自分自身は削除できない
+    if @user.id == current_user.id
+      redirect_to admin_users_url, alert: t("admin.users.messages.cannot_delete_self"), status: :see_other
+      return
+    end
+
     @user.destroy!
     redirect_to admin_users_url, notice: t("helpers.notice.destroyed", resource: User.model_name.human), status: :see_other
   end

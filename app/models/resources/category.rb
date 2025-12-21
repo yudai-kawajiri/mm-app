@@ -9,6 +9,7 @@
 #   - product: 製品カテゴリー (1)
 #   - plan: 計画カテゴリー (2)
 class Resources::Category < ApplicationRecord
+  belongs_to :company
   include TranslatableAssociations
   has_paper_trail
 

@@ -8,7 +8,7 @@ RSpec.describe "Dashboards", type: :request do
 
   describe 'GET /' do
     context 'ログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get authenticated_root_path
@@ -22,7 +22,7 @@ RSpec.describe "Dashboards", type: :request do
 
       # 修正1: 月次予算が存在する場合のみテスト
       context '月次予算が存在する場合' do
-        let!(:monthly_budget) { create(:monthly_budget, user: admin_user, budget_month: Date.new(year, month, 1)) }
+        let!(:monthly_budget) { create(:monthly_budget, user: super_admin_user, budget_month: Date.new(year, month, 1)) }
 
         it '@monthly_budgetに月次予算を割り当てること' do
           get authenticated_root_path
@@ -58,8 +58,8 @@ RSpec.describe "Dashboards", type: :request do
       end
 
       context 'グラフデータの生成' do
-        let!(:monthly_budget) { create(:monthly_budget, user: admin_user, budget_month: Date.new(year, month, 1)) }
-        let!(:daily_target) { create(:daily_target, user: admin_user, target_date: Date.new(year, month, 15), target_amount: 10000) }
+        let!(:monthly_budget) { create(:monthly_budget, user: super_admin_user, budget_month: Date.new(year, month, 1)) }
+        let!(:daily_target) { create(:daily_target, user: super_admin_user, target_date: Date.new(year, month, 15), target_amount: 10000) }
     end
       it '正常にレスポンスを返すこと' do
         get authenticated_root_path

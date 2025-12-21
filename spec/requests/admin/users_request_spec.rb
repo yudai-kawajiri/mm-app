@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe "Admin::Users", type: :request do
-  let(:super_admin_user) { create(:user, :super_admin) }
+  let(:super_admin_user) { create(:user, :super_admin, approved: true) }
   let(:general_user) { create(:user, :general) }
 
   describe 'GET /admin/users' do
     context '管理者でログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in super_admin_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get admin_users_path
@@ -14,10 +14,10 @@ RSpec.describe "Admin::Users", type: :request do
       end
 
       it '@usersに全ユーザーを割り当てること' do
-        user1 = create(:user)
-        user2 = create(:user)
+        user1 = create(:user, approved: true)
+        user2 = create(:user, approved: true)
         get admin_users_path
-        expect(assigns(:users)).to include(user1, user2, admin_user)
+        expect(assigns(:users)).to include(user1, user2, super_admin_user)
       end
 
       it 'indexテンプレートを表示すること' do
@@ -27,7 +27,7 @@ RSpec.describe "Admin::Users", type: :request do
     end
 
     context 'スタッフでログインしている場合' do
-      before { sign_in staff_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it 'リダイレクトされること' do
         get admin_users_path
@@ -47,7 +47,7 @@ RSpec.describe "Admin::Users", type: :request do
     let!(:target_user) { create(:user) }
 
     context '管理者でログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in super_admin_user, scope: :user }
 
       it 'ユーザーが削除されること' do
         expect {
@@ -67,18 +67,18 @@ RSpec.describe "Admin::Users", type: :request do
 
       it '自分自身は削除できないこと' do
         expect {
-          delete admin_user_path(admin_user)
+          delete admin_user_path(super_admin_user)
         }.not_to change(User, :count)
       end
 
       it '自分自身を削除しようとするとエラーメッセージが表示されること' do
-        delete admin_user_path(admin_user)
+        delete admin_user_path(super_admin_user)
         expect(flash[:alert]).to be_present
       end
     end
 
     context 'スタッフでログインしている場合' do
-      before { sign_in staff_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it 'ユーザーが削除されないこと' do
         expect {

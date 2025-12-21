@@ -1,6 +1,5 @@
 FactoryBot.define do
   factory :admin_request do
-    company { nil }
     user { nil }
     store { nil }
     request_type { 1 }

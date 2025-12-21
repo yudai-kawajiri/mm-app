@@ -21,7 +21,7 @@ RSpec.describe Resources::Material, type: :model do
       create(:material, name: 'テスト原材料', category: category, user: user)
       material = build(:material, name: 'テスト原材料', category: category, user: user)
       material.valid?
-      expect(material.errors[:name]).to include('は既に使用されています')
+      expect(material.errors[:name]).to include('はすでに存在します')
     end
 
     it '異なるカテゴリ―であれば同じ名前でも有効であること' do
@@ -42,7 +42,7 @@ RSpec.describe Resources::Material, type: :model do
     it '発注単位の重量が0以下なら無効であること' do
       material = build(:material, unit_weight_for_order: 0)
       material.valid?
-      expect(material.errors[:unit_weight_for_order]).to include('0より大きい値を入力してください')
+      expect(material.errors[:unit_weight_for_order]).to include('は0より大きい値にしてください')
     end
 
     it 'デフォルト重量が負の値なら無効であること' do
