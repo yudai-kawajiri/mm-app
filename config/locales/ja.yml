@@ -73,6 +73,7 @@ ja:
   errors:
     messages:
       unauthorized: この操作を行う権限がありません
+    invalid_subdomain_access: 'アクセス権限がありません'
   flash_messages:
     create:
       success: "%{resource}を登録しました"
@@ -585,7 +586,6 @@ ja:
       table_headers:
         company: 会社名
         store: 店舗名
-    invalid_subdomain_access: 'アクセス権限がありません'
   dashboard:
     sidebar:
       company: 会社
