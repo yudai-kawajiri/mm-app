@@ -11,6 +11,7 @@ class Management::NumericalManagementsController < Management::BaseController
   VALID_MONTH_MAX = 12
 
   before_action :authenticate_user!
+  before_action :require_store_user
 
   def index
     year = params[:year].to_i

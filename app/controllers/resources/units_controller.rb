@@ -13,6 +13,7 @@ class Resources::UnitsController < AuthenticatedController
 
   find_resource :unit, only: [ :show, :edit, :update, :destroy, :copy ]
   before_action :set_unit, only: [ :show, :edit, :update, :destroy, :copy ]
+  before_action :require_store_user
 
   def index
     @units = scoped_units

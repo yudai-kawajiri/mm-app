@@ -14,7 +14,8 @@ class Resources::PlansController < AuthenticatedController
   )
 
   find_resource :plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ]
-  before_action :set_plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ], unless: -> { action_name == "print" && params[:plan_schedule_id].present? }
+  before_action :set_plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ]
+  before_action :require_store_user, unless: -> { action_name == "print" && params[:plan_schedule_id].present? }
 
   # 【Eager Loading】
   # N+1クエリを防ぐため、category を事前ロード
