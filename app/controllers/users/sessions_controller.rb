@@ -2,7 +2,6 @@
 
 class Users::SessionsController < Devise::SessionsController
   # before_action :configure_sign_in_params, only: [:create]
-  skip_before_action :check_super_admin_subdomain, only: [:new, :create, :destroy]
   before_action :check_admin_subdomain_for_login, only: [:new, :create]
 
   # GET /resource/sign_in
