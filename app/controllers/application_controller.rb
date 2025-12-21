@@ -158,10 +158,12 @@ class ApplicationController < ActionController::Base
 
   # システム管理者は admin サブドメインのみアクセス可能
   def check_super_admin_subdomain
-    if current_user&.super_admin? && request.subdomain != 'admin'
+    if user_signed_in? && current_user.super_admin? && request.subdomain != 'admin'
       sign_out current_user
-      redirect_to 'http://admin.localhost:3000/users/sign_in', alert: t('errors.messages.invalid_subdomain_access'), allow_other_host: true
+      flash[:alert] = t('errors.invalid_subdomain_access')
+      redirect_to new_user_session_url(subdomain: 'admin'), allow_other_host: true
     end
+  end
   end
 
   private

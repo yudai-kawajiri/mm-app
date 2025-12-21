@@ -585,6 +585,7 @@ ja:
       table_headers:
         company: 会社名
         store: 店舗名
+    invalid_subdomain_access: 'アクセス権限がありません'
   dashboard:
     sidebar:
       company: 会社
