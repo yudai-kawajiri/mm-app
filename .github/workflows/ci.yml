@@ -31,13 +31,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version-file: .ruby-version
+          ruby-version: '3.3.6'
           bundler-cache: true
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libvips
 
       - name: Install dependencies
         run: |
@@ -50,33 +55,16 @@ jobs:
       - name: Setup database
         run: |
           bundle exec rails db:create
-          bundle exec rails db:schema:load
+          bundle exec rails db:migrate
 
       - name: Run RSpec tests
         run: |
-          bundle exec rspec --format progress --format RspecJunitFormatter --out tmp/rspec.xml
-
-      - name: Generate coverage report
-        if: always()
-        run: |
-          echo "Coverage: $(grep -o 'Line Coverage: [0-9.]*%' coverage/.last_run.json | head -1 || echo 'N/A')"
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v5
-        if: always()
-        with:
-          name: test-results
-          path: tmp/rspec.xml
+          bundle exec rspec --format documentation
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-report
           path: coverage/
-
-      - name: Test Summary
-        uses: test-summary/action@v2
-        if: always()
-        with:
-          paths: tmp/rspec.xml
+          if-no-files-found: ignore
