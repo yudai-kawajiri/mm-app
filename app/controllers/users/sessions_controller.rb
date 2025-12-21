@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Users::SessionsController < Devise::SessionsController
+  skip_before_action :check_super_admin_subdomain, only: [:new, :create]
   skip_before_action :verify_authenticity_token, only: [:destroy]
   
   # GET /users/sign_in

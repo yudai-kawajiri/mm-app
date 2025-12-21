@@ -189,4 +189,3 @@ class ApplicationController < ActionController::Base
     flash[:notice] = t("devise.failure.already_authenticated")
     redirect_to authenticated_root_path
   end
-end
