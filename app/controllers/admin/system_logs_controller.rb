@@ -1,5 +1,5 @@
 class Admin::SystemLogsController < Admin::BaseController
-  before_action :authorize_super_admin!
+  before_action :authorize_system_logs_access!
   
   LOGS_PER_PAGE = 50
 
@@ -48,8 +48,8 @@ class Admin::SystemLogsController < Admin::BaseController
 
   private
 
-  def authorize_super_admin!
-    unless current_user&.super_admin?
+  def authorize_system_logs_access!
+    unless current_user&.super_admin? || current_user&.company_admin?
       redirect_to authenticated_root_path, alert: t('errors.messages.unauthorized')
     end
   end
