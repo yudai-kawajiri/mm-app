@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :material, class: 'Resources::Material' do
+    association :company
     sequence(:name) { |n| "原材料#{n}" }
     sequence(:reading) do |n|
       hiragana_nums = %w[ぜろ いち に さん よん ご ろく なな はち きゅう]

@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :monthly_budget, class: 'Management::MonthlyBudget' do
+    association :company
     sequence(:budget_month) { |n| (Date.current.beginning_of_month + n.months) }
     target_amount { 1000000 }
     description { "テスト用の予算メモ" }

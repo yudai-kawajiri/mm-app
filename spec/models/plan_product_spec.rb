@@ -27,14 +27,14 @@ RSpec.describe Planning::PlanProduct, type: :model do
     it 'production_countが0より大きいこと' do
       plan_product.production_count = 0
       expect(plan_product).not_to be_valid
-      expect(plan_product.errors[:production_count]).to include('0より大きい値を入力してください')
+      expect(plan_product.errors[:production_count]).to include('は0より大きい値にしてください')
     end
 
     it 'product_idがplan_id内で一意であること' do
       create(:plan_product, plan: plan, product: product)
       duplicate = build(:plan_product, plan: plan, product: product)
       expect(duplicate).not_to be_valid
-      expect(duplicate.errors[:product_id]).to include('は既に使用されています')
+      expect(duplicate.errors[:product_id]).to include('はすでに存在します')
     end
   end
 

@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :daily_target, class: 'Management::DailyTarget' do
+    association :company
     association :monthly_budget
     target_date { Date.current }
     target_amount { 30000 }

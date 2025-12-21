@@ -25,7 +25,7 @@ RSpec.describe Resources::Category, type: :model do
       create(:category, name: 'テストカテゴリー', category_type: :material)
       category = build(:category, name: 'テストカテゴリー', category_type: :material)
       category.valid?
-      expect(category.errors[:name]).to include('は既に使用されています')  # 「は既に存在します」→「は既に使用されています」
+      expect(category.errors[:name]).to include('はすでに存在します')  # 「は既に存在します」→「は既に使用されています」
     end
 
     it '異なるcategory_typeであれば同じ名前でも有効であること' do

@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :plan_schedule, class: 'Planning::PlanSchedule' do
+    association :company
     association :user
     association :plan
     scheduled_date { Date.current }

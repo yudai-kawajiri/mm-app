@@ -6,7 +6,7 @@ RSpec.describe "Admin::SystemLogs", type: :request do
 
   describe 'GET /admin/system_logs' do
     context '管理者でログインしている場合' do
-      before { sign_in admin_user, scope: :user }
+      before { sign_in super_admin_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get admin_system_logs_path
@@ -65,7 +65,7 @@ RSpec.describe "Admin::SystemLogs", type: :request do
     end
 
     context 'スタッフでログインしている場合' do
-      before { sign_in staff_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it 'リダイレクトされること' do
         get admin_system_logs_path

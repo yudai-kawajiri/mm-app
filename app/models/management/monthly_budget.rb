@@ -9,6 +9,7 @@
 #   MonthlyBudget.for_month(2024, 12)
 #   budget.achievement_rate
 class Management::MonthlyBudget < ApplicationRecord
+  belongs_to :company
   # 変更履歴の記録
   has_paper_trail
 

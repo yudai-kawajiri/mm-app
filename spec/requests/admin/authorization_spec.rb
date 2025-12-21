@@ -8,7 +8,7 @@ RSpec.describe 'Admin権限テスト', type: :request do
     describe 'GET /admin/users' do
       context 'adminユーザーの場合' do
         it 'ユーザー一覧にアクセスできる' do
-          sign_in admin_user, scope: :user
+          sign_in super_admin_user, scope: :user
           get admin_users_path
           expect(response).to have_http_status(:success)
         end
@@ -16,7 +16,7 @@ RSpec.describe 'Admin権限テスト', type: :request do
 
       context 'staffユーザーの場合' do
         it 'ユーザー一覧にアクセスできない' do
-          sign_in staff_user, scope: :user
+          sign_in general_user, scope: :user
           get admin_users_path
           expect(response).to have_http_status(:redirect)
           expect(response).to redirect_to(root_path)
@@ -37,7 +37,7 @@ RSpec.describe 'Admin権限テスト', type: :request do
 
       context 'adminユーザーの場合' do
         it '他のユーザーを削除できる' do
-          sign_in admin_user, scope: :user
+          sign_in super_admin_user, scope: :user
           expect {
             delete admin_user_path(target_user)
           }.to change(User, :count).by(-1)
@@ -47,7 +47,7 @@ RSpec.describe 'Admin権限テスト', type: :request do
 
       context 'staffユーザーの場合' do
         it '他のユーザーを削除できない' do
-          sign_in staff_user, scope: :user
+          sign_in general_user, scope: :user
           expect {
             delete admin_user_path(target_user)
           }.not_to change(User, :count)
@@ -62,7 +62,7 @@ RSpec.describe 'Admin権限テスト', type: :request do
     describe 'GET /admin/system_logs' do
       context 'adminユーザーの場合' do
         it 'システムログにアクセスできる' do
-          sign_in admin_user, scope: :user
+          sign_in super_admin_user, scope: :user
           get admin_system_logs_path
           expect(response).to have_http_status(:success)
         end
@@ -70,7 +70,7 @@ RSpec.describe 'Admin権限テスト', type: :request do
 
       context 'staffユーザーの場合' do
         it 'システムログにアクセスできない' do
-          sign_in staff_user, scope: :user
+          sign_in general_user, scope: :user
           get admin_system_logs_path
           expect(response).to have_http_status(:redirect)
           expect(response).to redirect_to(root_path)
@@ -82,14 +82,14 @@ RSpec.describe 'Admin権限テスト', type: :request do
   describe 'Role enum' do
     it 'staffロールが正しく設定される' do
       user = create(:user, role: :general)
-      expect(user.staff?).to be true
-      expect(user.admin?).to be false
+      expect(user.general?).to be true
+      expect(user.super_admin?).to be false
     end
 
     it 'adminロールが正しく設定される' do
       user = create(:user, role: :super_admin)
-      expect(user.admin?).to be true
-      expect(user.staff?).to be false
+      expect(user.super_admin?).to be true
+      expect(user.general?).to be false
     end
   end
 end
