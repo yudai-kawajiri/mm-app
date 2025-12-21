@@ -10,7 +10,7 @@ RSpec.describe "Plans", type: :request do
 
   describe 'GET /plans' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_plans_path
@@ -55,7 +55,7 @@ RSpec.describe "Plans", type: :request do
 
   describe 'GET /plans/new' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get new_resources_plan_path
@@ -93,7 +93,7 @@ RSpec.describe "Plans", type: :request do
 
   describe 'POST /plans' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -154,7 +154,7 @@ RSpec.describe "Plans", type: :request do
 
   describe 'GET /plans/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get resources_plan_path(plan)
@@ -187,7 +187,7 @@ RSpec.describe "Plans", type: :request do
 
   describe 'GET /plans/:id/edit' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get edit_resources_plan_path(plan)
@@ -225,7 +225,7 @@ RSpec.describe "Plans", type: :request do
 
   describe 'PATCH /plans/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -282,7 +282,7 @@ RSpec.describe "Plans", type: :request do
 
   describe 'DELETE /plans/:id' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '計画が削除されること' do
         plan_to_delete = create(:plan, user: super_admin_user, category: plan_category)
@@ -312,7 +312,7 @@ RSpec.describe "Plans", type: :request do
 
   describe 'PATCH /plans/:id/update_status' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なステータスの場合' do
         it 'ステータスが更新されること' do
@@ -343,7 +343,7 @@ RSpec.describe "Plans", type: :request do
 
   describe 'POST /plans/:id/copy' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '計画がコピーされること' do
         expect {
@@ -384,7 +384,7 @@ RSpec.describe "Plans", type: :request do
 
   describe 'GET /plans/:id/print' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
         get print_resources_plan_path(plan)
