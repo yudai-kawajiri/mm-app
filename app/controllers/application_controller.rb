@@ -67,7 +67,7 @@ class ApplicationController < ActionController::Base
 
   def current_company
     return @current_company if defined?(@current_company)
-    
+
     # システム管理者の場合: session[:current_company_id] でテナントを切り替え
     if current_user&.super_admin?
       @current_company = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
@@ -75,7 +75,7 @@ class ApplicationController < ActionController::Base
       # 会社管理者・店舗管理者: 所属テナント、またはサブドメインから取得
       @current_company = current_user&.company || company_from_subdomain
     end
-    
+
     @current_company
   end
 
@@ -156,7 +156,6 @@ class ApplicationController < ActionController::Base
   end
 
   private
-
   def auto_login_pending_user
     return unless session[:pending_user_id].present?
     return if user_signed_in?
@@ -178,3 +177,4 @@ class ApplicationController < ActionController::Base
     flash[:notice] = t("devise.failure.already_authenticated")
     redirect_to authenticated_root_path
   end
+end

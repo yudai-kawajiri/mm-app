@@ -2,9 +2,16 @@
 
 class Users::SessionsController < Devise::SessionsController
   # GET /resource/sign_in
-  # def new
-  #   super
-  # end
+  def new
+    # ログイン画面表示前にチェック
+    if user_signed_in? && current_user.super_admin? && request.subdomain != 'admin'
+      sign_out current_user
+      flash[:alert] = t('errors.invalid_subdomain_access')
+      redirect_to new_user_session_url(subdomain: 'admin'), allow_other_host: true and return
+    end
+    
+    super
+  end
 
   # POST /resource/sign_in
   def create
