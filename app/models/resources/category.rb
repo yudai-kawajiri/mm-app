@@ -26,7 +26,7 @@ class Resources::Category < ApplicationRecord
   has_many :products, class_name: "Resources::Product", dependent: :restrict_with_error
   has_many :plans, class_name: "Resources::Plan", dependent: :restrict_with_error
 
-  validates :name, presence: true, uniqueness: { scope: [:category_type, :store_id] }
+  validates :name, presence: true, uniqueness: { scope: [ :category_type, :store_id ] }
   validates :category_type, presence: true
   validates :reading, presence: true
   validate :reading_uniqueness_within_store_and_type
@@ -41,8 +41,8 @@ class Resources::Category < ApplicationRecord
   scope :for_plans, -> { where(category_type: :plan) }
 
   copyable_config(
-    uniqueness_scope: [:category_type, :store_id],
-    uniqueness_check_attributes: [:name, :reading]
+    uniqueness_scope: [ :category_type, :store_id ],
+    uniqueness_check_attributes: [ :name, :reading ]
   )
 
   private

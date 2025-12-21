@@ -11,14 +11,14 @@ class StoresController < AuthenticatedController
       store = current_company&.stores&.find_by(id: params[:store_id])
       if store
         session[:current_store_id] = store.id
-        flash[:notice] = t('stores.switch.success', store_name: store.name)
+        flash[:notice] = t("stores.switch.success", store_name: store.name)
       else
-        flash[:alert] = t('stores.switch.not_found')
+        flash[:alert] = t("stores.switch.not_found")
       end
     else
       # 全店舗を選択
       session[:current_store_id] = nil
-      flash[:notice] = t('stores.switch.all_stores')
+      flash[:notice] = t("stores.switch.all_stores")
     end
 
     redirect_to request.referer || authenticated_root_path
@@ -28,7 +28,7 @@ class StoresController < AuthenticatedController
 
   def require_super_admin_or_company_admin
     unless current_user.super_admin? || current_user.company_admin?
-      flash[:alert] = t('errors.unauthorized')
+      flash[:alert] = t("errors.unauthorized")
       redirect_to authenticated_root_path
     end
   end

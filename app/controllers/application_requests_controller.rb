@@ -1,7 +1,7 @@
 class ApplicationRequestsController < ApplicationController
   layout "application"
-  before_action :find_application_request_by_token, only: [:accept, :accept_confirm]
-  skip_before_action :verify_authenticity_token, only: [:create]
+  before_action :find_application_request_by_token, only: [ :accept, :accept_confirm ]
+  skip_before_action :verify_authenticity_token, only: [ :create ]
 
   def new
     @application_request = ApplicationRequest.new
@@ -13,7 +13,7 @@ class ApplicationRequestsController < ApplicationController
     if @application_request.save
       @application_request.generate_invitation_token!
       ApplicationRequestMailer.invitation_email(@application_request).deliver_later
-      redirect_to thanks_application_requests_path, notice: '招待メールを送信しました'
+      redirect_to thanks_application_requests_path, notice: "招待メールを送信しました"
     else
       render :new, status: :unprocessable_entity
     end
@@ -53,11 +53,11 @@ class ApplicationRequestsController < ApplicationController
         host: request.host,
         port: request.port
       ),
-      notice: 'アカウント登録が完了しました。ログインしてください',
+      notice: "アカウント登録が完了しました。ログインしてください",
       allow_other_host: true
     end
   rescue ActiveRecord::RecordInvalid => e
-    error_msg = e.record.errors.full_messages.join(', ')
+    error_msg = e.record.errors.full_messages.join(", ")
     flash[:alert] = "登録に失敗しました: #{error_msg}"
     render :accept, status: :unprocessable_entity
   end
@@ -79,8 +79,8 @@ class ApplicationRequestsController < ApplicationController
   end
 
   def generate_unique_subdomain(company_name)
-    base = company_name.to_s.gsub(/[^a-zA-Z0-9]/, '').downcase[0..20]
-    base = 'company' if base.blank?
+    base = company_name.to_s.gsub(/[^a-zA-Z0-9]/, "").downcase[0..20]
+    base = "company" if base.blank?
 
     subdomain = base
     counter = 0

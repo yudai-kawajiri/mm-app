@@ -195,8 +195,6 @@ RSpec.describe "Management::DailyTargets", type: :request do
           expect(flash[:alert]).to be_present
         end
       end
-
-
     end
 
     context 'ログインしていない場合' do

@@ -1,7 +1,7 @@
 class Admin::CompaniesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_super_admin!
-  before_action :set_company, only: [:show, :edit, :update, :destroy]
+  before_action :set_company, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @companies = Company.all
@@ -10,16 +10,16 @@ class Admin::CompaniesController < ApplicationController
     if params[:q].present?
       search_term = "%#{params[:q]}%"
       @companies = @companies.where(
-        'companies.name LIKE ? OR companies.subdomain LIKE ?',
+        "companies.name LIKE ? OR companies.subdomain LIKE ?",
         search_term, search_term
       ).distinct
     end
 
     # ソート処理
     case params[:sort_by]
-    when 'subdomain'
+    when "subdomain"
       @companies = @companies.order(subdomain: :asc)
-    when 'created_at'
+    when "created_at"
       @companies = @companies.order(created_at: :desc)
     else
       @companies = @companies.order(created_at: :desc) # デフォルト: 登録日降順
@@ -38,9 +38,9 @@ class Admin::CompaniesController < ApplicationController
 
   def create
     @company = Company.new(company_params)
-    
+
     if @company.save
-      redirect_to admin_company_path(@company), notice: t('admin.companies.messages.created')
+      redirect_to admin_company_path(@company), notice: t("admin.companies.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -51,7 +51,7 @@ class Admin::CompaniesController < ApplicationController
 
   def update
     if @company.update(company_params)
-      redirect_to admin_company_path(@company), notice: t('admin.companies.messages.updated')
+      redirect_to admin_company_path(@company), notice: t("admin.companies.messages.updated")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -59,9 +59,9 @@ class Admin::CompaniesController < ApplicationController
 
   def destroy
     if @company.destroy
-      redirect_to admin_companies_path, notice: t('admin.companies.messages.destroyed')
+      redirect_to admin_companies_path, notice: t("admin.companies.messages.destroyed")
     else
-      redirect_to admin_company_path(@company), alert: @company.errors.full_messages.join(', ')
+      redirect_to admin_company_path(@company), alert: @company.errors.full_messages.join(", ")
     end
   end
 
@@ -77,7 +77,7 @@ class Admin::CompaniesController < ApplicationController
 
   def authorize_super_admin!
     unless current_user.super_admin?
-      redirect_to authenticated_root_path, alert: t('errors.unauthorized')
+      redirect_to authenticated_root_path, alert: t("errors.unauthorized")
     end
   end
 end

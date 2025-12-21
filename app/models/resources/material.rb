@@ -27,8 +27,8 @@ class Resources::Material < ApplicationRecord
   has_many :product_materials, class_name: "Planning::ProductMaterial", dependent: :restrict_with_error
   has_many :products, through: :product_materials, class_name: "Resources::Product"
 
-  validates :name, presence: true, uniqueness: { scope: [:category_id, :store_id] }
-  validates :reading, presence: true, uniqueness: { scope: [:category_id, :store_id] }
+  validates :name, presence: true, uniqueness: { scope: [ :category_id, :store_id ] }
+  validates :reading, presence: true, uniqueness: { scope: [ :category_id, :store_id ] }
   validates :measurement_type, presence: true, inclusion: { in: %w[weight count] }
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
@@ -84,8 +84,8 @@ class Resources::Material < ApplicationRecord
   end
 
   copyable_config(
-    uniqueness_scope: [:category_id, :store_id],
-    uniqueness_check_attributes: [:name, :reading]
+    uniqueness_scope: [ :category_id, :store_id ],
+    uniqueness_check_attributes: [ :name, :reading ]
   )
 
   private
@@ -94,6 +94,6 @@ class Resources::Material < ApplicationRecord
     return unless category_id_changed?
     return if Planning::ProductMaterial.where(material_id: id).count.zero?
 
-    errors.add(:category_id, I18n.t('activerecord.errors.models.resources/material.category_in_use', record: "商品"))
+    errors.add(:category_id, I18n.t("activerecord.errors.models.resources/material.category_in_use", record: "商品"))
   end
 end

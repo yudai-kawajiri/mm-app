@@ -77,5 +77,5 @@ end
 
 # N+1クエリ検出（開発環境のみ）
 group :development do
-  gem 'bullet'
+  gem "bullet"
 end

@@ -4,7 +4,6 @@ export default class extends Controller {
   static targets = ["input", "row", "clearButton"]
 
   connect() {
-    console.log("Resource search controller connected")
     this.updateClearButton()
 
     // セレクトボックスの変更も監視
@@ -19,14 +18,12 @@ export default class extends Controller {
     }
 
     const keyword = this.inputTarget.value.toLowerCase().trim()
-    console.log("Searching for:", keyword)
     this.filterRows(keyword)
     this.updateClearButton()
   }
 
   filterRows(keyword) {
     if (!this.hasRowTarget) {
-      console.log("No row targets found")
       return
     }
 
@@ -43,7 +40,6 @@ export default class extends Controller {
       }
     })
 
-    console.log(`Visible rows: ${visibleCount}`)
   }
 
   updateClearButton() {
@@ -84,10 +80,8 @@ export default class extends Controller {
 
     if (hasValue) {
       this.clearButtonTarget.classList.remove('d-none')
-      console.log('Clear button shown')
     } else {
       this.clearButtonTarget.classList.add('d-none')
-      console.log('Clear button hidden')
     }
   }
 
@@ -125,7 +119,6 @@ export default class extends Controller {
 
     // ページ全体をリロードして検索結果をリセット
     if (clearUrl) {
-      console.log('Redirecting to:', clearUrl)
       window.location.href = clearUrl  // ← 追加！
     } else {
       // リアルタイム検索のフォールバック

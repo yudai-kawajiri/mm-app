@@ -18,8 +18,8 @@ RSpec.describe "PlanSchedules", type: :request do
           {
             plan_schedule: {
               scheduled_date: scheduled_date.to_s,
-              plan_id: plan.id,
-              
+              plan_id: plan.id
+
             }
           }
         end
@@ -54,8 +54,8 @@ RSpec.describe "PlanSchedules", type: :request do
           {
             plan_schedule: {
               scheduled_date: scheduled_date.to_s,
-              plan_id: plan.id,
-              
+              plan_id: plan.id
+
             }
           }
         end
@@ -76,8 +76,8 @@ RSpec.describe "PlanSchedules", type: :request do
         let(:missing_plan_params) do
           {
             plan_schedule: {
-              scheduled_date: scheduled_date.to_s,
-              
+              scheduled_date: scheduled_date.to_s
+
             }
           }
         end
@@ -99,8 +99,8 @@ RSpec.describe "PlanSchedules", type: :request do
           {
             plan_schedule: {
               scheduled_date: 'invalid-date',
-              plan_id: plan.id,
-              
+              plan_id: plan.id
+
             }
           }
         end
@@ -137,8 +137,8 @@ RSpec.describe "PlanSchedules", type: :request do
           {
             plan_schedule: {
               scheduled_date: scheduled_date.to_s,
-              plan_id: plan.id,
-              
+              plan_id: plan.id
+
             }
           }
         end
@@ -162,7 +162,7 @@ RSpec.describe "PlanSchedules", type: :request do
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        patch management_plan_schedule_path(plan_schedule), params: { plan_schedule: { } }
+        patch management_plan_schedule_path(plan_schedule), params: { plan_schedule: {} }
         expect(response).to redirect_to(new_user_session_path)
       end
     end

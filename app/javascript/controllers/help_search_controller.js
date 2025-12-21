@@ -12,7 +12,6 @@ export default class extends Controller {
   ]
 
   connect() {
-    console.log("Help search controller connected")
   }
 
   search() {

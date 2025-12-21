@@ -3,13 +3,13 @@ class ApplicationRequestMailer < ApplicationMailer
     @application_request = application_request
     @invitation_url = accept_application_requests_url(
       token: application_request.invitation_token,
-      host: ENV.fetch('APP_HOST', 'localhost:3000'),
-      protocol: ENV.fetch('APP_PROTOCOL', 'http')
+      host: ENV.fetch("APP_HOST", "localhost:3000"),
+      protocol: ENV.fetch("APP_PROTOCOL", "http")
     )
 
     mail(
       to: application_request.contact_email,
-      subject: '【MM-App】アプリケーション責任者招待のご案内'
+      subject: "【MM-App】アプリケーション責任者招待のご案内"
     )
   end
 
@@ -18,12 +18,12 @@ class ApplicationRequestMailer < ApplicationMailer
     @user = admin_request.user
     @login_url = new_user_session_url(
       host: "#{admin_request.user.company.subdomain}.#{ENV.fetch('APP_DOMAIN', 'localhost:3000')}",
-      protocol: ENV.fetch('APP_PROTOCOL', 'http')
+      protocol: ENV.fetch("APP_PROTOCOL", "http")
     )
 
     mail(
       to: @user.email,
-      subject: '【MM-App】ユーザー登録が承認されました'
+      subject: "【MM-App】ユーザー登録が承認されました"
     )
   end
 
@@ -33,7 +33,7 @@ class ApplicationRequestMailer < ApplicationMailer
 
     mail(
       to: @user.email,
-      subject: '【MM-App】ユーザー登録申請について'
+      subject: "【MM-App】ユーザー登録申請について"
     )
   end
 end

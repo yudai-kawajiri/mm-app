@@ -111,7 +111,7 @@ module Copyable
 
     # 元の読み仮名から「こぴー」部分を削除して、真のベース読み仮名を取得
     original_reading = base_reading ? base_reading.sub(/こぴー.*\z/, "").strip : nil
-    
+
     copy_count = 1
     result = nil
 
@@ -120,16 +120,16 @@ module Copyable
       new_name = copy_config[:name_format].call(original_name, copy_count)
       # 元の読み仮名（こぴー部分を除去したもの）をベースに生成
       new_reading = original_reading ? generate_reading_for_copy(original_reading, copy_count) : nil
-      
+
       # 一意性チェック
       unless attributes_exist?(new_name, new_reading)
         result = { name: new_name, reading: new_reading }
         break
       end
-      
+
       copy_count += 1
     end
-    
+
     result
   end
 

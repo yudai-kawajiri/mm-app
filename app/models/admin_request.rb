@@ -8,7 +8,7 @@ class AdminRequest < ApplicationRecord
   belongs_to :company
   belongs_to :user
   belongs_to :store, optional: true
-  belongs_to :approved_by, class_name: 'User', optional: true
+  belongs_to :approved_by, class_name: "User", optional: true
 
   enum :request_type, {
     store_admin_request: 0,
@@ -40,9 +40,9 @@ class AdminRequest < ApplicationRecord
       )
 
       case request_type
-      when 'store_admin_request'
+      when "store_admin_request"
         user.update!(role: :store_admin)
-      when 'user_registration'
+      when "user_registration"
         user.update!(approved: true)
       end
 
@@ -61,10 +61,10 @@ class AdminRequest < ApplicationRecord
 
       # 却下時の処理: ユーザーの状態を元に戻す
       case request_type
-      when 'store_admin_request'
+      when "store_admin_request"
         # 店舗管理者昇格リクエストを却下 → 役割を一般ユーザーに戻す
         user.update!(role: :general) if user.store_admin?
-      when 'user_registration'
+      when "user_registration"
         # ユーザー登録リクエストを却下 → 承認を取り消す
         user.update!(approved: false)
       end

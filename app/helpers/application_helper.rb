@@ -45,7 +45,6 @@ module ApplicationHelper
     return "" if value.blank?
 
     I18n.t("activerecord.enums.#{record.model_name.i18n_key}.#{attribute}.#{value}")
-
   end
 
   # ============================================================
@@ -190,10 +189,10 @@ module ApplicationHelper
   #
   # @example
   #   sidebar_link_active?(item) ? "active" : ""
-    #
+  #
   # サイドバーリンクがアクティブかどうかを判定
   #
-    #
+  #
   # サイドバーリンクがアクティブかどうかを判定
   #
   def sidebar_link_active?(item)
@@ -240,7 +239,6 @@ module ApplicationHelper
   def sidebar_link_class(path)
     base_class = "list-group-item list-group-item-action"
     current_page?(path) ? "#{base_class} active" : base_class
-
   end
 
   #
@@ -256,7 +254,6 @@ module ApplicationHelper
   def sidebar_submenu_link_class(path)
     base_class = "list-group-item list-group-item-action ps-5"
     current_page?(path) ? "#{base_class} active" : base_class
-
   end
 
   #
@@ -270,7 +267,6 @@ module ApplicationHelper
   #
   def submenu_indicator
     content_tag(:span, "└ ", class: "submenu-indicator")
-
   end
 
   # ============================================================
@@ -321,7 +317,6 @@ module ApplicationHelper
       # 通常のカラムの処理
       resource.send(data)
     end
-
   end
 
   # ============================================================
@@ -346,7 +341,6 @@ module ApplicationHelper
     else
       form.label(attribute, options)
     end
-
   end
 
   #
@@ -360,7 +354,6 @@ module ApplicationHelper
   def form_text_field_lg(form, attribute, options = {})
     options[:class] = "form-control form-control-lg #{options[:class]}".strip
     form.text_field(attribute, options)
-
   end
 
   #
@@ -374,7 +367,6 @@ module ApplicationHelper
   def form_number_field_lg(form, attribute, options = {})
     options[:class] = "form-control form-control-lg #{options[:class]}".strip
     form.number_field(attribute, options)
-
   end
 
   #
@@ -390,7 +382,6 @@ module ApplicationHelper
   def form_select_lg(form, attribute, choices, select_options = {}, html_options = {})
     html_options[:class] = "form-select form-select-lg #{html_options[:class]}".strip
     form.select(attribute, choices, select_options, html_options)
-
   end
 
   #
@@ -408,7 +399,6 @@ module ApplicationHelper
   def form_collection_select_lg(form, attribute, collection, value_method, text_method, select_options = {}, html_options = {})
     html_options[:class] = "form-select form-select-lg #{html_options[:class]}".strip
     form.collection_select(attribute, collection, value_method, text_method, select_options, html_options)
-
   end
 
   #
@@ -422,7 +412,6 @@ module ApplicationHelper
   def form_text_area_lg(form, attribute, options = {})
     options[:class] = "form-control form-control-lg #{options[:class]}".strip
     form.text_area(attribute, options)
-
   end
 
   # ============================================================
@@ -568,15 +557,15 @@ module ApplicationHelper
         content_tag(:div, class: "form-text d-flex justify-content-between align-items-center mt-1") do
           # 左側: ヘルプテキスト
           left_content = if help_text
-            content_tag(:span, help_text, class: 'text-muted')
+            content_tag(:span, help_text, class: "text-muted")
           else
-            content_tag(:span, t("helpers.character_counter.max_hint", max: max_length), class: 'text-muted')
+            content_tag(:span, t("helpers.character_counter.max_hint", max: max_length), class: "text-muted")
           end
 
           # 右側: 文字数カウンター（バッジ表示）
           current = content_tag(:span, "0", data: { "input--character-counter-target": "count" })
           remaining = content_tag(:span, max_length.to_s, class: "text-muted", data: { "input--character-counter-target": "remaining" })
-          right_content = content_tag(:span, class: 'badge bg-light text-dark') do
+          right_content = content_tag(:span, class: "badge bg-light text-dark") do
             t("helpers.character_counter.hint",
               current: current,
               max: max_length,
@@ -601,7 +590,6 @@ module ApplicationHelper
 
       label_html + field_html + counter_and_help_html + error_html
     end
-
   end
 
   # ============================================================
@@ -622,7 +610,6 @@ module ApplicationHelper
   #
   def format_currency(amount)
     number_to_currency(amount || 0, unit: "¥", precision: 0, delimiter: ",")
-
   end
 
   #
@@ -652,7 +639,6 @@ module ApplicationHelper
     return "text-warning" if achievement_rate >= 80
 
     "text-danger"
-
   end
 
   # ============================================================
@@ -673,7 +659,6 @@ module ApplicationHelper
   def resource_partial_path(resource, partial_name = "fields")
     model_name = resource.class.name.underscore
     "#{model_name.pluralize}/#{partial_name}"
-
   end
 
   # scopeとresourceから正しいパスを生成
@@ -689,7 +674,7 @@ module ApplicationHelper
     Rails.logger.debug "Action: #{action.inspect}"
 
     if scope_array.any?
-      scope_prefix = scope_array.join('_')
+      scope_prefix = scope_array.join("_")
       action_prefix = action ? "#{action}_" : ""
       path_method = "#{action_prefix}#{scope_prefix}_#{route_key}_path"
 
@@ -701,13 +686,13 @@ module ApplicationHelper
         send(path_method, resource)
       else
         # フォールバック: polymorphic_path を使用
-        args = [action, *scope_array, resource].compact
+        args = [ action, *scope_array, resource ].compact
         Rails.logger.debug "Polymorphic args: #{args.inspect}"
         polymorphic_path(args)
       end
     else
       # scopeがない場合はpolymorphic_pathを使用
-      polymorphic_path([action, resource].compact)
+      polymorphic_path([ action, resource ].compact)
     end
   rescue => e
     Rails.logger.error "Path generation failed: #{e.message}"

@@ -169,13 +169,10 @@ export default class extends Controller {
   // 商品選択時に価格とカテゴリーを取得
   async updateProduct(event) {
     const productId = event.target.value
-    console.log('[updateProduct] Product ID:', productId)
     Logger.log(LOG_MESSAGES.PRODUCT_SELECTED(productId))
 
     if (!productId) {
-      console.log('[updateProduct] No product ID, calling resetProduct()')
       this.resetProduct()
-      console.log('[updateProduct] After resetProduct(), productionCount value:', this.productionCountTarget.value)
       return
     }
 
@@ -241,10 +238,7 @@ export default class extends Controller {
 
     // 数量もリセット
     if (this.hasProductionCountTarget) {
-      console.log('[resetProduct] Before reset:', this.productionCountTarget.value)
       this.productionCountTarget.value = DEFAULT_VALUE.EMPTY_STRING
-      console.log('[resetProduct] After reset:', this.productionCountTarget.value)
-      console.log('[resetProduct] Target element:', this.productionCountTarget)
     } else {
       console.warn('[resetProduct] productionCountTarget not found!')
     }
@@ -450,9 +444,7 @@ export default class extends Controller {
 
       // 数量をリセット
       if (allTabRowController.hasProductionCountTarget) {
-        console.log('[resetAllTabProductionCount] Before reset:', allTabRowController.productionCountTarget.value)
         allTabRowController.productionCountTarget.value = DEFAULT_VALUE.EMPTY_STRING
-        console.log('[resetAllTabProductionCount] After reset:', allTabRowController.productionCountTarget.value)
       }
 
       // 小計をリセット

@@ -57,8 +57,8 @@ class Resources::Plan < ApplicationRecord
   }
 
   # バリデーション
-  validates :name, presence: true, uniqueness: { scope: [:category_id, :store_id] }
-  validates :reading, presence: true, uniqueness: { scope: [:category_id, :store_id] }
+  validates :name, presence: true, uniqueness: { scope: [ :category_id, :store_id ] }
+  validates :reading, presence: true, uniqueness: { scope: [ :category_id, :store_id ] }
   validates :category_id, presence: true
   validates :status, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
@@ -85,7 +85,7 @@ class Resources::Plan < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    uniqueness_scope: [:category_id, :store_id],
+    uniqueness_scope: [ :category_id, :store_id ],
     uniqueness_check_attributes: [ :name, :reading ],
     associations_to_copy: [ :plan_products ],
     additional_attributes: {
@@ -261,7 +261,7 @@ class Resources::Plan < ApplicationRecord
     # 計画に含まれる全製品の原材料を集計
     material_totals = Hash.new { |h, k| h[k] = { total_quantity: 0, products: [] } }
 
-    plan_products.includes(product: { product_materials: { material: [:order_group, :unit_for_order] } }).each do |pp|
+    plan_products.includes(product: { product_materials: { material: [ :order_group, :unit_for_order ] } }).each do |pp|
       pp.product.product_materials.each do |pm|
         material = pm.material
         quantity = pm.quantity * pp.production_count
@@ -307,7 +307,7 @@ class Resources::Plan < ApplicationRecord
     end
 
     # ★追加: ここでソートして返す
-    material_totals.values.sort_by { |m| [m[:display_order], m[:material_id]] }
+    material_totals.values.sort_by { |m| [ m[:display_order], m[:material_id] ] }
   end
 
   private

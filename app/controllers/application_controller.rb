@@ -12,8 +12,8 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :invitation_code, :store_id])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:name])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [ :name, :invitation_code, :store_id ])
+    devise_parameter_sanitizer.permit(:account_update, keys: [ :name ])
   end
 
   def after_sign_in_path_for(resource)
@@ -164,7 +164,7 @@ class ApplicationController < ActionController::Base
     if user
       sign_in(user)
       session.delete(:pending_user_id)
-      flash[:notice] = 'アカウント登録が完了しました' if session[:first_login]
+      flash[:notice] = "アカウント登録が完了しました" if session[:first_login]
       session.delete(:first_login)
     else
       session.delete(:pending_user_id)

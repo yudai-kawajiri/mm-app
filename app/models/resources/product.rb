@@ -45,10 +45,10 @@ class Resources::Product < ApplicationRecord
 
   after_save :purge_image, if: :remove_image_checked?
 
-  validates :name, presence: true, uniqueness: { scope: [:category_id, :store_id] }
-  validates :reading, presence: true, uniqueness: { scope: [:category_id, :store_id] }
+  validates :name, presence: true, uniqueness: { scope: [ :category_id, :store_id ] }
+  validates :reading, presence: true, uniqueness: { scope: [ :category_id, :store_id ] }
   validates :price, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :item_number, presence: true, length: { maximum: ITEM_NUMBER_DIGITS }, uniqueness: { scope: [:category_id, :store_id] }
+  validates :item_number, presence: true, length: { maximum: ITEM_NUMBER_DIGITS }, uniqueness: { scope: [ :category_id, :store_id ] }
   validates :category_id, presence: true
   validates :status, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
@@ -68,9 +68,9 @@ class Resources::Product < ApplicationRecord
   end
 
   copyable_config(
-    uniqueness_scope: [:category_id, :store_id],
-    uniqueness_check_attributes: [:name, :reading],
-    associations_to_copy: [:product_materials],
+    uniqueness_scope: [ :category_id, :store_id ],
+    uniqueness_check_attributes: [ :name, :reading ],
+    associations_to_copy: [ :product_materials ],
     additional_attributes: {
       item_number: :generate_unique_item_number,
       status: :draft
@@ -132,6 +132,6 @@ class Resources::Product < ApplicationRecord
     return unless category_id_changed?
     return if Planning::PlanProduct.where(product_id: id).count.zero?
 
-    errors.add(:category_id, I18n.t('activerecord.errors.models.resources/product.category_in_use', record: "計画"))
+    errors.add(:category_id, I18n.t("activerecord.errors.models.resources/product.category_in_use", record: "計画"))
   end
 end

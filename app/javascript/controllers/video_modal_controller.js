@@ -5,7 +5,6 @@ export default class extends Controller {
   static targets = ["modal", "iframe", "title"]
 
   connect() {
-    console.log("Video modal controller connected")
   }
 
   open(event) {
