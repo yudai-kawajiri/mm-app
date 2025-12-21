@@ -12,14 +12,14 @@ development:
   <<: *default
   database: mm_app_development
   # 日本語対応のCollation設定
-  collation: en_US.UTF8
-  ctype: en_US.UTF8
+  collation: C.UTF-8
+  ctype: C.UTF-8
 
 test:
   <<: *default
   database: mm_app_test
-  collation: en_US.UTF8
-  ctype: en_US.UTF8
+  collation: C.UTF-8
+  ctype: C.UTF-8
 
 production:
   primary:
