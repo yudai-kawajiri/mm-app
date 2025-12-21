@@ -154,8 +154,6 @@ class ApplicationController < ActionController::Base
     return Planning::PlanSchedule.none unless current_company
     Planning::PlanSchedule.where(company_id: current_company.id, store_id: current_store&.id)
   end
-  end
-  end
 
   private
 
