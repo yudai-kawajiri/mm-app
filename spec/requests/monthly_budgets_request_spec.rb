@@ -9,7 +9,7 @@ RSpec.describe "MonthlyBudgets", type: :request do
 
   describe 'POST /monthly_budgets' do
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -104,10 +104,10 @@ RSpec.describe "MonthlyBudgets", type: :request do
   end
 
   describe 'PATCH /monthly_budgets/:id' do
-    let!(:monthly_budget) { create(:monthly_budget, budget_month: budget_month, target_amount: 200000) }
+    let!(:monthly_budget) { create(:monthly_budget, budget_month: budget_month, target_amount: 200000, user: general_user, company: general_user.company) }
 
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       context '有効なパラメータの場合' do
         let(:valid_params) do
@@ -168,10 +168,10 @@ RSpec.describe "MonthlyBudgets", type: :request do
   end
 
   describe 'DELETE /monthly_budgets/:id' do
-    let!(:monthly_budget) { create(:monthly_budget, budget_month: budget_month) }
+    let!(:monthly_budget) { create(:monthly_budget, budget_month: budget_month, user: general_user, company: general_user.company) }
 
     context 'ログインしている場合' do
-      before { sign_in super_admin_user, scope: :user }
+      before { sign_in general_user, scope: :user }
 
       it '月次予算が削除されること' do
         expect {
