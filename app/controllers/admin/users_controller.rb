@@ -68,8 +68,10 @@ class Admin::UsersController < Admin::BaseController
     @user.approved = false
 
     if @user.save
-      AdminMailer.new_user_notification(@user).deliver_later
-      redirect_to [ :admin, @user ], notice: t("helpers.notice.created", resource: User.model_name.human)
+      if @user.password.present? && @user.password == @user.password_confirmation
+        flash[:generated_password] = @user.password
+      end
+      redirect_to scoped_path(:admin_user_path, @user), notice: t("helpers.notice.created", resource: User.model_name.human)
     else
       render :new, status: :unprocessable_entity
     end
@@ -79,8 +81,14 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def update
-    if @user.update(user_params)
-      redirect_to [ :admin, @user ], notice: t("helpers.notice.updated", resource: User.model_name.human)
+    # パスワードが空欄の場合はパラメータから除外
+    update_params = user_params
+    if update_params[:password].blank?
+      update_params = update_params.except(:password, :password_confirmation)
+    end
+
+    if @user.update(update_params)
+      redirect_to scoped_path(:admin_user_path, @user), notice: t("helpers.notice.updated", resource: User.model_name.human)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -89,12 +97,12 @@ class Admin::UsersController < Admin::BaseController
   def destroy
     # 自分自身は削除できない
     if @user.id == current_user.id
-      redirect_to admin_users_url, alert: t("admin.users.messages.cannot_delete_self"), status: :see_other
+      redirect_to scoped_path(:admin_users_path), alert: t("admin.users.messages.cannot_delete_self"), status: :see_other
       return
     end
 
     @user.destroy!
-    redirect_to admin_users_url, notice: t("helpers.notice.destroyed", resource: User.model_name.human), status: :see_other
+    redirect_to scoped_path(:admin_users_path), notice: t("helpers.notice.destroyed", resource: User.model_name.human), status: :see_other
   end
 
   private
