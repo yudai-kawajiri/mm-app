@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "NumericalManagements", type: :request do
-  let(:admin_user) { create(:user, :admin) }
-  let(:staff_user) { create(:user, :staff) }
+  let(:super_admin_user) { create(:user, :super_admin) }
+  let(:general_user) { create(:user, :general) }
   let(:year) { Date.current.year }
   let(:month) { Date.current.month }
   let(:target_date) { Date.new(year, month, 15) }

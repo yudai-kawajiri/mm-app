@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "Units", type: :request do
-  let(:admin_user) { create(:user, :admin) }
-  let(:staff_user) { create(:user, :staff) }
+  let(:super_admin_user) { create(:user, :super_admin) }
+  let(:general_user) { create(:user, :general) }
   let!(:unit) { create(:unit, user: admin_user) }
 
   describe 'GET /units' do

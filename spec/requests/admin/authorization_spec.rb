@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin権限テスト', type: :request do
-  let(:admin_user) { create(:user, role: :admin) }
-  let(:staff_user) { create(:user, role: :staff) }
+  let(:super_admin_user) { create(:user, role: :super_admin) }
+  let(:general_user) { create(:user, role: :general) }
 
   describe 'Admin::UsersController' do
     describe 'GET /admin/users' do
@@ -33,7 +33,7 @@ RSpec.describe 'Admin権限テスト', type: :request do
     end
 
     describe 'DELETE /admin/users/:id' do
-      let!(:target_user) { create(:user, role: :staff) }
+      let!(:target_user) { create(:user, role: :general) }
 
       context 'adminユーザーの場合' do
         it '他のユーザーを削除できる' do
@@ -81,13 +81,13 @@ RSpec.describe 'Admin権限テスト', type: :request do
 
   describe 'Role enum' do
     it 'staffロールが正しく設定される' do
-      user = create(:user, role: :staff)
+      user = create(:user, role: :general)
       expect(user.staff?).to be true
       expect(user.admin?).to be false
     end
 
     it 'adminロールが正しく設定される' do
-      user = create(:user, role: :admin)
+      user = create(:user, role: :super_admin)
       expect(user.admin?).to be true
       expect(user.staff?).to be false
     end

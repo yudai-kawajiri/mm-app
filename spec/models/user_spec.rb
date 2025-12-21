@@ -25,34 +25,34 @@ RSpec.describe User, type: :model do
       create(:user, email: 'test@example.com')
       user = build(:user, email: 'test@example.com')
       user.valid?
-      expect(user.errors[:email]).to include('は既に使用されています')
+      expect(user.errors[:email]).to include('はすでに存在します')
     end
 
     it 'パスワードが6文字未満は無効であること' do
       user = build(:user, password: '12345', password_confirmation: '12345')
       user.valid?
-      expect(user.errors[:password]).to include('6文字以上で入力してください')
+      expect(user.errors[:password]).to include('は6文字以上で入力してください')
     end
   end
 
   describe 'enum' do
-    it 'roleがstaffであること' do
-      user = create(:user, :staff)
-      expect(user.role).to eq('staff')
-      expect(user.staff?).to be true
+    it 'roleがgeneralであること' do
+      user = create(:user, :general)
+      expect(user.role).to eq('general')
+      expect(user.general?).to be true
     end
 
-    it 'roleがadminであること' do
-      user = create(:user, :admin)
-      expect(user.role).to eq('admin')
-      expect(user.admin?).to be true
+    it 'roleがsuper_adminであること' do
+      user = create(:user, :super_admin)
+      expect(user.role).to eq('super_admin')
+      expect(user.super_admin?).to be true
     end
   end
 
   describe 'デフォルト値' do
-    it '新規ユーザーのroleはstaffであること' do
+    it '新規ユーザーのroleはgeneralであること' do
       user = create(:user)
-      expect(user.role).to eq('staff')
+      expect(user.role).to eq('general')
     end
   end
 end

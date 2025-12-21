@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "Plans", type: :request do
-  let(:admin_user) { create(:user, :admin) }
-  let(:staff_user) { create(:user, :staff) }
+  let(:super_admin_user) { create(:user, :super_admin) }
+  let(:general_user) { create(:user, :general) }
   let(:plan_category) { create(:category, :plan, user: admin_user) }
   let(:product_category) { create(:category, :product, user: admin_user) }
   let(:product) { create(:product, user: admin_user, category: product_category) }

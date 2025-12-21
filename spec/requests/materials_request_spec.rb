@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "Materials", type: :request do
-  let(:admin_user) { create(:user, :admin) }
-  let(:staff_user) { create(:user, :staff) }
+  let(:super_admin_user) { create(:user, :super_admin) }
+  let(:general_user) { create(:user, :general) }
   let(:category) { create(:category, :material, user: admin_user) }
   let(:unit) { create(:unit, user: admin_user) }
   let!(:material) { create(:material, user: admin_user, category: category, unit_for_product: unit, unit_for_order: unit) }

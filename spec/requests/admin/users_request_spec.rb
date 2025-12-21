@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "Admin::Users", type: :request do
-  let(:admin_user) { create(:user, :admin) }
-  let(:staff_user) { create(:user, :staff) }
+  let(:super_admin_user) { create(:user, :super_admin) }
+  let(:general_user) { create(:user, :general) }
 
   describe 'GET /admin/users' do
     context '管理者でログインしている場合' do
