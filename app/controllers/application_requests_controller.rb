@@ -31,7 +31,7 @@ class ApplicationRequestsController < ApplicationController
 
       company = Company.create!(
         name: @application_request.company_name,
-        subdomain: subdomain,
+        slug: subdomain,
         active: true
       )
 
@@ -78,7 +78,7 @@ class ApplicationRequestsController < ApplicationController
     subdomain = base
     counter = 0
 
-    while Company.exists?(subdomain: subdomain)
+    while Company.exists?(slug: subdomain)
       counter += 1
       subdomain = "#{base}-#{counter}"
     end
