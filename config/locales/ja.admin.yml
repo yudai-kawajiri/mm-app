@@ -92,11 +92,11 @@ ja:
         title: "会社管理"
         table_headers:
           name: "会社名"
-          subdomain: "サブドメイン"
+          slug: "会社コード"
           created_at: "登録日"
           actions: "アクション"
         sort_options:
-          subdomain: "サブドメイン名順"
+          slug: "会社コード順"
           created_at: "登録順"
         search:
           placeholder: "会社名またはサブドメインで検索"
@@ -116,9 +116,9 @@ ja:
       form:
         name: "会社名"
         name_placeholder: "株式会社サンプル"
-        subdomain: "サブドメイン"
-        subdomain_placeholder: "sample-company"
-        subdomain_hint: "半角英数字とハイフンのみ使用可能です(例: example-company)"
+        slug: "会社コード"
+        slug_placeholder: "sample-company"
+        slug_hint: "半角英数字とハイフンのみ使用可能です(例: example-company)"
         submit_create: "登録"
         submit_update: "更新"
         cancel: "キャンセル"

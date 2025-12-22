@@ -73,7 +73,6 @@ ja:
   errors:
     messages:
       unauthorized: この操作を行う権限がありません
-    invalid_subdomain_access: 'アクセス権限がありません'
   flash_messages:
     create:
       success: "%{resource}を登録しました"
@@ -258,13 +257,9 @@ ja:
     description: 原材料管理から製造計画、売上予測まで一元管理
     login_button: ログイン
     signup_button: 新規登録
-    subdomain_label: 会社のサブドメインを入力してください（半角英数字とハイフン）
     slug_label: 会社コード（半角英数字とハイフン）
-    subdomain_placeholder: your-company
     slug_placeholder: your-company
-    subdomain_required: サブドメインを入力してください
     slug_required: 会社コードを入力してください
-    subdomain_hint: 既存の会社にログイン・登録する場合のみ入力してください
     slug_hint: 会社から提供された会社コードを入力してください
     or: または
     new_company_button: 新規会社登録を申請
