@@ -8,7 +8,7 @@
     ) %>
   </div>
   <div class="col-md-6">
-    <%= form_group_lg(f, :subdomain,
+    <%= form_group_lg(f, :slug,
         required: true,
         label: raw([t('activerecord.attributes.company.slug'), t('helpers.required_mark')].join(' ')),
         placeholder: t('admin.companies.form.slug_placeholder'),
