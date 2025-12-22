@@ -27,11 +27,11 @@ class ApplicationRequestsController < ApplicationController
 
   def accept_confirm
     ActiveRecord::Base.transaction do
-      subdomain = generate_unique_subdomain(@application_request.company_name)
+      slug = generate_unique_slug(@application_request.company_name)
 
       company = Company.create!(
         name: @application_request.company_name,
-        slug: subdomain,
+        slug: slug,
         active: true
       )
 
@@ -71,17 +71,17 @@ class ApplicationRequestsController < ApplicationController
     @application_request = ApplicationRequest.find_by!(invitation_token: params[:token])
   end
 
-  def generate_unique_subdomain(company_name)
+  def generate_unique_slug(company_name)
     base = company_name.to_s.gsub(/[^a-zA-Z0-9]/, "").downcase[0..20]
     base = "company" if base.blank?
 
-    subdomain = base
+    slug = base
     counter = 0
 
-    while Company.exists?(slug: subdomain)
+    while Company.exists?(slug: slug)
       counter += 1
-      subdomain = "#{base}-#{counter}"
+      slug = "#{base}-#{counter}"
     end
-    subdomain
+    slug
   end
 end
