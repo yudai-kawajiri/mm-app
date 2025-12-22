@@ -6,7 +6,7 @@ class Users::SessionsController < Devise::SessionsController
     # ログイン画面表示前にチェック
     if user_signed_in? && current_user.super_admin? && !admin_path?
       sign_out current_user
-      flash[:alert] = t('errors.invalid_subdomain_access')
+      flash[:alert] = t('errors.messages.unauthorized')
       return redirect_to new_user_session_url, allow_other_host: true
     end
 
@@ -19,7 +19,7 @@ class Users::SessionsController < Devise::SessionsController
     if params[:user] && params[:user][:email].present?
       user = User.find_by(email: params[:user][:email])
       if user&.super_admin? && !admin_path?
-        flash.now[:alert] = t('errors.invalid_subdomain_access')
+        flash.now[:alert] = t('errors.messages.unauthorized')
         self.resource = resource_class.new(sign_in_params)
         render :new, status: :unprocessable_entity
         return

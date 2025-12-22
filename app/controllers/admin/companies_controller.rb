@@ -17,8 +17,8 @@ class Admin::CompaniesController < ApplicationController
 
     # ソート処理
     case params[:sort_by]
-    when "subdomain"
-      @companies = @companies.order(subdomain: :asc)
+    when "slug"
+      @companies = @companies.order(slug: :asc)
     when "created_at"
       @companies = @companies.order(created_at: :desc)
     else
@@ -72,7 +72,7 @@ class Admin::CompaniesController < ApplicationController
   end
 
   def company_params
-    params.require(:company).permit(:name, :subdomain)
+    params.require(:company).permit(:name, :slug)
   end
 
   def authorize_super_admin!

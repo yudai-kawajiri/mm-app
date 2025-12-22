@@ -8,7 +8,7 @@ class RouterController < ApplicationController
 
   def index
     if current_company.present?
-      # パスベース: /c/:company_subdomain/dashboards へリダイレクト
+      # パスベース: /c/:company_slug/dashboards へリダイレクト
       redirect_to company_dashboards_path(company_slug: current_company.slug)
     else
       # 会社が取得できない場合は選択画面へ
