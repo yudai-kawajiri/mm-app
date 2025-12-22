@@ -1,0 +1,14 @@
+ja:
+  api:
+    errors:
+      unauthorized: 認証が必要です
+      plan_not_found: 計画が見つかりません
+      plan_schedule_not_found: 計画スケジュールが見つかりません
+      daily_target_not_found: 日別予算が見つかりませんでした、またはアクセスが拒否されました
+      product_not_found: 商品が見つかりません、またはアクセスが拒否されました
+      material_not_found: 原材料が見つかりません、またはアクセスが拒否されました
+      server_error: サーバーエラーが発生しました
+      invalid_date: 無効な日付形式です
+      invalid_parameters: パラメータが不正です
+      invalid_status: 無効なステータスです
+      missing_required_info: 必要な情報が不足しています

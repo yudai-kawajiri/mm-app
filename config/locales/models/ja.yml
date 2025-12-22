@@ -9,6 +9,11 @@ ja:
           attributes:
             email:
               not_found: "メールアドレスが見つかりません"
+        store:
+          attributes:
+            base:
+              restrict_dependent_destroy:
+                has_many: "この店舗にはユーザーが所属しているため削除できません。先にユーザーを移動または削除してください。"
         product:
           attributes:
             product_id:
@@ -274,3 +279,144 @@ ja:
       index:
         more_changes: "他%{count}件"
         filter: "絞り込み"
+  activerecord:
+    errors:
+      template:
+        header:
+          one: "%{model}の保存に失敗しました"
+          other: "%{count}件のエラーが発生したため、%{model}の保存に失敗しました"
+        body: '以下の項目を確認してください:'
+      models:
+        user:
+          attributes:
+            phone:
+              invalid_phone_format: は10桁または11桁の数字で入力してください
+        resources/category:
+          category_type_in_use: "%{record}で使用しています"
+          category_in_use: "%{record}で使用しています"
+        resources/material:
+          category_in_use: "%{record}で使用しています"
+        resources/unit:
+          category_in_use: "%{record}で使用しています"
+          unit_in_use: "%{record}で使用しています"
+    models:
+      user: ユーザー
+      store: 店舗
+      company: 会社
+      admin_request: 承認リクエスト
+      category: カテゴリー
+      resource: 資源
+      material: 原材料
+      product: 商品
+      plan: 計画
+      planning/plan_schedule: 計画スケジュール
+      planning/plan_product: 計画商品
+      management/daily_target: 日別予算
+      management/monthly_budget: 月間予算
+      resources/plan: 製造計画
+      resources/material: 原材料
+      resources/product: 商品
+      resources/product_material: 商品原材料
+      resources/plan_product: 計画商品
+      resources/category: カテゴリー
+      resources/order: 発注
+      resources/order_group: 発注グループ
+      resources/unit: 単位
+    attributes:
+      store:
+        code: 店舗コード
+        name: 店舗名
+        company: 会社名
+        users_count: ユーザー数
+        invitation_code: 招待コード
+        created_at: 登録日時
+      system_log:
+        created_at: 日時
+        action: アクション
+        user: ユーザー
+        details: 詳細
+      user:
+        name: 名前
+        email: メールアドレス
+        company: 会社名
+        password: パスワード
+        password_confirmation: パスワード（確認）
+        current_password: 現在のパスワード
+        phone: 電話番号
+        role: 権限
+        store_id: 店舗
+        invitation_code: 招待コード
+        approved: 承認状態
+      store:
+        company: 会社名
+        name: 店舗名
+        code: 店舗コード
+        invitation_code: 招待コード
+        created_at: 登録日
+        users_count: ユーザー数
+      company:
+        name: 会社名
+        subdomain: サブドメイン
+        created_at: 登録日
+      admin_request:
+        user: ユーザー
+        store: 店舗
+        company_id: 会社名
+        company: 会社
+        request_type: リクエスト種別
+        status: ステータス
+        reason: 理由
+      resources/material:
+        name: 原材料名
+        code: 原材料コード
+        description: 説明
+        category_id: カテゴリー
+        production_unit_id: 使用単位
+        order_unit_id: 発注単位
+        conversion_rate: 換算レート
+        standard_unit_price: 標準単価
+      resources/product:
+        name: 商品名
+        code: 商品コード
+        description: 説明
+        category_id: カテゴリー
+      resources/plan:
+        name: 計画名
+        code: 計画コード
+        plan_date: 計画日
+        status: ステータス
+        category_id: カテゴリー
+        actual_revenue_data: 実績売上データ
+      resources/order_group:
+        name: 発注グループ名
+        code: 発注グループコード
+        order_date: 発注日
+        status: ステータス
+        category_id: カテゴリー
+      resources/category:
+        name: カテゴリー名
+        category_type: タイプ
+      resources/unit:
+        name: 単位名
+    enums:
+      resources/plan:
+        status:
+          draft: 下書き
+          confirmed: 確定
+          completed: 完了
+      resources/order_group:
+        status:
+          draft: 下書き
+          ordered: 発注済み
+          received: 入荷済み
+      resources/category:
+        category_type:
+          material: 原材料
+          product: 商品
+          plan: 計画
+          order_group: 発注グループ
+    associations:
+      resources/unit:
+        materials_as_product_unit: 商品単位として使用している原材料
+        materials_as_order_unit: 発注単位として使用している原材料
+        materials_as_production_unit: 使用単位として使用している原材料

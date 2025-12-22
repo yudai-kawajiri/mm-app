@@ -1,0 +1,91 @@
+ja:
+  common:
+    deleted_plan: "(削除された計画)"
+    menu:
+      company_management: 会社管理
+      approval_requests: 承認リクエスト
+      user_management: ユーザー管理
+      store_management: 店舗管理
+      system_logs: システムログ
+      admin_management: 管理者メニュー
+    search: 検索
+    clear: クリア
+    action: アクション
+    cancel: キャンセル
+    category: カテゴリー
+    characters: 文字
+    close: 閉じる
+    create: 登録
+    update: 更新
+    save: 保存
+    saving: 保存中...
+    destroy: 削除
+    edit: 編集
+    name: 名前
+    sort_by: ソート
+    show: 詳細
+    back: 戻る
+    copy: コピー
+    print: 印刷
+    print_action: 印刷する
+    record: レコード
+    change: 変更
+    uncategorized: 未分類
+    not_set: 未設定
+    calculation_unavailable: 計算不可
+    count_suffix: 件
+    system: システム
+    remaining: 残り
+    save_order: 並び順を保存
+    reorder_mode: 並び替えモード
+    year_suffix: 年
+    month_suffix: 月
+    suffix:
+      year: 年
+      month: 月
+    actions:
+      reorder_print_order: 印刷順を並び替え
+    terms: 利用規約
+    privacy: プライバシーポリシー
+  totals:
+    category: カテゴリ―合計
+  labels:
+    date: 日付
+  forms:
+    titles:
+      basic_info: 基本情報
+      plan_product: 製造商品
+      product_material: 商品原材料
+  search:
+    placeholders:
+      enter_name: 名前を入力
+  stores:
+    switch:
+      success: "%{store_name}に切り替えました"
+      all_stores: 全店舗表示に切り替えました
+      not_found: 店舗が見つかりませんでした
+    invitation_code_regenerated: 招待コードを再発行しました
+    show:
+      confirm_regenerate: 招待コードを再発行しますか？既存の招待コードは無効になります。
+      regenerate_code: 招待コード再発行
+      statistics: 統計情報
+      total_users: 所属ユーザー数
+      approved_users: 承認済みユーザー数
+      users_list: 所属ユーザー一覧
+      approved: 承認済み
+      pending: 承認待ち
+      no_users: 所属ユーザーがいません
+      role_badges:
+        general: 一般
+        store_admin: 店舗管理者
+        company_admin: 会社管理者
+      user: ユーザー
+      store: 店舗
+      status: ステータス
+      message: メッセージ
+      request_type: リクエスト種別
+  companies:
+    switch:
+      success: "%{company_name} に切り替えました"
+      not_found: 会社が見つかりませんでした
+      all_companies: システム管理モード（全会社）に切り替えました

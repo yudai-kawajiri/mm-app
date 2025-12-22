@@ -1,0 +1,71 @@
+ja:
+  landing:
+    title: MM-App
+    back_to_top: トップページへ戻る
+    subtitle: 製造業向けの包括的な生産管理・数値管理システム
+    description: 原材料管理から製造計画、売上予測まで一元管理
+    login_button: ログイン
+    signup_button: 新規登録
+    slug_label: 会社ID（半角英数字とハイフン）
+    slug_placeholder: your-company-id
+    slug_required: 会社IDを入力してください
+    slug_hint: 既存の会社にログイン・登録する場合のみ入力してください
+    or: または
+    new_company_button: 新規会社登録を申請
+    features:
+      title: 主な機能
+      resources:
+        title: リソース管理
+        description: 原材料・商品・カテゴリー
+      planning:
+        title: 製造計画
+        description: 日別計画・商品紐付け
+      management:
+        title: 数値管理
+        description: 予算・目標・実績
+      forecast:
+        title: 売上予測
+        description: データに基づく経営判断
+    errors:
+      company_not_found: "会社が見つかりません。再度ログインしてください。"
+  terms:
+    title: 利用規約
+    last_updated: 最終更新日
+  privacy:
+    title: プライバシーポリシー
+    last_updated: 最終更新日
+  static_pages:
+    back_to_login: ログインページに戻る
+    contact_form_link: お問い合わせフォームへ
+    contact_via_help: 本規約に関するお問い合わせは、
+  contacts:
+    new:
+      title: お問い合わせ
+      subtitle: ご不明な点やご要望がございましたら、お気軽にお問い合わせください。
+    form:
+      name: お名前
+      name_placeholder: 山田 太郎
+      email: メールアドレス
+      email_placeholder: example@example.com
+      subject: 件名
+      subject_placeholder: お問い合わせ内容の件名
+      message: お問い合わせ内容
+      message_placeholder: 具体的なお問い合わせ内容をご記入ください
+      message_hint: 最大5000文字まで入力できます
+      message_max_length: '5000'
+      submit: 送信
+      company:
+        name: 会社名
+        subdomain: サブドメイン
+        created_at: 登録日
+    messages:
+      success_with_response_time: お問い合わせを送信しました。通常2〜3営業日以内にご返信いたします。
+      failure: お問い合わせの送信に失敗しました。
+  contact_mailer:
+    subject: "【MM-App】お問い合わせを受け付けました"
+    contact_email:
+      title: お問い合わせがありました
+      name_label: お名前
+      email_label: メールアドレス
+      subject_label: 件名
+      message_label: お問い合わせ内容

@@ -1,5 +1,8 @@
 ja:
   admin:
+    common:
+      categories: カテゴリー管理
+
     users:
       index:
         title: "ユーザー管理"
@@ -32,18 +35,12 @@ ja:
         title: "ユーザー登録"
       edit:
         title: "ユーザー編集"
-      show:
-        generated_password:
-          title: 初期パスワードが生成されました
-          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
-        generated_password:
-          title: 初期パスワードが生成されました
-          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
-        user_info: "ユーザー情報"
-        title: "ユーザー詳細"
-        generated_password:
-          title: 初期パスワードが生成されました
-          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
+      messages:
+        invited: "%{name} を招待しました"
+        updated: "%{name} を更新しました"
+        user_deleted: "%{name} を削除しました"
+        cannot_delete_self: 自分自身を削除することはできません
+        user_not_found: ユーザーが見つかりませんでした
       form:
         name: "名前"
         name_placeholder: "山田 太郎"
@@ -59,6 +56,8 @@ ja:
         submit_create: "登録"
         submit_update: "更新"
         cancel: "キャンセル"
+        store_admin_role_hint: 店舗管理者は一般ユーザーのみ作成できます
+        store_admin_store_hint: 自店舗のユーザーのみ作成できます
       roles:
         super_admin: "システム管理者"
         company_admin: "会社管理者"
@@ -72,7 +71,7 @@ ja:
         user: "ユーザー"
         date_from: "開始日"
         date_to: "終了日"
-        filter: "絞り込む"
+        filter: "フィルタ"
         datetime: "日時"
         action: "アクション"
         record_id: "レコードID"
@@ -86,6 +85,9 @@ ja:
         create: "登録"
         update: "更新"
         destroy: "削除"
+      table_headers:
+        company: 会社名
+        store: 店舗名
 
     companies:
       index:
@@ -105,14 +107,6 @@ ja:
         title: "会社作成"
       edit:
         title: "会社編集"
-      show:
-        generated_password:
-          title: 初期パスワードが生成されました
-          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
-        generated_password:
-          title: 初期パスワードが生成されました
-          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
-        title: "会社詳細"
       form:
         name: "会社名"
         name_placeholder: "株式会社サンプル"
@@ -145,12 +139,6 @@ ja:
           created_at: "登録日時"
           actions: "アクション"
       show:
-        generated_password:
-          title: 初期パスワードが生成されました
-          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
-        generated_password:
-          title: 初期パスワードが生成されました
-          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
         title: "承認リクエスト詳細"
         approve: "承認する"
         reject: "却下する"
@@ -158,11 +146,6 @@ ja:
         rejection_reason_placeholder: "却下する理由を入力してください"
       confirm:
         approve: "%{name}の申請を承認しますか?"
-
-        approved: "承認リクエストを承認しました"
-        rejected: "承認リクエストを却下しました"
-        approve_failed: "承認に失敗しました"
-        reject_failed: "却下に失敗しました"
 
     stores:
       index:
@@ -195,19 +178,13 @@ ja:
         submit_update: "更新"
         cancel: "キャンセル"
       show:
-        generated_password:
-          title: 初期パスワードが生成されました
-          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
-        generated_password:
-          title: 初期パスワードが生成されました
-          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
         title: "店舗詳細"
         store_info: "店舗情報"
         regenerate_code: "コード再発行"
         confirm_regenerate: "招待コードを再発行しますか？現在のコードは無効になります。"
         statistics: "統計"
         total_users: "総ユーザー数"
-        approved_users: "承認済みユーザー"
+        approved_users: "承認済みユーザー数"
         users_list: "所属ユーザー一覧"
         approved: "承認済み"
         pending: "承認待ち"
@@ -226,5 +203,6 @@ ja:
         invitation_code_regenerated: "招待コードを再発行しました"
       confirm:
         regenerate_code: "招待コードを再発行しますか？現在のコードは無効になります。"
-
-    common:
+      invitation_code_regenerated: 招待コードを再発行しました
+      store_id:
+        blank: を選択してください

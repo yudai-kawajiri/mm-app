@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_21_130855) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_22_075302) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -67,12 +67,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_21_130855) do
   end
 
   create_table "application_requests", force: :cascade do |t|
+    t.string "admin_email"
+    t.string "admin_name"
     t.string "company_email"
     t.integer "company_id"
     t.string "company_name"
     t.string "company_phone"
-    t.string "contact_email"
-    t.string "contact_name"
     t.datetime "created_at", null: false
     t.datetime "invitation_sent_at"
     t.string "invitation_token"
@@ -107,9 +107,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_21_130855) do
     t.datetime "invitation_sent_at"
     t.string "invitation_token"
     t.string "name", null: false
-    t.string "subdomain", null: false
+    t.string "slug", null: false
     t.datetime "updated_at", null: false
-    t.index ["subdomain"], name: "index_companies_on_subdomain", unique: true
+    t.index ["slug"], name: "index_companies_on_subdomain", unique: true
   end
 
   create_table "daily_targets", force: :cascade do |t|
