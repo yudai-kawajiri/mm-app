@@ -164,6 +164,14 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  # ルーティングエラーをキャッチ
+  rescue_from ActionController::RoutingError, with: :handle_routing_error
+
+  def handle_routing_error(exception)
+    logger.error "Routing Error: #{exception.message}"
+    redirect_to company_dashboards_path(company_slug: current_company.slug), alert: t("errors.messages.unauthorized")
+  end
   
   def auto_login_pending_user
     return unless session[:pending_user_id].present?
