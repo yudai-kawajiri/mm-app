@@ -54,7 +54,7 @@ pin "controllers/video_modal_controller", to: "controllers/video_modal_controlle
 # Other Controllers
 pin "controllers/resource_search_controller", to: "controllers/resource_search_controller.js"
 pin "controllers/welcome_modal_controller", to: "controllers/welcome_modal_controller.js"
-pin "controllers/subdomain_redirect_controller", to: "controllers/subdomain_redirect_controller.js"
+pin "controllers/slug_redirect_controller", to: "controllers/slug_redirect_controller.js"
 
 # Utility Modules
 pin "utils/logger", to: "utils/logger.js"

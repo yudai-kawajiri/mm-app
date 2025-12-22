@@ -42,7 +42,7 @@ import VideoModalController from "controllers/video_modal_controller"
 // Other Controllers
 import ResourceSearchController from "controllers/resource_search_controller"
 import WelcomeModalController from "controllers/welcome_modal_controller"
-import SubdomainRedirectController from "controllers/subdomain_redirect_controller"
+import SlugRedirectController from "controllers/slug_redirect_controller"
 
 // コントローラー登録
 application.register("admin--user-role", AdminUserRoleController)
@@ -71,4 +71,4 @@ application.register("help-search", HelpSearchController)
 application.register("video-modal", VideoModalController)
 application.register("resource-search", ResourceSearchController)
 application.register("welcome-modal", WelcomeModalController)
-application.register("subdomain-redirect", SubdomainRedirectController)
+application.register("slug-redirect", SlugRedirectController)
