@@ -681,10 +681,10 @@ module ApplicationHelper
   #
   # @example
   #   scoped_path(:admin_users_path)
-  #   # => "/c/company-subdomain/admin/users"
+  #   # => "/c/company-slug/admin/users"
   #
   #   scoped_path(:resources_material_path, @material)
-  #   # => "/c/company-subdomain/resources/materials/123"
+  #   # => "/c/company-slug/resources/materials/123"
   #
 
   # パスベース対応: 動的に company_ プレフィックス付きパスを生成
