@@ -42,10 +42,8 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource)
     if current_user.company_admin?
-      # 会社管理者はデフォルトで全店舗モード（session[:current_store_id] = nil）
       session[:current_store_id] = nil
     elsif current_user.store_id.present?
-      # 店舗管理者は自店舗を設定
       session[:current_store_id] = current_user.store_id
     end
 
@@ -64,19 +62,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def layout_by_resource
-    return "print" if action_name == "print"
-
-    if devise_controller?
-      "application"
-    elsif request.env['warden']&.user
-      "authenticated_layout"
-    else
-      "application"
-    end
-  end
-
-
   def user_for_paper_trail
     user_signed_in? ? current_user.id : nil
   end
@@ -85,8 +70,6 @@ class ApplicationController < ActionController::Base
     { store_id: current_store&.id }
   end
 
-
-  # パスベース: params[:company_slug]から会社を取得
   def company_from_path
     return nil unless params[:company_slug].present?
     @company_from_path ||= Company.find_by(slug: params[:company_slug])
@@ -95,26 +78,10 @@ class ApplicationController < ActionController::Base
   def current_company
     return @current_company if defined?(@current_company)
 
-    # システム管理者の場合: session[:current_company_id] でテナントを切り替え
     if current_user&.super_admin?
       @current_company = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
     else
-      # 会社管理者・店舗管理者: 所属テナント、またはパスから取得
       @current_company = current_user&.company || company_from_path
-    end
-
-    @current_company
-  end
-
-  def current_company
-    return @current_company if defined?(@current_company)
-
-    # システム管理者の場合: session[:current_company_id] でテナントを切り替え
-    if current_user&.super_admin?
-      @current_company = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
-    else
-      # 会社管理者・店舗管理者: 所属テナント、またはサブドメインから取得
-      @current_company = current_user&.company || company_from_subdomain
     end
 
     @current_company
@@ -197,6 +164,7 @@ class ApplicationController < ActionController::Base
   end
 
   private
+  
   def auto_login_pending_user
     return unless session[:pending_user_id].present?
     return if user_signed_in?
@@ -205,7 +173,7 @@ class ApplicationController < ActionController::Base
     if user
       sign_in(user)
       session.delete(:pending_user_id)
-      flash[:notice] = "アカウント登録が完了しました" if session[:first_login]
+      flash[:notice] = t("helpers.notice.account_registered") if session[:first_login]
       session.delete(:first_login)
     else
       session.delete(:pending_user_id)

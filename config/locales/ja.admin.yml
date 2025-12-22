@@ -36,6 +36,9 @@ ja:
         generated_password:
           title: 初期パスワードが生成されました
           note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
+        generated_password:
+          title: 初期パスワードが生成されました
+          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
         user_info: "ユーザー情報"
         title: "ユーザー詳細"
         generated_password:
@@ -106,6 +109,9 @@ ja:
         generated_password:
           title: 初期パスワードが生成されました
           note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
+        generated_password:
+          title: 初期パスワードが生成されました
+          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
         title: "会社詳細"
       form:
         name: "会社名"
@@ -139,6 +145,9 @@ ja:
           created_at: "登録日時"
           actions: "アクション"
       show:
+        generated_password:
+          title: 初期パスワードが生成されました
+          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
         generated_password:
           title: 初期パスワードが生成されました
           note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
@@ -186,6 +195,9 @@ ja:
         submit_update: "更新"
         cancel: "キャンセル"
       show:
+        generated_password:
+          title: 初期パスワードが生成されました
+          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
         generated_password:
           title: 初期パスワードが生成されました
           note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）

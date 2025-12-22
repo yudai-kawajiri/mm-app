@@ -31,18 +31,19 @@
           <span class="text-danger">*</span>
         <% end %>
         <%= f.select :role,
-            options_for_select([
+            [
               [t('admin.users.roles.general'), 'general'],
               [t('admin.users.roles.store_admin'), 'store_admin'],
               [t('admin.users.roles.company_admin'), 'company_admin']
-            ], user.role),
-            { prompt: t('admin.users.form.role_placeholder') },
-            class: 'form-select',
-            required: true,
-            data: {
-              'form-validation-target': 'field',
-              'admin--user-role-target': 'roleSelect',
-              'action': 'change->admin--user-role#toggleStoreField'
+            ],
+            { prompt: t('helpers.prompt.select'), selected: (user.persisted? ? user.role : nil) },
+            {
+              class: 'form-select',
+              required: true,
+              data: {
+                'admin--user-role-target': 'roleSelect',
+                'action': 'change->admin--user-role#toggleStoreField'
+              }
             } %>
       </div>
     <% end %>
@@ -78,10 +79,12 @@
         <% end %>
         <%= f.collection_select :store_id, @stores, :id, :name,
             { prompt: t('helpers.prompt.select') },
-            class: 'form-select',
-            data: {
-              'form-validation-target': 'field',
-              'admin--user-role-target': 'storeSelect'
+            {
+              class: 'form-select',
+              data: {
+                'form-validation-target': 'field',
+                'admin--user-role-target': 'storeSelect'
+              }
             } %>
       </div>
     <% end %>

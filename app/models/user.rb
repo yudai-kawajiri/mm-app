@@ -44,7 +44,6 @@ class User < ApplicationRecord
   # Callbacks
   before_validation :normalize_phone
   before_validation :generate_random_password, on: :create, if: -> { password.blank? }
-  after_initialize :set_default_role, if: :new_record?
 
   # 月次予算を取得
   def budget_for_month(date)
@@ -102,9 +101,6 @@ class User < ApplicationRecord
     self.phone = phone.gsub(/[-\s()]/, "") if phone.present?
   end
 
-  def set_default_role
-    self.role ||= :general
-  end
 
   def invitation_code_valid
     return if invitation_code.blank?
@@ -128,4 +124,14 @@ end
   # 承認システムを無効化（管理者作成ユーザーは即座にログイン可能）
   def approved?
     true
+  end
+
+  # 権限の日本語表示用
+  def self.roles_i18n
+    {
+      I18n.t('admin.users.roles.general') => 'general',
+      I18n.t('admin.users.roles.store_admin') => 'store_admin',
+      I18n.t('admin.users.roles.company_admin') => 'company_admin',
+      I18n.t('admin.users.roles.super_admin') => 'super_admin'
+    }
   end
