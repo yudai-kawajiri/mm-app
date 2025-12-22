@@ -23,6 +23,7 @@ class User < ApplicationRecord
   # AdminRequest関連
   has_many :admin_requests, dependent: :destroy
   has_many :approved_requests, class_name: "AdminRequest", foreign_key: :approved_by_id
+  has_many :categories, class_name: "Resources::Category", foreign_key: :user_id, dependent: :nullify
 
   # 4段階の権限管理
   enum :role, {

@@ -9,11 +9,6 @@ ja:
           attributes:
             email:
               not_found: "メールアドレスが見つかりません"
-        store:
-          attributes:
-            base:
-              restrict_dependent_destroy:
-                has_many: "この店舗にはユーザーが所属しているため削除できません。先にユーザーを移動または削除してください。"
         product:
           attributes:
             product_id:

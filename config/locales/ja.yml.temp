@@ -1,0 +1,33 @@
+
+  # ここまでが既存の内容
+  
+  application_requests:
+    accept_confirm:
+      success: "アカウント登録が完了しました。ログインしてください"
+      failure: "登録に失敗しました: %{error}"
+    create:
+      success: "招待メールを送信しました"
+
+  application_request_mailer:
+    invitation_email:
+      subject: "【MM-App】アカウント招待のお知らせ"
+      greeting: "様"
+      welcome_message: "MM-Appへようこそ!"
+      account_created: "あなたのアカウントが作成されました。以下の情報でログインしてください。"
+      company_id_label: "会社ID"
+      company_id_instruction: "※ログイン画面で上記の会社IDを入力してください"
+      email_label: "メールアドレス"
+      password_label: "初期パスワード"
+      login_button: "ログインページへ"
+      password_change_notice: "初回ログイン後、必ずパスワードを変更してください。"
+      fallback_instruction: "ボタンが機能しない場合は、以下のURLをブラウザにコピーしてアクセスしてください:"
+      footer_notice: "このメールに心当たりがない場合は、破棄してください。"
+      copyright: "© %{year} MM-App. All rights reserved."
+    approval_notification:
+      subject: "【MM-App】ユーザー登録が承認されました"
+    rejection_notification:
+      subject: "【MM-App】ユーザー登録申請について"
+
+  admin:
+    admin_requests:
+      default_reject_reason: "承認基準を満たしていません"
