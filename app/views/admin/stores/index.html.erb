@@ -23,6 +23,19 @@
       category_options: nil,
       hide_category: true %>
 
+  <% 
+    # システム管理者のみ会社名カラムを表示
+    columns = []
+    columns << { header: :company, data: Proc.new { |store| store.company&.name || '-' } } if current_user.super_admin?
+    columns += [
+      { header: :code, data: Proc.new { |store| store.code } },
+      { header: :name, data: Proc.new { |store| store.name } },
+      { header: :invitation_code, data: Proc.new { |store| store.invitation_code } },
+      { header: :users_count, data: Proc.new { |store| AdminRequest.where(store: store).where.not(status: :rejected).count } },
+      { header: :created_at, data: Proc.new { |store| l(store.created_at.to_date, format: :default) } }
+    ]
+  %>
+
   <%= render 'shared/components/resource_list',
       resources: @stores,
       resource_class: Store,
@@ -36,15 +49,7 @@
       edit_link: !current_user.store_admin?,
       destroy_link: !current_user.store_admin?,
       scope: [:admin],
-
-      columns: [
-        { header: :company, data: Proc.new { |store| store.company&.name || '-' } },
-        { header: :code, data: Proc.new { |store| store.code } },
-        { header: :name, data: Proc.new { |store| store.name } },
-        { header: :invitation_code, data: Proc.new { |store| store.invitation_code } },
-        { header: :users_count, data: Proc.new { |store| AdminRequest.where(store: store).where.not(status: :rejected).count } },
-        { header: :created_at, data: Proc.new { |store| l(store.created_at.to_date, format: :default) } }
-      ]
+      columns: columns
   %>
 
   <%= paginate @stores, theme: 'bootstrap-5' %>

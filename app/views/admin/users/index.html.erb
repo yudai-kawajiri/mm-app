@@ -23,6 +23,32 @@
       category_options: nil,
       hide_category: true %>
 
+  <% 
+    # システム管理者のみ会社名カラムを表示
+    columns = []
+    columns << { header: :company, data: Proc.new { |user| user.company&.name || t('admin.users.index.not_set') } } if current_user.super_admin?
+    columns += [
+      { header: :name, data: Proc.new { |user| user.name } },
+      { header: :email, data: Proc.new { |user| user.email } },
+      {
+        header: :role,
+        data: Proc.new { |user|
+          if user.super_admin?
+            content_tag(:span, t('admin.users.index.role_badges.super_admin'), class: 'badge bg-danger')
+          elsif user.company_admin?
+            content_tag(:span, t('admin.users.index.role_badges.company_admin'), class: 'badge bg-warning')
+          elsif user.store_admin?
+            content_tag(:span, t('admin.users.index.role_badges.store_admin'), class: 'badge bg-info')
+          else
+            content_tag(:span, t('admin.users.index.role_badges.general'), class: 'badge bg-secondary')
+          end
+        }
+      },
+      { header: :store, data: Proc.new { |user| user.store&.name || '-' } },
+      { header: :created_at, data: Proc.new { |user| l(user.created_at.to_date, format: :default) } }
+    ]
+  %>
+
   <%= render 'shared/components/resource_list',
       resources: @users,
       resource_class: User,
@@ -33,28 +59,7 @@
       show_copy: false,
       show_print: false,
       scope: [:admin],
-
-      columns: [
-        { header: :company, data: Proc.new { |user| user.company&.name || t('admin.users.index.not_set') } },
-        { header: :name, data: Proc.new { |user| user.name } },
-        { header: :email, data: Proc.new { |user| user.email } },
-        {
-          header: :role,
-          data: Proc.new { |user|
-            if user.super_admin?
-              content_tag(:span, t('admin.users.index.role_badges.super_admin'), class: 'badge bg-danger')
-            elsif user.company_admin?
-              content_tag(:span, t('admin.users.index.role_badges.company_admin'), class: 'badge bg-warning')
-            elsif user.store_admin?
-              content_tag(:span, t('admin.users.index.role_badges.store_admin'), class: 'badge bg-info')
-            else
-              content_tag(:span, t('admin.users.index.role_badges.general'), class: 'badge bg-secondary')
-            end
-          }
-        },
-        { header: :store, data: Proc.new { |user| user.store&.name || '-' } },
-        { header: :created_at, data: Proc.new { |user| l(user.created_at.to_date, format: :default) } }
-      ]
+      columns: columns
   %>
 
   <%= paginate @users, theme: 'bootstrap-5' %>

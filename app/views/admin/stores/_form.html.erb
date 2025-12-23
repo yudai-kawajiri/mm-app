@@ -1,5 +1,13 @@
 <%= form_with model: [:admin, @store], local: true do |f| %>
 
+  <%# 会社名（システム管理者のみ表示・読み取り専用） %>
+  <% if current_user.super_admin? %>
+    <div class="mb-3">
+      <%= label_tag :company_name, Company.human_attribute_name(:name), class: 'form-label' %>
+      <div class="form-control-plaintext"><%= @store.company.name %></div>
+    </div>
+  <% end %>
+
   <div class="mb-3">
     <%= f.label :code, t('admin.stores.form.code'), class: 'form-label' %>
     <%= f.text_field :code, class: 'form-control', placeholder: t('admin.stores.form.code_placeholder') %>

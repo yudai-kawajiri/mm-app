@@ -29,8 +29,16 @@ class Admin::UsersController < Admin::BaseController
   end
 
   # 承認済みユーザー + AdminRequest が pending/approved のユーザー
+  # 承認済みユーザー + AdminRequest が pending/approved のユーザー + AdminRequestが存在しないユーザー（管理者が直接作成）
   admin_request_user_ids = AdminRequest.where.not(status: :rejected).pluck(:user_id)
-  users_scope = users_scope.where("users.approved = ? OR users.id IN (?)", true, admin_request_user_ids.presence || [0])
+  users_with_no_request = users_scope.left_joins(:admin_requests).where(admin_requests: { id: nil }).pluck(:id)
+
+  users_scope = users_scope.where(
+    "users.approved = ? OR users.id IN (?) OR users.id IN (?)",
+    true,
+    admin_request_user_ids.presence || [0],
+    users_with_no_request.presence || [0]
+  )
 
   # 検索処理
   if params[:q].present?
@@ -71,15 +79,15 @@ class Admin::UsersController < Admin::BaseController
     @user = current_user.company.users.build(user_params)
     @user.approved = false
 
-    # バリデーションを実行してパスワードを生成
-    @user.valid?
-    
-    # パスワードを保存前に取得
-    generated_password = @user.password if @user.password.present?
-    
+    # パスワードが空の場合のみ自動生成
+    password_was_blank = params[:user][:password].blank?
+
     if @user.save
-      flash[:generated_password] = generated_password if generated_password.present?
-      redirect_to company_admin_user_path(company_slug: current_company.slug, id: @user), notice: t("helpers.notice.created", resource: User.model_name.human)
+      # パスワードが自動生成された場合のみフラッシュメッセージを表示
+      if password_was_blank && @user.password.present?
+        flash[:generated_password] = @user.password
+      end
+      redirect_to scoped_path(:admin_user_path, id: @user), notice: t("admin.users.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -130,13 +138,29 @@ class Admin::UsersController < Admin::BaseController
     # システム管理者の場合
     if current_user.super_admin?
       if session[:current_company_id].present?
-        @stores = Company.find(session[:current_company_id]).stores
+        company = Company.find(session[:current_company_id])
+        if session[:current_store_id].present?
+          # 店舗が選択されている場合: その店舗のみ
+          @stores = company.stores.where(id: session[:current_store_id])
+        else
+          # 全店舗選択: 会社の全店舗
+          @stores = company.stores
+        end
       else
         @stores = Store.all
       end
+    elsif current_user.company_admin?
+      # 会社管理者
+      if session[:current_store_id].present?
+        # 店舗が選択されている場合: その店舗のみ
+        @stores = current_user.company.stores.where(id: session[:current_store_id])
+      else
+        # 全店舗選択: 自社の全店舗
+        @stores = current_user.company.stores
+      end
     else
-      # 会社管理者・店舗管理者
-      @stores = current_user.company.stores
+      # 店舗管理者: 自分の店舗のみ
+      @stores = current_user.company.stores.where(id: current_user.store_id)
     end
   end
 

@@ -68,7 +68,7 @@ ja:
 
     system_logs:
       index:
-        title: "システムログ"
+        title: "システムログ一覧"
         model: "モデル"
         user: "ユーザー"
         date_from: "開始日"
@@ -138,7 +138,7 @@ ja:
         rejected: "却下"
       default_reject_reason: "承認基準を満たしていません"
       index:
-        title: "承認リクエスト"
+        title: "承認リクエスト一覧"
         search:
           placeholder: "会社名またはリクエスト送信者名で検索"
         sort_options:
@@ -165,7 +165,7 @@ ja:
 
     stores:
       index:
-        title: "店舗管理"
+        title: "店舗一覧"
         search:
           placeholder: "店舗名またはコードで検索"
         sort_options:

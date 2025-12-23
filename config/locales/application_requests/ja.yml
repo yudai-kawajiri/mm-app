@@ -17,18 +17,18 @@ ja:
       terms_agreement_html: "<a href='/terms' target='_blank'>利用規約</a>と<a href='/privacy' target='_blank'>プライバシーポリシー</a>に同意する"
       already_have_account: "すでにアカウントをお持ちですか？"
       login_link: "ログイン"
-    
+
     create:
       success: "登録申請を受け付けました。承認されるまでお待ちください。"
       error: "登録に失敗しました。入力内容をご確認ください。"
-    
+
     accept:
       title: "招待を承認"
       success: "招待を承認しました。ログインしてください。"
       error: "招待の承認に失敗しました。"
       invalid_token: "無効な招待トークンです。"
       already_accepted: "この招待は既に承認されています。"
-  
+
   application_request_mailer:
     invitation_email:
       subject: "【MM-App】管理者アカウントの招待"
@@ -47,7 +47,7 @@ ja:
         1. <a href="%{login_url}">ログインページ</a>にアクセス
         2. 上記のメールアドレスとパスワードでログイン
         3. パスワードを変更
-    
+
     approval_notification:
       subject: "【MM-App】ユーザー登録が承認されました"
       approved_message: "ユーザー登録リクエストが承認されました。以下のログイン情報でシステムにアクセスできます。"
@@ -66,7 +66,7 @@ ja:
       method_2_step_1: "にアクセス"
       method_2_step_2: "会社コード「%{slug}」を選択"
       method_2_step_3: "ログイン情報を入力"
-    
+
     rejection_notification:
       subject: "【MM-App】ユーザー登録申請について"
       greeting: "%{name} 様"

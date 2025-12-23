@@ -67,6 +67,8 @@
         </div>
       </div>
     </div>
+    <%# 会社名（システム管理者のみ表示） %>
+    <% if current_user.super_admin? %>
 
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
@@ -78,6 +80,7 @@
         </div>
       </div>
     </div>
+    <% end %>
 
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
