@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
-  layout "authenticated_layout"
+  layout :choose_layout
   before_action :set_company_from_slug
   before_action :configure_sign_up_params, only: [ :create ]
   before_action :configure_account_update_params, only: [ :update ]
@@ -30,6 +30,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
       set_minimum_password_length
       respond_with resource
     end
+  end
+
+  def choose_layout
+    action_name.in?(%w[new create]) ? "application" : "authenticated_layout"
   end
 
   protected

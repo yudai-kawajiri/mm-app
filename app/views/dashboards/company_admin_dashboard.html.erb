@@ -18,7 +18,7 @@
             <h5 class="card-title mb-0"><%= t('dashboard.company_admin.pending_users') %></h5>
           </div>
           <p class="display-4 mb-3 fw-bold"><%= @pending_users_count %></p>
-          <%= link_to t('dashboard.company_admin.view_users'), scoped_path(:admin_users_path), class: 'btn btn-light btn-sm' %>
+          <%= link_to t('dashboard.company_admin.view_users'), scoped_path(:admin_admin_requests_path), class: 'btn btn-light btn-sm' %>
         </div>
       </div>
     </div>

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Users::SessionsController < Devise::SessionsController
+  before_action :set_company_from_slug, only: [:new, :create]
+
   # GET /resource/sign_in
   def new
     # ログイン画面表示前にチェック
@@ -18,8 +20,18 @@ class Users::SessionsController < Devise::SessionsController
     # ログイン前にチェック
     if params[:user] && params[:user][:email].present?
       user = User.find_by(email: params[:user][:email])
+      
+      # スーパー管理者チェック
       if user&.super_admin? && !admin_path?
         flash.now[:alert] = t('errors.messages.unauthorized')
+        self.resource = resource_class.new(sign_in_params)
+        render :new, status: :unprocessable_entity
+        return
+      end
+
+      # 会社チェック：ユーザーが存在し、会社が一致しない場合は汎用エラー
+      if user && @company && user.company_id != @company.id
+        flash.now[:alert] = 'メールアドレスまたはパスワードが正しくありません'
         self.resource = resource_class.new(sign_in_params)
         render :new, status: :unprocessable_entity
         return
@@ -35,4 +47,15 @@ class Users::SessionsController < Devise::SessionsController
   def admin_path?
     request.path.start_with?(AdminConfig::ADMIN_PATH_PREFIX)
   end
+
+  private
+
+  def set_company_from_slug
+    @company = Company.find_by!(slug: params[:company_slug]) if params[:company_slug]
+  end
+
+  def current_company
+    @company
+  end
+  helper_method :current_company
 end

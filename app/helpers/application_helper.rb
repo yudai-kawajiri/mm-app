@@ -22,6 +22,37 @@
 #   - 自動バリデーション表示
 #
 module ApplicationHelper
+  def scoped_path(path_method, *args)
+    return send(path_method, *args) unless current_company.present?
+
+    # path_method を解析して正しい company_* 形式に変換
+    # 例: new_resources_category_path → new_company_resources_category_path
+    path_str = path_method.to_s
+
+    # 'new_' や 'edit_' などのアクションプレフィックスを抽出
+    if path_str =~ /^(new|edit)_(.+)$/
+      action_prefix = Regexp.last_match(1)
+      rest = Regexp.last_match(2)
+      company_method_name = "#{action_prefix}_company_#{rest}"
+    else
+      company_method_name = "company_#{path_str}"
+    end
+
+    puts "DEBUG scoped_path: path_method=#{path_method}, action_prefix=#{action_prefix rescue "N/A"}, rest=#{rest rescue "N/A"}, company_method_name=#{company_method_name}"
+    puts "DEBUG: Trying to call #{company_method_name} for #{path_method}"
+    begin
+      send(company_method_name, *args, company_slug: current_company.slug)
+    rescue NoMethodError => e
+      Rails.logger.debug "Path fallback for #{path_method}: #{e.message}"
+      begin
+        send(path_method, *args)
+      rescue NoMethodError => fallback_error
+        Rails.logger.error "Path generation completely failed for #{path_method}: #{fallback_error.message}"
+        "#"
+      end
+    end
+  end
+
   # ============================================================
   # Enum翻訳
   # ============================================================
@@ -690,23 +721,7 @@ module ApplicationHelper
 
   # パスベース対応: 動的に company_ プレフィックス付きパスを生成
 
-  def scoped_path(path_method, *args)
-    return send(path_method, *args) unless current_company.present?
 
-    company_method_name = "company_#{path_method}"
-    
-    begin
-      send(company_method_name, *args, company_slug: current_company.slug)
-    rescue NoMethodError => e
-      Rails.logger.debug "Path fallback for #{path_method}: #{e.message}"
-      begin
-        send(path_method, *args)
-      rescue NoMethodError => fallback_error
-        Rails.logger.error "Path generation completely failed for #{path_method}: #{fallback_error.message}"
-        "#"
-      end
-    end
-  end
   def resource_path_with_scope(resource, scope = nil, action = nil)
     scope_array = Array(scope).compact
     route_key = resource.class.model_name.route_key.singularize

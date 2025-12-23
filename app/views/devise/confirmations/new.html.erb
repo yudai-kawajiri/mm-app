@@ -10,7 +10,7 @@
 
   <%= render "devise/shared/error_messages", resource: resource %>
 
-  <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, class: 'needs-validation', novalidate: true }) do |f| %>
+  <%= form_for(resource, as: resource_name, url: company_user_confirmation_path(company_slug: params[:company_slug]), html: { method: :post, class: 'needs-validation', novalidate: true }) do |f| %>
     <div class="mb-4">
       <%= f.label :email, class: 'form-label fw-bold' do %>
         <i class="bi bi-envelope me-1"></i><%= t('activerecord.attributes.user.email') %>
@@ -32,7 +32,7 @@
     </div>
 
     <div class="text-center">
-      <%= link_to new_session_path(resource_name), class: 'text-decoration-none' do %>
+      <%= link_to company_new_user_session_path(company_slug: params[:company_slug]), class: 'text-decoration-none' do %>
         <i class="bi bi-arrow-left me-1"></i><%= t('devise.shared.links.sign_in') %>
       <% end %>
     </div>

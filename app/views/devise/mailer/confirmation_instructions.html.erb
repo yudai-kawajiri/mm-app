@@ -24,13 +24,13 @@
       
       <div style="text-align: center;">
         <%= link_to t('devise.mailer.confirmation_instructions.action'), 
-            confirmation_url(@resource, confirmation_token: @token), 
+            company_user_confirmation_url(company_slug: @resource.company.slug, confirmation_token: @token), 
             class: 'button' %>
       </div>
       
       <p style="font-size: 14px; color: #6c757d;">
         <%= t('devise.mailer.confirmation_instructions.instruction_2') %><br>
-        <%= confirmation_url(@resource, confirmation_token: @token) %>
+        <%= company_user_confirmation_url(company_slug: @resource.company.slug, confirmation_token: @token) %>
       </p>
       
       <div class="footer">

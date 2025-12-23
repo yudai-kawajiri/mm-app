@@ -31,9 +31,9 @@ class ApplicationController < ActionController::Base
     return send(path_method, *args) unless current_company.present?
 
     if path_method.to_s =~ /\A(new|edit)_(.+)/
-      prefix = $1
-      rest = $2
-      company_method_name = "company_#{prefix}_#{rest}"
+      action_prefix = Regexp.last_match(1)
+      rest = Regexp.last_match(2)
+      company_method_name = "#{action_prefix}_company_#{rest}"
     else
       company_method_name = "company_#{path_method}"
     end
@@ -65,7 +65,7 @@ class ApplicationController < ActionController::Base
       session[:current_store_id] = current_user.store_id
     end
 
-    company_dashboards_path(company_slug: current_company.slug)
+    current_company ? company_dashboards_path(company_slug: current_company.slug) : company_dashboards_path(company_slug: current_user.company.slug)
   end
 
   def layout_by_resource

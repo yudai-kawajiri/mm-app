@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
   # ルートドメイン: ランディングページと新規会社申請
   root to: "landing#index"
-  
+
   resources :application_requests, only: [ :new, :create ] do
     collection do
       get :thanks
@@ -21,19 +21,17 @@ Rails.application.routes.draw do
   get :privacy, to: "static_pages#privacy"
   resources :contacts, only: [ :new, :create ]
 
-  # Devise認証（グローバル - パスワードリセットのみ）
-  devise_for :users, skip: [:sessions, :registrations], controllers: { 
-    passwords: "devise/passwords"
-  }
+  # Devise設定（すべてskip、company scopeで個別定義）
+  devise_for :users, skip: :all
 
-  # 会社スコープ内の認証機能（ログインとサインアップ）
+  # 会社スコープ内の認証機能
   scope "/c/:company_slug", as: :company do
     devise_scope :user do
       # ログイン
       get "/users/sign_in", to: "users/sessions#new", as: :new_user_session
       post "/users/sign_in", to: "users/sessions#create", as: :user_session
       delete "/users/sign_out", to: "users/sessions#destroy", as: :destroy_user_session
-      
+
       # サインアップ
       get "/users/sign_up", to: "users/registrations#new", as: :new_user_registration
       post "/users", to: "users/registrations#create", as: :user_registration
@@ -41,14 +39,18 @@ Rails.application.routes.draw do
       patch "/users", to: "users/registrations#update"
       put "/users", to: "users/registrations#update"
       delete "/users", to: "users/registrations#cancel"
+
+      # パスワードリセット
+      get "/users/password/new", to: "users/passwords#new", as: :new_user_password
+      post "/users/password", to: "users/passwords#create", as: :user_password
+      get "/users/password/edit", to: "users/passwords#edit", as: :edit_user_password
+      patch "/users/password", to: "users/passwords#update"
+      put "/users/password", to: "users/passwords#update"
     end
   end
 
   # 認証後のルーティング（会社スコープ）
   authenticated :user do
-    # 会社選択前のルート
-    get "/companies/select", to: "companies#select", as: :select_company
-    
     # 会社スコープ内のルーティング
     scope "/c/:company_slug", as: :company do
       root to: "router#index", as: :root
@@ -70,7 +72,7 @@ Rails.application.routes.draw do
             post :reject
           end
         end
-        resources :users, only: [ :index, :new, :create, :show, :edit, :update, :destroy ]
+        resources :users
         resources :stores do
           member do
             post :regenerate_invitation_code
