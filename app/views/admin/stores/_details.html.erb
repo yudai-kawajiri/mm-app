@@ -68,13 +68,13 @@
         <div class="row text-center mt-2">
           <div class="col-6">
             <div class="border rounded p-3">
-              <div class="fs-2 fw-bold text-primary"><%= AdminRequest.where(store: store).where.not(status: :rejected).count %></div>
+              <div class="fs-2 fw-bold text-primary"><%= @users.count %></div>
               <div class="text-muted small"><%= t('admin.stores.show.total_users') %></div>
             </div>
           </div>
           <div class="col-6">
             <div class="border rounded p-3">
-              <div class="fs-2 fw-bold text-success"><%= AdminRequest.where(store: store, status: :approved).count %></div>
+              <div class="fs-2 fw-bold text-success"><%= @users.where(approved: true).count %></div>
               <div class="text-muted small"><%= t('admin.stores.show.approved_users') %></div>
             </div>
           </div>

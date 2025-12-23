@@ -52,8 +52,8 @@ class Admin::StoresController < Admin::BaseController
   end
 
   def show
+    @users = @store.users.order(created_at: :desc)
   end
-
   def new
     @store = Store.new
     if current_user.super_admin? && session[:current_company_id].present?
