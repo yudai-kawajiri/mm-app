@@ -81,6 +81,7 @@ ja:
         unknown_user: "不明なユーザー"
         system: "システム"
         no_logs: "ログが見つかりません"
+        more_changes: "他%{count}件"
       actions:
         create: "登録"
         update: "更新"
@@ -120,6 +121,19 @@ ja:
         delete: "%{name} を削除してもよろしいですか?"
 
     admin_requests:
+      messages:
+        created: "リクエストを作成しました"
+        approved: "承認しました。招待メールを送信しました。"
+        approve_failed: "承認に失敗しました"
+        rejected: "却下しました"
+        reject_failed: "却下に失敗しました"
+      request_types:
+        user_registration: "ユーザー登録"
+        store_admin_request: "店舗管理者申請"
+      statuses:
+        pending: "承認待ち"
+        approved: "承認済み"
+        rejected: "却下"
       default_reject_reason: "承認基準を満たしていません"
       index:
         title: "承認リクエスト"

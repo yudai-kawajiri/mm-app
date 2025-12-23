@@ -8,6 +8,9 @@ ja:
     no_setting: 未設定
     required_mark: <span class="text-danger">*</span>
     select_store_to_create: 店舗を選択してください
+    submit:
+      update: 更新
+      create: 登録
     prompt:
       select: 選択してください
       create: 登録
