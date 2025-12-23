@@ -1,70 +1,75 @@
----
 ja:
   application_requests:
     new:
-      title: アカウント登録
-      heading: アカウント登録
-      company_info: 会社情報
-      company_name: 会社名
-      company_name_placeholder: 株式会社サンプル
-      company_email: 会社メールアドレス
-      company_email_placeholder: example@example.com
-      company_phone: 電話番号
-      company_phone_placeholder: "09012345678"
-      optional_field: 任意項目です
-      admin_info: 責任者情報
-      admin_name: 責任者氏名
-      admin_name_placeholder: 山田太郎
-      admin_email: 責任者メールアドレス
-      admin_email_placeholder: example@example.com
-      admin_email_hint: 招待URLがこのメールアドレスに送信されます
-      submit: 招待メールを送信
+      title: "新規登録"
+      company_code_label: "会社コード"
+      company_code_placeholder: "例: ok2eke"
+      email_label: "メールアドレス"
+      email_placeholder: "例: user@example.com"
+      name_label: "お名前"
+      name_placeholder: "例: 山田太郎"
+      password_label: "パスワード"
+      password_placeholder: "8文字以上"
+      password_confirmation_label: "パスワード(確認)"
+      store_code_label: "店舗コード"
+      store_code_placeholder: "店舗の招待コードを入力"
+      submit_button: "登録申請"
+      terms_agreement_html: "<a href='/terms' target='_blank'>利用規約</a>と<a href='/privacy' target='_blank'>プライバシーポリシー</a>に同意する"
+      already_have_account: "すでにアカウントをお持ちですか？"
+      login_link: "ログイン"
+    
     create:
-      title: 利用申請を受け付けました
-      message_html: ご入力いただいたメールアドレス宛に、アカウント登録用のURLをお送りしました。<br>メールをご確認の上、アカウント登録を完了してください。
-      notice: アプリケーション責任者に招待メールを送信しました。
-      success: "招待メールを送信しました"
-      failure: "登録に失敗しました: %{error}"
+      success: "登録申請を受け付けました。承認されるまでお待ちください。"
+      error: "登録に失敗しました。入力内容をご確認ください。"
+    
     accept:
-      title: アカウント登録
-      registration_info: 登録情報
-      password_instruction: "招待メールに記載された初期パスワードでログインしてください。"
-      activate_button: "アカウントを有効化する"
-      already_used: "この招待はすでに使用されています。"
-      errors:
-        invalid_token: 招待URLが無効です。
-        expired: 招待の有効期限が切れています。
-        registration_failed: アカウント登録に失敗しました。もう一度お試しください。
-    accept_confirm:
-      success: "アカウント登録が完了しました。ログインしてください"
-      approved: "アカウントが承認されました。招待メールに記載されたパスワードでログインしてください。"
-      approval_failed: "承認に失敗しました: %{error}"
-    thanks:
-      title: 招待メール送信完了
-      heading: 招待メールを送信しました
-      message: アプリケーション責任者のメールアドレスに招待URLを送信しました。メールに記載されたURLからアカウント登録を完了してください。
-      check_email: このページを閉じて、メールを確認してください。
+      title: "招待を承認"
+      success: "招待を承認しました。ログインしてください。"
+      error: "招待の承認に失敗しました。"
+      invalid_token: "無効な招待トークンです。"
+      already_accepted: "この招待は既に承認されています。"
   
   application_request_mailer:
     invitation_email:
-      subject: "【MM-App】アカウント招待のお知らせ"
-      greeting: "%{name} 様"
-      welcome_message: "MM-Appへようこそ!"
-      account_created: "あなたのアカウントが作成されました。以下の情報でログインしてください。"
-      company_id_label: "会社ID"
-      company_id_instruction: "※ログイン画面で上記の会社IDを入力してください"
-      email_label: "メールアドレス"
-      password_label: "初期パスワード"
-      temporary_password_note: "このパスワードは一時的なものです"
-      login_info_title: "ログイン情報"
-      activate_button: "アカウントを有効化する"
-      login_button: "ログインページへ"
-      after_activation: "アカウント有効化後、以下からログインできます"
-      password_change_notice: "初回ログイン後、必ずパスワードを変更してください。"
-      fallback_instruction: "ボタンが機能しない場合は、以下のURLをブラウザにコピーしてアクセスしてください:"
-      footer_notice: "このメールに心当たりがない場合は、破棄してください。"
-      copyright: "© %{year} MM-App. All rights reserved."
+      subject: "【MM-App】管理者アカウントの招待"
+      greeting: "%{admin_name} 様"
+      invitation_message: "MM-Appの管理者アカウントが作成されました。"
+      company_info: "会社情報"
+      company_name: "会社名"
+      company_code: "会社コード"
+      login_info: "ログイン情報"
+      email: "メールアドレス"
+      temporary_password: "初期パスワード"
+      password_change_notice: "※初回ログイン後、必ずパスワードを変更してください"
+      accept_invitation: "招待を承認してログイン"
+      or_manual_login: "または、以下の手順で手動ログイン"
+      manual_steps_html: |
+        1. <a href="%{login_url}">ログインページ</a>にアクセス
+        2. 上記のメールアドレスとパスワードでログイン
+        3. パスワードを変更
+    
     approval_notification:
       subject: "【MM-App】ユーザー登録が承認されました"
+      approved_message: "ユーザー登録リクエストが承認されました。以下のログイン情報でシステムにアクセスできます。"
+      greeting: "%{name} 様"
+      approval_message: "ユーザー登録申請が承認されました。"
+      login_info_title: "ログイン情報"
+      company_name: "会社名"
+      company_code: "会社コード"
+      email: "メールアドレス"
+      password: "パスワード"
+      password_value: "登録時に設定したパスワード"
+      login_methods_title: "ログイン方法"
+      method_1_title: "方法1: ダイレクトログイン"
+      login_button: "ログインする"
+      method_2_title: "方法2: トップページから"
+      method_2_step_1: "にアクセス"
+      method_2_step_2: "会社コード「%{slug}」を選択"
+      method_2_step_3: "ログイン情報を入力"
+    
     rejection_notification:
       subject: "【MM-App】ユーザー登録申請について"
+      greeting: "%{name} 様"
+      rejection_message: "ユーザー登録申請が承認されませんでした。"
+      reason_label: "理由"
+      contact_info: "ご不明な点がございましたら、管理者にお問い合わせください。"

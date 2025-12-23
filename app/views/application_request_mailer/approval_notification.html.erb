@@ -16,41 +16,41 @@
 <body>
   <div class="container">
     <div class="header">
-      <h2><%= t('devise.approval_notification.subject') %></h2>
+      <h2><%= t('application_request_mailer.approval_notification.subject') %></h2>
     </div>
 
     <div class="content">
-      <p><%= t('devise.approval_notification.greeting', name: @user.name) %></p>
+      <p><%= t('application_request_mailer.approval_notification.greeting', name: @user.name) %></p>
       
       <div class="info-box">
         <p style="margin: 0; font-weight: bold;">
-          <i>✓</i> <%= t('devise.approval_notification.approved_message') %>
+          <i>✓</i> <%= t('application_request_mailer.approval_notification.approved_message') %>
         </p>
       </div>
       
-      <h3><%= t('devise.approval_notification.login_info_title') %></h3>
+      <h3><%= t('application_request_mailer.approval_notification.login_info_title') %></h3>
       <ul>
-        <li><strong><%= t('devise.approval_notification.company_name') %>:</strong> <%= @user.company.name %></li>
-        <li><strong><%= t('devise.approval_notification.company_code') %>:</strong> <%= @user.company.slug %></li>
-        <li><strong><%= t('devise.approval_notification.email') %>:</strong> <%= @user.email %></li>
-        <li><strong><%= t('devise.approval_notification.password') %>:</strong> <%= t('devise.approval_notification.password_value') %></li>
+        <li><strong><%= t('application_request_mailer.approval_notification.company_name') %>:</strong> <%= @user.company.name %></li>
+        <li><strong><%= t('application_request_mailer.approval_notification.company_code') %>:</strong> <%= @user.company.slug %></li>
+        <li><strong><%= t('application_request_mailer.approval_notification.email') %>:</strong> <%= @user.email %></li>
+        <li><strong><%= t('application_request_mailer.approval_notification.password') %>:</strong> <%= t('application_request_mailer.approval_notification.password_value') %></li>
       </ul>
       
-      <h3><%= t('devise.approval_notification.login_methods_title') %></h3>
+      <h3><%= t('application_request_mailer.approval_notification.login_methods_title') %></h3>
       <div class="login-steps">
-        <p><strong><%= t('devise.approval_notification.method_1_title') %></strong></p>
+        <p><strong><%= t('application_request_mailer.approval_notification.method_1_title') %></strong></p>
         <div style="text-align: center;">
-          <a href="<%= company_dashboards_url(company_slug: @user.company.slug, host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>" class="button"><%= t('devise.approval_notification.login_button') %></a>
+          <a href="<%= company_dashboards_url(company_slug: @user.company.slug, host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>" class="button"><%= t('application_request_mailer.approval_notification.login_button') %></a>
         </div>
         <p style="font-size: 14px; color: #6c757d; text-align: center;">
           <%= company_dashboards_url(company_slug: @user.company.slug, host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>
         </p>
         
-        <p style="margin-top: 20px;"><strong><%= t('devise.approval_notification.method_2_title') %></strong></p>
+        <p style="margin-top: 20px;"><strong><%= t('application_request_mailer.approval_notification.method_2_title') %></strong></p>
         <ol>
-          <li><a href="<%= root_url(host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>"><%= root_url(host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %></a> <%= t('devise.approval_notification.method_2_step_1') %></li>
-          <li><%= t('devise.approval_notification.method_2_step_2', slug: @user.company.slug) %></li>
-          <li><%= t('devise.approval_notification.method_2_step_3') %></li>
+          <li><a href="<%= root_url(host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>"><%= root_url(host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %></a> <%= t('application_request_mailer.approval_notification.method_2_step_1') %></li>
+          <li><%= t('application_request_mailer.approval_notification.method_2_step_2', slug: @user.company.slug) %></li>
+          <li><%= t('application_request_mailer.approval_notification.method_2_step_3') %></li>
         </ol>
       </div>
       

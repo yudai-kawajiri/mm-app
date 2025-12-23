@@ -4,7 +4,7 @@ class ApplicationRequestMailer < ApplicationMailer
     @admin_name = application_request.admin_name
     @admin_email = application_request.admin_email
     @company_slug = company_slug
-    @temporary_password = application_request.temporary_password  # ← 修正：DBから取得
+    @temporary_password = application_request.temporary_password
     @invitation_url = accept_application_requests_url(
       token: application_request.invitation_token,
       host: ENV.fetch("APP_HOST", "localhost:3000"),
@@ -20,7 +20,9 @@ class ApplicationRequestMailer < ApplicationMailer
   def approval_notification(admin_request)
     @admin_request = admin_request
     @user = admin_request.user
-    @login_url = new_user_session_url(
+    @company_slug = admin_request.company.slug
+    @login_url = company_new_user_session_url(
+      company_slug: @company_slug,
       host: ENV.fetch("APP_HOST", "localhost:3000"),
       protocol: ENV.fetch("APP_PROTOCOL", "http")
     )
