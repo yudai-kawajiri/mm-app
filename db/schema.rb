@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_22_075302) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_22_221455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -77,8 +77,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_22_075302) do
     t.datetime "invitation_sent_at"
     t.string "invitation_token"
     t.integer "status"
+    t.string "temporary_password"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["invitation_token"], name: "index_application_requests_on_invitation_token", unique: true
+    t.index ["user_id"], name: "index_application_requests_on_user_id"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -100,16 +103,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_22_075302) do
 
   create_table "companies", force: :cascade do |t|
     t.boolean "active", default: true, null: false
-    t.string "company_email"
-    t.string "company_phone"
     t.datetime "created_at", null: false
+    t.string "email"
     t.datetime "invitation_accepted_at"
     t.datetime "invitation_sent_at"
     t.string "invitation_token"
     t.string "name", null: false
-    t.string "slug", null: false
+    t.string "phone"
+    t.string "subdomain", null: false
     t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_companies_on_subdomain", unique: true
+    t.index ["subdomain"], name: "index_companies_on_subdomain", unique: true
   end
 
   create_table "daily_targets", force: :cascade do |t|
@@ -299,7 +302,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_22_075302) do
     t.datetime "updated_at", null: false
     t.index ["company_id", "code"], name: "index_stores_on_company_id_and_code", unique: true
     t.index ["company_id"], name: "index_stores_on_company_id"
-    t.index ["invitation_code"], name: "index_stores_on_invitation_code", unique: true
   end
 
   create_table "units", force: :cascade do |t|
