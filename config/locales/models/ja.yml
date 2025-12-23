@@ -336,3 +336,11 @@ ja:
       index:
         more_changes: "他%{count}件"
         filter: "絞り込み"
+
+      user:
+        role:
+          super_admin: "システム管理者"
+          company_admin: "会社管理者"
+          store_admin: "店舗管理者"
+          employee: "従業員"
+          general: "一般"
