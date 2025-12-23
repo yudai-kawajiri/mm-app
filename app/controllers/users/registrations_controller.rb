@@ -5,6 +5,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
   before_action :set_company_from_slug
   before_action :configure_sign_up_params, only: [ :create ]
   before_action :configure_account_update_params, only: [ :update ]
+  
+  helper_method :current_company
 
   # POST /resource
   def create
@@ -63,7 +65,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def current_company
     @company
   end
-  helper_method :current_company
 
   def create_admin_request(user)
     AdminRequest.create!(
