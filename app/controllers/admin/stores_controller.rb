@@ -4,7 +4,7 @@ class Admin::StoresController < Admin::BaseController
   before_action :set_store, only: [ :show, :edit, :update, :destroy, :regenerate_invitation_code ]
   before_action :authorize_store_management, only: [ :new, :create, :edit, :update, :destroy, :regenerate_invitation_code ]
 
-def index
+  def index
     # システム管理者の場合
     if current_user.super_admin?
       if session[:current_company_id].present?
@@ -16,6 +16,11 @@ def index
       @stores = current_user.company.stores.where(id: current_user.store_id)
     else
       @stores = current_user.company.stores
+      
+      # 店舗が選択されている場合はその店舗のみ表示
+      if session[:current_store_id].present?
+        @stores = @stores.where(id: session[:current_store_id])
+      end
     end
 
     # 検索処理
@@ -47,30 +52,33 @@ def index
   end
 
   def show
-    # 承認済みユーザーのみ表示
-    @users = @store.users.where(approved: true).includes(:company).order(:created_at)
-      .page(params[:page]).per(20)
   end
 
   def new
-    @store = current_user.company.stores.build
+    @store = Store.new
+    if current_user.super_admin? && session[:current_company_id].present?
+      @store.company_id = session[:current_company_id]
+    else
+      @store.company = current_user.company
+    end
   end
 
   def create
-    @store = current_user.company.stores.build(store_params)
+    @store = Store.new(store_params)
 
     if @store.save
-      redirect_to scoped_path(:admin_store_path, @store), notice: t("helpers.notice.created", resource: Store.model_name.human)
+      redirect_to scoped_path(:admin_stores_path), notice: t("admin.stores.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
   end
 
-  def edit; end
+  def edit
+  end
 
   def update
     if @store.update(store_params)
-      redirect_to scoped_path(:admin_store_path, @store), notice: t("helpers.notice.updated", resource: Store.model_name.human)
+      redirect_to scoped_path(:admin_store_path, id: @store.id), notice: t("admin.stores.messages.updated")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -78,16 +86,17 @@ def index
 
   def destroy
     if @store.users.exists?
-      redirect_to scoped_path(:admin_store_path, @store), alert: t("admin.stores.cannot_delete_with_users")
-    else
-      @store.destroy
-      redirect_to scoped_path(:admin_stores_path), notice: t("helpers.notice.destroyed", resource: Store.model_name.human)
+      redirect_to scoped_path(:admin_stores_path), alert: t("admin.stores.messages.has_users")
+      return
     end
+
+    @store.destroy
+    redirect_to scoped_path(:admin_stores_path), notice: t("admin.stores.messages.deleted")
   end
 
   def regenerate_invitation_code
     @store.regenerate_invitation_code!
-    redirect_to scoped_path(:admin_store_path, @store), notice: t("admin.stores.invitation_code_regenerated")
+    redirect_to scoped_path(:admin_store_path, id: @store.id), notice: t("admin.stores.messages.invitation_code_regenerated")
   end
 
   private
@@ -97,12 +106,12 @@ def index
   end
 
   def store_params
-    params.require(:store).permit(:name, :code)
+    params.require(:store).permit(:name, :code, :company_id, :address, :phone, :email)
   end
 
   def authorize_store_management
-    unless current_user.company_admin? || current_user.super_admin?
-      redirect_to scoped_path(:admin_stores_path), alert: t("admin.stores.unauthorized")
+    unless current_user.super_admin? || current_user.company_admin?
+      redirect_to scoped_path(:dashboards_path), alert: t("admin.common.messages.unauthorized")
     end
   end
 end
