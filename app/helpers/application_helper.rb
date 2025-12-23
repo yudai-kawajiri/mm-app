@@ -160,6 +160,7 @@ module ApplicationHelper
         admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
         admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
         admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
+        admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
       end
 
       # 店舗管理者専用メニュー

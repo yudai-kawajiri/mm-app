@@ -1,11 +1,31 @@
 class ApplicationController < ActionController::Base
   layout :layout_by_resource
 
+  before_action :authenticate_user!, unless: :public_page?
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_paper_trail_whodunnit
   before_action :redirect_if_authenticated, if: -> { devise_controller? && action_name == "new" && controller_name == "sessions" }
+  before_action :auto_login_pending_user
+  before_action :set_current_company
 
   helper_method :current_company, :current_store, :scoped_path
+
+  private
+
+  def public_page?
+    devise_controller? || 
+    controller_name == 'landing' || 
+    controller_name == 'application_requests' ||
+    controller_name == 'static_pages' ||
+    controller_name == 'contacts'
+  end
+
+  def set_current_company
+    if params[:company_slug].present?
+      @company_from_path = Company.find_by(slug: params[:company_slug])
+      session[:current_company_id] = @company_from_path&.id if @company_from_path
+    end
+  end
 
   def scoped_path(path_method, *args)
     return send(path_method, *args) unless current_company.present?
@@ -13,7 +33,7 @@ class ApplicationController < ActionController::Base
     if path_method.to_s =~ /\A(new|edit)_(.+)/
       prefix = $1
       rest = $2
-      company_method_name = "#{prefix}_company_#{rest}"
+      company_method_name = "company_#{prefix}_#{rest}"
     else
       company_method_name = "company_#{path_method}"
     end
@@ -30,8 +50,6 @@ class ApplicationController < ActionController::Base
       end
     end
   end
-
-  before_action :auto_login_pending_user
 
   protected
 
@@ -163,14 +181,11 @@ class ApplicationController < ActionController::Base
     Planning::PlanSchedule.where(company_id: current_company.id, store_id: current_store&.id)
   end
 
-  private
-
-  # ルーティングエラーをキャッチ
   rescue_from ActionController::RoutingError, with: :handle_routing_error
 
   def handle_routing_error(exception)
     logger.error "Routing Error: #{exception.message}"
-    redirect_to company_dashboards_path(company_slug: current_company.slug), alert: t("errors.messages.unauthorized")
+    redirect_to company_dashboards_path(company_slug: current_company.slug), alert: t('errors.page_not_found')
   end
   
   def auto_login_pending_user
@@ -195,3 +210,15 @@ class ApplicationController < ActionController::Base
     redirect_to company_dashboards_path(company_slug: current_company.slug)
   end
 end
+
+  # Deviseパス用のヘルパー
+  def devise_scoped_path(path_method, resource_name = :user)
+    if current_company.present?
+      send(path_method, company_slug: current_company.slug)
+    else
+      send(path_method)
+    end
+  rescue NoMethodError => e
+    Rails.logger.error "Devise path generation failed for #{path_method}: #{e.message}"
+    "#"
+  end

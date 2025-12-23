@@ -21,8 +21,28 @@ Rails.application.routes.draw do
   get :privacy, to: "static_pages#privacy"
   resources :contacts, only: [ :new, :create ]
 
-  # Devise認証（グローバル）
-  devise_for :users, controllers: { registrations: "users/registrations", sessions: "users/sessions" }
+  # Devise認証（グローバル - パスワードリセットのみ）
+  devise_for :users, skip: [:sessions, :registrations], controllers: { 
+    passwords: "devise/passwords"
+  }
+
+  # 会社スコープ内の認証機能（ログインとサインアップ）
+  scope "/c/:company_slug", as: :company do
+    devise_scope :user do
+      # ログイン
+      get "/users/sign_in", to: "users/sessions#new", as: :new_user_session
+      post "/users/sign_in", to: "users/sessions#create", as: :user_session
+      delete "/users/sign_out", to: "users/sessions#destroy", as: :destroy_user_session
+      
+      # サインアップ
+      get "/users/sign_up", to: "users/registrations#new", as: :new_user_registration
+      post "/users", to: "users/registrations#create", as: :user_registration
+      get "/users/edit", to: "users/registrations#edit", as: :edit_user_registration
+      patch "/users", to: "users/registrations#update"
+      put "/users", to: "users/registrations#update"
+      delete "/users", to: "users/registrations#cancel"
+    end
+  end
 
   # 認証後のルーティング（会社スコープ）
   authenticated :user do
@@ -83,7 +103,7 @@ Rails.application.routes.draw do
         end
       end
 
-      namespace :planning do
+      namespace :resources do
         resources :plans do
           resources :plan_products, only: [ :index, :create, :update, :destroy, :edit ]
           resources :plan_schedules, only: [ :index, :create, :update, :destroy ]
