@@ -29,8 +29,16 @@ class Admin::UsersController < Admin::BaseController
   end
 
   # 承認済みユーザー + AdminRequest が pending/approved のユーザー
+  # 承認済みユーザー + AdminRequest が pending/approved のユーザー + AdminRequestが存在しないユーザー（管理者が直接作成）
   admin_request_user_ids = AdminRequest.where.not(status: :rejected).pluck(:user_id)
-  users_scope = users_scope.where("users.approved = ? OR users.id IN (?)", true, admin_request_user_ids.presence || [0])
+  users_with_no_request = users_scope.left_joins(:admin_requests).where(admin_requests: { id: nil }).pluck(:id)
+
+  users_scope = users_scope.where(
+    "users.approved = ? OR users.id IN (?) OR users.id IN (?)",
+    true,
+    admin_request_user_ids.presence || [0],
+    users_with_no_request.presence || [0]
+  )
 
   # 検索処理
   if params[:q].present?
@@ -71,15 +79,15 @@ class Admin::UsersController < Admin::BaseController
     @user = current_user.company.users.build(user_params)
     @user.approved = false
 
-    # バリデーションを実行してパスワードを生成
-    @user.valid?
-    
-    # パスワードを保存前に取得
-    generated_password = @user.password if @user.password.present?
-    
+    # パスワードが空の場合のみ自動生成
+    password_was_blank = params[:user][:password].blank?
+
     if @user.save
-      flash[:generated_password] = generated_password if generated_password.present?
-      redirect_to company_admin_user_path(company_slug: current_company.slug, id: @user), notice: t("helpers.notice.created", resource: User.model_name.human)
+      # パスワードが自動生成された場合のみフラッシュメッセージを表示
+      if password_was_blank && @user.password.present?
+        flash[:generated_password] = @user.password
+      end
+      redirect_to scoped_path(:admin_user_path, id: @user), notice: t("admin.users.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
