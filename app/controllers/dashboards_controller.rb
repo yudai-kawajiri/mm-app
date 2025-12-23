@@ -19,8 +19,8 @@ class DashboardsController < AuthenticatedController
 
   # システム管理者用ダッシュボード
   def render_admin_dashboard
-    # 承認待ちユーザー数: 全テナント
-    @pending_users_count = User.where(approved: false).count
+    # 承認待ちユーザー数: 全テナント (AdminRequest の pending のみ)
+    @pending_users_count = AdminRequest.pending.count
     @companies_count = Company.count
     @stores_count = Store.count
 
@@ -32,8 +32,8 @@ class DashboardsController < AuthenticatedController
 
   # 会社管理者用ダッシュボード
   def render_company_admin_dashboard
-    # 承認待ちユーザー数: 自テナントのみ
-    @pending_users_count = current_user.company.users.where(approved: false).count
+    # 承認待ちユーザー数: 自テナントのみ (AdminRequest の pending のみ)
+    @pending_users_count = AdminRequest.for_company(current_user.company).pending.count
     @stores_count = current_user.company.stores.count
 
     # 会社管理者: テナント内のログをフィルタ
@@ -74,9 +74,12 @@ class DashboardsController < AuthenticatedController
     weather_service = WeatherService.new
     @weather_forecast = weather_service.fetch_weekly_forecast
 
-    # 店舗管理者: 承認待ちユーザー通知
+    # 店舗管理者: 承認待ちユーザー通知 (AdminRequest の pending のみ)
     if current_user.store_admin?
-      @pending_users_count = current_user.store.users.where(approved: false).count
+      @pending_users_count = AdminRequest.for_company(current_user.company)
+                                          .where(store: current_user.store)
+                                          .pending
+                                          .count
     end
 
     render "dashboards/index"
