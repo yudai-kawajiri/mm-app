@@ -1,8 +1,11 @@
 ja:
   admin:
+    common:
+      categories: カテゴリー管理
+
     users:
       index:
-        title: "ユーザー管理"
+        title: "ユーザー一覧"
         not_set: （未設定）
         role_badges:
           super_admin: "システム管理者"
@@ -30,17 +33,16 @@ ja:
           placeholder: "名前またはメールアドレスで検索"
       new:
         title: "ユーザー登録"
+      show:
+        title: "ユーザー詳細"
       edit:
         title: "ユーザー編集"
-      show:
-        user_info: "ユーザー情報"
-        title: "ユーザー詳細"
-        generated_password:
-          title: 初期パスワードが生成されました
-          note: このパスワードをユーザーに伝えてください（この画面を閉じると確認できません）
-      created: "ユーザーを登録しました"
-      updated: "ユーザーを更新しました"
-      destroyed: "ユーザーを削除しました"
+      messages:
+        invited: "%{name} を招待しました"
+        updated: "%{name} を更新しました"
+        user_deleted: "%{name} を削除しました"
+        cannot_delete_self: 自分自身を削除することはできません
+        user_not_found: ユーザーが見つかりませんでした
       form:
         name: "名前"
         name_placeholder: "山田 太郎"
@@ -48,6 +50,7 @@ ja:
         email_placeholder: "example@example.com"
         password: "パスワード"
         password_placeholder: "8文字以上"
+        password_hint: "空欄の場合、ランダムパスワードが自動生成されます"
         password_confirmation: "パスワード(確認)"
         password_confirmation_placeholder: "パスワードを再入力"
         role: "権限"
@@ -55,9 +58,8 @@ ja:
         submit_create: "登録"
         submit_update: "更新"
         cancel: "キャンセル"
-      messages:
-        user_deleted: "%{name}を削除しました"
-        user_delete_failed: "%{name}の削除に失敗しました"
+        store_admin_role_hint: 店舗管理者は一般ユーザーのみ作成できます
+        store_admin_store_hint: 自店舗のユーザーのみ作成できます
       roles:
         super_admin: "システム管理者"
         company_admin: "会社管理者"
@@ -71,7 +73,7 @@ ja:
         user: "ユーザー"
         date_from: "開始日"
         date_to: "終了日"
-        filter: "絞り込む"
+        filter: "フィルタ"
         datetime: "日時"
         action: "アクション"
         record_id: "レコードID"
@@ -81,21 +83,25 @@ ja:
         unknown_user: "不明なユーザー"
         system: "システム"
         no_logs: "ログが見つかりません"
+        more_changes: "他%{count}件"
       actions:
         create: "登録"
         update: "更新"
         destroy: "削除"
+      table_headers:
+        company: 会社名
+        store: 店舗名
 
     companies:
       index:
         title: "会社管理"
         table_headers:
           name: "会社名"
-          subdomain: "サブドメイン"
+          slug: "会社コード"
           created_at: "登録日"
           actions: "アクション"
         sort_options:
-          subdomain: "サブドメイン名順"
+          slug: "会社コード順"
           created_at: "登録順"
         search:
           placeholder: "会社名またはサブドメインで検索"
@@ -104,18 +110,12 @@ ja:
         title: "会社作成"
       edit:
         title: "会社編集"
-      show:
-        title: "会社詳細"
-      messages:
-        created: "会社を作成しました"
-        updated: "会社を更新しました"
-        destroyed: "会社を削除しました"
       form:
         name: "会社名"
         name_placeholder: "株式会社サンプル"
-        subdomain: "サブドメイン"
-        subdomain_placeholder: "sample-company"
-        subdomain_hint: "半角英数字とハイフンのみ使用可能です(例: example-company)"
+        slug: "会社コード"
+        slug_placeholder: "sample-company"
+        slug_hint: "半角英数字とハイフンのみ使用可能です(例: example-company)"
         submit_create: "登録"
         submit_update: "更新"
         cancel: "キャンセル"
@@ -123,6 +123,20 @@ ja:
         delete: "%{name} を削除してもよろしいですか?"
 
     admin_requests:
+      messages:
+        created: "リクエストを作成しました"
+        approved: "承認しました。招待メールを送信しました。"
+        approve_failed: "承認に失敗しました"
+        rejected: "却下しました"
+        reject_failed: "却下に失敗しました"
+      request_types:
+        user_registration: "ユーザー登録"
+        store_admin_request: "店舗管理者申請"
+      statuses:
+        pending: "承認待ち"
+        approved: "承認済み"
+        rejected: "却下"
+      default_reject_reason: "承認基準を満たしていません"
       index:
         title: "承認リクエスト"
         search:
@@ -149,12 +163,6 @@ ja:
       confirm:
         approve: "%{name}の申請を承認しますか?"
 
-      messages:
-        approved: "承認リクエストを承認しました"
-        rejected: "承認リクエストを却下しました"
-        approve_failed: "承認に失敗しました"
-        reject_failed: "却下に失敗しました"
-
     stores:
       index:
         title: "店舗管理"
@@ -177,9 +185,6 @@ ja:
         title: "店舗登録"
       edit:
         title: "店舗編集"
-      created: "店舗を登録しました"
-      updated: "店舗を更新しました"
-      destroyed: "店舗を削除しました"
       form:
         code: "店舗コード"
         code_placeholder: "例: STORE01"
@@ -195,7 +200,7 @@ ja:
         confirm_regenerate: "招待コードを再発行しますか？現在のコードは無効になります。"
         statistics: "統計"
         total_users: "総ユーザー数"
-        approved_users: "承認済みユーザー"
+        approved_users: "承認済みユーザー数"
         users_list: "所属ユーザー一覧"
         approved: "承認済み"
         pending: "承認待ち"
@@ -210,13 +215,10 @@ ja:
           user_email: "メールアドレス"
           user_status: "承認状態"
           user_role: "権限"
-      messages:
         cannot_delete_with_users: "ユーザーが所属している店舗は削除できません"
         invitation_code_regenerated: "招待コードを再発行しました"
-        invitation_code_regenerate_failed: "招待コードの再発行に失敗しました"
-        not_found_or_unauthorized: "指定された店舗が見つからないか、アクセス権限がありません"
       confirm:
         regenerate_code: "招待コードを再発行しますか？現在のコードは無効になります。"
-
-    common:
-      not_found_or_unauthorized: "指定されたリソースが見つからないか、アクセス権限がありません"
+      invitation_code_regenerated: 招待コードを再発行しました
+      store_id:
+        blank: を選択してください

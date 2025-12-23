@@ -7,7 +7,7 @@
   </div>
 
   <%# フィルタフォーム（枠なし） %>
-  <%= form_with url: admin_system_logs_path, method: :get, local: true, class: 'row g-3 mb-4' do |f| %>
+  <%= form_with url: scoped_path(:admin_system_logs_path), method: :get, local: true, class: 'row g-3 mb-4' do |f| %>
     <div class="col-md-2">
       <%= f.label :company_id, t('admin.system_logs.table_headers.company'), class: 'form-label' %>
       <%= f.select :company_id, options_for_select(@companies.map { |c| [c.name, c.id.to_s] }, params[:company_id]), { include_blank: t('helpers.prompt.select') }, class: 'form-select' %>

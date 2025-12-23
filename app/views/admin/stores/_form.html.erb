@@ -12,6 +12,6 @@
 
   <div class="d-flex gap-2">
     <%= f.submit @store.new_record? ? t('admin.stores.form.submit_create') : t('admin.stores.form.submit_update'), class: 'btn btn-primary' %>
-    <%= link_to t('admin.stores.form.cancel'), admin_stores_path, class: 'btn btn-secondary' %>
+    <%= link_to t('admin.stores.form.cancel'), scoped_path(:admin_stores_path), class: 'btn btn-secondary' %>
   </div>
 <% end %>

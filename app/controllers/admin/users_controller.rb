@@ -28,7 +28,9 @@ class Admin::UsersController < Admin::BaseController
     end
   end
 
-  users_scope = users_scope.where(approved: true)
+  # 承認済みユーザー + AdminRequest が pending/approved のユーザー
+  admin_request_user_ids = AdminRequest.where.not(status: :rejected).pluck(:user_id)
+  users_scope = users_scope.where("users.approved = ? OR users.id IN (?)", true, admin_request_user_ids.presence || [0])
 
   # 検索処理
   if params[:q].present?
@@ -63,24 +65,35 @@ class Admin::UsersController < Admin::BaseController
     @user = current_user.company.users.build
   end
 
+  def edit
+  end
   def create
     @user = current_user.company.users.build(user_params)
     @user.approved = false
 
+    # バリデーションを実行してパスワードを生成
+    @user.valid?
+    
+    # パスワードを保存前に取得
+    generated_password = @user.password if @user.password.present?
+    
     if @user.save
-      AdminMailer.new_user_notification(@user).deliver_later
-      redirect_to [ :admin, @user ], notice: t("helpers.notice.created", resource: User.model_name.human)
+      flash[:generated_password] = generated_password if generated_password.present?
+      redirect_to company_admin_user_path(company_slug: current_company.slug, id: @user), notice: t("helpers.notice.created", resource: User.model_name.human)
     else
       render :new, status: :unprocessable_entity
     end
   end
 
-  def edit
-  end
-
   def update
-    if @user.update(user_params)
-      redirect_to [ :admin, @user ], notice: t("helpers.notice.updated", resource: User.model_name.human)
+    # パスワードが空欄の場合はパラメータから除外
+    update_params = user_params
+    if update_params[:password].blank?
+      update_params = update_params.except(:password, :password_confirmation)
+    end
+
+    if @user.update(update_params)
+      redirect_to company_admin_user_path(company_slug: current_company.slug, id: @user), notice: t("helpers.notice.updated", resource: User.model_name.human)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -89,12 +102,12 @@ class Admin::UsersController < Admin::BaseController
   def destroy
     # 自分自身は削除できない
     if @user.id == current_user.id
-      redirect_to admin_users_url, alert: t("admin.users.messages.cannot_delete_self"), status: :see_other
+      redirect_to scoped_path(:admin_users_path), alert: t("admin.users.messages.cannot_delete_self"), status: :see_other
       return
     end
 
     @user.destroy!
-    redirect_to admin_users_url, notice: t("helpers.notice.destroyed", resource: User.model_name.human), status: :see_other
+    redirect_to scoped_path(:admin_users_path), notice: t("helpers.notice.destroyed", resource: User.model_name.human), status: :see_other
   end
 
   private

@@ -10,38 +10,49 @@
     .info-box { background-color: #d4edda; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
     .button { display: inline-block; padding: 12px 30px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
     .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6; text-align: center; font-size: 12px; color: #6c757d; }
+    .login-steps { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h2>ユーザー登録が承認されました</h2>
+      <h2><%= t('application_request_mailer.approval_notification.subject') %></h2>
     </div>
 
     <div class="content">
-      <p><%= @user.name %> 様</p>
+      <p><%= t('application_request_mailer.approval_notification.greeting', name: @user.name) %></p>
       
       <div class="info-box">
         <p style="margin: 0; font-weight: bold;">
-          <i>✓</i> ユーザー登録申請が承認されました。
+          <i>✓</i> <%= t('application_request_mailer.approval_notification.approved_message') %>
         </p>
       </div>
       
-      <p>以下のログインページからアクセスしてください。</p>
-      
-      <div style="text-align: center;">
-        <a href="<%= @login_url %>" class="button">ログインする</a>
-      </div>
-      
-      <p>ログイン情報:</p>
+      <h3><%= t('application_request_mailer.approval_notification.login_info_title') %></h3>
       <ul>
-        <li><strong>メールアドレス:</strong> <%= @user.email %></li>
-        <li><strong>パスワード:</strong> 登録時に設定したパスワード</li>
+        <li><strong><%= t('application_request_mailer.approval_notification.company_name') %>:</strong> <%= @user.company.name %></li>
+        <li><strong><%= t('application_request_mailer.approval_notification.company_code') %>:</strong> <%= @user.company.slug %></li>
+        <li><strong><%= t('application_request_mailer.approval_notification.email') %>:</strong> <%= @user.email %></li>
+        <li><strong><%= t('application_request_mailer.approval_notification.password') %>:</strong> <%= t('application_request_mailer.approval_notification.password_value') %></li>
       </ul>
       
-      <p style="font-size: 14px; color: #6c757d;">
-        ログインURL: <%= @login_url %>
-      </p>
+      <h3><%= t('application_request_mailer.approval_notification.login_methods_title') %></h3>
+      <div class="login-steps">
+        <p><strong><%= t('application_request_mailer.approval_notification.method_1_title') %></strong></p>
+        <div style="text-align: center;">
+          <a href="<%= company_dashboards_url(company_slug: @user.company.slug, host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>" class="button"><%= t('application_request_mailer.approval_notification.login_button') %></a>
+        </div>
+        <p style="font-size: 14px; color: #6c757d; text-align: center;">
+          <%= company_dashboards_url(company_slug: @user.company.slug, host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>
+        </p>
+        
+        <p style="margin-top: 20px;"><strong><%= t('application_request_mailer.approval_notification.method_2_title') %></strong></p>
+        <ol>
+          <li><a href="<%= root_url(host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>"><%= root_url(host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %></a> <%= t('application_request_mailer.approval_notification.method_2_step_1') %></li>
+          <li><%= t('application_request_mailer.approval_notification.method_2_step_2', slug: @user.company.slug) %></li>
+          <li><%= t('application_request_mailer.approval_notification.method_2_step_3') %></li>
+        </ol>
+      </div>
       
       <div class="footer">
         <p>&copy; <%= Time.current.year %> MM-App. All rights reserved.</p>

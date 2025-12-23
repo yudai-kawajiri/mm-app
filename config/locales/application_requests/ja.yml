@@ -1,0 +1,75 @@
+ja:
+  application_requests:
+    new:
+      title: "新規登録"
+      company_code_label: "会社コード"
+      company_code_placeholder: "例: ok2eke"
+      email_label: "メールアドレス"
+      email_placeholder: "例: user@example.com"
+      name_label: "お名前"
+      name_placeholder: "例: 山田太郎"
+      password_label: "パスワード"
+      password_placeholder: "8文字以上"
+      password_confirmation_label: "パスワード(確認)"
+      store_code_label: "店舗コード"
+      store_code_placeholder: "店舗の招待コードを入力"
+      submit_button: "登録申請"
+      terms_agreement_html: "<a href='/terms' target='_blank'>利用規約</a>と<a href='/privacy' target='_blank'>プライバシーポリシー</a>に同意する"
+      already_have_account: "すでにアカウントをお持ちですか？"
+      login_link: "ログイン"
+    
+    create:
+      success: "登録申請を受け付けました。承認されるまでお待ちください。"
+      error: "登録に失敗しました。入力内容をご確認ください。"
+    
+    accept:
+      title: "招待を承認"
+      success: "招待を承認しました。ログインしてください。"
+      error: "招待の承認に失敗しました。"
+      invalid_token: "無効な招待トークンです。"
+      already_accepted: "この招待は既に承認されています。"
+  
+  application_request_mailer:
+    invitation_email:
+      subject: "【MM-App】管理者アカウントの招待"
+      greeting: "%{admin_name} 様"
+      invitation_message: "MM-Appの管理者アカウントが作成されました。"
+      company_info: "会社情報"
+      company_name: "会社名"
+      company_code: "会社コード"
+      login_info: "ログイン情報"
+      email: "メールアドレス"
+      temporary_password: "初期パスワード"
+      password_change_notice: "※初回ログイン後、必ずパスワードを変更してください"
+      accept_invitation: "招待を承認してログイン"
+      or_manual_login: "または、以下の手順で手動ログイン"
+      manual_steps_html: |
+        1. <a href="%{login_url}">ログインページ</a>にアクセス
+        2. 上記のメールアドレスとパスワードでログイン
+        3. パスワードを変更
+    
+    approval_notification:
+      subject: "【MM-App】ユーザー登録が承認されました"
+      approved_message: "ユーザー登録リクエストが承認されました。以下のログイン情報でシステムにアクセスできます。"
+      greeting: "%{name} 様"
+      approval_message: "ユーザー登録申請が承認されました。"
+      login_info_title: "ログイン情報"
+      company_name: "会社名"
+      company_code: "会社コード"
+      email: "メールアドレス"
+      password: "パスワード"
+      password_value: "登録時に設定したパスワード"
+      login_methods_title: "ログイン方法"
+      method_1_title: "方法1: ダイレクトログイン"
+      login_button: "ログインする"
+      method_2_title: "方法2: トップページから"
+      method_2_step_1: "にアクセス"
+      method_2_step_2: "会社コード「%{slug}」を選択"
+      method_2_step_3: "ログイン情報を入力"
+    
+    rejection_notification:
+      subject: "【MM-App】ユーザー登録申請について"
+      greeting: "%{name} 様"
+      rejection_message: "ユーザー登録申請が承認されませんでした。"
+      reason_label: "理由"
+      contact_info: "ご不明な点がございましたら、管理者にお問い合わせください。"

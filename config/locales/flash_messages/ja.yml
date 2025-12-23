@@ -1,0 +1,19 @@
+ja:
+  flash_messages:
+    create:
+      success: "%{resource}を登録しました"
+      failure: "%{resource}の登録に失敗しました"
+    update:
+      success: "%{resource}を更新しました"
+      failure: "%{resource}の更新に失敗しました"
+    destroy:
+      success: "%{resource}を削除しました"
+      failure: "%{resource}の削除に失敗しました"
+    save:
+      success: "%{resource}を保存しました"
+      failure: "%{resource}の保存に失敗しました"
+    copy:
+      success: "%{resource}をコピーしました"
+      failure: "%{resource}のコピーに失敗しました"
+    not_authorized: このアクションを実行する権限がありません
+    require_store_selected: このアクションを実行するには店舗を選択してください。

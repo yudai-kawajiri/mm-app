@@ -1,64 +1,80 @@
 class ApplicationRequestsController < ApplicationController
-  layout "application"
   before_action :find_application_request_by_token, only: [ :accept, :accept_confirm ]
-  skip_before_action :verify_authenticity_token, only: [ :create ]
 
   def new
     @application_request = ApplicationRequest.new
   end
 
   def create
-    @application_request = ApplicationRequest.new(application_request_params)
+    ActiveRecord::Base.transaction do
+      # 1. 会社を作成
+      company = Company.create!(
+        name: application_request_params[:company_name],
+        email: application_request_params[:company_email],
+        phone: application_request_params[:company_phone],
+        slug: SecureRandom.alphanumeric(6).downcase
+      )
 
-    if @application_request.save
-      @application_request.generate_invitation_token!
-      ApplicationRequestMailer.invitation_email(@application_request).deliver_later
-      redirect_to thanks_application_requests_path, notice: "招待メールを送信しました"
-    else
-      render :new, status: :unprocessable_entity
+      # 2. ApplicationRequest を作成
+      @application_request = ApplicationRequest.new(application_request_params)
+      @application_request.company = company
+      @application_request.status = :pending
+      @application_request.invitation_token = SecureRandom.urlsafe_base64(32)
+      @application_request.save!
+
+      # 3. 初期パスワードを生成
+      temporary_password = SecureRandom.alphanumeric(12)
+
+      # 4. ユーザーを作成（未承認状態）
+      user = User.create!(
+        email: @application_request.admin_email,
+        password: temporary_password,
+        password_confirmation: temporary_password,
+        name: @application_request.admin_name,
+        company: company,
+        role: :company_admin,
+        approved: false
+      )
+
+      @application_request.update!(user: user)
+
+      # 5. 初期パスワードを ApplicationRequest に保存（メール送信用）
+      @application_request.update_column(:temporary_password, temporary_password)
+
+      # 6. 招待メールを送信
+      ApplicationRequestMailer.invitation_email(@application_request, company.slug).deliver_later
+
+      redirect_to thanks_application_requests_path
     end
+  rescue ActiveRecord::RecordInvalid => e
+    flash.now[:alert] = t("application_requests.create.failure", error: e.record.errors.full_messages.join(", "))
+    render :new, status: :unprocessable_entity
   end
 
   def thanks
   end
 
   def accept
+    # 招待トークンが有効かチェック
+    if @application_request.status == "accepted"
+      redirect_to company_new_user_session_path(company_slug: @application_request.company.slug),
+        alert: t("application_requests.accept.already_used")
+    end
   end
 
   def accept_confirm
     ActiveRecord::Base.transaction do
-      subdomain = generate_unique_subdomain(@application_request.company_name)
+      # ユーザーを承認
+      user = @application_request.user
+      user.update!(approved: true)
 
-      company = Company.create!(
-        name: @application_request.company_name,
-        subdomain: subdomain,
-        active: true
-      )
+      @application_request.update!(status: :accepted)
 
-      user = User.create!(
-        email: @application_request.contact_email,
-        password: params[:application_request][:password],
-        password_confirmation: params[:application_request][:password_confirmation],
-        name: @application_request.contact_name,
-        company: company,
-        role: :company_admin,
-        approved: true
-      )
-
-      @application_request.update!(status: :accepted, user: user)
-
-      # 手動ログインに誘導
-      redirect_to new_user_session_url(
-        subdomain: company.subdomain,
-        host: request.host,
-        port: request.port
-      ),
-      notice: "アカウント登録が完了しました。ログインしてください",
-      allow_other_host: true
+      redirect_to company_new_user_session_path(company_slug: @application_request.company.slug),
+        notice: t("application_requests.accept_confirm.approved")
     end
   rescue ActiveRecord::RecordInvalid => e
-    error_msg = e.record.errors.full_messages.join(", ")
-    flash[:alert] = "登録に失敗しました: #{error_msg}"
+    flash[:alert] = t("application_requests.accept_confirm.approval_failed", error: e.record.errors.full_messages.join(', '))
     render :accept, status: :unprocessable_entity
   end
 
@@ -69,26 +85,12 @@ class ApplicationRequestsController < ApplicationController
       :company_name,
       :company_email,
       :company_phone,
-      :contact_name,
-      :contact_email
+      :admin_name,
+      :admin_email,
     )
   end
 
   def find_application_request_by_token
     @application_request = ApplicationRequest.find_by!(invitation_token: params[:token])
-  end
-
-  def generate_unique_subdomain(company_name)
-    base = company_name.to_s.gsub(/[^a-zA-Z0-9]/, "").downcase[0..20]
-    base = "company" if base.blank?
-
-    subdomain = base
-    counter = 0
-
-    while Company.exists?(subdomain: subdomain)
-      counter += 1
-      subdomain = "#{base}-#{counter}"
-    end
-    subdomain
   end
 end

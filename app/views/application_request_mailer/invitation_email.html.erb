@@ -7,49 +7,78 @@
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
     .header { background-color: #007bff; color: white; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
     .content { background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; }
+    .company-id-box { background-color: #fff3cd; padding: 20px; border: 3px solid #ffc107; border-radius: 8px; margin: 25px 0; text-align: center; }
+    .company-id-value { font-size: 28px; font-weight: bold; color: #dc3545; letter-spacing: 2px; margin: 10px 0; font-family: monospace; }
+    .password-box { background-color: #d1ecf1; padding: 20px; border: 3px solid #17a2b8; border-radius: 8px; margin: 25px 0; text-align: center; }
+    .password-value { font-size: 24px; font-weight: bold; color: #0c5460; letter-spacing: 1px; margin: 10px 0; font-family: monospace; background-color: white; padding: 10px; border-radius: 5px; }
     .info-box { background-color: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; margin: 20px 0; }
     .field { margin-bottom: 10px; }
     .label { font-weight: bold; color: #495057; }
     .button { display: inline-block; padding: 12px 30px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
     .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6; text-align: center; font-size: 12px; color: #6c757d; }
+    .warning { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 12px; border-radius: 5px; margin: 15px 0; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h2><%= t('application_request_mailer.invitation_email.header') %></h2>
+      <h2><%= t('application_request_mailer.invitation_email.welcome_message') %></h2>
     </div>
 
     <div class="content">
-      <p><%= t('application_request_mailer.invitation_email.greeting', name: @application_request.contact_name) %></p>
+      <p><%= t('application_request_mailer.invitation_email.greeting', name: @application_request.admin_name) %></p>
 
-      <p><%= t('application_request_mailer.invitation_email.introduction') %></p>
+      <p><%= t('application_request_mailer.invitation_email.account_created') %></p>
 
+      <!-- 🔥 会社ID表示セクション -->
+      <div class="company-id-box">
+        <h3 style="margin-top: 0; color: #856404; font-size: 16px;">
+          🔑 <%= t('application_request_mailer.invitation_email.company_id_label') %>
+        </h3>
+        <div class="company-id-value"><%= @company_slug %></div>
+        <p style="font-size: 14px; color: #856404; margin-bottom: 0;">
+          <%= t('application_request_mailer.invitation_email.company_id_instruction') %>
+        </p>
+      </div>
+
+      <!-- 🔐 初期パスワード表示セクション -->
+      <div class="password-box">
+        <h3 style="margin-top: 0; color: #0c5460; font-size: 16px;">
+          🔐 <%= t('application_request_mailer.invitation_email.password_label') %>
+        </h3>
+        <div class="password-value"><%= @application_request.temporary_password %></div>
+        <p style="font-size: 14px; color: #0c5460; margin-bottom: 0;">
+          <%= t('application_request_mailer.invitation_email.temporary_password_note') %>
+        </p>
+      </div>
+
+      <!-- ログイン情報 -->
       <div class="info-box">
-        <h3 style="margin-top: 0;"><%= t('application_request_mailer.invitation_email.company_info') %></h3>
+        <h3 style="margin-top: 0;"><%= t('application_request_mailer.invitation_email.login_info_title') %></h3>
         <div class="field">
-          <span class="label"><%= t('application_request_mailer.invitation_email.company_name') %>:</span> <%= @application_request.company_name %>
+          <span class="label"><%= t('application_request_mailer.invitation_email.email_label') %>:</span> <%= @application_request.admin_email %>
         </div>
-        <div class="field">
-          <span class="label"><%= t('application_request_mailer.invitation_email.company.email') %>:</span> <%= @application_request.company_email %>
-        </div>
-        <% if @application_request.company_phone.present? %>
-          <div class="field">
-            <span class="label"><%= t('application_request_mailer.invitation_email.company.phone') %>:</span> <%= @application_request.company_phone %>
-          </div>
-        <% end %>
       </div>
 
-      <p><%= t('application_request_mailer.invitation_email.instruction') %></p>
-
+      <!-- 招待リンクボタン -->
       <div style="text-align: center;">
-        <a href="<%= @invitation_url %>" class="button"><%= t('application_request_mailer.invitation_email.action') %></a>
+        <a href="<%= @invitation_url %>" class="button"><%= t('application_request_mailer.invitation_email.activate_button') %></a>
       </div>
 
-      <p style="font-size: 14px; color: #6c757d;">
-        <%= t('application_request_mailer.invitation_email.expiry_notice') %>
-      </p>
+      <!-- ログインページリンク -->
+      <div style="text-align: center; margin-top: 20px;">
+        <p><%= t('application_request_mailer.invitation_email.after_activation') %></p>
+        <a href="<%= company_new_user_session_url(company_slug: @company_slug, host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>" class="button">
+          <%= t('application_request_mailer.invitation_email.login_button') %>
+        </a>
+      </div>
 
+      <!-- セキュリティ警告 -->
+      <div class="warning">
+        ⚠️ <%= t('application_request_mailer.invitation_email.password_change_notice') %>
+      </div>
+
+      <!-- フォールバック -->
       <p style="font-size: 14px; color: #6c757d;">
         <%= t('application_request_mailer.invitation_email.fallback_instruction') %><br>
         <%= @invitation_url %>

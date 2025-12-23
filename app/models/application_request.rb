@@ -6,8 +6,8 @@ class ApplicationRequest < ApplicationRecord
 
   validates :company_name, presence: true
   validates :company_email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :contact_name, presence: true
-  validates :contact_email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :admin_name, presence: true
+  validates :admin_email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :invitation_token, uniqueness: true, allow_nil: true
 
   def generate_invitation_token!

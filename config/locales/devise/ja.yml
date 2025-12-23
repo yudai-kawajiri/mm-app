@@ -44,6 +44,9 @@ ja:
         current_password_help: 変更を確定するには現在のパスワードが必要です
         leave_blank_if_you_don_t_want_to_change_it: 変更しない場合は空欄のままにしてください
         new_password: 新しいパスワード
+        we_need_your_current_password_to_confirm_your_changes: 変更を確定するには現在のパスワードが必要です
+        update: 更新
+        are_you_sure: 本当にアカウントを削除してもよろしいですか？
       signed_up_but_not_approved: 登録が完了しました。管理者の承認をお待ちください。承認後にログイン可能になります。
       signed_up: アカウント登録が完了しました
       pending_reconfirmation: 現在、%{unconfirmed_email}の確認待ちです
@@ -83,26 +86,47 @@ ja:
         back_to_login: ログイン画面に戻る
     mailer:
       confirmation_instructions:
+        subject: メールアドレスの確認
         greeting: ようこそ、%{name}さん！
-        instruction: '以下のリンクをクリックして、メールアドレスの確認を完了してください:'
+        instruction: 以下のリンクをクリックして、メールアドレスの確認を完了してください。
         action: メールアドレスを確認する
+        instruction_2: もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください。
       email_changed:
+        subject: メールアドレスが変更されました
         greeting: こんにちは、%{name}さん！
         message: メールアドレスが変更されたことをお知らせします。
         message_unconfirmed: メールアドレスが%{email}に変更されました。現在確認待ちです。
         message_confirmed: メールアドレスが%{email}に変更されました。
       password_change:
+        subject: パスワードが変更されました
         greeting: こんにちは、%{name}さん！
         message: パスワードが変更されたことをお知らせします。
       reset_password_instructions:
         subject: "【MM-Appシステム】パスワード再設定のご案内"
         greeting: こんにちは %{name} さん！
         action: パスワードの変更
-        instruction_1: パスワードをリセットするには、以下のリンクをクリックしてください。
-        instruction_2: このメールに心当たりがない場合は、無視して構いません。
-        instruction_3: パスワードは、上記のリンクをクリックして新しいパスワードを登録するまで変更されません。
+        instruction: パスワードをリセットするには、以下のリンクをクリックしてください。
+        instruction_2: もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください。
+        instruction_3: このメールに心当たりがない場合は、無視して構いません。パスワードは、上記のリンクをクリックして新しいパスワードを登録するまで変更されません。
       unlock_instructions:
+        subject: アカウントのロック解除
         greeting: こんにちは、%{name}さん！
         message: ログイン試行回数が上限に達したため、アカウントがロックされました。
-        instruction: '以下のリンクをクリックしてアカウントのロックを解除してください:'
+        instruction: 以下のリンクをクリックしてアカウントのロックを解除してください。
         action: アカウントのロックを解除する
+        instruction_2: もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください。
+    approval_notification:
+      subject: "【MM-App】ユーザー登録が承認されました"
+      greeting: "%{name} 様"
+      approved_message: ユーザー登録申請が承認されました。
+      instruction: 以下のログインページからアクセスしてください。
+      action: ログインする
+      login_info: 'ログイン情報:'
+      email: 'メールアドレス: %{email}'
+      password: 'パスワード: 登録時に設定したパスワード'
+    rejection_notification:
+      subject: "【MM-App】ユーザー登録申請について"
+      greeting: "%{name} 様"
+      rejected_message: ユーザー登録申請が却下されました。
+      reason_label: '却下理由:'
+      contact_message: ご不明な点がございましたら、管理者までお問い合わせください。

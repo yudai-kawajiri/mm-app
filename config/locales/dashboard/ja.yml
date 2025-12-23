@@ -58,6 +58,7 @@ ja:
       contact: "お問い合わせ"
       terms: "利用規約"
       privacy_policy: "プライバシーポリシー"
+      disabled_menu: "この機能は現在利用できません"
 
     # システム管理者用ダッシュボード
     admin:
@@ -132,3 +133,42 @@ ja:
     welcome_modal:
       copy_button: "コピー"
       start_button: "始める"
+    
+    users:
+      index:
+        search:
+          placeholder: 名前またはメールアドレスで検索
+        table_headers:
+          company: 会社名
+          store: 店舗名
+    
+    stores:
+      index:
+        search:
+          placeholder: 店舗コードまたは店舗名で検索
+        table_headers:
+          company: 会社名
+    
+    companies:
+      index:
+        search:
+          placeholder: 会社名で検索
+    
+    admin_requests:
+      index:
+        search:
+          placeholder: 申請者名で検索
+    
+    system_logs:
+      index:
+        title: システムログ
+        model: モデル
+        user: ユーザー
+        date_from: 開始日
+        date_to: 終了日
+        filter: フィルタ
+        record_id: レコードID
+        no_logs: ログがありません
+      table_headers:
+        company: 会社名
+        store: 店舗名

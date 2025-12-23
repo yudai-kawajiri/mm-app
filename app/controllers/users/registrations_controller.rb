@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
+  layout :choose_layout
+  before_action :set_company_from_slug
   before_action :configure_sign_up_params, only: [ :create ]
   before_action :configure_account_update_params, only: [ :update ]
+  
+  helper_method :current_company
 
   # POST /resource
   def create
     build_resource(sign_up_params)
 
     # テナントを設定
-    resource.company = current_company
+    resource.company = @company
     resource.approved = false
 
     resource.save
@@ -30,6 +34,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  def choose_layout
+    action_name.in?(%w[new create]) ? "application" : "authenticated_layout"
+  end
+
   protected
 
   def configure_sign_up_params
@@ -41,14 +49,22 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def after_sign_up_path_for(resource)
-    new_user_session_path
+    company_new_user_session_path(company_slug: params[:company_slug])
   end
 
   def after_inactive_sign_up_path_for(resource)
-    new_user_session_path
+    company_new_user_session_path(company_slug: params[:company_slug])
   end
 
   private
+
+  def set_company_from_slug
+    @company = Company.find_by!(slug: params[:company_slug])
+  end
+
+  def current_company
+    @company
+  end
 
   def create_admin_request(user)
     AdminRequest.create!(

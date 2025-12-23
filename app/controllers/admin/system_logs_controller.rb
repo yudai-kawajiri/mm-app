@@ -1,11 +1,27 @@
+# frozen_string_literal: true
+
 class Admin::SystemLogsController < Admin::BaseController
-  before_action :authorize_system_logs_access!
-
-  LOGS_PER_PAGE = 50
-
   def index
     @versions = accessible_versions
                   .order(created_at: :desc)
+
+    # フィルタ用のデータを設定
+    if current_user.super_admin?
+      @companies = session[:current_company_id].present? ? [Company.find(session[:current_company_id])] : Company.all
+      @stores = session[:current_company_id].present? ? Company.find(session[:current_company_id]).stores : Store.all
+      @users = session[:current_company_id].present? ? Company.find(session[:current_company_id]).users : User.all
+    elsif current_user.company_admin?
+      @companies = [current_user.company]
+      @stores = current_user.company.stores
+      @users = current_user.company.users
+    else
+      @companies = [current_user.company]
+      @stores = [current_user.store]
+      @users = current_user.store.users
+    end
+
+    # モデルタイプの一覧
+    @model_types = PaperTrail::Version.distinct.pluck(:item_type).compact.sort
 
     # フィルタ処理
     if params[:item_type].present?
@@ -36,23 +52,10 @@ class Admin::SystemLogsController < Admin::BaseController
       @versions = @versions.where("created_at <= ?", date_to)
     end
 
-    # ページネーション
-    @versions = @versions.page(params[:page]).per(LOGS_PER_PAGE)
-
-    # フィルタ用のデータ
-    @model_types = accessible_versions.distinct.pluck(:item_type).compact.sort
-    @users = User.where(id: accessible_versions.pluck(:whodunnit).compact.uniq)
-    @companies = Company.where(id: @users.pluck(:company_id).compact.uniq).order(:name)
-    @stores = Store.where(id: @users.pluck(:store_id).compact.uniq).order(:name)
+    @versions = @versions.page(params[:page]).per(20)
   end
 
   private
-
-  def authorize_system_logs_access!
-    unless current_user&.super_admin? || current_user&.company_admin?
-      redirect_to authenticated_root_path, alert: t("errors.messages.unauthorized")
-    end
-  end
 
   def accessible_versions
     if current_user.super_admin?
@@ -61,23 +64,31 @@ class Admin::SystemLogsController < Admin::BaseController
 
       # 特定テナント選択時: そのテナントのユーザーが実行したログのみ
       company = Company.find(session[:current_company_id])
-
-      # テナントに所属するユーザーのID一覧(文字列)
       company_user_ids = company.users.pluck(:id).map(&:to_s)
 
-      # whodunnit(実行ユーザー)がこのテナントのユーザーのログのみ
+      # 店舗が選択されている場合、その店舗のユーザーのログのみ
+      if session[:current_store_id].present?
+        store_user_ids = company.users.where(store_id: session[:current_store_id]).pluck(:id).map(&:to_s)
+        return PaperTrail::Version.where(whodunnit: store_user_ids)
+      end
+
       PaperTrail::Version.where(whodunnit: company_user_ids)
     elsif current_user.company_admin?
       # 会社管理者: 自社ユーザーが実行したログのみ
       company = current_user.company
       company_user_ids = company.users.pluck(:id).map(&:to_s)
 
+      # 店舗が選択されている場合、その店舗のユーザーのログのみ
+      if session[:current_store_id].present?
+        store_user_ids = company.users.where(store_id: session[:current_store_id]).pluck(:id).map(&:to_s)
+        return PaperTrail::Version.where(whodunnit: store_user_ids)
+      end
+
       PaperTrail::Version.where(whodunnit: company_user_ids)
     elsif current_user.store_admin?
       # 店舗管理者: 自店舗ユーザーが実行したログのみ
       store = current_user.store
       store_user_ids = store.users.pluck(:id).map(&:to_s)
-
       PaperTrail::Version.where(whodunnit: store_user_ids)
     else
       PaperTrail::Version.none

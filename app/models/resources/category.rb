@@ -23,9 +23,9 @@ class Resources::Category < ApplicationRecord
   DESCRIPTION_MAX_LENGTH = 500
   DESCRIPTION_ROWS = 3
 
-  has_many :materials, class_name: "Resources::Material", dependent: :restrict_with_error
-  has_many :products, class_name: "Resources::Product", dependent: :restrict_with_error
-  has_many :plans, class_name: "Resources::Plan", dependent: :restrict_with_error
+  has_many :materials, class_name: "Resources::Material", dependent: :destroy
+  has_many :products, class_name: "Resources::Product", dependent: :destroy
+  has_many :plans, class_name: "Resources::Plan", dependent: :destroy
 
   validates :name, presence: true, uniqueness: { scope: [ :category_type, :store_id ] }
   validates :category_type, presence: true

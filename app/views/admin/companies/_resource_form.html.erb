@@ -21,7 +21,7 @@
             }
           ) do |f| %>
         <%= render 'form', f: f %>
-        <%= render 'shared/actions/form_action_links', f: f, resource: resource, back_url: admin_companies_path, scope: :admin %>
+        <%= render 'shared/actions/form_action_links', f: f, resource: resource, back_url: scoped_path(:admin_companies_path), scope: :admin %>
       <% end %>
     </div>
   </div>

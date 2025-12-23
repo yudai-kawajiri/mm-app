@@ -1,4 +1,4 @@
-<div class="col-md-3 bg-light border-end p-4">
+<div id="sidebar" class="col-md-3 bg-light border-end p-4">
   <h2 class="mb-4 fw-bold text-primary">
     <%= t('dashboard.menu.title') %>
   </h2>
@@ -17,7 +17,7 @@
 
       <% if current_user.super_admin? %>
         <%# システム管理者: 会社選択ドロップダウン %>
-        <%= form_with url: switch_company_path, method: :post, local: true do |f| %>
+        <%= form_with url: scoped_path(:switch_company_path), method: :post, local: true do |f| %>
           <%= f.select :current_company_id,
               options_for_select(
                 [[t('dashboard.sidebar.system_admin_mode'), nil]] + Company.order(:name).pluck(:name, :id),
@@ -37,9 +37,9 @@
     <%# === 店舗選択 === %>
     <% if current_user.super_admin? %>
       <%
-        # システム管理テナント(subdomain: 'admin')の場合はグレーアウト
+        # システム管理テナント(slug: 'admin')の場合はグレーアウト
         current_company_obj = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
-        is_system_company = current_company_obj&.subdomain == 'admin'
+        is_system_company = current_company_obj&.slug == 'admin'
         can_select_store = session[:current_company_id].present? && !is_system_company
       %>
 
@@ -49,7 +49,7 @@
           <small class="text-muted d-block mb-1">
             <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
           </small>
-          <%= form_with url: switch_store_path, method: :post, local: true do |f| %>
+          <%= form_with url: scoped_path(:switch_store_path), method: :post, local: true do |f| %>
             <%= f.select :current_store_id,
                 options_for_select(
                   [[t('dashboard.sidebar.all_stores'), '']] + current_company.stores.map { |s| [s.name, s.id] },
@@ -77,7 +77,7 @@
         <small class="text-muted d-block mb-1">
           <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
         </small>
-        <%= form_with url: switch_store_path, method: :post, local: true do |f| %>
+        <%= form_with url: scoped_path(:switch_store_path), method: :post, local: true do |f| %>
           <%= f.select :current_store_id,
               options_for_select(
                 [[t('dashboard.sidebar.all_stores'), '']] + current_company.stores.map { |s| [s.name, s.id] },
@@ -188,7 +188,7 @@
 
     <%# 設定メニュー: アカウント設定、ヘルプ、利用規約など %>
     <% settings_collapse_id = 'collapse-settings' %>
-    <% settings_is_active = current_page?(help_path) || current_page?(edit_user_registration_path) || current_page?(terms_path) || current_page?(privacy_path) || current_page?(new_contact_path) %>
+    <% settings_is_active = current_page?(scoped_path(:help_path)) || current_page?(scoped_path(:edit_user_registration_path)) || current_page?(terms_path) || current_page?(privacy_path) || current_page?(new_contact_path) %>
 
     <a href="#"
         class="list-group-item list-group-item-action <%= 'active' if settings_is_active %>"
@@ -206,13 +206,13 @@
           id="<%= settings_collapse_id %>"
           >
 
-      <%= link_to edit_user_registration_path,
-          class: "list-group-item list-group-item-action ps-4 #{current_page?(edit_user_registration_path) ? 'active' : ''}" do %>
+      <%= link_to scoped_path(:edit_user_registration_path),
+          class: "list-group-item list-group-item-action ps-4 #{current_page?(scoped_path(:edit_user_registration_path)) ? 'active' : ''}" do %>
         <%= submenu_indicator %><%= t('dashboard.menu.account_settings') %>
       <% end %>
 
-      <%= link_to help_path,
-          class: "list-group-item list-group-item-action ps-4 #{current_page?(help_path) ? 'active' : ''}" do %>
+      <%= link_to scoped_path(:help_path),
+          class: "list-group-item list-group-item-action ps-4 #{current_page?(scoped_path(:help_path)) ? 'active' : ''}" do %>
         <%= submenu_indicator %><%= t('dashboard.menu.help') %>
       <% end %>
 
@@ -232,7 +232,7 @@
       <% end %>
     </div>
 
-    <%= button_to destroy_user_session_path, method: :delete, data: { turbo: false }, class: "list-group-item list-group-item-action text-danger mt-2" do %>
+    <%= button_to scoped_path(:destroy_user_session_path), method: :delete, data: { turbo: false }, class: "list-group-item list-group-item-action text-danger mt-2" do %>
       <%= t('devise.sessions.sign_out') %>
     <% end %>
 

@@ -1,5 +1,5 @@
-<%# フォームのアクションリンク（キャンセル・送信ボタン） %>
-<% 
+<%# フォームのアクションリンク(キャンセル・送信ボタン) %>
+<%
   resource = local_assigns[:resource]
   back_url = local_assigns[:back_url]
   scope = local_assigns[:scope]
@@ -10,9 +10,11 @@
   <% final_back_url = back_url %>
 <% else %>
   <% if scope.present? %>
-    <% final_back_url = send("#{scope}_#{resource.class.model_name.route_key}_path") %>
+    <% back_path_method = "#{Array(scope).join('_')}_#{resource.class.model_name.route_key}_path".to_sym %>
+    <% final_back_url = scoped_path(back_path_method) %>
   <% else %>
-    <% final_back_url = send("#{resource.class.model_name.route_key}_path") %>
+    <% back_path_method = "#{resource.class.model_name.route_key}_path".to_sym %>
+    <% final_back_url = scoped_path(back_path_method) %>
   <% end %>
 <% end %>
 

@@ -10,7 +10,7 @@ class Admin::AdminRequestsController < Admin::BaseController
     if params[:q].present?
       search_term = "%#{params[:q]}%"
       @admin_requests = @admin_requests.joins(:user, :company).where(
-        "users.name LIKE ? OR companies.name LIKE ? OR companies.subdomain LIKE ?",
+        "users.name LIKE ? OR companies.name LIKE ? OR companies.slug LIKE ?",
         search_term, search_term, search_term
       ).distinct
     end
@@ -40,11 +40,11 @@ class Admin::AdminRequestsController < Admin::BaseController
   def create
     @admin_request = AdminRequest.new(admin_request_params)
     @admin_request.user = current_user
-    @admin_request.company = current_company
+    @admin_request.company = current_user.company
     @admin_request.request_type = :store_admin_request
 
     if @admin_request.save
-      redirect_to admin_admin_requests_path, notice: t("admin.admin_requests.messages.created")
+      redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), notice: t("admin.admin_requests.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -52,9 +52,9 @@ class Admin::AdminRequestsController < Admin::BaseController
 
   def approve
     if @admin_request.approve!(current_user)
-      redirect_to admin_admin_requests_path, notice: t("admin.admin_requests.messages.approved")
+      redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), notice: t("admin.admin_requests.messages.approved")
     else
-      redirect_to admin_admin_requests_path, alert: t("admin.admin_requests.messages.approve_failed")
+      redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), alert: t("admin.admin_requests.messages.approve_failed")
     end
   end
 
@@ -62,9 +62,9 @@ class Admin::AdminRequestsController < Admin::BaseController
     reason = params[:reason].presence || t("admin.admin_requests.default_reject_reason")
 
     if @admin_request.reject!(current_user, reason: reason)
-      redirect_to admin_admin_requests_path, notice: t("admin.admin_requests.messages.rejected")
+      redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), notice: t("admin.admin_requests.messages.rejected")
     else
-      redirect_to admin_admin_requests_path, alert: t("admin.admin_requests.messages.reject_failed")
+      redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), alert: t("admin.admin_requests.messages.reject_failed")
     end
   end
 
@@ -86,10 +86,10 @@ class Admin::AdminRequestsController < Admin::BaseController
         AdminRequest.all
       end
     elsif current_user.company_admin?
-      base_scope = AdminRequest.for_company(current_company)
+      base_scope = AdminRequest.for_company(current_user.company)
       session[:current_store_id].present? ? base_scope.where(store_id: session[:current_store_id]) : base_scope
     elsif current_user.store_admin?
-      AdminRequest.for_company(current_company).where(store_id: current_user.store_id)
+      AdminRequest.for_company(current_user.company).where(store_id: current_user.store_id)
     else
       AdminRequest.none
     end

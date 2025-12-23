@@ -7,16 +7,16 @@
 # - データは店舗ごとに完全分離（他店舗のデータは閲覧不可）
 class Store < ApplicationRecord
   belongs_to :company
-  has_many :users, dependent: :nullify
-  has_many :products, class_name: "Resources::Product", dependent: :nullify
-  has_many :materials, class_name: "Resources::Material", dependent: :nullify
-  has_many :categories, class_name: "Resources::Category", dependent: :nullify
-  has_many :plans, class_name: "Resources::Plan", dependent: :nullify
-  has_many :material_order_groups, class_name: "Resources::MaterialOrderGroup", dependent: :nullify
-  has_many :daily_targets, class_name: "Management::DailyTarget", dependent: :nullify
-  has_many :monthly_budgets, class_name: "Management::MonthlyBudget", dependent: :nullify
-  has_many :plan_schedules, class_name: "Planning::PlanSchedule", dependent: :nullify
-  has_many :units, class_name: "Resources::Unit", dependent: :nullify
+  has_many :users, dependent: :restrict_with_error
+  has_many :products, class_name: "Resources::Product", dependent: :destroy
+  has_many :materials, class_name: "Resources::Material", dependent: :destroy
+  has_many :categories, class_name: "Resources::Category", dependent: :destroy
+  has_many :plans, class_name: "Resources::Plan", dependent: :destroy
+  has_many :material_order_groups, class_name: "Resources::MaterialOrderGroup", dependent: :destroy
+  has_many :daily_targets, class_name: "Management::DailyTarget", dependent: :destroy
+  has_many :monthly_budgets, class_name: "Management::MonthlyBudget", dependent: :destroy
+  has_many :plan_schedules, class_name: "Planning::PlanSchedule", dependent: :destroy
+  has_many :units, class_name: "Resources::Unit", dependent: :destroy
 
   validates :name, presence: true, uniqueness: { scope: :company_id }
   validates :code, presence: true, uniqueness: { scope: :company_id }

@@ -107,7 +107,7 @@
         <% back_url = if request.referer.present? && request.referer != request.original_url
                         request.referer
                       else
-                        user_signed_in? ? authenticated_root_path : new_user_session_path
+                        user_signed_in? ? company_dashboards_path(company_slug: current_company.slug) : new_user_session_path
                       end %>
 
         <%= render 'shared/actions/back_link', url: back_url %>

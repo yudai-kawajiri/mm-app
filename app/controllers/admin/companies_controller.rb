@@ -10,15 +10,15 @@ class Admin::CompaniesController < ApplicationController
     if params[:q].present?
       search_term = "%#{params[:q]}%"
       @companies = @companies.where(
-        "companies.name LIKE ? OR companies.subdomain LIKE ?",
+        "companies.name LIKE ? OR companies.slug LIKE ?",
         search_term, search_term
       ).distinct
     end
 
     # ソート処理
     case params[:sort_by]
-    when "subdomain"
-      @companies = @companies.order(subdomain: :asc)
+    when "slug"
+      @companies = @companies.order(slug: :asc)
     when "created_at"
       @companies = @companies.order(created_at: :desc)
     else
@@ -40,7 +40,7 @@ class Admin::CompaniesController < ApplicationController
     @company = Company.new(company_params)
 
     if @company.save
-      redirect_to admin_company_path(@company), notice: t("admin.companies.messages.created")
+      redirect_to admin_company_path(@company), notice: t("helpers.notice.created", resource: Company.model_name.human)
     else
       render :new, status: :unprocessable_entity
     end
@@ -51,7 +51,7 @@ class Admin::CompaniesController < ApplicationController
 
   def update
     if @company.update(company_params)
-      redirect_to admin_company_path(@company), notice: t("admin.companies.messages.updated")
+      redirect_to admin_company_path(@company), notice: t("helpers.notice.updated", resource: Company.model_name.human)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -59,7 +59,7 @@ class Admin::CompaniesController < ApplicationController
 
   def destroy
     if @company.destroy
-      redirect_to admin_companies_path, notice: t("admin.companies.messages.destroyed")
+      redirect_to admin_companies_path, notice: t("helpers.notice.destroyed", resource: Company.model_name.human)
     else
       redirect_to admin_company_path(@company), alert: @company.errors.full_messages.join(", ")
     end
@@ -72,12 +72,12 @@ class Admin::CompaniesController < ApplicationController
   end
 
   def company_params
-    params.require(:company).permit(:name, :subdomain)
+    params.require(:company).permit(:name, :slug)
   end
 
   def authorize_super_admin!
     unless current_user.super_admin?
-      redirect_to authenticated_root_path, alert: t("errors.unauthorized")
+      redirect_to company_dashboards_path(company_slug: current_company.slug), alert: t("errors.unauthorized")
     end
   end
 end

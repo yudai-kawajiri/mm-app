@@ -11,7 +11,7 @@
       skip_store_check: true %>
 
   <%= render 'shared/forms/search_form',
-      form_path: admin_admin_requests_path,
+      form_path: scoped_path(:admin_admin_requests_path),
       search_placeholder: t('admin.admin_requests.index.search.placeholder'),
       sort_options: [
         [t('admin.admin_requests.index.sort_options.company'), 'company'],
@@ -54,7 +54,7 @@
               </td>
               <td><%= l(request.created_at, format: :long) %></td>
               <td class="text-center">
-                <%= link_to admin_admin_request_path(request),
+                <%= link_to scoped_path(:admin_admin_request_path, request),
                     class: 'btn btn-sm btn-outline-primary',
                     title: t('common.show'),
                     data: { turbo: false } do %>

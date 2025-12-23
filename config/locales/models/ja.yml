@@ -9,6 +9,13 @@ ja:
           attributes:
             email:
               not_found: "メールアドレスが見つかりません"
+            phone:
+              invalid_phone_format: は10桁または11桁の数字で入力してください
+        store:
+          attributes:
+            base:
+              restrict_dependent_destroy:
+                has_many: "この店舗にはユーザーが所属しているため削除できません。先にユーザーを移動または削除してください。"
         product:
           attributes:
             product_id:
@@ -38,8 +45,10 @@ ja:
               used_in_plans: "は計画スケジュールで使用中のため変更できません"
         "resources/category":
           category_type_in_use: "%{record}で使用しています"
+          category_in_use: "%{record}で使用しています"
         "resources/unit":
           category_in_use: "%{record}で使用しています"
+          unit_in_use: "%{record}で使用しています"
         "resources/material":
           category_in_use: "%{record}で使用しています"
         "planning/product_material":
@@ -51,8 +60,22 @@ ja:
           attributes:
             product_id:
               blank: "を選択してください"
+      template:
+        header:
+          one: "%{model}の保存に失敗しました"
+          other: "%{count}件のエラーが発生したため、%{model}の保存に失敗しました"
+        body: '以下の項目を確認してください:'
 
     models:
+      user: ユーザー
+      store: 店舗
+      company: 会社
+      admin_request: 承認リクエスト
+      category: カテゴリー
+      resource: 資源
+      material: 原材料
+      product: 商品
+      plan: 計画
       materials: "原材料"
       products: "商品"
       plans: "計画"
@@ -73,21 +96,65 @@ ja:
       "planning/daily_target": "日別予算"
       "planning/actual_revenue": "実績売上"
       "management/monthly_budget": "月間予算"
-      store: "店舗"
-      user: "ユーザー"
+      planning/plan_schedule: 計画スケジュール
+      planning/plan_product: 計画商品
+      management/daily_target: 日別予算
+      management/monthly_budget: 月間予算
+      resources/order: 発注
+      resources/order_group: 発注グループ
 
     attributes:
       user:
+        name: 名前
         email: "メールアドレス"
+        company: 会社名
         password: "パスワード"
-        name: "名前"
         password_confirmation: "パスワード(確認)"
         current_password: "現在のパスワード"
+        phone: 電話番号
+        role: 権限
         invitation_code: "招待コード"
-        role: "権限"
         store: "店舗"
         store_id: "店舗"
+        approved: 承認状態
         created_at: "登録日"
+
+      store:
+        code: 店舗コード
+        name: 店舗名
+        company: 会社名
+        users_count: ユーザー数
+        invitation_code: "招待コード"
+        created_at: "登録日"
+        updated_at: "更新日"
+        description: "概要"
+
+      company:
+        name: 会社名
+        subdomain: サブドメイン
+        slug: "会社コード"
+        created_at: 登録日
+
+      admin_request:
+        user: ユーザー
+        user_id: "リクエスト送信者"
+        store: 店舗
+        store_id: "対象店舗"
+        company_id: 会社名
+        company: 会社
+        request_type: "リクエスト種別"
+        status: "ステータス"
+        message: "メッセージ"
+        rejection_reason: "却下理由"
+        approved_by_id: "承認者"
+        approved_at: "承認日時"
+        reason: 理由
+
+      system_log:
+        created_at: 日時
+        action: アクション
+        user: ユーザー
+        details: 詳細
 
       "resources/category":
         name: "カテゴリー名"
@@ -97,16 +164,6 @@ ja:
         materials: "原材料"
         products: "商品"
         plans: "製造計画"
-
-      admin_request:
-        user_id: "リクエスト送信者"
-        store_id: "対象店舗"
-        request_type: "リクエスト種別"
-        status: "ステータス"
-        message: "メッセージ"
-        rejection_reason: "却下理由"
-        approved_by_id: "承認者"
-        approved_at: "承認日時"
 
       "resources/unit":
         name: "単位名"
@@ -124,6 +181,8 @@ ja:
       "resources/material":
         name: "原材料名"
         reading: "読み仮名"
+        code: 原材料コード
+        description: "概要"
         category: "カテゴリー"
         category_id: "カテゴリー"
         default_unit_weight: "基本分量"
@@ -136,11 +195,15 @@ ja:
         order_group_id: "発注グループ"
         new_order_group_name: "新発注グループ"
         production_unit: "使用単位"
-        description: "概要"
+        production_unit_id: 使用単位
+        order_unit_id: 発注単位
+        conversion_rate: 換算レート
+        standard_unit_price: 標準単価
 
       "resources/product":
         name: "商品名"
         reading: "読み仮名"
+        code: 商品コード
         item_number: "品番"
         price: "売価"
         category_id: "カテゴリー"
@@ -171,9 +234,12 @@ ja:
       "resources/plan":
         name: "計画名"
         reading: "読み仮名"
+        code: 計画コード
+        plan_date: 計画日
         category_id: "カテゴリー"
         status: "ステータス"
         description: "概要"
+        actual_revenue_data: 実績売上データ
 
       "planning/plan_schedule":
         scheduled_date: "実施日"
@@ -200,13 +266,19 @@ ja:
         created_at: "登録日時"
         updated_at: "更新日時"
 
-      store:
-        code: "コード"
-        name: "店舗名"
-        invitation_code: "招待コード"
-        created_at: "登録日"
-        updated_at: "更新日"
-        description: "概要"
+      resources/order_group:
+        name: 発注グループ名
+        code: 発注グループコード
+        order_date: 発注日
+        status: ステータス
+        category_id: カテゴリー
+
+      resources/category:
+        name: カテゴリー名
+        category_type: タイプ
+
+      resources/unit:
+        name: 単位名
 
     enums:
       "resources/category":
@@ -214,6 +286,7 @@ ja:
           material: "原材料"
           product: "商品"
           plan: "計画"
+          order_group: 発注グループ
 
       "resources/unit":
         category:
@@ -232,6 +305,7 @@ ja:
           draft: "下書き"
           active: "実施中"
           completed: "完了"
+          confirmed: 確定
 
       admin_request:
         request_type:
@@ -242,33 +316,21 @@ ja:
           approved: "承認済み"
           rejected: "却下"
 
-      company:
-        name: "企業名"
-        subdomain: "サブドメイン"
-        created_at: "登録日時"
-        updated_at: "更新日時"
+      resources/order_group:
+        status:
+          draft: 下書き
+          ordered: 発注済み
+          received: 入荷済み
 
-      store:
-        attributes:
-          code:
-            blank: "を入力してください"
-            taken: "は既に使用されています"
-          name:
-            blank: "を入力してください"
-            taken: "は既に使用されています"
-      user:
-        attributes:
-          email:
-            blank: "を入力してください"
-            taken: "は既に使用されています"
-            invalid: "は有効なメールアドレスではありません"
-
-
+    associations:
+      resources/unit:
+        materials_as_product_unit: 商品単位として使用している原材料
+        materials_as_order_unit: 発注単位として使用している原材料
+        materials_as_production_unit: 使用単位として使用している原材料
 
   common:
     view_detail: "詳細を見る"
-  common:
-    view_detail: "詳細を見る"
+
   admin:
     system_logs:
       index:

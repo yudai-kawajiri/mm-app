@@ -6,13 +6,13 @@ export default class extends Controller {
   
   redirect(event) {
     const path = event.currentTarget.dataset.path
-    const subdomain = this.inputTarget.value.trim()
+    const slug = this.inputTarget.value.trim()
     
-    if (!subdomain) {
+    if (!slug) {
       alert(this.errorMessageValue)
       return
     }
     
-    window.location.href = `http://${subdomain}.localhost:3000${path}`
+    window.location.href = `/c/${slug}${path}`
   }
 }

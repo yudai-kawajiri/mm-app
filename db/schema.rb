@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_20_062840) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_22_221455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -67,16 +67,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_20_062840) do
   end
 
   create_table "application_requests", force: :cascade do |t|
+    t.string "admin_email"
+    t.string "admin_name"
     t.string "company_email"
     t.integer "company_id"
     t.string "company_name"
     t.string "company_phone"
-    t.string "contact_email"
-    t.string "contact_name"
     t.datetime "created_at", null: false
     t.datetime "invitation_sent_at"
     t.string "invitation_token"
     t.integer "status"
+    t.string "temporary_password"
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["invitation_token"], name: "index_application_requests_on_invitation_token", unique: true
@@ -102,13 +103,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_20_062840) do
 
   create_table "companies", force: :cascade do |t|
     t.boolean "active", default: true, null: false
-    t.string "company_email"
-    t.string "company_phone"
     t.datetime "created_at", null: false
+    t.string "email"
     t.datetime "invitation_accepted_at"
     t.datetime "invitation_sent_at"
     t.string "invitation_token"
     t.string "name", null: false
+    t.string "phone"
     t.string "subdomain", null: false
     t.datetime "updated_at", null: false
     t.index ["subdomain"], name: "index_companies_on_subdomain", unique: true
