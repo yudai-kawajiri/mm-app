@@ -74,3 +74,6 @@ ja:
     messages:
       unauthorized: この操作を行う権限がありません
     invalid_subdomain_access: 'アクセス権限がありません'
+
+  errors:
+    page_not_found: "ページが見つかりませんでした"

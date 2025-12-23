@@ -58,6 +58,7 @@ ja:
       contact: "お問い合わせ"
       terms: "利用規約"
       privacy_policy: "プライバシーポリシー"
+      disabled_menu: "この機能は現在利用できません"
 
     # システム管理者用ダッシュボード
     admin:

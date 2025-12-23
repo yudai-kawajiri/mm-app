@@ -24,21 +24,21 @@ ja:
       message_html: ご入力いただいたメールアドレス宛に、アカウント登録用のURLをお送りしました。<br>メールをご確認の上、アカウント登録を完了してください。
       notice: アプリケーション責任者に招待メールを送信しました。
       success: "招待メールを送信しました"
+      failure: "登録に失敗しました: %{error}"
     accept:
       title: アカウント登録
       registration_info: 登録情報
-      password: パスワード
-      password_confirmation: パスワード（確認）
-      submit: 登録する
+      password_instruction: "招待メールに記載された初期パスワードでログインしてください。"
+      activate_button: "アカウントを有効化する"
+      already_used: "この招待はすでに使用されています。"
       errors:
         invalid_token: 招待URLが無効です。
         expired: 招待の有効期限が切れています。
         registration_failed: アカウント登録に失敗しました。もう一度お試しください。
-      messages:
-      password_placeholder: 6文字以上で入力してください
     accept_confirm:
       success: "アカウント登録が完了しました。ログインしてください"
-      failure: "登録に失敗しました: %{error}"
+      approved: "アカウントが承認されました。招待メールに記載されたパスワードでログインしてください。"
+      approval_failed: "承認に失敗しました: %{error}"
     thanks:
       title: 招待メール送信完了
       heading: 招待メールを送信しました
@@ -55,7 +55,11 @@ ja:
       company_id_instruction: "※ログイン画面で上記の会社IDを入力してください"
       email_label: "メールアドレス"
       password_label: "初期パスワード"
+      temporary_password_note: "このパスワードは一時的なものです"
+      login_info_title: "ログイン情報"
+      activate_button: "アカウントを有効化する"
       login_button: "ログインページへ"
+      after_activation: "アカウント有効化後、以下からログインできます"
       password_change_notice: "初回ログイン後、必ずパスワードを変更してください。"
       fallback_instruction: "ボタンが機能しない場合は、以下のURLをブラウザにコピーしてアクセスしてください:"
       footer_notice: "このメールに心当たりがない場合は、破棄してください。"
