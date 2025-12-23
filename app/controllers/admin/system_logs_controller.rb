@@ -7,14 +7,39 @@ class Admin::SystemLogsController < Admin::BaseController
 
     # フィルタ用のデータを設定
     if current_user.super_admin?
-      @companies = session[:current_company_id].present? ? [Company.find(session[:current_company_id])] : Company.all
-      @stores = session[:current_company_id].present? ? Company.find(session[:current_company_id]).stores : Store.all
-      @users = session[:current_company_id].present? ? Company.find(session[:current_company_id]).users : User.all
+      if session[:current_company_id].present?
+        company = Company.find(session[:current_company_id])
+        @companies = [company]
+        
+        if session[:current_store_id].present?
+          # 特定店舗選択時
+          @stores = company.stores.where(id: session[:current_store_id])
+          @users = company.users.where(store_id: session[:current_store_id])
+        else
+          # 全店舗選択時
+          @stores = company.stores
+          @users = company.users
+        end
+      else
+        # システム管理モード（会社未選択）
+        @companies = Company.all
+        @stores = Store.all
+        @users = User.all
+      end
     elsif current_user.company_admin?
       @companies = [current_user.company]
-      @stores = current_user.company.stores
-      @users = current_user.company.users
+      
+      if session[:current_store_id].present?
+        # 特定店舗選択時
+        @stores = current_user.company.stores.where(id: session[:current_store_id])
+        @users = current_user.company.users.where(store_id: session[:current_store_id])
+      else
+        # 全店舗選択時
+        @stores = current_user.company.stores
+        @users = current_user.company.users
+      end
     else
+      # store_admin
       @companies = [current_user.company]
       @stores = [current_user.store]
       @users = current_user.store.users
