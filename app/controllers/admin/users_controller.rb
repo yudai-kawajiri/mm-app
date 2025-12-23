@@ -28,7 +28,9 @@ class Admin::UsersController < Admin::BaseController
     end
   end
 
-  users_scope = users_scope.where(approved: true)
+  # 承認済みユーザー + AdminRequest が pending/approved のユーザー
+  admin_request_user_ids = AdminRequest.where.not(status: :rejected).pluck(:user_id)
+  users_scope = users_scope.where("users.approved = ? OR users.id IN (?)", true, admin_request_user_ids.presence || [0])
 
   # 検索処理
   if params[:q].present?
