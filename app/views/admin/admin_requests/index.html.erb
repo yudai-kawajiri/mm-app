@@ -27,7 +27,9 @@
       <table class="table table-hover align-middle">
         <thead class="table-light">
           <tr>
-            <th><%= t('admin.admin_requests.index.table_headers.company') %></th>
+            <% if current_user.super_admin? %>
+              <th><%= t('admin.admin_requests.index.table_headers.company') %></th>
+            <% end %>
             <th><%= t('admin.admin_requests.index.table_headers.user') %></th>
             <th><%= t('admin.admin_requests.index.table_headers.store') %></th>
             <th><%= t('admin.admin_requests.index.table_headers.request_type') %></th>
@@ -39,7 +41,9 @@
         <tbody>
           <% @admin_requests.each do |request| %>
             <tr data-resource-search-target="row" data-search-name="<%= request.user.company&.name %> <%= request.user.name %>">
-              <td><%= request.user.company&.name || '-' %></td>
+              <% if current_user.super_admin? %>
+                <td><%= request.user.company&.name || '-' %></td>
+              <% end %>
               <td><%= request.user.name %></td>
               <td><%= request.store&.name || '-' %></td>
               <td><%= t("activerecord.enums.admin_request.request_type.#{request.request_type}") %></td>
@@ -69,7 +73,7 @@
 
     <%= paginate @admin_requests, theme: 'bootstrap-5' %>
   <% else %>
-    <div class="alert alert-info d-flex align-items-center" role="alert">
+    <div class="alert alert-info" role="alert">
       <i class="bi bi-info-circle me-2"></i>
       <%= t('admin.admin_requests.index.no_requests') %>
     </div>

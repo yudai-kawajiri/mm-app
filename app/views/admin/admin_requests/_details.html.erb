@@ -10,13 +10,12 @@
           <%= request_class.human_attribute_name(:user_id) %>
         </label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
-          <%= admin_request.user.name %>
-          <div class="text-muted" style="font-size: 0.9em;">
-            <%= admin_request.user.email %>
-          </div>
+          <%= admin_request.user.name %> <span class="text-muted" style="font-size: 0.9em;">(<%= admin_request.user.email %>)</span>
         </div>
       </div>
     </div>
+    <%# 会社名(システム管理者のみ表示) %>
+    <% if current_user.super_admin? %>
 
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
@@ -28,6 +27,7 @@
         </div>
       </div>
     </div>
+    <% end %>
 
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
@@ -130,18 +130,18 @@
       <% end %>
     <% end %>
   </div>
-  
+
   <% if admin_request.can_be_approved? %>
     <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-      <%= button_to approve_company_admin_admin_request_path(admin_request, company_slug: params[:company_slug]), 
-          method: :post, 
+      <%= button_to approve_company_admin_admin_request_path(admin_request, company_slug: params[:company_slug]),
+          method: :post,
           class: 'btn btn-success',
           data: { confirm: t('admin.admin_requests.confirm.approve', name: admin_request.user.name) } do %>
         <i class="bi bi-check-circle me-1"></i>
         <%= t('admin.admin_requests.show.approve') %>
       <% end %>
-      
-      <%= link_to '#', 
+
+      <%= link_to '#',
           class: 'btn btn-danger',
           data: { bs_toggle: 'modal', bs_target: '#rejectModal' } do %>
         <i class="bi bi-x-circle me-1"></i>
@@ -166,13 +166,13 @@
           </div>
           <div class="modal-body">
             <div class="mb-3">
-              <%= label_tag 'admin_request[rejection_reason]', 
-                  t('admin.admin_requests.show.rejection_reason_label'), 
+              <%= label_tag 'admin_request[rejection_reason]',
+                  t('admin.admin_requests.show.rejection_reason_label'),
                   class: 'form-label' %>
-              <%= text_area_tag 'admin_request[rejection_reason]', 
-                  nil, 
-                  rows: 4, 
-                  class: 'form-control', 
+              <%= text_area_tag 'admin_request[rejection_reason]',
+                  nil,
+                  rows: 4,
+                  class: 'form-control',
                   placeholder: t('admin.admin_requests.show.rejection_reason_placeholder'),
                   required: true %>
             </div>
