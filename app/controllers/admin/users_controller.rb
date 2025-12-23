@@ -138,13 +138,29 @@ class Admin::UsersController < Admin::BaseController
     # システム管理者の場合
     if current_user.super_admin?
       if session[:current_company_id].present?
-        @stores = Company.find(session[:current_company_id]).stores
+        company = Company.find(session[:current_company_id])
+        if session[:current_store_id].present?
+          # 店舗が選択されている場合: その店舗のみ
+          @stores = company.stores.where(id: session[:current_store_id])
+        else
+          # 全店舗選択: 会社の全店舗
+          @stores = company.stores
+        end
       else
         @stores = Store.all
       end
+    elsif current_user.company_admin?
+      # 会社管理者
+      if session[:current_store_id].present?
+        # 店舗が選択されている場合: その店舗のみ
+        @stores = current_user.company.stores.where(id: session[:current_store_id])
+      else
+        # 全店舗選択: 自社の全店舗
+        @stores = current_user.company.stores
+      end
     else
-      # 会社管理者・店舗管理者
-      @stores = current_user.company.stores
+      # 店舗管理者: 自分の店舗のみ
+      @stores = current_user.company.stores.where(id: current_user.store_id)
     end
   end
 
