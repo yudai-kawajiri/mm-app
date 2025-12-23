@@ -9,6 +9,8 @@
     .content { background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; }
     .company-id-box { background-color: #fff3cd; padding: 20px; border: 3px solid #ffc107; border-radius: 8px; margin: 25px 0; text-align: center; }
     .company-id-value { font-size: 28px; font-weight: bold; color: #dc3545; letter-spacing: 2px; margin: 10px 0; font-family: monospace; }
+    .password-box { background-color: #d1ecf1; padding: 20px; border: 3px solid #17a2b8; border-radius: 8px; margin: 25px 0; text-align: center; }
+    .password-value { font-size: 24px; font-weight: bold; color: #0c5460; letter-spacing: 1px; margin: 10px 0; font-family: monospace; background-color: white; padding: 10px; border-radius: 5px; }
     .info-box { background-color: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; margin: 20px 0; }
     .field { margin-bottom: 10px; }
     .label { font-weight: bold; color: #495057; }
@@ -24,11 +26,11 @@
     </div>
 
     <div class="content">
-      <p><%= @application_request.admin_name %><%= t('application_request_mailer.invitation_email.greeting') %></p>
+      <p><%= t('application_request_mailer.invitation_email.greeting', name: @application_request.admin_name) %></p>
 
       <p><%= t('application_request_mailer.invitation_email.account_created') %></p>
 
-      <!-- 🔥 会社ID表示セクション（最重要） -->
+      <!-- 🔥 会社ID表示セクション -->
       <div class="company-id-box">
         <h3 style="margin-top: 0; color: #856404; font-size: 16px;">
           🔑 <%= t('application_request_mailer.invitation_email.company_id_label') %>
@@ -39,36 +41,36 @@
         </p>
       </div>
 
+      <!-- 🔐 初期パスワード表示セクション -->
+      <div class="password-box">
+        <h3 style="margin-top: 0; color: #0c5460; font-size: 16px;">
+          🔐 <%= t('application_request_mailer.invitation_email.password_label') %>
+        </h3>
+        <div class="password-value"><%= @application_request.temporary_password %></div>
+        <p style="font-size: 14px; color: #0c5460; margin-bottom: 0;">
+          <%= t('application_request_mailer.invitation_email.temporary_password_note') %>
+        </p>
+      </div>
+
       <!-- ログイン情報 -->
       <div class="info-box">
-        <h3 style="margin-top: 0;"><%= t('application_request_mailer.invitation_email.email_label') %></h3>
+        <h3 style="margin-top: 0;"><%= t('application_request_mailer.invitation_email.login_info_title') %></h3>
         <div class="field">
           <span class="label"><%= t('application_request_mailer.invitation_email.email_label') %>:</span> <%= @application_request.admin_email %>
         </div>
-        <div class="field">
-          <span class="label"><%= t('application_request_mailer.invitation_email.password_label') %>:</span> <%= @password %>
-        </div>
       </div>
 
-      <!-- 会社情報 -->
-      <div class="info-box">
-        <h3 style="margin-top: 0;">会社情報</h3>
-        <div class="field">
-          <span class="label">会社名:</span> <%= @application_request.company_name %>
-        </div>
-        <div class="field">
-          <span class="label">会社メールアドレス:</span> <%= @application_request.company_email %>
-        </div>
-        <% if @application_request.company_phone.present? %>
-          <div class="field">
-            <span class="label">電話番号:</span> <%= @application_request.company_phone %>
-          </div>
-        <% end %>
-      </div>
-
-      <!-- ログインボタン -->
+      <!-- 招待リンクボタン -->
       <div style="text-align: center;">
-        <a href="<%= root_url %>" class="button"><%= t('application_request_mailer.invitation_email.login_button') %></a>
+        <a href="<%= @invitation_url %>" class="button"><%= t('application_request_mailer.invitation_email.activate_button') %></a>
+      </div>
+
+      <!-- ログインページリンク -->
+      <div style="text-align: center; margin-top: 20px;">
+        <p><%= t('application_request_mailer.invitation_email.after_activation') %></p>
+        <a href="<%= company_new_user_session_url(company_slug: @company_slug, host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>" class="button">
+          <%= t('application_request_mailer.invitation_email.login_button') %>
+        </a>
       </div>
 
       <!-- セキュリティ警告 -->
@@ -79,7 +81,7 @@
       <!-- フォールバック -->
       <p style="font-size: 14px; color: #6c757d;">
         <%= t('application_request_mailer.invitation_email.fallback_instruction') %><br>
-        <%= root_url %>
+        <%= @invitation_url %>
       </p>
 
       <div class="footer">

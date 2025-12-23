@@ -4,7 +4,7 @@ class ApplicationRequestMailer < ApplicationMailer
     @admin_name = application_request.admin_name
     @admin_email = application_request.admin_email
     @company_slug = company_slug
-    @temporary_password = generate_temporary_password
+    @temporary_password = application_request.temporary_password  # ← 修正：DBから取得
     @invitation_url = accept_application_requests_url(
       token: application_request.invitation_token,
       host: ENV.fetch("APP_HOST", "localhost:3000"),
@@ -39,12 +39,5 @@ class ApplicationRequestMailer < ApplicationMailer
       to: @user.email,
       subject: t('application_request_mailer.rejection_notification.subject')
     )
-  end
-
-  private
-
-  def generate_temporary_password
-    # 仮パスワード生成（大文字・小文字・数字を含む12文字）
-    SecureRandom.alphanumeric(12)
   end
 end
