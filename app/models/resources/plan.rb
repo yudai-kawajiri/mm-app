@@ -85,9 +85,9 @@ class Resources::Plan < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    uniqueness_scope: [ :category_id, :store_id ],
-    uniqueness_check_attributes: [ :name, :reading ],
-    associations_to_copy: [ :plan_products ],
+    uniqueness_scope: [:category_id, :store_id],
+    uniqueness_check_attributes: [:name, :reading],
+    associations_to_copy: [:plan_products],
     additional_attributes: {
       status: :draft
     }
