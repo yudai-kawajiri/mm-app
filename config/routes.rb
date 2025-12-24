@@ -97,7 +97,9 @@ Rails.application.routes.draw do
             post :reorder
           end
         end
-        resources :categories
+        resources :categories do
+          post :copy, on: :member
+        end
         resources :units
         resources :product_materials, only: [ :index, :edit, :update ]
         resources :material_order_groups do

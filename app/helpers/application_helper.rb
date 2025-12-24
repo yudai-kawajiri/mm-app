@@ -23,14 +23,20 @@
 #
 module ApplicationHelper
   def scoped_path(path_method, *args)
+    Rails.logger.info "DEBUG scoped_path: current_company.present? = #{current_company.present?}, current_company = #{current_company.inspect}"
     return send(path_method, *args) unless current_company.present?
+    Rails.logger.info "DEBUG scoped_path ENTRY: path_method=#{path_method}, current_company=#{current_company.inspect}"
 
     # path_method を解析して正しい company_* 形式に変換
     # 例: new_resources_category_path → new_company_resources_category_path
     path_str = path_method.to_s
 
     # 'new_' や 'edit_' などのアクションプレフィックスを抽出
-    if path_str =~ /^(new|edit)_(.+)$/
+    # copy_ は member action なので特別処理
+    if path_str =~ /^copy_(.+)$/
+      rest = Regexp.last_match(1)
+      company_method_name = "copy_company_#{rest}"
+    elsif path_str =~ /^(new|edit)_(.+)$/
       action_prefix = Regexp.last_match(1)
       rest = Regexp.last_match(2)
       company_method_name = "#{action_prefix}_company_#{rest}"
@@ -38,12 +44,12 @@ module ApplicationHelper
       company_method_name = "company_#{path_str}"
     end
 
-    puts "DEBUG scoped_path: path_method=#{path_method}, action_prefix=#{action_prefix rescue "N/A"}, rest=#{rest rescue "N/A"}, company_method_name=#{company_method_name}"
-    puts "DEBUG: Trying to call #{company_method_name} for #{path_method}"
+    Rails.logger.info "DEBUG scoped_path: path_method=#{path_method}, action_prefix=#{action_prefix rescue "N/A"}, rest=#{rest rescue "N/A"}, company_method_name=#{company_method_name}"
+    Rails.logger.info "DEBUG: Trying to call #{company_method_name} for #{path_method}"
     begin
       send(company_method_name, *args, company_slug: current_company.slug)
     rescue NoMethodError => e
-      Rails.logger.debug "Path fallback for #{path_method}: #{e.message}"
+      Rails.logger.info "Path fallback for #{path_method}: #{e.message}"
       begin
         send(path_method, *args)
       rescue NoMethodError => fallback_error

@@ -15,7 +15,7 @@
 <% search_name_proc = local_assigns[:search_name_proc] %>
 
 <% if copy_url_method.blank? && show_copy %>
-  <% copy_url_method = "copy_#{resource_class.model_name.route_key.singularize}_path".to_sym %>
+  <% copy_url_method = "copy_#{resource_class.model_name.singular}_path".to_sym %>
 <% end %>
 
 <% if search_target.present? || sort_options.present? %>
@@ -24,7 +24,7 @@
       route_key = resource_class.model_name.route_key
       scope = local_assigns[:scope]
       scope_prefix = scope.is_a?(Array) ? scope.first : scope
-      form_path = scope_prefix.present? ? send("#{scope_prefix}_#{route_key}_path") : send("#{route_key}_path")
+      form_path = scoped_path("#{route_key}_path".to_sym)
     %>
     <%= render 'shared/forms/search_form',
         form_path: form_path,
@@ -86,13 +86,14 @@
         <% end %>
 
         <td>
+          <% Rails.logger.debug "DEBUG _resource_list: show_copy=#{show_copy}, copy_url_method=#{copy_url_method.inspect}" %>
           <%= render 'shared/actions/resource_action_links',
               resource: resource,
               resource_name: resource.class.model_name.human,
               show_link: defined?(show_action_link) ? show_action_link : true,
               show_copy: show_copy,
               copy_url: show_copy && copy_url_method.present? ?
-              send(copy_url_method, resource) : nil,
+              scoped_path(copy_url_method, resource) : nil,
               show_print: show_print,
               print_url: show_print && print_url_method.present? ?
               send(print_url_method, resource) : nil,
