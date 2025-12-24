@@ -50,7 +50,7 @@ class Resources::ProductsController < AuthenticatedController
     @material_categories = scoped_categories.for_materials
     @materials = scoped_materials.ordered
 
-    respond_to_save(@product)
+    respond_to_save(@product, success_path: -> { scoped_path(:resources_product_path, @product) })
   end
 
   def show
@@ -70,32 +70,32 @@ class Resources::ProductsController < AuthenticatedController
     @material_categories = scoped_categories.for_materials
     @materials = scoped_materials.ordered
 
-    respond_to_save(@product)
+    respond_to_save(@product, success_path: -> { scoped_path(:resources_product_path, @product) })
   end
 
   def destroy
-    respond_to_destroy(@product, success_path: resources_products_url)
+    respond_to_destroy(@product, success_path: scoped_path(:resources_products_path))
   end
 
   def copy
     @product.create_copy(user: current_user)
-    redirect_to resources_products_path, notice: t("flash_messages.copy.success",
+    redirect_to scoped_path(:resources_products_path), notice: t("flash_messages.copy.success",
                                                   resource: @product.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Product copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_products_path, alert: t("flash_messages.copy.failure",
+    redirect_to scoped_path(:resources_products_path), alert: t("flash_messages.copy.failure",
                                                   resource: @product.class.model_name.human)
   end
 
   def update_status
     if @product.update(status: params[:status])
-      redirect_to resources_products_path,
+      redirect_to scoped_path(:resources_products_path),
                   notice: t("products.messages.status_updated",
                             name: @product.name,
                             status: t("activerecord.enums.resources/product.status.#{@product.status}"))
     else
       error_messages = @product.errors.full_messages.join("、")
-      redirect_to resources_products_path,
+      redirect_to scoped_path(:resources_products_path),
                   alert: error_messages
     end
   end
