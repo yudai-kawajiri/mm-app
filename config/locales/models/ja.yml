@@ -278,9 +278,6 @@ ja:
         reading: 読み仮名
         description: 概要
 
-      resources/unit:
-        name: 単位名
-
     enums:
       "resources/category":
         category_type:

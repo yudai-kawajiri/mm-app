@@ -100,21 +100,20 @@ Rails.application.routes.draw do
         resources :categories do
           post :copy, on: :member
         end
-        resources :units
+        resources :units do
+          post :copy, on: :member
+        end
         resources :product_materials, only: [ :index, :edit, :update ]
         resources :material_order_groups do
           post :copy, on: :member
         end
-      end
-
-      namespace :resources do
         resources :plans do
-          resources :plan_products, only: [ :index, :create, :update, :destroy, :edit ]
-          resources :plan_schedules, only: [ :index, :create, :update, :destroy ]
           post :copy, on: :member
           member do
             patch :update_status
           end
+          resources :plan_products, only: [ :index, :create, :update, :destroy, :edit ]
+          resources :plan_schedules, only: [ :index, :create, :update, :destroy ]
         end
       end
 

@@ -46,7 +46,7 @@ class Resources::CategoriesController < AuthenticatedController
     @category.company_id = current_company.id
     @category.store_id = current_store&.id || current_user.store_id
 
-    respond_to_save(@category, success_path: scoped_path(:resources_categories_path))
+    respond_to_save(@category, success_path: -> { scoped_path(:resources_category_path, @category) })
   end
 
   def edit
@@ -62,7 +62,7 @@ class Resources::CategoriesController < AuthenticatedController
     @category.store_id ||= current_store&.id
     Rails.logger.debug "After force: store_id = #{@category.store_id.inspect}"
     Rails.logger.debug "===================="
-    respond_to_save(@category, success_path: scoped_path(:resources_categories_path))
+    respond_to_save(@category, success_path: -> { scoped_path(:resources_category_path, @category) })
   end
 
   def destroy

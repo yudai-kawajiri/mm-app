@@ -43,7 +43,7 @@ class Resources::UnitsController < AuthenticatedController
     @unit.user_id = current_user.id
     @unit.company_id = current_company.id
     @unit.store_id = current_store&.id if @unit.store_id.blank?
-    respond_to_save(@unit)
+    respond_to_save(@unit, success_path: -> { scoped_path(:resources_unit_path, @unit) })
   end
 
   def show; end
@@ -52,20 +52,20 @@ class Resources::UnitsController < AuthenticatedController
 
   def update
     @unit.assign_attributes(unit_params)
-    respond_to_save(@unit)
+    respond_to_save(@unit, success_path: -> { scoped_path(:resources_unit_path, @unit) })
   end
 
   def destroy
-    respond_to_destroy(@unit, success_path: resources_units_url)
+    respond_to_destroy(@unit, success_path: scoped_path(:resources_units_path))
   end
 
   def copy
     @unit.create_copy(user: current_user)
-    redirect_to resources_units_path, notice: t("flash_messages.copy.success",
+    redirect_to scoped_path(:resources_units_path), notice: t("flash_messages.copy.success",
                                                   resource: @unit.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Unit copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_units_path, alert: t("flash_messages.copy.failure",
+    redirect_to scoped_path(:resources_units_path), alert: t("flash_messages.copy.failure",
                                                 resource: @unit.class.model_name.human)
   end
 
