@@ -38,7 +38,7 @@ import Logger from "utils/logger"
 
 // 定数定義
 const API_ENDPOINT = {
-  MATERIAL_UNIT_DATA: (materialId) => `/api/v1/materials/${materialId}/fetch_product_unit_data`
+  MATERIAL_UNIT_DATA: (companySlug, materialId) => `/c/${companySlug}/api/v1/materials/${materialId}/fetch_product_unit_data`
 }
 
 const HTTP_HEADERS = {
@@ -179,7 +179,14 @@ export default class extends Controller {
     try {
       Logger.log(LOG_MESSAGES.FETCHING_UNIT_DATA, materialId)
 
-      const response = await fetch(API_ENDPOINT.MATERIAL_UNIT_DATA(materialId), {
+      const companySlug = window.location.pathname.split('/')[2] || ''
+if (!companySlug) {
+  Logger.error('Company slug not found in URL')
+  this.resetUnit()
+  return
+}
+
+      const response = await fetch(API_ENDPOINT.MATERIAL_UNIT_DATA(companySlug, materialId), {
         headers: {
           'Accept': HTTP_HEADERS.ACCEPT,
           'X-Requested-With': HTTP_HEADERS.X_REQUESTED_WITH

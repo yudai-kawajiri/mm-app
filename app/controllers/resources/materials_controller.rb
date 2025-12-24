@@ -116,6 +116,17 @@ class Resources::MaterialsController < AuthenticatedController
     render json: { error: t("sortable_table.not_found") }, status: :not_found
   end
 
+  def fetch_product_unit_data
+    @material = scoped_materials.find(params[:id])
+    
+    render json: {
+      unit_id: @material.unit_for_product_id,
+      unit_name: @material.unit_for_product&.name
+    }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: t("materials.not_found") }, status: :not_found
+  end
+
 
 
   def scoped_materials
