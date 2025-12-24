@@ -111,6 +111,7 @@ Rails.application.routes.draw do
           post :copy, on: :member
           member do
             patch :update_status
+            get :print
           end
           resources :plan_products, only: [ :index, :create, :update, :destroy, :edit ]
           resources :plan_schedules, only: [ :index, :create, :update, :destroy ]

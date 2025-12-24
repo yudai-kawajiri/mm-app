@@ -31,20 +31,23 @@ module ApplicationHelper
     # 例: new_resources_category_path → new_company_resources_category_path
     path_str = path_method.to_s
 
+    # カスタムアクション (copy_, print_, update_status_ など) を抽出
+    if path_str =~ /^(copy|print|update_status)_(.+)$/
+      action_prefix = Regexp.last_match(1)
+      rest = Regexp.last_match(2)
+      company_method_name = "#{action_prefix}_company_#{rest}"
     # 'new_' や 'edit_' などのアクションプレフィックスを抽出
-    # copy_ は member action なので特別処理
-    if path_str =~ /^copy_(.+)$/
-      rest = Regexp.last_match(1)
-      company_method_name = "copy_company_#{rest}"
     elsif path_str =~ /^(new|edit)_(.+)$/
       action_prefix = Regexp.last_match(1)
       rest = Regexp.last_match(2)
       company_method_name = "#{action_prefix}_company_#{rest}"
     else
+      action_prefix = ""
+      rest = ""
       company_method_name = "company_#{path_str}"
     end
 
-    Rails.logger.info "DEBUG scoped_path: path_method=#{path_method}, action_prefix=#{action_prefix rescue "N/A"}, rest=#{rest rescue "N/A"}, company_method_name=#{company_method_name}"
+    Rails.logger.info "DEBUG scoped_path: path_method=#{path_method}, action_prefix=#{action_prefix}, rest=#{rest}, company_method_name=#{company_method_name}"
     Rails.logger.info "DEBUG: Trying to call #{company_method_name} for #{path_method}"
     begin
       send(company_method_name, *args, company_slug: current_company.slug)

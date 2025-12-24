@@ -41,7 +41,7 @@ module Copyable
 
   def create_copy(user:)
     ActiveRecord::Base.transaction do
-      unique_attrs = generate_unique_attributes(1)
+      unique_attrs = generate_unique_attributes
 
       new_record = dup
       new_record.name = unique_attrs[:name]
@@ -74,12 +74,20 @@ module Copyable
 
   # 課題: "商品A (コピー1)" をコピーすると "商品A (コピー1) (コピー1)" になってしまう
   # 解決: 正規表現でコピー接尾辞を削除し、元の名前から連番を生成
-  def generate_unique_attributes(copy_count)
+  def generate_unique_attributes
     base_name = name
     base_reading = reading if respond_to?(:reading)
 
     # "(コピー1)" のパターンをマッチ: スペース + "(コピー" + 数字 + ")"
-    copy_suffix_pattern = /\s*\(コピー\d+\)\z/
+    # 背景: I18n.t('copyable.copy_suffix', count: 1) から数字部分を除去して "(コピー" を取得
+    copy_suffix_sample = I18n.t('copyable.copy_suffix', count: 1)  # "(コピー1)"
+    copy_suffix_pattern_text = copy_suffix_sample.gsub(/\d+/, '\\d+')  # "(コピー\\d+)"
+    copy_suffix_pattern = /\s*#{Regexp.escape(copy_suffix_pattern_text.gsub('\\d+', '')).gsub('\\(', '\\(').gsub('\\)', '')}(\d+)\)\z/
+
+    # 簡略版: 数字を除いた "(コピー" 部分を動的に取得
+    copy_prefix = copy_suffix_sample.sub(/\d+/, '').sub(/\)$/, '')  # "(コピー"
+    copy_suffix_pattern = /\s*#{Regexp.escape(copy_prefix)}(\d+)\)\z/
+
     # 元の名前からコピー接尾辞を削除し、余分な空白も削除
     original_name = base_name.gsub(copy_suffix_pattern, "").strip
 
@@ -87,11 +95,14 @@ module Copyable
     reading_copy_text = I18n.t('copyable.reading_copy_text')
     original_reading = base_reading ? base_reading.sub(/#{reading_copy_text}.*\z/, "").strip : nil
 
-    if base_name =~ /\(コピー(\d+)\)\z/
+    # 背景: 元の名前に既に「(コピーN)」が含まれている場合、N+1 から開始
+    # 例: "商品A (コピー3)" → copy_count = 4 から開始
+    if base_name =~ copy_suffix_pattern
       copy_count = $1.to_i + 1
     else
       copy_count = 1
     end
+
     result = nil
 
     loop do
