@@ -96,7 +96,7 @@
               scoped_path(copy_url_method, resource) : nil,
               show_print: show_print,
               print_url: show_print && print_url_method.present? ?
-              send(print_url_method, resource) : nil,
+              scoped_path(print_url_method, resource) : nil,
               icon_mode: icon_mode,
               edit_link: edit_link,
               destroy_link: destroy_link,
