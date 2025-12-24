@@ -58,7 +58,11 @@ const DEFAULT_VALUE = {
 }
 
 const API_ENDPOINT = {
-  PRODUCT_DETAILS: (productId) => `/api/v1/products/${productId}/fetch_plan_details`
+  PRODUCT_DETAILS: (productId) => {
+    // URLから company_slug を取得: /c/ok2eke/... → "ok2eke"
+    const companySlug = window.location.pathname.split('/')[2]
+    return `/c/${companySlug}/api/v1/products/${productId}/fetch_plan_details`
+  }
 }
 
 const HTTP_STATUS = {

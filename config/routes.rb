@@ -141,7 +141,11 @@ Rails.application.routes.draw do
             end
           end
           resources :daily_targets, only: [ :show, :update ]
-          resources :products, only: [ :show ]
+          resources :products, only: [ :show ] do
+            member do
+              get :fetch_plan_details
+            end
+          end
           resources :materials, only: [ :index, :show ] do
             member do
               get :fetch_product_unit_data
