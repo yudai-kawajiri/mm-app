@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class DashboardsController < AuthenticatedController
+  layout 'dashboard'
   def index
     @show_welcome_modal = session.delete(:first_login)
 

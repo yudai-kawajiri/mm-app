@@ -185,35 +185,32 @@ module ApplicationHelper
 
       # システム管理者専用メニュー
       if current_user.super_admin?
-        # システム管理モード（全テナント）のときだけ表示
         if session[:current_company_id].nil?
+          # システム管理モード（全テナント）
           admin_submenu << { name: t("common.menu.company_management"), path: scoped_path(:admin_companies_path) }
-          admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
-        else
-          # 特定テナント選択時: システムログのみ表示
-          admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
         end
-      end
-
-      # 会社管理者・システム管理者共通メニュー
-      if current_user.company_admin? || current_user.super_admin?
-        admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
-        admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
-        admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
+        # システム管理者は常にシステムログを表示
         admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
       end
 
-      # 店舗管理者専用メニュー
-      if current_user.store_admin?
-        admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
-        admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
-        admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
+      # 会社管理者専用メニュー（システム管理者と重複しないように）
+      if current_user.company_admin? && !current_user.super_admin?
+        admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
       end
+
+      # 店舗管理者・会社管理者・システム管理者の共通メニュー
+      admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
+      admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
+      admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
+
       items << {
         name: t("common.menu.admin_management"),
+        icon: "bi bi-gear-fill",
+        disabled: false,
         submenu: admin_submenu
       }
     end
+
     items
   end
   #

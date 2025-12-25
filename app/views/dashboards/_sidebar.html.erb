@@ -98,7 +98,6 @@
     <% end %>
   </div>
 
-  <%# === メニュー === %>
   <div class="list-group" id="sidebar-accordion">
     <% sidebar_menu_items.each do |item| %>
       <% if item[:submenu] %>
@@ -106,10 +105,10 @@
         <% collapse_id = "collapse-#{item[:name].parameterize(separator: '-', locale: :en).presence || item[:name].hash.abs}" %>
         <% parent_is_active = item[:submenu].any? { |sub| sidebar_link_active?(sub) } %>
 
-        <% if item[:disabled] %>
+        <% if item[:disabled] == true %>
           <%# disabled の場合: 展開機能なし、鍵アイコン表示 %>
           <a href="#" class="list-group-item list-group-item-action disabled text-muted" title="<%= t('dashboard.menu.disabled_menu') %>" onclick="return false;">
-            <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
+            <% if item[:icon] %><i class="<%= item[:icon] %>"></i> <% end %><%= item[:name] %>
             <i class="bi bi-lock-fill float-end"></i>
           </a>
         <% else %>
@@ -122,7 +121,7 @@
              aria-expanded="<%= parent_is_active %>"
              aria-controls="<%= collapse_id %>"
              onclick="event.preventDefault();">
-            <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
+            <% if item[:icon] %><i class="<%= item[:icon] %>"></i> <% end %><%= item[:name] %>
             <i class="bi bi-chevron-down float-end"></i>
           </a>
         <% end %>
