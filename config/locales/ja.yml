@@ -2,7 +2,7 @@
 ja:
   application_name: MM-App
   meta:
-    title: MM-App - 製造業務管理システム
+    title: "MM-App - 製造業務管理システム"
     description: 使用量と発注量を自動で計算、予算管理しながら計画を最適化
     site_name: MM-App
   date:
@@ -73,23 +73,23 @@ ja:
   errors:
     messages:
       unauthorized: この操作を行う権限がありません
-    invalid_subdomain_access: 'アクセス権限がありません'
-    page_not_found: "ページが見つかりませんでした"
+    invalid_subdomain_access: アクセス権限がありません
+    page_not_found: ページが見つかりませんでした
     max_attempts_exceeded: "コピー名の生成に失敗しました（%{max_attempts}回以上重複）"
 
   copyable:
     copy_text: "(コピー"
     copy_suffix: "(コピー%{count})"
-    reading_copy_text: "こぴー"
+    reading_copy_text: こぴー
     reading_numbers:
       - ""
-      - "いち"
-      - "に"
-      - "さん"
-      - "よん"
-      - "ご"
-      - "ろく"
-      - "なな"
-      - "はち"
-      - "きゅう"
-      - "じゅう"
+      - いち
+      - に
+      - さん
+      - よん
+      - ご
+      - ろく
+      - なな
+      - はち
+      - きゅう
+      - じゅう

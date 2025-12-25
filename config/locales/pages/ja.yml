@@ -6,9 +6,9 @@ ja:
     description: 原材料管理から製造計画、売上予測まで一元管理
     login_button: ログイン
     signup_button: 新規登録
-    slug_label: 会社コード（半角英数字とハイフン）
+    slug_label: 会社コード
     slug_placeholder: sample-company
-    slug_required: 会社IDを入力してください
+    slug_required: 会社コードを入力してください
     slug_hint: 既存の会社にログイン・登録する場合のみ入力してください
     or: または
     new_company_button: 新規会社登録を申請
@@ -37,7 +37,7 @@ ja:
   static_pages:
     back_to_login: ログインページに戻る
     contact_form_link: お問い合わせフォームへ
-    contact_via_help: 本規約に関するお問い合わせは、
+    contact_via_help: "本規約に関するお問い合わせは、"
   contacts:
     new:
       title: お問い合わせ
@@ -52,7 +52,7 @@ ja:
       message: お問い合わせ内容
       message_placeholder: 具体的なお問い合わせ内容をご記入ください
       message_hint: 最大5000文字まで入力できます
-      message_max_length: '5000'
+      message_max_length: "5000"
       submit: 送信
       company:
         name: 会社名
