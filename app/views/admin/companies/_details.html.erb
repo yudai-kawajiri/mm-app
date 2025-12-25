@@ -24,6 +24,24 @@
 
     <div class="col-md-6">
       <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= company_class.human_attribute_name(:email) %></label>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= company.email.presence || t('admin.users.index.not_set') %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
+        <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= company_class.human_attribute_name(:phone) %></label>
+        <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
+          <%= company.phone.presence || t('admin.users.index.not_set') %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="mb-3 border-bottom py-3">
         <label class="form-label mb-0 text-muted" style="font-size: 1.0em;"><%= company_class.human_attribute_name(:created_at) %></label>
         <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
           <%= l(company.created_at.to_date, format: :default) %>

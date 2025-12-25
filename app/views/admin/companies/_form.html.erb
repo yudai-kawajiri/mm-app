@@ -2,17 +2,38 @@
 <div class="row">
   <div class="col-md-6">
     <%= form_group_lg(f, :name,
-        required: true,
-        label: raw([t('activerecord.attributes.company.name'), t('helpers.required_mark')].join(' ')),
-        placeholder: t('admin.companies.form.name_placeholder')
+        field_type: :text_field,
+        label: t('activerecord.attributes.company.name'),
+        placeholder: t('admin.companies.form.name_placeholder'),
+        required: true
     ) %>
   </div>
   <div class="col-md-6">
     <%= form_group_lg(f, :slug,
-        required: true,
-        label: raw([t('activerecord.attributes.company.slug'), t('helpers.required_mark')].join(' ')),
+        field_type: :text_field,
+        label: t('activerecord.attributes.company.slug'),
         placeholder: t('admin.companies.form.slug_placeholder'),
-        help_text: t('admin.companies.form.slug_hint')
+        help_text: t('admin.companies.form.slug_hint'),
+        required: true
+    ) %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <%= form_group_lg(f, :email,
+        field_type: :text_field,
+        label: t('activerecord.attributes.company.email'),
+        placeholder: t('admin.companies.form.email_placeholder'),
+        required: false
+    ) %>
+  </div>
+  <div class="col-md-6">
+    <%= form_group_lg(f, :phone,
+        field_type: :text_field,
+        label: t('activerecord.attributes.company.phone'),
+        placeholder: t('admin.companies.form.phone_placeholder'),
+        required: false
     ) %>
   </div>
 </div>
