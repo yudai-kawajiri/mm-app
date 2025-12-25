@@ -73,11 +73,11 @@ class Admin::UsersController < Admin::BaseController
     @user = current_user.company.users.build
   end
 
-  def edit
-  end
+  def edit; end
+
   def create
     @user = current_user.company.users.build(user_params)
-    @user.approved = false
+    @user.approved = true
 
     # パスワードが空の場合のみ自動生成
     password_was_blank = params[:user][:password].blank?
@@ -87,7 +87,7 @@ class Admin::UsersController < Admin::BaseController
       if password_was_blank && @user.password.present?
         flash[:generated_password] = @user.password
       end
-      redirect_to scoped_path(:admin_user_path, id: @user), notice: t("admin.users.messages.created")
+      redirect_to company_admin_user_path(company_slug: current_company.slug, id: @user.id), notice: t("admin.users.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
