@@ -60,7 +60,7 @@ const DATE_OFFSET = {
 }
 
 const URL_TEMPLATE = {
-  ACTUAL_REVENUE: (id) => `/management/plan_schedules/${id}/actual_revenue`
+  ACTUAL_REVENUE: (id, companySlug) => `/c/${companySlug}/management/plan_schedules/${id}/actual_revenue`
 }
 
 const LOG_MESSAGES = {
@@ -132,7 +132,11 @@ export default class extends Controller {
     // フォームのactionを動的に設定
     const form = document.getElementById(ELEMENT_ID.FORM)
     if (form) {
-      const actionUrl = URL_TEMPLATE.ACTUAL_REVENUE(planScheduleId)
+      // URLからcompany_slugを取得
+      const pathParts = window.location.pathname.split('/')
+      const companySlug = pathParts[2] // /c/{company_slug}/...
+
+      const actionUrl = URL_TEMPLATE.ACTUAL_REVENUE(planScheduleId, companySlug)
       form.action = actionUrl
       Logger.log(LOG_MESSAGES.FORM_ACTION_SET, actionUrl)
     } else {

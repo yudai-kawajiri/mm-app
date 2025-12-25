@@ -12,7 +12,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <%= form_with url: scoped_path(:update_daily_target_management_numerical_managements_path),
+      <%= form_with url: update_daily_target_company_management_numerical_managements_path(company_slug: current_company.slug),
                     method: :patch,
                     local: true,
                     id: "editTargetForm" do |f| %>
