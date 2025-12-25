@@ -194,7 +194,6 @@
                           <%= link_to print_company_resources_plan_path(plan, company_slug: current_company.slug, date: day[:date]),
                                       class: "btn btn-outline-primary",
                                       target: "_blank",
-                                      data: { turbo: false },
                                       title: t("numerical_managements.actions.print_plan") do %>
                             <i class="bi bi-printer"></i>
                           <% end %>
@@ -203,7 +202,6 @@
                           <%= link_to print_company_resources_plan_path("deleted", company_slug: current_company.slug, date: day[:date], plan_schedule_id: ps.id),
                                       class: "btn btn-outline-primary",
                                       target: "_blank",
-                                      data: { turbo: false },
                                       title: t("common.deleted_plan") do %>
                             <i class="bi bi-printer"></i>
                           <% end %>
@@ -223,8 +221,7 @@
                                 <% if ps.plan.present? %>
                                   <%= link_to print_company_resources_plan_path(ps.plan, company_slug: current_company.slug, date: day[:date]),
                                               class: "dropdown-item",
-                                              target: "_blank",
-                                              data: { turbo: false } do %>
+                                              target: "_blank" do %>
                                     <%= ps.plan.name %>
                                   <% end %>
                                 <% else %>

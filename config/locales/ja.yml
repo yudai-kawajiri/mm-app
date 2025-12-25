@@ -74,9 +74,8 @@ ja:
     messages:
       unauthorized: この操作を行う権限がありません
     invalid_subdomain_access: 'アクセス権限がありません'
-
-  errors:
     page_not_found: "ページが見つかりませんでした"
+    max_attempts_exceeded: "コピー名の生成に失敗しました（%{max_attempts}回以上重複）"
 
   copyable:
     copy_text: "(コピー"
@@ -94,5 +93,3 @@ ja:
       - "はち"
       - "きゅう"
       - "じゅう"
-  errors:
-    max_attempts_exceeded: "コピー名の生成に失敗しました（%{max_attempts}回以上重複）"
