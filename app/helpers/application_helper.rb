@@ -205,7 +205,6 @@ module ApplicationHelper
 
       items << {
         name: t("common.menu.admin_management"),
-        icon: "bi bi-gear-fill",
         disabled: false,
         submenu: admin_submenu
       }
