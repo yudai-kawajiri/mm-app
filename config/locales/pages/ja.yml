@@ -6,8 +6,8 @@ ja:
     description: 原材料管理から製造計画、売上予測まで一元管理
     login_button: ログイン
     signup_button: 新規登録
-    slug_label: 会社ID（半角英数字とハイフン）
-    slug_placeholder: your-company-id
+    slug_label: 会社コード（半角英数字とハイフン）
+    slug_placeholder: sample-company
     slug_required: 会社IDを入力してください
     slug_hint: 既存の会社にログイン・登録する場合のみ入力してください
     or: または

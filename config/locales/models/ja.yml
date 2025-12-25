@@ -131,8 +131,9 @@ ja:
 
       company:
         name: 会社名
-        subdomain: サブドメイン
         slug: "会社コード"
+        email: "会社メールアドレス"
+        phone: "電話番号"
         created_at: 登録日
 
       admin_request:

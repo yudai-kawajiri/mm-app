@@ -4,7 +4,7 @@ ja:
       company: "会社"
       store: "店舗"
       all_stores: "全店舗"
-      system_admin_mode: "システム管理（全会社）"
+      system_admin_mode: "全会社"
       company_management: "会社管理"
       user_management: "ユーザー管理"
       store_management: "店舗管理"
@@ -21,7 +21,6 @@ ja:
       numerical_management: "数値管理"
       material_list: "原材料一覧"
       new_material: "原材料登録"
-      numerical_management: "数値管理"
       monthly_budget: "月間予算管理"
       daily_targets: "日次目標管理"
       plan_schedule: "計画スケジュール"
@@ -60,7 +59,6 @@ ja:
       privacy_policy: "プライバシーポリシー"
       disabled_menu: "この機能は現在利用できません"
 
-    # システム管理者用ダッシュボード
     admin:
       title: "システム管理者ダッシュボード"
       pending_users: "承認待ちユーザー"
@@ -75,7 +73,6 @@ ja:
       logs:
         target: "対象"
 
-    # 会社管理者用ダッシュボード
     company_admin:
       title: "会社管理者ダッシュボード"
       pending_users: "承認待ちユーザー"
@@ -105,6 +102,8 @@ ja:
       message: "MM-Appへようこそ！"
       bookmark_title: "ブックマークのお願い"
       bookmark_message: "次回から簡単にアクセスできるよう、このページをブックマークしてください。"
+      copy_button: "コピー"
+      start_button: "始める"
 
     weather:
       title: "週間天気予報"
@@ -125,15 +124,10 @@ ja:
       remaining_days: "残り営業日数"
       calculation_error: "計算エラー"
 
-    # ダッシュボード表示用
     welcome_message: "%{name}さん、こんにちは"
     display_month_label: "表示月"
     display_button: "表示"
 
-    welcome_modal:
-      copy_button: "コピー"
-      start_button: "始める"
-    
     users:
       index:
         search:
@@ -141,24 +135,24 @@ ja:
         table_headers:
           company: 会社名
           store: 店舗名
-    
+
     stores:
       index:
         search:
           placeholder: 店舗コードまたは店舗名で検索
         table_headers:
           company: 会社名
-    
+
     companies:
       index:
         search:
           placeholder: 会社名で検索
-    
+
     admin_requests:
       index:
         search:
           placeholder: 申請者名で検索
-    
+
     system_logs:
       index:
         title: システムログ
