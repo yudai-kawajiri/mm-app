@@ -69,7 +69,7 @@ module PlansHelper
           status_label = t("activerecord.enums.resources/plan.status.#{status_key}")
           content_tag(:li) do
             button_to status_label,
-              scoped_path(:update_status_resources_plan_path, plan, status: status_key),
+              update_status_company_resources_plan_path(plan, company_slug: current_company.slug, status: status_key),
               method: :patch,
               class: "dropdown-item border-0 bg-transparent text-start w-100 p-2",
               form: { class: "d-inline" }

@@ -92,6 +92,7 @@ Rails.application.routes.draw do
           post :copy, on: :member
           member do
             delete :purge_image
+            patch :update_status
           end
           collection do
             post :reorder
@@ -119,13 +120,24 @@ Rails.application.routes.draw do
       end
 
       namespace :management do
-        resources :monthly_budgets, only: [ :index, :create, :update ] do
-          collection do
+        resources :monthly_budgets, only: [ :index, :create, :update, :destroy ] do
+          member do
             patch :update_discount_rates
           end
         end
         resources :daily_targets, only: [ :index, :create, :update ]
-        resources :numerical_managements, only: [ :index ]
+        resources :numerical_managements, only: [ :index ] do
+          collection do
+            patch :bulk_update
+            patch :update_daily_target
+          end
+        end
+
+        resources :plan_schedules, only: [ :create, :update ] do
+          member do
+            patch :actual_revenue
+          end
+        end
       end
 
       namespace :api do

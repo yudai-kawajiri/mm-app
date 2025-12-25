@@ -6,6 +6,7 @@
       aria-hidden="true"
       data-controller="management--assign-plan-info management--assign-plan-modal"
       data-action="show.bs.modal->management--assign-plan-info#showModal"
+      data-management--assign-plan-modal-company-slug-value="<%= current_company.slug %>"
       data-management--assign-plan-modal-plans-value="<%= @plans_by_category.transform_values { |plans| plans.map { |p| { id: p.id, name: p.name, status: p.status, expected_revenue: p.expected_revenue, plan_products: p.plan_products.map { |pp| { product_id: pp.product_id, product_name: pp.product.name, production_count: pp.production_count, price: pp.product.price } } } } }.to_json %>"
       data-management--assign-plan-modal-i18n-select-placeholder-value="<%= t('helpers.prompt.select') %>"
       data-management--assign-plan-modal-i18n-select-plan-after-category-value="<%= t('numerical_managements.modals.prompts.select_plan_after_category') %>"
@@ -20,12 +21,15 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <%= form_with model: Planning::PlanSchedule.new,
-                    scope: :plan_schedule,
-                    url: scoped_path(:management_plan_schedules_path),
-                    method: :post,
-                    local: true,
-                    id: "assignPlanForm",
-                    data: { 'management--assign-plan-modal-target': 'form' } do |f| %>
+              scope: :plan_schedule,
+              url: company_management_plan_schedules_path,
+              method: :post,
+              local: true,
+              id: "assignPlanForm",
+              data: {
+                'management--assign-plan-modal-target': 'form',
+                turbo: false
+              } do |f| %>
         <div class="modal-header">
           <h5 class="modal-title" id="assignPlanModalLabel" data-management--assign-plan-modal-target="modalTitle"><%= t("numerical_managements.modals.assign_plan.title") %></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
