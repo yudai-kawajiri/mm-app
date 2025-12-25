@@ -11,6 +11,17 @@ ja:
               not_found: メールアドレスが見つかりません
             phone:
               invalid_phone_format: は10桁または11桁の数字で入力してください
+        company:
+          attributes:
+            phone:
+              taken: は既に使用されています
+            slug:
+              taken: は既に使用されています
+        store:
+          attributes:
+            base:
+              restrict_dependent_destroy:
+                has_many: この店舗にはユーザーが所属しているため削除できません。先にユーザーを移動または削除してください。
         store:
           attributes:
             base:

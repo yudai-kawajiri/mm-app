@@ -7,6 +7,7 @@ class Company < ApplicationRecord
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, format: { with: /\A[a-z0-9\-]+\z/ }
+  validates :phone, allow_blank: true, format: { with: /\A\d{10,11}\z/ }
 
   before_validation :generate_invitation_token, on: :create
 
