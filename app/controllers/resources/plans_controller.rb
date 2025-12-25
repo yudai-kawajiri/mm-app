@@ -46,7 +46,7 @@ class Resources::PlansController < AuthenticatedController
     @plan_categories = scoped_categories.for_plans.ordered
     @product_categories = scoped_categories.for_products.ordered
 
-    respond_to_save(@plan)
+    respond_to_save(@plan, success_path: -> { scoped_path(:resources_plan_path, @plan) })
   end
 
   def show
@@ -65,33 +65,33 @@ class Resources::PlansController < AuthenticatedController
     @plan_categories = scoped_categories.for_plans.ordered
     @product_categories = scoped_categories.for_products.ordered
 
-    respond_to_save(@plan)
+    respond_to_save(@plan, success_path: -> { scoped_path(:resources_plan_path, @plan) })
   end
 
   def destroy
-    respond_to_destroy(@plan, success_path: resources_plans_url)
+    respond_to_destroy(@plan, success_path: company_resources_plans_path(company_slug: current_company.slug))
   end
 
   def copy
     @plan.create_copy(user: current_user)
-    redirect_to resources_plans_path, notice: t("flash_messages.copy.success",
-                                                resource: @plan.class.model_name.human)
+    redirect_to company_resources_plans_path(company_slug: current_company.slug),
+                notice: t("flash_messages.copy.success", resource: @plan.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Plan copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_plans_path, alert: t("flash_messages.copy.failure",
-                                                resource: @plan.class.model_name.human)
+    redirect_to company_resources_plans_path(company_slug: current_company.slug),
+                alert: t("flash_messages.copy.failure", resource: @plan.class.model_name.human)
   end
 
   def update_status
     if @plan.update(status: params[:status])
-      redirect_to resources_plans_path,
+      redirect_to company_resources_plans_path(company_slug: current_company.slug),
                   notice: t("plans.messages.status_updated",
                             name: @plan.name,
                             status: t("activerecord.enums.resources/plan.status.#{@plan.status}"))
     else
       error_messages = @plan.errors.full_messages.join("、")
-      redirect_to resources_plans_path,
-                alert: error_messages
+      redirect_to company_resources_plans_path(company_slug: current_company.slug),
+                  alert: error_messages
     end
   end
 
@@ -169,7 +169,6 @@ class Resources::PlansController < AuthenticatedController
     @plan = scoped_plans.find(params[:id])
   end
 
-
   def scoped_plans
     case current_user.role
     when "store_admin", "general"
@@ -186,6 +185,7 @@ class Resources::PlansController < AuthenticatedController
       Resources::Plan.none
     end
   end
+
   # 削除済みプランの印刷レンダリング
   def render_deleted_plan_print
     snapshot = @plan_schedule.plan_products_snapshot
@@ -217,11 +217,11 @@ class Resources::PlansController < AuthenticatedController
     )
 
     @materials_summary = if snapshot["materials_summary"].present?
-                        snapshot["materials_summary"].map(&:deep_symbolize_keys)
-    else
-                            []
-    end
-      render layout: "print"
+                          snapshot["materials_summary"].map(&:deep_symbolize_keys)
+                        else
+                          []
+                        end
+    render layout: "print"
   end
 
   private

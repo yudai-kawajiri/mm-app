@@ -92,38 +92,52 @@ Rails.application.routes.draw do
           post :copy, on: :member
           member do
             delete :purge_image
+            patch :update_status
           end
           collection do
             post :reorder
           end
         end
-        resources :categories
-        resources :units
+        resources :categories do
+          post :copy, on: :member
+        end
+        resources :units do
+          post :copy, on: :member
+        end
         resources :product_materials, only: [ :index, :edit, :update ]
         resources :material_order_groups do
           post :copy, on: :member
         end
-      end
-
-      namespace :resources do
         resources :plans do
-          resources :plan_products, only: [ :index, :create, :update, :destroy, :edit ]
-          resources :plan_schedules, only: [ :index, :create, :update, :destroy ]
           post :copy, on: :member
           member do
             patch :update_status
+            get :print
           end
+          resources :plan_products, only: [ :index, :create, :update, :destroy, :edit ]
+          resources :plan_schedules, only: [ :index, :create, :update, :destroy ]
         end
       end
 
       namespace :management do
-        resources :monthly_budgets, only: [ :index, :create, :update ] do
-          collection do
+        resources :monthly_budgets, only: [ :index, :create, :update, :destroy ] do
+          member do
             patch :update_discount_rates
           end
         end
         resources :daily_targets, only: [ :index, :create, :update ]
-        resources :numerical_managements, only: [ :index ]
+        resources :numerical_managements, only: [ :index ] do
+          collection do
+            patch :bulk_update
+            patch :update_daily_target
+          end
+        end
+
+        resources :plan_schedules, only: [ :create, :update ] do
+          member do
+            patch :actual_revenue
+          end
+        end
       end
 
       namespace :api do
@@ -139,7 +153,11 @@ Rails.application.routes.draw do
             end
           end
           resources :daily_targets, only: [ :show, :update ]
-          resources :products, only: [ :show ]
+          resources :products, only: [ :show ] do
+            member do
+              get :fetch_plan_details
+            end
+          end
           resources :materials, only: [ :index, :show ] do
             member do
               get :fetch_product_unit_data

@@ -1,4 +1,9 @@
 <%# 製造計画フォーム（新規・編集共通） %>
-<%= form_with model: plan, html: { id: 'plan_form' }, data: { controller: 'form-submit form-validation' } do |f| %>
+<%= form_with model: plan,
+              url: plan.new_record? ? scoped_path(:resources_plans_path) : scoped_path(:resources_plan_path, plan),
+              method: plan.new_record? ? :post : :patch,
+              html: { id: 'plan_form' },
+              data: { controller: 'form-submit form-validation' } do |f| %>
+
   <%= render 'shared/forms/resource_two_column_form', f: f, basic_fields: 'resources/plans/fields', detail_fields: 'resources/plans/products_fields', resource_name: 'plans' %>
 <% end %>

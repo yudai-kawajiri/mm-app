@@ -16,7 +16,7 @@ class Admin::StoresController < Admin::BaseController
       @stores = current_user.company.stores.where(id: current_user.store_id)
     else
       @stores = current_user.company.stores
-      
+
       # 店舗が選択されている場合はその店舗のみ表示
       if session[:current_store_id].present?
         @stores = @stores.where(id: session[:current_store_id])
@@ -46,9 +46,9 @@ class Admin::StoresController < Admin::BaseController
 
     # users_count を最後に計算（すでに left_joins(:company) されている場合も考慮）
     @stores = @stores.left_joins(:users)
-                     .select("stores.*, COUNT(DISTINCT users.id) as users_count")
-                     .group("stores.id")
-                     .page(params[:page]).per(20)
+                  .select("stores.*, COUNT(DISTINCT CASE WHEN users.approved = true THEN users.id END) as users_count")
+                  .group("stores.id")
+                  .page(params[:page]).per(20)
   end
 
   def show

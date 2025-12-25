@@ -40,7 +40,7 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
     @material_order_group.user_id = current_user.id
     @material_order_group.company_id = current_company.id
     @material_order_group.store_id = current_store&.id if @material_order_group.store_id.blank?
-    respond_to_save(@material_order_group)
+    respond_to_save(@material_order_group, success_path: -> { scoped_path(:resources_material_order_group_path, @material_order_group) })
   end
 
   def show; end
@@ -49,20 +49,20 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
 
   def update
     @material_order_group.assign_attributes(material_order_group_params)
-    respond_to_save(@material_order_group)
+    respond_to_save(@material_order_group, success_path: -> { scoped_path(:resources_material_order_group_path, @material_order_group) })
   end
 
   def destroy
-    respond_to_destroy(@material_order_group, success_path: resources_material_order_groups_url)
+    respond_to_destroy(@material_order_group, success_path: scoped_path(:resources_material_order_groups_path))
   end
 
   def copy
     @material_order_group.create_copy(user: current_user)
-    redirect_to resources_material_order_groups_path, notice: t("flash_messages.copy.success",
+    redirect_to scoped_path(:resources_material_order_groups_path), notice: t("flash_messages.copy.success",
                                                                   resource: @material_order_group.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "MaterialOrderGroup copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_material_order_groups_path, alert: t("flash_messages.copy.failure",
+    redirect_to scoped_path(:resources_material_order_groups_path), alert: t("flash_messages.copy.failure",
                                                                 resource: @material_order_group.class.model_name.human)
   end
 

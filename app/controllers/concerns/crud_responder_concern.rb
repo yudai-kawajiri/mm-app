@@ -24,7 +24,7 @@ module CrudResponderConcern
                         resource: resource_name,
                         name: resource_display_name)
 
-      redirect_to success_path, status: :see_other, allow_other_host: true
+      redirect_to (success_path.respond_to?(:call) ? success_path.call : success_path), status: :see_other, allow_other_host: true
     else
       action = resource.new_record? ? :create : :update
 

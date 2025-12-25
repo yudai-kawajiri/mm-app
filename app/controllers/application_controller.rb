@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   before_action :auto_login_pending_user
   before_action :set_current_company
 
-  helper_method :current_company, :current_store, :scoped_path
+  helper_method :current_company, :current_store
 
   private
 
@@ -93,6 +93,7 @@ class ApplicationController < ActionController::Base
     @company_from_path ||= Company.find_by(slug: params[:company_slug])
   end
 
+  helper_method :current_company
   def current_company
     return @current_company if defined?(@current_company)
 

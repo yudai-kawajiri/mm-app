@@ -1,5 +1,5 @@
 <%# 商品フォーム %>
-<%= form_with model: product,
+<%= form_with model: product, url: product.new_record? ? scoped_path(:resources_products_path) : scoped_path(:resources_product_path, product), method: product.new_record? ? :post : :patch,
               html: { multipart: true, id: 'product_form' },
               data: { controller: 'form-submit form-validation', turbo: false } do |f| %>
   <%= render 'shared/forms/resource_two_column_form',

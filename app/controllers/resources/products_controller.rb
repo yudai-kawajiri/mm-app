@@ -50,7 +50,7 @@ class Resources::ProductsController < AuthenticatedController
     @material_categories = scoped_categories.for_materials
     @materials = scoped_materials.ordered
 
-    respond_to_save(@product)
+    respond_to_save(@product, success_path: -> { scoped_path(:resources_product_path, @product) })
   end
 
   def show
@@ -70,32 +70,32 @@ class Resources::ProductsController < AuthenticatedController
     @material_categories = scoped_categories.for_materials
     @materials = scoped_materials.ordered
 
-    respond_to_save(@product)
+    respond_to_save(@product, success_path: -> { scoped_path(:resources_product_path, @product) })
   end
 
   def destroy
-    respond_to_destroy(@product, success_path: resources_products_url)
+    respond_to_destroy(@product, success_path: company_resources_products_path(company_slug: current_company.slug))
   end
 
   def copy
     @product.create_copy(user: current_user)
-    redirect_to resources_products_path, notice: t("flash_messages.copy.success",
-                                                  resource: @product.class.model_name.human)
+    redirect_to company_resources_products_path(company_slug: current_company.slug),
+                notice: t("flash_messages.copy.success", resource: @product.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Product copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_products_path, alert: t("flash_messages.copy.failure",
-                                                  resource: @product.class.model_name.human)
+    redirect_to company_resources_products_path(company_slug: current_company.slug),
+                alert: t("flash_messages.copy.failure", resource: @product.class.model_name.human)
   end
 
   def update_status
     if @product.update(status: params[:status])
-      redirect_to resources_products_path,
+      redirect_to company_resources_products_path(company_slug: current_company.slug),
                   notice: t("products.messages.status_updated",
                             name: @product.name,
                             status: t("activerecord.enums.resources/product.status.#{@product.status}"))
     else
       error_messages = @product.errors.full_messages.join("、")
-      redirect_to resources_products_path,
+      redirect_to company_resources_products_path(company_slug: current_company.slug),
                   alert: error_messages
     end
   end
@@ -123,8 +123,6 @@ class Resources::ProductsController < AuthenticatedController
     @product = scoped_products.find(params[:id])
   end
 
-
-
   def scoped_products
     case current_user.role
     when "store_admin", "general"
@@ -141,6 +139,7 @@ class Resources::ProductsController < AuthenticatedController
       Resources::Product.none
     end
   end
+
   private
 
   def product_params
@@ -157,7 +156,11 @@ class Resources::ProductsController < AuthenticatedController
       materials = params[:resources_product][:product_materials_attributes]
       if materials.present?
         filtered_materials = materials.permit!.to_h.reject do |_key, attrs|
-          attrs[:quantity].blank? || attrs[:quantity].to_f.zero?
+          # _destroy が設定されている場合は除外しない（削除処理のため Rails に渡す必要がある）
+          next false if attrs["_destroy"].to_s == "1" || attrs["_destroy"].to_s == "true"
+
+          # material_id が空の場合のみ除外
+          attrs["material_id"].blank?
         end
         whitelisted[:product_materials_attributes] = filtered_materials
       end

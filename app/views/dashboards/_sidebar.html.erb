@@ -98,7 +98,6 @@
     <% end %>
   </div>
 
-  <%# === メニュー === %>
   <div class="list-group" id="sidebar-accordion">
     <% sidebar_menu_items.each do |item| %>
       <% if item[:submenu] %>
@@ -106,10 +105,10 @@
         <% collapse_id = "collapse-#{item[:name].parameterize(separator: '-', locale: :en).presence || item[:name].hash.abs}" %>
         <% parent_is_active = item[:submenu].any? { |sub| sidebar_link_active?(sub) } %>
 
-        <% if item[:disabled] %>
+        <% if item[:disabled] == true %>
           <%# disabled の場合: 展開機能なし、鍵アイコン表示 %>
           <a href="#" class="list-group-item list-group-item-action disabled text-muted" title="<%= t('dashboard.menu.disabled_menu') %>" onclick="return false;">
-            <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
+            <% if item[:icon] %><i class="<%= item[:icon] %>"></i> <% end %><%= item[:name] %>
             <i class="bi bi-lock-fill float-end"></i>
           </a>
         <% else %>
@@ -122,7 +121,7 @@
              aria-expanded="<%= parent_is_active %>"
              aria-controls="<%= collapse_id %>"
              onclick="event.preventDefault();">
-            <i class="<%= item[:icon] %>"></i> <%= item[:name] %>
+            <% if item[:icon] %><i class="<%= item[:icon] %>"></i> <% end %><%= item[:name] %>
             <i class="bi bi-chevron-down float-end"></i>
           </a>
         <% end %>
@@ -188,7 +187,7 @@
 
     <%# 設定メニュー: アカウント設定、ヘルプ、利用規約など %>
     <% settings_collapse_id = 'collapse-settings' %>
-    <% settings_is_active = current_page?(scoped_path(:help_path)) || current_page?(scoped_path(:edit_user_registration_path)) || current_page?(terms_path) || current_page?(privacy_path) || current_page?(new_contact_path) %>
+    <% settings_is_active = current_page?(scoped_path(:help_path)) || current_page?(company_edit_user_registration_path(company_slug: current_company.slug)) || current_page?(terms_path) || current_page?(privacy_path) || current_page?(new_contact_path) %>
 
     <a href="#"
         class="list-group-item list-group-item-action <%= 'active' if settings_is_active %>"
@@ -206,8 +205,8 @@
           id="<%= settings_collapse_id %>"
           >
 
-      <%= link_to scoped_path(:edit_user_registration_path),
-          class: "list-group-item list-group-item-action ps-4 #{current_page?(scoped_path(:edit_user_registration_path)) ? 'active' : ''}" do %>
+      <%= link_to company_edit_user_registration_path(company_slug: current_company.slug),
+          class: "list-group-item list-group-item-action ps-4 #{current_page?(company_edit_user_registration_path(company_slug: current_company.slug)) ? 'active' : ''}" do %>
         <%= submenu_indicator %><%= t('dashboard.menu.account_settings') %>
       <% end %>
 

@@ -77,3 +77,22 @@ ja:
 
   errors:
     page_not_found: "ページが見つかりませんでした"
+
+  copyable:
+    copy_text: "(コピー"
+    copy_suffix: "(コピー%{count})"
+    reading_copy_text: "こぴー"
+    reading_numbers:
+      - ""
+      - "いち"
+      - "に"
+      - "さん"
+      - "よん"
+      - "ご"
+      - "ろく"
+      - "なな"
+      - "はち"
+      - "きゅう"
+      - "じゅう"
+  errors:
+    max_attempts_exceeded: "コピー名の生成に失敗しました（%{max_attempts}回以上重複）"

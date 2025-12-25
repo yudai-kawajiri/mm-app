@@ -38,6 +38,7 @@ ja:
       edit:
         title: "ユーザー編集"
       messages:
+        created: "ユーザーを作成しました。"
         invited: "%{name} を招待しました"
         updated: "%{name} を更新しました"
         user_deleted: "%{name} を削除しました"

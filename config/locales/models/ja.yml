@@ -269,16 +269,14 @@ ja:
       resources/order_group:
         name: 発注グループ名
         code: 発注グループコード
-        order_date: 発注日
         status: ステータス
         category_id: カテゴリー
 
       resources/category:
         name: カテゴリー名
-        category_type: タイプ
-
-      resources/unit:
-        name: 単位名
+        category_type: 種別
+        reading: 読み仮名
+        description: 概要
 
     enums:
       "resources/category":

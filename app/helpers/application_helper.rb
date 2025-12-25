@@ -23,27 +23,36 @@
 #
 module ApplicationHelper
   def scoped_path(path_method, *args)
+    Rails.logger.info "DEBUG scoped_path: current_company.present? = #{current_company.present?}, current_company = #{current_company.inspect}"
     return send(path_method, *args) unless current_company.present?
+    Rails.logger.info "DEBUG scoped_path ENTRY: path_method=#{path_method}, current_company=#{current_company.inspect}"
 
     # path_method を解析して正しい company_* 形式に変換
     # 例: new_resources_category_path → new_company_resources_category_path
     path_str = path_method.to_s
 
+    # カスタムアクション (copy_, print_, update_status_ など) を抽出
+    if path_str =~ /^(copy|print|update_status)_(.+)$/
+      action_prefix = Regexp.last_match(1)
+      rest = Regexp.last_match(2)
+      company_method_name = "#{action_prefix}_company_#{rest}"
     # 'new_' や 'edit_' などのアクションプレフィックスを抽出
-    if path_str =~ /^(new|edit)_(.+)$/
+    elsif path_str =~ /^(new|edit)_(.+)$/
       action_prefix = Regexp.last_match(1)
       rest = Regexp.last_match(2)
       company_method_name = "#{action_prefix}_company_#{rest}"
     else
+      action_prefix = ""
+      rest = ""
       company_method_name = "company_#{path_str}"
     end
 
-    puts "DEBUG scoped_path: path_method=#{path_method}, action_prefix=#{action_prefix rescue "N/A"}, rest=#{rest rescue "N/A"}, company_method_name=#{company_method_name}"
-    puts "DEBUG: Trying to call #{company_method_name} for #{path_method}"
+    Rails.logger.info "DEBUG scoped_path: path_method=#{path_method}, action_prefix=#{action_prefix}, rest=#{rest}, company_method_name=#{company_method_name}"
+    Rails.logger.info "DEBUG: Trying to call #{company_method_name} for #{path_method}"
     begin
       send(company_method_name, *args, company_slug: current_company.slug)
     rescue NoMethodError => e
-      Rails.logger.debug "Path fallback for #{path_method}: #{e.message}"
+      Rails.logger.info "Path fallback for #{path_method}: #{e.message}"
       begin
         send(path_method, *args)
       rescue NoMethodError => fallback_error
@@ -176,35 +185,31 @@ module ApplicationHelper
 
       # システム管理者専用メニュー
       if current_user.super_admin?
-        # システム管理モード（全テナント）のときだけ表示
         if session[:current_company_id].nil?
+          # システム管理モード（全テナント）
           admin_submenu << { name: t("common.menu.company_management"), path: scoped_path(:admin_companies_path) }
-          admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
-        else
-          # 特定テナント選択時: システムログのみ表示
-          admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
         end
-      end
-
-      # 会社管理者・システム管理者共通メニュー
-      if current_user.company_admin? || current_user.super_admin?
-        admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
-        admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
-        admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
+        # システム管理者は常にシステムログを表示
         admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
       end
 
-      # 店舗管理者専用メニュー
-      if current_user.store_admin?
-        admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
-        admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
-        admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
+      # 会社管理者専用メニュー（システム管理者と重複しないように）
+      if current_user.company_admin? && !current_user.super_admin?
+        admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
       end
+
+      # 店舗管理者・会社管理者・システム管理者の共通メニュー
+      admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
+      admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
+      admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
+
       items << {
         name: t("common.menu.admin_management"),
+        disabled: false,
         submenu: admin_submenu
       }
     end
+
     items
   end
   #

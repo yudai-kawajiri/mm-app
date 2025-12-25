@@ -2,7 +2,7 @@
 <%= content_for(:title, t('products.index.title')) %>
 
 <div data-controller="sortable-table resource-search"
-      data-sortable-table-reorder-path-value="<%= reorder_resources_products_path %>"
+      data-sortable-table-reorder-path-value="<%= reorder_company_resources_products_path(company_slug: current_company.slug) %>"
       data-sortable-table-param-name-value="product_ids">
 
   <%= render 'shared/layouts/header_with_actions',
@@ -11,7 +11,7 @@
       is_index_page: true,
       is_form_page: false,
       is_show_page: false,
-      new_path: new_resources_product_path,
+      new_path: scoped_path(:new_resources_product_path),
       sortable: true %>
 
   <%

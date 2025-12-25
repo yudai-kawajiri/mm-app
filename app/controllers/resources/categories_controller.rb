@@ -46,7 +46,7 @@ class Resources::CategoriesController < AuthenticatedController
     @category.company_id = current_company.id
     @category.store_id = current_store&.id || current_user.store_id
 
-    respond_to_save(@category)
+    respond_to_save(@category, success_path: -> { scoped_path(:resources_category_path, @category) })
   end
 
   def edit
@@ -62,21 +62,21 @@ class Resources::CategoriesController < AuthenticatedController
     @category.store_id ||= current_store&.id
     Rails.logger.debug "After force: store_id = #{@category.store_id.inspect}"
     Rails.logger.debug "===================="
-    respond_to_save(@category)
+    respond_to_save(@category, success_path: -> { scoped_path(:resources_category_path, @category) })
   end
 
   def destroy
-    respond_to_destroy(@category, success_path: resources_categories_path)
+    respond_to_destroy(@category, success_path: scoped_path(:resources_categories_path))
   end
 
 
   def copy
     @category.create_copy(user: current_user)
-    redirect_to resources_categories_path, notice: t("flash_messages.copy.success",
+    redirect_to scoped_path(:resources_categories_path), notice: t("flash_messages.copy.success",
                                                       resource: @category.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Category copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_categories_path, alert: t("flash_messages.copy.failure",
+    redirect_to scoped_path(:resources_categories_path), alert: t("flash_messages.copy.failure",
                                                 resource: @category.class.model_name.human)
   end
 

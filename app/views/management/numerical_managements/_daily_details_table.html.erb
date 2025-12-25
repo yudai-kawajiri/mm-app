@@ -48,7 +48,7 @@
   </div>
 
   <div class="card-body p-0">
-    <%= form_with url: bulk_update_management_numerical_managements_path, method: :patch, data: { management__daily_details_target: "form", action: "submit->management--daily-details#beforeSubmit" } do |f| %>
+    <%= form_with url: bulk_update_company_management_numerical_managements_path(company_slug: current_company.slug), method: :patch, data: { management__daily_details_target: "form", action: "submit->management--daily-details#beforeSubmit" } do |f| %>
       <%= hidden_field_tag :year, @selected_date.year %>
       <%= hidden_field_tag :month, @selected_date.month %>
 
@@ -165,7 +165,7 @@
                             data-day="<%= day[:date].day %>"
                             data-schedule-id="<%= first_schedule&.id %>"
                             data-plan-id="<%= first_schedule&.plan_id %>"
-                                                        data-plan-name="<%= first_schedule&.plan&.name || first_schedule&.plan_products_snapshot&.dig("plan_name") || t("common.deleted_plan") %>"
+                            data-plan-name="<%= first_schedule&.plan&.name || first_schedule&.plan_products_snapshot&.dig("plan_name") || t("common.deleted_plan") %>"
                             data-category-name="<%= first_schedule&.plan&.category&.name || first_schedule&.plan_products_snapshot&.dig("category_name") || "-" %>"
                             data-snapshot="<%= first_schedule&.plan_products_snapshot&.to_json %>"
                             title="<%= first_schedule ? t("numerical_managements.actions.edit_plan") : t("numerical_managements.actions.add_plan") %>">
@@ -191,7 +191,7 @@
                       <% if day[:plan_schedules].count == 1 %>
                         <% plan = day[:plan_schedules].first.plan %>
                         <% if plan.present? %>
-                          <%= link_to print_resources_plan_path(plan, date: day[:date]),
+                          <%= link_to print_company_resources_plan_path(plan, company_slug: current_company.slug, date: day[:date]),
                                       class: "btn btn-outline-primary",
                                       target: "_blank",
                                       data: { turbo: false },
@@ -200,7 +200,7 @@
                           <% end %>
                         <% else %>
                           <% ps = day[:plan_schedules].first %>
-                          <%= link_to print_resources_plan_path("deleted", date: day[:date], plan_schedule_id: ps.id),
+                          <%= link_to print_company_resources_plan_path("deleted", company_slug: current_company.slug, date: day[:date], plan_schedule_id: ps.id),
                                       class: "btn btn-outline-primary",
                                       target: "_blank",
                                       data: { turbo: false },
@@ -221,7 +221,7 @@
                             <% day[:plan_schedules].each do |ps| %>
                               <li>
                                 <% if ps.plan.present? %>
-                                  <%= link_to print_resources_plan_path(ps.plan, date: day[:date]),
+                                  <%= link_to print_company_resources_plan_path(ps.plan, company_slug: current_company.slug, date: day[:date]),
                                               class: "dropdown-item",
                                               target: "_blank",
                                               data: { turbo: false } do %>

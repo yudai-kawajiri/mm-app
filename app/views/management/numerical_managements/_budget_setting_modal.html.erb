@@ -6,7 +6,7 @@
       <% if @monthly_budget&.persisted? %>
         <%= form_with model: @monthly_budget,
                       scope: :monthly_budget,
-                      url: scoped_path(:management_monthly_budget_path)(@monthly_budget),
+                      url: scoped_path(:management_monthly_budget_path, @monthly_budget),
                       method: :patch do |f| %>
           <div class="modal-header">
             <h5 class="modal-title" id="budgetSettingModalLabel"><%= t('numerical_managements.modals.budget_setting.title') %></h5>
