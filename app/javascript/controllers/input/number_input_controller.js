@@ -120,8 +120,8 @@ const DECIMAL_PLACES = {
 }
 
 const LOG_MESSAGES = {
-  CONVERSION_SUCCESS: '✅ Converted to numeric:',
-  INVALID_VALUE: '⚠️ Invalid numeric value:'
+  CONVERSION_SUCCESS: ' Converted to numeric:',
+  INVALID_VALUE: ' Invalid numeric value:'
 }
 
 const EVENT_OPTIONS = {
