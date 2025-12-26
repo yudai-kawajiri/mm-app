@@ -17,7 +17,8 @@
 
       <% if current_user.super_admin? %>
         <%# システム管理者: 会社選択ドロップダウン %>
-        <%= form_with url: scoped_path(:switch_company_path), method: :post, local: true do |f| %>
+        <% company_slug_for_form = current_company&.slug || (session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id])&.slug : nil) || 'admin' %>
+        <%= form_with url: company_switch_company_path(company_slug: company_slug_for_form), method: :post, local: true do |f| %>
           <%= f.select :current_company_id,
               options_for_select(
                 [[t('dashboard.sidebar.system_admin_mode'), nil]] + Company.order(:name).pluck(:name, :id),
@@ -49,7 +50,7 @@
           <small class="text-muted d-block mb-1">
             <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
           </small>
-          <%= form_with url: scoped_path(:switch_store_path), method: :post, local: true do |f| %>
+          <%= form_with url: company_switch_store_path(company_slug: current_company.slug), method: :post, local: true do |f| %>
             <%= f.select :current_store_id,
                 options_for_select(
                   [[t('dashboard.sidebar.all_stores'), '']] + current_company.stores.map { |s| [s.name, s.id] },
@@ -77,7 +78,7 @@
         <small class="text-muted d-block mb-1">
           <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
         </small>
-        <%= form_with url: scoped_path(:switch_store_path), method: :post, local: true do |f| %>
+        <%= form_with url: company_switch_store_path(company_slug: current_company.slug), method: :post, local: true do |f| %>
           <%= f.select :current_store_id,
               options_for_select(
                 [[t('dashboard.sidebar.all_stores'), '']] + current_company.stores.map { |s| [s.name, s.id] },
@@ -112,7 +113,6 @@
             <i class="bi bi-lock-fill float-end"></i>
           </a>
         <% else %>
-        <%# DEBUG: disabled value = <%= item[:disabled].inspect %> %>
           <%# 通常: 展開機能あり %>
           <a href="#"
              class="list-group-item list-group-item-action <%= 'active' if parent_is_active %>"
@@ -188,7 +188,7 @@
 
     <%# 設定メニュー: アカウント設定、ヘルプ、利用規約など %>
     <% settings_collapse_id = 'collapse-settings' %>
-    <% settings_is_active = current_page?(scoped_path(:help_path)) || current_page?(company_edit_user_registration_path(company_slug: current_company.slug)) || current_page?(terms_path) || current_page?(privacy_path) || current_page?(new_contact_path) %>
+    <% settings_is_active = current_page?(scoped_path(:help_path)) || current_page?(company_edit_user_registration_path(company_slug: current_company&.slug || 'admin')) || current_page?(terms_path) || current_page?(privacy_path) || current_page?(new_contact_path) %>
 
     <a href="#"
         class="list-group-item list-group-item-action <%= 'active' if settings_is_active %>"
@@ -206,8 +206,8 @@
           id="<%= settings_collapse_id %>"
           >
 
-      <%= link_to company_edit_user_registration_path(company_slug: current_company.slug),
-          class: "list-group-item list-group-item-action ps-4 #{current_page?(company_edit_user_registration_path(company_slug: current_company.slug)) ? 'active' : ''}" do %>
+      <%= link_to company_edit_user_registration_path(company_slug: current_company&.slug || 'admin'),
+          class: "list-group-item list-group-item-action ps-4 #{current_page?(company_edit_user_registration_path(company_slug: current_company&.slug || 'admin')) ? 'active' : ''}" do %>
         <%= submenu_indicator %><%= t('dashboard.menu.account_settings') %>
       <% end %>
 

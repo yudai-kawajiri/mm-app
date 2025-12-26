@@ -4,7 +4,19 @@ class Admin::CompaniesController < ApplicationController
   before_action :set_company, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @companies = Company.all
+    # システム管理者の場合
+    if current_user.super_admin?
+      if session[:current_company_id].present?
+        # 特定の会社を選択している場合、その会社のみ表示
+        @companies = Company.where(id: session[:current_company_id])
+      else
+        # 全会社モード
+        @companies = Company.all
+      end
+    else
+      # 会社管理者以下は自分の会社のみ
+      @companies = Company.where(id: current_user.company_id)
+    end
 
     # 検索処理
     if params[:q].present?

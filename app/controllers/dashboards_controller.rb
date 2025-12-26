@@ -20,15 +20,41 @@ class DashboardsController < AuthenticatedController
 
   # システム管理者用ダッシュボード
   def render_admin_dashboard
-    # 承認待ちユーザー数: 全テナント (AdminRequest の pending のみ)
-    @pending_users_count = AdminRequest.pending.count
-    @companies_count = Company.count
-    @stores_count = Store.count
+    if session[:current_company_id].present?
+      # 会社選択時: 会社管理者と同じダッシュボードを表示
+      company = Company.find(session[:current_company_id])
+      @pending_users_count = AdminRequest.for_company(company).pending.count
+      @stores_count = company.stores.count
 
-    # システム管理者: 全ログ表示
-    @recent_logs = PaperTrail::Version.order(created_at: :desc).limit(10)
+      if session[:current_store_id].present?
+        # 店舗選択時: その店舗のログのみ
+        store = Store.find(session[:current_store_id])
+        @recent_logs = PaperTrail::Version
+          .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+          .where("users.store_id = ? OR versions.whodunnit IS NULL", store.id)
+          .order("versions.created_at DESC")
+          .limit(10)
+      else
+        # 全店舗選択時: 会社内の全ログ
+        @recent_logs = PaperTrail::Version
+          .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+          .where("users.company_id = ? OR versions.whodunnit IS NULL", company.id)
+          .order("versions.created_at DESC")
+          .limit(10)
+      end
 
-    render "dashboards/admin_dashboard"
+      render "dashboards/company_admin_dashboard"
+    else
+      # 全会社モード: システム管理者ダッシュボード
+      @pending_users_count = AdminRequest.pending.count
+      @companies_count = Company.count
+      @stores_count = Store.count
+
+      # システム管理者: 全ログ表示
+      @recent_logs = PaperTrail::Version.order(created_at: :desc).limit(10)
+
+      render "dashboards/admin_dashboard"
+    end
   end
 
   # 会社管理者用ダッシュボード

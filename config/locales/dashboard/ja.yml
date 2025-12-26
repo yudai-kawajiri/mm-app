@@ -8,6 +8,9 @@ ja:
       company_management: 会社管理
       user_management: ユーザー管理
       store_management: 店舗管理
+      select_company_first: 先に会社を選択してください
+      store_selection_note: 会社を選択すると店舗を選択できます
+      no_store: 店舗なし
       system_logs: システムログ
       admin_requests: 管理者申請承認
       category_management: カテゴリー管理
