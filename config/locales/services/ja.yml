@@ -3,19 +3,19 @@ ja:
     saved: 並び替えを保存しました
     not_found: 指定されたデータが見つかりませんでした。
     save_failed: 並び替えの保存に失敗しました
-    error: 'エラーが発生しました: %{message}'
+    error: "エラーが発生しました: %{message}"
   services:
     numerical_data_bulk_update:
       errors:
-        monthly_budget_update_failed: '月次予算ID %{id}: %{errors}'
-        daily_target_update_failed: '日別目標ID %{id}: %{errors}'
-        daily_target_save_failed: '日別目標 %{date}: %{errors}'
-        invalid_date: '日別目標: 無効な日付 %{date}'
-        plan_schedule_update_failed: '計画スケジュールID %{id}: %{errors}'
+        monthly_budget_update_failed: "月次予算ID %{id}: %{errors}"
+        daily_target_update_failed: "日別目標ID %{id}: %{errors}"
+        daily_target_save_failed: "日別目標 %{date}: %{errors}"
+        invalid_date: "日別目標: 無効な日付 %{date}"
+        plan_schedule_update_failed: "計画スケジュールID %{id}: %{errors}"
     weather:
       errors:
-        api_error: '天気予報API エラー: %{code} - %{body}'
-        service_error: '天気予報サービス エラー: %{message}'
+        api_error: "天気予報API エラー: %{code} - %{body}"
+        service_error: "天気予報サービス エラー: %{message}"
   components:
     category_tabs:
       confirm_delete: このカテゴリ―タブを削除しますか?
@@ -39,5 +39,5 @@ ja:
       first: 最初
       last: 最後
       previous: "&laquo; 前"
-      next: 次 &raquo;
+      next: "次 &raquo;"
       truncate: "&hellip;"

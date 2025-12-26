@@ -20,7 +20,7 @@ class Users::SessionsController < Devise::SessionsController
     # ログイン前にチェック
     if params[:user] && params[:user][:email].present?
       user = User.find_by(email: params[:user][:email])
-      
+
       # スーパー管理者チェック
       if user&.super_admin? && !admin_path?
         flash.now[:alert] = t('errors.messages.unauthorized')
@@ -29,8 +29,8 @@ class Users::SessionsController < Devise::SessionsController
         return
       end
 
-      # 会社チェック：ユーザーが存在し、会社が一致しない場合は汎用エラー
-      if user && @company && user.company_id != @company.id
+      # 会社チェック：システム管理者以外のユーザーが存在し、会社が一致しない場合は汎用エラー
+      if user && @company && user.company_id != @company.id && !user.super_admin?
         flash.now[:alert] = 'メールアドレスまたはパスワードが正しくありません'
         self.resource = resource_class.new(sign_in_params)
         render :new, status: :unprocessable_entity
@@ -45,7 +45,7 @@ class Users::SessionsController < Devise::SessionsController
 
   # システム管理者用のパスかチェック
   def admin_path?
-    request.path.start_with?(AdminConfig::ADMIN_PATH_PREFIX)
+    request.path.start_with?('/c/admin', '/admin')  # 両方チェック
   end
 
   private

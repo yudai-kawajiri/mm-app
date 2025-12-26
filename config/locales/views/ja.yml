@@ -88,7 +88,7 @@ ja:
     switch:
       success: "%{company_name} に切り替えました"
       not_found: 会社が見つかりませんでした
-      all_companies: システム管理モード（全会社）に切り替えました
+      all_companies: "システム管理モード（全会社）に切り替えました"
   tabs:
     category_tabs:
       confirm_delete: "カテゴリー %{category_id} のタブを削除しますか？"

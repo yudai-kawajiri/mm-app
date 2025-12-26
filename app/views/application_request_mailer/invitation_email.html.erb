@@ -30,10 +30,10 @@
 
       <p><%= t('application_request_mailer.invitation_email.account_created') %></p>
 
-      <!-- 🔥 会社ID表示セクション -->
+      <!--  会社ID表示セクション -->
       <div class="company-id-box">
         <h3 style="margin-top: 0; color: #856404; font-size: 16px;">
-          🔑 <%= t('application_request_mailer.invitation_email.company_id_label') %>
+          <%= t('application_request_mailer.invitation_email.company_id_label') %>
         </h3>
         <div class="company-id-value"><%= @company_slug %></div>
         <p style="font-size: 14px; color: #856404; margin-bottom: 0;">
@@ -41,10 +41,10 @@
         </p>
       </div>
 
-      <!-- 🔐 初期パスワード表示セクション -->
+      <!-- 初期パスワード表示セクション -->
       <div class="password-box">
         <h3 style="margin-top: 0; color: #0c5460; font-size: 16px;">
-          🔐 <%= t('application_request_mailer.invitation_email.password_label') %>
+          <%= t('application_request_mailer.invitation_email.password_label') %>
         </h3>
         <div class="password-value"><%= @application_request.temporary_password %></div>
         <p style="font-size: 14px; color: #0c5460; margin-bottom: 0;">
@@ -75,7 +75,7 @@
 
       <!-- セキュリティ警告 -->
       <div class="warning">
-        ⚠️ <%= t('application_request_mailer.invitation_email.password_change_notice') %>
+        <%= t('application_request_mailer.invitation_email.password_change_notice') %>
       </div>
 
       <!-- フォールバック -->

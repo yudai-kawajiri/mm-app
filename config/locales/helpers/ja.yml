@@ -1,12 +1,12 @@
 ja:
   helpers:
     notice:
-      account_registered: "アカウント登録が完了しました"
+      account_registered: アカウント登録が完了しました
       created: "%{resource}を作成しました"
       updated: "%{resource}を更新しました"
       destroyed: "%{resource}を削除しました"
     no_setting: 未設定
-    required_mark: <span class="text-danger">*</span>
+    required_mark: "<span class=\"text-danger\">*</span>"
     select_store_to_create: 店舗を選択してください
     submit:
       update: 更新
@@ -18,11 +18,11 @@ ja:
     links:
       destroy: 削除
     character_counter:
-      max_hint: 最大%{max}文字まで入力できます
+      max_hint: "最大%{max}文字まで入力できます"
       hint: "%{current} / %{max} 文字(残り %{remaining} 文字)"
     confirm:
-      destroy: 本当にこの%{resource}を削除してもよろしいですか?
-      copy: この%{resource}をコピーしますか?
+      destroy: "本当にこの%{resource}を削除してもよろしいですか?"
+      copy: "この%{resource}をコピーしますか?"
     link:
       back: 戻る
       edit: 編集

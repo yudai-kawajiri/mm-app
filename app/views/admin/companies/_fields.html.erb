@@ -1,0 +1,45 @@
+<%# 会社フォームフィールド %>
+<div class="row">
+  <div class="col-md-6">
+    <%= form_group_lg(f, :name,
+        field_type: :text_field,
+        label: "#{t('activerecord.attributes.company.name')} <span class='text-danger'>*</span>".html_safe,
+        placeholder: t('admin.companies.form.name_placeholder'),
+        required: true
+    ) %>
+  </div>
+  <div class="col-md-6">
+    <%= form_group_lg(f, :slug,
+        field_type: :text_field,
+        label: "#{t('activerecord.attributes.company.slug')} <span class='text-danger'>*</span>".html_safe,
+        placeholder: t('admin.companies.form.slug_placeholder'),
+        help_text: t('admin.companies.form.slug_hint'),
+        required: true
+    ) %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <%= form_group_lg(f, :email,
+        field_type: :text_field,
+        label: t('activerecord.attributes.company.email'),
+        placeholder: t('admin.companies.form.email_placeholder'),
+        required: false
+    ) %>
+  </div>
+  <div class="col-md-6">
+    <%= form_group_lg(f, :phone,
+        field_type: :text_field,
+        label: t('activerecord.attributes.company.phone'),
+        placeholder: t('admin.companies.form.phone_placeholder'),
+        inputmode: 'numeric',
+        required: false,
+        data: {
+          controller: 'input--number-input',
+          'number-input-no-comma': 'true',
+          action: 'input->input--number-input#handleInput paste->number-input#handlePaste'
+        }
+    ) %>
+  </div>
+</div>

@@ -7,7 +7,7 @@
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: nil,
+    new_path: new_admin_company_path,
     new_button_text: nil,
     skip_store_check: true %>
 
@@ -36,6 +36,8 @@
       columns: [
         { header: :name, data: Proc.new { |company| company.name } },
         { header: :slug, data: Proc.new { |company| company.slug } },
+        { header: :email, data: Proc.new { |company| company.email.presence || '-' } },
+        { header: :phone, data: Proc.new { |company| company.phone.presence || '-' } },
         { header: :created_at, data: Proc.new { |company| l(company.created_at.to_date, format: :default) } }
       ]
   %>

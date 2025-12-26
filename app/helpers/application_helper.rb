@@ -23,38 +23,24 @@
 #
 module ApplicationHelper
   def scoped_path(path_method, *args)
-    Rails.logger.info "DEBUG scoped_path: current_company.present? = #{current_company.present?}, current_company = #{current_company.inspect}"
-    return send(path_method, *args) unless current_company.present?
-    Rails.logger.info "DEBUG scoped_path ENTRY: path_method=#{path_method}, current_company=#{current_company.inspect}"
+    # current_company が存在しない場合は、admin を使う
+    company_slug = current_company&.slug || 'admin'
 
-    # path_method を解析して正しい company_* 形式に変換
-    # 例: new_resources_category_path → new_company_resources_category_path
-    path_str = path_method.to_s
-
-    # カスタムアクション (copy_, print_, update_status_ など) を抽出
-    if path_str =~ /^(copy|print|update_status)_(.+)$/
-      action_prefix = Regexp.last_match(1)
-      rest = Regexp.last_match(2)
-      company_method_name = "#{action_prefix}_company_#{rest}"
-    # 'new_' や 'edit_' などのアクションプレフィックスを抽出
-    elsif path_str =~ /^(new|edit)_(.+)$/
+    if path_method.to_s =~ /\A(new|edit)_(.+)/
       action_prefix = Regexp.last_match(1)
       rest = Regexp.last_match(2)
       company_method_name = "#{action_prefix}_company_#{rest}"
     else
-      action_prefix = ""
-      rest = ""
-      company_method_name = "company_#{path_str}"
+      company_method_name = "company_#{path_method}"
     end
 
-    Rails.logger.info "DEBUG scoped_path: path_method=#{path_method}, action_prefix=#{action_prefix}, rest=#{rest}, company_method_name=#{company_method_name}"
-    Rails.logger.info "DEBUG: Trying to call #{company_method_name} for #{path_method}"
     begin
-      send(company_method_name, *args, company_slug: current_company.slug)
+      send(company_method_name, *args, company_slug: company_slug)
     rescue NoMethodError => e
-      Rails.logger.info "Path fallback for #{path_method}: #{e.message}"
+      Rails.logger.debug "Path fallback for #{path_method}: #{e.message}"
+      # フォールバック: 元のメソッド名を試す
       begin
-        send(path_method, *args)
+        send(path_method, *args, company_slug: company_slug)
       rescue NoMethodError => fallback_error
         Rails.logger.error "Path generation completely failed for #{path_method}: #{fallback_error.message}"
         "#"
@@ -111,7 +97,7 @@ module ApplicationHelper
   #
   def sidebar_menu_items
     items = [
-      { name: t("dashboard.menu.dashboard"), path: company_root_path(company_slug: current_company.slug) },
+      { name: t("dashboard.menu.dashboard"), path: company_root_path(company_slug: current_company&.slug || 'admin') },
       {
         name: t("dashboard.menu.category_management"),
         path: scoped_path(:resources_categories_path),
@@ -183,33 +169,31 @@ module ApplicationHelper
     if current_user.store_admin? || current_user.company_admin? || current_user.super_admin?
       admin_submenu = []
 
-      # システム管理者専用メニュー
       if current_user.super_admin?
-        if session[:current_company_id].nil?
-          # システム管理モード（全テナント）
-          admin_submenu << { name: t("common.menu.company_management"), path: scoped_path(:admin_companies_path) }
+        # システム管理者は常に会社管理とシステムログを表示
+        admin_submenu << { name: t("common.menu.company_management"), path: '/admin/companies' }
+        admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
+      end
+
+      # ユーザー管理と店舗管理(会社が選択されている場合)
+      if session[:current_company_id].present?
+        if current_user.company_admin? || current_user.super_admin?
+          admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
+          admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
+          admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
         end
-        # システム管理者は常にシステムログを表示
-        admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
-      end
 
-      # 会社管理者専用メニュー（システム管理者と重複しないように）
-      if current_user.company_admin? && !current_user.super_admin?
-        admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
+        if current_user.store_admin?
+          admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
+          admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
+        end
       end
-
-      # 店舗管理者・会社管理者・システム管理者の共通メニュー
-      admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
-      admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
-      admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
 
       items << {
         name: t("common.menu.admin_management"),
-        disabled: false,
         submenu: admin_submenu
       }
     end
-
     items
   end
   #
@@ -238,9 +222,10 @@ module ApplicationHelper
     # ダッシュボードの場合の特別処理（メニュー名で判定）
     if item[:name] == t("dashboard.menu.dashboard")
       # ダッシュボード関連のパスを厳密にチェック
+      company_slug = current_company&.slug || 'admin'
       dashboard_paths = [
-        company_root_path(company_slug: current_company.slug),
-        company_dashboards_path(company_slug: current_company.slug),
+        company_root_path(company_slug: company_slug),
+        company_dashboards_path(company_slug: company_slug),
         "/dashboards"
       ].compact
 

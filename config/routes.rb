@@ -24,6 +24,10 @@ Rails.application.routes.draw do
   # Devise設定（すべてskip、company scopeで個別定義）
   devise_for :users, skip: :all
 
+  namespace :admin do
+    resources :companies, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+  end
+
   # 会社スコープ内の認証機能
   scope "/c/:company_slug", as: :company do
     devise_scope :user do

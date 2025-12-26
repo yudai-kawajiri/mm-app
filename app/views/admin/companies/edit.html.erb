@@ -1,7 +1,7 @@
 <%# 会社編集画面 %>
 <% content_for :title, t('admin.companies.edit.title') %>
 
-<%= render 'resource_form',
+<%= render 'shared/resource_form',
             resource: @company,
             form_title: t('admin.companies.edit.title'),
-            submit_label: t('helpers.submit.update') %>
+            scope: :admin %>

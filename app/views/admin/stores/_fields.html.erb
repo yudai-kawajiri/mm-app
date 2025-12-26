@@ -1,22 +1,28 @@
-<%# 店舗フォームのフィールド部分 %>
+<%# 店舗フォームフィールド %>
+
+<%# 会社名（システム管理者のみ表示・読み取り専用） %>
+<% if current_user.super_admin? && resource.company.present? %>
+  <div class="mb-3">
+    <%= label_tag :company_name, Company.human_attribute_name(:name), class: 'form-label h5 text-muted' %>
+    <div class="form-control-plaintext"><%= resource.company.name %></div>
+  </div>
+<% end %>
+
 <div class="row">
   <div class="col-md-6">
-    <div class="mb-3">
-      <%= f.label :code, class: 'form-label h5' do %>
-        <%= Store.human_attribute_name(:code) %>
-        <span class="text-danger">*</span>
-      <% end %>
-      <%= f.text_field :code, class: 'form-control', placeholder: t('admin.stores.form.code_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
-    </div>
+    <%= form_group_lg(f, :code,
+        field_type: :text_field,
+        label: "#{t('admin.stores.form.code')} <span class='text-danger'>*</span>".html_safe,
+        placeholder: t('admin.stores.form.code_placeholder'),
+        required: true
+    ) %>
   </div>
-
   <div class="col-md-6">
-    <div class="mb-3">
-      <%= f.label :name, class: 'form-label h5' do %>
-        <%= Store.human_attribute_name(:name) %>
-        <span class="text-danger">*</span>
-      <% end %>
-      <%= f.text_field :name, class: 'form-control', placeholder: t('admin.stores.form.name_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
-    </div>
+    <%= form_group_lg(f, :name,
+        field_type: :text_field,
+        label: "#{t('admin.stores.form.name')} <span class='text-danger'>*</span>".html_safe,
+        placeholder: t('admin.stores.form.name_placeholder'),
+        required: true
+    ) %>
   </div>
 </div>
