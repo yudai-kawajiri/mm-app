@@ -13,19 +13,27 @@ class ApplicationController < ActionController::Base
   private
 
   def public_page?
-    devise_controller? || 
-    controller_name == 'landing' || 
+    devise_controller? ||
+    controller_name == 'landing' ||
     controller_name == 'application_requests' ||
     controller_name == 'static_pages' ||
     controller_name == 'contacts'
   end
 
-  def set_current_company
-    if params[:company_slug].present?
-      @company_from_path = Company.find_by(slug: params[:company_slug])
-      session[:current_company_id] = @company_from_path&.id if @company_from_path
+    def set_current_company
+      if params[:company_slug].present?
+        if params[:company_slug] == 'admin'
+          # 全会社モード: セッションをクリア
+          session[:current_company_id] = nil
+          session[:current_store_id] = nil
+          @company_from_path = nil
+        else
+          # 特定の会社: セッションに保存
+          @company_from_path = Company.find_by(slug: params[:company_slug])
+          session[:current_company_id] = @company_from_path&.id if @company_from_path
+        end
+      end
     end
-  end
 
   def scoped_path(path_method, *args)
     return send(path_method, *args) unless current_company.present?
@@ -37,7 +45,7 @@ class ApplicationController < ActionController::Base
     else
       company_method_name = "company_#{path_method}"
     end
-    
+
     begin
       send(company_method_name, *args, company_slug: current_company.slug)
     rescue NoMethodError => e
@@ -188,7 +196,7 @@ class ApplicationController < ActionController::Base
     logger.error "Routing Error: #{exception.message}"
     redirect_to company_dashboards_path(company_slug: current_company.slug), alert: t('errors.page_not_found')
   end
-  
+
   def auto_login_pending_user
     return unless session[:pending_user_id].present?
     return if user_signed_in?

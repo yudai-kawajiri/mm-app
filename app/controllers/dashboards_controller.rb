@@ -53,7 +53,7 @@ class DashboardsController < AuthenticatedController
       # システム管理者: 全ログ表示
       @recent_logs = PaperTrail::Version.order(created_at: :desc).limit(10)
 
-      render "dashboards/admin_dashboard"
+      render "dashboards/admin_dashboard"  # ← 全会社モード専用ビュー
     end
   end
 

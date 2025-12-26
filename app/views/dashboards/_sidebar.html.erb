@@ -21,8 +21,8 @@
         <%= form_with url: company_switch_company_path(company_slug: company_slug_for_form), method: :post, local: true do |f| %>
           <%= f.select :current_company_id,
               options_for_select(
-                [[t('dashboard.sidebar.system_admin_mode'), nil]] + Company.order(:name).pluck(:name, :id),
-                session[:current_company_id].presence
+                [[t('dashboard.sidebar.system_admin_mode'), '']] + Company.order(:name).pluck(:name, :id),
+                session[:current_company_id].presence || ''
               ),
               {},
               {
