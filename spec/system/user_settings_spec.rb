@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'アカウント設定', type: :system do
-  let(:user) { create(:user, name: '山田太郎', email: 'test@example.com') }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, name: '山田太郎', email: 'test@example.com', company: company) }
 
   before do
     sign_in_as(user)

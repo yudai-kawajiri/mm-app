@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "Settings", type: :request do
-  let(:user) { create(:user) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, company: company) }
 
   before do
     sign_in user, scope: :user
@@ -9,7 +10,7 @@ RSpec.describe "Settings", type: :request do
 
   describe "GET /settings" do
     it "returns http success" do
-      get settings_path
+      get scoped_path(:settings)
       expect(response).to have_http_status(:success)
     end
   end

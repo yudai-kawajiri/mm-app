@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'ダッシュボード', type: :system do
-  let(:user) { create(:user) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, company: company) }
 
   before do
     sign_in_as(user)
@@ -9,14 +10,14 @@ RSpec.describe 'ダッシュボード', type: :system do
 
   describe 'ダッシュボード表示' do
     it 'ダッシュボードページが表示される' do
-      visit root_path
+      visit "/c/#{user.company.slug}"
 
       expect(page).to have_content(user.name)
       expect(page).to have_content('ようこそ') | have_content('ダッシュボード')
     end
 
     it '月次選択フォームが表示される' do
-      visit root_path
+      visit "/c/#{user.company.slug}"
 
       expect(page).to have_select('year')
       expect(page).to have_select('month')
@@ -24,7 +25,7 @@ RSpec.describe 'ダッシュボード', type: :system do
     end
 
     it '現在の年月が選択されている' do
-      visit root_path
+      visit "/c/#{user.company.slug}"
 
       current_year = Date.current.year
       current_month = Date.current.month
@@ -36,7 +37,7 @@ RSpec.describe 'ダッシュボード', type: :system do
 
   describe '月次選択機能' do
     it '異なる月を選択して表示できる' do
-      visit root_path
+      visit "/c/#{user.company.slug}"
 
       select '2024年', from: 'year'
       select '12月', from: 'month'
@@ -57,7 +58,7 @@ RSpec.describe 'ダッシュボード', type: :system do
     end
 
     it '月次予算情報が表示される' do
-      visit root_path
+      visit "/c/#{user.company.slug}"
 
       # サマリーカードが表示されることを確認
       expect(page).to have_css('.card') | have_css('.summary-card')

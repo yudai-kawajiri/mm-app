@@ -23,15 +23,19 @@ class Management::DailyTargetsController < Management::BaseController
 
     if @daily_target.save
       message = @daily_target.previously_new_record? ? I18n.t("common.created") : I18n.t("common.updated")
-      redirect_to management_numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  notice: I18n.t("numerical_managements.messages.daily_target_saved",
-                                date: target_date.strftime("%-m月%-d日"),
-                                action: message)
+      redirect_to company_management_numerical_managements_path(
+        company_slug: current_company.slug,
+        month: target_date.strftime("%Y-%m")
+      ), notice: I18n.t("numerical_managements.messages.daily_target_saved",
+                        date: target_date.strftime("%-m月%-d日"),
+                        action: message)
     else
       Rails.logger.error "DailyTarget保存失敗: #{@daily_target.errors.full_messages.join(', ')}"
-      redirect_to management_numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  alert: I18n.t("numerical_managements.messages.daily_target_save_failed",
-                                errors: @daily_target.errors.full_messages.join(", "))
+      redirect_to company_management_numerical_managements_path(
+        company_slug: current_company.slug,
+        month: target_date.strftime("%Y-%m")
+      ), alert: I18n.t("numerical_managements.messages.daily_target_save_failed",
+                       errors: @daily_target.errors.full_messages.join(", "))
     end
   end
 
@@ -45,14 +49,18 @@ class Management::DailyTargetsController < Management::BaseController
     @daily_target.assign_attributes(permitted.except(:target_date))
 
     if @daily_target.save
-      redirect_to management_numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  notice: I18n.t("numerical_managements.messages.daily_target_updated_with_date",
-                                date: target_date.strftime("%-m月%-d日"))
+      redirect_to company_management_numerical_managements_path(
+        company_slug: current_company.slug,
+        month: target_date.strftime("%Y-%m")
+      ), notice: I18n.t("numerical_managements.messages.daily_target_updated_with_date",
+                        date: target_date.strftime("%-m月%-d日"))
     else
       Rails.logger.error "DailyTarget更新失敗: #{@daily_target.errors.full_messages.join(', ')}"
-      redirect_to management_numerical_managements_path(month: target_date.strftime("%Y-%m")),
-                  alert: I18n.t("numerical_managements.messages.daily_target_update_failed",
-                                errors: @daily_target.errors.full_messages.join(", "))
+      redirect_to company_management_numerical_managements_path(
+        company_slug: current_company.slug,
+        month: target_date.strftime("%Y-%m")
+      ), alert: I18n.t("numerical_managements.messages.daily_target_update_failed",
+                       errors: @daily_target.errors.full_messages.join(", "))
     end
   end
 
@@ -74,7 +82,7 @@ class Management::DailyTargetsController < Management::BaseController
 
     Date.parse(date_string)
   rescue ArgumentError, TypeError
-    redirect_to management_numerical_managements_path,
+    redirect_to company_management_numerical_managements_path(company_slug: current_company.slug),
                 alert: I18n.t("api.errors.invalid_date")
     nil
   end
@@ -86,8 +94,10 @@ class Management::DailyTargetsController < Management::BaseController
     )
 
     unless monthly_budget
-      redirect_to management_numerical_managements_path(month: date.strftime("%Y-%m")),
-                  alert: I18n.t("numerical_managements.messages.budget_not_set")
+      redirect_to company_management_numerical_managements_path(
+        company_slug: current_company.slug,
+        month: date.strftime("%Y-%m")
+      ), alert: I18n.t("numerical_managements.messages.budget_not_set")
       return nil
     end
 

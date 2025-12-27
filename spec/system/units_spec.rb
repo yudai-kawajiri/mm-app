@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe '単位管理', type: :system do
-  let(:user) { create(:user) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, company: company) }
 
   before do
     sign_in_as(user)
@@ -12,7 +13,7 @@ RSpec.describe '単位管理', type: :system do
     let!(:unit2) { create(:unit, name: '箱', category: :ordering, user: user) }
 
     it '単位の一覧が表示される' do
-      visit resources_units_path
+      visit "/c/#{user.company.slug}/resources/units"
 
       expect(page).to have_content('単位一覧')
       expect(page).to have_content('kg')
@@ -20,7 +21,7 @@ RSpec.describe '単位管理', type: :system do
     end
 
     it '単位のカテゴリ―が表示される' do
-      visit resources_units_path
+      visit "/c/#{user.company.slug}/resources/units"
 
       # enumの翻訳が表示されることを確認
       expect(page).to have_content('使用単位')
@@ -32,7 +33,7 @@ RSpec.describe '単位管理', type: :system do
     let!(:unit) { create(:unit, name: 'kg', category: :production, user: user) }
 
     it '単位の詳細情報が表示される' do
-      visit resources_unit_path(unit)
+      visit "/c/#{user.company.slug}/resources/units/#{unit.id}"
 
       expect(page).to have_content('単位詳細')
       expect(page).to have_content('kg')
@@ -42,7 +43,7 @@ RSpec.describe '単位管理', type: :system do
 
   describe '単位作成' do
     it '新規作成画面が表示される' do
-      visit new_resources_unit_path
+      visit "/c/#{user.company.slug}/resources/units/new"
 
       expect(page).to have_content('単位登録')
       expect(page).to have_field('単位名')
@@ -51,11 +52,11 @@ RSpec.describe '単位管理', type: :system do
     end
 
     it 'バリデーションエラーが表示される' do
-      visit new_resources_unit_path
+      visit "/c/#{user.company.slug}/resources/units/new"
 
       click_button '登録'
 
-      expect(page).to have_content('単位名 を入力してください')
+      expect(page).to have_content('単位名を入力してください')
     end
   end
 
@@ -63,19 +64,19 @@ RSpec.describe '単位管理', type: :system do
     let!(:unit) { create(:unit, name: 'kg', category: :production, user: user) }
 
     it '編集画面が表示される' do
-      visit edit_resources_unit_path(unit)
+      visit "/c/#{user.company.slug}/resources/units/#{unit.id}/edit"
 
       expect(page).to have_content('単位編集')
       expect(page).to have_field('単位名', with: 'kg')
     end
 
     it 'バリデーションエラーが表示される' do
-      visit edit_resources_unit_path(unit)
+      visit "/c/#{user.company.slug}/resources/units/#{unit.id}/edit"
 
       fill_in '単位名', with: ''
       click_button '更新'
 
-      expect(page).to have_content('単位名 を入力してください')
+      expect(page).to have_content('単位名を入力してください')
     end
   end
 
@@ -83,7 +84,7 @@ RSpec.describe '単位管理', type: :system do
     let!(:unit) { create(:unit, name: 'kg', category: :production, user: user) }
 
     it '単位の削除ボタンが表示される' do
-      visit resources_unit_path(unit)
+      visit "/c/#{user.company.slug}/resources/units/#{unit.id}"
 
       # rack_testドライバーではJavaScriptの確認ダイアログに対応していないため、
       # 削除ボタンの存在確認のみ行う

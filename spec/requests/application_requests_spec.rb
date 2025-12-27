@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "ApplicationRequests", type: :request do
+  let(:company) { create(:company) }
   before do
     host! 'example.com'
   end

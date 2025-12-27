@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe '認証機能', type: :system do
-  let(:user) { create(:user, email: 'test@example.com', password: 'password123') }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, email: 'test@example.com', password: 'password123', company: company) }
 
   describe 'ログイン' do
     scenario 'ユーザーは正しい認証情報でログインできる' do
@@ -12,7 +13,7 @@ RSpec.describe '認証機能', type: :system do
       click_button 'ログイン'
 
       expect(page).to have_content('ログインしました')
-      expect(current_path).to eq(authenticated_root_path)
+      expect(current_path).to eq(authenticated_scoped_path(:root))
     end
 
     scenario '誤った認証情報ではログインできない' do
@@ -42,7 +43,7 @@ RSpec.describe '認証機能', type: :system do
     end
 
     scenario 'ログイン中のユーザーはログアウトできる' do
-      visit authenticated_root_path
+      visit authenticated_scoped_path(:root)
 
       # サイドバー内の「ログアウト」ボタン（button_to で実装されている）
       # t('devise.sessions.sign_out') の翻訳は「ログアウト」
@@ -51,13 +52,13 @@ RSpec.describe '認証機能', type: :system do
       end
 
       expect(page).to have_content('ログアウトしました')
-      expect(current_path).to eq(root_path)
+      expect(current_path).to eq(scoped_path(:root))
     end
   end
 
   describe 'アクセス制限' do
     scenario '未ログインユーザーは保護されたページにアクセスできない' do
-      visit resources_categories_path
+      visit "/c/#{user.company.slug}/resources/categories"
 
       expect(current_path).to eq(new_user_session_path)
       expect(page).to have_content('アカウント登録もしくはログインが必要です')
@@ -65,9 +66,9 @@ RSpec.describe '認証機能', type: :system do
 
     scenario 'ログイン後は保護されたページにアクセスできる' do
       sign_in_as(user)
-      visit resources_categories_path
+      visit "/c/#{user.company.slug}/resources/categories"
 
-      expect(current_path).to eq(resources_categories_path)
+      expect(current_path).to eq(scoped_path(:resources_categories))
       expect(page).to have_http_status(:success)
     end
   end

@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "Dashboards", type: :request do
-  let(:super_admin_user) { create(:user, :super_admin) }
-  let(:general_user) { create(:user, :general) }
+  let(:company) { create(:company) }
+  let(:super_admin_user) { create(:user, :super_admin, company: company) }
+  let(:general_user) { create(:user, :general, company: company) }
   let(:year) { Date.current.year }
   let(:month) { Date.current.month }
 
@@ -75,7 +76,7 @@ RSpec.describe "Dashboards", type: :request do
     # 修正2: 未ログイン時のテストを実際の動作に合わせる
     context 'ログインしていない場合' do
       it 'ログインページが表示されること' do
-        get root_path  # authenticated_root_pathではなくroot_path
+        get scoped_path(:root)  # authenticated_root_pathではなくroot_path
         expect(response).to have_http_status(:success)
         expect(response).to render_template('landing/index')
       end

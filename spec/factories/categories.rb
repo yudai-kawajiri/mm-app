@@ -22,7 +22,8 @@ FactoryBot.define do
     end
 
     trait :plan do
-      category_type { :plan }
+      reading { 'けいかくかてごり' }
+    category_type { :plan }
     end
   end
 end

@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
-# Category
-#
 # カテゴリーモデル - 材料、製品、計画の分類を管理
-#
-# カテゴリー種別:
-#   - material: 材料カテゴリー (0)
-#   - product: 製品カテゴリー (1)
-#   - plan: 計画カテゴリー (2)
 class Resources::Category < ApplicationRecord
   belongs_to :company
   include TranslatableAssociations

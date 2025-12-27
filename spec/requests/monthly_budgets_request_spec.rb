@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "MonthlyBudgets", type: :request do
-  let(:super_admin_user) { create(:user, :super_admin) }
-  let(:general_user) { create(:user, :general) }
+  let(:company) { create(:company) }
+  let(:super_admin_user) { create(:user, :super_admin, company: company) }
+  let(:general_user) { create(:user, :general, company: company) }
   let(:year) { Date.current.year }
   let(:month) { Date.current.month }
   let(:budget_month) { Date.new(year, month, 1) }
@@ -31,7 +32,7 @@ RSpec.describe "MonthlyBudgets", type: :request do
 
         it '数値管理ページにリダイレクトされること' do
           post management_monthly_budgets_path, params: valid_params
-          expect(response).to redirect_to(management_numerical_managements_path(year: year, month: month))
+          expect(response).to redirect_to(scoped_path(:management_numerical_managements, year: year, month: month))
         end
 
         it '成功メッセージが表示されること' do
@@ -64,7 +65,7 @@ RSpec.describe "MonthlyBudgets", type: :request do
 
         it '数値管理ページにリダイレクトされること' do
           post management_monthly_budgets_path, params: invalid_params
-          expect(response).to redirect_to(management_numerical_managements_path(year: year, month: month))
+          expect(response).to redirect_to(scoped_path(:management_numerical_managements, year: year, month: month))
         end
       end
 
@@ -127,7 +128,7 @@ RSpec.describe "MonthlyBudgets", type: :request do
 
         it '数値管理ページにリダイレクトされること' do
           patch management_monthly_budget_path(monthly_budget), params: valid_params
-          expect(response).to redirect_to(management_numerical_managements_path(year: year, month: month))
+          expect(response).to redirect_to(scoped_path(:management_numerical_managements, year: year, month: month))
         end
 
         it '成功メッセージが表示されること' do
@@ -181,7 +182,7 @@ RSpec.describe "MonthlyBudgets", type: :request do
 
       it '数値管理ページにリダイレクトされること' do
         delete management_monthly_budget_path(monthly_budget)
-        expect(response).to redirect_to(management_numerical_managements_path(year: year, month: month))
+        expect(response).to redirect_to(scoped_path(:management_numerical_managements, year: year, month: month))
       end
 
       it '成功メッセージが表示されること' do

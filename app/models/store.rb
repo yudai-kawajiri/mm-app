@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-# Store
-#
-# 店舗モデル
-# - 1つの会社（Company）に複数の店舗が所属
-# - データは店舗ごとに完全分離（他店舗のデータは閲覧不可）
 class Store < ApplicationRecord
+  INVITATION_CODE_LENGTH = 8
+  MAX_CODE_GENERATION_ATTEMPTS = 100
+
+  attribute :active, :boolean, default: true
+
   belongs_to :company
+
   has_many :users, dependent: :restrict_with_error
   has_many :products, class_name: "Resources::Product", dependent: :destroy
   has_many :materials, class_name: "Resources::Material", dependent: :destroy
@@ -22,15 +23,10 @@ class Store < ApplicationRecord
   validates :code, presence: true, uniqueness: { scope: :company_id }
   validates :invitation_code, uniqueness: true, allow_nil: true
 
-  attribute :active, :boolean, default: true
-
   before_create :generate_invitation_code
 
   def regenerate_invitation_code!
-    loop do
-      self.invitation_code = SecureRandom.alphanumeric(8).upcase
-      break unless Store.exists?(invitation_code: invitation_code)
-    end
+    generate_unique_invitation_code
     save!
   end
 
@@ -38,10 +34,15 @@ class Store < ApplicationRecord
 
   def generate_invitation_code
     return if invitation_code.present?
+    generate_unique_invitation_code
+  end
 
-    loop do
-      self.invitation_code = SecureRandom.alphanumeric(8).upcase
-      break unless Store.exists?(invitation_code: invitation_code)
+  def generate_unique_invitation_code
+    MAX_CODE_GENERATION_ATTEMPTS.times do
+      self.invitation_code = SecureRandom.alphanumeric(INVITATION_CODE_LENGTH).upcase
+      return unless Store.exists?(invitation_code: invitation_code)
     end
+
+    raise "Failed to generate unique invitation code after #{MAX_CODE_GENERATION_ATTEMPTS} attempts"
   end
 end

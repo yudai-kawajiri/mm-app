@@ -1,8 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe 'Smoke Test', type: :system do
+  let(:company) { create(:company) }
+  let(:user) { create(:user, company: company) }
   scenario 'トップページにアクセスできる' do
-    visit root_path
+    visit "/c/#{user.company.slug}"
     expect(page).to have_http_status(:success)
   end
 

@@ -72,6 +72,7 @@ ja:
         format: "%u%n"
   errors:
     messages:
+      hiragana_only: "はひらがなで入力してください"
       unauthorized: この操作を行う権限がありません
     invalid_subdomain_access: アクセス権限がありません
     page_not_found: ページが見つかりませんでした
