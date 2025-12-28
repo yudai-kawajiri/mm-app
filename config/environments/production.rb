@@ -78,6 +78,6 @@ Rails.application.configure do
     "X-Content-Type-Options" => "nosniff"
   }
 
-# CSRF protection
-config.action_controller.default_protect_from_forgery = true
+  # CSRF protection
+  config.action_controller.default_protect_from_forgery = true
 end
