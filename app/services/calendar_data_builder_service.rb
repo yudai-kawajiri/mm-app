@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-#
-# CalendarDataBuilderService
-#
-# 数値管理カレンダーのデータ構築を処理するサービスクラス
-#
 class CalendarDataBuilderService
   def initialize(year, month, store_id: nil)
     @year = year.to_i

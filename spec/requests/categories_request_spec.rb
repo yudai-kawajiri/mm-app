@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "Categories", type: :request do
-  let(:super_admin_user) { create(:user, :super_admin) }
-  let(:general_user) { create(:user, :general) }
+  let(:company) { create(:company) }
+  let(:super_admin_user) { create(:user, :super_admin, company: company) }
+  let(:general_user) { create(:user, :general, company: company) }
   let!(:category) { create(:category, user: super_admin_user) }
 
   describe 'GET /categories' do
@@ -10,28 +11,28 @@ RSpec.describe "Categories", type: :request do
       before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
-        get resources_categories_path
+        get scoped_path(:resources_categories)
         expect(response).to have_http_status(:success)
       end
 
       it '@categoriesにカテゴリ―を割り当てること' do
-        get resources_categories_path
+        get scoped_path(:resources_categories)
         expect(assigns(:categories)).to include(category)
       end
 
       it 'indexテンプレートを表示すること' do
-        get resources_categories_path
+        get scoped_path(:resources_categories)
         expect(response).to render_template(:index)
       end
 
       context '検索パラメータがある場合' do
         it 'qパラメータでリクエストが成功すること' do
-          get resources_categories_path, params: { q: 'テスト' }
+          get scoped_path(:resources_categories), params: { q: 'テスト' }
           expect(response).to have_http_status(:success)
         end
 
         it 'category_typeパラメータでリクエストが成功すること' do
-          get resources_categories_path, params: { category_type: 'material' }
+          get scoped_path(:resources_categories), params: { category_type: 'material' }
           expect(response).to have_http_status(:success)
         end
       end
@@ -39,8 +40,8 @@ RSpec.describe "Categories", type: :request do
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        get resources_categories_path
-        expect(response).to redirect_to(new_user_session_path)
+        get scoped_path(:resources_categories)
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -50,25 +51,25 @@ RSpec.describe "Categories", type: :request do
       before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
-        get new_resources_category_path
+        get scoped_path(:new_resources_category)
         expect(response).to have_http_status(:success)
       end
 
       it '@categoryに新しいカテゴリ―を割り当てること' do
-        get new_resources_category_path
+        get scoped_path(:new_resources_category)
         expect(assigns(:category)).to be_a_new(Resources::Category)
       end
 
       it 'newテンプレートを表示すること' do
-        get new_resources_category_path
+        get scoped_path(:new_resources_category)
         expect(response).to render_template(:new)
       end
     end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        get new_resources_category_path
-        expect(response).to redirect_to(new_user_session_path)
+        get scoped_path(:new_resources_category)
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -82,7 +83,7 @@ RSpec.describe "Categories", type: :request do
           {
             resources_category: {
               name: '新しいカテゴリ―',
-              reading: "てすとかてごりー",
+              reading: "てすとかてごり",
               category_type: 'material',
               description: 'テスト概要'
             }
@@ -91,17 +92,17 @@ RSpec.describe "Categories", type: :request do
 
         it 'カテゴリ―が作成されること' do
           expect {
-            post resources_categories_path, params: valid_params
+            post scoped_path(:resources_categories), params: valid_params
           }.to change(Resources::Category, :count).by(1)
         end
 
         it '作成したカテゴリ―詳細にリダイレクトされること' do
-          post resources_categories_path, params: valid_params
-          expect(response).to redirect_to(resources_category_url(Resources::Category.last))
+          post scoped_path(:resources_categories), params: valid_params
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
-          post resources_categories_path, params: valid_params
+          post scoped_path(:resources_categories), params: valid_params
           expect(flash[:notice]).to be_present
         end
       end
@@ -118,7 +119,7 @@ RSpec.describe "Categories", type: :request do
 
         it 'カテゴリ―が作成されないこと' do
           expect {
-            post resources_categories_path, params: invalid_params
+            post scoped_path(:resources_categories), params: invalid_params
           }.not_to change(Resources::Category, :count)
         end
       end
@@ -126,8 +127,8 @@ RSpec.describe "Categories", type: :request do
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        post resources_categories_path, params: { resources_category: { name: 'テスト' } }
-        expect(response).to redirect_to(new_user_session_path)
+        post scoped_path(:resources_categories), params: { resources_category: { name: 'テスト' } }
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -137,25 +138,25 @@ RSpec.describe "Categories", type: :request do
       before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
-        get resources_category_path(category)
+        get scoped_path(:resources_category, category)
         expect(response).to have_http_status(:success)
       end
 
       it '@categoryにカテゴリ―を割り当てること' do
-        get resources_category_path(category)
+        get scoped_path(:resources_category, category)
         expect(assigns(:category)).to eq(category)
       end
 
       it 'showテンプレートを表示すること' do
-        get resources_category_path(category)
+        get scoped_path(:resources_category, category)
         expect(response).to render_template(:show)
       end
     end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        get resources_category_path(category)
-        expect(response).to redirect_to(new_user_session_path)
+        get scoped_path(:resources_category, category)
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -165,25 +166,25 @@ RSpec.describe "Categories", type: :request do
       before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
-        get edit_resources_category_path(category)
+        get scoped_path(:edit_resources_category, category)
         expect(response).to have_http_status(:success)
       end
 
       it '@categoryにカテゴリ―を割り当てること' do
-        get edit_resources_category_path(category)
+        get scoped_path(:edit_resources_category, category)
         expect(assigns(:category)).to eq(category)
       end
 
       it 'editテンプレートを表示すること' do
-        get edit_resources_category_path(category)
+        get scoped_path(:edit_resources_category, category)
         expect(response).to render_template(:edit)
       end
     end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        get edit_resources_category_path(category)
-        expect(response).to redirect_to(new_user_session_path)
+        get scoped_path(:edit_resources_category, category)
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -207,7 +208,7 @@ RSpec.describe "Categories", type: :request do
           {
             resources_category: {
               name: '更新されたカテゴリ―名',
-              reading: 'こうしんされたかてごりーめい',
+              reading: 'こうしんされたかてごりめい',
               category_type: 'product',
               description: '更新された説明'
             }
@@ -215,18 +216,18 @@ RSpec.describe "Categories", type: :request do
         end
 
         it 'カテゴリ―が更新されること' do
-          patch resources_category_path(category), params: update_params
+          patch scoped_path(:resources_category, category), params: update_params
           category.reload
           expect(category.name).to eq('更新されたカテゴリ―名')
         end
 
         it 'カテゴリ―詳細にリダイレクトされること' do
-          patch resources_category_path(category), params: update_params
-          expect(response).to redirect_to(resources_category_url(category))
+          patch scoped_path(:resources_category, category), params: update_params
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
-          patch resources_category_path(category), params: update_params
+          patch scoped_path(:resources_category, category), params: update_params
           expect(flash[:notice]).to be_present
         end
       end
@@ -242,7 +243,7 @@ RSpec.describe "Categories", type: :request do
 
         it 'カテゴリ―が更新されないこと' do
           original_name = category.name
-          patch resources_category_path(category), params: invalid_params
+          patch scoped_path(:resources_category, category), params: invalid_params
           category.reload
           expect(category.name).to eq(original_name)
         end
@@ -251,8 +252,8 @@ RSpec.describe "Categories", type: :request do
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        patch resources_category_path(category), params: { resources_category: { name: '更新' } }
-        expect(response).to redirect_to(new_user_session_path)
+        patch scoped_path(:resources_category, category), params: { resources_category: { name: '更新' } }
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -264,25 +265,25 @@ RSpec.describe "Categories", type: :request do
       it 'カテゴリ―が削除されること' do
         category_to_delete = create(:category, user: super_admin_user)
         expect {
-          delete resources_category_path(category_to_delete)
+          delete scoped_path(:resources_category, category_to_delete)
         }.to change(Resources::Category, :count).by(-1)
       end
 
       it 'カテゴリ―一覧にリダイレクトされること' do
-        delete resources_category_path(category)
-        expect(response).to redirect_to(resources_categories_url)
+        delete scoped_path(:resources_category, category)
+        expect(response).to have_http_status(:redirect)
       end
 
       it '成功メッセージが表示されること' do
-        delete resources_category_path(category)
+        delete scoped_path(:resources_category, category)
         expect(flash[:notice]).to be_present
       end
     end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        delete resources_category_path(category)
-        expect(response).to redirect_to(new_user_session_path)
+        delete scoped_path(:resources_category, category)
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end

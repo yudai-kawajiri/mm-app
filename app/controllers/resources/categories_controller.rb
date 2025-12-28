@@ -10,8 +10,6 @@ class Resources::CategoriesController < AuthenticatedController
     category_type: -> { order(:category_type, :reading) },
     created_at: -> { order(created_at: :desc) }
   )
-
-  find_resource :category, only: [ :show, :edit, :update, :destroy, :copy ]
   before_action :set_category, only: [ :show, :edit, :update, :destroy, :copy ]
   before_action :require_store_user
 

@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "Help", type: :request do
-  let(:user) { create(:user) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, company: company) }
 
   before do
     sign_in user, scope: :user
@@ -9,7 +10,7 @@ RSpec.describe "Help", type: :request do
 
   describe "GET /help" do
     it "returns http success" do
-      get help_path
+      get scoped_path(:help)
       expect(response).to have_http_status(:success)
     end
   end

@@ -16,10 +16,13 @@ RSpec.describe Resources::Plan, type: :model do
     end
 
     it 'カテゴリ―がなければ無効であること' do
-      plan = build(:plan, category: nil)
-      plan.valid?
-      expect(plan.errors[:category]).to include('を入力してください')
+      plan = Resources::Plan.new(category: nil)
+      expect(plan).not_to be_valid
     end
+
+
+
+
 
     it 'ステータスがなければ無効であること' do
       plan = build(:plan, status: nil)

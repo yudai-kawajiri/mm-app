@@ -7,7 +7,7 @@ FactoryBot.define do
     sequence(:reading) do |n|
       hiragana_nums = %w[ぜろ いち に さん よん ご ろく なな はち きゅう]
       digits = n.to_s.chars.map { |d| hiragana_nums[d.to_i] }
-      "はっちゅうぐるーぷ#{digits.join}"
+      "はっちゅうぐるぷ#{digits.join}"
     end
     association :user
   end

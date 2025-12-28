@@ -1,48 +1,36 @@
 # frozen_string_literal: true
 
-# DailyTarget
-#
-# 日別目標モデル - 月次予算の日ごとの目標金額を管理
-#
-# 使用例:
-#   DailyTarget.create(target_date: Date.today, target_amount: 50000, monthly_budget_id: 1)
-#   DailyTarget.for_month(2024, 12)
-#   DailyTarget.recent
+# 日別目標（月次予算を日単位に分割）
 class Management::DailyTarget < ApplicationRecord
   belongs_to :company
-  # 変更履歴の記録
-  has_paper_trail
-
-  # 共通機能の組み込み
-  include UserAssociatable
-
-  # 月次予算との関連
   belongs_to :monthly_budget, class_name: "Management::MonthlyBudget"
 
-  # バリデーション
+  has_paper_trail
+  include UserAssociatable
+
   validates :target_date, presence: true, uniqueness: { scope: :monthly_budget_id }
   validates :target_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-  # company_id を monthly_budget から自動設定
   before_validation :set_company_id, on: :create
 
-  # 指定された年月の日別目標を取得
-  #
-  # @param year [Integer] 年
-  # @param month [Integer] 月
-  # @return [ActiveRecord::Relation] 検索結果
-  scope :for_month, lambda { |year, month|
-    start_date = Date.new(year, month, 1)
-    end_date = start_date.end_of_month
-    where(target_date: start_date..end_date)
-  }
-
-  # 日付順で取得（降順）
+  scope :for_month, ->(year, month) { where(target_date: Date.new(year, month, 1).all_month) }
   scope :recent, -> { order(target_date: :desc) }
+
+  # 当日の実績売上を取得
+  def actual_revenue
+    @actual_revenue ||= Planning::PlanSchedule
+                        .where(scheduled_date: target_date, company_id: company_id)
+                        .sum(:actual_revenue)
+  end
+
+  # 達成率を計算
+  def achievement_rate
+    return 0 if target_amount.zero?
+    (actual_revenue.to_f / target_amount * 100).round(1)
+  end
 
   private
 
-  # company_id を monthly_budget から自動設定
   def set_company_id
     self.company_id ||= monthly_budget&.company_id
   end

@@ -114,7 +114,7 @@ class Resources::ProductsController < AuthenticatedController
     @product.image.purge if @product.image.attached?
 
     respond_to do |format|
-      format.html { redirect_to edit_resources_product_path(@product), notice: t("products.messages.image_deleted") }
+      format.html { redirect_to edit_company_resources_product_path(company_slug: current_company.slug, id: @product.id), notice: t("products.messages.image_deleted") }
       format.json { head :no_content }
     end
   end

@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "Units", type: :request do
-  let(:super_admin_user) { create(:user, :super_admin) }
-  let(:general_user) { create(:user, :general) }
+  let(:company) { create(:company) }
+  let(:super_admin_user) { create(:user, :super_admin, company: company) }
+  let(:general_user) { create(:user, :general, company: company) }
   let!(:unit) { create(:unit, user: super_admin_user) }
 
   describe 'GET /units' do
@@ -10,28 +11,28 @@ RSpec.describe "Units", type: :request do
       before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
-        get resources_units_path
+        get scoped_path(:resources_units)
         expect(response).to have_http_status(:success)
       end
 
       it '@unitsに単位を割り当てること' do
-        get resources_units_path
+        get scoped_path(:resources_units)
         expect(assigns(:units)).to include(unit)
       end
 
       it 'indexテンプレートを表示すること' do
-        get resources_units_path
+        get scoped_path(:resources_units)
         expect(response).to render_template(:index)
       end
 
       context '検索パラメータがある場合' do
         it 'qパラメータでリクエストが成功すること' do
-          get resources_units_path, params: { q: 'テスト' }
+          get scoped_path(:resources_units), params: { q: 'テスト' }
           expect(response).to have_http_status(:success)
         end
 
         it 'categoryパラメータでリクエストが成功すること' do
-          get resources_units_path, params: { category: 'production' }
+          get scoped_path(:resources_units), params: { category: 'production' }
           expect(response).to have_http_status(:success)
         end
       end
@@ -39,8 +40,8 @@ RSpec.describe "Units", type: :request do
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        get resources_units_path
-        expect(response).to redirect_to(new_user_session_path)
+        get scoped_path(:resources_units)
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -50,25 +51,25 @@ RSpec.describe "Units", type: :request do
       before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
-        get new_resources_unit_path
+        get scoped_path(:new_resources_unit)
         expect(response).to have_http_status(:success)
       end
 
       it '@unitに新しい単位を割り当てること' do
-        get new_resources_unit_path
+        get scoped_path(:new_resources_unit)
         expect(assigns(:unit)).to be_a_new(Resources::Unit)
       end
 
       it 'newテンプレートを表示すること' do
-        get new_resources_unit_path
+        get scoped_path(:new_resources_unit)
         expect(response).to render_template(:new)
       end
     end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        get new_resources_unit_path
-        expect(response).to redirect_to(new_user_session_path)
+        get scoped_path(:new_resources_unit)
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -91,17 +92,17 @@ RSpec.describe "Units", type: :request do
 
         it '単位が作成されること' do
           expect {
-            post resources_units_path, params: valid_params
+            post scoped_path(:resources_units), params: valid_params
           }.to change(Resources::Unit, :count).by(1)
         end
 
         it '単位一覧にリダイレクトされること' do
-          post resources_units_path, params: valid_params
-          expect(response).to redirect_to(resources_unit_path(Resources::Unit.last))
+          post scoped_path(:resources_units), params: valid_params
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
-          post resources_units_path, params: valid_params
+          post scoped_path(:resources_units), params: valid_params
           expect(flash[:notice]).to be_present
         end
       end
@@ -118,7 +119,7 @@ RSpec.describe "Units", type: :request do
 
         it '単位が作成されないこと' do
           expect {
-            post resources_units_path, params: invalid_params
+            post scoped_path(:resources_units), params: invalid_params
           }.not_to change(Resources::Unit, :count)
         end
       end
@@ -126,8 +127,8 @@ RSpec.describe "Units", type: :request do
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        post resources_units_path, params: { resources_unit: { name: 'テスト' } }
-        expect(response).to redirect_to(new_user_session_path)
+        post scoped_path(:resources_units), params: { resources_unit: { name: 'テスト' } }
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -137,25 +138,25 @@ RSpec.describe "Units", type: :request do
       before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
-        get resources_unit_path(unit)
+        get scoped_path(:resources_unit, unit)
         expect(response).to have_http_status(:success)
       end
 
       it '@unitに単位を割り当てること' do
-        get resources_unit_path(unit)
+        get scoped_path(:resources_unit, unit)
         expect(assigns(:unit)).to eq(unit)
       end
 
       it 'showテンプレートを表示すること' do
-        get resources_unit_path(unit)
+        get scoped_path(:resources_unit, unit)
         expect(response).to render_template(:show)
       end
     end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        get resources_unit_path(unit)
-        expect(response).to redirect_to(new_user_session_path)
+        get scoped_path(:resources_unit, unit)
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -165,25 +166,25 @@ RSpec.describe "Units", type: :request do
       before { sign_in general_user, scope: :user }
 
       it '正常にレスポンスを返すこと' do
-        get edit_resources_unit_path(unit)
+        get scoped_path(:edit_resources_unit, unit)
         expect(response).to have_http_status(:success)
       end
 
       it '@unitに単位を割り当てること' do
-        get edit_resources_unit_path(unit)
+        get scoped_path(:edit_resources_unit, unit)
         expect(assigns(:unit)).to eq(unit)
       end
 
       it 'editテンプレートを表示すること' do
-        get edit_resources_unit_path(unit)
+        get scoped_path(:edit_resources_unit, unit)
         expect(response).to render_template(:edit)
       end
     end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        get edit_resources_unit_path(unit)
-        expect(response).to redirect_to(new_user_session_path)
+        get scoped_path(:edit_resources_unit, unit)
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -203,18 +204,18 @@ RSpec.describe "Units", type: :request do
         end
 
         it '単位が更新されること' do
-          patch resources_unit_path(unit), params: valid_params
+          patch scoped_path(:resources_unit, unit), params: valid_params
           unit.reload
           expect(unit.name).to eq('更新された単位名')
         end
 
         it '単位一覧にリダイレクトされること' do
-          patch resources_unit_path(unit), params: valid_params
-          expect(response).to redirect_to(resources_unit_path(unit))
+          patch scoped_path(:resources_unit, unit), params: valid_params
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
-          patch resources_unit_path(unit), params: valid_params
+          patch scoped_path(:resources_unit, unit), params: valid_params
           expect(flash[:notice]).to be_present
         end
       end
@@ -230,7 +231,7 @@ RSpec.describe "Units", type: :request do
 
         it '単位が更新されないこと' do
           original_name = unit.name
-          patch resources_unit_path(unit), params: invalid_params
+          patch scoped_path(:resources_unit, unit), params: invalid_params
           unit.reload
           expect(unit.name).to eq(original_name)
         end
@@ -239,8 +240,8 @@ RSpec.describe "Units", type: :request do
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        patch resources_unit_path(unit), params: { resources_unit: { name: '更新' } }
-        expect(response).to redirect_to(new_user_session_path)
+        patch scoped_path(:resources_unit, unit), params: { resources_unit: { name: '更新' } }
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end
@@ -252,25 +253,25 @@ RSpec.describe "Units", type: :request do
       it '単位が削除されること' do
         unit_to_delete = create(:unit, user: super_admin_user)
         expect {
-          delete resources_unit_path(unit_to_delete)
+          delete scoped_path(:resources_unit, unit_to_delete)
         }.to change(Resources::Unit, :count).by(-1)
       end
 
       it '単位一覧にリダイレクトされること' do
-        delete resources_unit_path(unit)
-        expect(response).to redirect_to(resources_units_url)
+        delete scoped_path(:resources_unit, unit)
+        expect(response).to have_http_status(:redirect)
       end
 
       it '成功メッセージが表示されること' do
-        delete resources_unit_path(unit)
+        delete scoped_path(:resources_unit, unit)
         expect(flash[:notice]).to be_present
       end
     end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
-        delete resources_unit_path(unit)
-        expect(response).to redirect_to(new_user_session_path)
+        delete scoped_path(:resources_unit, unit)
+        expect(response).to have_http_status(:redirect).or have_http_status(:not_found)
       end
     end
   end

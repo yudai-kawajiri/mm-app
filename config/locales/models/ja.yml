@@ -17,11 +17,11 @@ ja:
               taken: は既に使用されています
             slug:
               taken: は既に使用されています
-        store:
-          attributes:
-            base:
-              restrict_dependent_destroy:
-                has_many: この店舗にはユーザーが所属しているため削除できません。先にユーザーを移動または削除してください。
+        contact:
+          name: お名前
+          email: メールアドレス
+          subject: 件名
+          message: お問い合わせ内容
         store:
           attributes:
             base:
@@ -82,6 +82,8 @@ ja:
       store: 店舗
       company: 会社
       admin_request: 承認リクエスト
+      contact: お問い合わせ
+      application_request: 申請
       category: カテゴリー
       resource: 資源
       material: 原材料
@@ -291,6 +293,12 @@ ja:
         description: 概要
 
     enums:
+      user:
+        role:
+          general: 一般
+          store_admin: 店舗管理者
+          company_admin: 会社管理者
+          super_admin: システム管理者
       "resources/category":
         category_type:
           material: 原材料
