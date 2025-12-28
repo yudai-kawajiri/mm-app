@@ -151,8 +151,7 @@
 
                     <% first_schedule = day[:plan_schedules].first %>
                     <%
-                      snapshot_plan_name = first_schedule&.snapshot_products.is_a?(Hash) ? first_schedule.snapshot_products["plan_name"] : nil rescue nil
-                      snapshot_category_name = first_schedule&.snapshot_products.is_a?(Hash) ? first_schedule.snapshot_products["category_name"] : nil rescue nil
+                      # snapshot_plan_name と snapshot_category_name は将来の機能用に予約
                     %>
                     <button type="button"
                             class="btn <%= first_schedule ? "btn-outline-warning" : "btn-outline-info" %> plan-add-btn"

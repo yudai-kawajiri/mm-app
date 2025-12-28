@@ -23,7 +23,7 @@
     <%
       route_key = resource_class.model_name.route_key
       scope = local_assigns[:scope]
-      scope_prefix = scope.is_a?(Array) ? scope.first : scope
+      # scope_prefix は将来の機能用に予約
       form_path = scoped_path("#{route_key}_path".to_sym)
     %>
     <%= render 'shared/forms/search_form',

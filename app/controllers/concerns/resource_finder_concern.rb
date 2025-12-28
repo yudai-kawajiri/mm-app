@@ -32,7 +32,8 @@ module ResourceFinderConcern
       resource_sym = resource_name.to_sym
       callback_method_name = "set_#{resource_sym}"
 
-      define_method callback_method_name do
+      silence_warnings do
+        define_method callback_method_name do
         begin
           # Controllerの名前空間からモデルクラスを推定
           # 例: Resources::ProductsController → Resources::Product
@@ -54,8 +55,9 @@ module ResourceFinderConcern
           redirect_to root_url
         end
       end
+      end
 
-      before_action callback_method_name.to_sym, options
+      silence_warnings { silence_warnings { before_action callback_method_name.to_sym, options } }
     end
   end
 end

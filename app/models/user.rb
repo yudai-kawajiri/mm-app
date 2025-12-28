@@ -97,7 +97,7 @@ class User < ApplicationRecord
     errors.add(:store_id, :blank) if store_admin? && store_id.blank?
   end
 
-def self.roles_i18n
+def self.roles_i18n_custom
   {
     general: I18n.t('activerecord.attributes.user.roles.general'),
     store_admin: I18n.t('activerecord.attributes.user.roles.store_admin'),
@@ -106,12 +106,4 @@ def self.roles_i18n
   }
 end
 
-def self.roles_i18n
-  {
-    I18n.t('admin.users.roles.general') => 'general',
-    I18n.t('admin.users.roles.store_admin') => 'store_admin',
-    I18n.t('admin.users.roles.company_admin') => 'company_admin',
-    I18n.t('admin.users.roles.super_admin') => 'super_admin'
-  }
-end
 end
