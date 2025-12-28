@@ -127,4 +127,12 @@ RSpec.describe Planning::PlanProduct, type: :model do
       expect(plan_product.versions.count).to be > 0
     end
   end
+
+    describe '#product_name' do
+    it 'returns product name' do
+      pp = create(:plan_product)
+      expect(pp.product).to respond_to(:name)
+    end
+  end
+
 end

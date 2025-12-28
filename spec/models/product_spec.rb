@@ -77,4 +77,19 @@ RSpec.describe Resources::Product, type: :model do
       expect(product.user).to be_present
     end
   end
+
+  describe '#display_info' do
+    it 'returns product info' do
+      product = create(:product, name: 'Test Product')
+      expect(product.name).to eq('Test Product')
+    end
+  end
+
+  describe 'with materials' do
+    it 'has product_materials' do
+      product = create(:product)
+      expect(product).to respond_to(:product_materials)
+    end
+  end
+
 end

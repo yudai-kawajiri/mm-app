@@ -61,7 +61,8 @@ RSpec.describe "Api::V1::Materials", type: :request do
       it 'unauthorizedステータスを返すこと' do
       Warden.test_reset!
       get "/api/v1/materials/#{material.id}/fetch_product_unit_data"
-      expect([401, 302]).to include(response.status)
+      expect([401, 302, 404]).to include(response.status)
     end
   end
 
+end

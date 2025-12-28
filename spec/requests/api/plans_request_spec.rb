@@ -48,5 +48,4 @@ RSpec.describe "Api::V1::Plans", type: :request do
         expect(json).to have_key('error')
       end
     end
-  end
-end
+  end    end
