@@ -14,7 +14,7 @@ Rails.application.configure do
   config.assume_ssl = false
 
   # HTTPSを強制（HSTS、セキュアCookie有効化）
-  config.force_ssl = false
+  config.force_ssl = true
 
   # DNSリバインディング攻撃対策
   allowed_hosts = ENV.fetch("ALLOWED_HOSTS", "").split(",").map(&:strip)
