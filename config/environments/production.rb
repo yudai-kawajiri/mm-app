@@ -77,4 +77,7 @@ Rails.application.configure do
     "X-XSS-Protection" => "1; mode=block",
     "X-Content-Type-Options" => "nosniff"
   }
+
+# CSRF protection
+config.action_controller.default_protect_from_forgery = true
 end
