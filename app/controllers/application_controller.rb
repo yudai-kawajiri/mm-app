@@ -8,7 +8,6 @@ class ApplicationController < ActionController::Base
   before_action :auto_login_pending_user
   before_action :set_current_company
 
-  helper_method :current_company, :current_store
 
   private
 

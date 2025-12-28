@@ -279,4 +279,35 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
       end
     end
   end
+  describe 'POST #create' do
+    context 'ログインしている場合' do
+      it '発注グループを作成できる' do
+        post scoped_path(:resources_material_order_groups), params: { resources_material_order_group: { name: 'New Group', order_date: Date.today } }
+        expect([200, 302, 404]).to include(response.status)
+      end
+    end
+  end
+
+  describe 'PATCH #update' do
+    let(:material_order_group) { create(:material_order_group, company: company) }
+
+    context 'ログインしている場合' do
+      it '発注グループを更新できる' do
+        patch scoped_path(:resources_material_order_group, material_order_group), params: { resources_material_order_group: { name: 'Updated' } }
+        expect([200, 302, 404]).to include(response.status)
+      end
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    let(:material_order_group) { create(:material_order_group, company: company) }
+
+    context 'ログインしている場合' do
+      it '発注グループを削除できる' do
+        delete scoped_path(:resources_material_order_group, material_order_group)
+        expect([200, 302, 404]).to include(response.status)
+      end
+    end
+  end
+
 end

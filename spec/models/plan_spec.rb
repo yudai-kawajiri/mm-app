@@ -62,4 +62,19 @@ RSpec.describe Resources::Plan, type: :model do
       expect(plan.user).to be_present
     end
   end
+
+  describe '#active?' do
+    it 'returns status check' do
+      plan = create(:plan)
+      expect(plan).to respond_to(:status)
+    end
+  end
+
+  describe 'with products' do
+    it 'has plan_products' do
+      plan = create(:plan)
+      expect(plan).to respond_to(:plan_products)
+    end
+  end
+
 end

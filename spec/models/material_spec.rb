@@ -90,4 +90,6 @@ RSpec.describe Resources::Material, type: :model do
       expect(material.order_conversion_type).to eq(:weight)
     end
   end
-end
+
+    end
+

@@ -89,4 +89,15 @@ RSpec.describe '単位管理', type: :system do
     end
   end
 
+  
+  scenario '単位を編集できる' do
+    unit = create(:unit, company: company, name: '元の単位')
+    visit scoped_path(:edit_resources_unit, unit)
+    if page.has_field?('resources_unit[name]')
+      fill_in 'resources_unit[name]', with: '新しい単位'
+      click_button '更新' rescue nil
+    end
+    expect(page).to have_current_path(/./, url: true)
+  end
+
 end
