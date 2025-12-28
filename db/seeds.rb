@@ -1,4 +1,4 @@
-puts "===== Seeding database ====="
+puts "===== データベースのシード処理を開始 ====="
 
 # システム管理者用会社（冪等性対応）
 admin_company = Company.find_or_create_by!(slug: 'admin') do |c|
@@ -59,4 +59,4 @@ end
 
 puts "✓ 店舗管理者作成完了: #{store_admin.email}"
 
-puts "===== Seeding complete ====="
+puts "===== シード処理完了 ====="
