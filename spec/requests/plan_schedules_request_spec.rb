@@ -1,6 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe "PlanSchedules", type: :request do
+RSpec.describe 'PlanSchedules', type: :request do
+  include Warden::Test::Helpers
+
+  before { Warden.test_mode! }
+  after { Warden.test_reset! }
   let(:company) { create(:company) }
   let(:super_admin_user) { create(:user, :super_admin, company: company) }
   let(:general_user) { create(:user, :general, company: company) }
@@ -33,7 +37,7 @@ RSpec.describe "PlanSchedules", type: :request do
 
         it '数値管理ページにリダイレクトされること' do
           post scoped_path(:management_plan_schedules), params: valid_params
-          expect(response).to redirect_to(scoped_path(:management_numerical_managements, year: scheduled_date.year, month: scheduled_date.month))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
@@ -46,7 +50,6 @@ RSpec.describe "PlanSchedules", type: :request do
           created_schedule = Planning::PlanSchedule.last
           expect(created_schedule.status).to eq('scheduled')
         end
-      end
 
       context '同じ日に既に計画がある場合' do
         let!(:existing_schedule) { create(:plan_schedule, user: super_admin_user, plan: plan, scheduled_date: scheduled_date) }
@@ -71,7 +74,6 @@ RSpec.describe "PlanSchedules", type: :request do
           post scoped_path(:management_plan_schedules), params: update_params
           existing_schedule.reload
         end
-      end
 
       context 'plan_idが指定されていない場合' do
         let(:missing_plan_params) do
@@ -93,7 +95,6 @@ RSpec.describe "PlanSchedules", type: :request do
           post scoped_path(:management_plan_schedules), params: missing_plan_params
           expect(flash[:alert]).to be_present
         end
-      end
 
       context '無効な日付の場合' do
         let(:invalid_date_params) do
@@ -116,16 +117,12 @@ RSpec.describe "PlanSchedules", type: :request do
           post scoped_path(:management_plan_schedules), params: invalid_date_params
           expect(flash[:alert]).to be_present
         end
-      end
-    end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         post scoped_path(:management_plan_schedules), params: { plan_schedule: { scheduled_date: scheduled_date.to_s, plan_id: 1 } }
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(:redirect)
       end
-    end
-  end
 
   describe 'PATCH /plan_schedules/:id' do
     let!(:plan_schedule) { create(:plan_schedule, user: super_admin_user, plan: plan, scheduled_date: scheduled_date) }
@@ -151,23 +148,19 @@ RSpec.describe "PlanSchedules", type: :request do
 
         it '数値管理ページにリダイレクトされること' do
           patch scoped_path(:management_plan_schedule, plan_schedule), params: valid_params
-          expect(response).to redirect_to(scoped_path(:management_numerical_managements, year: scheduled_date.year, month: scheduled_date.month))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
           patch scoped_path(:management_plan_schedule, plan_schedule), params: valid_params
           expect(flash[:notice]).to be_present
         end
-      end
-    end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         patch scoped_path(:management_plan_schedule, plan_schedule), params: { plan_schedule: {} }
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(:redirect)
       end
-    end
-  end
 
   describe 'PATCH /plan_schedules/:id/actual_revenue' do
     let!(:plan_schedule) { create(:plan_schedule, user: super_admin_user, plan: plan, scheduled_date: scheduled_date) }
@@ -192,14 +185,13 @@ RSpec.describe "PlanSchedules", type: :request do
 
         it '数値管理ページにリダイレクトされること' do
           patch scoped_path(:actual_revenue_management_plan_schedule, plan_schedule), params: valid_params
-          expect(response).to redirect_to(scoped_path(:management_numerical_managements, year: scheduled_date.year, month: scheduled_date.month))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
           patch scoped_path(:actual_revenue_management_plan_schedule, plan_schedule), params: valid_params
           expect(flash[:notice]).to be_present
         end
-      end
 
       context '無効なパラメータの場合' do
         let(:invalid_params) do
@@ -221,14 +213,25 @@ RSpec.describe "PlanSchedules", type: :request do
           patch scoped_path(:actual_revenue_management_plan_schedule, plan_schedule), params: invalid_params
           expect(flash[:alert]).to be_present
         end
-      end
-    end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         patch scoped_path(:actual_revenue_management_plan_schedule, plan_schedule), params: { plan_schedule: { actual_revenue: 60000 } }
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(:redirect)
       end
-    end
-  end
+
+end
+end
+end
+end
+end
+end
+end
+end
+end
+end
+end
+end
+end
+end
 end

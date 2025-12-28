@@ -20,7 +20,8 @@ FactoryBot.define do
       
       # Category を設定（同じ company の plan カテゴリーを使用）
       unless plan.category
-        plan.category = create(:category, :plan, 
+        plan.category = create(:category,
+                               category_type: :plan,
                                company: plan.company,
                                user: plan.user)
       end

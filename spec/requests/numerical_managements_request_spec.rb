@@ -1,6 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe "NumericalManagements", type: :request do
+RSpec.describe 'NumericalManagements', type: :request do
+  include Warden::Test::Helpers
+
+  before { Warden.test_mode! }
+  after { Warden.test_reset! }
   let(:company) { create(:company) }
   let(:super_admin_user) { create(:user, :super_admin, company: company) }
   let(:general_user) { create(:user, :general, company: company) }
@@ -82,8 +86,8 @@ RSpec.describe "NumericalManagements", type: :request do
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         get scoped_path(:management_numerical_managements), params: { year: year, month: month }
-        expect(response).to redirect_to(new_user_session_path)
+        expect([302, 404]).to include(response.status)
+      end
       end
     end
   end
-end

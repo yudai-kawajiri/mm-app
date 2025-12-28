@@ -82,7 +82,7 @@ ja:
   copyable:
     copy_text: "(コピー"
     copy_suffix: "(コピー%{count})"
-    reading_copy_text: こぴー
+    reading_copy_text: こぴ
     reading_numbers:
       - ""
       - いち

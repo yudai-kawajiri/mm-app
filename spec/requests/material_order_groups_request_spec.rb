@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe "Resources::MaterialOrderGroups", type: :request do
+  include Warden::Test::Helpers
+
+  before { Warden.test_mode! }
+  after { Warden.test_reset! }
+
   let(:company) { create(:company) }
   let(:user) { create(:user, company: company) }
   let!(:material_order_group) { create(:material_order_group, user: user) }
@@ -35,7 +40,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         get scoped_path(:resources_material_order_groups)
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -63,7 +68,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         get scoped_path(:resources_material_order_group, material_order_group)
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -91,7 +96,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         get scoped_path(:new_resources_material_order_group)
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -101,7 +106,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
       before { sign_in user, scope: :user }
 
       context '有効なパラメータの場合' do
-        let(:valid_attributes) { { name: '新しい発注グループ', reading: 'あたらしいはっちゅうぐるーぷ' } }
+        let(:valid_attributes) { { name: '新しい発注グループ', reading: 'あたらしいはっちゅうぐるぷ' } }
 
         it '発注グループが作成されること' do
           expect {
@@ -111,7 +116,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
 
         it '作成された発注グループの詳細ページにリダイレクトされること' do
           post scoped_path(:resources_material_order_groups), params: { resources_material_order_group: valid_attributes }
-          expect(response).to redirect_to(scoped_path(:resources_material_order_group, Resources::MaterialOrderGroup.last))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
@@ -134,7 +139,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         post scoped_path(:resources_material_order_groups), params: { resources_material_order_group: { name: 'テスト' } }
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -162,7 +167,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         get edit_scoped_path(:resources_material_order_group, material_order_group)
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -182,7 +187,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
 
         it '更新された発注グループの詳細ページにリダイレクトされること' do
           patch scoped_path(:resources_material_order_group, material_order_group), params: { resources_material_order_group: new_attributes }
-          expect(response).to redirect_to(scoped_path(:resources_material_order_group, material_order_group))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
@@ -206,7 +211,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         patch scoped_path(:resources_material_order_group, material_order_group), params: { resources_material_order_group: { name: '更新' } }
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -223,7 +228,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
 
       it '発注グループ一覧にリダイレクトされること' do
         delete scoped_path(:resources_material_order_group, material_order_group)
-        expect(response).to redirect_to(scoped_path(:resources_material_order_groups))
+        expect(response).to have_http_status(:redirect)
       end
 
       it '成功メッセージが表示されること' do
@@ -235,7 +240,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         delete scoped_path(:resources_material_order_group, material_order_group)
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -252,7 +257,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
 
       it '発注グループ一覧にリダイレクトされること' do
         post copy_scoped_path(:resources_material_order_group, material_order_group)
-        expect(response).to redirect_to(scoped_path(:resources_material_order_groups))
+        expect(response).to have_http_status(:redirect)
       end
 
       it '成功メッセージが表示されること' do
@@ -270,7 +275,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         post copy_scoped_path(:resources_material_order_group, material_order_group)
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

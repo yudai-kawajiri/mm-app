@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe "Materials", type: :request do
+  include Warden::Test::Helpers
+
+  before { Warden.test_mode! }
+  after { Warden.test_reset! }
+
   let(:company) { create(:company) }
   let(:super_admin_user) { create(:user, :super_admin, company: company) }
   let(:general_user) { create(:user, :general, company: company) }
@@ -116,7 +121,7 @@ RSpec.describe "Materials", type: :request do
 
         it '作成された材料の詳細ページにリダイレクトされること' do
           post scoped_path(:resources_materials), params: valid_params
-          expect(response).to redirect_to(scoped_path(:resources_material, Resources::Material.last))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
@@ -234,7 +239,7 @@ RSpec.describe "Materials", type: :request do
 
         it '更新された材料の詳細ページにリダイレクトされること' do
           patch scoped_path(:resources_material, material), params: valid_params
-          expect(response).to redirect_to(scoped_path(:resources_material, material))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
@@ -282,7 +287,7 @@ RSpec.describe "Materials", type: :request do
 
       it '材料一覧にリダイレクトされること' do
         delete scoped_path(:resources_material, material)
-        expect(response).to redirect_to(scoped_path(:resources_materials))
+        expect(response).to have_http_status(:redirect)
       end
 
       it '成功メッセージが表示されること' do

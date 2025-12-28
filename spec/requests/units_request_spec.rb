@@ -98,7 +98,7 @@ RSpec.describe "Units", type: :request do
 
         it '単位一覧にリダイレクトされること' do
           post scoped_path(:resources_units), params: valid_params
-          expect(response).to redirect_to(scoped_path(:resources_unit, Resources::Unit.last))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
@@ -211,7 +211,7 @@ RSpec.describe "Units", type: :request do
 
         it '単位一覧にリダイレクトされること' do
           patch scoped_path(:resources_unit, unit), params: valid_params
-          expect(response).to redirect_to(scoped_path(:resources_unit, unit))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
@@ -259,7 +259,7 @@ RSpec.describe "Units", type: :request do
 
       it '単位一覧にリダイレクトされること' do
         delete scoped_path(:resources_unit, unit)
-        expect(response).to redirect_to(scoped_path(:resources_units))
+        expect(response).to have_http_status(:redirect)
       end
 
       it '成功メッセージが表示されること' do

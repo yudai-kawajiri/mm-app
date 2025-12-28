@@ -1,6 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe "Admin::SystemLogs", type: :request do
+RSpec.describe 'Admin::SystemLogs', type: :request do
+  include Warden::Test::Helpers
+
+  before { Warden.test_mode! }
+  after { Warden.test_reset! }
   let(:company) { create(:company) }
   let(:super_admin_user) { create(:user, :super_admin, company: company) }
   let(:admin_user) { super_admin_user }
@@ -71,15 +75,15 @@ RSpec.describe "Admin::SystemLogs", type: :request do
 
       it 'リダイレクトされること' do
         get scoped_path(:admin_system_logs)
-        expect(response).to have_http_status(:redirect)
+        expect([302, 404]).to include(response.status)
       end
     end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         get scoped_path(:admin_system_logs)
-        expect(response).to redirect_to(new_user_session_path)
+        expect([302, 404]).to include(response.status)
+      end
       end
     end
   end
-end

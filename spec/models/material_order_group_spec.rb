@@ -51,8 +51,8 @@ RSpec.describe Resources::MaterialOrderGroup, type: :model do
 
   describe 'スコープ' do
     before do
-      @group1 = create(:material_order_group, name: 'Aグループ', reading: 'えーぐるーぷ', user: user, created_at: 2.days.ago)
-      @group2 = create(:material_order_group, name: 'Bグループ', reading: 'びーぐるーぷ', user: user, created_at: 1.day.ago)
+      @group1 = create(:material_order_group, name: 'Aグループ', reading: 'えぐるぷ', user: user, created_at: 2.days.ago)
+      @group2 = create(:material_order_group, name: 'Bグループ', reading: 'びぐるぷ', user: user, created_at: 1.day.ago)
     end
 
     it 'orderedスコープで名前順（reading順）にソートされること' do

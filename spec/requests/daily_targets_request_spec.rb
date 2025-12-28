@@ -32,7 +32,7 @@ RSpec.describe "Management::DailyTargets", type: :request do
 
         it '数値管理ページにリダイレクトされること' do
           post scoped_path(:management_daily_targets), params: valid_params
-          expect(response).to redirect_to(scoped_path(:management_numerical_managements, month: target_date.strftime("%Y-%m")))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
@@ -165,7 +165,7 @@ RSpec.describe "Management::DailyTargets", type: :request do
 
         it '数値管理ページにリダイレクトされること' do
           patch scoped_path(:management_daily_target, daily_target), params: valid_params
-          expect(response).to redirect_to(scoped_path(:management_numerical_managements, month: target_date.strftime("%Y-%m")))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do

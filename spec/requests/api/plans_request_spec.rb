@@ -1,13 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe "Api::V1::Plans", type: :request do
+  include Warden::Test::Helpers
   let(:company) { create(:company) }
   let(:user) { create(:user, company: company) }
   let(:product) { create(:product, user: user, price: 1000, company: company) }
-  let(:plan) { create(:plan, user: user) }
+  let(:plan) { create(:plan, user: user, company: user.company) }
   let!(:plan_product) { create(:plan_product, plan: plan, product: product, production_count: 10) }
 
   describe 'GET /api/v1/plans/:id/revenue' do
+    before { login_as(user, scope: :user) }
+    after { Warden.test_reset! }
+    after { Warden.test_reset! }
     it '正常にレスポンスを返すこと' do
       get scoped_path(:revenue_api_v1_plan, plan), as: :json
       expect(response).to have_http_status(:success)

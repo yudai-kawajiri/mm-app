@@ -5,6 +5,8 @@ class Planning::PlanSchedule < ApplicationRecord
   include UserAssociatable
 
   belongs_to :plan, class_name: "Resources::Plan", optional: true
+  belongs_to :company
+  belongs_to :company
 
   validates :scheduled_date, presence: true, uniqueness: { scope: :store_id }
   validates :status, presence: true

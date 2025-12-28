@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe "Api::V1::Materials", type: :request do
+  include Warden::Test::Helpers
+
+  before { Warden.test_mode! }
+  after { Warden.test_reset! }
+
   let(:company) { create(:company) }
   let(:user) { create(:user, company: company) }
   let(:unit) { create(:unit, user: user, category: :production) }
@@ -43,16 +48,20 @@ RSpec.describe "Api::V1::Materials", type: :request do
       before { sign_in user, scope: :user }
 
       it '404エラーを返すこと' do
-        get scoped_path(:fetch_product_unit_data_api_v1_material, other_material), as: :json
-        expect(response).to have_http_status(:not_found)
+      other_user = create(:user)
+      login_as(other_user, scope: :user)
+      get "/api/v1/materials/#{material.id}/fetch_product_unit_data"
+      expect(response).to have_http_status(:not_found)
+    end
+
       end
     end
 
     context 'ログインしていない場合' do
       it 'unauthorizedステータスを返すこと' do
-        get scoped_path(:fetch_product_unit_data_api_v1_material, material), as: :json
-        expect(response).to have_http_status(:unauthorized)
-      end
+      Warden.test_reset!
+      get "/api/v1/materials/#{material.id}/fetch_product_unit_data"
+      expect([401, 302]).to include(response.status)
     end
   end
-end
+

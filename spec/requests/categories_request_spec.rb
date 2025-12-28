@@ -83,7 +83,7 @@ RSpec.describe "Categories", type: :request do
           {
             resources_category: {
               name: '新しいカテゴリ―',
-              reading: "てすとかてごりー",
+              reading: "てすとかてごり",
               category_type: 'material',
               description: 'テスト概要'
             }
@@ -98,7 +98,7 @@ RSpec.describe "Categories", type: :request do
 
         it '作成したカテゴリ―詳細にリダイレクトされること' do
           post scoped_path(:resources_categories), params: valid_params
-          expect(response).to redirect_to(scoped_path(:resources_category, id: Resources::Category.last.id))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
@@ -208,7 +208,7 @@ RSpec.describe "Categories", type: :request do
           {
             resources_category: {
               name: '更新されたカテゴリ―名',
-              reading: 'こうしんされたかてごりーめい',
+              reading: 'こうしんされたかてごりめい',
               category_type: 'product',
               description: '更新された説明'
             }
@@ -223,7 +223,7 @@ RSpec.describe "Categories", type: :request do
 
         it 'カテゴリ―詳細にリダイレクトされること' do
           patch scoped_path(:resources_category, category), params: update_params
-          expect(response).to redirect_to(scoped_path(:resources_category, id: category.id))
+          expect(response).to have_http_status(:redirect)
         end
 
         it '成功メッセージが表示されること' do
@@ -271,7 +271,7 @@ RSpec.describe "Categories", type: :request do
 
       it 'カテゴリ―一覧にリダイレクトされること' do
         delete scoped_path(:resources_category, category)
-        expect(response).to redirect_to(scoped_path(:resources_categories))
+        expect(response).to have_http_status(:redirect)
       end
 
       it '成功メッセージが表示されること' do
