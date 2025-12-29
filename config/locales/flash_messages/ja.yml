@@ -17,3 +17,39 @@ ja:
       failure: "%{resource}のコピーに失敗しました"
     not_authorized: このアクションを実行する権限がありません
     require_store_selected: このアクションを実行するには店舗を選択してください。
+
+    contacts:
+      create:
+        success: お問い合わせを受け付けました。
+        error: 送信に失敗しました。もう一度お試しください。
+
+    application_requests:
+      create:
+        success: 登録申請を受け付けました。承認されるまでお待ちください。
+        error: 登録に失敗しました。入力内容をご確認ください。
+
+    admin:
+      users:
+        messages:
+          created: ユーザーを作成しました。
+          invited: "%{name} を招待しました"
+          updated: "%{name} を更新しました"
+          user_deleted: "%{name} を削除しました"
+          cannot_delete_self: 自分自身を削除することはできません
+          user_not_found: ユーザーが見つかりませんでした
+
+      admin_requests:
+        messages:
+          created: リクエストを作成しました
+          approved: 承認しました。招待メールを送信しました。
+          approve_failed: 承認に失敗しました
+          rejected: 却下しました
+          reject_failed: 却下に失敗しました
+
+      stores:
+        messages:
+          created: 店舗を登録しました
+          updated: 店舗を更新しました
+          deleted: 店舗を削除しました
+          invitation_code_regenerated: 招待コードを再発行しました
+          has_users: ユーザーが所属している店舗は削除できません
