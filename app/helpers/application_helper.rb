@@ -176,7 +176,7 @@ module ApplicationHelper
       end
 
       # ユーザー管理と店舗管理(会社が選択されている場合)
-      if session[:current_company_id].present?
+      if current_user.super_admin? || session[:current_company_id].present?
         if current_user.company_admin? || current_user.super_admin?
           admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
           admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
