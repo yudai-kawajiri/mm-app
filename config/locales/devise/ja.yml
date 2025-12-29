@@ -64,6 +64,7 @@ ja:
         forgot_your_password: パスワードを忘れた方
         didn_t_receive_confirmation_instructions: 確認メールが届いていませんか？
         didn_t_receive_unlock_instructions: ロック解除の手順が届いていませんか？
+        back_to_top: トップページに戻る
 
     passwords:
       new:

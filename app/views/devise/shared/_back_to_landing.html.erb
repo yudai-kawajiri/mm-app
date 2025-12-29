@@ -1,7 +1,7 @@
-<%# TOPへ戻るボタン（カード内の右下） %>
-<div class="text-end mt-4">
-  <%= link_to "http://localhost:#{request.port}/", class: "btn btn-outline-secondary btn-sm" do %>
-    <i class="bi bi-arrow-left"></i>
-    <%= t('landing.back_to_top') %>
+<%# トップページへ戻るボタン %>
+<div class="text-center mt-4">
+  <%= link_to root_path, class: "btn btn-outline-secondary btn-sm" do %>
+    <i class="bi bi-house-door me-2"></i>
+    <%= t('devise.shared.links.back_to_top') %>
   <% end %>
 </div>
