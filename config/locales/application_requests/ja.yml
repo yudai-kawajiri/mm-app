@@ -25,7 +25,7 @@ ja:
       email_placeholder: "例: user@example.com"
       name_label: お名前
       name_placeholder: "例: 山田太郎"
-      password_placeholder: 8文字以上
+      password_placeholder: 6文字以上
       password_confirmation_label: "パスワード(確認)"
       store_code_label: 店舗コード
       store_code_placeholder: 店舗の招待コードを入力

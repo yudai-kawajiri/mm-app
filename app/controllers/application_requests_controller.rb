@@ -6,8 +6,13 @@ class ApplicationRequestsController < ApplicationController
   end
 
   def create
-    # 最初に @application_request を作成（rescue でも使えるようにする）
-    @application_request = ApplicationRequest.new(application_request_params)
+    @application_request = ApplicationRequest.new(
+      company_name: application_request_params[:company_name],
+      company_email: application_request_params[:company_email],
+      company_phone: application_request_params[:company_phone],
+      admin_name: application_request_params[:admin_name],
+      admin_email: application_request_params[:admin_email]
+    )
 
     ActiveRecord::Base.transaction do
       company = Company.create!(

@@ -43,7 +43,7 @@ ja:
         email: メールアドレス
         email_placeholder: example@example.com
         password: パスワード
-        password_placeholder: 8文字以上
+        password_placeholder: 6文字以上
         password_hint: 空欄の場合、ランダムパスワードが自動生成されます
         password_confirmation: "パスワード(確認)"
         password_confirmation_placeholder: パスワードを再入力
