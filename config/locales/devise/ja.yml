@@ -8,6 +8,10 @@ ja:
         password_placeholder: パスワードを入力
       sign_in: ログイン
       sign_out: ログアウト
+      signed_in: ログインしました
+      signed_out: ログアウトしました
+      already_signed_out: 既にログアウト済みです
+
     confirmations:
       new:
         title: 確認メール再送信
@@ -125,11 +129,6 @@ ja:
       unauthenticated: ログインもしくはアカウント登録が必要です
       unconfirmed: メールアドレスの確認が必要です
       not_approved: アカウントは承認待ちです。管理者の承認をお待ちください。
-
-    sessions:
-      signed_in: ログインしました
-      signed_out: ログアウトしました
-      already_signed_out: 既にログアウト済みです
 
     passwords:
       no_token: パスワード再設定のメールからのみアクセスできます
