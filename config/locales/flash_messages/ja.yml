@@ -64,31 +64,6 @@ ja:
           switch_not_found: 会社が見つかりませんでした
           switch_all_companies: "システム管理モード（全会社）に切り替えました"
 
-    devise:
-      sessions:
-        signed_in: ログインしました
-        signed_out: ログアウトしました
-
-      confirmations:
-        confirmed: アカウントを認証しました
-
-      failure:
-        not_approved: アカウントは承認待ちです。管理者の承認をお待ちください。
-        unauthenticated: アカウント登録もしくはログインが必要です
-        invalid: メールアドレスまたはパスワードが違います
-        not_found_in_database: メールアドレスまたはパスワードが違います
-        already_authenticated: 既にログインしています
-
-      registrations:
-        signed_up_but_not_approved: 登録が完了しました。管理者の承認をお待ちください。承認後にログイン可能になります。
-        signed_up: アカウント登録が完了しました
-        pending_reconfirmation: "現在、%{unconfirmed_email}の確認待ちです"
-        updated: アカウント情報を更新しました
-        destroyed: アカウントを削除しました
-
-      passwords:
-        send_instructions: パスワード再設定のメールを送信しました
-        updated: パスワードを更新しました
 
   plans:
     messages:

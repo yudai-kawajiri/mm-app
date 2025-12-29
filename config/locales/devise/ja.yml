@@ -112,3 +112,54 @@ ja:
       rejected_message: ユーザー登録申請が却下されました。
       reason_label: "却下理由:"
       contact_message: ご不明な点がございましたら、管理者までお問い合わせください。
+
+    # Flash メッセージ（ログイン・認証関連）
+    failure:
+      already_authenticated: 既にログインしています
+      inactive: アカウントが有効化されていません
+      invalid: "%{authentication_keys}またはパスワードが違います"
+      locked: アカウントがロックされています
+      last_attempt: もう一度間違えるとアカウントがロックされます
+      not_found_in_database: "%{authentication_keys}またはパスワードが違います"
+      timeout: セッションがタイムアウトしました。もう一度ログインしてください
+      unauthenticated: ログインもしくはアカウント登録が必要です
+      unconfirmed: メールアドレスの確認が必要です
+      not_approved: アカウントは承認待ちです。管理者の承認をお待ちください。
+
+    sessions:
+      signed_in: ログインしました
+      signed_out: ログアウトしました
+      already_signed_out: 既にログアウト済みです
+
+    passwords:
+      no_token: パスワード再設定のメールからのみアクセスできます
+      send_instructions: パスワード再設定のメールを送信しました
+      send_paranoid_instructions: メールアドレスが登録済みの場合、パスワード再設定のメールが送信されます
+      updated: パスワードを更新しました
+      updated_not_active: パスワードを更新しました
+
+    confirmations:
+      confirmed: アカウントを認証しました
+      send_instructions: アカウント確認のメールを送信しました
+      send_paranoid_instructions: メールアドレスが登録済みの場合、アカウント確認のメールが送信されます
+
+    registrations:
+      destroyed: アカウントを削除しました
+      signed_up: アカウント登録が完了しました
+      signed_up_but_inactive: アカウント登録が完了しましたが、アカウントが有効化されていません
+      signed_up_but_locked: アカウント登録が完了しましたが、アカウントがロックされています
+      signed_up_but_unconfirmed: 確認メールを送信しました。メール内のリンクをクリックしてアカウントを有効化してください
+      update_needs_confirmation: アカウント情報を更新しました。確認メールをご確認ください
+      updated: アカウント情報を更新しました
+      updated_but_not_signed_in: アカウント情報を更新しました。再度ログインしてください
+      signed_up_but_not_approved: 登録が完了しました。管理者の承認をお待ちください。承認後にログイン可能になります。
+      pending_reconfirmation: "現在、%{unconfirmed_email}の確認待ちです"
+
+    unlocks:
+      send_instructions: アカウントのロック解除方法を送信しました
+      send_paranoid_instructions: アカウントが存在する場合、ロック解除方法を送信しました
+      unlocked: アカウントのロックを解除しました
+
+    omniauth_callbacks:
+      failure: "%{kind}アカウントによる認証に失敗しました。理由：%{reason}"
+      success: "%{kind}アカウントによる認証に成功しました"
