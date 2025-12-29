@@ -17,6 +17,7 @@ ja:
       admin_email: 管理者メールアドレス
       admin_email_placeholder: admin@example.com
       admin_email_hint: このメールアドレスでログインします
+      password_label: パスワード
       submit: 登録申請
       company_code_label: 会社コード
       company_code_placeholder: "例: ok2eke"
@@ -36,7 +37,6 @@ ja:
     accept:
       title: 招待を承認
       registration_info: 登録情報
-      password_instruction: 以下の初期パスワードでログインしてください。ログイン後、必ずパスワードを変更してください。
       activate_button: アカウントを有効化
       success: 招待を承認しました。ログインしてください。
       error: 招待の承認に失敗しました。

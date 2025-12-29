@@ -10,7 +10,6 @@ class ApplicationRequestsController < ApplicationController
     @application_request = ApplicationRequest.new(application_request_params)
 
     ActiveRecord::Base.transaction do
-      # 1. 会社を作成
       company = Company.create!(
         name: application_request_params[:company_name],
         code: SecureRandom.alphanumeric(8).upcase,
@@ -19,20 +18,15 @@ class ApplicationRequestsController < ApplicationController
         slug: SecureRandom.alphanumeric(6).downcase
       )
 
-      # 2. ApplicationRequest を作成
       @application_request.company = company
       @application_request.status = :pending
       @application_request.invitation_token = SecureRandom.urlsafe_base64(32)
       @application_request.save!
 
-      # 3. 初期パスワードを生成
-      temporary_password = SecureRandom.alphanumeric(12)
-
-      # 4. ユーザーを作成（未承認状態）
       user = User.create!(
         email: @application_request.admin_email,
-        password: temporary_password,
-        password_confirmation: temporary_password,
+        password: application_request_params[:password],
+        password_confirmation: application_request_params[:password_confirmation],
         name: @application_request.admin_name,
         company: company,
         role: :company_admin,
@@ -41,12 +35,7 @@ class ApplicationRequestsController < ApplicationController
 
       @application_request.update!(user: user)
 
-      # 5. 初期パスワードを ApplicationRequest に保存（メール送信用）
-      @application_request.update_column(:temporary_password, temporary_password)
-
-      # 6. 招待メールを送信
       ApplicationRequestMailer.invitation_email(@application_request, company.slug).deliver_later
-
       redirect_to thanks_application_requests_path
     end
   rescue ActiveRecord::RecordInvalid => e
@@ -112,6 +101,8 @@ class ApplicationRequestsController < ApplicationController
       :company_phone,
       :admin_name,
       :admin_email,
+      :password,
+      :password_confirmation
     )
   end
 

@@ -52,6 +52,20 @@
         <%= f.email_field :admin_email, class: "form-control form-control-lg", placeholder: t('application_requests.new.admin_email_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
         <small class="form-text text-muted"><%= t('application_requests.new.admin_email_hint') %></small>
       </div>
+
+            <div class="mb-4">
+        <%= f.label :password, class: "form-label h5" do %>
+          <%= t('application_requests.new.password_label') %><%= raw(t('helpers.required_mark')) %>
+        <% end %>
+        <%= f.password_field :password, class: "form-control form-control-lg", placeholder: t('application_requests.new.password_placeholder'), required: true, minlength: 8, data: { 'form-validation-target': 'field' } %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :password_confirmation, class: "form-label h5" do %>
+          <%= t('application_requests.new.password_confirmation_label') %><%= raw(t('helpers.required_mark')) %>
+        <% end %>
+        <%= f.password_field :password_confirmation, class: "form-control form-control-lg", placeholder: t('application_requests.new.password_placeholder'), required: true, minlength: 8, data: { 'form-validation-target': 'field' } %>
+      </div>
     </div>
 
     <%= render 'shared/terms_privacy_agreement' %>
