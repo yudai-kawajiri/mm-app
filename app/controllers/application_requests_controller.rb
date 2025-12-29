@@ -6,6 +6,9 @@ class ApplicationRequestsController < ApplicationController
   end
 
   def create
+    # 最初に @application_request を作成（rescue でも使えるようにする）
+    @application_request = ApplicationRequest.new(application_request_params)
+    
     ActiveRecord::Base.transaction do
       # 1. 会社を作成
       company = Company.create!(
@@ -16,7 +19,6 @@ class ApplicationRequestsController < ApplicationController
       )
 
       # 2. ApplicationRequest を作成
-      @application_request = ApplicationRequest.new(application_request_params)
       @application_request.company = company
       @application_request.status = :pending
       @application_request.invitation_token = SecureRandom.urlsafe_base64(32)
@@ -47,10 +49,15 @@ class ApplicationRequestsController < ApplicationController
       redirect_to thanks_application_requests_path
     end
   rescue ActiveRecord::RecordInvalid => e
+    # エラーの詳細をログに出力
+    Rails.logger.error("ApplicationRequest creation failed: #{e.record.errors.full_messages}")
+    
+    # エラーメッセージを @application_request に追加
+    @application_request.errors.add(:base, e.record.errors.full_messages.join(", "))
+    
     flash.now[:alert] = t("application_requests.create.failure", error: e.record.errors.full_messages.join(", "))
     render :new, status: :unprocessable_entity
   end
-
   def thanks
   end
 
