@@ -51,7 +51,7 @@ class Admin::CompaniesController < ApplicationController
     @company = Company.new(company_params)
 
     if @company.save
-      redirect_to admin_company_path(@company), notice: t("helpers.notice.created", resource: Company.model_name.human)
+      redirect_to admin_company_path(@company), notice:  t("flash_messages.create.success", resource: Company.model_name.human)
     else
       render :new, status: :unprocessable_entity
     end
@@ -64,7 +64,7 @@ class Admin::CompaniesController < ApplicationController
 
   def update
     if @company.update(company_params)
-      redirect_to admin_company_path(@company), notice: t("helpers.notice.updated", resource: Company.model_name.human)
+      redirect_to admin_company_path(@company), notice: t("flash_messages.update.success", resource: Company.model_name.human)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -74,7 +74,7 @@ class Admin::CompaniesController < ApplicationController
 
   def destroy
     if @company.destroy
-      redirect_to admin_companies_path, notice: t("helpers.notice.destroyed", resource: Company.model_name.human)
+      redirect_to admin_companies_path, notice: t("flash_messages.destroy.success", resource: Company.model_name.human)
     else
       redirect_to admin_company_path(@company), alert: @company.errors.full_messages.join(", ")
     end

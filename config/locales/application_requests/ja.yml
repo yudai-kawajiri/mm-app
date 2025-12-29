@@ -34,10 +34,6 @@ ja:
       already_have_account: すでにアカウントをお持ちですか？
       login_link: ログイン
 
-    create:
-      success: 登録申請を受け付けました。承認されるまでお待ちください。
-      error: 登録に失敗しました。入力内容をご確認ください。
-
     accept:
       title: 招待を承認
       success: 招待を承認しました。ログインしてください。

@@ -105,9 +105,9 @@ class Resources::ProductsController < AuthenticatedController
       Resources::Product.find(id).update(display_order: index + 1)
     end
 
-    render json: { message: t("sortable_table.saved") }, status: :ok
+    render json: { message: t("flash_messages.sortable_table.messages.saved") }, status: :ok
   rescue ActiveRecord::RecordNotFound
-    render json: { error: t("sortable_table.not_found") }, status: :not_found
+    render json: { error: t("flash_messages.sortable_table.messages.not_found") }, status: :not_found
   end
 
   def purge_image

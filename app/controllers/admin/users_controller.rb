@@ -101,7 +101,7 @@ class Admin::UsersController < Admin::BaseController
     end
 
     if @user.update(update_params)
-      redirect_to company_admin_user_path(company_slug: current_company.slug, id: @user), notice: t("helpers.notice.updated", resource: User.model_name.human)
+      redirect_to company_admin_user_path(company_slug: current_company.slug, id: @user), notice: t("flash_messages.update.success", resource: User.model_name.human)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -115,7 +115,7 @@ class Admin::UsersController < Admin::BaseController
     end
 
     @user.destroy!
-    redirect_to scoped_path(:admin_users_path), notice: t("helpers.notice.destroyed", resource: User.model_name.human), status: :see_other
+    redirect_to scoped_path(:admin_users_path), notice: t("flash_messages.destroy.success", resource: User.model_name.human), status: :see_other
   end
 
   private

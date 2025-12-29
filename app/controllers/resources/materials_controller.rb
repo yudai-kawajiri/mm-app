@@ -111,14 +111,14 @@ class Resources::MaterialsController < AuthenticatedController
       Resources::Material.find(id).update(display_order: index + 1)
     end
 
-    render json: { message: t("sortable_table.saved") }, status: :ok
+    render json: { message: t("flash_messages.sortable_table.messages.saved") }, status: :ok
   rescue ActiveRecord::RecordNotFound
-    render json: { error: t("sortable_table.not_found") }, status: :not_found
+    render json: { error: t("flash_messages.sortable_table.messages.not_found") }, status: :not_found
   end
 
   def fetch_product_unit_data
     @material = scoped_materials.find(params[:id])
-    
+
     render json: {
       unit_id: @material.unit_for_product_id,
       unit_name: @material.unit_for_product&.name

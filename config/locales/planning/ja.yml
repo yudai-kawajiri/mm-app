@@ -49,8 +49,6 @@ ja:
       duplicate_name: は既に同じカテゴリ―内に存在します
       duplicate_product: 同じ商品を複数回追加することはできません
       product_fetch_failed: 商品情報の取得に失敗しました。ページを再読み込みしてください。
-    messages:
-      status_updated: "計画「%{name}」のステータスを「%{status}」に変更しました"
 
   product_material:
     order_quantity_detail:
@@ -58,13 +56,6 @@ ja:
       weight: "%{weight}g → %{order_quantity}%{order_unit}"
       errors:
         unit_fetch_failed: 単位データの取得に失敗しました
-
-  plan_schedules:
-    messages:
-      plan_assigned: 計画を登録しました
-      plan_updated: 計画を更新しました
-      plan_schedule_save_failed: "計画の保存に失敗しました: %{errors}"
-      plan_schedule_update_failed: "計画の更新に失敗しました: %{errors}"
 
   numerical_managements:
     index:
@@ -179,39 +170,6 @@ ja:
       actions:
         create: 登録
         update: 更新
-    messages:
-      budget_created: 月間予算を登録しました
-      budget_updated: 月間予算を更新しました
-      budget_update_failed: 月間予算の更新に失敗しました
-      budget_deleted: 月間予算を削除しました
-      budget_delete_failed: 月間予算の削除に失敗しました
-      budget_not_set: この月の予算が設定されていません
-      daily_target_saved: "%{date}の目標を%{action}しました"
-      daily_target_save_failed: "目標の保存に失敗しました: %{errors}"
-      daily_target_updated: 日別目標を更新しました
-      daily_target_updated_with_date: "%{date}の目標を更新しました"
-      daily_target_update_failed: "目標の更新に失敗しました: %{errors}"
-      daily_target_deleted: 日別目標を削除しました
-      daily_target_delete_failed: 日別目標の削除に失敗しました
-      actual_updated: 実績を更新しました
-      actual_update_failed: 実績の更新に失敗しました
-      actual_deleted: 実績を削除しました
-      actual_delete_failed: 実績の削除に失敗しました
-      plan_assigned: 計画を登録しました
-      plan_assign_failed: 計画の登録に失敗しました
-      plan_unassigned: 計画を削除しました
-      plan_unassign_failed: 計画の削除に失敗しました
-      plan_not_found: 計画が見つかりません
-      actual_revenue_updated: 実績売上を更新しました
-      actual_revenue_update_failed: 実績売上の更新に失敗しました
-      daily_details_updated: 日別詳細を更新しました
-      budget_exceeded: "日別予算の合計（%{total}）が月間予算（%{budget}）を超過しています。予算内に収めてください。"
-      discount_rates_updated: 見切率を更新しました
-      discount_rates_update_failed: 見切率の更新に失敗しました
     errors:
       budget_not_set: 月次予算が設定されていません。先に予算設定を行ってください。
       budget_mismatch: "日別予算の合計（%{total}）が月次予算（%{budget}）と一致しません。"
-    monthly_budgets:
-      update_discount_rates:
-        success: 見切率を更新しました
-        failure: 見切率の更新に失敗しました

@@ -35,7 +35,7 @@ class Management::MonthlyBudgetsController < Management::BaseController
 
     if @monthly_budget.save
       redirect_to scoped_path(:management_numerical_managements_path, year: budget_month.year, month: budget_month.month),
-            notice: t("numerical_managements.messages.budget_created")
+            notice: t("flash_messages.numerical_managements.messages.budget_created")
     else
       redirect_to scoped_path(:management_numerical_managements_path, year: budget_month.year, month: budget_month.month),
             alert: @monthly_budget.errors.full_messages.to_sentence
@@ -48,7 +48,7 @@ class Management::MonthlyBudgetsController < Management::BaseController
   def update
     if @monthly_budget.update(sanitized_monthly_budget_params)
       redirect_to scoped_path(:management_numerical_managements_path, year: @monthly_budget.budget_month.year, month: @monthly_budget.budget_month.month),
-            notice: t("numerical_managements.messages.budget_updated")
+            notice: t("flash_messages.numerical_managements.messages.budget_updated")
     else
       redirect_to scoped_path(:management_numerical_managements_path, year: @monthly_budget.budget_month.year, month: @monthly_budget.budget_month.month),
             alert: @monthly_budget.errors.full_messages.to_sentence
@@ -78,12 +78,12 @@ class Management::MonthlyBudgetsController < Management::BaseController
       @monthly_budget.destroy!
 
       redirect_to scoped_path(:management_numerical_managements_path, year: budget_month.year, month: budget_month.month),
-            notice: t("numerical_managements.messages.budget_deleted")
+            notice: t("flash_messages.numerical_managements.messages.budget_deleted")
     end
   rescue ActiveRecord::RecordNotDestroyed, ActiveRecord::RecordInvalid => e
     Rails.logger.error "Monthly budget deletion failed: #{e.message}"
     redirect_to scoped_path(:management_numerical_managements_path, year: budget_month.year, month: budget_month.month),
-                alert: t("numerical_managements.messages.budget_delete_failed")
+                alert: t("flash_messages.numerical_managements.messages.budget_delete_failed")
   end
 
   # 見切率を更新
@@ -103,7 +103,7 @@ class Management::MonthlyBudgetsController < Management::BaseController
       redirect_to scoped_path(:management_numerical_managements_path,
         year: @monthly_budget.budget_month.year,
         month: @monthly_budget.budget_month.month
-      ), notice: t("numerical_managements.messages.discount_rates_updated")
+      ), notice: t("flash_messages.numerical_managements.messages.discount_rates_updated")
     else
       redirect_to scoped_path(:management_numerical_managements_path,
         year: @monthly_budget.budget_month.year,

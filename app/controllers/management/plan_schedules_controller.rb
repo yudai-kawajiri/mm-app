@@ -40,7 +40,7 @@ class Management::PlanSchedulesController < Management::BaseController
         @plan_schedule.create_snapshot_from_plan
       end
 
-      action = @plan_schedule.previously_new_record? ? I18n.t("numerical_managements.messages.plan_assigned") : I18n.t("numerical_managements.messages.plan_assigned")
+      action = @plan_schedule.previously_new_record? ? I18n.t("flash_messages.numerical_managements.messages.plan_assigned") : I18n.t("flash_messages.numerical_managements.messages.plan_assigned")
 
       redirect_to company_management_numerical_managements_path(
         company_slug: current_company.slug,
@@ -104,13 +104,13 @@ class Management::PlanSchedulesController < Management::BaseController
         company_slug: current_company.slug,
         year: @plan_schedule.scheduled_date.year,
         month: @plan_schedule.scheduled_date.month
-      ), notice: t("numerical_managements.messages.actual_revenue_updated")
+      ), notice: t("flash_messages.numerical_managements.messages.actual_revenue_updated")
     else
       redirect_to company_management_numerical_managements_path(
         company_slug: current_company.slug,
         year: @plan_schedule.scheduled_date.year,
         month: @plan_schedule.scheduled_date.month
-      ), alert: t("numerical_managements.messages.actual_revenue_update_failed")
+      ), alert: t("flash_messages.numerical_managements.messages.actual_revenue_update_failed")
     end
   end
 

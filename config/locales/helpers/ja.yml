@@ -1,10 +1,5 @@
 ja:
   helpers:
-    notice:
-      account_registered: アカウント登録が完了しました
-      created: "%{resource}を作成しました"
-      updated: "%{resource}を更新しました"
-      destroyed: "%{resource}を削除しました"
     no_setting: 未設定
     required_mark: "<span class=\"text-danger\">*</span>"
     select_store_to_create: 店舗を選択してください
@@ -41,8 +36,6 @@ ja:
     label:
       user:
         remember_me: ログイン情報を記憶する
-    messages:
-      budget_created: 予算を設定しました
       restrict_dependent_destroy:
         has_one: "%{record}で使用されているため削除できません"
         has_many: "%{record}で使用されているため削除できません"

@@ -1,5 +1,4 @@
 ja:
-  # 単位
   units:
     new:
       title: 単位登録
@@ -14,12 +13,8 @@ ja:
       title: "%{name} - 単位詳細"
     edit:
       title: "%{name} - 単位編集"
-    messages:
-      copy_success: "単位「%{original_name}」を「%{new_name}」としてコピーしました"
-      copy_failed: "単位のコピーに失敗しました: %{error}"
     gram: g
 
-  # カテゴリー
   categories:
     new:
       title: カテゴリー登録
@@ -34,11 +29,7 @@ ja:
       title: "%{name} - カテゴリー詳細"
     edit:
       title: "%{name} - カテゴリー編集"
-    messages:
-      copy_success: "カテゴリー「%{original_name}」を「%{new_name}」としてコピーしました"
-      copy_failed: "カテゴリーのコピーに失敗しました: %{error}"
 
-  # 原材料
   materials:
     new:
       title: 原材料登録
@@ -77,11 +68,7 @@ ja:
       new: 新規登録
     placeholders:
       new_order_group: 商品ごとに違う規格で使用する場合に入力してください
-    messages:
-      copy_success: "原材料「%{original_name}」を「%{new_name}」としてコピーしました"
-      copy_failed: "原材料のコピーに失敗しました: %{error}"
 
-  # 発注グループ
   material_order_groups:
     new:
       title: 発注グループ登録
@@ -108,11 +95,7 @@ ja:
     errors:
       not_found: 発注グループが見つかりません
       has_materials: "このグループは%{count}件の原材料で使用されているため削除できません"
-    messages:
-      copy_success: "発注グループ「%{original_name}」を「%{new_name}」としてコピーしました"
-      copy_failed: "発注グループのコピーに失敗しました: %{error}"
 
-  # 商品
   products:
     new:
       title: 商品登録
@@ -151,15 +134,7 @@ ja:
       unit_weight: 分量
       unit: 単位
     add_material_button: 原材料を追加
-    messages:
-      copy_success: "商品「%{original_name}」を「%{new_name}」としてコピーしました"
-      copy_failed: "商品のコピーに失敗しました: %{error}"
-      image_deleted: 画像を削除しました
-      image_delete_failed: 画像の削除に失敗しました
-      confirm_delete_image: この画像を削除しますか?
-      status_updated: "商品「%{name}」のステータスを「%{status}」に変更しました"
 
-  # 計画
   plans:
     new:
       title: 計画登録
@@ -179,8 +154,3 @@ ja:
     tab_total: カテゴリ―合計
     actions:
       preview: 印刷プレビュー
-    messages:
-      copy_success: "計画「%{original_name}」を「%{new_name}」としてコピーしました"
-      copy_failed: "計画のコピーに失敗しました: %{error}"
-      copy_failed_duplicate: "計画のコピーに失敗しました: 名前が重複しています"
-      no_products_set: 商品が設定されていません

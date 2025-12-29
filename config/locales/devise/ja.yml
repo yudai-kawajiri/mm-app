@@ -6,24 +6,15 @@ ja:
         submit: ログイン
         email_placeholder: example@example.com
         password_placeholder: パスワードを入力
-      signed_in: ログインしました
-      signed_out: ログアウトしました
       sign_in: ログイン
       sign_out: ログアウト
     confirmations:
-      confirmed: アカウントを認証しました
       new:
         title: 確認メール再送信
         description: アカウント確認のメールを再送信します
         email_placeholder: example@example.com
         email_help: 登録時に使用したメールアドレスを入力してください
         submit: 確認メールを再送信
-    failure:
-      not_approved: アカウントは承認待ちです。管理者の承認をお待ちください。
-      unauthenticated: アカウント登録もしくはログインが必要です
-      invalid: メールアドレスまたはパスワードが違います
-      not_found_in_database: メールアドレスまたはパスワードが違います
-      already_authenticated: 既にログインしています
       user:
         already_authenticated: 既にログインしています
     registrations:
@@ -46,12 +37,6 @@ ja:
         we_need_your_current_password_to_confirm_your_changes: 変更を確定するには現在のパスワードが必要です
         update: 更新
         are_you_sure: 本当にアカウントを削除してもよろしいですか？
-      signed_up_but_not_approved: 登録が完了しました。管理者の承認をお待ちください。承認後にログイン可能になります。
-      signed_up: アカウント登録が完了しました
-      pending_reconfirmation: "現在、%{unconfirmed_email}の確認待ちです"
-      user:
-        updated: アカウント情報を更新しました
-        destroyed: アカウントを削除しました
     shared:
       minimum_password_length: "%{count}文字以上で入力してください"
       links:
@@ -61,8 +46,6 @@ ja:
         didn_t_receive_confirmation_instructions: 確認メールが届いていませんか？
         didn_t_receive_unlock_instructions: ロック解除の手順が届いていませんか？
     passwords:
-      send_instructions: パスワード再設定のメールを送信しました
-      updated: パスワードを更新しました
       new:
         title: パスワードを忘れた方
         submit: 送信

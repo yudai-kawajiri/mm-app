@@ -214,7 +214,7 @@ class ApplicationController < ActionController::Base
   def redirect_if_authenticated
     return unless user_signed_in?
 
-    flash[:notice] = t("devise.failure.already_authenticated")
+    flash[:notice] = t("flash_messages.devise.failure.already_authenticated")
     redirect_to company_dashboards_path(company_slug: current_company.slug)
   end
 end

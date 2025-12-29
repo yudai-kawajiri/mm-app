@@ -60,10 +60,6 @@ ja:
     placeholders:
       enter_name: 名前を入力
   stores:
-    switch:
-      success: "%{store_name}に切り替えました"
-      all_stores: 全店舗表示に切り替えました
-      not_found: 店舗が見つかりませんでした
     invitation_code_regenerated: 招待コードを再発行しました
     show:
       confirm_regenerate: 招待コードを再発行しますか？既存の招待コードは無効になります。
@@ -84,11 +80,6 @@ ja:
       status: ステータス
       message: メッセージ
       request_type: リクエスト種別
-  companies:
-    switch:
-      success: "%{company_name} に切り替えました"
-      not_found: 会社が見つかりませんでした
-      all_companies: "システム管理モード（全会社）に切り替えました"
   tabs:
     category_tabs:
       confirm_delete: "カテゴリー %{category_id} のタブを削除しますか？"

@@ -26,8 +26,6 @@ ja:
       forecast:
         title: 売上予測
         description: データに基づく経営判断
-    errors:
-      company_not_found: "会社が見つかりません。再度ログインしてください。"
   terms:
     title: 利用規約
     last_updated: 最終更新日

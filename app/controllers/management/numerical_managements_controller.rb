@@ -106,7 +106,7 @@ class Management::NumericalManagementsController < Management::BaseController
                       year: date.year,
                       month: date.month
                     ),
-                    alert: t("numerical_managements.messages.budget_exceeded",
+                    alert: t("flash_messages.numerical_managements.messages.budget_exceeded",
                             budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
                             total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(new_total)}"),
                     turbo: false
@@ -120,7 +120,7 @@ class Management::NumericalManagementsController < Management::BaseController
                     year: date.year,
                     month: date.month
                   ),
-                  notice: t("numerical_managements.messages.daily_target_updated"),
+                  notice: t("flash_messages.numerical_managements.messages.daily_target_updated"),
                   turbo: false
     else
       redirect_to company_management_numerical_managements_path(
@@ -128,7 +128,7 @@ class Management::NumericalManagementsController < Management::BaseController
                     year: date.year,
                     month: date.month
                   ),
-            alert: t("numerical_managements.messages.daily_target_update_failed", errors: daily_target.errors.full_messages.join(", ")),
+            alert: t("flash_messages.numerical_managements.messages.daily_target_update_failed", errors: daily_target.errors.full_messages.join(", ")),
             turbo: false
     end
   rescue Date::Error
@@ -172,7 +172,7 @@ class Management::NumericalManagementsController < Management::BaseController
                     year: year,
                     month: month
                   ),
-                  notice: t("numerical_managements.messages.daily_details_updated"),
+                  notice: t("flash_messages.numerical_managements.messages.daily_details_updated"),
                   turbo: false
     else
       redirect_to company_management_numerical_managements_path(
@@ -285,7 +285,7 @@ class Management::NumericalManagementsController < Management::BaseController
     if total_daily_target > monthly_budget.target_amount
       {
         exceeded: true,
-        message: t("numerical_managements.messages.budget_exceeded",
+        message: t("flash_messages.numerical_managements.messages.budget_exceeded",
                   budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
                   total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(total_daily_target)}")
       }

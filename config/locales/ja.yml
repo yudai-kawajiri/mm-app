@@ -11,6 +11,7 @@ ja:
       short: "%m/%d"
       default: "%Y/%m/%d"
       long: "%Y年%m月%d日(%a)"
+      short_with_day: "%-m月%-d日"
     abbr_day_names:
     - 日
     - 月
@@ -95,3 +96,8 @@ ja:
       - はち
       - きゅう
       - じゅう
+
+  common:
+    actions:
+      created: 登録
+      updated: 更新

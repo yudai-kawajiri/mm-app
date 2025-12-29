@@ -1,9 +1,4 @@
 ja:
-  sortable_table:
-    saved: 並び替えを保存しました
-    not_found: 指定されたデータが見つかりませんでした。
-    save_failed: 並び替えの保存に失敗しました
-    error: "エラーが発生しました: %{message}"
   services:
     numerical_data_bulk_update:
       errors:

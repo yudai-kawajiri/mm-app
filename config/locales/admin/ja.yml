@@ -37,13 +37,6 @@ ja:
         title: ユーザー詳細
       edit:
         title: ユーザー編集
-      messages:
-        created: ユーザーを作成しました。
-        invited: "%{name} を招待しました"
-        updated: "%{name} を更新しました"
-        user_deleted: "%{name} を削除しました"
-        cannot_delete_self: 自分自身を削除することはできません
-        user_not_found: ユーザーが見つかりませんでした
       form:
         name: 名前
         name_placeholder: 山田 太郎
@@ -131,12 +124,6 @@ ja:
         delete: "%{name} を削除してもよろしいですか?"
 
     admin_requests:
-      messages:
-        created: リクエストを作成しました
-        approved: 承認しました。招待メールを送信しました。
-        approve_failed: 承認に失敗しました
-        rejected: 却下しました
-        reject_failed: 却下に失敗しました
       request_types:
         user_registration: ユーザー登録
         store_admin_request: 店舗管理者申請
@@ -223,10 +210,7 @@ ja:
           user_email: メールアドレス
           user_status: 承認状態
           user_role: 権限
-        cannot_delete_with_users: ユーザーが所属している店舗は削除できません
-        invitation_code_regenerated: 招待コードを再発行しました
       confirm:
         regenerate_code: 招待コードを再発行しますか？現在のコードは無効になります。
-      invitation_code_regenerated: 招待コードを再発行しました
       store_id:
         blank: を選択してください
