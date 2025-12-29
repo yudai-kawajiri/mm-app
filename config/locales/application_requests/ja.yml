@@ -36,10 +36,14 @@ ja:
 
     accept:
       title: 招待を承認
+      registration_info: 登録情報
+      password_instruction: 以下の初期パスワードでログインしてください。ログイン後、必ずパスワードを変更してください。
+      activate_button: アカウントを有効化
       success: 招待を承認しました。ログインしてください。
       error: 招待の承認に失敗しました。
       invalid_token: 無効な招待トークンです。
       already_accepted: この招待は既に承認されています。
+      already_used: この招待は既に使用されています。
 
     thanks:
       title: 利用申請完了
