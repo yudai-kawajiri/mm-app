@@ -27,6 +27,8 @@ ja:
       create:
         success: 登録申請を受け付けました。承認されるまでお待ちください。
         error: 登録に失敗しました。入力内容をご確認ください。
+        duplicate_phone: この電話番号は既に登録されています。
+        duplicate_email: このメールアドレスは既に登録されています。
 
     admin:
       users:

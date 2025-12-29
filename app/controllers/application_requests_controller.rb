@@ -58,7 +58,24 @@ class ApplicationRequestsController < ApplicationController
 
     flash.now[:alert] = t("flash_messages.application_requests.create.error", error: e.record.errors.full_messages.join(", "))
     render :new, status: :unprocessable_entity
+  rescue ActiveRecord::RecordNotUnique => e
+    # 重複キーエラーの処理
+    Rails.logger.error("Duplicate key error: #{e.message}")
+
+    # エラーメッセージを判定
+    if e.message.include?("index_companies_on_phone")
+      error_message = t('flash_messages.application_requests.create.duplicate_phone')
+    elsif e.message.include?("index_companies_on_email")
+      error_message = t('flash_messages.application_requests.create.duplicate_email')
+    else
+      error_message = t('flash_messages.application_requests.create.error')
+    end
+
+    @application_request.errors.add(:base, error_message)
+    flash.now[:alert] = error_message
+    render :new, status: :unprocessable_entity
   end
+
   def thanks
   end
 
