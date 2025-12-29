@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_29_074546) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -79,12 +79,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
     t.integer "status"
     t.string "temporary_password"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
   end
 
   create_table "categories", force: :cascade do |t|
     t.integer "category_type"
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
@@ -100,24 +100,26 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
   end
 
   create_table "companies", force: :cascade do |t|
-    t.boolean "active", default: true, null: false
+    t.string "address"
+    t.string "code", null: false
     t.datetime "created_at", null: false
+    t.text "description"
     t.string "email"
-    t.datetime "invitation_accepted_at"
-    t.datetime "invitation_sent_at"
     t.string "invitation_token"
     t.string "name", null: false
     t.string "phone"
     t.string "slug", null: false
     t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_companies_on_code", unique: true
+    t.index ["invitation_token"], name: "index_companies_on_invitation_token", unique: true
     t.index ["phone"], name: "index_companies_on_phone", unique: true
-    t.index ["slug"], name: "index_companies_on_subdomain", unique: true
+    t.index ["slug"], name: "index_companies_on_slug", unique: true
   end
 
   create_table "daily_targets", force: :cascade do |t|
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
-    t.text "description", comment: "概要"
+    t.text "description"
     t.bigint "monthly_budget_id", null: false
     t.bigint "store_id"
     t.bigint "target_amount", null: false, comment: "目標金額"
@@ -133,7 +135,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
   end
 
   create_table "material_order_groups", force: :cascade do |t|
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
     t.integer "materials_count", default: 0, null: false
     t.string "name", null: false
@@ -150,7 +152,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
 
   create_table "materials", force: :cascade do |t|
     t.bigint "category_id", null: false
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
     t.decimal "default_unit_weight", precision: 10, scale: 3, comment: "デフォルトの1単位あたり重量（g）"
     t.text "description"
@@ -183,13 +185,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
 
   create_table "monthly_budgets", force: :cascade do |t|
     t.date "budget_month", null: false, comment: "予算対象月（月初日を保存）"
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
-    t.text "description", comment: "概要"
-    t.decimal "forecast_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "予測見切率（%）"
+    t.text "description", comment: "説明"
+    t.decimal "forecast_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "予測見切り率（%）"
     t.bigint "store_id"
     t.bigint "target_amount", null: false, comment: "目標金額"
-    t.decimal "target_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "目標見切率（%）"
+    t.decimal "target_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "目標見切り率（%）"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["budget_month", "store_id"], name: "index_monthly_budgets_on_budget_month_and_store_id", unique: true
@@ -199,7 +201,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
   end
 
   create_table "plan_products", force: :cascade do |t|
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
     t.bigint "plan_id", null: false
     t.bigint "product_id", null: false
@@ -213,9 +215,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
 
   create_table "plan_schedules", force: :cascade do |t|
     t.bigint "actual_revenue", comment: "実績売上"
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
-    t.text "description", comment: "概要"
+    t.text "description", comment: "説明"
     t.bigint "plan_id"
     t.jsonb "plan_products_snapshot", default: {}, null: false, comment: "計画商品のスナップショット（日別調整用）"
     t.date "scheduled_date", null: false, comment: "スケジュール実施日"
@@ -234,7 +236,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
 
   create_table "plans", force: :cascade do |t|
     t.bigint "category_id", null: false
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
@@ -252,7 +254,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
   end
 
   create_table "product_materials", force: :cascade do |t|
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
     t.bigint "material_id", null: false
     t.bigint "product_id", null: false
@@ -269,7 +271,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
 
   create_table "products", force: :cascade do |t|
     t.bigint "category_id", null: false
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
     t.text "description"
     t.integer "display_order"
@@ -301,12 +303,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
     t.datetime "updated_at", null: false
     t.index ["company_id", "code"], name: "index_stores_on_company_id_and_code", unique: true
     t.index ["company_id"], name: "index_stores_on_company_id"
-    t.index ["invitation_code"], name: "index_stores_on_invitation_code", unique: true
   end
 
   create_table "units", force: :cascade do |t|
     t.integer "category"
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
@@ -323,7 +324,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_25_125044) do
 
   create_table "users", force: :cascade do |t|
     t.boolean "approved", default: false, null: false
-    t.bigint "company_id", null: false
+    t.bigint "company_id"
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
