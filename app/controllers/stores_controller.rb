@@ -18,7 +18,7 @@ class StoresController < AuthenticatedController
     else
       # 全店舗を選択
       session[:current_store_id] = nil
-      flash[:notice] = t("flash_messages.stores.messages.switch_all_stores"))
+      flash[:notice] = t("flash_messages.stores.messages.switch_all_stores")
     end
 
     redirect_to request.referer || company_dashboards_path(company_slug: current_company.slug)
