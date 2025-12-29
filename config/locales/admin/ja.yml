@@ -116,7 +116,7 @@ ja:
         email: メールアドレス
         email_placeholder: example@example.com
         phone: 電話番号
-        phone_placeholder: 03-1234-5678
+        phone_placeholder: 0312345678
         submit_create: 登録
         submit_update: 更新
         cancel: キャンセル

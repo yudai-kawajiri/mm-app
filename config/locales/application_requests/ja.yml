@@ -9,7 +9,7 @@ ja:
       company_email: 会社メールアドレス
       company_email_placeholder: info@example.com
       company_phone: 電話番号
-      company_phone_placeholder: 03-1234-5678
+      company_phone_placeholder: 0312345678
       optional_field: 任意項目
       admin_info: 管理者情報
       admin_name: 管理者名
