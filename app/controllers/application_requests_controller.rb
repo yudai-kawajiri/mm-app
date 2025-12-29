@@ -12,7 +12,7 @@ class ApplicationRequestsController < ApplicationController
     ActiveRecord::Base.transaction do
       # 1. 会社を作成
       company = Company.create!(
-        name: application_request_params[:company_name],]
+        name: application_request_params[:company_name],
         code: SecureRandom.alphanumeric(8).upcase,
         email: application_request_params[:company_email],
         phone: application_request_params[:company_phone],
