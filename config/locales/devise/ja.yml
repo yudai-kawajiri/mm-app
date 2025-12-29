@@ -103,11 +103,11 @@ ja:
       invalid: "%{authentication_keys}またはパスワードが違います"
       locked: アカウントがロックされています
       last_attempt: もう一度間違えるとアカウントがロックされます
+      not_approved: アカウントが承認されていません。メール内の「アカウントを有効化」ボタンを押してください。
       not_found_in_database: "%{authentication_keys}またはパスワードが違います"
       timeout: セッションがタイムアウトしました。もう一度ログインしてください
       unauthenticated: ログインもしくはアカウント登録が必要です
       unconfirmed: メールアドレスの確認が必要です
-      not_approved: アカウントは承認待ちです。管理者の承認をお待ちください。
 
     omniauth_callbacks:
       failure: "%{kind}アカウントによる認証に失敗しました。理由：%{reason}"

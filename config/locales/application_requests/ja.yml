@@ -24,7 +24,6 @@ ja:
       email_placeholder: "例: user@example.com"
       name_label: お名前
       name_placeholder: "例: 山田太郎"
-      password_label: パスワード
       password_placeholder: 8文字以上
       password_confirmation_label: "パスワード(確認)"
       store_code_label: 店舗コード
@@ -44,6 +43,7 @@ ja:
       invalid_token: 無効な招待トークンです。
       already_accepted: この招待は既に承認されています。
       already_used: この招待は既に使用されています。
+      success: 招待を承認しました。ログインしてください。
 
     thanks:
       title: 利用申請完了
@@ -72,19 +72,9 @@ ja:
       login_info_title: ログイン情報
       email: メールアドレス
       email_label: メールアドレス
-      temporary_password: 初期パスワード
-      password_label: 初期パスワード
-      temporary_password_note: 初回ログイン後、必ずパスワードを変更してください
       password_change_notice: "※初回ログイン後、必ずパスワードを変更してください"
       accept_invitation: 招待を承認してログイン
       activate_button: アカウントを有効化
-      after_activation: アカウント有効化後はこちらからログイン
-      login_button: ログインページへ
-      or_manual_login: または、以下の手順で手動ログイン
-      manual_steps_html: |
-        1. <a href="%{login_url}">ログインページ</a>にアクセス
-        2. 上記のメールアドレスとパスワードでログイン
-        3. パスワードを変更
       fallback_instruction: ボタンが機能しない場合は、以下のURLをブラウザにコピーしてください
       footer_notice: このメールに心当たりがない場合は、無視してください。
       copyright: "© %{year} MM-App. All rights reserved."
