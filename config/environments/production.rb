@@ -51,17 +51,18 @@ Rails.application.configure do
     host: ENV.fetch("APP_HOST", "localhost:3000")
   }
 
-  # SMTP設定（環境変数で制御）
-  if ENV["SMTP_ADDRESS"].present?
+    # SMTP設定（SendGrid）
     config.action_mailer.delivery_method = :smtp
+    config.action_mailer.perform_deliveries = true
+    config.action_mailer.raise_delivery_errors = true
     config.action_mailer.smtp_settings = {
-      address:              ENV["SMTP_ADDRESS"],
-      port:                 ENV.fetch("SMTP_PORT", 587),
-      domain:               ENV["SMTP_DOMAIN"],
-      user_name:            ENV["SMTP_USERNAME"],
-      password:             ENV["SMTP_PASSWORD"],
-      authentication:       ENV.fetch("SMTP_AUTHENTICATION", "plain"),
-      enable_starttls_auto: ENV.fetch("SMTP_ENABLE_STARTTLS_AUTO", "true") == "true"
+      address: 'smtp.sendgrid.net',
+      port: 587,
+      domain: ENV['SENDGRID_DOMAIN'] || 'mm-app-gpih.onrender.com',
+      user_name: 'apikey',
+      password: ENV['SENDGRID_API_KEY'],
+      authentication: :plain,
+      enable_starttls_auto: true
     }
   end
 
