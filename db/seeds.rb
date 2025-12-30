@@ -16,6 +16,11 @@ admin_user = User.find_or_create_by!(email: 'mmapp@outlook.jp') do |u|
   u.approved = true
 end
 
+# 既存ユーザーの role を強制的に更新
+admin_user.update!(role: :super_admin, approved: true, company: admin_company)
+
 puts "システム管理者作成完了: #{admin_user.email}"
+puts "Role: #{admin_user.role}"
+puts "Super Admin?: #{admin_user.super_admin?}"
 
 puts "シード処理完了"
