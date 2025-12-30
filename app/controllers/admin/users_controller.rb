@@ -87,7 +87,7 @@ class Admin::UsersController < Admin::BaseController
       if password_was_blank && @user.password.present?
         flash[:generated_password] = @user.password
       end
-        redirect_to scoped_path(:admin_user_path, @user), notice: t("flash_messages.admin.users.messages.created")
+        redirect_to scoped_path(:admin_admin_user_path, @user), notice: t("flash_messages.admin.users.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -101,7 +101,7 @@ class Admin::UsersController < Admin::BaseController
     end
 
     if @user.update(update_params)
-      redirect_to scoped_path(:admin_user_path, @user), notice: t("flash_messages.update.success", resource: User.model_name.human)
+      redirect_to scoped_path(:admin_admin_user_path, @user), notice: t("flash_messages.update.success", resource: User.model_name.human)
     else
       render :edit, status: :unprocessable_entity
     end
