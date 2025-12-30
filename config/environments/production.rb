@@ -64,7 +64,6 @@ Rails.application.configure do
       authentication: :plain,
       enable_starttls_auto: true
     }
-  end
 
   # ロケールのフォールバック
   config.i18n.fallbacks = true
