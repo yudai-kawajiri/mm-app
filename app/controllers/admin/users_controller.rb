@@ -110,12 +110,12 @@ class Admin::UsersController < Admin::BaseController
   def destroy
     # 自分自身は削除できない
     if @user.id == current_user.id
-      redirect_to scoped_path(:admin_users_path), alert: t("admin.users.messages.cannot_delete_self"), status: :see_other
+      redirect_to scoped_path(:admin_admin_users_path), alert: t("admin.users.messages.cannot_delete_self"), status: :see_other
       return
     end
 
     @user.destroy!
-    redirect_to scoped_path(:admin_users_path), notice: t("flash_messages.destroy.success", resource: User.model_name.human), status: :see_other
+    redirect_to scoped_path(:admin_admin_users_path), notice: t("flash_messages.destroy.success", resource: User.model_name.human), status: :see_other
   end
 
   private
