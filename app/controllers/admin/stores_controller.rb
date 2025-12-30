@@ -65,6 +65,9 @@ class Admin::StoresController < Admin::BaseController
 
   def create
     @store = Store.new(store_params)
+    if @store.company_id.blank?
+      @store.company = current_user.company
+    end
 
     if @store.save
       redirect_to scoped_path(:admin_stores_path), notice: t("admin.stores.messages.created")

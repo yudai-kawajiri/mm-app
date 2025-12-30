@@ -27,7 +27,7 @@ ja:
       name_placeholder: "例: 山田太郎"
       password_placeholder: 6文字以上
       password_confirmation_label: "パスワード(確認)"
-      store_code_label: 店舗コード
+      store_code_label: 店舗ID
       store_code_placeholder: 店舗の招待コードを入力
       submit_button: 登録申請
       terms_agreement_html: "<a href='/terms' target='_blank'>利用規約</a>と<a href='/privacy' target='_blank'>プライバシーポリシー</a>に同意する"
@@ -43,7 +43,10 @@ ja:
       invalid_token: 無効な招待トークンです。
       already_accepted: この招待は既に承認されています。
       already_used: この招待は既に使用されています。
-      success: 招待を承認しました。ログインしてください。
+
+    accept_confirm:
+      approved: アカウントが承認されました。ログインしてください。
+      approval_failed: "承認に失敗しました: %{error}"
 
     thanks:
       title: 利用申請完了
@@ -66,8 +69,8 @@ ja:
       company_info: 会社情報
       company_name: 会社名
       company_code: 会社コード
-      company_id_label: 会社ID
-      company_id_instruction: ログイン時にこの会社IDを使用してください
+      company_id_label: 会社コード
+      company_id_instruction: ログイン時にこの会社コードを使用してください
       login_info: ログイン情報
       login_info_title: ログイン情報
       email: メールアドレス

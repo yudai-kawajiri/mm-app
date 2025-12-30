@@ -170,8 +170,12 @@ module ApplicationHelper
       admin_submenu = []
 
       if current_user.super_admin?
-        # システム管理者は常に会社管理とシステムログを表示
+        # システム管理者は常に会社管理を表示
         admin_submenu << { name: t("common.menu.company_management"), path: '/admin/companies' }
+      end
+
+      # システム管理者と会社管理者はシステムログを表示
+      if current_user.super_admin? || current_user.company_admin?
         admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
       end
 
