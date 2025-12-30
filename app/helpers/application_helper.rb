@@ -195,8 +195,9 @@ module ApplicationHelper
         name: t("common.menu.admin_management"),
         submenu: admin_submenu
       }
-      end
-      items
+    end
+    items
+  end
   #
   # サイドバーリンクがアクティブかどうかを判定
   #
