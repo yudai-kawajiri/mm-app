@@ -133,7 +133,7 @@ ja:
         created_at: 登録日
 
       store:
-        code: 店舗コード
+        code: 店舗ID
         name: 店舗名
         company: 会社名
         users_count: ユーザー数

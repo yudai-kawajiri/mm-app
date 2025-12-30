@@ -43,7 +43,7 @@ ja:
         email: メールアドレス
         email_placeholder: example@example.com
         password: パスワード
-        password_placeholder: 6文字以上
+        password_placeholder: 6文字以上で入力してください
         password_hint: 空欄の場合、ランダムパスワードが自動生成されます
         password_confirmation: "パスワード(確認)"
         password_confirmation_placeholder: パスワードを再入力
@@ -165,7 +165,7 @@ ja:
           placeholder: 店舗名またはコードで検索
         sort_options:
           company: 会社順
-          code: 店舗コード順
+          code: 店舗ID順
           created_at: 登録順
         no_stores: 店舗が登録されていません
         table_headers:
@@ -181,7 +181,7 @@ ja:
       edit:
         title: 店舗編集
       form:
-        code: 店舗コード
+        code: 店舗ID
         code_placeholder: "例: STORE01"
         name: 店舗名
         name_placeholder: "例: 西葛西本店"

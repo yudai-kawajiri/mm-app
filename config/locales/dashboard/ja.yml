@@ -142,7 +142,7 @@ ja:
     stores:
       index:
         search:
-          placeholder: 店舗コードまたは店舗名で検索
+          placeholder: 店舗IDまたは店舗名で検索
         table_headers:
           company: 会社名
 
