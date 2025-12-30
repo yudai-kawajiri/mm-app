@@ -45,10 +45,10 @@ class Admin::StoresController < Admin::BaseController
     end
 
     # users_count を最後に計算（すでに left_joins(:company) されている場合も考慮）
-    @stores = @stores.left_joins(:users)
-                  .select("stores.*, COUNT(DISTINCT CASE WHEN users.approved = true THEN users.id END) as users_count")
-                  .group("stores.id, companies.id")
-                  .page(params[:page]).per(20)
+    @stores = @stores.left_joins(:company, :users)
+              .select("stores.*, COUNT(DISTINCT CASE WHEN users.approved = true THEN users.id END) as users_count")
+              .group("stores.id, companies.id")
+              .page(params[:page]).per(20)
   end
 
   def show
