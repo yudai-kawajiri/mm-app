@@ -11,7 +11,7 @@ class StoresController < AuthenticatedController
       store = current_company&.stores&.find_by(id: params[:current_store_id])
       if store
         session[:current_store_id] = store.id
-        flash[:notice] = t("flash_messages.stores.messages.switch_success", store_name: store.name)
+        flash[:notice] = t("flash_messages.admin.stores.messages.switch_success", store_name: store.name)
       else
         flash[:alert] = t("flash_messages.stores.messages.switch_not_found")
       end

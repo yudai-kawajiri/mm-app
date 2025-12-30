@@ -87,7 +87,7 @@ class Admin::UsersController < Admin::BaseController
       if password_was_blank && @user.password.present?
         flash[:generated_password] = @user.password
       end
-      redirect_to company_admin_user_path(company_slug: current_company.slug, id: @user.id), notice: t("admin.users.messages.created")
+      redirect_to company_admin_user_path(company_slug: current_company.slug, id: @user.id), notice: t("flash_messages.admin.users.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
