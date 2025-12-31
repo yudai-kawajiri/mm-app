@@ -73,7 +73,7 @@ class Resources::Plan < ApplicationRecord
     uniqueness_scope: [:category_id, :store_id],
     uniqueness_check_attributes: [:name, :reading],
     associations_to_copy: [:plan_products],
-    additional_attributes: { status: :draft }
+    status_on_copy: :draft
   )
 
   # --- 計算・集計メソッド ---
