@@ -46,7 +46,6 @@
           <%= company_users_sign_in_url(company_slug: @user.company.slug, host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>
         </p>
 
-
         <p style="margin-top: 20px;"><strong><%= t('application_request_mailer.approval_notification.method_2_title') %></strong></p>
         <ol>
           <li><a href="<%= root_url(host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>"><%= root_url(host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %></a> <%= t('application_request_mailer.approval_notification.method_2_step_1') %></li>
