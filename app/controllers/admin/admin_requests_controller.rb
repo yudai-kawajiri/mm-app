@@ -62,6 +62,13 @@ class Admin::AdminRequestsController < Admin::BaseController
     reason = params[:reason].presence || t("admin.admin_requests.default_reject_reason")
 
     if @admin_request.reject!(current_user, reason: reason)
+      # 却下時に未承認ユーザーを削除
+      user = @admin_request.user
+      if user.present? && !user.approved?
+        Rails.logger.info "Deleting rejected user: #{user.email}"
+        user.destroy
+      end
+
       redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), notice: t("flash_messages.admin.admin_requests.messages.rejected")
     else
       redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), alert: t("flash_messages.admin.admin_requests.messages.reject_failed")
