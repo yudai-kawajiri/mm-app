@@ -54,16 +54,9 @@ module CrudResponderConcern
 
       redirect_to success_path, status: :see_other, allow_other_host: true
     else
-      # 削除失敗 → エラー (赤) - association名を翻訳
-      error_messages = resource.errors.full_messages.map do |msg|
-        msg.gsub(/\bproduct materials\b/, "商品")
-           .gsub(/\bplan products\b/, "計画")
-           .gsub(/\bmaterials\b/, "原材料")
-           .gsub(/\bproducts\b/, "商品")
-           .gsub(/\bplans\b/, "計画")
-           .gsub(/が存在しているので削除できません/, "で使用されているため削除できません")
-      end
-      flash[:alert] = error_messages.to_sentence
+      # 削除失敗 → エラー表示（翻訳ファイルのエラーメッセージをそのまま使用）
+      flash[:alert] = resource.errors.full_messages.to_sentence
+
       redirect_to destroy_failure_path, status: :see_other, allow_other_host: true
     end
   end
