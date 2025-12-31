@@ -104,3 +104,10 @@ ja:
     actions:
       created: 登録
       updated: 更新
+
+  activerecord:
+    errors:
+      messages:
+        restrict_dependent_destroy:
+          has_many: "他のデータで使用されているため削除できません"
+          has_one: "関連するデータが存在するため削除できません"
