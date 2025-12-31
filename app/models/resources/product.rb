@@ -86,9 +86,9 @@ class Resources::Product < ApplicationRecord
     uniqueness_scope: [:category_id, :store_id],
     uniqueness_check_attributes: [:name, :reading],
     associations_to_copy: [:product_materials],
+    status_on_copy: :draft,
     additional_attributes: {
-      item_number: :generate_unique_item_number,
-      status: :draft
+      item_number: :generate_unique_item_number
     }
   )
 
