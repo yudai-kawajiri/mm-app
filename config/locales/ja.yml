@@ -75,6 +75,9 @@ ja:
     messages:
       hiragana_only: "はひらがなで入力してください"
       unauthorized: この操作を行う権限がありません
+      status_used_in_plans: "計画で使用されているため、ステータスを変更できません"
+      restrict_dependent_destroy:
+        has_many: "他のデータで使用されているため削除できません"
     invalid_subdomain_access: アクセス権限がありません
     page_not_found: ページが見つかりませんでした
     select_company: 会社を選択してください
