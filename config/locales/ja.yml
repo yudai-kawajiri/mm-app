@@ -111,3 +111,9 @@ ja:
         restrict_dependent_destroy:
           has_many: "他のデータで使用されているため削除できません"
           has_one: "関連するデータが存在するため削除できません"
+
+    helpers:
+      messages:
+        restrict_dependent_destroy:
+          has_many: "他のデータで使用されているため削除できません"
+          has_one: "関連するデータが存在するため削除できません"
