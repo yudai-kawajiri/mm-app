@@ -85,7 +85,7 @@ class Resources::PlansController < AuthenticatedController
   def update_status
     if @plan.update(status: params[:status])
       redirect_to company_resources_plans_path(company_slug: current_company.slug),
-                  notice: t("flash_messages.plans.messages.status_updated",
+                  notice: t("flash_messages.resources.plans.messages.status_updated",
                             name: @plan.name,
                             status: t("activerecord.enums.resources/plan.status.#{@plan.status}"))
     else

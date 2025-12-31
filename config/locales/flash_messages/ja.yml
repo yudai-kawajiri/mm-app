@@ -67,11 +67,6 @@ ja:
           switch_not_found: 会社が見つかりませんでした
           switch_all_companies: "システム管理モード（全会社）に切り替えました"
 
-
-  plans:
-    messages:
-      status_updated: "計画「%{name}」のステータスを「%{status}」に変更しました"
-
   plan_schedules:
     messages:
       plan_assigned: 計画を登録しました
@@ -157,3 +152,4 @@ ja:
         copy_failed: "計画のコピーに失敗しました: %{error}"
         copy_failed_duplicate: "計画のコピーに失敗しました: 名前が重複しています"
         no_products_set: 商品が設定されていません
+        status_updated: "計画「%{name}」のステータスを「%{status}」に変更しました"
