@@ -119,6 +119,12 @@ class Resources::ProductsController < AuthenticatedController
     end
   end
 
+  def print
+    respond_to do |format|
+      format.html { render layout: 'print' }
+    end
+  end
+
   def set_product
     @product = scoped_products.find(params[:id])
   end
