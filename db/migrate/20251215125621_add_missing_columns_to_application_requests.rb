@@ -7,7 +7,7 @@ class AddMissingColumnsToApplicationRequests < ActiveRecord::Migration[8.0]
     add_column :application_requests, :approved_by_id, :bigint
     add_column :application_requests, :approved_at, :datetime
     add_column :application_requests, :rejection_reason, :text
-    
+
     add_index :application_requests, :status
     add_index :application_requests, :approved_by_id
   end

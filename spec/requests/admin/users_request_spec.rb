@@ -38,14 +38,14 @@ RSpec.describe "Admin::Users", type: :request do
 
       it 'リダイレクトされること' do
         get scoped_path(:admin_users)
-        expect([302, 404]).to include(response.status)
+        expect([ 302, 404 ]).to include(response.status)
       end
     end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         get scoped_path(:admin_users)
-        expect([302, 404]).to include(response.status)
+        expect([ 302, 404 ]).to include(response.status)
       end
       end
     end
@@ -65,7 +65,7 @@ RSpec.describe "Admin::Users", type: :request do
 
       xit 'ユーザー一覧にリダイレクトされること' do
         delete scoped_path(:admin_user, target_user)
-        expect([302, 404]).to include(response.status)
+        expect([ 302, 404 ]).to include(response.status)
       end
 
       xit '成功メッセージが表示されること' do
@@ -96,7 +96,7 @@ RSpec.describe "Admin::Users", type: :request do
 
       xit 'リダイレクトされること' do
         delete scoped_path(:admin_user, target_user)
-        expect([302, 404]).to include(response.status)
+        expect([ 302, 404 ]).to include(response.status)
       end
     end
   end

@@ -23,7 +23,7 @@ FactoryBot.define do
     after(:build) do |products, evaluator|
       # Company を設定（user から取得または新規作成）
       products.company ||= products.user&.company || create(:company)
-      
+
       # Store は optional（明示的に指定された場合のみ設定）
       # products.store ||= ... は削除（optional: true なので不要）
     end

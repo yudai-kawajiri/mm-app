@@ -110,7 +110,6 @@ RSpec.describe '製品管理', type: :system do
       expect(page).to have_content('サーモン握り')
       expect(page).to have_content('えび握り')
     end
-
 end
 end
 end

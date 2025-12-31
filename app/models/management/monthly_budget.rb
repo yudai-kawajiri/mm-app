@@ -44,11 +44,11 @@ class Management::MonthlyBudget < ApplicationRecord
   end
 
   def total_planned_revenue
-    plan_schedules.sum('COALESCE(expected_revenue, 0)')
+    plan_schedules.sum("COALESCE(expected_revenue, 0)")
   end
 
   def total_actual_revenue
-    plan_schedules.sum('COALESCE(actual_revenue, 0)')
+    plan_schedules.sum("COALESCE(actual_revenue, 0)")
   end
 
   # 総見込み売上（実績 + 残り予定）
@@ -59,9 +59,9 @@ class Management::MonthlyBudget < ApplicationRecord
   # 今日以降の予定売上（実績未入力分のみ）
   def remaining_planned_revenue
     today = Date.current
-    plan_schedules.where('scheduled_date >= ?', today)
+    plan_schedules.where("scheduled_date >= ?", today)
                   .where(actual_revenue: nil)
-                  .sum('COALESCE(expected_revenue, 0)')
+                  .sum("COALESCE(expected_revenue, 0)")
   end
 
   def achievement_rate

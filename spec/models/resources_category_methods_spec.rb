@@ -4,8 +4,6 @@ RSpec.describe Resources::Category, type: :model do
   let(:company) { create(:company) }
 
   describe '重要メソッド' do
-    
-
     it 'has products association' do
       category = create(:category, company: company)
       expect(category).to respond_to(:products)

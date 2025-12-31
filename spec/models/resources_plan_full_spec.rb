@@ -6,14 +6,17 @@ RSpec.describe Resources::Plan, type: :model do
 
   describe 'plan operations' do
     it 'can be instantiated' do
-    plan = Resources::Plan.new(
-      company: company,
-      store: store,
-      name: 'Test Plan'
-    )
-    expect(plan).to be_a(Resources::Plan)
-  end_date: Date.today + 7.days
+      plan = Resources::Plan.new(
+        company: company,
+        store: store,
+        name: 'Test Plan',
+        end_date: Date.today + 7.days
       )
+      expect(plan).to be_a(Resources::Plan)
+    end
+
+    it 'can be persisted' do
+      plan = create(:plan, company: company, store: store)
       expect(plan.persisted?).to be_truthy
     end
 

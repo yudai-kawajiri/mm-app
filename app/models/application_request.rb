@@ -14,7 +14,7 @@ class ApplicationRequest < ApplicationRecord
   validates :admin_name, presence: true
   validates :admin_email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :invitation_token, uniqueness: true, allow_nil: true
-  
+
   # 電話番号のフォーマット検証（ハイフンなし10桁または11桁）
   validates :company_phone, format: {
     with: /\A\d{10,11}\z/,

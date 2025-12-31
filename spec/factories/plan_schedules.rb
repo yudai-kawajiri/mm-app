@@ -6,7 +6,7 @@ FactoryBot.define do
     transient do
       company { user&.company || create(:company) }
     end
-    
+
     association :plan, factory: :plan, strategy: :build
     before(:create) do |plan_schedule, evaluator|
       plan_schedule.company ||= evaluator.company
@@ -14,7 +14,7 @@ FactoryBot.define do
     end
     scheduled_date { Date.current }
     actual_revenue { nil }
-    
+
     status { :scheduled }
     description { "テスト用の計画スケジュール説明" }
 

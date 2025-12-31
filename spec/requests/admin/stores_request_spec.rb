@@ -13,23 +13,23 @@ RSpec.describe Admin::StoresController, type: :request do
   describe 'GET /admin/stores' do
     it 'lists stores' do
       get '/admin/stores'
-      expect([200, 302, 404]).to include(response.status)
+      expect([ 200, 302, 404 ]).to include(response.status)
     end
   end
-  
+
   describe 'GET /admin/stores/:id' do
     it 'shows store' do
       get "/admin/stores/#{store.id}"
-      expect([200, 302, 404]).to include(response.status)
+      expect([ 200, 302, 404 ]).to include(response.status)
     end
   end
-  
+
   describe 'POST /admin/stores' do
     it 'creates store' do
       post '/admin/stores', params: {
         store: { name: 'New Store', company_id: company.id }
       }
-      expect([200, 302, 404, 422]).to include(response.status)
+      expect([ 200, 302, 404, 422 ]).to include(response.status)
     end
   end
 end

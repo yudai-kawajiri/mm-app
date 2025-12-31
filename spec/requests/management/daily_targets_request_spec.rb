@@ -13,8 +13,7 @@ RSpec.describe Management::DailyTargetsController, type: :request do
   describe 'GET index' do
     it 'shows daily targets' do
       get scoped_path(:management_daily_targets)
-      expect([200, 302, 404]).to include(response.status)
+      expect([ 200, 302, 404 ]).to include(response.status)
     end
   end
-  
   end

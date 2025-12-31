@@ -6,7 +6,7 @@ RSpec.describe RouterController, type: :request do
   describe 'routing' do
     it 'handles root path' do
       get "http://#{company.slug}.example.com/"
-      expect([200, 302, 404]).to include(response.status)
+      expect([ 200, 302, 404 ]).to include(response.status)
     end
   end
 end

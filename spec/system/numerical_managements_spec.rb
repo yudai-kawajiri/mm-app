@@ -13,6 +13,6 @@ RSpec.describe '数値管理', type: :system do
 
   scenario '数値管理ページにアクセスできる' do
     visit scoped_path(:management_numerical_managements)
-    expect([200, 302, 404]).to include(page.status_code)
+    expect([ 200, 302, 404 ]).to include(page.status_code)
   end
 end

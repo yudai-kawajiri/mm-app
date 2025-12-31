@@ -52,7 +52,6 @@ RSpec.describe "Api::V1::Products", type: :request do
       get "/api/v1/products/#{product.id}/fetch_plan_details"
       expect(response).to have_http_status(:not_found)
     end
-
       end
     end
 
@@ -60,8 +59,7 @@ RSpec.describe "Api::V1::Products", type: :request do
       it 'リダイレクトされること' do
       Warden.test_reset!
       get "/api/v1/products/#{product.id}/fetch_plan_details"
-      expect([401, 302, 404]).to include(response.status)
+      expect([ 401, 302, 404 ]).to include(response.status)
     end
   end
-
 end

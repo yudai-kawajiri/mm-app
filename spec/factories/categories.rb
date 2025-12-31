@@ -5,7 +5,7 @@ FactoryBot.define do
     transient do
       user { nil }
     end
-    
+
     company { user&.company || create(:company) }
     sequence(:name) { |n| "カテゴリ#{n}" }
     sequence(:reading) do |n|

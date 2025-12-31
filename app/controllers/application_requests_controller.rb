@@ -58,11 +58,11 @@ class ApplicationRequestsController < ApplicationController
 
     # エラーメッセージを判定
     if e.message.include?("index_companies_on_phone")
-      error_message = t('flash_messages.application_requests.create.duplicate_phone')
+      error_message = t("flash_messages.application_requests.create.duplicate_phone")
     elsif e.message.include?("index_companies_on_email")
-      error_message = t('flash_messages.application_requests.create.duplicate_email')
+      error_message = t("flash_messages.application_requests.create.duplicate_email")
     else
-      error_message = t('flash_messages.application_requests.create.error')
+      error_message = t("flash_messages.application_requests.create.error")
     end
 
     @application_request.errors.add(:base, error_message)
@@ -93,7 +93,7 @@ class ApplicationRequestsController < ApplicationController
         notice: t("application_requests.accept_confirm.approved")
     end
   rescue ActiveRecord::RecordInvalid => e
-    flash[:alert] = t("application_requests.accept_confirm.approval_failed", error: e.record.errors.full_messages.join(', '))
+    flash[:alert] = t("application_requests.accept_confirm.approval_failed", error: e.record.errors.full_messages.join(", "))
     render :accept, status: :unprocessable_entity
   end
 

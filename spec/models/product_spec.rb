@@ -91,5 +91,4 @@ RSpec.describe Resources::Product, type: :model do
       expect(product).to respond_to(:product_materials)
     end
   end
-
 end

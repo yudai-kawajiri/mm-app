@@ -9,8 +9,8 @@ class Admin::SystemLogsController < Admin::BaseController
     if current_user.super_admin?
       if session[:current_company_id].present?
         company = Company.find(session[:current_company_id])
-        @companies = [company]
-        
+        @companies = [ company ]
+
         if session[:current_store_id].present?
           # 特定店舗選択時
           @stores = company.stores.where(id: session[:current_store_id])
@@ -27,8 +27,8 @@ class Admin::SystemLogsController < Admin::BaseController
         @users = User.all
       end
     elsif current_user.company_admin?
-      @companies = [current_user.company]
-      
+      @companies = [ current_user.company ]
+
       if session[:current_store_id].present?
         # 特定店舗選択時
         @stores = current_user.company.stores.where(id: session[:current_store_id])
@@ -40,8 +40,8 @@ class Admin::SystemLogsController < Admin::BaseController
       end
     else
       # store_admin
-      @companies = [current_user.company]
-      @stores = [current_user.store]
+      @companies = [ current_user.company ]
+      @stores = [ current_user.store ]
       @users = current_user.store.users
     end
 

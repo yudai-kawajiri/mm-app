@@ -24,15 +24,15 @@ preload_app!
 # データベース接続の再確立
 before_fork do
   ActiveRecord::Base.connection_pool.disconnect! if defined?(ActiveRecord)
-  
+
   # 本番環境でマイグレーションを実行（起動時に1回だけ）
-  if ENV['RAILS_ENV'] == 'production'
-    require 'rake'
+  if ENV["RAILS_ENV"] == "production"
+    require "rake"
     Rails.application.load_tasks
-    
+
     begin
       puts "Checking for pending migrations..."
-      Rake::Task['db:migrate'].invoke
+      Rake::Task["db:migrate"].invoke
       puts "Migrations completed successfully"
     rescue => e
       puts "Migration warning: #{e.message}"

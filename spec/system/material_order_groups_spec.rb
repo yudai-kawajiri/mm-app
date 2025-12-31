@@ -13,11 +13,11 @@ RSpec.describe '発注グループ', type: :system do
 
   scenario '発注グループページにアクセスできる' do
     visit scoped_path(:resources_material_order_groups)
-    expect([200, 302, 404]).to include(page.status_code)
+    expect([ 200, 302, 404 ]).to include(page.status_code)
   end
-  
+
   scenario '新規発注グループを作成できる' do
     visit scoped_path(:new_resources_material_order_group)
-    expect([200, 302, 404]).to include(page.status_code)
+    expect([ 200, 302, 404 ]).to include(page.status_code)
   end
 end

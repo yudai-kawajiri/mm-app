@@ -12,12 +12,12 @@ RSpec.describe CompaniesController, type: :request do
     it 'shows company with subdomain' do
       host! "#{company.slug}.example.com"
       get "/c/#{company.slug}"
-      expect([200, 302, 404]).to include(response.status)
+      expect([ 200, 302, 404 ]).to include(response.status)
     end
-    
+
     it 'shows company without subdomain' do
       get "/c/#{company.slug}"
-      expect([200, 302, 404]).to include(response.status)
+      expect([ 200, 302, 404 ]).to include(response.status)
     end
   end
 end

@@ -13,14 +13,12 @@ RSpec.describe 'ApplicationController Methods', type: :request do
   describe 'authenticated actions trigger controller methods' do
     it 'triggers set_current_company' do
       get '/dashboards' rescue nil
-      expect([200, 302, 404]).to include(response.status)
+      expect([ 200, 302, 404 ]).to include(response.status)
     end
 
     it 'triggers set_current_store' do
       get scoped_path(:resources_materials) rescue nil
-      expect([200, 302, 404]).to include(response.status)
+      expect([ 200, 302, 404 ]).to include(response.status)
     end
-
-    
   end
 end

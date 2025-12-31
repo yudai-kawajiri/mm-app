@@ -14,13 +14,13 @@ RSpec.describe 'Stores Switch', type: :request do
   describe 'POST /switch_store' do
     it 'switches to specific store' do
       post "/c/#{company.slug}/switch_store", params: { current_store_id: store2.id }
-      expect([200, 302]).to include(response.status)
+      expect([ 200, 302 ]).to include(response.status)
       expect(session[:current_store_id]).to eq(store2.id) if response.status == 302
     end
 
     it 'switches to all stores' do
       post "/c/#{company.slug}/switch_store", params: { current_store_id: nil }
-      expect([200, 302]).to include(response.status)
+      expect([ 200, 302 ]).to include(response.status)
     end
   end
 end

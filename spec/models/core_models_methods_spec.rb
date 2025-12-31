@@ -16,8 +16,6 @@ RSpec.describe 'Core Models Methods', type: :model do
       company = create(:company)
       expect(company).to respond_to(:users)
     end
-
-    
   end
 
   describe Store do

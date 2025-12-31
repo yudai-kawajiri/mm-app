@@ -10,7 +10,7 @@ RSpec.describe 'Smoke Test', type: :system do
   let(:user) { create(:user, company: company) }
   scenario 'トップページにアクセスできる' do
         visit root_path
-        expect([200, 302]).to include(page.status_code)
+        expect([ 200, 302 ]).to include(page.status_code)
       end
 
   # js: true のテストは一旦コメントアウト

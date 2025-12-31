@@ -121,7 +121,7 @@ class Resources::ProductsController < AuthenticatedController
 
   def print
     respond_to do |format|
-      format.html { render layout: 'print' }
+      format.html { render layout: "print" }
     end
   end
 

@@ -431,40 +431,39 @@ RSpec.describe 'Products', type: :request do
 
   describe 'full CRUD operations' do
     let(:store) { create(:store, company: company) }
-    
+
     context 'ログイン済み' do
       before do
         sign_in general_user, scope: :user
         host! "#{company.slug}.example.com"
       end
-      
+
       it 'creates, reads, updates, deletes product' do
         category = create(:category, company: company)
-        
+
         # Create
         post scoped_path(:resources_products), params: {
           resources_product: { name: 'Test Product', category_id: category.id, store_id: store.id }
         }
-        
+
         # Read
         product = Resources::Product.last
         if product
           get scoped_path(:resources_product, product)
-          
+
           # Update
           patch scoped_path(:resources_product, product), params: {
             resources_product: { name: 'Updated Product' }
           }
-          
+
           # Delete
           delete scoped_path(:resources_product, product)
         end
-        
+
         expect(true).to be true
       end
     end
   end
-
 end
 end
 end

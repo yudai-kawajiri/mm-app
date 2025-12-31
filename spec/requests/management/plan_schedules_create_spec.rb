@@ -19,7 +19,7 @@ RSpec.describe 'Management::PlanSchedules Create', type: :request do
           scheduled_date: Date.today.to_s
         }
       }
-      expect([200, 302, 422]).to include(response.status)
+      expect([ 200, 302, 422 ]).to include(response.status)
     end
   end
 end
