@@ -83,6 +83,7 @@ const INPUT_TYPE = {
 }
 
 const HTTP_METHOD = {
+  POST: 'post',
   PATCH: 'patch'
 }
 
@@ -236,6 +237,7 @@ export default class extends Controller {
     if (this.hasSubmitBtnTarget) { this.submitBtnTarget.value = this.i18nUpdateLabelValue }
     if (this.hasFormTarget) {
       this.formTarget.action = `/c/${this.companySlugValue}/management/plan_schedules/${scheduleId}`
+      this.formTarget.method = HTTP_METHOD.POST
       this.updateMethodInput(HTTP_METHOD.PATCH)
       this.updateCsrfToken()
     }
@@ -277,6 +279,7 @@ export default class extends Controller {
     // フォームアクション
     if (this.hasFormTarget) {
       this.formTarget.action = `/c/${this.companySlugValue}/management/plan_schedules/${scheduleId}`
+      this.formTarget.method = HTTP_METHOD.POST
       this.updateMethodInput(HTTP_METHOD.PATCH)
       this.updateCsrfToken()
     }
@@ -322,9 +325,10 @@ export default class extends Controller {
       this.submitBtnTarget.value = this.i18nCreateLabelValue
     }
 
-    // フォームアクション（初期値は空、プラン選択時に設定される）
+    // フォームアクション（新規作成用に設定）
     if (this.hasFormTarget) {
-      this.formTarget.action = '#'
+      this.formTarget.action = `/c/${this.companySlugValue}/management/plan_schedules`
+      this.formTarget.method = HTTP_METHOD.POST
       this.removeMethodInput()
       this.updateCsrfToken()
     }
@@ -408,11 +412,14 @@ export default class extends Controller {
       const products = JSON.parse(selectedOption.dataset[DATA_ATTRIBUTE.PRODUCTS] || '[]')
       this.currentPlanProducts = products
 
-      // フォームURLを動的に設定（management名前空間を使用）
-      if (this.hasFormTarget && planId) {
-        const companySlug = this.companySlugValue
-        this.formTarget.action = `/c/${companySlug}/management/plan_schedules`
-        Logger.log(LOG_MESSAGES.FORM_URL_UPDATED, this.formTarget.action)
+      // 新規作成モードの場合のみフォームURLを設定
+      if (this.hasFormTarget) {
+        const isEditMode = /\/plan_schedules\/\d+$/.test(this.formTarget.action)
+        if (!isEditMode) {
+          this.formTarget.action = `/c/${this.companySlugValue}/management/plan_schedules`
+          this.formTarget.method = HTTP_METHOD.POST
+          Logger.log(LOG_MESSAGES.FORM_URL_UPDATED, this.formTarget.action)
+        }
       }
 
       this.displayProducts(products)
@@ -421,10 +428,6 @@ export default class extends Controller {
       this.resetProductsSection()
       if (this.hasPlannedRevenueTarget) {
         this.plannedRevenueTarget.value = DEFAULT_VALUE.EMPTY_STRING
-      }
-      // フォームURLをリセット
-      if (this.hasFormTarget) {
-        this.formTarget.action = '#'
       }
       this.showInfoAlert()
     }
