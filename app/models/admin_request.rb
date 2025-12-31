@@ -48,7 +48,6 @@ class AdminRequest < ApplicationRecord
     end
   end
 
-  # 却下処理：却下理由の保存とユーザー状態のリセットを実行
   def reject!(rejected_by_user, reason:)
     transaction do
       update!(
@@ -65,6 +64,7 @@ class AdminRequest < ApplicationRecord
         user.update!(approved: false)
       end
 
+      # 却下通知メールを送信
       ApplicationRequestMailer.rejection_notification(self).deliver_later
     end
   end
