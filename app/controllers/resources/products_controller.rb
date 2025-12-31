@@ -34,7 +34,7 @@ class Resources::ProductsController < AuthenticatedController
     @product = Resources::Product.new
     @product.user_id = current_user.id
     @product.company_id = current_company.id
-    @product.store_id = current_store&.id
+    @product.store_id = current_user.store_id
     @product_categories = scoped_categories.for_products.ordered
     @material_categories = scoped_categories.for_materials
     @materials = scoped_materials.ordered
@@ -44,7 +44,7 @@ class Resources::ProductsController < AuthenticatedController
     @product = Resources::Product.new(product_params)
     @product.user_id = current_user.id
     @product.company_id = current_company.id
-    @product.store_id = current_store&.id if @product.store_id.blank?
+    @product.store_id = current_user.store_id if @product.store_id.blank?
 
     @product_categories = scoped_categories.for_products.ordered
     @material_categories = scoped_categories.for_materials

@@ -32,7 +32,7 @@ class Resources::PlansController < AuthenticatedController
     @plan = Resources::Plan.new
     @plan.user_id = current_user.id
     @plan.company_id = current_company.id
-    @plan.store_id = current_store&.id
+    @plan.store_id = current_user.store_id
     @plan_categories = scoped_categories.for_plans.ordered
     @product_categories = scoped_categories.for_products.ordered
   end
@@ -41,7 +41,7 @@ class Resources::PlansController < AuthenticatedController
     @plan = Resources::Plan.new(plan_params)
     @plan.user_id = current_user.id
     @plan.company_id = current_company.id
-    @plan.store_id = current_store&.id if @plan.store_id.blank?
+    @plan.store_id = current_user.store_id if @plan.store_id.blank?
 
     @plan_categories = scoped_categories.for_plans.ordered
     @product_categories = scoped_categories.for_products.ordered

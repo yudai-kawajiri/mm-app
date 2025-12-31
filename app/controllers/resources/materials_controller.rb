@@ -49,7 +49,7 @@ class Resources::MaterialsController < AuthenticatedController
     @material = Resources::Material.new
     @material.user_id = current_user.id
     @material.company_id = current_company.id
-    @material.store_id = current_store&.id
+    @material.store_id = current_user.store_id
   end
 
   # 原材料を作成
@@ -65,7 +65,7 @@ class Resources::MaterialsController < AuthenticatedController
     @material = Resources::Material.new(material_params)
     @material.user_id = current_user.id
     @material.company_id = current_company.id
-    @material.store_id = current_store&.id if @material.store_id.blank?
+    @material.store_id = current_user.store_id if @material.store_id.blank?
     respond_to_save(@material, success_path: -> { scoped_path(:resources_material_path, @material) })
   end
 

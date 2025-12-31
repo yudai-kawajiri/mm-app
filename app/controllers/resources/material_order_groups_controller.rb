@@ -32,14 +32,14 @@ class Resources::MaterialOrderGroupsController < AuthenticatedController
     @material_order_group = Resources::MaterialOrderGroup.new
     @material_order_group.user_id = current_user.id
     @material_order_group.company_id = current_company.id
-    @material_order_group.store_id = current_store&.id
+    @material_order_group.store_id = current_user.store_id
   end
 
   def create
     @material_order_group = Resources::MaterialOrderGroup.new(material_order_group_params)
     @material_order_group.user_id = current_user.id
     @material_order_group.company_id = current_company.id
-    @material_order_group.store_id = current_store&.id if @material_order_group.store_id.blank?
+    @material_order_group.store_id = current_user.store_id if @material_order_group.store_id.blank?
     respond_to_save(@material_order_group, success_path: -> { scoped_path(:resources_material_order_group_path, @material_order_group) })
   end
 

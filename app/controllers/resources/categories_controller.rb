@@ -42,7 +42,7 @@ class Resources::CategoriesController < AuthenticatedController
     @category = Resources::Category.new(category_params)
     @category.user_id = current_user.id
     @category.company_id = current_company.id
-    @category.store_id = current_store&.id || current_user.store_id
+    @category.store_id = current_user.store_id || current_user.store_id
 
     respond_to_save(@category, success_path: -> { scoped_path(:resources_category_path, @category) })
   end
@@ -57,7 +57,7 @@ class Resources::CategoriesController < AuthenticatedController
     Rails.logger.debug "After assign: store_id = #{@category.store_id.inspect}"
 
     # 強制的に store_id を設定（念のため）
-    @category.store_id ||= current_store&.id
+    @category.store_id ||= current_user.store_id
     Rails.logger.debug "After force: store_id = #{@category.store_id.inspect}"
     Rails.logger.debug "===================="
     respond_to_save(@category, success_path: -> { scoped_path(:resources_category_path, @category) })

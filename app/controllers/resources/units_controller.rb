@@ -35,14 +35,14 @@ class Resources::UnitsController < AuthenticatedController
     @unit = Resources::Unit.new
     @unit.user_id = current_user.id
     @unit.company_id = current_company.id
-    @unit.store_id = current_store&.id
+    @unit.store_id = current_user.store_id
   end
 
   def create
     @unit = Resources::Unit.new(unit_params)
     @unit.user_id = current_user.id
     @unit.company_id = current_company.id
-    @unit.store_id = current_store&.id if @unit.store_id.blank?
+    @unit.store_id = current_user.store_id if @unit.store_id.blank?
     respond_to_save(@unit, success_path: -> { scoped_path(:resources_unit_path, @unit) })
   end
 
