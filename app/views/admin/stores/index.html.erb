@@ -7,12 +7,12 @@
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: (current_user.company_admin? || current_user.super_admin?) ? new_admin_store_path : nil,
+    new_path: (current_user.company_admin? || current_user.super_admin?) ? scoped_path(:new_admin_store_path) : nil,
     new_button_text: t('admin.stores.new.title'),
     skip_store_check: true %>
 
   <%= render 'shared/forms/search_form',
-      form_path: admin_stores_path,
+      form_path: scoped_path(:admin_stores_path),
       search_placeholder: t('admin.stores.index.search.placeholder'),
       sort_options: [
         [t('admin.stores.index.sort_options.company'), 'company'],
@@ -22,6 +22,19 @@
       sort_by: params[:sort_by],
       category_options: nil,
       hide_category: true %>
+
+  <% 
+    # システム管理者のみ会社名カラムを表示
+    columns = []
+    columns << { header: :company, data: Proc.new { |store| store.company&.name || '-' } } if current_user.super_admin?
+    columns += [
+      { header: :code, data: Proc.new { |store| store.code } },
+      { header: :name, data: Proc.new { |store| store.name } },
+      { header: :invitation_code, data: Proc.new { |store| store.invitation_code } },
+      { header: :users_count, data: Proc.new { |store| AdminRequest.where(store: store).where.not(status: :rejected).count } },
+      { header: :created_at, data: Proc.new { |store| l(store.created_at.to_date, format: :default) } }
+    ]
+  %>
 
   <%= render 'shared/components/resource_list',
       resources: @stores,
@@ -36,15 +49,7 @@
       edit_link: !current_user.store_admin?,
       destroy_link: !current_user.store_admin?,
       scope: [:admin],
-
-      columns: [
-        { header: :company, data: Proc.new { |store| store.company&.name || '-' } },
-        { header: :code, data: Proc.new { |store| store.code } },
-        { header: :name, data: Proc.new { |store| store.name } },
-        { header: :invitation_code, data: Proc.new { |store| store.invitation_code } },
-        { header: :users_count, data: Proc.new { |store| store.users_count } },
-        { header: :created_at, data: Proc.new { |store| l(store.created_at.to_date, format: :default) } }
-      ]
+      columns: columns
   %>
 
   <%= paginate @stores, theme: 'bootstrap-5' %>

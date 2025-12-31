@@ -1,0 +1,364 @@
+ja:
+  activerecord:
+    concerns:
+      copyable:
+        copy_name_format: "%{name} (コピー%{count})"
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              not_found: メールアドレスが見つかりません
+            phone:
+              invalid_phone_format: は10桁または11桁の数字で入力してください
+        company:
+          attributes:
+            phone:
+              taken: は既に使用されています
+            slug:
+              taken: は既に使用されています
+        contact:
+          name: お名前
+          email: メールアドレス
+          subject: 件名
+          message: お問い合わせ内容
+        store:
+          attributes:
+            base:
+              restrict_dependent_destroy:
+                has_many: この店舗にはユーザーが所属しているため削除できません。先にユーザーを移動または削除してください。
+        product:
+          attributes:
+            product_id:
+              blank: を選択してください
+            item_number:
+              too_long: は4文字以内で入力してください
+            name:
+              blank: を入力してください
+              taken: は既に使用されています
+            category_id:
+              blank: を選択してください
+            price:
+              blank: を入力してください
+              not_a_number: は数値で入力してください
+              greater_than: は0より大きい値を入力してください
+            status:
+              blank: を選択してください
+        "resources/product":
+          item_number_exceeded: 品番が上限を超えました。これ以上コピーできません。
+          category_in_use: "%{record}で使用しています"
+          attributes:
+            status:
+              used_in_plans: は計画で使用中のため変更できません
+        "resources/plan":
+          attributes:
+            status:
+              used_in_plans: は計画スケジュールで使用中のため変更できません
+        "resources/category":
+          category_type_in_use: "%{record}で使用しています"
+          category_in_use: "%{record}で使用しています"
+        "resources/unit":
+          category_in_use: "%{record}で使用しています"
+          unit_in_use: "%{record}で使用しています"
+        "resources/material":
+          category_in_use: "%{record}で使用しています"
+        "planning/product_material":
+          attributes:
+            material_id:
+              blank: を選択してください
+              already_registered: は既に登録されています
+        "planning/plan_product":
+          attributes:
+            product_id:
+              blank: を選択してください
+      template:
+        header:
+          one: "%{model}の保存に失敗しました"
+          other: "%{count}件のエラーが発生したため、%{model}の保存に失敗しました"
+        body: "以下の項目を確認してください:"
+
+    models:
+      user: ユーザー
+      store: 店舗
+      company: 会社
+      admin_request: 承認リクエスト
+      contact: お問い合わせ
+      application_request: 申請
+      category: カテゴリー
+      resource: 資源
+      material: 原材料
+      product: 商品
+      plan: 計画
+      materials: 原材料
+      products: 商品
+      plans: 計画
+      product_materials: 商品
+      plan_products: 計画
+      materials_as_production_unit: 製造単位
+      materials_as_order_unit: 発注単位
+      "resources/category": カテゴリー
+      "resources/unit": 単位
+      material_order_group: 発注グループ
+      "resources/material_order_group": 発注グループ
+      "resources/material": 原材料
+      "planning/product_material": 商品原材料
+      "resources/product": 商品
+      "resources/plan": 製造計画
+      "planning/plan_product": 計画商品
+      "planning/plan_schedule": 計画スケジュール
+      "planning/daily_target": 日別予算
+      "planning/actual_revenue": 実績売上
+      "management/monthly_budget": 月間予算
+      planning/plan_schedule: 計画スケジュール
+      planning/plan_product: 計画商品
+      management/daily_target: 日別予算
+      management/monthly_budget: 月間予算
+      resources/order: 発注
+      resources/order_group: 発注グループ
+
+    attributes:
+      user:
+        name: 名前
+        email: メールアドレス
+        company: 会社名
+        password: パスワード
+        password_confirmation: "パスワード(確認)"
+        current_password: 現在のパスワード
+        phone: 電話番号
+        role: 権限
+        invitation_code: 招待コード
+        store: 店舗
+        store_id: 店舗
+        approved: 承認状態
+        created_at: 登録日
+
+      store:
+        code: 店舗ID
+        name: 店舗名
+        company: 会社名
+        users_count: ユーザー数
+        invitation_code: 招待コード
+        created_at: 登録日
+        updated_at: 更新日
+        description: 概要
+
+      company:
+        name: 会社名
+        slug: 会社コード
+        email: 会社メールアドレス
+        phone: 電話番号
+        created_at: 登録日
+
+      admin_request:
+        user: ユーザー
+        user_id: リクエスト送信者
+        store: 店舗
+        store_id: 対象店舗
+        company_id: 会社名
+        company: 会社
+        request_type: リクエスト種別
+        status: ステータス
+        message: メッセージ
+        rejection_reason: 却下理由
+        approved_by_id: 承認者
+        approved_at: 承認日時
+        reason: 理由
+
+      system_log:
+        created_at: 日時
+        action: アクション
+        user: ユーザー
+        details: 詳細
+
+      "resources/category":
+        name: カテゴリー名
+        reading: 読み仮名
+        category_type: 種別
+        description: 概要
+        materials: 原材料
+        products: 商品
+        plans: 製造計画
+
+      "resources/unit":
+        name: 単位名
+        reading: 読み仮名
+        category: カテゴリー
+        description: 概要
+        materials_as_product_unit: "原材料(使用単位)"
+        materials_as_order_unit: "原材料(発注単位)"
+
+      "resources/material_order_group":
+        name: グループ名
+        reading: 読み仮名
+        materials_count: 使用原材料
+
+      "resources/material":
+        name: 原材料名
+        reading: 読み仮名
+        code: 原材料コード
+        description: 概要
+        category: カテゴリー
+        category_id: カテゴリー
+        default_unit_weight: 基本分量
+        unit_for_product: 製造単位
+        unit_weight_for_order: 基本発注量
+        pieces_per_order_unit: 基本発注入数
+        default_order_quantity: "基本発注量/発注入数"
+        unit_for_order: 発注単位
+        order_group: 発注グループ
+        order_group_id: 発注グループ
+        new_order_group_name: 新発注グループ
+        production_unit: 使用単位
+        production_unit_id: 使用単位
+        order_unit_id: 発注単位
+        conversion_rate: 換算レート
+        standard_unit_price: 標準単価
+
+      "resources/product":
+        name: 商品名
+        reading: 読み仮名
+        code: 商品コード
+        item_number: 品番
+        price: 売価
+        category_id: カテゴリー
+        category: カテゴリー
+        image: 画像
+        status: ステータス
+        description: 概要
+        product_materials:
+          material_id: 原材料
+          quantity: 数量
+          unit_id: 単位
+          unit_weight: 分量
+
+      "planning/product_material":
+        material_id: 原材料
+        unit_id: 単位
+        quantity: 数量
+        unit_weight: 分量
+
+      "planning/plan_product":
+        product_id: 商品
+        production_count: 製造数
+        price: 単価
+        subtotal: 小計
+        created_at: 登録日時
+        updated_at: 更新日時
+
+      "resources/plan":
+        name: 計画名
+        reading: 読み仮名
+        code: 計画コード
+        plan_date: 計画日
+        category_id: カテゴリー
+        status: ステータス
+        description: 概要
+        actual_revenue_data: 実績売上データ
+
+      "planning/plan_schedule":
+        scheduled_date: 実施日
+        plan_id: 製造計画
+        description: 概要
+
+      "planning/daily_target":
+        target_date: 対象日
+        target_amount: 予算額
+        description: 概要
+
+      "planning/actual_revenue":
+        revenue_date: 実績日
+        amount: 売上額
+        store_id: 店舗
+        created_at: 登録日時
+        updated_at: 更新日時
+
+      "management/monthly_budget":
+        target_month: 対象月
+        target_amount: 予算額
+        store_id: 店舗
+        description: 概要
+        created_at: 登録日時
+        updated_at: 更新日時
+
+      resources/order_group:
+        name: 発注グループ名
+        code: 発注グループコード
+        status: ステータス
+        category_id: カテゴリー
+
+      resources/category:
+        name: カテゴリー名
+        category_type: 種別
+        reading: 読み仮名
+        description: 概要
+
+    enums:
+      user:
+        role:
+          general: 一般
+          store_admin: 店舗管理者
+          company_admin: 会社管理者
+          super_admin: システム管理者
+      "resources/category":
+        category_type:
+          material: 原材料
+          product: 商品
+          plan: 計画
+          order_group: 発注グループ
+
+      "resources/unit":
+        category:
+          production: 製造単位
+          ordering: 発注単位
+          manufacturing: 使用単位
+
+      "resources/product":
+        status:
+          draft: 下書き
+          selling: 販売中
+          discontinued: 販売中止
+
+      "resources/plan":
+        status:
+          draft: 下書き
+          active: 実施中
+          completed: 完了
+          confirmed: 確定
+
+      admin_request:
+        request_type:
+          store_admin_request: 店舗管理者昇格
+          user_registration: ユーザー登録
+        status:
+          pending: 承認待ち
+          approved: 承認済み
+          rejected: 却下
+
+      resources/order_group:
+        status:
+          draft: 下書き
+          ordered: 発注済み
+          received: 入荷済み
+
+    associations:
+      resources/unit:
+        materials_as_product_unit: 商品単位として使用している原材料
+        materials_as_order_unit: 発注単位として使用している原材料
+        materials_as_production_unit: 使用単位として使用している原材料
+
+  common:
+    view_detail: 詳細を見る
+
+  admin:
+    system_logs:
+      index:
+        more_changes: "他%{count}件"
+        filter: 絞り込み
+
+      user:
+        role:
+          super_admin: システム管理者
+          company_admin: 会社管理者
+          store_admin: 店舗管理者
+          employee: 従業員
+          general: 一般

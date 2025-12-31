@@ -1,0 +1,41 @@
+ja:
+  helpers:
+    no_setting: 未設定
+    required_mark: "<span class=\"text-danger\">*</span>"
+    select_store_to_create: 店舗を選択してください
+    submit:
+      update: 更新
+      create: 登録
+    prompt:
+      select: 選択してください
+      create: 登録
+      update: 更新
+    links:
+      destroy: 削除
+    character_counter:
+      max_hint: "最大%{max}文字まで入力できます"
+      hint: "%{current} / %{max} 文字(残り %{remaining} 文字)"
+    confirm:
+      destroy: "本当にこの%{resource}を削除してもよろしいですか?"
+      copy: "この%{resource}をコピーしますか?"
+    link:
+      back: 戻る
+      edit: 編集
+      show: 詳細
+      destroy: 削除
+      new: 新規登録
+      cancel: キャンセル
+      copy: コピー
+      back_to_dashboard: ダッシュボードへ戻る
+      add_item: "+ %{resource}を登録"
+      print: 印刷
+      delete_image: 画像削除
+      cancel_new_image: 選択をキャンセル
+    forms:
+      quantity_placeholder: 数量
+    label:
+      user:
+        remember_me: ログイン情報を記憶する
+      restrict_dependent_destroy:
+        has_one: "%{record}で使用されているため削除できません"
+        has_many: "%{record}で使用されているため削除できません"

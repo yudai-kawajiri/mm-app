@@ -1,0 +1,171 @@
+ja:
+  dashboard:
+    sidebar:
+      company: 会社
+      store: 店舗
+      all_stores: 全店舗
+      system_admin_mode: 全会社
+      company_management: 会社管理
+      user_management: ユーザー管理
+      store_management: 店舗管理
+      select_company_first: 先に会社を選択してください
+      store_selection_note: 会社を選択すると店舗を選択できます
+      no_store: 店舗なし
+      system_logs: システムログ
+      admin_requests: 管理者申請承認
+      category_management: カテゴリー管理
+      material_management: 原材料管理
+      product_management: 商品管理
+      product_list: 商品一覧
+      new_product: 商品登録
+      plan_list: 計画一覧
+      new_plan: 計画登録
+      numerical_dashboard: 数値管理ダッシュボード
+      numerical_management: 数値管理
+      material_list: 原材料一覧
+      new_material: 原材料登録
+      monthly_budget: 月間予算管理
+      daily_targets: 日次目標管理
+      plan_schedule: 計画スケジュール
+      store_disabled_for_super_admin: "※ 会社選択時は店舗を選択できません"
+      store_not_set: 未設定
+
+    menu:
+      title: MM-App
+      dashboard: ダッシュボード
+      category_management: カテゴリー管理
+      category_list: カテゴリ一覧
+      new_category: カテゴリー登録
+      material_master_management: 原材料マスタ管理
+      material_management: 原材料管理
+      unit_management: 単位管理
+      unit_list: 単位一覧
+      new_unit: 単位登録
+      order_group_management: 発注グループ管理
+      order_group_list: 発注グループ一覧
+      new_order_group: 発注グループ登録
+      product_management: 商品管理
+      product_list: 商品一覧
+      new_product: 商品登録
+      plan_list: 計画一覧
+      new_plan: 計画登録
+      numerical_dashboard: 数値管理ダッシュボード
+      numerical_management: 数値管理
+      material_list: 原材料一覧
+      new_material: 原材料登録
+      plan_management: 計画管理
+      settings: 設定
+      account_settings: アカウント設定
+      help: ヘルプ
+      contact: お問い合わせ
+      terms: 利用規約
+      privacy_policy: プライバシーポリシー
+      disabled_menu: この機能は現在利用できません
+
+    admin:
+      title: システム管理者ダッシュボード
+      pending_users: 承認待ちユーザー
+      total_companies: 登録会社数
+      total_stores: 登録店舗数
+      recent_logs: 最近のシステムログ
+      view_users: ユーザー一覧を見る
+      view_companies: 会社一覧を見る
+      view_stores: 店舗一覧を見る
+      view_all_logs: すべてのログを見る
+      no_logs: ログがありません
+      logs:
+        target: 対象
+
+    company_admin:
+      title: 会社管理者ダッシュボード
+      pending_users: 承認待ちユーザー
+      total_stores: 店舗数
+      recent_logs: 最近のアクティビティ
+      view_users: ユーザー一覧を見る
+      view_stores: 店舗一覧を見る
+      view_all_logs: すべてのログを見る
+      no_logs: ログがありません
+      logs:
+        target: 対象
+
+    welcome:
+      title: "MM-Appへようこそ！"
+      message_html: |
+        <p>MM-Appは製造業務の計画管理を支援するシステムです。</p>
+        <p>まずは以下の機能から始めてみましょう：</p>
+        <ul>
+          <li>カテゴリーの登録</li>
+          <li>原材料マスタの設定</li>
+          <li>月間予算の入力</li>
+        </ul>
+      get_started: 今すぐ始める
+
+    welcome_modal:
+      title: ログインに成功しました
+      message: "MM-Appへようこそ！"
+      bookmark_title: ブックマークのお願い
+      bookmark_message: 次回から簡単にアクセスできるよう、このページをブックマークしてください。
+      copy_button: コピー
+      start_button: 始める
+
+    weather:
+      title: 週間天気予報
+      conditions:
+        sunny: 晴れ
+        cloudy: 曇り
+        rainy: 雨
+        snowy: 雪
+
+    kpi:
+      monthly_target: 月間売上予算
+      monthly_actual: 月間売上実績
+      achievement_rate: 月間売上達成率
+      remaining_target: 残りの売上予算
+      target_achieved: 売上予算達成
+      daily_target: 本日の売上目標
+      daily_actual: 本日の売上実績
+      remaining_days: 残り営業日数
+      calculation_error: 計算エラー
+
+    welcome_message: "%{name}さん、こんにちは"
+    display_month_label: 表示月
+    display_button: 表示
+
+    users:
+      index:
+        search:
+          placeholder: 名前またはメールアドレスで検索
+        table_headers:
+          company: 会社名
+          store: 店舗名
+
+    stores:
+      index:
+        search:
+          placeholder: 店舗IDまたは店舗名で検索
+        table_headers:
+          company: 会社名
+
+    companies:
+      index:
+        search:
+          placeholder: 会社名で検索
+
+    admin_requests:
+      index:
+        search:
+          placeholder: 申請者名で検索
+
+    system_logs:
+      index:
+        title: システムログ
+        model: モデル
+        user: ユーザー
+        date_from: 開始日
+        date_to: 終了日
+        filter: フィルタ
+        record_id: レコードID
+        no_logs: ログがありません
+      table_headers:
+        company: 会社名
+        store: 店舗名

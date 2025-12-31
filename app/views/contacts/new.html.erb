@@ -52,7 +52,7 @@
 
             <div class="d-flex justify-content-end gap-2">
               <% if user_signed_in? %>
-                <%= link_to t('helpers.link.back'), help_path, class: 'btn btn-outline-secondary btn-lg' %>
+                <%= link_to t('helpers.link.back'), scoped_path(:help_path), class: 'btn btn-outline-secondary btn-lg' %>
               <% else %>
                 <%= link_to t('helpers.link.back'), root_path, class: 'btn btn-outline-secondary btn-lg' %>
               <% end %>

@@ -32,7 +32,7 @@
         </button>
 
         <% if @monthly_budget&.persisted? %>
-          <%= button_to management_monthly_budget_path(@monthly_budget),
+          <%= button_to scoped_path(:management_monthly_budget_path, @monthly_budget),
                         method: :delete,
                         form: { data: { turbo_confirm: t('numerical_managements.modals.confirm.delete') } },
                         class: "btn btn-outline-danger btn-sm" do %>

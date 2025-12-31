@@ -1,0 +1,156 @@
+ja:
+  units:
+    new:
+      title: 単位登録
+    index:
+      title: 単位一覧
+      sort_placeholder: 並び順を選択
+      sort_options:
+        name: 名前順
+        category: カテゴリ―順
+        created_at: 登録順
+    show:
+      title: "%{name} - 単位詳細"
+    edit:
+      title: "%{name} - 単位編集"
+    gram: g
+
+  categories:
+    new:
+      title: カテゴリー登録
+    index:
+      title: カテゴリー一覧
+      sort_placeholder: 並び順を選択
+      sort_options:
+        name: 名前順
+        category_type: 種別順
+        created_at: 登録順
+    show:
+      title: "%{name} - カテゴリー詳細"
+    edit:
+      title: "%{name} - カテゴリー編集"
+
+  materials:
+    new:
+      title: 原材料登録
+    index:
+      title: 原材料一覧
+      sort_placeholder: 並び順を選択
+      sort_options:
+        display_order: 印刷順
+        name: 名前順
+        category: カテゴリ―順
+        order_group: 発注グループ順
+        created_at: 登録順
+    show:
+      title: "%{name} - 原材料詳細"
+    edit:
+      title: "%{name} - 原材料編集"
+    form:
+      default_unit_weight_help: "（商品1個当の使用量）"
+      unit_for_product_help: "（製造時の計量単位）"
+      production_unit_help: "（原材料の管理単位）"
+      basic_order_quantity: 基本発注量
+      unit_weight_for_order_placeholder: "例: 1000 (1kg当のグラム数)"
+      unit_weight_for_order_help: "重量ベース: 1発注単位当のグラム数を入力"
+      pieces_per_order_unit_placeholder: "例: 100 (1cs当の個数)"
+      pieces_per_order_unit_help: "個数ベース: 1発注単位当の個数を入力"
+    attributes:
+      default_order_quantity: "基本発注量/発注入数"
+      measurement_type: 計測方法
+      unit_weight_for_order_label: 基本発注量
+      pieces_per_order_unit_label: 基本発注入数
+    measurement_types:
+      weight: 重量ベース
+      count: 個数ベース
+    order_group_methods:
+      existing: 既存から選択
+      new: 新規登録
+    placeholders:
+      new_order_group: 商品ごとに違う規格で使用する場合に入力してください
+
+  material_order_groups:
+    new:
+      title: 発注グループ登録
+    index:
+      title: 発注グループ管理
+      unused: 未使用
+      sort_placeholder: 並び順を選択
+      sort_options:
+        name: 名前順
+        created_at: 登録順
+    show:
+      title: "%{name} - 詳細"
+      materials_using_this_group: このグループを使用している原材料
+      materials_count: "%{count}件の原材料"
+      no_materials: このグループを使用している原材料はありません
+    edit:
+      title: "%{name} - 編集"
+    form:
+      name_placeholder: "例: 生まぐろ、冷凍まぐろ"
+      name_help: 同じグループに設定された原材料は、発注時にまとめて計算されます。
+      clear: 解除
+      clear_group: グループ解除
+      delete_group: グループ削除
+    errors:
+      not_found: 発注グループが見つかりません
+      has_materials: "このグループは%{count}件の原材料で使用されているため削除できません"
+
+  products:
+    new:
+      title: 商品登録
+    index:
+      title: 商品一覧
+      sort_placeholder: 並び順を選択
+      sort_options:
+        name: 名前順
+        category: カテゴリ―順
+        display_order: 印刷順
+        created_at: 登録順
+    show:
+      title: "%{name} - 商品詳細"
+    edit:
+      title: "%{name} - 商品編集"
+    placeholder:
+      item_number: 4桁で入力してください
+    image_help:
+      select: JPG、PNG、GIF形式の画像を選択してください
+      change: 画像を変更する場合は新しいファイルを選択してください
+      no_image: 画像未選択
+    product_material_fields:
+      material_name_prompt: 原材料名
+      unit_weight_placeholder: 分量
+      unit_weight: 商品単位分量
+      unit_prompt: 単位
+      delete_button: 削除
+      no_materials_set: 原材料が設定されていません
+    category_selector:
+      prompt: カテゴリ―を選択
+      add_button: カテゴリ―タブを追加
+    tab_all: 全て
+    table_headers:
+      material_name: 原材料名
+      quantity: 数量
+      unit_weight: 分量
+      unit: 単位
+    add_material_button: 原材料を追加
+
+  plans:
+    new:
+      title: 計画登録
+    index:
+      title: 製造計画一覧
+      sort_placeholder: 並び順を選択
+      sort_options:
+        name: 名前順
+        status: ステータス順
+        category: カテゴリ―順
+    show:
+      title: "%{name} - 計画詳細"
+    edit:
+      title: "%{name} - 計画編集"
+    grand_total: 総合計
+    tab_all: 全て
+    tab_total: カテゴリ―合計
+    actions:
+      preview: 印刷プレビュー

@@ -8,34 +8,36 @@
   </div>
 
   <div class="row g-4 mb-4">
-    <div class="col-md-4">
+    <!-- 承認待ちユーザー -->
+    <div class="col-md-6">
       <div class="card text-white h-100 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
         <div class="card-body">
-          <h5 class="card-title"><i class="bi bi-person-check me-2"></i><%= t('dashboard.admin.pending_users') %></h5>
-          <p class="card-text display-6"><%= @pending_users_count %></p>
+          <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-person-check fs-4 me-2"></i>
+            <h5 class="card-title mb-0"><%= t('dashboard.admin.pending_users') %></h5>
+          </div>
+          <p class="display-4 mb-3 fw-bold"><%= @pending_users_count %></p>
+          <%= link_to t('dashboard.admin.view_users'), scoped_path(:admin_admin_requests_path), class: 'btn btn-light btn-sm' %>
         </div>
       </div>
     </div>
 
-    <div class="col-md-4">
+    <!-- 登録会社数 -->
+    <div class="col-md-6">
       <div class="card text-white h-100 shadow-sm" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
         <div class="card-body">
-          <h5 class="card-title"><i class="bi bi-building me-2"></i><%= t('dashboard.admin.total_companies') %></h5>
-          <p class="card-text display-6"><%= @companies_count %></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card text-white h-100 shadow-sm" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-        <div class="card-body">
-          <h5 class="card-title"><i class="bi bi-shop me-2"></i><%= t('dashboard.admin.total_stores') %></h5>
-          <p class="card-text display-6"><%= @stores_count %></p>
+          <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-building fs-4 me-2"></i>
+            <h5 class="card-title mb-0"><%= t('dashboard.admin.total_companies') %></h5>
+          </div>
+          <p class="display-4 mb-3 fw-bold"><%= @companies_count %></p>
+          <%= link_to t('dashboard.admin.view_companies'), admin_companies_path, class: 'btn btn-light btn-sm' %>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- 最近のシステムログ -->
   <div class="row">
     <div class="col-12">
       <div class="card shadow-sm">

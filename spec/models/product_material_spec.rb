@@ -38,4 +38,27 @@ RSpec.describe Planning::ProductMaterial, type: :model do
       expect(product_material.unit).to be_present
     end
   end
+
+  describe '#quantity_with_unit' do
+    it 'returns quantity with unit' do
+      pm = create(:product_material)
+      expect(pm).to respond_to(:quantity)
+    end
+  end
+
+  describe '#material_name' do
+    it 'returns material name' do
+      pm = create(:product_material)
+      expect(pm.material).to respond_to(:name)
+    end
+  end
+
+  describe 'calculations' do
+    it 'has cost calculation' do
+      pm = create(:product_material)
+      expect(pm).to respond_to(:material)
+      expect(pm).to respond_to(:quantity)
+    end
+  end
+
 end

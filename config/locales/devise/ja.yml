@@ -1,0 +1,163 @@
+ja:
+  devise:
+    sessions:
+      new:
+        title: ログイン
+        submit: ログイン
+        email_placeholder: example@example.com
+        password_placeholder: パスワードを入力
+      sign_in: ログイン
+      sign_out: ログアウト
+      signed_in: ログインしました
+      signed_out: ログアウトしました
+      already_signed_out: 既にログアウト済みです
+
+    confirmations:
+      new:
+        title: 確認メール再送信
+        description: アカウント確認のメールを再送信します
+        email_placeholder: example@example.com
+        email_help: 登録時に使用したメールアドレスを入力してください
+        submit: 確認メールを再送信
+      user:
+        already_authenticated: 既にログインしています
+      confirmed: アカウントを認証しました
+      send_instructions: アカウント確認のメールを送信しました
+      send_paranoid_instructions: メールアドレスが登録済みの場合、アカウント確認のメールが送信されます
+
+    registrations:
+      new:
+        title: 新規登録
+        invitation_code_placeholder: 招待コードを入力してください
+        invitation_code_hint: お店の招待コードを入力してください
+        store_hint: 所属する店舗を選択してください
+      edit:
+        title: アカウント編集
+        email_placeholder: example@example.com
+        unhappy: アカウントの使用をやめる場合
+        cancel_my_account: アカウントを削除する
+        cancel_confirm: 本当にアカウントを削除してもよろしいですか？このアクションは取り消せません
+        password_placeholder: 変更しない場合は空欄
+        password_help: 空白の場合は変更しません
+        current_password_help: 変更を確定するには現在のパスワードが必要です
+        leave_blank_if_you_don_t_want_to_change_it: 変更しない場合は空欄のままにしてください
+        new_password: 新しいパスワード
+        we_need_your_current_password_to_confirm_your_changes: 変更を確定するには現在のパスワードが必要です
+        update: 更新
+        are_you_sure: 本当にアカウントを削除してもよろしいですか？
+      destroyed: アカウントを削除しました
+      signed_up: アカウント登録が完了しました
+      signed_up_but_inactive: アカウント登録が完了しましたが、アカウントが有効化されていません
+      signed_up_but_locked: アカウント登録が完了しましたが、アカウントがロックされています
+      signed_up_but_unconfirmed: 確認メールを送信しました。メール内のリンクをクリックしてアカウントを有効化してください
+      update_needs_confirmation: アカウント情報を更新しました。確認メールをご確認ください
+      updated: アカウント情報を更新しました
+      updated_but_not_signed_in: アカウント情報を更新しました。再度ログインしてください
+      signed_up_but_not_approved: 登録が完了しました。管理者の承認をお待ちください。承認後にログイン可能になります。
+      pending_reconfirmation: "現在、%{unconfirmed_email}の確認待ちです"
+
+    shared:
+      minimum_password_length: "%{count}文字以上で入力してください"
+      links:
+        sign_up: 新規登録
+        sign_in: ログイン画面に戻る
+        forgot_your_password: パスワードを忘れた方
+        didn_t_receive_confirmation_instructions: 確認メールが届いていませんか？
+        didn_t_receive_unlock_instructions: ロック解除の手順が届いていませんか？
+        back_to_top: トップページに戻る
+
+    passwords:
+      new:
+        title: パスワードを忘れた方
+        submit: 送信
+        description: 登録したメールアドレスにパスワード再設定のリンクをお送りします
+        email_placeholder: example@example.com
+        email_help: 登録時に使用したメールアドレスを入力してください
+      edit:
+        title: パスワード変更
+        submit: パスワード変更
+        description: 新しいパスワードを設定してください
+        new_password: 新しいパスワード
+        new_password_confirmation: "新しいパスワード（確認）"
+      no_token: パスワード再設定のメールからのみアクセスできます
+      send_instructions: パスワード再設定のメールを送信しました
+      send_paranoid_instructions: メールアドレスが登録済みの場合、パスワード再設定のメールが送信されます
+      updated: パスワードを更新しました
+      updated_not_active: パスワードを更新しました
+
+    unlocks:
+      new:
+        title: アカウントロック解除
+        email: メールアドレス
+        email_placeholder: example@example.com
+        email_hint: 登録時に使用したメールアドレスを入力してください
+        submit: ロック解除のメールを送信
+        back_to_login: ログイン画面に戻る
+      send_instructions: アカウントのロック解除方法を送信しました
+      send_paranoid_instructions: アカウントが存在する場合、ロック解除方法を送信しました
+      unlocked: アカウントのロックを解除しました
+
+    failure:
+      already_authenticated: 既にログインしています
+      inactive: アカウントが有効化されていません
+      invalid: "%{authentication_keys}またはパスワードが違います"
+      locked: アカウントがロックされています
+      last_attempt: もう一度間違えるとアカウントがロックされます
+      not_approved: アカウントが承認されていません。メール内の「アカウントを有効化」ボタンを押してください。
+      not_found_in_database: "%{authentication_keys}またはパスワードが違います"
+      timeout: セッションがタイムアウトしました。もう一度ログインしてください
+      unauthenticated: ログインもしくはアカウント登録が必要です
+      unconfirmed: メールアドレスの確認が必要です
+
+    omniauth_callbacks:
+      failure: "%{kind}アカウントによる認証に失敗しました。理由：%{reason}"
+      success: "%{kind}アカウントによる認証に成功しました"
+
+    mailer:
+      confirmation_instructions:
+        subject: メールアドレスの確認
+        greeting: "ようこそ、%{name}さん！"
+        instruction: 以下のリンクをクリックして、メールアドレスの確認を完了してください。
+        action: メールアドレスを確認する
+        instruction_2: もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください。
+      email_changed:
+        subject: メールアドレスが変更されました
+        greeting: "こんにちは、%{name}さん！"
+        message: メールアドレスが変更されたことをお知らせします。
+        message_unconfirmed: "メールアドレスが%{email}に変更されました。現在確認待ちです。"
+        message_confirmed: "メールアドレスが%{email}に変更されました。"
+      password_change:
+        subject: パスワードが変更されました
+        greeting: "こんにちは、%{name}さん！"
+        message: パスワードが変更されたことをお知らせします。
+      reset_password_instructions:
+        subject: "【MM-Appシステム】パスワード再設定のご案内"
+        greeting: "こんにちは %{name} さん！"
+        action: パスワードの変更
+        instruction: パスワードをリセットするには、以下のリンクをクリックしてください。
+        instruction_2: もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください。
+        instruction_3: このメールに心当たりがない場合は、無視して構いません。パスワードは、上記のリンクをクリックして新しいパスワードを登録するまで変更されません。
+      unlock_instructions:
+        subject: アカウントのロック解除
+        greeting: "こんにちは、%{name}さん！"
+        message: ログイン試行回数が上限に達したため、アカウントがロックされました。
+        instruction: 以下のリンクをクリックしてアカウントのロックを解除してください。
+        action: アカウントのロックを解除する
+        instruction_2: もしボタンが動作しない場合は、以下のURLをブラウザにコピー&ペーストしてください。
+
+    approval_notification:
+      subject: "【MM-App】ユーザー登録が承認されました"
+      greeting: "%{name} 様"
+      approved_message: ユーザー登録申請が承認されました。
+      instruction: 以下のログインページからアクセスしてください。
+      action: ログインする
+      login_info: "ログイン情報:"
+      email: "メールアドレス: %{email}"
+      password: "パスワード: 登録時に設定したパスワード"
+
+    rejection_notification:
+      subject: "【MM-App】ユーザー登録申請について"
+      greeting: "%{name} 様"
+      rejected_message: ユーザー登録申請が却下されました。
+      reason_label: "却下理由:"
+      contact_message: ご不明な点がございましたら、管理者までお問い合わせください。

@@ -21,7 +21,7 @@ RSpec.describe Resources::MaterialOrderGroup, type: :model do
       create(:material_order_group, name: 'マグロ類', user: user)
       duplicate_group = build(:material_order_group, name: 'マグロ類', user: user)
       expect(duplicate_group).not_to be_valid
-      expect(duplicate_group.errors[:name]).to include('は既に使用されています')
+      expect(duplicate_group.errors[:name]).to include('はすでに存在します')
     end
 
     it 'readingが存在すること' do
@@ -51,8 +51,8 @@ RSpec.describe Resources::MaterialOrderGroup, type: :model do
 
   describe 'スコープ' do
     before do
-      @group1 = create(:material_order_group, name: 'Aグループ', reading: 'えーぐるーぷ', user: user, created_at: 2.days.ago)
-      @group2 = create(:material_order_group, name: 'Bグループ', reading: 'びーぐるーぷ', user: user, created_at: 1.day.ago)
+      @group1 = create(:material_order_group, name: 'Aグループ', reading: 'えぐるぷ', user: user, created_at: 2.days.ago)
+      @group2 = create(:material_order_group, name: 'Bグループ', reading: 'びぐるぷ', user: user, created_at: 1.day.ago)
     end
 
     it 'orderedスコープで名前順（reading順）にソートされること' do

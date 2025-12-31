@@ -59,7 +59,7 @@ const DATE_OFFSET = {
 }
 
 const URL_TEMPLATE = {
-  UPDATE_DAILY_TARGET: (year, month, day) => `/management/numerical_managements/update_daily_target?year=${year}&month=${month}&day=${day}`
+  UPDATE_DAILY_TARGET: (companySlug, year, month, day) => `/c/${companySlug}/management/numerical_managements/update_daily_target?year=${year}&month=${month}&day=${day}`
 }
 
 const LOG_MESSAGES = {
@@ -131,7 +131,11 @@ export default class extends Controller {
     // フォームのactionを動的に設定
     const form = document.getElementById(ELEMENT_ID.FORM)
     if (form) {
-      const actionUrl = URL_TEMPLATE.UPDATE_DAILY_TARGET(year, month, day)
+      // URLからcompany_slugを取得
+      const pathParts = window.location.pathname.split('/')
+      const companySlug = pathParts[2] // /c/{company_slug}/...
+
+      const actionUrl = URL_TEMPLATE.UPDATE_DAILY_TARGET(companySlug, year, month, day)
       form.action = actionUrl
       Logger.log(LOG_MESSAGES.FORM_ACTION_SET, actionUrl)
     }

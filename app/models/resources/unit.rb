@@ -1,14 +1,8 @@
 # frozen_string_literal: true
 
-# Unit
-#
 # 単位モデル - 材料の製造単位、発注単位、使用単位を管理
-#
-# 単位カテゴリー:
-#   - production: 製造単位（商品製造で使う単位: g, 本など）
-#   - ordering: 発注単位（発注時の単位: kg, 箱など）
-#   - manufacturing: 使用単位（印刷時に表示する数え方: 枚, カン, 本, 切れなど）
 class Resources::Unit < ApplicationRecord
+  belongs_to :company
   include TranslatableAssociations
   has_paper_trail
 
@@ -22,6 +16,7 @@ class Resources::Unit < ApplicationRecord
 
   enum :category, { production: 0, ordering: 1, manufacturing: 2 }
 
+  # 削除抑制：他モデルで使用中の単位は削除不可とし、整合性を維持
   has_many :materials_as_product_unit,
             class_name: "Material",
             foreign_key: "unit_for_product_id",
@@ -42,6 +37,7 @@ class Resources::Unit < ApplicationRecord
   validates :category, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
 
+  # 運用中の整合性担保：使用されている単位のカテゴリー変更を禁止
   validate :prevent_category_change_if_in_use, on: :update
 
   scope :for_index, -> { order(created_at: :desc) }
@@ -58,13 +54,14 @@ class Resources::Unit < ApplicationRecord
 
   private
 
+  # カテゴリー変更によるデータの不整合（例：発注単位が製造単位に変わる等）を防ぐ
   def prevent_category_change_if_in_use
     return unless category_changed?
 
     usage_details = []
-    usage_details << "原材料" if Resources::Material.where(unit_for_product_id: id).exists? ||
+    usage_details << I18n.t("activerecord.models.resources/material") if Resources::Material.where(unit_for_product_id: id).exists? ||
                                   Resources::Material.where(unit_for_order_id: id).exists?
-    usage_details << "商品原材料" if Planning::ProductMaterial.where(unit_id: id).exists?
+    usage_details << I18n.t("activerecord.models.planning/product_material") if Planning::ProductMaterial.where(unit_id: id).exists?
 
     return if usage_details.empty?
 

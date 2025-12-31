@@ -101,8 +101,12 @@ class Management::NumericalManagementsController < Management::BaseController
       new_total = current_total + sanitized_value.to_i
 
       if new_total > monthly_budget.target_amount
-        redirect_to management_numerical_managements_path(year: date.year, month: date.month),
-                    alert: t("numerical_managements.messages.budget_exceeded",
+        redirect_to company_management_numerical_managements_path(
+                      company_slug: current_company.slug,
+                      year: date.year,
+                      month: date.month
+                    ),
+                    alert: t("flash_messages.numerical_managements.messages.budget_exceeded",
                             budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
                             total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(new_total)}"),
                     turbo: false
@@ -111,19 +115,28 @@ class Management::NumericalManagementsController < Management::BaseController
     end
 
     if daily_target.update(target_amount: sanitized_value)
-      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
-                  notice: t("numerical_managements.messages.daily_target_updated"),
+      redirect_to company_management_numerical_managements_path(
+                    company_slug: current_company.slug,
+                    year: date.year,
+                    month: date.month
+                  ),
+                  notice: t("flash_messages.numerical_managements.messages.daily_target_updated"),
                   turbo: false
     else
-      redirect_to management_numerical_managements_path(year: date.year, month: date.month),
-            alert: t("numerical_managements.messages.daily_target_update_failed", errors: daily_target.errors.full_messages.join(", ")),
+      redirect_to company_management_numerical_managements_path(
+                    company_slug: current_company.slug,
+                    year: date.year,
+                    month: date.month
+                  ),
+            alert: t("flash_messages.numerical_managements.messages.daily_target_update_failed", errors: daily_target.errors.full_messages.join(", ")),
             turbo: false
     end
   rescue Date::Error
-    redirect_to management_numerical_managements_path(
-      year: Date.current.year,
-      month: Date.current.month
-    ),
+    redirect_to company_management_numerical_managements_path(
+                  company_slug: current_company.slug,
+                  year: Date.current.year,
+                  month: Date.current.month
+                ),
             alert: t("api.errors.invalid_date"),
             turbo: false
   end
@@ -141,7 +154,11 @@ class Management::NumericalManagementsController < Management::BaseController
 
     budget_check_result = check_budget_before_bulk_update(year, month, sanitized_params)
     if budget_check_result[:exceeded]
-      redirect_to management_numerical_managements_path(year: year, month: month),
+      redirect_to company_management_numerical_managements_path(
+                    company_slug: current_company.slug,
+                    year: year,
+                    month: month
+                  ),
                   alert: budget_check_result[:message],
                   turbo: false
       return
@@ -150,11 +167,19 @@ class Management::NumericalManagementsController < Management::BaseController
     service = NumericalDataBulkUpdateService.new(current_user, sanitized_params, current_store&.id)
 
     if service.call
-      redirect_to management_numerical_managements_path(year: year, month: month),
-                  notice: t("numerical_managements.messages.daily_details_updated"),
+      redirect_to company_management_numerical_managements_path(
+                    company_slug: current_company.slug,
+                    year: year,
+                    month: month
+                  ),
+                  notice: t("flash_messages.numerical_managements.messages.daily_details_updated"),
                   turbo: false
     else
-      redirect_to management_numerical_managements_path(year: year, month: month),
+      redirect_to company_management_numerical_managements_path(
+                    company_slug: current_company.slug,
+                    year: year,
+                    month: month
+                  ),
                   alert: service.errors.join(", "),
                   turbo: false
     end
@@ -260,7 +285,7 @@ class Management::NumericalManagementsController < Management::BaseController
     if total_daily_target > monthly_budget.target_amount
       {
         exceeded: true,
-        message: t("numerical_managements.messages.budget_exceeded",
+        message: t("flash_messages.numerical_managements.messages.budget_exceeded",
                   budget: "¥#{ActiveSupport::NumberHelper.number_to_delimited(monthly_budget.target_amount)}",
                   total: "¥#{ActiveSupport::NumberHelper.number_to_delimited(total_daily_target)}")
       }

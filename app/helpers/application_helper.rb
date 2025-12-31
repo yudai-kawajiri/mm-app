@@ -22,6 +22,32 @@
 #   - 自動バリデーション表示
 #
 module ApplicationHelper
+  def scoped_path(path_method, *args)
+    # current_company が存在しない場合は、admin を使う
+    company_slug = current_company&.slug || 'admin'
+
+    if path_method.to_s =~ /\A(new|edit)_(.+)/
+      action_prefix = Regexp.last_match(1)
+      rest = Regexp.last_match(2)
+      company_method_name = "#{action_prefix}_company_#{rest}"
+    else
+      company_method_name = "company_#{path_method}"
+    end
+
+    begin
+      send(company_method_name, *args, company_slug: company_slug)
+    rescue NoMethodError => e
+      Rails.logger.debug "Path fallback for #{path_method}: #{e.message}"
+      # フォールバック: 元のメソッド名を試す
+      begin
+        send(path_method, *args, company_slug: company_slug)
+      rescue NoMethodError => fallback_error
+        Rails.logger.error "Path generation completely failed for #{path_method}: #{fallback_error.message}"
+        "#"
+      end
+    end
+  end
+
   # ============================================================
   # Enum翻訳
   # ============================================================
@@ -71,14 +97,14 @@ module ApplicationHelper
   #
   def sidebar_menu_items
     items = [
-      { name: t("dashboard.menu.dashboard"), path: authenticated_root_path },
+      { name: t("dashboard.menu.dashboard"), path: company_root_path(company_slug: current_company&.slug || 'admin') },
       {
         name: t("dashboard.menu.category_management"),
-        path: resources_categories_path,
+        path: scoped_path(:resources_categories_path),
         disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
-          { name: t("dashboard.menu.category_list"), path: resources_categories_path },
-          { name: t("dashboard.menu.new_category"), path: new_resources_category_path }
+          { name: t("dashboard.menu.category_list"), path: scoped_path(:resources_categories_path) },
+          { name: t("dashboard.menu.new_category"), path: scoped_path(:new_resources_category_path) }
         ]
       },
       {
@@ -87,54 +113,54 @@ module ApplicationHelper
         submenu: [
           {
             name: t("dashboard.menu.unit_management"),
-            path: resources_units_path,
+            path: scoped_path(:resources_units_path),
             submenu: [
-              { name: t("dashboard.menu.unit_list"), path: resources_units_path },
-              { name: t("dashboard.menu.new_unit"), path: new_resources_unit_path }
+              { name: t("dashboard.menu.unit_list"), path: scoped_path(:resources_units_path) },
+              { name: t("dashboard.menu.new_unit"), path: scoped_path(:new_resources_unit_path) }
             ]
           },
           {
             name: t("dashboard.menu.order_group_management"),
-            path: resources_material_order_groups_path,
+            path: scoped_path(:resources_material_order_groups_path),
             submenu: [
-              { name: t("dashboard.menu.order_group_list"), path: resources_material_order_groups_path },
-              { name: t("dashboard.menu.new_order_group"), path: new_resources_material_order_group_path }
+              { name: t("dashboard.menu.order_group_list"), path: scoped_path(:resources_material_order_groups_path) },
+              { name: t("dashboard.menu.new_order_group"), path: scoped_path(:new_resources_material_order_group_path) }
             ]
           },
           {
             name: t("dashboard.menu.material_management"),
-            path: resources_materials_path,
+            path: scoped_path(:resources_materials_path),
             submenu: [
-              { name: t("dashboard.menu.material_list"), path: resources_materials_path },
-              { name: t("dashboard.menu.new_material"), path: new_resources_material_path }
+              { name: t("dashboard.menu.material_list"), path: scoped_path(:resources_materials_path) },
+              { name: t("dashboard.menu.new_material"), path: scoped_path(:new_resources_material_path) }
             ]
           }
         ]
       },
       {
         name: t("dashboard.menu.product_management"),
-        path: resources_products_path,
+        path: scoped_path(:resources_products_path),
         disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
-          { name: t("dashboard.menu.product_list"), path: resources_products_path },
-          { name: t("dashboard.menu.new_product"), path: new_resources_product_path }
+          { name: t("dashboard.menu.product_list"), path: scoped_path(:resources_products_path) },
+          { name: t("dashboard.menu.new_product"), path: scoped_path(:new_resources_product_path) }
         ]
       },
       {
         name: t("dashboard.menu.plan_management"),
-        path: resources_plans_path,
+        path: scoped_path(:resources_plans_path),
         disabled: (current_user.super_admin? || current_user.company_admin?),
         submenu: [
-          { name: t("dashboard.menu.plan_list"), path: resources_plans_path },
-          { name: t("dashboard.menu.new_plan"), path: new_resources_plan_path }
+          { name: t("dashboard.menu.plan_list"), path: scoped_path(:resources_plans_path) },
+          { name: t("dashboard.menu.new_plan"), path: scoped_path(:new_resources_plan_path) }
         ]
       },
       {
       name: t("dashboard.menu.numerical_management"),
-      path: management_numerical_managements_path,
+      path: scoped_path(:management_numerical_managements_path),
       disabled: (current_user.super_admin? || current_user.company_admin?),
       submenu: [
-        { name: t("dashboard.menu.numerical_dashboard"), path: management_numerical_managements_path }
+        { name: t("dashboard.menu.numerical_dashboard"), path: scoped_path(:management_numerical_managements_path) }
       ]
     }
     ]
@@ -143,31 +169,28 @@ module ApplicationHelper
     if current_user.store_admin? || current_user.company_admin? || current_user.super_admin?
       admin_submenu = []
 
-      # システム管理者専用メニュー
       if current_user.super_admin?
-        # システム管理モード（全テナント）のときだけ表示
-        if session[:current_company_id].nil?
-          admin_submenu << { name: t("common.menu.company_management"), path: admin_companies_path }
-          admin_submenu << { name: t("common.menu.system_logs"), path: admin_system_logs_path }
-        else
-          # 特定テナント選択時: システムログのみ表示
-          admin_submenu << { name: t("common.menu.system_logs"), path: admin_system_logs_path }
-        end
+        # システム管理者は常に会社管理を表示
+        admin_submenu << { name: t("common.menu.company_management"), path: '/admin/companies' }
       end
 
-      # 会社管理者・システム管理者共通メニュー
+      # システム管理者と会社管理者はシステムログを表示
+      if current_user.super_admin? || current_user.company_admin?
+        admin_submenu << { name: t("common.menu.system_logs"), path: scoped_path(:admin_system_logs_path) }
+      end
+
+      # ユーザー管理と店舗管理
       if current_user.company_admin? || current_user.super_admin?
-        admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
-        admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
-        admin_submenu << { name: t("common.menu.store_management"), path: admin_stores_path }
+        admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
+        admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
+        admin_submenu << { name: t("common.menu.store_management"), path: scoped_path(:admin_stores_path) }
       end
 
-      # 店舗管理者専用メニュー
       if current_user.store_admin?
-        admin_submenu << { name: t("common.menu.approval_requests"), path: admin_admin_requests_path }
-        admin_submenu << { name: t("common.menu.user_management"), path: admin_users_path }
-        admin_submenu << { name: t("common.menu.store_management"), path: admin_stores_path }
+        admin_submenu << { name: t("common.menu.approval_requests"), path: scoped_path(:admin_admin_requests_path) }
+        admin_submenu << { name: t("common.menu.user_management"), path: scoped_path(:admin_users_path) }
       end
+
       items << {
         name: t("common.menu.admin_management"),
         submenu: admin_submenu
@@ -201,9 +224,10 @@ module ApplicationHelper
     # ダッシュボードの場合の特別処理（メニュー名で判定）
     if item[:name] == t("dashboard.menu.dashboard")
       # ダッシュボード関連のパスを厳密にチェック
+      company_slug = current_company&.slug || 'admin'
       dashboard_paths = [
-        authenticated_root_path,
-        dashboards_path,
+        company_root_path(company_slug: company_slug),
+        company_dashboards_path(company_slug: company_slug),
         "/dashboards"
       ].compact
 
@@ -662,46 +686,51 @@ module ApplicationHelper
   end
 
   # scopeとresourceから正しいパスを生成
-  def resource_path_with_scope(resource, scope = nil, action = nil)
-    scope_array = Array(scope).compact
-    route_key = resource.class.model_name.route_key.singularize
-
-    Rails.logger.debug "=== resource_path_with_scope DEBUG ==="
-    Rails.logger.debug "Resource: #{resource.class.name}"
-    Rails.logger.debug "Scope: #{scope.inspect}"
-    Rails.logger.debug "Scope Array: #{scope_array.inspect}"
-    Rails.logger.debug "Route Key: #{route_key}"
-    Rails.logger.debug "Action: #{action.inspect}"
-
-    if scope_array.any?
-      scope_prefix = scope_array.join("_")
-      action_prefix = action ? "#{action}_" : ""
-      path_method = "#{action_prefix}#{scope_prefix}_#{route_key}_path"
-
-      Rails.logger.debug "Path Method: #{path_method}"
-      Rails.logger.debug "Respond to? #{respond_to?(path_method)}"
-
-      # メソッドが存在するか確認
-      if respond_to?(path_method)
-        send(path_method, resource)
-      else
-        # フォールバック: polymorphic_path を使用
-        args = [ action, *scope_array, resource ].compact
-        Rails.logger.debug "Polymorphic args: #{args.inspect}"
-        polymorphic_path(args)
-      end
-    else
-      # scopeがない場合はpolymorphic_pathを使用
-      polymorphic_path([ action, resource ].compact)
-    end
-  rescue => e
-    Rails.logger.error "Path generation failed: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
-    "#"
-  end
 
   def can_create_store_resource?
     return true unless current_user.company_admin?
     session[:current_store_id].present?
+  end
+
+  # ============================================================
+  # パスベース対応ヘルパー
+  # ============================================================
+
+  #
+  # パスベース対応: 会社スコープ付きのパスを自動生成
+  #
+  # @param path_method [Symbol] パスメソッド名（例: :admin_users_path）
+  # @param args [Array] パスメソッドの引数
+  # @return [String] 会社スコープ付きパス
+  #
+  # @example
+  #   scoped_path(:admin_users_path)
+  #   # => "/c/company-slug/admin/users"
+  #
+  #   scoped_path(:resources_material_path, @material)
+  #   # => "/c/company-slug/resources/materials/123"
+  #
+
+  # パスベース対応: 動的に company_ プレフィックス付きパスを生成
+
+
+  def resource_path_with_scope(resource, scope = nil, action = nil)
+    scope_array = Array(scope).compact
+    route_key = resource.class.model_name.route_key.singularize
+
+    if scope_array.any?
+      scope_prefix = scope_array.join("_")
+      action_prefix = action ? "#{action}_" : ""
+      path_method = "#{action_prefix}#{scope_prefix}_#{route_key}_path".to_sym
+    else
+      action_prefix = action ? "#{action}_" : ""
+      path_method = "#{action_prefix}#{route_key}_path".to_sym
+    end
+
+    # scoped_pathを使用してパス生成
+    scoped_path(path_method, resource)
+  rescue => e
+    Rails.logger.error "Path generation failed for #{path_method}: #{e.message}"
+    "#"
   end
 end

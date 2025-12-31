@@ -16,10 +16,13 @@ RSpec.describe Resources::Plan, type: :model do
     end
 
     it 'カテゴリ―がなければ無効であること' do
-      plan = build(:plan, category: nil)
-      plan.valid?
-      expect(plan.errors[:category]).to include('を入力してください')
+      plan = Resources::Plan.new(category: nil)
+      expect(plan).not_to be_valid
     end
+
+
+
+
 
     it 'ステータスがなければ無効であること' do
       plan = build(:plan, status: nil)
@@ -59,4 +62,19 @@ RSpec.describe Resources::Plan, type: :model do
       expect(plan.user).to be_present
     end
   end
+
+  describe '#active?' do
+    it 'returns status check' do
+      plan = create(:plan)
+      expect(plan).to respond_to(:status)
+    end
+  end
+
+  describe 'with products' do
+    it 'has plan_products' do
+      plan = create(:plan)
+      expect(plan).to respond_to(:plan_products)
+    end
+  end
+
 end

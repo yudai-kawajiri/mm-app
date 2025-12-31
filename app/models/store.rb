@@ -1,36 +1,32 @@
 # frozen_string_literal: true
 
-# Store
-#
-# 店舗モデル
-# - 1つの会社（Company）に複数の店舗が所属
-# - データは店舗ごとに完全分離（他店舗のデータは閲覧不可）
 class Store < ApplicationRecord
+  INVITATION_CODE_LENGTH = 8
+  MAX_CODE_GENERATION_ATTEMPTS = 100
+
+  attribute :active, :boolean, default: true
+
   belongs_to :company
-  has_many :users, dependent: :nullify
-  has_many :products, class_name: "Resources::Product", dependent: :nullify
-  has_many :materials, class_name: "Resources::Material", dependent: :nullify
-  has_many :categories, class_name: "Resources::Category", dependent: :nullify
-  has_many :plans, class_name: "Resources::Plan", dependent: :nullify
-  has_many :material_order_groups, class_name: "Resources::MaterialOrderGroup", dependent: :nullify
-  has_many :daily_targets, class_name: "Management::DailyTarget", dependent: :nullify
-  has_many :monthly_budgets, class_name: "Management::MonthlyBudget", dependent: :nullify
-  has_many :plan_schedules, class_name: "Planning::PlanSchedule", dependent: :nullify
-  has_many :units, class_name: "Resources::Unit", dependent: :nullify
+
+  has_many :users, dependent: :restrict_with_error
+  has_many :products, class_name: "Resources::Product", dependent: :destroy
+  has_many :materials, class_name: "Resources::Material", dependent: :destroy
+  has_many :categories, class_name: "Resources::Category", dependent: :destroy
+  has_many :plans, class_name: "Resources::Plan", dependent: :destroy
+  has_many :material_order_groups, class_name: "Resources::MaterialOrderGroup", dependent: :destroy
+  has_many :daily_targets, class_name: "Management::DailyTarget", dependent: :destroy
+  has_many :monthly_budgets, class_name: "Management::MonthlyBudget", dependent: :destroy
+  has_many :plan_schedules, class_name: "Planning::PlanSchedule", dependent: :destroy
+  has_many :units, class_name: "Resources::Unit", dependent: :destroy
 
   validates :name, presence: true, uniqueness: { scope: :company_id }
   validates :code, presence: true, uniqueness: { scope: :company_id }
   validates :invitation_code, uniqueness: true, allow_nil: true
 
-  attribute :active, :boolean, default: true
-
   before_create :generate_invitation_code
 
   def regenerate_invitation_code!
-    loop do
-      self.invitation_code = SecureRandom.alphanumeric(8).upcase
-      break unless Store.exists?(invitation_code: invitation_code)
-    end
+    generate_unique_invitation_code
     save!
   end
 
@@ -38,10 +34,15 @@ class Store < ApplicationRecord
 
   def generate_invitation_code
     return if invitation_code.present?
+    generate_unique_invitation_code
+  end
 
-    loop do
-      self.invitation_code = SecureRandom.alphanumeric(8).upcase
-      break unless Store.exists?(invitation_code: invitation_code)
+  def generate_unique_invitation_code
+    MAX_CODE_GENERATION_ATTEMPTS.times do
+      self.invitation_code = SecureRandom.alphanumeric(INVITATION_CODE_LENGTH).upcase
+      return unless Store.exists?(invitation_code: invitation_code)
     end
+
+    raise "Failed to generate unique invitation code after #{MAX_CODE_GENERATION_ATTEMPTS} attempts"
   end
 end

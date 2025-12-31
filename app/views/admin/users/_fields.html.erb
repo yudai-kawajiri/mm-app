@@ -11,6 +11,16 @@
       <%= f.text_field :name, class: 'form-control', placeholder: t('admin.users.form.name_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
+
+    <%# 会社名（システム管理者のみ表示・読み取り専用） %>
+    <% if current_user.super_admin? %>
+      <div class="mb-3">
+        <%= f.label :company_name, class: 'form-label h5' do %>
+          <%= Company.human_attribute_name(:name) %>
+        <% end %>
+        <div class="form-control-plaintext"><%= user.company&.name || current_user.company&.name || t('common.not_set') %></div>
+      </div>
+    <% end %>
     <% if current_user.store_admin? %>
       <%# 店舗管理者: 権限は「一般」固定、非表示 %>
       <%= f.hidden_field :role, value: 'general' %>
@@ -31,18 +41,19 @@
           <span class="text-danger">*</span>
         <% end %>
         <%= f.select :role,
-            options_for_select([
+            [
               [t('admin.users.roles.general'), 'general'],
               [t('admin.users.roles.store_admin'), 'store_admin'],
               [t('admin.users.roles.company_admin'), 'company_admin']
-            ], user.role),
-            { prompt: t('admin.users.form.role_placeholder') },
-            class: 'form-select',
-            required: true,
-            data: {
-              'form-validation-target': 'field',
-              'admin--user-role-target': 'roleSelect',
-              'action': 'change->admin--user-role#toggleStoreField'
+            ],
+            { prompt: t('helpers.prompt.select'), selected: (user.persisted? ? user.role : nil) },
+            {
+              class: 'form-select',
+              required: true,
+              data: {
+                'admin--user-role-target': 'roleSelect',
+                'action': 'change->admin--user-role#toggleStoreField'
+              }
             } %>
       </div>
     <% end %>
@@ -78,10 +89,12 @@
         <% end %>
         <%= f.collection_select :store_id, @stores, :id, :name,
             { prompt: t('helpers.prompt.select') },
-            class: 'form-select',
-            data: {
-              'form-validation-target': 'field',
-              'admin--user-role-target': 'storeSelect'
+            {
+              class: 'form-select',
+              data: {
+                'form-validation-target': 'field',
+                'admin--user-role-target': 'storeSelect'
+              }
             } %>
       </div>
     <% end %>

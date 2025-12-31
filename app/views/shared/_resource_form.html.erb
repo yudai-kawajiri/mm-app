@@ -27,9 +27,25 @@
     <div class="card-body">
       <%= render 'shared/forms/error_messages', resource: resource %>
 
-      <% model_for_form = scope.present? ? [scope, resource] : resource %>
+      <% 
+        model_for_form = scope.present? ? [scope, resource] : resource 
+        if resource.new_record?
+          if scope.present?
+            form_url = scoped_path("#{Array(scope).join('_')}_#{resource.class.model_name.route_key}_path".to_sym)
+          else
+            form_url = scoped_path("#{resource.class.model_name.route_key}_path".to_sym)
+          end
+        else
+          if scope.present?
+            form_url = scoped_path("#{Array(scope).join('_')}_#{resource.class.model_name.route_key.singularize}_path".to_sym, resource)
+          else
+            form_url = scoped_path("#{resource.class.model_name.route_key.singularize}_path".to_sym, resource)
+          end
+        end
+      %>
       <%= form_with(
             model: model_for_form,
+            url: form_url,
             local: true,
             class: "needs-validation",
             data: {

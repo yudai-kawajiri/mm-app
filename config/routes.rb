@@ -1,28 +1,63 @@
-# frozen_string_literal: true
-
 Rails.application.routes.draw do
-  # 利用規約、プライバシーポリシー、お問い合わせは全環境で共通
+  # ヘルスチェック
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  # PWA
+  get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
+
+  # ルートドメイン: ランディングページと新規会社申請
+  root to: "landing#index"
+
+  resources :application_requests, only: [ :new, :create ] do
+    collection do
+      get :thanks
+      get :accept
+      post :accept, action: :accept_confirm
+    end
+  end
+
   get :terms, to: "static_pages#terms"
   get :privacy, to: "static_pages#privacy"
   resources :contacts, only: [ :new, :create ]
 
-  constraints subdomain: "" do
-    root to: "landing#index"
+  # Devise設定（すべてskip、company scopeで個別定義）
+  devise_for :users, skip: :all
 
-    resources :application_requests, only: [ :new, :create ] do
-      collection do
-        get :thanks
-        get :accept
-        post :accept, action: :accept_confirm
-      end
+  namespace :admin do
+    resources :companies, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+  end
+
+  # 会社スコープ内の認証機能
+  scope "/c/:company_slug", as: :company do
+    devise_scope :user do
+      # ログイン
+      get "/users/sign_in", to: "users/sessions#new", as: :new_user_session
+      post "/users/sign_in", to: "users/sessions#create", as: :user_session
+      delete "/users/sign_out", to: "users/sessions#destroy", as: :destroy_user_session
+
+      # サインアップ
+      get "/users/sign_up", to: "users/registrations#new", as: :new_user_registration
+      post "/users", to: "users/registrations#create", as: :user_registration
+      get "/users/edit", to: "users/registrations#edit", as: :edit_user_registration
+      patch "/users", to: "users/registrations#update"
+      put "/users", to: "users/registrations#update"
+      delete "/users", to: "users/registrations#cancel"
+
+      # パスワードリセット
+      get "/users/password/new", to: "users/passwords#new", as: :new_user_password
+      post "/users/password", to: "users/passwords#create", as: :user_password
+      get "/users/password/edit", to: "users/passwords#edit", as: :edit_user_password
+      patch "/users/password", to: "users/passwords#update"
+      put "/users/password", to: "users/passwords#update"
     end
   end
 
-  constraints subdomain: /.+/ do
-    devise_for :users, controllers: { registrations: "users/registrations", sessions: "users/sessions" }
-
-    authenticated :user do
-      root to: "router#index", as: :authenticated_root
+  # 認証後のルーティング（会社スコープ）
+  authenticated :user do
+    # 会社スコープ内のルーティング
+    scope "/c/:company_slug", as: :company do
+      root to: "router#index", as: :root
 
       post :switch_store, to: "stores#switch"
       post :switch_company, to: "companies#switch"
@@ -41,7 +76,7 @@ Rails.application.routes.draw do
             post :reject
           end
         end
-        resources :users, only: [ :index, :new, :create, :show, :edit, :update, :destroy ]
+        resources :users
         resources :stores do
           member do
             post :regenerate_invitation_code
@@ -50,7 +85,51 @@ Rails.application.routes.draw do
         resources :system_logs, only: [ :index ]
       end
 
+      namespace :resources do
+        resources :materials do
+          post :copy, on: :member
+          collection do
+            post :reorder
+          end
+        end
+        resources :products do
+          post :copy, on: :member
+          member do
+            delete :purge_image
+            patch :update_status
+          end
+          collection do
+            post :reorder
+          end
+        end
+        resources :categories do
+          post :copy, on: :member
+        end
+        resources :units do
+          post :copy, on: :member
+        end
+        resources :product_materials, only: [ :index, :edit, :update ]
+        resources :material_order_groups do
+          post :copy, on: :member
+        end
+        resources :plans do
+          post :copy, on: :member
+          member do
+            patch :update_status
+            get :print
+          end
+          resources :plan_products, only: [ :index, :create, :update, :destroy, :edit ]
+          resources :plan_schedules, only: [ :index, :create, :update, :destroy ]
+        end
+      end
+
       namespace :management do
+        resources :monthly_budgets, only: [ :index, :create, :update, :destroy ] do
+          member do
+            patch :update_discount_rates
+          end
+        end
+        resources :daily_targets, only: [ :index, :create, :update ]
         resources :numerical_managements, only: [ :index ] do
           collection do
             patch :bulk_update
@@ -58,98 +137,40 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :monthly_budgets, only: [ :create, :update, :destroy ] do
-          member do
-            patch :update_discount_rates
-          end
-        end
-
-        resources :daily_targets, only: [ :create, :update ]
-
-        resources :plan_schedules, only: [ :create, :update, :destroy ] do
+        resources :plan_schedules, only: [ :create, :update ] do
           member do
             patch :actual_revenue
           end
         end
       end
 
-      namespace :resources do
-        resources :categories do
-          member do
-            post :copy
-          end
-        end
-
-        resources :units do
-          member do
-            post :copy
-          end
-        end
-
-        resources :materials do
-          collection do
-            post :reorder
-          end
-
-          member do
-            post :copy
-          end
-        end
-
-        resources :material_order_groups do
-          member do
-            post :copy
-          end
-        end
-
-        resources :products do
-          collection do
-            post :reorder
-          end
-
-          member do
-            patch :update_status
-            delete :purge_image
-            post :copy
-          end
-
-          resources :product_materials, only: [ :index, :edit, :update ]
-        end
-
-        resources :plans do
-          member do
-            patch :update_status
-            post :copy
-            get :print
-          end
-        end
-      end
-
       namespace :api do
         namespace :v1 do
-          resources :products, only: [ :index, :show ] do
+          resources :plans, only: [] do
+            member do
+              get :revenue
+            end
+          end
+          resources :plan_schedules, only: [] do
+            member do
+              get :revenue
+            end
+          end
+          resources :daily_targets, only: [ :show, :update ]
+          resources :products, only: [ :show ] do
             member do
               get :fetch_plan_details
             end
           end
-
           resources :materials, only: [ :index, :show ] do
             member do
               get :fetch_product_unit_data
             end
           end
-
-          resources :plans, only: [ :index, :show ] do
-            member do
-              get :revenue
-            end
-          end
         end
       end
     end
-
-    unauthenticated :user do
-      root to: redirect("/users/sign_in"), as: :unauthenticated_root
-    end
   end
+
+  resource :user_settings, only: [ :show, :update, :edit ]
 end

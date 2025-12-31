@@ -1,0 +1,38 @@
+ja:
+  services:
+    numerical_data_bulk_update:
+      errors:
+        monthly_budget_update_failed: "月次予算ID %{id}: %{errors}"
+        daily_target_update_failed: "日別目標ID %{id}: %{errors}"
+        daily_target_save_failed: "日別目標 %{date}: %{errors}"
+        invalid_date: "日別目標: 無効な日付 %{date}"
+        plan_schedule_update_failed: "計画スケジュールID %{id}: %{errors}"
+    weather:
+      errors:
+        api_error: "天気予報API エラー: %{code} - %{body}"
+        service_error: "天気予報サービス エラー: %{message}"
+  components:
+    category_tabs:
+      confirm_delete: このカテゴリ―タブを削除しますか?
+  product_material:
+    unit_not_set: 未設定
+    unit_error: エラー
+    errors:
+      unit_fetch_failed: 単位情報の取得に失敗しました
+  settings:
+    title: 設定
+    account:
+      title: アカウント設定
+      description: プロフィール、パスワード、メールアドレスの変更
+      button: アカウント設定を開く
+    help:
+      title: 使い方・ヘルプ
+      description: 使い方動画、FAQ、よくある質問
+      button: 使い方を見る
+  views:
+    pagination:
+      first: 最初
+      last: 最後
+      previous: "&laquo; 前"
+      next: "次 &raquo;"
+      truncate: "&hellip;"

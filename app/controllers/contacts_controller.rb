@@ -11,7 +11,7 @@ class ContactsController < ApplicationController
       ContactMailer.contact_email(@contact).deliver_now
 
       # ログイン状態に応じてリダイレクト先を変更
-      redirect_path = user_signed_in? ? help_path : root_path
+      redirect_path = user_signed_in? ? scoped_path(:help_path) : root_path
       redirect_to redirect_path, notice: t("contacts.messages.success_with_response_time")
     else
       render :new, status: :unprocessable_entity

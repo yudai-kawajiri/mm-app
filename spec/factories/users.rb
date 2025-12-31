@@ -6,14 +6,23 @@ FactoryBot.define do
     email { Faker::Internet.unique.email }
     password { 'password123' }
     password_confirmation { 'password123' }
-    role { :staff }
+    role { :general }
+    association :company
 
-    trait :admin do
-      role { :admin }
+    trait :super_admin do
+      role { :super_admin }
     end
 
-    trait :staff do
-      role { :staff }
+    trait :company_admin do
+      role { :company_admin }
+    end
+
+    trait :store_admin do
+      role { :store_admin }
+    end
+
+    trait :general do
+      role { :general }
     end
   end
 end

@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-# AdminRequest
-#
-# 管理者承認リクエストモデル
-# 店舗管理者昇格、ユーザー登録などの承認フローを管理
 class AdminRequest < ApplicationRecord
   belongs_to :company
   belongs_to :user
@@ -31,6 +27,7 @@ class AdminRequest < ApplicationRecord
   scope :for_user, ->(user) { where(user: user) }
   scope :recent, -> { order(created_at: :desc) }
 
+  # 承認処理：ステータス変更とユーザー権限の更新をアトミックに実行
   def approve!(approved_by_user)
     transaction do
       update!(
@@ -39,6 +36,7 @@ class AdminRequest < ApplicationRecord
         approved_at: Time.current
       )
 
+      # リクエスト種別に応じたユーザー状態の同期
       case request_type
       when "store_admin_request"
         user.update!(role: :store_admin)
@@ -59,16 +57,14 @@ class AdminRequest < ApplicationRecord
         rejection_reason: reason
       )
 
-      # 却下時の処理: ユーザーの状態を元に戻す
       case request_type
       when "store_admin_request"
-        # 店舗管理者昇格リクエストを却下 → 役割を一般ユーザーに戻す
         user.update!(role: :general) if user.store_admin?
       when "user_registration"
-        # ユーザー登録リクエストを却下 → 承認を取り消す
         user.update!(approved: false)
       end
 
+      # 却下通知メールを送信
       ApplicationRequestMailer.rejection_notification(self).deliver_later
     end
   end

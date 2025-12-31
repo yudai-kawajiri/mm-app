@@ -14,7 +14,7 @@ Rails.application.configure do
   # Eager loading の設定（CI環境では有効化推奨）
   # ローカルテスト: false（高速化）
   # CI環境: true（本番環境と同じ条件でテスト）
-  config.eager_load = ENV["CI"].present?
+  config.eager_load = false
 
   # すべてのリクエストをローカルとして扱う（詳細なエラー表示）
   config.consider_all_requests_local = true

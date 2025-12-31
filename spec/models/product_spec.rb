@@ -12,7 +12,7 @@ RSpec.describe Resources::Product, type: :model do
     it '売価が0以下なら無効であること' do
       product = build(:product, price: 0)
       product.valid?
-      expect(product.errors[:price]).to include('0より大きい値を入力してください')  # スペースなし
+      expect(product.errors[:price]).to include('は0より大きい値にしてください')  # スペースなし
     end
 
     it 'ステータスがなければ無効であること' do
@@ -30,7 +30,7 @@ RSpec.describe Resources::Product, type: :model do
     it '売価が0以下なら無効であること' do
       product = build(:product, price: 0)
       product.valid?
-      expect(product.errors[:price]).to include('0より大きい値を入力してください')
+      expect(product.errors[:price]).to include('は0より大きい値にしてください')
     end
 
     it 'カテゴリ―がなければ無効であること' do
@@ -77,4 +77,19 @@ RSpec.describe Resources::Product, type: :model do
       expect(product.user).to be_present
     end
   end
+
+  describe '#display_info' do
+    it 'returns product info' do
+      product = create(:product, name: 'Test Product')
+      expect(product.name).to eq('Test Product')
+    end
+  end
+
+  describe 'with materials' do
+    it 'has product_materials' do
+      product = create(:product)
+      expect(product).to respond_to(:product_materials)
+    end
+  end
+
 end

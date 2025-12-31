@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 class Users::SessionsController < Devise::SessionsController
+  before_action :set_company_from_slug, only: [:new, :create]
+
   # GET /resource/sign_in
   def new
     # ログイン画面表示前にチェック
-    if user_signed_in? && current_user.super_admin? && request.subdomain != "admin"
+    if user_signed_in? && current_user.super_admin? && !admin_path?
       sign_out current_user
-      flash[:alert] = t("errors.invalid_subdomain_access")
-      return redirect_to new_user_session_url(subdomain: "admin"), allow_other_host: true
+      flash[:alert] = t('errors.messages.unauthorized')
+      return redirect_to new_user_session_url, allow_other_host: true
     end
 
     super
@@ -18,8 +20,18 @@ class Users::SessionsController < Devise::SessionsController
     # ログイン前にチェック
     if params[:user] && params[:user][:email].present?
       user = User.find_by(email: params[:user][:email])
-      if user&.super_admin? && request.subdomain != "admin"
-        flash.now[:alert] = t("errors.invalid_subdomain_access")
+
+      # スーパー管理者チェック
+      if user&.super_admin? && !admin_path?
+        flash.now[:alert] = t('errors.messages.unauthorized')
+        self.resource = resource_class.new(sign_in_params)
+        render :new, status: :unprocessable_entity
+        return
+      end
+
+      # 会社チェック：システム管理者以外のユーザーが存在し、会社が一致しない場合は汎用エラー
+      if user && @company && user.company_id != @company.id && !user.super_admin?
+        flash.now[:alert] = 'メールアドレスまたはパスワードが正しくありません'
         self.resource = resource_class.new(sign_in_params)
         render :new, status: :unprocessable_entity
         return
@@ -29,15 +41,21 @@ class Users::SessionsController < Devise::SessionsController
     super
   end
 
-  # DELETE /resource/sign_out
-  # def destroy
-  #   super
-  # end
-
   protected
 
-  # If you have extra params to permit, append them to the sanitizer.
-  # def configure_sign_in_params
-  #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
-  # end
+  # システム管理者用のパスかチェック
+  def admin_path?
+    request.path.start_with?('/c/admin', '/admin')  # 両方チェック
+  end
+
+  private
+
+  def set_company_from_slug
+    @company = Company.find_by!(slug: params[:company_slug]) if params[:company_slug]
+  end
+
+  def current_company
+    @company
+  end
+  helper_method :current_company
 end

@@ -28,6 +28,7 @@ class Admin::UsersController < Admin::BaseController
     end
   end
 
+  # 承認済みユーザーのみ表示
   users_scope = users_scope.where(approved: true)
 
   # 検索処理
@@ -63,32 +64,49 @@ class Admin::UsersController < Admin::BaseController
     @user = current_user.company.users.build
   end
 
+  def edit; end
+
   def create
     @user = current_user.company.users.build(user_params)
-    @user.approved = false
+    @user.approved = true
+
+    # パスワードが空の場合のみ自動生成
+    password_was_blank = params[:user][:password].blank?
 
     if @user.save
-      AdminMailer.new_user_notification(@user).deliver_later
-      redirect_to [ :admin, @user ], notice: t("helpers.notice.created", resource: User.model_name.human)
+      # パスワードが自動生成された場合のみフラッシュメッセージを表示
+      if password_was_blank && @user.password.present?
+        flash[:generated_password] = @user.password
+      end
+      redirect_to company_admin_user_path(@user, company_slug: company_slug_for_redirect), notice: t("flash_messages.admin.users.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
   end
 
-  def edit
-  end
-
   def update
-    if @user.update(user_params)
-      redirect_to [ :admin, @user ], notice: t("helpers.notice.updated", resource: User.model_name.human)
+    # パスワードが空欄の場合はパラメータから除外
+    update_params = user_params
+    if update_params[:password].blank?
+      update_params = update_params.except(:password, :password_confirmation)
+    end
+
+    if @user.update(update_params)
+      redirect_to company_admin_user_path(@user, company_slug: company_slug_for_redirect), notice: t("flash_messages.update.success", resource: User.model_name.human)
     else
       render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
+    # 自分自身は削除できない
+    if @user.id == current_user.id
+      redirect_to company_admin_users_path(company_slug: company_slug_for_redirect), alert: t("flash_messages.admin.users.messages.cannot_delete_self"), status: :see_other
+      return
+    end
+
     @user.destroy!
-    redirect_to admin_users_url, notice: t("helpers.notice.destroyed", resource: User.model_name.human), status: :see_other
+    redirect_to company_admin_users_path(company_slug: company_slug_for_redirect), notice: t("flash_messages.destroy.success", resource: User.model_name.human), status: :see_other
   end
 
   private
@@ -111,17 +129,41 @@ class Admin::UsersController < Admin::BaseController
     # システム管理者の場合
     if current_user.super_admin?
       if session[:current_company_id].present?
-        @stores = Company.find(session[:current_company_id]).stores
+        company = Company.find(session[:current_company_id])
+        if session[:current_store_id].present?
+          # 店舗が選択されている場合: その店舗のみ
+          @stores = company.stores.where(id: session[:current_store_id])
+        else
+          # 全店舗選択: 会社の全店舗
+          @stores = company.stores
+        end
       else
         @stores = Store.all
       end
+    elsif current_user.company_admin?
+      # 会社管理者
+      if session[:current_store_id].present?
+        # 店舗が選択されている場合: その店舗のみ
+        @stores = current_user.company.stores.where(id: session[:current_store_id])
+      else
+        # 全店舗選択: 自社の全店舗
+        @stores = current_user.company.stores
+      end
     else
-      # 会社管理者・店舗管理者
-      @stores = current_user.company.stores
+      # 店舗管理者: 自分の店舗のみ
+      @stores = current_user.company.stores.where(id: current_user.store_id)
     end
   end
 
   def user_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation, :role, :store_id)
+  end
+
+  def company_slug_for_redirect
+    if current_user.super_admin?
+      params[:company_slug] || current_user.company.slug
+    else
+      current_user.company.slug
+    end
   end
 end

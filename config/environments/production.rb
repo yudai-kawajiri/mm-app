@@ -14,7 +14,7 @@ Rails.application.configure do
   config.assume_ssl = false
 
   # HTTPSを強制（HSTS、セキュアCookie有効化）
-  config.force_ssl = false
+  config.force_ssl = true
 
   # DNSリバインディング攻撃対策
   allowed_hosts = ENV.fetch("ALLOWED_HOSTS", "").split(",").map(&:strip)
@@ -51,19 +51,19 @@ Rails.application.configure do
     host: ENV.fetch("APP_HOST", "localhost:3000")
   }
 
-  # SMTP設定（環境変数で制御）
-  if ENV["SMTP_ADDRESS"].present?
+    # SMTP設定（SendGrid）
     config.action_mailer.delivery_method = :smtp
+    config.action_mailer.perform_deliveries = true
+    config.action_mailer.raise_delivery_errors = true
     config.action_mailer.smtp_settings = {
-      address:              ENV["SMTP_ADDRESS"],
-      port:                 ENV.fetch("SMTP_PORT", 587),
-      domain:               ENV["SMTP_DOMAIN"],
-      user_name:            ENV["SMTP_USERNAME"],
-      password:             ENV["SMTP_PASSWORD"],
-      authentication:       ENV.fetch("SMTP_AUTHENTICATION", "plain"),
-      enable_starttls_auto: ENV.fetch("SMTP_ENABLE_STARTTLS_AUTO", "true") == "true"
+      address: 'smtp.sendgrid.net',
+      port: 587,
+      domain: ENV['SENDGRID_DOMAIN'] || 'mm-app-gpih.onrender.com',
+      user_name: 'apikey',
+      password: ENV['SENDGRID_API_KEY'],
+      authentication: :plain,
+      enable_starttls_auto: true
     }
-  end
 
   # ロケールのフォールバック
   config.i18n.fallbacks = true
@@ -77,4 +77,7 @@ Rails.application.configure do
     "X-XSS-Protection" => "1; mode=block",
     "X-Content-Type-Options" => "nosniff"
   }
+
+  # CSRF protection
+  config.action_controller.default_protect_from_forgery = true
 end

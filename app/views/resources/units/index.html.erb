@@ -7,7 +7,7 @@
     is_index_page: true,
     is_form_page: false,
     is_show_page: false,
-    new_path: new_resources_unit_path %>
+    new_path: scoped_path(:new_resources_unit_path) %>
 
 <div data-controller="resource-search">
   <%
@@ -39,6 +39,7 @@
       ],
       sort_placeholder: t('units.index.sort_placeholder'),
       icon_mode: true,
+      copy_url_method: :copy_company_resources_unit_path,
       search_name_proc: search_name,
 
       columns: [

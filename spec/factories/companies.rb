@@ -1,8 +1,7 @@
 FactoryBot.define do
   factory :company do
-    name { "MyString" }
-    subdomain { "MyString" }
-    plan { "MyString" }
-    active { false }
+    sequence(:name) { |n| "Company #{n}" }
+    sequence(:slug) { |n| "company-#{n}" }
+    active { true }
   end
 end

@@ -9,7 +9,7 @@
     additional_actions: [
       {
         label: t('plans.actions.preview'),
-        path: print_resources_plan_path(@plan),
+        path: scoped_path(:print_resources_plan_path, @plan),
         class: 'btn-light',
         target: '_blank',
         icon: 'bi-printer'

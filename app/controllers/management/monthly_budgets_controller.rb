@@ -34,11 +34,11 @@ class Management::MonthlyBudgetsController < Management::BaseController
     @monthly_budget.assign_attributes(sanitized_monthly_budget_params)
 
     if @monthly_budget.save
-      redirect_to management_numerical_managements_path(year: budget_month.year, month: budget_month.month),
-            notice: t("numerical_managements.messages.budget_created")
+      redirect_to scoped_path(:management_numerical_managements_path, year: budget_month.year, month: budget_month.month),
+            notice: t("flash_messages.numerical_managements.messages.budget_created")
     else
-      redirect_to management_numerical_managements_path(year: budget_month.year, month: budget_month.month),
-                  alert: t("numerical_managements.messages.budget_create_failed")
+      redirect_to scoped_path(:management_numerical_managements_path, year: budget_month.year, month: budget_month.month),
+            alert: @monthly_budget.errors.full_messages.to_sentence
     end
   end
 
@@ -47,11 +47,11 @@ class Management::MonthlyBudgetsController < Management::BaseController
   # @return [void]
   def update
     if @monthly_budget.update(sanitized_monthly_budget_params)
-      redirect_to management_numerical_managements_path(year: @monthly_budget.budget_month.year, month: @monthly_budget.budget_month.month),
-            notice: t("numerical_managements.messages.budget_updated")
+      redirect_to scoped_path(:management_numerical_managements_path, year: @monthly_budget.budget_month.year, month: @monthly_budget.budget_month.month),
+            notice: t("flash_messages.numerical_managements.messages.budget_updated")
     else
-      redirect_to management_numerical_managements_path(year: @monthly_budget.budget_month.year, month: @monthly_budget.budget_month.month),
-                  alert: t("numerical_managements.messages.budget_update_failed")
+      redirect_to scoped_path(:management_numerical_managements_path, year: @monthly_budget.budget_month.year, month: @monthly_budget.budget_month.month),
+            alert: @monthly_budget.errors.full_messages.to_sentence
     end
   end
 
@@ -77,13 +77,13 @@ class Management::MonthlyBudgetsController < Management::BaseController
       # 月次予算を削除
       @monthly_budget.destroy!
 
-      redirect_to management_numerical_managements_path(year: budget_month.year, month: budget_month.month),
-            notice: t("numerical_managements.messages.budget_deleted")
+      redirect_to scoped_path(:management_numerical_managements_path, year: budget_month.year, month: budget_month.month),
+            notice: t("flash_messages.numerical_managements.messages.budget_deleted")
     end
   rescue ActiveRecord::RecordNotDestroyed, ActiveRecord::RecordInvalid => e
     Rails.logger.error "Monthly budget deletion failed: #{e.message}"
-    redirect_to management_numerical_managements_path(year: budget_month.year, month: budget_month.month),
-                alert: t("numerical_managements.messages.budget_delete_failed")
+    redirect_to scoped_path(:management_numerical_managements_path, year: budget_month.year, month: budget_month.month),
+                alert: t("flash_messages.numerical_managements.messages.budget_delete_failed")
   end
 
   # 見切率を更新
@@ -100,12 +100,12 @@ class Management::MonthlyBudgetsController < Management::BaseController
     end
 
     if @monthly_budget.update(cleaned_params)
-      redirect_to management_numerical_managements_path(
+      redirect_to scoped_path(:management_numerical_managements_path,
         year: @monthly_budget.budget_month.year,
         month: @monthly_budget.budget_month.month
-      ), notice: t("numerical_managements.messages.discount_rates_updated")
+      ), notice: t("flash_messages.numerical_managements.messages.discount_rates_updated")
     else
-      redirect_to management_numerical_managements_path(
+      redirect_to scoped_path(:management_numerical_managements_path,
         year: @monthly_budget.budget_month.year,
         month: @monthly_budget.budget_month.month
       ), alert: @monthly_budget.errors.full_messages.join(", ")

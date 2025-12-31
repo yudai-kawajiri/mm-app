@@ -7,43 +7,19 @@
     <h5 class="mb-3"><i class="bi bi-info-circle me-2"></i><%= t('application_requests.accept.registration_info') %></h5>
     <div class="mb-2">
       <strong><%= t('application_requests.new.company_name') %>:</strong>
-      <%= @application_request.company_name %>
+      <%= @application_request.company.name %>
     </div>
     <div class="mb-2">
       <strong><%= t('application_requests.new.admin_name') %>:</strong>
-      <%= @application_request.contact_name %>
+      <%= @application_request.admin_name %>
     </div>
     <div>
       <strong><%= t('application_requests.new.admin_email') %>:</strong>
-      <%= @application_request.contact_email %>
+      <%= @application_request.admin_email %>
     </div>
   </div>
 
   <%= form_with scope: :application_request, url: accept_application_requests_path(token: params[:token]), method: :post, local: true, data: { turbo: false } do |f| %>
-    <%= render "devise/shared/error_messages", resource: @application_request %>
-
-    <div class="mb-3">
-      <%= f.label :password, class: 'form-label' do %>
-        <%= t('application_requests.accept.password') %><span class="text-danger">*</span>
-      <% end %>
-      <%= f.password_field :password,
-                           class: "form-control",
-                           placeholder: t('application_requests.accept.password_placeholder'),
-                           required: true,
-                           minlength: 6 %>
-    </div>
-
-    <div class="mb-4">
-      <%= f.label :password_confirmation, class: 'form-label' do %>
-        <%= t('application_requests.accept.password_confirmation') %><span class="text-danger">*</span>
-      <% end %>
-      <%= f.password_field :password_confirmation,
-                           class: "form-control",
-                           placeholder: t('application_requests.accept.password_placeholder'),
-                           required: true,
-                           minlength: 6 %>
-    </div>
-
-    <%= f.submit t('application_requests.accept.submit'), class: 'btn btn-success w-100 btn-lg' %>
+    <%= f.submit t('application_requests.accept.activate_button'), class: 'btn btn-success w-100 btn-lg' %>
   <% end %>
 <% end %>

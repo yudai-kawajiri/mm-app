@@ -7,6 +7,7 @@
 //     class="modal"
 //     data-controller="management--assign-plan-modal"
 //     data-management--assign-plan-modal-plans-value="<%= @plans_by_category.to_json %>"
+//     data-management--assign-plan-modal-company-slug-value="<%= current_company.slug %>"
 //   >
 //     <!-- モーダルの内容 -->
 //   </div>
@@ -82,6 +83,7 @@ const INPUT_TYPE = {
 }
 
 const HTTP_METHOD = {
+  POST: 'post',
   PATCH: 'patch'
 }
 
@@ -93,10 +95,6 @@ const DEFAULT_VALUE = {
 
 const ARRAY_INDEX = {
   FIRST: 0
-}
-
-const URL_PATH = {
-  PLAN_SCHEDULES: '/management/plan_schedules'
 }
 
 const SELECTOR = {
@@ -138,7 +136,8 @@ const LOG_MESSAGES = {
   TOTAL_COST_UPDATED: 'Total cost updated:',
   MODAL_DATA_SET: 'Modal data set for schedule:',
   EDIT_MODE: 'Edit mode',
-  CREATE_MODE: 'Create mode'
+  CREATE_MODE: 'Create mode',
+  FORM_URL_UPDATED: 'Form URL updated:'
 }
 
 export default class extends Controller {
@@ -159,6 +158,7 @@ export default class extends Controller {
 
   static values = {
     plans: Object,
+    companySlug: String,
     i18nSelectPlaceholder: String,
     i18nSelectPlanAfterCategory: String,
     i18nNoAvailablePlans: String,
@@ -231,13 +231,13 @@ export default class extends Controller {
     }
   }
 
-
   // 削除された計画モード設定
   setupDeletedPlanMode(scheduleId, snapshot, plannedRevenue) {
     if (this.hasModalTitleTarget) { this.modalTitleTarget.textContent = this.i18nEditTitleValue }
     if (this.hasSubmitBtnTarget) { this.submitBtnTarget.value = this.i18nUpdateLabelValue }
     if (this.hasFormTarget) {
-      this.formTarget.action = `${URL_PATH.PLAN_SCHEDULES}/${scheduleId}`
+      this.formTarget.action = `/c/${this.companySlugValue}/management/plan_schedules/${scheduleId}`
+      this.formTarget.method = HTTP_METHOD.POST
       this.updateMethodInput(HTTP_METHOD.PATCH)
       this.updateCsrfToken()
     }
@@ -278,7 +278,8 @@ export default class extends Controller {
 
     // フォームアクション
     if (this.hasFormTarget) {
-      this.formTarget.action = `${URL_PATH.PLAN_SCHEDULES}/${scheduleId}`
+      this.formTarget.action = `/c/${this.companySlugValue}/management/plan_schedules/${scheduleId}`
+      this.formTarget.method = HTTP_METHOD.POST
       this.updateMethodInput(HTTP_METHOD.PATCH)
       this.updateCsrfToken()
     }
@@ -324,9 +325,10 @@ export default class extends Controller {
       this.submitBtnTarget.value = this.i18nCreateLabelValue
     }
 
-    // フォームアクション
+    // フォームアクション（新規作成用に設定）
     if (this.hasFormTarget) {
-      this.formTarget.action = URL_PATH.PLAN_SCHEDULES
+      this.formTarget.action = `/c/${this.companySlugValue}/management/plan_schedules`
+      this.formTarget.method = HTTP_METHOD.POST
       this.removeMethodInput()
       this.updateCsrfToken()
     }
@@ -406,8 +408,20 @@ export default class extends Controller {
     Logger.log(LOG_MESSAGES.PLAN_CHANGED)
 
     if (selectedOption && selectedOption.value) {
+      const planId = selectedOption.value
       const products = JSON.parse(selectedOption.dataset[DATA_ATTRIBUTE.PRODUCTS] || '[]')
       this.currentPlanProducts = products
+
+      // 新規作成モードの場合のみフォームURLを設定
+      if (this.hasFormTarget) {
+        const isEditMode = /\/plan_schedules\/\d+$/.test(this.formTarget.action)
+        if (!isEditMode) {
+          this.formTarget.action = `/c/${this.companySlugValue}/management/plan_schedules`
+          this.formTarget.method = HTTP_METHOD.POST
+          Logger.log(LOG_MESSAGES.FORM_URL_UPDATED, this.formTarget.action)
+        }
+      }
+
       this.displayProducts(products)
       this.hideInfoAlert()
     } else {

@@ -1,7 +1,7 @@
 <%= content_for(:title, t('materials.index.title')) %>
 
 <div data-controller="sortable-table resource-search"
-      data-sortable-table-reorder-path-value="<%= reorder_resources_materials_path %>"
+      data-sortable-table-reorder-path-value="<%= reorder_company_resources_materials_path(company_slug: current_company.slug) %>"
       data-sortable-table-param-name-value="material_ids">
 
   <%= render 'shared/layouts/header_with_actions',
@@ -10,7 +10,7 @@
       is_index_page: true,
       is_form_page: false,
       is_show_page: false,
-      new_path: new_resources_material_path,
+      new_path: scoped_path(:new_resources_material_path),
       sortable: true %>
 
   <%
@@ -46,6 +46,7 @@
       sort_placeholder: t('materials.index.sort_placeholder'),
       icon_mode: true,
       sortable: true,
+      copy_url_method: :copy_company_resources_material_path,  
       search_name_proc: search_name,
 
       columns: [

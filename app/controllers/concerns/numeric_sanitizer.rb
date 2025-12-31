@@ -106,7 +106,7 @@ module NumericSanitizer
 
     str = value.to_s
     str = str.tr("０-９", "0-9")
-    str = str.gsub(/[\s　\t]+/, "")
+    str = str.gsub(/[\s　]+/, "")
     str = str.delete(",")
 
     return nil if str.blank?
@@ -148,7 +148,7 @@ module NumericSanitizer
 
     str = value.to_s
     str = str.tr("０-９", "0-9")
-    str = str.gsub(/[\s　\t]+/, "")
+    str = str.gsub(/[\s　]+/, "")
 
     return nil if str.blank?
     return nil if str.include?(",")

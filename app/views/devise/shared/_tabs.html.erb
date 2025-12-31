@@ -3,22 +3,27 @@
   # コントローラーパスとアクション名で判定
   is_login_page = (controller_path == 'devise/sessions' || controller_name == 'sessions') && (action_name == 'new' || action_name == 'create')
   is_signup_page = (controller_path == 'users/registrations' || controller_name == 'registrations') && (action_name == 'new' || action_name == 'create')
+  
+  # company_slug パラメータを取得
+  company_slug = params[:company_slug]
 %>
 <ul class="nav nav-tabs mb-4" role="tablist">
-  <li class="nav-item" role="presentation">
-    <%= link_to new_session_path(resource_name),
-          class: "nav-link #{'active' if is_login_page}",
-          role: "tab" do %>
-      <i class="bi bi-box-arrow-in-right me-2"></i>
-      <%= t('devise.sessions.new.title') %>
-    <% end %>
-  </li>
-  <li class="nav-item" role="presentation">
-    <%= link_to new_registration_path(resource_name),
-          class: "nav-link #{'active' if is_signup_page}",
-          role: "tab" do %>
-      <i class="bi bi-person-plus me-2"></i>
-      <%= t('devise.registrations.new.title') %>
-    <% end %>
-  </li>
+  <% if company_slug.present? %>
+    <li class="nav-item" role="presentation">
+      <%= link_to company_new_user_session_path(company_slug: company_slug),
+            class: "nav-link #{'active' if is_login_page}",
+            role: "tab" do %>
+        <i class="bi bi-box-arrow-in-right me-2"></i>
+        <%= t('devise.sessions.new.title') %>
+      <% end %>
+    </li>
+    <li class="nav-item" role="presentation">
+      <%= link_to company_new_user_registration_path(company_slug: company_slug),
+            class: "nav-link #{'active' if is_signup_page}",
+            role: "tab" do %>
+        <i class="bi bi-person-plus me-2"></i>
+        <%= t('devise.registrations.new.title') %>
+      <% end %>
+    </li>
+  <% end %>
 </ul>

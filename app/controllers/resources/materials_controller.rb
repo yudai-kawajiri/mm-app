@@ -14,9 +14,10 @@ class Resources::MaterialsController < AuthenticatedController
     created_at: -> { order(created_at: :desc) }
   )
 
-  find_resource :material, only: [ :show, :edit, :update, :destroy, :copy ]
-  before_action :set_material, only: [ :show, :edit, :update, :destroy, :copy ]
+  skip_before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :require_store_user
+  before_action :set_material, only: [:show, :edit, :update, :destroy, :copy]
 
   # 原材料一覧
   #
@@ -48,7 +49,7 @@ class Resources::MaterialsController < AuthenticatedController
     @material = Resources::Material.new
     @material.user_id = current_user.id
     @material.company_id = current_company.id
-    @material.store_id = current_store&.id
+    @material.store_id = current_user.store_id
   end
 
   # 原材料を作成
@@ -64,8 +65,8 @@ class Resources::MaterialsController < AuthenticatedController
     @material = Resources::Material.new(material_params)
     @material.user_id = current_user.id
     @material.company_id = current_company.id
-    @material.store_id = current_store&.id if @material.store_id.blank?
-    respond_to_save(@material)
+    @material.store_id = current_user.store_id if @material.store_id.blank?
+    respond_to_save(@material, success_path: -> { scoped_path(:resources_material_path, @material) })
   end
 
   def show; end
@@ -85,11 +86,11 @@ class Resources::MaterialsController < AuthenticatedController
     @manufacturing_units = scoped_units.where(category: :manufacturing).ordered
     @material_order_groups = scoped_material_order_groups.ordered
     @material.assign_attributes(material_params)
-    respond_to_save(@material)
+    respond_to_save(@material, success_path: -> { scoped_path(:resources_material_path, @material) })
   end
 
   def destroy
-    respond_to_destroy(@material, success_path: resources_materials_url)
+    respond_to_destroy(@material, success_path: scoped_path(:resources_materials_path))
   end
 
   # 原材料をコピー
@@ -97,11 +98,11 @@ class Resources::MaterialsController < AuthenticatedController
   # 【注意】
   def copy
     @material.create_copy(user: current_user)
-    redirect_to resources_materials_path, notice: t("flash_messages.copy.success",
+    redirect_to scoped_path(:resources_materials_path), notice: t("flash_messages.copy.success",
                                                     resource: @material.class.model_name.human)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Material copy failed: #{e.record.errors.full_messages.join(', ')}"
-    redirect_to resources_materials_path, alert: t("flash_messages.copy.failure",
+    redirect_to scoped_path(:resources_materials_path), alert: t("flash_messages.copy.failure",
                                                     resource: @material.class.model_name.human)
   end
 
@@ -110,14 +111,22 @@ class Resources::MaterialsController < AuthenticatedController
       Resources::Material.find(id).update(display_order: index + 1)
     end
 
-    render json: { message: t("sortable_table.saved") }, status: :ok
+    render json: { message: t("flash_messages.sortable_table.messages.saved") }, status: :ok
   rescue ActiveRecord::RecordNotFound
-    render json: { error: t("sortable_table.not_found") }, status: :not_found
+    render json: { error: t("flash_messages.sortable_table.messages.not_found") }, status: :not_found
   end
 
-  def set_material
+  def fetch_product_unit_data
     @material = scoped_materials.find(params[:id])
+
+    render json: {
+      unit_id: @material.unit_for_product_id,
+      unit_name: @material.unit_for_product&.name
+    }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: t("materials.not_found") }, status: :not_found
   end
+
 
 
   def scoped_materials
@@ -155,3 +164,12 @@ class Resources::MaterialsController < AuthenticatedController
     )
   end
 end
+
+  private
+
+  def set_material
+    @material = scoped_materials.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    flash[:alert] = t("flash_messages.not_authorized")
+    redirect_to company_dashboards_path(company_slug: current_company.slug)
+  end

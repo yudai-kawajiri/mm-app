@@ -7,21 +7,21 @@ class StoresController < AuthenticatedController
   #
   # システム管理者または会社管理者が店舗を切り替える
   def switch
-    if params[:store_id].present?
-      store = current_company&.stores&.find_by(id: params[:store_id])
+    if params[:current_store_id].present?
+      store = current_company&.stores&.find_by(id: params[:current_store_id])
       if store
         session[:current_store_id] = store.id
-        flash[:notice] = t("stores.switch.success", store_name: store.name)
+        flash[:notice] = t("flash_messages.admin.stores.messages.switch_success", store_name: store.name)
       else
-        flash[:alert] = t("stores.switch.not_found")
+        flash[:alert] = t("flash_messages.stores.messages.switch_not_found")
       end
     else
       # 全店舗を選択
       session[:current_store_id] = nil
-      flash[:notice] = t("stores.switch.all_stores")
+      flash[:notice] = t("flash_messages.stores.messages.switch_all_stores")
     end
 
-    redirect_to request.referer || authenticated_root_path
+    redirect_to request.referer || company_dashboards_path(company_slug: current_company.slug)
   end
 
   private
@@ -29,7 +29,7 @@ class StoresController < AuthenticatedController
   def require_super_admin_or_company_admin
     unless current_user.super_admin? || current_user.company_admin?
       flash[:alert] = t("errors.unauthorized")
-      redirect_to authenticated_root_path
+      redirect_to company_dashboards_path(company_slug: current_company.slug)
     end
   end
 end
