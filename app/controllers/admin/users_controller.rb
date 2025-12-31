@@ -110,7 +110,7 @@ class Admin::UsersController < Admin::BaseController
   def destroy
     # 自分自身は削除できない
     if @user.id == current_user.id
-      redirect_to company_admin_users_path(company_slug: company_slug_for_redirect), alert: t("admin.users.messages.cannot_delete_self"), status: :see_other
+      redirect_to company_admin_users_path(company_slug: company_slug_for_redirect), alert: t("flash_messages.admin.users.messages.cannot_delete_self"), status: :see_other
       return
     end
 

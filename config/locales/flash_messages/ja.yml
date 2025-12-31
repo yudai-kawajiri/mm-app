@@ -47,6 +47,7 @@ ja:
           approve_failed: 承認に失敗しました
           rejected: 却下しました
           reject_failed: 却下に失敗しました
+        default_reject_reason: "却下されました"
 
       stores:
         messages:
