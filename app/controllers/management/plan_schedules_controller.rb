@@ -80,7 +80,7 @@ class Management::PlanSchedulesController < Management::BaseController
         company_slug: current_company.slug,
         year: scheduled_date.year,
         month: scheduled_date.month
-      ), notice: I18n.t("numerical_managements.messages.plan_assigned")
+      ), notice: I18n.t("flash_messages.numerical_managements.messages.plan_assigned")
     else
       redirect_to company_management_numerical_managements_path(
         company_slug: current_company.slug,
