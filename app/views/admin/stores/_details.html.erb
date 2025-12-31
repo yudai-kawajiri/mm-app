@@ -50,7 +50,7 @@
           <div class="text-dark text-center pt-2" style="font-size: 1.1em; font-weight: 500;">
             <div class="d-flex align-items-center justify-content-center gap-2">
               <code class="fs-5"><%= store.invitation_code %></code>
-              <%= button_to regenerate_invitation_code_company_admin_store_path(company_slug: current_company.slug, id: store.id),
+              <%= button_to regenerate_invitation_code_company_admin_store_path(company_slug: params[:company_slug], id: store.id),
                             method: :post,
                             form: { data: { turbo_confirm: t('admin.stores.show.confirm_regenerate') } },
                             class: 'btn btn-sm btn-outline-secondary' do %>

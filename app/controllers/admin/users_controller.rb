@@ -28,17 +28,8 @@ class Admin::UsersController < Admin::BaseController
     end
   end
 
-  # 承認済みユーザー + AdminRequest が pending/approved のユーザー
-  # 承認済みユーザー + AdminRequest が pending/approved のユーザー + AdminRequestが存在しないユーザー（管理者が直接作成）
-  admin_request_user_ids = AdminRequest.where.not(status: :rejected).pluck(:user_id)
-  users_with_no_request = users_scope.left_joins(:admin_requests).where(admin_requests: { id: nil }).pluck(:id)
-
-  users_scope = users_scope.where(
-    "users.approved = ? OR users.id IN (?) OR users.id IN (?)",
-    true,
-    admin_request_user_ids.presence || [0],
-    users_with_no_request.presence || [0]
-  )
+  # 承認済みユーザーのみ表示
+  users_scope = users_scope.where(approved: true)
 
   # 検索処理
   if params[:q].present?
