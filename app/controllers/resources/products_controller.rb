@@ -12,7 +12,7 @@ class Resources::ProductsController < AuthenticatedController
     created_at: -> { order(created_at: :desc) }
   )
 
-  find_resource :product, only: [ :show, :edit, :update, :destroy, :copy, :purge_image, :update_status ]
+  find_resource :product, only: [ :show, :edit, :update, :destroy, :copy, :purge_image, :update_status, :print ]
   before_action :require_store_user
 
   # 商品一覧
