@@ -111,6 +111,11 @@ ja:
         restrict_dependent_destroy:
           has_many: "他のデータで使用されているため削除できません"
           has_one: "関連するデータが存在するため削除できません"
+      models:
+        resources/category:
+          attributes:
+            category_type:
+              in_use: "%{record}で使用されているため、種別を変更できません"
 
   helpers:
     messages:
