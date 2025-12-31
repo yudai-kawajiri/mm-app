@@ -90,7 +90,7 @@ class Resources::ProductsController < AuthenticatedController
   def update_status
     if @product.update(status: params[:status])
       redirect_to company_resources_products_path(company_slug: current_company.slug),
-                  notice: t("products.messages.status_updated",
+                  notice: t("resources.products.messages.status_updated",
                             name: @product.name,
                             status: t("activerecord.enums.resources/product.status.#{@product.status}"))
     else
