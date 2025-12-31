@@ -52,8 +52,11 @@ class Admin::StoresController < Admin::BaseController
   end
 
   def show
-    @users = @store.users.order(created_at: :desc)
+    # 全ユーザーと承認済みユーザーを分けて取得
+    @all_users = @store.users.order(created_at: :desc)
+    @users = @all_users.where(approved: true)
   end
+
   def new
     @store = Store.new
     if current_user.super_admin? && session[:current_company_id].present?
