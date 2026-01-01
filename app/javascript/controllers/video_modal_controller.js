@@ -23,7 +23,7 @@ export default class extends Controller {
     this.titleTarget.textContent = title
 
     // YouTube埋め込みURLを生成（enablejsapi=1 を追加）
-    const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&enablejsapi=1`
+    const embedUrl = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&enablejsapi=1`
     this.iframeTarget.src = embedUrl
 
     // Bootstrap Modalを表示
@@ -35,40 +35,40 @@ export default class extends Controller {
     this.iframeTarget.src = ""
   }
 
-  // ピクチャーインピクチャー機能を有効化
-  enablePip() {
-    const iframe = this.iframeTarget
+  enablePip(event) {
+    event.preventDefault()
 
-    // iframeの動画要素を取得してPiPを要求
-    try {
-      // YouTube iframe APIにPiPリクエストを送信
-      iframe.contentWindow.postMessage(
-        '{"event":"command","func":"requestPictureInPicture","args":""}',
-        '*'
-      )
-
-      // モーダルを閉じる
-      const modal = bootstrap.Modal.getInstance(this.modalTarget)
-      if (modal) {
-        modal.hide()
-      }
-    } catch (error) {
-      console.error('Picture-in-Picture failed:', error)
+    const youtubeId = this.iframeTarget.src.match(/embed\/([^?]+)/)?.[1]
+    if (!youtubeId) {
       alert(i18n.t('help.video_modal.pip_not_supported'))
+      return
+    }
+
+    // 小さいウィンドウで開く
+    const width = 480
+    const height = 270
+    const left = window.screen.width - width - 20
+    const top = window.screen.height - height - 100
+
+    window.open(
+      `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`,
+      'PiP',
+      `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=no`
+    )
+
+    // モーダルを閉じる
+    const modal = bootstrap.Modal.getInstance(this.modalTarget)
+    if (modal) {
+      modal.hide()
     }
   }
 
-  // 新しいタブでYouTubeを開く
-  openInYouTube() {
-    const iframe = this.iframeTarget
-    const src = iframe.src
+  openInYouTube(event) {
+    event.preventDefault()
 
-    // YouTube IDを抽出
-    const match = src.match(/embed\/([^?]+)/)
-    if (match && match[1]) {
-      const youtubeId = match[1]
-      const youtubeUrl = `https://www.youtube.com/watch?v=${youtubeId}`
-      window.open(youtubeUrl, '_blank')
+    const youtubeId = this.iframeTarget.src.match(/embed\/([^?]+)/)?.[1]
+    if (youtubeId) {
+      window.open(`https://www.youtube.com/watch?v=${youtubeId}`, '_blank')
     }
   }
 }

@@ -22,11 +22,12 @@ RSpec.describe 'Admin Companies Management', type: :request do
 
     it 'creates company' do
       post '/admin/companies', params: {
-        company: { name: 'Test Company', slug: 'test-company' }
+        company: { name: 'New Company', slug: 'new-company', email: 'info@example.com' }
       }
-      expect(response).to have_http_status(:redirect)  # 成功: 302
-      expect(Company.last.name).to eq('Test Company')
-      expect(Company.last.slug).to eq('test-company')
+      expect(response).to have_http_status(:redirect)
+      expect(Company.last.name).to eq('New Company')
+      expect(Company.last.slug).to eq('new-company')
+      expect(Company.last.email).to eq('info@example.com')
     end
   end
 end
