@@ -11,11 +11,12 @@ RSpec.describe Resources::Category, type: :model do
     end
 
     it 'validates name uniqueness within company' do
-      category1 = create(:category, company: company, name: 'Food')
-      category2 = Resources::Category.new(company: company, name: 'Food')
-      category2.valid?
+      create(:category, company: company, name: 'Food')
+      category2 = build(:category, company: company, name: 'Food')
+      expect(category2).not_to be_valid
       expect(category2.errors[:name]).to be_present
     end
+  end
 
   describe 'associations' do
     it 'belongs to company' do
@@ -28,6 +29,5 @@ RSpec.describe Resources::Category, type: :model do
       product = create(:product, company: company, category: category)
       expect(category.products).to include(product)
     end
-  end
   end
 end
