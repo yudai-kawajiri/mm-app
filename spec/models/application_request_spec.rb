@@ -1,5 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationRequest, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'basic model' do
+    it 'can be instantiated' do
+      request = ApplicationRequest.new
+      expect(request).to be_a(ApplicationRequest)
+    end
+  end
 end

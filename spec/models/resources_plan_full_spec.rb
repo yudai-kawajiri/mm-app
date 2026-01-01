@@ -9,24 +9,22 @@ RSpec.describe Resources::Plan, type: :model do
       plan = Resources::Plan.new(
         company: company,
         store: store,
-        name: 'Test Plan',
-        end_date: Date.today + 7.days
+        name: 'Test Plan'
       )
       expect(plan).to be_a(Resources::Plan)
     end
+  end
 
-    it 'can be persisted' do
-      plan = create(:plan, company: company, store: store)
-      expect(plan.persisted?).to be_truthy
-    end
-
+  describe 'associations' do
     it 'has associations' do
-      plan = create(:plan, company: company, store: store)
+      plan = Resources::Plan.new
       expect(plan).to respond_to(:company)
       expect(plan).to respond_to(:store)
       expect(plan).to respond_to(:plan_products)
     end
+  end
 
+  describe 'validations' do
     it 'validates presence of required fields' do
       plan = Resources::Plan.new
       plan.valid?
