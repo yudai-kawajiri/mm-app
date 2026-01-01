@@ -22,8 +22,8 @@ export default class extends Controller {
     // モーダルのタイトルを設定
     this.titleTarget.textContent = title
 
-    // YouTube埋め込みURLを生成
-    const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`
+    // YouTube埋め込みURLを生成（enablejsapi=1 を追加）
+    const embedUrl = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&enablejsapi=1`
     this.iframeTarget.src = embedUrl
 
     // Bootstrap Modalを表示
@@ -33,5 +33,42 @@ export default class extends Controller {
 
   close() {
     this.iframeTarget.src = ""
+  }
+
+  enablePip(event) {
+    event.preventDefault()
+
+    const youtubeId = this.iframeTarget.src.match(/embed\/([^?]+)/)?.[1]
+    if (!youtubeId) {
+      alert(i18n.t('help.video_modal.pip_not_supported'))
+      return
+    }
+
+    // 小さいウィンドウで開く
+    const width = 480
+    const height = 270
+    const left = window.screen.width - width - 20
+    const top = window.screen.height - height - 100
+
+    window.open(
+      `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`,
+      'PiP',
+      `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=no`
+    )
+
+    // モーダルを閉じる
+    const modal = bootstrap.Modal.getInstance(this.modalTarget)
+    if (modal) {
+      modal.hide()
+    }
+  }
+
+  openInYouTube(event) {
+    event.preventDefault()
+
+    const youtubeId = this.iframeTarget.src.match(/embed\/([^?]+)/)?.[1]
+    if (youtubeId) {
+      window.open(`https://www.youtube.com/watch?v=${youtubeId}`, '_blank')
+    }
   }
 }

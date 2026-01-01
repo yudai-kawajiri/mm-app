@@ -23,9 +23,9 @@
   <div class="col-md-6">
     <%= form_group_lg(f, :email,
         field_type: :text_field,
-        label: t('activerecord.attributes.company.email'),
+        label: "#{t('activerecord.attributes.company.email')}<span class='text-danger'>*</span>".html_safe,
         placeholder: t('admin.companies.form.email_placeholder'),
-        required: false
+        required: true
     ) %>
   </div>
   <div class="col-md-6">

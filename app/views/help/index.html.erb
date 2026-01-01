@@ -205,7 +205,7 @@
     </div>
   </section>
 
-  <!-- 動画モーダル（container-fluidの中に移動） -->
+  <!-- 動画モーダル -->
   <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true" data-video-modal-target="modal">
     <div class="modal-dialog modal-xl modal-dialog-centered">
       <div class="modal-content">
@@ -217,6 +217,24 @@
           <div class="ratio ratio-16x9">
             <iframe data-video-modal-target="iframe" src="" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button"
+                  class="btn btn-primary"
+                  data-action="click->video-modal#enablePip">
+            <i class="bi bi-picture"></i> <%= t('help.video_modal.picture_in_picture') %>
+          </button>
+          <button type="button"
+                  class="btn btn-secondary"
+                  data-action="click->video-modal#openInYouTube">
+            <i class="bi bi-youtube"></i> <%= t('help.video_modal.open_in_youtube') %>
+          </button>
+          <button type="button"
+                  class="btn btn-outline-secondary"
+                  data-bs-dismiss="modal"
+                  data-action="click->video-modal#close">
+            <%= t('help.video_modal.close') %>
+          </button>
         </div>
       </div>
     </div>

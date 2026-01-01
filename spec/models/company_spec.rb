@@ -3,21 +3,15 @@ require 'rails_helper'
 RSpec.describe Company, type: :model do
   describe 'validations' do
     it 'requires name' do
-      company = Company.new(name: nil, slug: 'test', code: 'TEST001')
+      company = Company.new(name: nil, slug: 'test')
       company.valid?
       expect(company.errors[:name]).to be_present
     end
 
     it 'requires slug' do
-      company = Company.new(name: 'Test', slug: nil, code: 'TEST001')
+      company = Company.new(name: 'Test', slug: nil)
       company.valid?
       expect(company.errors[:slug]).to be_present
-    end
-
-    xit 'requires code' do
-      company = Company.new(name: 'Test', slug: 'test', code: nil)
-      company.valid?
-      expect(company.errors[:code]).to be_present
     end
   end
 

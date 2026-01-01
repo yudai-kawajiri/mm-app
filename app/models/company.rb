@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Company < ApplicationRecord
   has_many :users, dependent: :destroy
   has_many :stores, dependent: :destroy
@@ -9,13 +7,19 @@ class Company < ApplicationRecord
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, format: { with: /\A[a-z0-9\-]+\z/ }
-  validates :phone, allow_blank: true, format: { with: /\A\d{10,11}\z/ }
+  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :phone, allow_blank: true, uniqueness: { allow_nil: true }, format: { with: /\A\d{10,11}\z/, allow_blank: true }
 
   before_validation :generate_invitation_token, on: :create
+  before_validation :normalize_phone
 
   private
 
   def generate_invitation_token
     self.invitation_token ||= SecureRandom.urlsafe_base64(32)
+  end
+
+  def normalize_phone
+    self.phone = nil if phone.blank?
   end
 end
