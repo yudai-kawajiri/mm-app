@@ -76,5 +76,4 @@ RSpec.describe Resources::Plan, type: :model do
       expect(plan).to respond_to(:plan_products)
     end
   end
-
 end

@@ -24,15 +24,15 @@ RSpec.describe 'Admin権限テスト', type: :request do
         it 'ユーザー一覧にアクセスできない' do
           login_as(general_user, scope: :user)
           get scoped_path(:admin_users)
-          expect([302, 404]).to include(response.status)
-          expect([302, 404]).to include(response.status)
+          expect([ 302, 404 ]).to include(response.status)
+          expect([ 302, 404 ]).to include(response.status)
         end
       end
 
       context '未ログインユーザーの場合' do
         it 'ログインページにリダイレクトされる' do
           get scoped_path(:admin_users)
-          expect([302, 404]).to include(response.status)
+          expect([ 302, 404 ]).to include(response.status)
         end
       end
     end
@@ -44,7 +44,7 @@ RSpec.describe 'Admin権限テスト', type: :request do
         it '他のユーザーを削除できる' do
           sign_in super_admin_user, scope: :user
           delete scoped_path(:admin_user, target_user)
-          expect([302, 404]).to include(response.status)
+          expect([ 302, 404 ]).to include(response.status)
         end
       end
 
@@ -52,7 +52,7 @@ RSpec.describe 'Admin権限テスト', type: :request do
         it '他のユーザーを削除できない' do
           login_as(general_user, scope: :user)
           delete scoped_path(:admin_user, target_user)
-          expect([302, 404]).to include(response.status)
+          expect([ 302, 404 ]).to include(response.status)
         end
       end
     end
@@ -73,8 +73,8 @@ RSpec.describe 'Admin権限テスト', type: :request do
         it 'システムログにアクセスできない' do
           login_as(general_user, scope: :user)
           get scoped_path(:admin_system_logs)
-          expect([302, 404]).to include(response.status)
-          expect([302, 404]).to include(response.status)
+          expect([ 302, 404 ]).to include(response.status)
+          expect([ 302, 404 ]).to include(response.status)
         end
       end
     end

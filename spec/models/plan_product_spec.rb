@@ -134,5 +134,4 @@ RSpec.describe Planning::PlanProduct, type: :model do
       expect(pp.product).to respond_to(:name)
     end
   end
-
 end

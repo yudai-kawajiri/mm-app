@@ -60,5 +60,4 @@ RSpec.describe Planning::ProductMaterial, type: :model do
       expect(pm).to respond_to(:quantity)
     end
   end
-
 end

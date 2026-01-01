@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Users::SessionsController < Devise::SessionsController
-  before_action :set_company_from_slug, only: [:new, :create]
+  before_action :set_company_from_slug, only: [ :new, :create ]
 
   # GET /resource/sign_in
   def new
     # ログイン画面表示前にチェック
     if user_signed_in? && current_user.super_admin? && !admin_path?
       sign_out current_user
-      flash[:alert] = t('errors.messages.unauthorized')
+      flash[:alert] = t("errors.messages.unauthorized")
       return redirect_to new_user_session_url, allow_other_host: true
     end
 
@@ -23,7 +23,7 @@ class Users::SessionsController < Devise::SessionsController
 
       # スーパー管理者チェック
       if user&.super_admin? && !admin_path?
-        flash.now[:alert] = t('errors.messages.unauthorized')
+        flash.now[:alert] = t("errors.messages.unauthorized")
         self.resource = resource_class.new(sign_in_params)
         render :new, status: :unprocessable_entity
         return
@@ -31,7 +31,7 @@ class Users::SessionsController < Devise::SessionsController
 
       # 会社チェック：システム管理者以外のユーザーが存在し、会社が一致しない場合は汎用エラー
       if user && @company && user.company_id != @company.id && !user.super_admin?
-        flash.now[:alert] = 'メールアドレスまたはパスワードが正しくありません'
+        flash.now[:alert] = "メールアドレスまたはパスワードが正しくありません"
         self.resource = resource_class.new(sign_in_params)
         render :new, status: :unprocessable_entity
         return
@@ -45,7 +45,7 @@ class Users::SessionsController < Devise::SessionsController
 
   # システム管理者用のパスかチェック
   def admin_path?
-    request.path.start_with?('/c/admin', '/admin')  # 両方チェック
+    request.path.start_with?("/c/admin", "/admin")  # 両方チェック
   end
 
   private

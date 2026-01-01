@@ -86,7 +86,7 @@ RSpec.describe 'NumericalManagements', type: :request do
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         get scoped_path(:management_numerical_managements), params: { year: year, month: month }
-        expect([302, 404]).to include(response.status)
+        expect([ 302, 404 ]).to include(response.status)
       end
       end
     end

@@ -108,7 +108,4 @@ RSpec.describe '原材料管理', type: :system do
         expect(page).to have_content('原材料')
       end
   end
-
-  
-  
 end

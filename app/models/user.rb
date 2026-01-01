@@ -99,11 +99,10 @@ class User < ApplicationRecord
 
 def self.roles_i18n_custom
   {
-    general: I18n.t('activerecord.attributes.user.roles.general'),
-    store_admin: I18n.t('activerecord.attributes.user.roles.store_admin'),
-    company_admin: I18n.t('activerecord.attributes.user.roles.company_admin'),
-    super_admin: I18n.t('activerecord.attributes.user.roles.super_admin')
+    general: I18n.t("activerecord.attributes.user.roles.general"),
+    store_admin: I18n.t("activerecord.attributes.user.roles.store_admin"),
+    company_admin: I18n.t("activerecord.attributes.user.roles.company_admin"),
+    super_admin: I18n.t("activerecord.attributes.user.roles.super_admin")
   }
 end
-
 end

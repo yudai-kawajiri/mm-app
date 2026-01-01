@@ -10,14 +10,14 @@ FactoryBot.define do
     end
     category { :production }
     description { "テスト用の単位概要" }
-    
+
     association :user
-    
+
     # user が指定された場合は user.company を使う
     after(:build) do |unit, evaluator|
       # Company を設定（user から取得または新規作成）
       unit.company ||= unit.user&.company || create(:company)
-      
+
       # Store は optional（明示的に指定された場合のみ設定）
       # unit.store ||= ... は削除（optional: true なので不要）
     end

@@ -12,7 +12,7 @@ RSpec.describe 'Admin::Companies', type: :request do
   describe 'GET /admin/companies' do
     it 'returns success or redirect' do
       get '/admin/companies'
-      expect([200, 302, 404]).to include(response.status)
+      expect([ 200, 302, 404 ]).to include(response.status)
     end
   end
 end

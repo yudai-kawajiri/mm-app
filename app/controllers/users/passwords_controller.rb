@@ -13,25 +13,25 @@ class Users::PasswordsController < Devise::PasswordsController
     @company
   end
   helper_method :current_company
-  # GET /resource/password/new
-  # def new
-  #   super
-  # end
+# GET /resource/password/new
+# def new
+#   super
+# end
 
-  # POST /resource/password
-  # def create
-  #   super
-  # end
+# POST /resource/password
+# def create
+#   super
+# end
 
-  # GET /resource/password/edit?reset_password_token=abcdef
-  # def edit
-  #   super
-  # end
+# GET /resource/password/edit?reset_password_token=abcdef
+# def edit
+#   super
+# end
 
-  # PUT /resource/password
-  # def update
-  #   super
-  # end
+# PUT /resource/password
+# def update
+#   super
+# end
 
 
 protected

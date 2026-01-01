@@ -5,7 +5,7 @@ class AddUniqueIndexToCompaniesPhone < ActiveRecord::Migration[8.1]
 
     # 重複を見つける
     duplicates = Company.select(:phone)
-                       .where.not(phone: [nil, ''])
+                       .where.not(phone: [ nil, '' ])
                        .group(:phone)
                        .having('COUNT(*) > 1')
                        .pluck(:phone)

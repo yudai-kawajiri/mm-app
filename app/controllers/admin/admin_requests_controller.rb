@@ -27,7 +27,7 @@ class Admin::AdminRequestsController < Admin::BaseController
       @admin_requests.joins(:company).order("companies.name ASC")
     end
 
-    @admin_requests = @admin_requests.includes(:store, :company, user: [:company, :store]).page(params[:page]).per(20)
+    @admin_requests = @admin_requests.includes(:store, :company, user: [ :company, :store ]).page(params[:page]).per(20)
   end
 
   def show

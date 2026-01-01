@@ -190,5 +190,4 @@ class Planning::PlanSchedule < ApplicationRecord
     self.company_id ||= plan&.company_id
     self.store_id ||= plan&.store_id
   end
-
 end

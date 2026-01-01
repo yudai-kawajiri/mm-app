@@ -17,7 +17,7 @@ class Resources::MaterialsController < AuthenticatedController
   skip_before_action :authenticate_user!
   before_action :authenticate_user!
   before_action :require_store_user
-  before_action :set_material, only: [:show, :edit, :update, :destroy, :copy]
+  before_action :set_material, only: [ :show, :edit, :update, :destroy, :copy ]
 
   # 原材料一覧
   #

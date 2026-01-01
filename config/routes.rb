@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   devise_for :users, skip: :all
 
   namespace :admin do
-    resources :companies, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+    resources :companies, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
   end
 
   # 会社スコープ内の認証機能

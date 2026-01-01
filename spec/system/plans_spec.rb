@@ -100,5 +100,4 @@ RSpec.describe '製造計画管理', type: :system do
         expect(page).to have_content('製造計画')
       end
   end
-
 end

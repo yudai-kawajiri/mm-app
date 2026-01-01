@@ -6,8 +6,6 @@ RSpec.describe Resources::Material, type: :model do
   let(:unit) { create(:unit, company: company) }
 
   describe '重要メソッド' do
-    
-
     it 'belongs to company' do
       material = create(:material, company: company, store: store)
       expect(material.company).to eq(company)

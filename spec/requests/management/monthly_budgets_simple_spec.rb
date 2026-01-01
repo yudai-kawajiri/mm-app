@@ -12,6 +12,6 @@ RSpec.describe 'Management::MonthlyBudgets', type: :request do
 
   it 'accesses monthly budgets' do
     get scoped_path(:management_monthly_budgets), params: { year: 2025, month: 1 }
-    expect([200, 302, 404]).to include(response.status)
+    expect([ 200, 302, 404 ]).to include(response.status)
   end
 end

@@ -218,9 +218,9 @@ class Resources::PlansController < AuthenticatedController
 
     @materials_summary = if snapshot["materials_summary"].present?
                           snapshot["materials_summary"].map(&:deep_symbolize_keys)
-                        else
+    else
                           []
-                        end
+    end
     render layout: "print"
   end
 

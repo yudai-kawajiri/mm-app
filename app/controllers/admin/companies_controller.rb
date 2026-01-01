@@ -97,9 +97,9 @@ class Admin::CompaniesController < ApplicationController
   end
 
   def handle_unique_violation(error, template)
-    if error.message.include?('index_companies_on_phone')
+    if error.message.include?("index_companies_on_phone")
       @company.errors.add(:phone, :taken)
-    elsif error.message.include?('index_companies_on_slug')
+    elsif error.message.include?("index_companies_on_slug")
       @company.errors.add(:slug, :taken)
     else
       @company.errors.add(:base, :invalid)

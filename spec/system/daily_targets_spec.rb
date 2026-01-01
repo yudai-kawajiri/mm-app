@@ -13,6 +13,6 @@ RSpec.describe '日次目標', type: :system do
 
   scenario '日次目標ページにアクセスできる' do
     visit scoped_path(:management_daily_targets)
-    expect([200, 302, 404]).to include(page.status_code)
+    expect([ 200, 302, 404 ]).to include(page.status_code)
   end
 end

@@ -336,36 +336,35 @@ RSpec.describe "Materials", type: :request do
 
   describe 'full CRUD operations' do
     let(:store) { create(:store, company: company) }
-    
+
     context 'ログイン済み' do
       before do
         sign_in general_user, scope: :user
         host! "#{company.slug}.example.com"
       end
-      
+
       it 'creates, reads, updates, deletes material' do
         # Create
         post scoped_path(:resources_materials), params: {
           resources_material: { name: 'Test Material', store_id: store.id }
         }
-        
+
         # Read
         material = Resources::Material.last
         if material
           get scoped_path(:resources_material, material)
-          
+
           # Update
           patch scoped_path(:resources_material, material), params: {
             resources_material: { name: 'Updated Material' }
           }
-          
+
           # Delete
           delete scoped_path(:resources_material, material)
         end
-        
+
         expect(true).to be true
       end
     end
   end
-
 end

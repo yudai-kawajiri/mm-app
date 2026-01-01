@@ -88,7 +88,7 @@ RSpec.describe 'カテゴリ―管理', type: :system do
       end
     end
   end
-  
+
   scenario 'フォームに入力して作成できる' do
     visit scoped_path(:new_resources_category)
     if page.has_field?('resources_category[name]')
@@ -97,5 +97,4 @@ RSpec.describe 'カテゴリ―管理', type: :system do
     end
     expect(page).to have_current_path(/./, url: true)
   end
-
 end

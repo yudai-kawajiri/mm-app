@@ -75,14 +75,14 @@ RSpec.describe 'Admin::SystemLogs', type: :request do
 
       it 'リダイレクトされること' do
         get scoped_path(:admin_system_logs)
-        expect([302, 404]).to include(response.status)
+        expect([ 302, 404 ]).to include(response.status)
       end
     end
 
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされること' do
         get scoped_path(:admin_system_logs)
-        expect([302, 404]).to include(response.status)
+        expect([ 302, 404 ]).to include(response.status)
       end
       end
     end

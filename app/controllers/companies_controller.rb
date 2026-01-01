@@ -12,19 +12,19 @@ class CompaniesController < ApplicationController
         session[:current_store_id] = nil # 会社変更時は店舗選択をリセット
         flash[:notice] = t("flash_messages.companies.messages.switch_not_found", company_name: company.name)
         redirect_to company_dashboards_path(company_slug: company.slug)
-        return
+        nil
       else
         flash[:alert] = t("flash_messages.admin.companies.messages.switch_not_found")
-        redirect_to company_dashboards_path(company_slug: current_company&.slug || 'admin')
-        return
+        redirect_to company_dashboards_path(company_slug: current_company&.slug || "admin")
+        nil
       end
     else
       # 全会社モード（システム管理モード）
       session[:current_company_id] = nil
       session[:current_store_id] = nil
       flash[:notice] = t("flash_messages.companies.messages.switch_all_companies")
-      redirect_to company_dashboards_path(company_slug: 'admin')
-      return
+      redirect_to company_dashboards_path(company_slug: "admin")
+      nil
     end
   end
 end

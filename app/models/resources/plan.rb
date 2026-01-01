@@ -51,8 +51,8 @@ class Resources::Plan < ApplicationRecord
   }
 
   # バリデーション
-  validates :name, presence: true, uniqueness: { scope: [:category_id, :store_id] }
-  validates :reading, presence: true, uniqueness: { scope: [:category_id, :store_id] }
+  validates :name, presence: true, uniqueness: { scope: [ :category_id, :store_id ] }
+  validates :reading, presence: true, uniqueness: { scope: [ :category_id, :store_id ] }
   validates :category_id, presence: true
   validates :status, presence: true
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }, allow_blank: true
@@ -61,7 +61,7 @@ class Resources::Plan < ApplicationRecord
   scope :for_index, -> { includes(:category).order(created_at: :desc) }
   scope :ordered, -> { order(:name) }
   scope :active_plans, -> { where(status: :active) }
-  scope :available_for_schedule, -> { where(status: [:draft, :active]) }
+  scope :available_for_schedule, -> { where(status: [ :draft, :active ]) }
 
   # カテゴリーによる絞り込み
   scope :filter_by_category_id, lambda { |category_id|
@@ -70,9 +70,9 @@ class Resources::Plan < ApplicationRecord
 
   # Copyable設定
   copyable_config(
-    uniqueness_scope: [:category_id, :store_id],
-    uniqueness_check_attributes: [:name, :reading],
-    associations_to_copy: [:plan_products],
+    uniqueness_scope: [ :category_id, :store_id ],
+    uniqueness_check_attributes: [ :name, :reading ],
+    associations_to_copy: [ :plan_products ],
     status_on_copy: :draft
   )
 
@@ -125,7 +125,7 @@ class Resources::Plan < ApplicationRecord
   def aggregated_material_requirements
     materials_hash = {}
 
-    plan_products.includes(product: { product_materials: [:material, :unit] }).each do |plan_product|
+    plan_products.includes(product: { product_materials: [ :material, :unit ] }).each do |plan_product|
       plan_product.material_requirements.each do |material_data|
         m_id = material_data[:material_id]
         # material オブジェクトを一度取得し、以降は再利用する
@@ -151,7 +151,7 @@ class Resources::Plan < ApplicationRecord
   def calculate_materials_summary
     material_totals = Hash.new { |h, k| h[k] = { total_quantity: 0, products: [] } }
 
-    plan_products.includes(product: { product_materials: { material: [:order_group, :unit_for_order] } }).each do |pp|
+    plan_products.includes(product: { product_materials: { material: [ :order_group, :unit_for_order ] } }).each do |pp|
       pp.product.product_materials.each do |pm|
         material = pm.material
         quantity = pm.quantity * pp.production_count
@@ -173,7 +173,7 @@ class Resources::Plan < ApplicationRecord
       end
     end
 
-    material_totals.values.sort_by { |m| [m[:display_order], m[:material_id]] }
+    material_totals.values.sort_by { |m| [ m[:display_order], m[:material_id] ] }
   end
 
   private
@@ -225,10 +225,10 @@ class Resources::Plan < ApplicationRecord
       group = groups_hash[m.order_group_name.presence || name]
 
       order_qty = case group[:type]
-                  when "count" then (group[:qty].to_f / group[:pieces]).round(2)
-                  when "weight" then (group[:weight].to_f / group[:unit_weight]).round(2)
-                  else 0
-                  end
+      when "count" then (group[:qty].to_f / group[:pieces]).round(2)
+      when "weight" then (group[:weight].to_f / group[:unit_weight]).round(2)
+      else 0
+      end
 
       data.merge(
         required_order_quantity: order_qty,
@@ -237,7 +237,7 @@ class Resources::Plan < ApplicationRecord
         # DBへの再問い合わせを防ぐため、オブジェクトから直接取得
         display_order: m.display_order || DEFAULT_DISPLAY_ORDER
       ).except(:material)
-    end.sort_by { |m| [m[:display_order], m[:material_name]] }
+    end.sort_by { |m| [ m[:display_order], m[:material_name] ] }
   end
 
   # 重複した商品を自動的に除外（データ整合性維持）

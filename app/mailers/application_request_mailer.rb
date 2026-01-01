@@ -29,7 +29,7 @@ class ApplicationRequestMailer < ApplicationMailer
 
     mail(
       to: @user.email,
-      subject: t('application_request_mailer.approval_notification.subject')
+      subject: t("application_request_mailer.approval_notification.subject")
     )
   end
 
@@ -39,7 +39,7 @@ class ApplicationRequestMailer < ApplicationMailer
 
     mail(
       to: @user.email,
-      subject: t('application_request_mailer.rejection_notification.subject')
+      subject: t("application_request_mailer.rejection_notification.subject")
     )
   end
 end

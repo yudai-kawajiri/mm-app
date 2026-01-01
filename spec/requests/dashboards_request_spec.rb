@@ -17,7 +17,7 @@ RSpec.describe 'Dashboards', type: :request do
 
       it 'returns success' do
         get scoped_path(:dashboards)
-        expect([200, 302]).to include(response.status)
+        expect([ 200, 302 ]).to include(response.status)
       end
 
       it '@forecast_dataに予測データを割り当てること' do
@@ -29,7 +29,7 @@ RSpec.describe 'Dashboards', type: :request do
     context 'ログインしていない場合' do
       it 'ログインページにリダイレクトされる' do
         get scoped_path(:dashboards)
-        expect([302, 404]).to include(response.status)
+        expect([ 302, 404 ]).to include(response.status)
       end
     end
   end
@@ -39,18 +39,17 @@ RSpec.describe 'Dashboards', type: :request do
     let!(:plan) { create(:plan, company: company) }
     let!(:product) { create(:product, company: company, store: store) }
     let!(:material) { create(:material, company: company, store: store) }
-    
+
     context 'ログイン済み' do
       before do
         sign_in general_user, scope: :user
         host! "#{company.slug}.example.com"
       end
-      
+
       it 'ダッシュボードデータを取得する' do
         get scoped_path(:dashboards)
-        expect([200, 302]).to include(response.status)
+        expect([ 200, 302 ]).to include(response.status)
       end
     end
   end
-
 end

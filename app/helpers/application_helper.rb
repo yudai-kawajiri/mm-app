@@ -24,7 +24,7 @@
 module ApplicationHelper
   def scoped_path(path_method, *args)
     # current_company が存在しない場合は、admin を使う
-    company_slug = current_company&.slug || 'admin'
+    company_slug = current_company&.slug || "admin"
 
     if path_method.to_s =~ /\A(new|edit)_(.+)/
       action_prefix = Regexp.last_match(1)
@@ -97,7 +97,7 @@ module ApplicationHelper
   #
   def sidebar_menu_items
     items = [
-      { name: t("dashboard.menu.dashboard"), path: company_root_path(company_slug: current_company&.slug || 'admin') },
+      { name: t("dashboard.menu.dashboard"), path: company_root_path(company_slug: current_company&.slug || "admin") },
       {
         name: t("dashboard.menu.category_management"),
         path: scoped_path(:resources_categories_path),
@@ -171,7 +171,7 @@ module ApplicationHelper
 
       if current_user.super_admin?
         # システム管理者は常に会社管理を表示
-        admin_submenu << { name: t("common.menu.company_management"), path: '/admin/companies' }
+        admin_submenu << { name: t("common.menu.company_management"), path: "/admin/companies" }
       end
 
       # システム管理者と会社管理者はシステムログを表示
@@ -224,7 +224,7 @@ module ApplicationHelper
     # ダッシュボードの場合の特別処理（メニュー名で判定）
     if item[:name] == t("dashboard.menu.dashboard")
       # ダッシュボード関連のパスを厳密にチェック
-      company_slug = current_company&.slug || 'admin'
+      company_slug = current_company&.slug || "admin"
       dashboard_paths = [
         company_root_path(company_slug: company_slug),
         company_dashboards_path(company_slug: company_slug),

@@ -13,15 +13,15 @@ class ApplicationController < ActionController::Base
 
   def public_page?
     devise_controller? ||
-    controller_name == 'landing' ||
-    controller_name == 'application_requests' ||
-    controller_name == 'static_pages' ||
-    controller_name == 'contacts'
+    controller_name == "landing" ||
+    controller_name == "application_requests" ||
+    controller_name == "static_pages" ||
+    controller_name == "contacts"
   end
 
     def set_current_company
       if params[:company_slug].present?
-        if params[:company_slug] == 'admin'
+        if params[:company_slug] == "admin"
           # 全会社モード: セッションをクリア
           session[:current_company_id] = nil
           session[:current_store_id] = nil
@@ -80,7 +80,7 @@ class ApplicationController < ActionController::Base
 
     if devise_controller?
       "application"
-    elsif request.env['warden']&.user
+    elsif request.env["warden"]&.user
       "authenticated_layout"
     else
       "application"
@@ -193,7 +193,7 @@ class ApplicationController < ActionController::Base
 
   def handle_routing_error(exception)
     logger.error "Routing Error: #{exception.message}"
-    redirect_to company_dashboards_path(company_slug: current_company.slug), alert: t('errors.page_not_found')
+    redirect_to company_dashboards_path(company_slug: current_company.slug), alert: t("errors.page_not_found")
   end
 
   def auto_login_pending_user

@@ -12,7 +12,6 @@ RSpec.describe 'Stores Access', type: :request do
 
   it 'accesses store page' do
   get "/c/#{company.slug}/stores/#{store.id}"
-  expect([200, 302, 404]).to include(response.status)
+  expect([ 200, 302, 404 ]).to include(response.status)
 end
-
 end

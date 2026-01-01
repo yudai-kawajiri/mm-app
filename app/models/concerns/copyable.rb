@@ -14,12 +14,12 @@ module Copyable
         "#{original_name} #{I18n.t('copyable.copy_suffix', count: copy_count)}"
       },
       uniqueness_scope: :name,
-      uniqueness_check_attributes: [:name],
+      uniqueness_check_attributes: [ :name ],
       associations_to_copy: [],
       association_copy_attributes: {},
       status_on_copy: nil,
       additional_attributes: {},
-      skip_attributes: [:created_at, :updated_at, :id]
+      skip_attributes: [ :created_at, :updated_at, :id ]
     }
   end
 
@@ -63,17 +63,17 @@ module Copyable
 
   def extract_original_attributes
     copy_suffix_pattern = build_copy_suffix_pattern
-    reading_copy_text = I18n.t('copyable.reading_copy_text')
+    reading_copy_text = I18n.t("copyable.reading_copy_text")
 
     original_name = name.gsub(copy_suffix_pattern, "").strip
     original_reading = respond_to?(:reading) && reading ?
       reading.sub(/#{reading_copy_text}.*\z/, "").strip : nil
 
-    [original_name, original_reading]
+    [ original_name, original_reading ]
   end
 
   def build_copy_suffix_pattern
-    copy_prefix = I18n.t('copyable.copy_suffix', count: 1).sub(/\d+/, '').sub(/\)$/, '')
+    copy_prefix = I18n.t("copyable.copy_suffix", count: 1).sub(/\d+/, "").sub(/\)$/, "")
     /\s*#{Regexp.escape(copy_prefix)}(\d+)\)\z/
   end
 
@@ -91,12 +91,12 @@ module Copyable
       copy_count += 1
     end
 
-    raise I18n.t('copyable.errors.max_attempts_exceeded', max_attempts: MAX_COPY_ATTEMPTS)
+    raise I18n.t("copyable.errors.max_attempts_exceeded", max_attempts: MAX_COPY_ATTEMPTS)
   end
 
   def generate_reading_for_copy(original_reading, copy_count)
-    reading_copy_text = I18n.t('copyable.reading_copy_text')
-    reading_numbers = I18n.t('copyable.reading_numbers')
+    reading_copy_text = I18n.t("copyable.reading_copy_text")
+    reading_numbers = I18n.t("copyable.reading_numbers")
 
     if copy_count <= COPY_COUNT_THRESHOLD
       "#{original_reading}#{reading_copy_text}#{reading_numbers[copy_count]}"
@@ -190,8 +190,8 @@ module Copyable
       copy_config[:association_copy_attributes][association_name]
     else
       original_record.attributes.keys.map(&:to_sym) -
-        [:id, :created_at, :updated_at] -
-        [association_foreign_key(association_name)]
+        [ :id, :created_at, :updated_at ] -
+        [ association_foreign_key(association_name) ]
     end
   end
 
