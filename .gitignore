@@ -65,3 +65,4 @@ cookies.txt
 server_logs.txt
 {
 config/routes.rb.backup_*
+.env
