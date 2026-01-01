@@ -54,7 +54,6 @@ jobs:
         run: |
           bundle exec rubocop --parallel
 
-      # ✅ 追加: アセットプリコンパイル
       - name: Precompile assets
         run: |
           bundle exec rails assets:precompile

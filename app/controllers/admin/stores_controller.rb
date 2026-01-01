@@ -112,7 +112,7 @@ class Admin::StoresController < Admin::BaseController
   end
 
   def store_params
-    params.require(:store).permit(:name, :code, :company_id, :address, :phone, :email)
+    params.require(:store).permit(:name, :code, :company_id, :phone, :email)
   end
 
   def authorize_store_management
