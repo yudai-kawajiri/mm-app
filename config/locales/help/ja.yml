@@ -12,6 +12,10 @@ ja:
     video_modal:
       preparing: の動画を準備中です
       default_title: 動画
+      picture_in_picture: "ピクチャーインピクチャーで表示"
+      open_in_youtube: "YouTubeで開く"
+      close: "閉じる"
+      pip_not_supported: "お使いのブラウザはピクチャーインピクチャーに対応していません"
     video_card:
       click_to_watch: "クリックして動画を見る（字幕をONにして下さい）"
     sections:
