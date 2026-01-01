@@ -87,7 +87,7 @@ class Admin::CompaniesController < ApplicationController
   end
 
   def company_params
-    params.require(:company).permit(:name, :slug, :code, :email, :phone)
+    params.require(:company).permit(:name, :slug, :email, :phone)
   end
 
   def authorize_super_admin!

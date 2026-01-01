@@ -22,10 +22,11 @@ RSpec.describe 'Admin Companies Management', type: :request do
 
     it 'creates company' do
       post '/admin/companies', params: {
-        company: { name: 'New Company', slug: 'new-company', code: 'COMP001' }
+        company: { name: 'Test Company', slug: 'test-company' }
       }
-      # コントローラーがcodeを許可していない可能性があるので、まずステータスだけ確認
-      expect([ 200, 302, 422 ]).to include(response.status)
+      expect(response).to have_http_status(:redirect)  # 成功: 302
+      expect(Company.last.name).to eq('Test Company')
+      expect(Company.last.slug).to eq('test-company')
     end
   end
 end

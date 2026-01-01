@@ -27,7 +27,7 @@ RSpec.describe 'Core Models Methods', type: :model do
     end
 
     it 'has name and code' do
-      store = create(:store, company: company, name: 'Test Store', code: 'TS001')
+      store = create(:store, company: company, name: 'Test Store')
       expect(store.name).to eq('Test Store')
       expect(store.code).to eq('TS001')
     end
