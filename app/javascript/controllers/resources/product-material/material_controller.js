@@ -77,8 +77,7 @@ const LOG_MESSAGES = {
 }
 
 export default class extends Controller {
-  static targets = ["materialSelect", "materialNameDisplay", "materialIdHidden", "unitDisplay", "quantityInput", "unitWeightInput", "unitIdInput"]
-
+  static targets = ["materialSelect", "materialNameDisplay", "materialIdHidden", "unitDisplay", "productionUnitDisplay", "quantityInput", "unitWeightInput", "unitIdInput"]
   connect() {
     Logger.log(LOG_MESSAGES.CONTROLLER_CONNECTED)
     Logger.log(LOG_MESSAGES.HAS_MATERIAL_SELECT, this.hasMaterialSelectTarget)
@@ -179,6 +178,11 @@ export default class extends Controller {
       Logger.log(LOG_MESSAGES.SET_UNIT_NAME, data.unit_name)
     }
 
+    if (this.hasProductionUnitDisplayTarget) {
+      this.productionUnitDisplayTarget.textContent = data.unit_name || DISPLAY_TEXT.UNIT_NOT_SET
+      Logger.log('Set production_unit_name:', data.unit_name)
+    }
+
     if (this.hasUnitWeightInputTarget) {
       const currentValue = this.unitWeightInputTarget.value
 
@@ -196,6 +200,10 @@ export default class extends Controller {
   resetUnit() {
     if (this.hasUnitDisplayTarget) {
       this.unitDisplayTarget.textContent = DISPLAY_TEXT.UNIT_NOT_SET
+    }
+
+    if (this.hasProductionUnitDisplayTarget) {
+      this.productionUnitDisplayTarget.textContent = DISPLAY_TEXT.UNIT_NOT_SET
     }
 
     if (this.hasUnitIdInputTarget) {
@@ -378,6 +386,12 @@ export default class extends Controller {
 
       if (allTabRowController.hasUnitDisplayTarget && this.hasUnitDisplayTarget) {
         allTabRowController.unitDisplayTarget.textContent = this.unitDisplayTarget.textContent
+      }
+
+      // 製造単位の同期（ここに追加！）
+      if (allTabRowController.hasProductionUnitDisplayTarget && this.hasProductionUnitDisplayTarget) {
+        allTabRowController.productionUnitDisplayTarget.textContent = this.productionUnitDisplayTarget.textContent
+        Logger.log('Production unit synced to ALL tab:', this.productionUnitDisplayTarget.textContent)
       }
 
       if (allTabRowController.hasUnitWeightInputTarget && this.hasUnitWeightInputTarget) {

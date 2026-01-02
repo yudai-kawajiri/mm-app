@@ -115,6 +115,12 @@
       } %>
   </td>
 
+  <td style="width: 15%;">
+    <span data-resources--product-material--material-target="productionUnitDisplay" class="fw-bold">
+      <%= f.object.unit&.name || t('helpers.no_setting') %>
+    </span>
+  </td>
+
   <td style="width: 10%;" class="text-end">
     <button type="button"
       class="btn btn-sm btn-danger"
