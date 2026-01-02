@@ -94,6 +94,12 @@
   </td>
 
   <td style="width: 20%;">
+    <span data-resources--product-material--material-target="unitDisplay" class="fw-bold">
+      <%= f.object.material&.unit_for_product&.name || t('helpers.no_setting') %>
+    </span>
+  </td>
+
+  <td style="width: 20%;">
     <%= f.text_field :unit_weight,
       class: 'form-control',
       inputmode: 'decimal',
@@ -107,12 +113,6 @@
         action: 'input->input--number-input#handleInput input->resources--product-material--material#syncUnitWeightToOtherTabs paste->input--number-input#handlePaste focus->input--number-input#handleFocus blur->input--number-input#handleBlur',
         'unique-id': unique_id
       } %>
-  </td>
-
-  <td style="width: 20%;">
-    <span data-resources--product-material--material-target="unitDisplay" class="fw-bold">
-      <%= f.object.material&.unit_for_product&.name || t('helpers.no_setting') %>
-    </span>
   </td>
 
   <td style="width: 10%;" class="text-end">

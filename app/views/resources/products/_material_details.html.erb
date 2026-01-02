@@ -8,8 +8,8 @@
       <tr class="border-bottom">
         <th class="text-muted"><%= t('activerecord.attributes.resources/material.name') %></th>
         <th class="text-end text-muted"><%= t('products.table_headers.quantity') %></th>
-        <th class="text-end text-muted"><%= t('products.table_headers.unit_weight') %></th>
         <th class="text-start text-muted"><%= t('products.table_headers.unit') %></th>
+        <th class="text-end text-muted"><%= t('products.table_headers.unit_weight') %></th>
       </tr>
     </thead>
     <tbody>
@@ -17,8 +17,8 @@
         <tr class="border-bottom">
           <td><%= pm.material.name %></td>
           <td class="text-end"><%= number_with_precision(pm.quantity, precision: 1) %></td>
-          <td class="text-end"><%= number_with_precision(pm.unit_weight, precision: 1) %></td>
           <td class="text-start"><%= pm.unit.name %></td>
+          <td class="text-end"><%= number_with_precision(pm.unit_weight, precision: 1) %></td>
         </tr>
       <% end %>
     </tbody>
