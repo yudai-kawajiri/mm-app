@@ -21,7 +21,7 @@ class StoresController < AuthenticatedController
       flash[:notice] = t("flash_messages.admin.stores.messages.switch_all_stores")
     end
 
-    redirect_to request.referer || company_dashboards_path(company_slug: current_company.slug)
+    redirect_to company_dashboards_path(company_slug: current_company.slug)
   end
 
   private

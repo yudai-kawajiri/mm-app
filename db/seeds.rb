@@ -15,8 +15,8 @@ puts "=========================================="
 # ====================
 # 1. 管理用会社の作成
 # ====================
-admin_company = Company.find_or_create_by!(slug: 'admin') do |c|
-  c.name = 'システム管理'
+admin_company = Company.find_or_create_by!(slug: 'system-admin') do |c|
+  c.name = 'システム管理会社'
   c.email = ENV['ADMIN_COMPANY_EMAIL'] || 'admin@mm-app-manage.com'
 end
 puts " 会社作成完了: #{admin_company.name}"
@@ -173,5 +173,5 @@ staff_user.update!(
 puts " 一般スタッフ作成完了: #{staff_user.email}"
 
 puts "\n=========================================="
-puts "シード処理完了 "
+puts "シード処理完了"
 puts "=========================================="

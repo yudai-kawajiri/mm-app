@@ -4,7 +4,7 @@ ja:
       company: 会社
       store: 店舗
       all_stores: 全店舗
-      system_admin_mode: 全会社
+      system_admin_mode: システム管理モード（全会社）
       company_management: 会社管理
       user_management: ユーザー管理
       store_management: 店舗管理
