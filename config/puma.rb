@@ -26,22 +26,9 @@ before_fork do
   ActiveRecord::Base.connection_pool.disconnect! if defined?(ActiveRecord)
 end
 
-# on_worker_boot: DB接続再確立 + 本番環境マイグレーション（1回のみ）
+# on_worker_boot: DB接続再確立
 on_worker_boot do
   ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
-
-  if ENV["RAILS_ENV"] == "production" && ENV["PUMA_WORKER_ID"] == "0"
-    require "rake"
-    Rails.application.load_tasks
-
-    begin
-      puts "Checking for pending migrations..."
-      Rake::Task["db:migrate"].invoke
-      puts "Migrations completed successfully"
-    rescue => e
-      puts "Migration warning: #{e.message}"
-    end
-  end
 end
 
 # ワーカーシャットダウンのタイムアウト
