@@ -3,4 +3,3 @@ class RemoveAddressFromStores < ActiveRecord::Migration[8.1]
     remove_column :stores, :address, :text
   end
 end
-
