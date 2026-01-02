@@ -13,15 +13,15 @@ class StoresController < AuthenticatedController
         session[:current_store_id] = store.id
         flash[:notice] = t("flash_messages.admin.stores.messages.switch_success", store_name: store.name)
       else
-        flash[:alert] = t("flash_messages.stores.messages.switch_not_found")
+        flash[:alert] = t("flash_messages.admin.stores.messages.switch_not_found")
       end
     else
       # 全店舗を選択
       session[:current_store_id] = nil
-      flash[:notice] = t("flash_messages.stores.messages.switch_all_stores")
+      flash[:notice] = t("flash_messages.admin.stores.messages.switch_all_stores")
     end
 
-    redirect_to request.referer || company_dashboards_path(company_slug: current_company.slug)
+    redirect_to company_dashboards_path(company_slug: current_company.slug)
   end
 
   private

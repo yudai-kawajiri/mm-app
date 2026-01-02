@@ -11,16 +11,30 @@
       <%= f.text_field :name, class: 'form-control', placeholder: t('admin.users.form.name_placeholder'), required: true, data: { 'form-validation-target': 'field' } %>
     </div>
 
-
-    <%# 会社名（システム管理者のみ表示・読み取り専用） %>
+    <%# 会社名（システム管理者のみ表示） %>
     <% if current_user.super_admin? %>
       <div class="mb-3">
         <%= f.label :company_name, class: 'form-label h5' do %>
           <%= Company.human_attribute_name(:name) %>
         <% end %>
-        <div class="form-control-plaintext"><%= user.company&.name || current_user.company&.name || t('common.not_set') %></div>
+        <% if current_company %>
+          <%# 特定の会社選択中: 固定表示 %>
+          <%= f.hidden_field :company_id, value: current_company.id %>
+          <div class="form-control-plaintext"><%= current_company.name %></div>
+        <% else %>
+          <%# 全会社モード: 選択可能 %>
+          <%= f.collection_select :company_id,
+              Company.where.not(slug: 'system-admin').order(:name),
+              :id, :name,
+              { prompt: t('helpers.prompt.select') },
+              { class: 'form-select', required: true } %>
+        <% end %>
       </div>
+    <% else %>
+      <%# 会社管理者: hidden_field で自動設定 %>
+      <%= f.hidden_field :company_id, value: current_company.id %>
     <% end %>
+
     <% if current_user.store_admin? %>
       <%# 店舗管理者: 権限は「一般」固定、非表示 %>
       <%= f.hidden_field :role, value: 'general' %>
@@ -80,8 +94,19 @@
         </div>
         <small class="text-muted"><%= t('admin.users.form.store_admin_store_hint') %></small>
       </div>
+    <% elsif session[:current_store_id].present? %>
+      <%# 特定の店舗選択中: 固定表示 %>
+      <%= f.hidden_field :store_id, value: session[:current_store_id] %>
+      <div class="mb-3">
+        <%= f.label :store_id, class: 'form-label h5' do %>
+          <%= User.human_attribute_name(:store) %>
+        <% end %>
+        <div class="form-control-plaintext">
+          <%= @stores.first&.name || t('common.not_set') %>
+        </div>
+      </div>
     <% else %>
-      <%# 会社管理者・システム管理者: 店舗選択可能 %>
+      <%# 全店舗選択中: 選択可能 %>
       <div class="mb-3" data-admin--user-role-target="storeField">
         <%= f.label :store_id, class: 'form-label h5' do %>
           <%= User.human_attribute_name(:store) %>

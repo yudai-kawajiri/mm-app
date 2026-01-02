@@ -21,8 +21,8 @@
         <%= form_with url: company_switch_company_path(company_slug: company_slug_for_form), method: :post, local: true do |f| %>
           <%= f.select :current_company_id,
               options_for_select(
-                [[t('dashboard.sidebar.system_admin_mode'), '']] + Company.order(:name).pluck(:name, :id),
-                session[:current_company_id].presence || ''
+                [[t('dashboard.sidebar.system_admin_mode'), '']] + Company.order(:name).map { |c| [c.name, c.id] },
+                session[:current_company_id]
               ),
               {},
               {
@@ -40,7 +40,7 @@
       <%
         # システム管理テナント(slug: 'admin')の場合はグレーアウト
         current_company_obj = session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id]) : nil
-        is_system_company = current_company_obj&.slug == 'admin'
+        is_system_company = current_company_obj&.slug == 'system-admin'
         can_select_store = session[:current_company_id].present? && !is_system_company
       %>
 
