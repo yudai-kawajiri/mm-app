@@ -34,6 +34,8 @@ ja:
       edit:
         title: アカウント編集
         email_placeholder: example@example.com
+        phone_placeholder: "09012345678"
+        phone_hint: "10桁または11桁の数字で入力してください（任意）"
         unhappy: アカウントの使用をやめる場合
         cancel_my_account: アカウントを削除する
         cancel_confirm: 本当にアカウントを削除してもよろしいですか？このアクションは取り消せません

@@ -29,17 +29,10 @@
     ) %>
   </div>
   <div class="col-md-6">
-    <%= form_group_lg(f, :phone,
-        field_type: :text_field,
+    <%= phone_field_group(f, :phone,
         label: t('activerecord.attributes.company.phone'),
         placeholder: t('admin.companies.form.phone_placeholder'),
-        inputmode: 'numeric',
-        required: false,
-        data: {
-          controller: 'input--number-input',
-          'number-input-no-comma': 'true',
-          action: 'input->input--number-input#handleInput paste->number-input#handlePaste'
-        }
+        required: false
     ) %>
   </div>
 </div>
