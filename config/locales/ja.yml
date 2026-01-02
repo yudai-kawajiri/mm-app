@@ -63,8 +63,8 @@ ja:
   time:
     formats:
       year_month: "%Y年%m月"
-      default: "%Y/%m/%d %H:%M:%S"
-      long: "%Y年%m月%d日 %H:%M:%S"
+      default: "%Y/%m/%d %H:%M"
+      long: "%Y年%-m月%-d日 %H:%M"
       short: "%m/%d %H:%M"
   number:
     currency:

@@ -38,7 +38,7 @@
         { header: :slug, data: Proc.new { |company| company.slug } },
         { header: :email, data: Proc.new { |company| company.email.presence || '-' } },
         { header: :phone, data: Proc.new { |company| company.phone.presence || '-' } },
-        { header: :created_at, data: Proc.new { |company| l(company.created_at.to_date, format: :default) } }
+        { header: :created_at, data: Proc.new { |company| l(company.created_at, format: :short) } }
       ]
   %>
 

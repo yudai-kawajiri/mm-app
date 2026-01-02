@@ -23,7 +23,7 @@
       category_options: nil,
       hide_category: true %>
 
-  <% 
+  <%
     # システム管理者のみ会社名カラムを表示
     columns = []
     columns << { header: :company, data: Proc.new { |user| user.company&.name || t('admin.users.index.not_set') } } if current_user.super_admin?
@@ -45,7 +45,7 @@
         }
       },
       { header: :store, data: Proc.new { |user| user.store&.name || '-' } },
-      { header: :created_at, data: Proc.new { |user| l(user.created_at.to_date, format: :default) } }
+      { header: :created_at, data: Proc.new { |user| l(user.created_at, format: :short) } }
     ]
   %>
 
