@@ -80,7 +80,7 @@ ja:
       title: 会社管理者ダッシュボード
       pending_users: 承認待ちユーザー
       total_stores: 店舗数
-      recent_logs: 最近のアクティビティ
+      recent_logs: 最近のシステムログ
       view_users: ユーザー一覧を見る
       view_stores: 店舗一覧を見る
       view_all_logs: すべてのログを見る
