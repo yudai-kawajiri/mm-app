@@ -15,18 +15,22 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 # PIDファイル
 pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 
-# 本番環境のワーカー数（CPU コア数に応じて調整）
+# 本番環境のワーカー数
 workers ENV.fetch("WEB_CONCURRENCY") { 2 }
 
-# プリロード（メモリ効率化）
+# プリロード
 preload_app!
 
-# データベース接続の再確立
+# before_fork: DB接続を切断
 before_fork do
   ActiveRecord::Base.connection_pool.disconnect! if defined?(ActiveRecord)
+end
 
-  # 本番環境でマイグレーションを実行（起動時に1回だけ）
-  if ENV["RAILS_ENV"] == "production"
+# on_worker_boot: DB接続再確立 + 本番環境マイグレーション（1回のみ）
+on_worker_boot do
+  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
+
+  if ENV["RAILS_ENV"] == "production" && ENV["PUMA_WORKER_ID"] == "0"
     require "rake"
     Rails.application.load_tasks
 
@@ -40,12 +44,8 @@ before_fork do
   end
 end
 
-on_worker_boot do
-  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
-end
-
 # ワーカーシャットダウンのタイムアウト
-worker_shutdown_timeout 60
+worker_timeout 60
 
 # 統計情報の有効化
 plugin :tmp_restart
