@@ -1,20 +1,3 @@
-# 本番環境でマイグレーション実行
-if Rails.env.production?
-  puts "=========================================="
-  puts "本番環境: マイグレーションを実行します..."
-  puts "=========================================="
-
-  require "rake"
-  Rails.application.load_tasks
-
-  begin
-    Rake::Task["db:migrate"].invoke
-    puts "マイグレーション完了"
-  rescue => e
-    puts "マイグレーションエラー: #{e.message}"
-  end
-end
-
 puts "=========================================="
 puts "シード処理を開始します..."
 puts "=========================================="
