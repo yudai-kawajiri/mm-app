@@ -16,8 +16,8 @@ module FormHelper
   def phone_field_group(form, attribute, **options)
     form_group_lg(form, attribute,
       field_type: :text_field,
-      type: 'tel',
-      pattern: '[0-9]*',
+      type: "tel",
+      pattern: "[0-9]*",
       **options
     )
   end

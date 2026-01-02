@@ -94,6 +94,12 @@
   </td>
 
   <td style="width: 20%;">
+    <span data-resources--product-material--material-target="unitDisplay" class="fw-bold">
+      <%= f.object.material&.unit_for_product&.name || t('helpers.no_setting') %>
+    </span>
+  </td>
+
+  <td style="width: 20%;">
     <%= f.text_field :unit_weight,
       class: 'form-control',
       inputmode: 'decimal',
@@ -109,9 +115,9 @@
       } %>
   </td>
 
-  <td style="width: 20%;">
-    <span data-resources--product-material--material-target="unitDisplay" class="fw-bold">
-      <%= f.object.material&.unit_for_product&.name || t('helpers.no_setting') %>
+  <td style="width: 15%;">
+    <span data-resources--product-material--material-target="productionUnitDisplay" class="fw-bold">
+      <%= f.object.unit&.name || t('helpers.no_setting') %>
     </span>
   </td>
 

@@ -3,4 +3,3 @@ class RemoveAddressFromCompanies < ActiveRecord::Migration[8.1]
     remove_column :companies, :address, :string
   end
 end
-

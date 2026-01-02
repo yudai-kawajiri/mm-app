@@ -132,7 +132,8 @@ ja:
       material_name: 原材料名
       quantity: 数量
       unit_weight: 分量
-      unit: 単位
+      unit: 使用単位
+      production_unit: 製造単位
     add_material_button: 原材料を追加
 
   plans:
