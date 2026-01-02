@@ -12,7 +12,7 @@ class User < ApplicationRecord
   belongs_to :store, optional: true
 
   has_many :admin_requests, dependent: :destroy
-  has_many :approved_requests, class_name: "AdminRequest", foreign_key: :approved_by_id
+  has_many :approved_requests, class_name: "AdminRequest", foreign_key: :approved_by_id, dependent: :nullify
   has_many :categories, class_name: "Resources::Category", foreign_key: :user_id, dependent: :nullify
 
   enum :role, {
@@ -97,12 +97,12 @@ class User < ApplicationRecord
     errors.add(:store_id, :blank) if store_admin? && store_id.blank?
   end
 
-def self.roles_i18n_custom
-  {
-    general: I18n.t("activerecord.attributes.user.roles.general"),
-    store_admin: I18n.t("activerecord.attributes.user.roles.store_admin"),
-    company_admin: I18n.t("activerecord.attributes.user.roles.company_admin"),
-    super_admin: I18n.t("activerecord.attributes.user.roles.super_admin")
-  }
-end
+  def self.roles_i18n_custom
+    {
+      general: I18n.t("activerecord.attributes.user.roles.general"),
+      store_admin: I18n.t("activerecord.attributes.user.roles.store_admin"),
+      company_admin: I18n.t("activerecord.attributes.user.roles.company_admin"),
+      super_admin: I18n.t("activerecord.attributes.user.roles.super_admin")
+    }
+  end
 end
