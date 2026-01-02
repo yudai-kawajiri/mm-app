@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_01_043551) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -357,56 +357,56 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_01_043551) do
   add_foreign_key "active_storage_attachments", "companies"
   add_foreign_key "active_storage_attachments", "stores"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "admin_requests", "companies"
+  add_foreign_key "admin_requests", "companies", on_delete: :cascade
   add_foreign_key "admin_requests", "stores"
-  add_foreign_key "admin_requests", "users"
-  add_foreign_key "admin_requests", "users", column: "approved_by_id"
-  add_foreign_key "categories", "companies"
-  add_foreign_key "categories", "stores"
-  add_foreign_key "categories", "users"
+  add_foreign_key "admin_requests", "users", column: "approved_by_id", on_delete: :nullify
+  add_foreign_key "admin_requests", "users", on_delete: :cascade
+  add_foreign_key "categories", "companies", on_delete: :cascade
+  add_foreign_key "categories", "stores", on_delete: :cascade
+  add_foreign_key "categories", "users", on_delete: :cascade
   add_foreign_key "daily_targets", "companies"
-  add_foreign_key "daily_targets", "monthly_budgets"
-  add_foreign_key "daily_targets", "stores"
+  add_foreign_key "daily_targets", "monthly_budgets", on_delete: :cascade
+  add_foreign_key "daily_targets", "stores", on_delete: :cascade
   add_foreign_key "daily_targets", "users"
-  add_foreign_key "material_order_groups", "companies"
-  add_foreign_key "material_order_groups", "stores"
+  add_foreign_key "material_order_groups", "companies", on_delete: :cascade
+  add_foreign_key "material_order_groups", "stores", on_delete: :cascade
   add_foreign_key "material_order_groups", "users"
-  add_foreign_key "materials", "categories"
-  add_foreign_key "materials", "companies"
-  add_foreign_key "materials", "material_order_groups", column: "order_group_id"
-  add_foreign_key "materials", "stores"
+  add_foreign_key "materials", "categories", on_delete: :cascade
+  add_foreign_key "materials", "companies", on_delete: :cascade
+  add_foreign_key "materials", "material_order_groups", column: "order_group_id", on_delete: :nullify
+  add_foreign_key "materials", "stores", on_delete: :cascade
   add_foreign_key "materials", "units", column: "production_unit_id"
   add_foreign_key "materials", "units", column: "unit_for_order_id"
   add_foreign_key "materials", "units", column: "unit_for_product_id"
   add_foreign_key "materials", "users"
-  add_foreign_key "monthly_budgets", "companies"
-  add_foreign_key "monthly_budgets", "stores"
+  add_foreign_key "monthly_budgets", "companies", on_delete: :cascade
+  add_foreign_key "monthly_budgets", "stores", on_delete: :cascade
   add_foreign_key "monthly_budgets", "users"
-  add_foreign_key "plan_products", "companies"
-  add_foreign_key "plan_products", "plans"
-  add_foreign_key "plan_products", "products"
-  add_foreign_key "plan_schedules", "companies"
-  add_foreign_key "plan_schedules", "plans"
-  add_foreign_key "plan_schedules", "stores"
+  add_foreign_key "plan_products", "companies", on_delete: :cascade
+  add_foreign_key "plan_products", "plans", on_delete: :cascade
+  add_foreign_key "plan_products", "products", on_delete: :cascade
+  add_foreign_key "plan_schedules", "companies", on_delete: :cascade
+  add_foreign_key "plan_schedules", "plans", on_delete: :cascade
+  add_foreign_key "plan_schedules", "stores", on_delete: :cascade
   add_foreign_key "plan_schedules", "users"
-  add_foreign_key "plans", "categories"
-  add_foreign_key "plans", "companies"
-  add_foreign_key "plans", "stores"
+  add_foreign_key "plans", "categories", on_delete: :cascade
+  add_foreign_key "plans", "companies", on_delete: :cascade
+  add_foreign_key "plans", "stores", on_delete: :cascade
   add_foreign_key "plans", "users"
   add_foreign_key "product_materials", "companies"
-  add_foreign_key "product_materials", "materials"
-  add_foreign_key "product_materials", "products"
+  add_foreign_key "product_materials", "materials", on_delete: :cascade
+  add_foreign_key "product_materials", "products", on_delete: :cascade
   add_foreign_key "product_materials", "units"
-  add_foreign_key "products", "categories"
-  add_foreign_key "products", "companies"
-  add_foreign_key "products", "stores"
+  add_foreign_key "products", "categories", on_delete: :cascade
+  add_foreign_key "products", "companies", on_delete: :cascade
+  add_foreign_key "products", "stores", on_delete: :cascade
   add_foreign_key "products", "users"
-  add_foreign_key "stores", "companies"
-  add_foreign_key "units", "companies"
-  add_foreign_key "units", "stores"
+  add_foreign_key "stores", "companies", on_delete: :cascade
+  add_foreign_key "units", "companies", on_delete: :cascade
+  add_foreign_key "units", "stores", on_delete: :cascade
   add_foreign_key "units", "users"
-  add_foreign_key "users", "companies"
-  add_foreign_key "users", "stores"
+  add_foreign_key "users", "companies", on_delete: :cascade
+  add_foreign_key "users", "stores", on_delete: :nullify
   add_foreign_key "versions", "companies"
   add_foreign_key "versions", "stores"
 end
