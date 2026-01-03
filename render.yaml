@@ -1,7 +1,7 @@
 databases:
   - name: mm-app-db
-    databaseName: mm_app_db
-    user: mm_app_user
+    databaseName: mmapp_production
+    user: mmapp_user  
 
 services:
   - type: web
