@@ -31,7 +31,8 @@ module Myapp
             puts "=========================================="
             puts "マイグレーションを実行中..."
             puts "=========================================="
-            ActiveRecord::Base.connection.migration_context.migrate
+            ActiveRecord::Migration.maintain_test_schema!
+            ActiveRecord::Migrator.migrate(ActiveRecord::Migrator.migrations_paths)
             puts "マイグレーション完了"
 
             puts "=========================================="
