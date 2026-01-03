@@ -3,6 +3,7 @@
 # 単位モデル - 材料の製造単位、発注単位、使用単位を管理
 class Resources::Unit < ApplicationRecord
   belongs_to :company
+  belongs_to :store, optional: true
   include TranslatableAssociations
   has_paper_trail
 

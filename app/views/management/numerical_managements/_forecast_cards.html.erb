@@ -54,6 +54,12 @@
                 <%= number_to_percentage((forecast_data[:achievement_rate] || 0), precision: 1) %>
               </td>
             </tr>
+                <tr>
+              <td class="py-1"><%= t('numerical_managements.index.forecast_discount_rate') %></td>
+              <td class="py-1 text-end fw-bold">
+                <%= number_to_percentage(forecast_data[:forecast_discount_rate] || 0, precision: 1) %>
+              </td>
+            </tr>
             <tr>
               <td class="py-1"><%= t('numerical_managements.index.forecast_diff') %></td>
               <td class="py-1 text-end fw-bold <%= (forecast_data[:forecast_diff] || 0) >= 0 ? 'text-success' : 'text-danger' %>">

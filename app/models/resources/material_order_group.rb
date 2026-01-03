@@ -3,6 +3,7 @@
 # 材料発注グループモデル - 発注時にまとめて扱う材料のグループを管理
 class Resources::MaterialOrderGroup < ApplicationRecord
   belongs_to :company
+  belongs_to :store, optional: true  
 
   has_paper_trail
 
