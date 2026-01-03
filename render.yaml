@@ -3,7 +3,7 @@ services:
     name: mm-app
     env: ruby
     plan: free
-    buildCommand: bundle install && corepack enable && yarn install && bundle exec rails assets:precompile && bundle exec rails db:migrate && bundle exec rails db:seed
+    buildCommand: bundle install && corepack enable && yarn install && bundle exec rails assets:precompile && bundle exec rails db:prepare
     startCommand: bundle exec puma -C config/puma.rb
     envVars:
       - key: RAILS_ENV
