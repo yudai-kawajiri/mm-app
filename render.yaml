@@ -1,8 +1,3 @@
-databases:
-  - name: mm-app-db
-    databaseName: mmapp_production
-    user: mmapp_user  
-
 services:
   - type: web
     name: mm-app
