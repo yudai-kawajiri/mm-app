@@ -1,4 +1,9 @@
-# db/seeds.rb
+begin
+ActiveRecord::Base.connection.migration_context.migrate
+  puts " マイグレーション完了"
+rescue => e
+  puts " マイグレーションエラー（続行）: #{e.message}"
+end
 
 puts "シード処理を開始します..."
 
