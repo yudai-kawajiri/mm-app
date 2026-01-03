@@ -13,7 +13,7 @@ services:
       - key: DATABASE_URL
         fromDatabase:
           name: mm-app-db
-          property: connectionString
+          property: externalConnectionString
       - key: RAILS_LOG_TO_STDOUT
         value: enabled
       - key: RAILS_SERVE_STATIC_FILES
