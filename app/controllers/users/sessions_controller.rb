@@ -51,7 +51,7 @@ class Users::SessionsController < Devise::SessionsController
   private
 
   def set_company_from_slug
-    @company = Company.find_by!(slug: params[:company_slug]) if params[:company_slug]
+    @company = Company.find_by(slug: params[:company_slug]) if params[:company_slug].present?
   end
 
   def current_company

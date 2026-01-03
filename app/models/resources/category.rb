@@ -3,6 +3,7 @@
 # カテゴリーモデル - 材料、製品、計画の分類を管理
 class Resources::Category < ApplicationRecord
   belongs_to :company
+  belongs_to :store, optional: true
   include TranslatableAssociations
   has_paper_trail
 

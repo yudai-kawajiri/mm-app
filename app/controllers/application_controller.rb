@@ -114,7 +114,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_store
-    return nil unless session[:current_store_id]
+    return nil unless current_user && session[:current_store_id]
     @current_store ||= current_user.company.stores.find_by(id: session[:current_store_id])
   end
 
