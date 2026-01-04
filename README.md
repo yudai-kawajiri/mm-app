@@ -215,7 +215,7 @@
 
 ## ER図
 
-![ER図全体像](docs/images/er_diagram.svg)
+![ER図全体像](docs/images/er_diagram.png)
 
 ### 主要テーブル
 
