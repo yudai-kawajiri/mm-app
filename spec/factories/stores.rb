@@ -3,7 +3,6 @@ FactoryBot.define do
     association :company
     sequence(:name) { |n| "Store #{n}" }
     sequence(:code) { |n| "STORE#{n.to_s.rjust(3, '0')}" }
-    address { "MyText" }
-    active { false }
+    active { true }
   end
 end
