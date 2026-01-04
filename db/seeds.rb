@@ -411,7 +411,7 @@ if defined?(Management::MonthlyBudget)
 
   if defined?(Management::DailyTarget)
     (current_month_start..current_month_end).each do |date|
-      target = date.wday.in?([0, 6]) ? ENV.fetch('TEST_DAILY_TARGET_WEEKEND', '60000').to_i : ENV.fetch('TEST_DAILY_TARGET_WEEKDAY', '30000').to_i
+      target = date.wday.in?([ 0, 6 ]) ? ENV.fetch('TEST_DAILY_TARGET_WEEKEND', '60000').to_i : ENV.fetch('TEST_DAILY_TARGET_WEEKDAY', '30000').to_i
       Management::DailyTarget.find_or_create_by!(
         monthly_budget: mb,
         target_date: date
@@ -422,8 +422,8 @@ if defined?(Management::MonthlyBudget)
   if defined?(Planning::PlanSchedule)
     completed_until = Date.new(2026, 1, 15)
     (current_month_start..current_month_end).each do |date|
-      target_plan = date.wday.in?([0, 6]) ? weekend_plan : weekday_plan
-      target_amount = date.wday.in?([0, 6]) ? ENV.fetch('TEST_DAILY_TARGET_WEEKEND', '60000').to_i : ENV.fetch('TEST_DAILY_TARGET_WEEKDAY', '30000').to_i
+      target_plan = date.wday.in?([ 0, 6 ]) ? weekend_plan : weekday_plan
+      target_amount = date.wday.in?([ 0, 6 ]) ? ENV.fetch('TEST_DAILY_TARGET_WEEKEND', '60000').to_i : ENV.fetch('TEST_DAILY_TARGET_WEEKDAY', '30000').to_i
 
       products = target_plan.plan_products.includes(:product).map do |pp|
         {
@@ -435,7 +435,7 @@ if defined?(Management::MonthlyBudget)
       end
 
       total_cost = products.sum { |p| p['production_count'] * p['price'] }
-      achievement_rate = [0.90, 0.95, 1.00, 1.05, 1.10][(date.day - 1) % 5]
+      achievement_rate = [ 0.90, 0.95, 1.00, 1.05, 1.10 ][(date.day - 1) % 5]
       actual_revenue = (target_amount * achievement_rate).round(-2)
       status = date <= completed_until ? 'completed' : 'scheduled'
       discount_rate = status == 'completed' ? 10.0 : 0.0
@@ -780,7 +780,7 @@ if defined?(Management::MonthlyBudget)
 
   if defined?(Management::DailyTarget)
     (current_month_start..current_month_end).each do |date|
-      target = date.wday.in?([0, 6]) ? ENV.fetch('TEST_DAILY_TARGET_WEEKEND', '60000').to_i : ENV.fetch('TEST_DAILY_TARGET_WEEKDAY', '30000').to_i
+      target = date.wday.in?([ 0, 6 ]) ? ENV.fetch('TEST_DAILY_TARGET_WEEKEND', '60000').to_i : ENV.fetch('TEST_DAILY_TARGET_WEEKDAY', '30000').to_i
       Management::DailyTarget.find_or_create_by!(
         monthly_budget: mb_sozai,
         target_date: date
@@ -790,8 +790,8 @@ if defined?(Management::MonthlyBudget)
 
   if defined?(Planning::PlanSchedule)
     (current_month_start..Date.new(2026, 1, 2)).each do |date|
-      target_plan = date.wday.in?([0, 6]) ? weekend_plan_sozai : weekday_plan_sozai
-      target_amount = date.wday.in?([0, 6]) ? ENV.fetch('TEST_DAILY_TARGET_WEEKEND', '60000').to_i : ENV.fetch('TEST_DAILY_TARGET_WEEKDAY', '30000').to_i
+      target_plan = date.wday.in?([ 0, 6 ]) ? weekend_plan_sozai : weekday_plan_sozai
+      target_amount = date.wday.in?([ 0, 6 ]) ? ENV.fetch('TEST_DAILY_TARGET_WEEKEND', '60000').to_i : ENV.fetch('TEST_DAILY_TARGET_WEEKDAY', '30000').to_i
 
       products = target_plan.plan_products.includes(:product).map do |pp|
         {
@@ -803,7 +803,7 @@ if defined?(Management::MonthlyBudget)
       end
 
       total_cost = products.sum { |p| p['production_count'] * p['price'] }
-      achievement_rate = [0.85, 0.92, 0.98, 1.03, 1.12][(date.day - 1) % 5]
+      achievement_rate = [ 0.85, 0.92, 0.98, 1.03, 1.12 ][(date.day - 1) % 5]
       actual_revenue = (target_amount * achievement_rate).round(-2)
       discount_rate = 12.0
       discount_amount = (actual_revenue * 0.12).round(-2)
@@ -830,7 +830,7 @@ if defined?(Management::MonthlyBudget)
     end
 
     (Date.new(2026, 1, 3)..current_month_end).each do |date|
-      target_plan = date.wday.in?([0, 6]) ? weekend_plan_sozai : weekday_plan_sozai
+      target_plan = date.wday.in?([ 0, 6 ]) ? weekend_plan_sozai : weekday_plan_sozai
 
       products = target_plan.plan_products.includes(:product).map do |pp|
         {

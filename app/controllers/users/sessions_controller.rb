@@ -46,7 +46,7 @@ class Users::SessionsController < Devise::SessionsController
   # システム管理者用のパスかチェック
   def admin_path?
     # システム管理者の会社スラッグでログインしている場合、または admin パス
-    params[:company_slug] == 'system-admin' ||
+    params[:company_slug] == "system-admin" ||
     request.path.start_with?("/c/system-admin", "/admin")
   end
 
