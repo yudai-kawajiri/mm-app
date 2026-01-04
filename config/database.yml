@@ -3,41 +3,27 @@ default: &default
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
-  # 環境変数から接続情報を取得
-  host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
-  username: <%= ENV.fetch("DATABASE_USERNAME", "postgres") %>
-  password: <%= ENV.fetch("DATABASE_PASSWORD", "password") %>
 
 development:
   <<: *default
+  host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
+  username: <%= ENV.fetch("DATABASE_USERNAME", "postgres") %>
+  password: <%= ENV.fetch("DATABASE_PASSWORD", "password") %>
   database: mm_app_development
-  # 日本語対応のCollation設定
   collation: C.UTF-8
   ctype: C.UTF-8
 
 test:
   <<: *default
+  host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
+  username: <%= ENV.fetch("DATABASE_USERNAME", "postgres") %>
+  password: <%= ENV.fetch("DATABASE_PASSWORD", "password") %>
   database: mm_app_test
   collation: C.UTF-8
   ctype: C.UTF-8
 
 production:
-  primary:
-    <<: *default
-    # DATABASE_URLが設定されている場合は優先
-    url: <%= ENV['DATABASE_URL'] %>
-    database: <%= ENV.fetch("DATABASE_NAME", "mm_app_production") %>
-    collation: C.UTF-8
-    ctype: C.UTF-8
-  cache:
-    <<: *default
-    database: mm_app_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *default
-    database: mm_app_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *default
-    database: mm_app_production_cable
-    migrations_paths: db/cable_migrate
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  url: <%= ENV['DATABASE_URL'] %>
