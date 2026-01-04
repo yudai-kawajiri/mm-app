@@ -31,7 +31,7 @@ class Users::SessionsController < Devise::SessionsController
 
       # 会社チェック：システム管理者以外のユーザーが存在し、会社が一致しない場合は汎用エラー
       if user && @company && user.company_id != @company.id && !user.super_admin?
-        flash.now[:alert] = "メールアドレスまたはパスワードが正しくありません"
+        flash.now[:alert] = t("errors.messages.invalid_credentials")
         self.resource = resource_class.new(sign_in_params)
         render :new, status: :unprocessable_entity
         return
@@ -45,7 +45,9 @@ class Users::SessionsController < Devise::SessionsController
 
   # システム管理者用のパスかチェック
   def admin_path?
-    request.path.start_with?("/c/admin", "/admin")  # 両方チェック
+    # システム管理者の会社スラッグでログインしている場合、または admin パス
+    params[:company_slug] == 'system-admin' ||
+    request.path.start_with?("/c/system-admin", "/admin")
   end
 
   private
