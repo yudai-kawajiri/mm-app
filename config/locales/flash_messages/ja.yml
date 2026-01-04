@@ -1,4 +1,9 @@
 ja:
+  errors:
+    messages:
+      invalid_credentials: "メールアドレスまたはパスワードが正しくありません"
+      unauthorized: "この操作は許可されていません"
+
   flash_messages:
     create:
       success: "%{resource}を登録しました"

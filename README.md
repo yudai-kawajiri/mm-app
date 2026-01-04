@@ -6,6 +6,7 @@
 [https://mm-app-gpih.onrender.com/](https://mm-app-gpih.onrender.com/)
 
 ### システム管理者（ポートフォリオ閲覧用）
+- **会社コード:** `system-admin`
 - Email: `admin@mm-app-manage.com`
 - Password: `Portfolio2026!`
 - 権限: super_admin（全ポートフォリオのデータを閲覧・管理可能）
