@@ -27,11 +27,6 @@
         <p class="lead text-muted">
           <%= t('landing.subtitle') %>
         </p>
-        <div class="text-center mt-3">
-          <%= link_to help_path, class: "btn btn-outline-primary" do %>
-            <i class="bi bi-question-circle"></i> <%= t('landing.help_button') %>
-          <% end %>
-        </div>
       </div>
 
       <div class="card shadow mb-5">
@@ -66,6 +61,13 @@
             <%= link_to t('landing.new_company_button'), new_application_request_path, class: 'btn btn-success w-100' %>
           </div>
         </div>
+      </div>
+
+      <!-- 使い方を見るボタン（移動） -->
+      <div class="text-center mb-4">
+        <%= link_to help_path, class: "btn btn-outline-primary btn-lg" do %>
+          <i class="bi bi-question-circle"></i> <%= t('landing.help_button') %>
+        <% end %>
       </div>
 
       <div class="mb-5">
