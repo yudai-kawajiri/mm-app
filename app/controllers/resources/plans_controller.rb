@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "ostruct"
+require "csv"
 class Resources::PlansController < AuthenticatedController
   include SortableController
 
@@ -13,8 +14,8 @@ class Resources::PlansController < AuthenticatedController
     created_at: -> { order(created_at: :desc) }
   )
 
-  find_resource :plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ]
-  before_action :set_plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ]
+  find_resource :plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status, :export_csv ]
+  before_action :set_plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status, :export_csv ]
   before_action :require_store_user, unless: -> { action_name == "print" && params[:plan_schedule_id].present? }
 
   # 【Eager Loading】
@@ -165,6 +166,78 @@ class Resources::PlansController < AuthenticatedController
     render layout: "print"
   end
 
+  # CSV出力
+  def export_csv
+    # 製造計画の商品データを取得
+    plan_products = @plan.plan_products
+                        .includes(product: { image_attachment: :blob })
+                        .joins(:product)
+                        .order("products.display_order ASC, products.id ASC")
+
+    # 原材料サマリーを取得
+    materials_summary = @plan.calculate_materials_summary
+
+    csv_data = CSV.generate(headers: true, encoding: Encoding::SJIS) do |csv|
+      # ========== 製造計画書（商品一覧） ==========
+      csv << [I18n.t('plans.csv.sections.product_list')]
+      csv << []
+      csv << [
+        I18n.t('plans.csv.headers.product.category'),
+        I18n.t('plans.csv.headers.product.item_number'),
+        I18n.t('plans.csv.headers.product.name'),
+        I18n.t('plans.csv.headers.product.production_count'),
+        I18n.t('plans.csv.headers.product.unit_price'),
+        I18n.t('plans.csv.headers.product.subtotal')
+      ]
+
+      total_revenue = 0
+      plan_products.each do |pp|
+        subtotal = pp.production_count * pp.product.price
+        total_revenue += subtotal
+        csv << [
+          pp.product.category&.name || "-",
+          "=\"#{pp.product.item_number}\"",
+          pp.product.name,
+          pp.production_count,
+          pp.product.price,
+          subtotal
+        ]
+      end
+
+      csv << ["", "", I18n.t('plans.csv.total'), "", "", total_revenue]
+      csv << []
+      csv << []
+      csv << [I18n.t('plans.csv.sections.material_list')]
+      csv << []
+      csv << [
+        I18n.t('plans.csv.headers.material.order_group'),
+        I18n.t('plans.csv.headers.material.name'),
+        I18n.t('plans.csv.headers.material.total_quantity'),
+        I18n.t('plans.csv.headers.material.quantity_unit'),
+        I18n.t('plans.csv.headers.material.total_weight'),
+        I18n.t('plans.csv.headers.material.weight_unit'),
+        I18n.t('plans.csv.headers.material.order_quantity'),
+        I18n.t('plans.csv.headers.material.order_unit')
+      ]
+
+      materials_summary.each do |material|
+        csv << [
+          material[:order_group_name] || "-",
+          material[:material_name],
+          material[:total_quantity],
+          I18n.t('plans.csv.units.piece'),
+          material[:total_weight] || 0,
+          I18n.t('plans.csv.units.gram'),
+          material[:required_order_quantity],
+          material[:order_unit_name]
+        ]
+      end
+    end
+
+    filename = "#{@plan.name}_#{I18n.t('plans.csv.filename_suffix')}_#{Time.current.strftime('%Y%m%d')}.csv"
+    send_data csv_data, filename: filename, type: "text/csv"
+  end
+
   def set_plan
     @plan = scoped_plans.find(params[:id])
   end
@@ -212,7 +285,7 @@ class Resources::PlansController < AuthenticatedController
     end
 
     @plan = OpenStruct.new(
-      name: snapshot["plan_name"] || "(削除された計画)",
+      name: snapshot["plan_name"] || I18n.t('plans.deleted_plan_name'),
       category: OpenStruct.new(name: snapshot["category_name"] || "-")
     )
 
