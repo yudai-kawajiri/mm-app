@@ -196,6 +196,11 @@
                                       title: t("numerical_managements.actions.print_plan") do %>
                             <i class="bi bi-printer"></i>
                           <% end %>
+                          <%= link_to export_csv_company_resources_plan_path(plan, company_slug: current_company.slug, date: day[:date]),
+                                      class: "btn btn-outline-success",
+                                      title: t("plans.csv.export_button") do %>
+                            <i class="bi bi-file-earmark-spreadsheet"></i>
+                          <% end %>
                         <% else %>
                           <% ps = day[:plan_schedules].first %>
                           <%= link_to print_company_resources_plan_path("deleted", company_slug: current_company.slug, date: day[:date], plan_schedule_id: ps.id),

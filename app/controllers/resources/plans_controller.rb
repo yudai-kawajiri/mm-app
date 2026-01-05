@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "ostruct"
+require "csv"
 class Resources::PlansController < AuthenticatedController
   include SortableController
 
@@ -13,8 +14,8 @@ class Resources::PlansController < AuthenticatedController
     created_at: -> { order(created_at: :desc) }
   )
 
-  find_resource :plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ]
-  before_action :set_plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status ]
+  find_resource :plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status, :export_csv ]
+  before_action :set_plan, only: [ :show, :edit, :update, :destroy, :copy, :print, :update_status, :export_csv ]
   before_action :require_store_user, unless: -> { action_name == "print" && params[:plan_schedule_id].present? }
 
   # 【Eager Loading】
@@ -154,6 +155,11 @@ class Resources::PlansController < AuthenticatedController
     @planned_revenue = @plan_products_for_print.sum { |item| item[:subtotal] }
     @total_product_cost = @planned_revenue
 
+    Rails.logger.debug "🔍 from_daily: #{from_daily}"
+    Rails.logger.debug "🔍 @budget: #{@budget.inspect}"
+    Rails.logger.debug "🔍 @planned_revenue: #{@planned_revenue}"
+    Rails.logger.debug "🔍 @plan_products_for_print.count: #{@plan_products_for_print.count}"
+
     if from_daily && @budget && @budget > 0
       @achievement_rate = ((@planned_revenue.to_f / @budget) * 100).round(1)
     else
@@ -163,6 +169,103 @@ class Resources::PlansController < AuthenticatedController
     @materials_summary = @plan.calculate_materials_summary
 
     render layout: "print"
+  end
+
+  def export_csv
+    # 数値管理からの呼び出しの場合、日付情報を取得
+    from_daily = params[:date].present?
+
+    if from_daily
+      @scheduled_date = Date.parse(params[:date])
+      @plan_schedule = @plan.plan_schedules.find_by(scheduled_date: @scheduled_date)
+      daily_target = Management::DailyTarget.find_by(target_date: @scheduled_date)
+      @budget = daily_target&.target_amount
+    end
+
+    # 製造計画の商品データを取得
+    plan_products = @plan.plan_products
+                        .includes(product: { image_attachment: :blob })
+                        .joins(:product)
+                        .order("products.display_order ASC, products.id ASC")
+
+    # 原材料サマリーを取得
+    materials_summary = @plan.calculate_materials_summary
+
+    # 計画高と達成率を計算
+    total_revenue = plan_products.sum { |pp| pp.production_count * pp.product.price }
+    achievement_rate = if from_daily && @budget && @budget > 0
+                        ((total_revenue.to_f / @budget) * 100).round(1)
+                      else
+                        nil
+                      end
+
+    csv_data = CSV.generate(headers: true, encoding: Encoding::SJIS) do |csv|
+      # ========== ヘッダー情報（数値管理からの場合） ==========
+      if from_daily
+        csv << [encode_for_csv("#{I18n.t('plans.csv.info.plan_name')}: #{@plan.name}")]
+        csv << [encode_for_csv("#{I18n.t('plans.csv.info.scheduled_date')}: #{@scheduled_date ? I18n.l(@scheduled_date, format: :long) : '-'}")]
+        csv << [encode_for_csv("#{I18n.t('plans.csv.info.budget')}: #{@budget ? format_currency_for_csv(@budget.to_i) : '-'}")]
+        csv << [encode_for_csv("#{I18n.t('plans.csv.info.planned_revenue')}: #{format_currency_for_csv(total_revenue.to_i)}")]
+        csv << [encode_for_csv("#{I18n.t('plans.csv.info.achievement_rate')}: #{achievement_rate ? "#{achievement_rate}%" : '-'}")]
+        csv << []
+      end
+
+      # ========== 製造計画書（商品一覧） ==========
+      csv << [I18n.t('plans.csv.sections.product_list')]
+      csv << []
+      csv << [
+        I18n.t('plans.csv.headers.product.category'),
+        I18n.t('plans.csv.headers.product.item_number'),
+        I18n.t('plans.csv.headers.product.name'),
+        I18n.t('plans.csv.headers.product.production_count'),
+        I18n.t('plans.csv.headers.product.unit_price'),
+        I18n.t('plans.csv.headers.product.subtotal')
+      ]
+
+      plan_products.each do |pp|
+        subtotal = pp.production_count * pp.product.price
+        csv << [
+          pp.product.category&.name || "-",
+          "=\"#{pp.product.item_number}\"",
+          pp.product.name,
+          pp.production_count,
+          pp.product.price,
+          subtotal
+        ]
+      end
+
+      csv << ["", "", I18n.t('plans.csv.total'), "", "", total_revenue]
+      csv << []
+      csv << []
+      csv << [I18n.t('plans.csv.sections.material_list')]
+      csv << []
+      csv << [
+        I18n.t('plans.csv.headers.material.order_group'),
+        I18n.t('plans.csv.headers.material.name'),
+        I18n.t('plans.csv.headers.material.total_quantity'),
+        I18n.t('plans.csv.headers.material.quantity_unit'),
+        I18n.t('plans.csv.headers.material.total_weight'),
+        I18n.t('plans.csv.headers.material.weight_unit'),
+        I18n.t('plans.csv.headers.material.order_quantity'),
+        I18n.t('plans.csv.headers.material.order_unit')
+      ]
+
+      materials_summary.each do |material|
+        csv << [
+          material[:order_group_name] || "-",
+          material[:material_name],
+          material[:total_quantity],
+          I18n.t('plans.csv.units.piece'),
+          material[:total_weight] || 0,
+          I18n.t('plans.csv.units.gram'),
+          material[:required_order_quantity],
+          material[:order_unit_name]
+        ]
+      end
+    end
+
+    filename = "#{@plan.name}_#{I18n.t('plans.csv.filename_suffix')}_#{Time.current.strftime('%Y%m%d')}.csv"
+    send_data csv_data, filename: filename, type: "text/csv"
   end
 
   def set_plan
@@ -202,7 +305,6 @@ class Resources::PlansController < AuthenticatedController
         subtotal: product["subtotal"] || (product["production_count"] * product["price"])
       }
     end
-
     @planned_revenue = @plan_products_for_print.sum { |item| item[:subtotal] }
 
     if @budget && @budget > 0
@@ -212,7 +314,7 @@ class Resources::PlansController < AuthenticatedController
     end
 
     @plan = OpenStruct.new(
-      name: snapshot["plan_name"] || "(削除された計画)",
+      name: snapshot["plan_name"] || I18n.t('plans.deleted_plan_name'),
       category: OpenStruct.new(name: snapshot["category_name"] || "-")
     )
 
@@ -261,5 +363,16 @@ class Resources::PlansController < AuthenticatedController
     return nil if cleaned.blank?
 
     cleaned.to_i
+  end
+
+  # CSV用に文字列をSJISエンコード
+  def encode_for_csv(str)
+    str.to_s.encode(Encoding::SJIS, invalid: :replace, undef: :replace)
+  end
+
+  # CSV用に金額をフォーマット
+  def format_currency_for_csv(amount)
+    formatted = amount.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\1,').reverse
+    "￥#{formatted}"
   end
 end

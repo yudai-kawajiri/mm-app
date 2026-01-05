@@ -155,3 +155,37 @@ ja:
     tab_total: カテゴリ―合計
     actions:
       preview: 印刷プレビュー
+    deleted_plan_name: (削除された計画)
+    csv:
+      info:
+        plan_name: 計画名
+        scheduled_date: 実施日
+        budget: 予算
+        planned_revenue: 計画高
+        achievement_rate: 達成率
+      sections:
+        product_list: ① 製造計画書（商品一覧）
+        material_list: ② 原材料管理表（発注・使用）
+      headers:
+        product:
+          category: 画像
+          item_number: 品番
+          name: 商品名
+          production_count: 製造数
+          unit_price: 単価
+          subtotal: 小計
+        material:
+          order_group: 発注グループ
+          name: 原材料名
+          total_quantity: 商品での使用量
+          quantity_unit: 単位
+          total_weight: 合計使用量
+          weight_unit: 単位
+          order_quantity: 発注数量
+          order_unit: 発注単位
+      units:
+        piece: 個
+        gram: g
+      total: 総合計
+      filename_suffix: 発注数
+      export_button: CSV出力

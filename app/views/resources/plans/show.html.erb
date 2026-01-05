@@ -9,9 +9,15 @@
     additional_actions: [
       {
         label: t('plans.actions.preview'),
-        path: scoped_path(:print_resources_plan_path, @plan),
+        path: print_company_resources_plan_path(company_slug: current_company.slug, id: @plan.id),
         class: 'btn-light',
         target: '_blank',
         icon: 'bi-printer'
+      },
+      {
+        label: t('plans.csv.export_button'),
+        path: export_csv_company_resources_plan_path(company_slug: current_company.slug, id: @plan.id),
+        class: 'btn-success',
+        icon: 'bi-filetype-csv'
       }
     ] %>
