@@ -1,6 +1,6 @@
 <% if params[:logout] == 'success' %>
   <div class="alert alert-success alert-dismissible fade show m-3" role="alert" id="logout-alert">
-    <i class="bi bi-check-circle-fill me-2"></i>ログアウトしました
+    <i class="bi bi-check-circle-fill me-2"></i><%= t('landing.logout_success') %>
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>
   <script>
@@ -8,7 +8,7 @@
     const url = new URL(window.location);
     url.searchParams.delete('logout');
     window.history.replaceState({}, '', url);
-    
+
     // 3秒後に自動で消す
     setTimeout(() => {
       const alert = document.getElementById('logout-alert');
@@ -61,6 +61,13 @@
             <%= link_to t('landing.new_company_button'), new_application_request_path, class: 'btn btn-success w-100' %>
           </div>
         </div>
+      </div>
+
+      <!-- 使い方を見るボタン（移動） -->
+      <div class="text-center mb-4">
+        <%= link_to help_path, class: "btn btn-outline-primary btn-lg" do %>
+          <i class="bi bi-question-circle"></i> <%= t('landing.help_button') %>
+        <% end %>
       </div>
 
       <div class="mb-5">

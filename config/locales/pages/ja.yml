@@ -2,9 +2,11 @@ ja:
   landing:
     title: MM-App
     back_to_top: トップページへ戻る
+    logout_success: ログアウトしました
     subtitle: 製造業向けの包括的な生産管理・数値管理システム
     description: 原材料管理から製造計画、売上予測まで一元管理
     login_button: ログイン
+    help_button: 使い方を見る
     signup_button: 新規登録
     slug_label: 会社コード
     slug_placeholder: sample-company

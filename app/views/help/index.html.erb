@@ -1,241 +1,258 @@
 <% content_for :title, t('help.title') %>
 
-<div class="container-fluid py-4" data-controller="help-search video-modal">
-  <div class="row mb-4">
-    <div class="col-12">
-      <h1><%= t('help.title') %></h1>
-      <p class="text-muted"><%= t('help.subtitle') %></p>
-    </div>
-  </div>
-
-  <!-- 検索ボックス(左寄せ) -->
-  <div class="row mb-4">
-    <div class="col-md-6">
-      <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-search"></i></span>
-        <input type="text"
-                class="form-control"
-                id="helpSearch"
-                placeholder="<%= t('help.search.placeholder') %>"
-                data-help-search-target="input"
-                data-action="input->help-search#search">
-      </div>
-    </div>
-  </div>
-
-  <!-- 使い方動画セクション -->
-  <section class="mb-5">
-    <h2 class="border-bottom pb-2 mb-4"><%= t('help.sections.videos') %></h2>
-
-    <!-- 動画が見つからない場合のメッセージ -->
-    <div class="alert alert-info d-none" id="noVideosFound" data-help-search-target="noVideosFound">
-      <%= t('help.search.no_videos_found') %>
-    </div>
-
-    <!-- 基本操作 -->
-    <div class="mb-3" data-help-search-target="videoCategory">
-      <h5 class="mb-2">
-        <a class="text-decoration-none d-block"
-          data-bs-toggle="collapse"
-          href="#collapseBasic"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapseBasic">
-          <%= t('help.ui.expand_arrow') %> <%= t('help.categories.basic_operations') %>
-        </a>
-      </h5>
-      <div class="collapse" id="collapseBasic">
-        <div class="row g-3">
-          <%= render 'shared/video_card',
-                    keywords: t('help.video_keywords.crud_operations'),
-                    youtube_id: t('help.videos.crud_operations.youtube_id'),
-                    title: t('help.videos.crud_operations.title'),
-                    description: t('help.videos.crud_operations.description') %>
-
-          <%= render 'shared/video_card',
-                    keywords: t('help.video_keywords.search_function'),
-                    youtube_id: t('help.videos.search_function.youtube_id'),
-                    title: t('help.videos.search_function.title'),
-                    description: t('help.videos.search_function.description') %>
-
-          <%= render 'shared/video_card',
-                    keywords: t('help.video_keywords.copy_function'),
-                    youtube_id: t('help.videos.copy_function.youtube_id'),
-                    title: t('help.videos.copy_function.title'),
-                    description: t('help.videos.copy_function.description') %>
-
-          <%= render 'shared/video_card',
-                    keywords: t('help.video_keywords.status_update'),
-                    youtube_id: t('help.videos.status_update.youtube_id'),
-                    title: t('help.videos.status_update.title'),
-                    description: t('help.videos.status_update.description') %>
-
-          <%= render 'shared/video_card',
-                    keywords: t('help.video_keywords.print_function'),
-                    youtube_id: t('help.videos.print_function.youtube_id'),
-                    title: t('help.videos.print_function.title'),
-                    description: t('help.videos.print_function.description') %>
+<div class="container py-4" data-controller="help-search video-modal">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <div class="row mb-4">
+        <div class="col-12">
+          <h1><%= t('help.title') %></h1>
+          <p class="text-muted"><%= t('help.subtitle') %></p>
         </div>
       </div>
-    </div>
 
-    <!-- 数値管理 -->
-    <div class="mb-3" data-help-search-target="videoCategory">
-      <h5 class="mb-2">
-        <a class="text-decoration-none d-block"
-            data-bs-toggle="collapse"
-            href="#collapseNumerical"
-            role="button"
-            aria-expanded="false"
-            aria-controls="collapseNumerical">
-          <%= t('help.ui.expand_arrow') %> <%= t('help.categories.numerical_management') %>
-        </a>
-      </h5>
-      <div class="collapse" id="collapseNumerical">
-        <div class="row g-3">
-          <%= render 'shared/video_card',
-                      keywords: t('help.video_keywords.monthly_budget'),
-                      youtube_id: t('help.videos.monthly_budget.youtube_id'),
-                      title: t('help.videos.monthly_budget.title'),
-                      description: t('help.videos.monthly_budget.description') %>
-
-          <%= render 'shared/video_card',
-                      keywords: t('help.video_keywords.daily_budget_and_actual'),
-                      youtube_id: t('help.videos.daily_budget_and_actual.youtube_id'),
-                      title: t('help.videos.daily_budget_and_actual.title'),
-                      description: t('help.videos.daily_budget_and_actual.description') %>
-
-          <%= render 'shared/video_card',
-                      keywords: t('help.video_keywords.plan_assignment'),
-                      youtube_id: t('help.videos.plan_assignment.youtube_id'),
-                      title: t('help.videos.plan_assignment.title'),
-                      description: t('help.videos.plan_assignment.description') %>
-
-          <%= render 'shared/video_card',
-                      keywords: t('help.video_keywords.loss_rate_setting'),
-                      youtube_id: t('help.videos.loss_rate_setting.youtube_id'),
-                      title: t('help.videos.loss_rate_setting.title'),
-                      description: t('help.videos.loss_rate_setting.description') %>
-        </div>
-      </div>
-    </div>
-
-    <!-- リソース管理 -->
-    <div class="mb-3" data-help-search-target="videoCategory">
-      <h5 class="mb-2">
-        <a class="text-decoration-none d-block"
-            data-bs-toggle="collapse"
-            href="#collapseResource"
-            role="button"
-            aria-expanded="false"
-            aria-controls="collapseResource">
-          <%= t('help.ui.expand_arrow') %> <%= t('help.categories.resource_management') %>
-        </a>
-      </h5>
-      <div class="collapse" id="collapseResource">
-        <div class="row g-3">
-          <%= render 'shared/video_card',
-                      keywords: t('help.video_keywords.category'),
-                      youtube_id: t('help.videos.category.youtube_id'),
-                      title: t('help.videos.category.title'),
-                      description: t('help.videos.category.description') %>
-
-          <%= render 'shared/video_card',
-                      keywords: t('help.video_keywords.unit'),
-                      youtube_id: t('help.videos.unit.youtube_id'),
-                      title: t('help.videos.unit.title'),
-                      description: t('help.videos.unit.description') %>
-
-          <%= render 'shared/video_card',
-                      keywords: t('help.video_keywords.material'),
-                      youtube_id: t('help.videos.material.youtube_id'),
-                      title: t('help.videos.material.title'),
-                      description: t('help.videos.material.description') %>
-
-          <%= render 'shared/video_card',
-                      keywords: t('help.video_keywords.order_group'),
-                      youtube_id: t('help.videos.order_group.youtube_id'),
-                      title: t('help.videos.order_group.title'),
-                      description: t('help.videos.order_group.description') %>
-
-          <%= render 'shared/video_card',
-                      keywords: t('help.video_keywords.product'),
-                      youtube_id: t('help.videos.product.youtube_id'),
-                      title: t('help.videos.product.title'),
-                      description: t('help.videos.product.description') %>
-        </div>
-      </div>
-    </div>
-
-    <!-- 製造計画 -->
-    <div class="mb-3" data-help-search-target="videoCategory">
-      <h5 class="mb-2">
-        <a class="text-decoration-none d-block"
-            data-bs-toggle="collapse"
-            href="#collapsePlan"
-            role="button"
-            aria-expanded="false"
-            aria-controls="collapsePlan">
-          <%= t('help.ui.expand_arrow') %> <%= t('help.categories.production_planning') %>
-        </a>
-      </h5>
-      <div class="collapse" id="collapsePlan">
-        <div class="row g-3">
-          <%= render 'shared/video_card',
-                      keywords: t('help.video_keywords.plan'),
-                      youtube_id: t('help.videos.plan.youtube_id'),
-                      title: t('help.videos.plan.title'),
-                      description: t('help.videos.plan.description') %>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- よくある質問セクション -->
-  <section class="mb-5">
-    <h2 class="border-bottom pb-2 mb-4"><%= t('help.sections.faq') %></h2>
-
-    <div class="accordion" id="faqAccordion">
-      <%= render 'faq_items' %>
-    </div>
-
-    <!-- FAQが見つからない場合のメッセージ -->
-    <div class="alert alert-info mt-3 d-none" id="noFaqFound" data-help-search-target="noFaqFound">
-      <%= t('help.search.no_faq_found') %>
-    </div>
-  </section>
-
-  <!-- 動画モーダル -->
-  <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true" data-video-modal-target="modal">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="videoModalLabel" data-video-modal-target="title"><%= t('help.video_modal.default_title') %></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-action="click->video-modal#close"></button>
-        </div>
-        <div class="modal-body p-0">
-          <div class="ratio ratio-16x9">
-            <iframe data-video-modal-target="iframe" src="" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <!-- 検索ボックス(左寄せ) -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text"
+                    class="form-control"
+                    id="helpSearch"
+                    placeholder="<%= t('help.search.placeholder') %>"
+                    data-help-search-target="input"
+                    data-action="input->help-search#search">
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button"
-                  class="btn btn-primary"
-                  data-action="click->video-modal#enablePip">
-            <i class="bi bi-picture"></i> <%= t('help.video_modal.picture_in_picture') %>
-          </button>
-          <button type="button"
-                  class="btn btn-secondary"
-                  data-action="click->video-modal#openInYouTube">
-            <i class="bi bi-youtube"></i> <%= t('help.video_modal.open_in_youtube') %>
-          </button>
-          <button type="button"
-                  class="btn btn-outline-secondary"
-                  data-bs-dismiss="modal"
-                  data-action="click->video-modal#close">
-            <%= t('help.video_modal.close') %>
-          </button>
+      </div>
+
+      <!-- 使い方動画セクション -->
+      <section class="mb-5">
+        <h2 class="border-bottom pb-2 mb-4"><%= t('help.sections.videos') %></h2>
+
+        <!-- 動画が見つからない場合のメッセージ -->
+        <div class="alert alert-info d-none" id="noVideosFound" data-help-search-target="noVideosFound">
+          <%= t('help.search.no_videos_found') %>
         </div>
+
+        <!-- 基本操作 -->
+        <div class="mb-3" data-help-search-target="videoCategory">
+          <h5 class="mb-2">
+            <a class="text-decoration-none d-block"
+              data-bs-toggle="collapse"
+              href="#collapseBasic"
+              role="button"
+              aria-expanded="false"
+              aria-controls="collapseBasic">
+              <%= t('help.ui.expand_arrow') %> <%= t('help.categories.basic_operations') %>
+            </a>
+          </h5>
+          <div class="collapse" id="collapseBasic">
+            <div class="row g-3">
+              <%= render 'shared/video_card',
+                        keywords: t('help.video_keywords.crud_operations'),
+                        youtube_id: t('help.videos.crud_operations.youtube_id'),
+                        title: t('help.videos.crud_operations.title'),
+                        description: t('help.videos.crud_operations.description') %>
+
+              <%= render 'shared/video_card',
+                        keywords: t('help.video_keywords.search_function'),
+                        youtube_id: t('help.videos.search_function.youtube_id'),
+                        title: t('help.videos.search_function.title'),
+                        description: t('help.videos.search_function.description') %>
+
+              <%= render 'shared/video_card',
+                        keywords: t('help.video_keywords.copy_function'),
+                        youtube_id: t('help.videos.copy_function.youtube_id'),
+                        title: t('help.videos.copy_function.title'),
+                        description: t('help.videos.copy_function.description') %>
+
+              <%= render 'shared/video_card',
+                        keywords: t('help.video_keywords.status_update'),
+                        youtube_id: t('help.videos.status_update.youtube_id'),
+                        title: t('help.videos.status_update.title'),
+                        description: t('help.videos.status_update.description') %>
+
+              <%= render 'shared/video_card',
+                        keywords: t('help.video_keywords.print_function'),
+                        youtube_id: t('help.videos.print_function.youtube_id'),
+                        title: t('help.videos.print_function.title'),
+                        description: t('help.videos.print_function.description') %>
+            </div>
+          </div>
+        </div>
+
+        <!-- 数値管理 -->
+        <div class="mb-3" data-help-search-target="videoCategory">
+          <h5 class="mb-2">
+            <a class="text-decoration-none d-block"
+                data-bs-toggle="collapse"
+                href="#collapseNumerical"
+                role="button"
+                aria-expanded="false"
+                aria-controls="collapseNumerical">
+              <%= t('help.ui.expand_arrow') %> <%= t('help.categories.numerical_management') %>
+            </a>
+          </h5>
+          <div class="collapse" id="collapseNumerical">
+            <div class="row g-3">
+              <%= render 'shared/video_card',
+                          keywords: t('help.video_keywords.monthly_budget'),
+                          youtube_id: t('help.videos.monthly_budget.youtube_id'),
+                          title: t('help.videos.monthly_budget.title'),
+                          description: t('help.videos.monthly_budget.description') %>
+
+              <%= render 'shared/video_card',
+                          keywords: t('help.video_keywords.daily_budget_and_actual'),
+                          youtube_id: t('help.videos.daily_budget_and_actual.youtube_id'),
+                          title: t('help.videos.daily_budget_and_actual.title'),
+                          description: t('help.videos.daily_budget_and_actual.description') %>
+
+              <%= render 'shared/video_card',
+                          keywords: t('help.video_keywords.plan_assignment'),
+                          youtube_id: t('help.videos.plan_assignment.youtube_id'),
+                          title: t('help.videos.plan_assignment.title'),
+                          description: t('help.videos.plan_assignment.description') %>
+
+              <%= render 'shared/video_card',
+                          keywords: t('help.video_keywords.loss_rate_setting'),
+                          youtube_id: t('help.videos.loss_rate_setting.youtube_id'),
+                          title: t('help.videos.loss_rate_setting.title'),
+                          description: t('help.videos.loss_rate_setting.description') %>
+            </div>
+          </div>
+        </div>
+
+        <!-- リソース管理 -->
+        <div class="mb-3" data-help-search-target="videoCategory">
+          <h5 class="mb-2">
+            <a class="text-decoration-none d-block"
+                data-bs-toggle="collapse"
+                href="#collapseResource"
+                role="button"
+                aria-expanded="false"
+                aria-controls="collapseResource">
+              <%= t('help.ui.expand_arrow') %> <%= t('help.categories.resource_management') %>
+            </a>
+          </h5>
+          <div class="collapse" id="collapseResource">
+            <div class="row g-3">
+              <%= render 'shared/video_card',
+                          keywords: t('help.video_keywords.category'),
+                          youtube_id: t('help.videos.category.youtube_id'),
+                          title: t('help.videos.category.title'),
+                          description: t('help.videos.category.description') %>
+
+              <%= render 'shared/video_card',
+                          keywords: t('help.video_keywords.unit'),
+                          youtube_id: t('help.videos.unit.youtube_id'),
+                          title: t('help.videos.unit.title'),
+                          description: t('help.videos.unit.description') %>
+
+              <%= render 'shared/video_card',
+                          keywords: t('help.video_keywords.material'),
+                          youtube_id: t('help.videos.material.youtube_id'),
+                          title: t('help.videos.material.title'),
+                          description: t('help.videos.material.description') %>
+
+              <%= render 'shared/video_card',
+                          keywords: t('help.video_keywords.order_group'),
+                          youtube_id: t('help.videos.order_group.youtube_id'),
+                          title: t('help.videos.order_group.title'),
+                          description: t('help.videos.order_group.description') %>
+
+              <%= render 'shared/video_card',
+                          keywords: t('help.video_keywords.product'),
+                          youtube_id: t('help.videos.product.youtube_id'),
+                          title: t('help.videos.product.title'),
+                          description: t('help.videos.product.description') %>
+            </div>
+          </div>
+        </div>
+
+        <!-- 製造計画 -->
+        <div class="mb-3" data-help-search-target="videoCategory">
+          <h5 class="mb-2">
+            <a class="text-decoration-none d-block"
+                data-bs-toggle="collapse"
+                href="#collapsePlan"
+                role="button"
+                aria-expanded="false"
+                aria-controls="collapsePlan">
+              <%= t('help.ui.expand_arrow') %> <%= t('help.categories.production_planning') %>
+            </a>
+          </h5>
+          <div class="collapse" id="collapsePlan">
+            <div class="row g-3">
+              <%= render 'shared/video_card',
+                          keywords: t('help.video_keywords.plan'),
+                          youtube_id: t('help.videos.plan.youtube_id'),
+                          title: t('help.videos.plan.title'),
+                          description: t('help.videos.plan.description') %>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- よくある質問セクション -->
+      <section class="mb-5">
+        <h2 class="border-bottom pb-2 mb-4"><%= t('help.sections.faq') %></h2>
+
+        <div class="accordion" id="faqAccordion">
+          <%= render 'faq_items' %>
+        </div>
+
+        <!-- FAQが見つからない場合のメッセージ -->
+        <div class="alert alert-info mt-3 d-none" id="noFaqFound" data-help-search-target="noFaqFound">
+          <%= t('help.search.no_faq_found') %>
+        </div>
+      </section>
+
+      <!-- 動画モーダル -->
+      <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true" data-video-modal-target="modal">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="videoModalLabel" data-video-modal-target="title"><%= t('help.video_modal.default_title') %></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-action="click->video-modal#close"></button>
+            </div>
+            <div class="modal-body p-0">
+              <div class="ratio ratio-16x9">
+                <iframe data-video-modal-target="iframe" src="" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button"
+                      class="btn btn-primary"
+                      data-action="click->video-modal#enablePip">
+                <i class="bi bi-picture"></i> <%= t('help.video_modal.picture_in_picture') %>
+              </button>
+              <button type="button"
+                      class="btn btn-secondary"
+                      data-action="click->video-modal#openInYouTube">
+                <i class="bi bi-youtube"></i> <%= t('help.video_modal.open_in_youtube') %>
+              </button>
+              <button type="button"
+                      class="btn btn-outline-secondary"
+                      data-bs-dismiss="modal"
+                      data-action="click->video-modal#close">
+                <%= t('help.video_modal.close') %>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 戻るリンク -->
+      <div class="mt-5 mb-4 text-center">
+        <% if user_signed_in? %>
+          <%= link_to company_dashboards_path(company_slug: current_company.slug), class: 'btn btn-outline-secondary btn-lg' do %>
+            <i class="bi bi-arrow-left"></i> <%= t('helpers.link.back') %>
+          <% end %>
+        <% else %>
+          <%= link_to root_path, class: 'btn btn-outline-secondary btn-lg' do %>
+            <i class="bi bi-arrow-left"></i> <%= t('helpers.link.back') %>
+          <% end %>
+        <% end %>
       </div>
     </div>
   </div>
