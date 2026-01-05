@@ -157,6 +157,12 @@ ja:
       preview: 印刷プレビュー
     deleted_plan_name: (削除された計画)
     csv:
+      info:
+        plan_name: 計画名
+        scheduled_date: 実施日
+        budget: 予算
+        planned_revenue: 計画高
+        achievement_rate: 達成率
       sections:
         product_list: ① 製造計画書（商品一覧）
         material_list: ② 原材料管理表（発注・使用）

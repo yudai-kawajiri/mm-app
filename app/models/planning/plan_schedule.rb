@@ -136,11 +136,15 @@ class Planning::PlanSchedule < ApplicationRecord
 
     plan_products_snapshot["products"].map do |product_data|
       product = Resources::Product.find(product_data["product_id"])
+      production_count = product_data["production_count"]
+      price = product_data["price"]
+      subtotal = product_data["subtotal"] || (production_count * price)
+
       {
         product: product,
-        production_count: product_data["production_count"],
-        price: product_data["price"],
-        subtotal: product_data["subtotal"]
+        production_count: production_count,
+        price: price,
+        subtotal: subtotal
       }
     end
   end
