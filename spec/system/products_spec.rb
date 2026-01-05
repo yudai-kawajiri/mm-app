@@ -5,6 +5,7 @@ RSpec.describe '製品管理', type: :system do
 
   before { Warden.test_mode! }
   after { Warden.test_reset! }
+
   let(:company) { create(:company) }
   let(:user) { create(:user, company: company) }
   let(:category) { create(:category, name: 'テストカテゴリ―', user: user) }
@@ -24,9 +25,10 @@ RSpec.describe '製品管理', type: :system do
     end
 
     xscenario '製品が存在しない場合でも一覧ページが表示される' do
-        visit products_path
-        expect(page).to have_current_path(products_path)
-      end
+      visit products_path
+      expect(page).to have_current_path(products_path)
+    end
+  end
 
   describe '製品作成' do
     scenario '作成フォームにアクセスできる' do
@@ -45,6 +47,7 @@ RSpec.describe '製品管理', type: :system do
 
       expect(page).to have_content('商品の登録に失敗しました')
       expect(page).to have_content('商品名を入力してください')
+    end
 
     scenario '価格が負の値の場合は作成できない' do
       visit "/c/#{user.company.slug}/resources/products/new"
@@ -55,10 +58,11 @@ RSpec.describe '製品管理', type: :system do
 
       expect(page).to have_content('商品の登録に失敗しました')
       expect(page).to have_content('は0より大きい値にしてください')
+    end
+  end
 
   describe '製品編集' do
     scenario 'ユーザーは製品を編集できる' do
-      # 直接PATCHリクエストで更新（フォーム経由ではなく）
       page.driver.submit :patch, scoped_path(:resources_product, product), {
         resources_product: {
           name: '大トロ握り',
@@ -84,6 +88,8 @@ RSpec.describe '製品管理', type: :system do
 
       expect(page).to have_content('商品の更新に失敗しました')
       expect(page).to have_content('商品名を入力してください')
+    end
+  end
 
   describe '製品削除' do
     scenario 'ユーザーは製品を削除できる' do
@@ -97,6 +103,8 @@ RSpec.describe '製品管理', type: :system do
       within 'table' do
         expect(page).not_to have_content('まぐろ握り')
       end
+    end
+  end
 
   describe '製品並び替え' do
     let!(:product2) { create(:product, name: 'サーモン握り', display_order: 2, user: user) }
@@ -110,13 +118,5 @@ RSpec.describe '製品管理', type: :system do
       expect(page).to have_content('サーモン握り')
       expect(page).to have_content('えび握り')
     end
-end
-end
-end
-end
-end
-end
-end
-end
-end
+  end
 end
