@@ -19,6 +19,7 @@ Rails.application.routes.draw do
 
   get :terms, to: "static_pages#terms"
   get :privacy, to: "static_pages#privacy"
+  get :help, to: "help#index"
   resources :contacts, only: [ :new, :create ]
 
   # Devise設定（すべてskip、company scopeで個別定義）
@@ -117,7 +118,7 @@ Rails.application.routes.draw do
           member do
             patch :update_status
             get :print
-            get :export_csv 
+            get :export_csv
           end
           resources :plan_products, only: [ :index, :create, :update, :destroy, :edit ]
           resources :plan_schedules, only: [ :index, :create, :update, :destroy ]

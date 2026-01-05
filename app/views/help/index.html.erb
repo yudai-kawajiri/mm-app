@@ -239,4 +239,16 @@
       </div>
     </div>
   </div>
+
+  <div class="mt-5 mb-4 text-center">
+    <% if user_signed_in? %>
+      <%= link_to company_dashboards_path(company_slug: current_company.slug), class: 'btn btn-outline-secondary btn-lg' do %>
+        <i class="bi bi-arrow-left"></i> <%= t('landing.back_to_top') %>
+      <% end %>
+    <% else %>
+      <%= link_to root_path, class: 'btn btn-outline-secondary btn-lg' do %>
+        <i class="bi bi-arrow-left"></i> <%= t('landing.back_to_top') %>
+      <% end %>
+    <% end %>
+  </div>
 </div>

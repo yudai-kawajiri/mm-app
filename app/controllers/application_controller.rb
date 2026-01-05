@@ -16,7 +16,8 @@ class ApplicationController < ActionController::Base
     controller_name == "landing" ||
     controller_name == "application_requests" ||
     controller_name == "static_pages" ||
-    controller_name == "contacts"
+    controller_name == "contacts" ||
+    controller_name == "help"
   end
 
     def set_current_company
