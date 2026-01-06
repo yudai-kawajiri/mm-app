@@ -82,4 +82,4 @@ ja:
       request_type: リクエスト種別
   tabs:
     category_tabs:
-      confirm_delete: "カテゴリー %{category_id} のタブを削除しますか？"
+      confirm_delete: "このカテゴリータブを削除しますか？"

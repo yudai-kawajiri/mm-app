@@ -140,6 +140,11 @@ Rails.application.routes.draw do
         end
 
         resources :plan_schedules, only: [ :create, :update ] do
+
+          collection do
+            patch :update, action: :bulk_update
+          end
+
           member do
             patch :actual_revenue
           end

@@ -98,7 +98,9 @@ end
   { name: '個', reading: 'こ', category: :production },
   { name: 'cs', reading: 'けえす', category: :ordering },
   { name: '袋', reading: 'ふくろ', category: :ordering },
-  { name: '本', reading: 'ほん', category: :production }
+  { name: '本', reading: 'ほん', category: :production },
+  { name: '枚', reading: 'まい', category: :manufacturing },
+  { name: '個', reading: 'こ', category: :manufacturing }
 ].each do |data|
   Resources::Unit.find_or_create_by!(
     store: main_store,
@@ -127,37 +129,37 @@ Resources::MaterialOrderGroup.find_or_create_by!(
 [
   {
     name: 'いくら', reading: 'いくら', description: '寿司ネタのいくら',
-    category: '生ねた', unit_for_product: 'g', unit_for_order: 'cs', production_unit: 'g',
+    category: '生ねた', unit_for_product: '個', unit_for_order: 'cs', production_unit: 'g',
     order_group: nil, measurement_type: 'weight', unit_weight_for_order: 200.0,
     default_unit_weight: 10.0
   },
   {
     name: 'しゃり玉', reading: 'しゃりだま', description: 'にぎり用のしゃり',
-    category: 'その他原材料', unit_for_product: '個', unit_for_order: 'kg', production_unit: '個',
+    category: 'その他原材料', unit_for_product: '個', unit_for_order: 'kg', production_unit: 'g',
     order_group: 'しゃり', measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 20.0
   },
   {
     name: 'ばらしゃり', reading: 'ばらしゃり', description: '巻物用のしゃり',
-    category: 'その他原材料', unit_for_product: 'g', unit_for_order: 'kg', production_unit: 'g',
+    category: 'その他原材料', unit_for_product: '個', unit_for_order: 'kg', production_unit: 'g',
     order_group: 'しゃり', measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 150.0
   },
   {
     name: 'まぐろ中とろ', reading: 'まぐろちゅうとろ', description: 'まぐろの中とろ部位',
-    category: '生ねた', unit_for_product: '枚', unit_for_order: 'kg', production_unit: '枚',
+    category: '生ねた', unit_for_product: '枚', unit_for_order: 'kg', production_unit: 'g',
     order_group: '生まぐろ', measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 10.0
   },
   {
     name: 'まぐろ赤身', reading: 'まぐろあかみ', description: 'まぐろの赤身部位',
-    category: '生ねた', unit_for_product: '枚', unit_for_order: 'kg', production_unit: '枚',
+    category: '生ねた', unit_for_product: '枚', unit_for_order: 'kg', production_unit: 'g',
     order_group: '生まぐろ', measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 10.0
   },
   {
     name: 'サーモン', reading: 'さあもん', description: 'サーモンの切り身',
-    category: '生ねた', unit_for_product: '枚', unit_for_order: 'kg', production_unit: '枚',
+    category: '生ねた', unit_for_product: '枚', unit_for_order: 'kg', production_unit: 'g',
     order_group: nil, measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 10.0
   },
@@ -169,19 +171,19 @@ Resources::MaterialOrderGroup.find_or_create_by!(
   },
   {
     name: '単品トレイ', reading: 'たんぴんとれい', description: '単品用のトレイ',
-    category: '消耗品', unit_for_product: '個', unit_for_order: 'cs', production_unit: '個',
+    category: '消耗品', unit_for_product: '枚', unit_for_order: 'cs', production_unit: '枚',
     order_group: nil, measurement_type: 'count', pieces_per_order_unit: 100,
     default_unit_weight: 1.0
   },
   {
     name: '巻物トレイ', reading: 'まきものとれい', description: '巻物用のトレイ',
-    category: '消耗品', unit_for_product: '個', unit_for_order: 'cs', production_unit: '個',
+    category: '消耗品', unit_for_product: '枚', unit_for_order: 'cs', production_unit: '枚',
     order_group: nil, measurement_type: 'count', pieces_per_order_unit: 100,
     default_unit_weight: 1.0
   },
   {
     name: '盛合せトレイ', reading: 'もりあわせとれい', description: '盛合せ用のトレイ',
-    category: '消耗品', unit_for_product: '個', unit_for_order: 'cs', production_unit: '個',
+    category: '消耗品', unit_for_product: '枚', unit_for_order: 'cs', production_unit: '枚',
     order_group: nil, measurement_type: 'count', pieces_per_order_unit: 100,
     default_unit_weight: 1.0
   },
@@ -193,13 +195,22 @@ Resources::MaterialOrderGroup.find_or_create_by!(
   },
   {
     name: '鉄火芯', reading: 'てっかしん', description: '鉄火巻き用のまぐろ',
-    category: '生ねた', unit_for_product: 'g', unit_for_order: 'kg', production_unit: 'g',
+    category: '生ねた', unit_for_product: '個', unit_for_order: 'kg', production_unit: 'g',
     order_group: '生まぐろ', measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 15.0
   }
 ].each do |data|
   category = Resources::Category.find_by(company: uoya_company, store: main_store, name: data[:category])
-  unit_for_product = Resources::Unit.find_by(company: uoya_company, store: main_store, name: data[:unit_for_product])
+  unit_for_product = Resources::Unit.find_by(
+    company: uoya_company,
+    store: main_store,
+    name: data[:unit_for_product],
+    category: :manufacturing
+  ) || Resources::Unit.find_by(
+    company: uoya_company,
+    store: main_store,
+    name: data[:unit_for_product]
+  )
   unit_for_order = Resources::Unit.find_by(company: uoya_company, store: main_store, name: data[:unit_for_order])
   production_unit = Resources::Unit.find_by(company: uoya_company, store: main_store, name: data[:production_unit])
   order_group = data[:order_group].present? ? Resources::MaterialOrderGroup.find_by(company: uoya_company, store: main_store, name: data[:order_group]) : nil
@@ -290,11 +301,11 @@ end
 
 # 商品と原材料の紐付け
 [
-  { product: maguro_sushi, materials: { 'まぐろ中とろ' => { quantity: 4, unit: '枚', unit_weight: 10.0 }, 'まぐろ赤身' => { quantity: 4, unit: '枚', unit_weight: 10.0 }, 'しゃり玉' => { quantity: 8, unit: '個', unit_weight: 20.0 }, '単品トレイ' => { quantity: 1, unit: '個', unit_weight: 1.0 } } },
-  { product: tekkamaki, materials: { 'ばらしゃり' => { quantity: 150, unit: 'g', unit_weight: 150.0 }, '全角のり' => { quantity: 1, unit: '枚', unit_weight: 1.0 }, '巻物トレイ' => { quantity: 1, unit: '個', unit_weight: 1.0 }, '鉄火芯' => { quantity: 15, unit: 'g', unit_weight: 15.0 } } },
-  { product: salmon_ikura, materials: { 'しゃり玉' => { quantity: 8, unit: '個', unit_weight: 20.0 }, 'サーモン' => { quantity: 4, unit: '枚', unit_weight: 10.0 }, 'いくら' => { quantity: 40, unit: 'g', unit_weight: 10.0 }, '軍艦のり' => { quantity: 4, unit: '枚', unit_weight: 1.0 }, '盛合せトレイ' => { quantity: 1, unit: '個', unit_weight: 1.0 } } },
-  { product: new_salmon_ikura, materials: { 'しゃり玉' => { quantity: 10, unit: '個', unit_weight: 20.0 }, 'サーモン' => { quantity: 5, unit: '枚', unit_weight: 10.0 }, 'いくら' => { quantity: 50, unit: 'g', unit_weight: 10.0 }, '軍艦のり' => { quantity: 5, unit: '枚', unit_weight: 1.0 }, '盛合せトレイ' => { quantity: 1, unit: '個', unit_weight: 1.0 } } },
-  { product: old_tekkamaki, materials: { 'ばらしゃり' => { quantity: 150, unit: 'g', unit_weight: 150.0 }, '全角のり' => { quantity: 1, unit: '枚', unit_weight: 1.0 }, '巻物トレイ' => { quantity: 1, unit: '個', unit_weight: 1.0 }, '鉄火芯' => { quantity: 10, unit: 'g', unit_weight: 10.0 } } }
+  { product: maguro_sushi, materials: { 'まぐろ中とろ' => { quantity: 4, unit: '枚', unit_weight: 10.0 }, 'まぐろ赤身' => { quantity: 4, unit: '枚', unit_weight: 10.0 }, 'しゃり玉' => { quantity: 8, unit: '個', unit_weight: 20.0 }, '単品トレイ' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } },
+  { product: tekkamaki, materials: { 'ばらしゃり' => { quantity: 1, unit: '個', unit_weight: 150.0 }, '全角のり' => { quantity: 1, unit: '枚', unit_weight: 1.0 }, '巻物トレイ' => { quantity: 1, unit: '枚', unit_weight: 1.0 }, '鉄火芯' => { quantity: 15, unit: 'g', unit_weight: 15.0 } } },
+  { product: salmon_ikura, materials: { 'しゃり玉' => { quantity: 8, unit: '個', unit_weight: 20.0 }, 'サーモン' => { quantity: 4, unit: '枚', unit_weight: 10.0 }, 'いくら' => { quantity: 4, unit: '個', unit_weight: 10.0 }, '軍艦のり' => { quantity: 4, unit: '枚', unit_weight: 1.0 }, '盛合せトレイ' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } },
+  { product: new_salmon_ikura, materials: { 'しゃり玉' => { quantity: 10, unit: '個', unit_weight: 20.0 }, 'サーモン' => { quantity: 5, unit: '枚', unit_weight: 10.0 }, 'いくら' => { quantity: 4, unit: '個', unit_weight: 10.0 }, '軍艦のり' => { quantity: 5, unit: '枚', unit_weight: 1.0 }, '盛合せトレイ' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } },
+  { product: old_tekkamaki, materials: { 'ばらしゃり' => { quantity: 1, unit: 'g', unit_weight: 150.0 }, '全角のり' => { quantity: 1, unit: '枚', unit_weight: 1.0 }, '巻物トレイ' => { quantity: 1, unit: '枚', unit_weight: 1.0 }, '鉄火芯' => { quantity: 10, unit: 'g', unit_weight: 10.0 } } }
 ].each do |data|
   product = data[:product]
   data[:materials].each do |material_name, attrs|
@@ -428,9 +439,11 @@ if defined?(Management::MonthlyBudget)
       products = target_plan.plan_products.includes(:product).map do |pp|
         {
           'product_id' => pp.product_id,
+          'name' => pp.product.name,
           'product_name' => pp.product.name,
           'production_count' => pp.production_count,
-          'price' => pp.product.price
+          'price' => pp.product.price,
+          'subtotal' => pp.product.price
         }
       end
 
@@ -533,7 +546,11 @@ end
   { name: 'パック', reading: 'ぱっく', category: :ordering },
   { name: '本', reading: 'ほん', category: :production },
   { name: '袋', reading: 'ふくろ', category: :ordering },
-  { name: 'ml', reading: 'みりりっとる', category: :production }
+  { name: 'ml', reading: 'みりりっとる', category: :production },
+  { name: '枚', reading: 'まい', category: :manufacturing },
+  { name: '個', reading: 'こ', category: :manufacturing },
+  { name: '切', reading: 'きれ', category: :manufacturing },
+  { name: '杯', reading: 'はい', category: :manufacturing }
 ].each do |data|
   Resources::Unit.find_or_create_by!(
     store: main_store_sozai,
@@ -560,79 +577,79 @@ Resources::MaterialOrderGroup.find_or_create_by!(
 [
   {
     name: 'じゃがいも', reading: 'じゃがいも', description: '北海道産じゃがいも',
-    category: '野菜', unit_for_product: 'g', unit_for_order: 'kg', production_unit: 'kg',
+    category: '野菜', unit_for_product: '切', unit_for_order: 'kg', production_unit: 'g',
     order_group: '青果', measurement_type: 'weight', unit_weight_for_order: 10.0,
-    default_unit_weight: 0.1
+    default_unit_weight: 8.0
   },
   {
     name: '玉ねぎ', reading: 'たまねぎ', description: '国産玉ねぎ',
-    category: '野菜', unit_for_product: 'g', unit_for_order: 'kg', production_unit: 'kg',
+    category: '野菜', unit_for_product: '個', unit_for_order: 'kg', production_unit: 'g',
     order_group: '青果', measurement_type: 'weight', unit_weight_for_order: 10.0,
-    default_unit_weight: 0.15
+    default_unit_weight: 1.0
   },
   {
     name: 'にんじん', reading: 'にんじん', description: '国産にんじん',
-    category: '野菜', unit_for_product: 'g', unit_for_order: 'kg', production_unit: 'kg',
+    category: '野菜', unit_for_product: '切', unit_for_order: 'kg', production_unit: 'g',
     order_group: '青果', measurement_type: 'weight', unit_weight_for_order: 10.0,
-    default_unit_weight: 0.1
+    default_unit_weight: 7.5
   },
   {
     name: 'ひき肉', reading: 'ひきにく', description: '国産合挽き肉',
-    category: '肉', unit_for_product: 'g', unit_for_order: 'kg', production_unit: 'kg',
+    category: '肉', unit_for_product: '個', unit_for_order: 'kg', production_unit: 'g',
     order_group: '精肉', measurement_type: 'weight', unit_weight_for_order: 1.0,
     default_unit_weight: 1.0
   },
   {
     name: '豚バラ肉', reading: 'ぶたばらにく', description: '国産豚バラスライス',
-    category: '肉', unit_for_product: 'g', unit_for_order: 'kg', production_unit: 'kg',
+    category: '肉', unit_for_product: '枚', unit_for_order: 'kg', production_unit: 'g',
     order_group: '精肉', measurement_type: 'weight', unit_weight_for_order: 1.0,
-    default_unit_weight: 1.0
+    default_unit_weight: 10.0
   },
   {
     name: '鶏もも肉', reading: 'とりももにく', description: '国産鶏もも肉',
-    category: '肉', unit_for_product: 'g', unit_for_order: 'kg', production_unit: 'kg',
+    category: '肉', unit_for_product: '切', unit_for_order: 'kg', production_unit: 'g',
     order_group: '精肉', measurement_type: 'weight', unit_weight_for_order: 1.0,
-    default_unit_weight: 1.0
+    default_unit_weight: 12.0
   },
   {
     name: 'パン粉', reading: 'ぱんこ', description: '生パン粉',
-    category: '調味料', unit_for_product: 'g', unit_for_order: 'kg', production_unit: 'kg',
+    category: '調味料', unit_for_product: '杯', unit_for_order: 'kg', production_unit: 'g',
     order_group: nil, measurement_type: 'weight', unit_weight_for_order: 1.0,
     default_unit_weight: 1.0
   },
   {
     name: '小麦粉', reading: 'こむぎこ', description: '薄力粉',
-    category: '調味料', unit_for_product: 'g', unit_for_order: 'kg', production_unit: 'kg',
+    category: '調味料', unit_for_product: '杯', unit_for_order: 'kg', production_unit: 'g',
     order_group: nil, measurement_type: 'weight', unit_weight_for_order: 1.0,
     default_unit_weight: 1.0
   },
   {
     name: '揚げ油', reading: 'あげあぶら', description: '業務用揚げ油',
-    category: '調味料', unit_for_product: 'ml', unit_for_order: 'ml', production_unit: 'ml',
+    category: '調味料', unit_for_product: '杯', unit_for_order: 'ml', production_unit: 'ml',
     order_group: nil, measurement_type: 'weight', unit_weight_for_order: 18000.0,
-    default_unit_weight: 18000.0
+    default_unit_weight: 1.0
   },
   {
     name: 'しょうゆ', reading: 'しょうゆ', description: '濃口醤油',
-    category: '調味料', unit_for_product: 'ml', unit_for_order: 'ml', production_unit: 'ml',
+    category: '調味料', unit_for_product: '杯', unit_for_order: 'ml', production_unit: 'ml',
     order_group: nil, measurement_type: 'weight', unit_weight_for_order: 1800.0,
-    default_unit_weight: 1800.0
+    default_unit_weight: 1.0
   },
   {
     name: '砂糖', reading: 'さとう', description: '上白糖',
-    category: '調味料', unit_for_product: 'g', unit_for_order: 'kg', production_unit: 'kg',
+    category: '調味料', unit_for_product: '杯', unit_for_order: 'kg', production_unit: 'g',
     order_group: nil, measurement_type: 'weight', unit_weight_for_order: 1.0,
     default_unit_weight: 1.0
   },
   {
     name: 'パック容器小', reading: 'ぱっくようきしょう', description: '小サイズパック',
-    category: '消耗品総菜', unit_for_product: '個', unit_for_order: 'パック', production_unit: 'パック',
+    category: '消耗品総菜', unit_for_product: '枚', unit_for_order: 'パック', production_unit: 'パック',
     order_group: nil, measurement_type: 'count', pieces_per_order_unit: 50,
     default_unit_weight: 1.0
   },
   {
     name: 'パック容器大', reading: 'ぱっくようきだい', description: '大サイズパック',
-    category: '消耗品総菜', unit_for_product: '個', unit_for_order: 'パック', production_unit: 'パック',
+    category: '消耗品総菜', unit_for_product: '枚', unit_for_order: 'パック', production_unit: 'パック',
     order_group: nil, measurement_type: 'count', pieces_per_order_unit: 50,
     default_unit_weight: 1.0
   }
@@ -704,9 +721,9 @@ end
 
 # 商品と原材料の紐付け（総菜）
 [
-  { product: korokke_sozai, materials: { 'ひき肉' => { quantity: 50, unit: 'g', unit_weight: 50.0 }, 'じゃがいも' => { quantity: 80, unit: 'g', unit_weight: 80.0 }, 'パン粉' => { quantity: 10, unit: 'g', unit_weight: 10.0 }, 'パック容器小' => { quantity: 1, unit: '個', unit_weight: 1.0 } } },
-  { product: karaage_sozai, materials: { '鶏もも肉' => { quantity: 100, unit: 'g', unit_weight: 100.0 }, '小麦粉' => { quantity: 10, unit: 'g', unit_weight: 10.0 }, '揚げ油' => { quantity: 50, unit: 'ml', unit_weight: 50.0 }, 'パック容器小' => { quantity: 1, unit: '個', unit_weight: 1.0 } } },
-  { product: nikujaga_sozai, materials: { '豚バラ肉' => { quantity: 80, unit: 'g', unit_weight: 80.0 }, 'じゃがいも' => { quantity: 100, unit: 'g', unit_weight: 100.0 }, '玉ねぎ' => { quantity: 50, unit: 'g', unit_weight: 50.0 }, 'にんじん' => { quantity: 30, unit: 'g', unit_weight: 30.0 }, 'しょうゆ' => { quantity: 15, unit: 'ml', unit_weight: 15.0 }, '砂糖' => { quantity: 10, unit: 'g', unit_weight: 10.0 }, 'パック容器大' => { quantity: 1, unit: '個', unit_weight: 1.0 } } }
+  { product: korokke_sozai, materials: { 'ひき肉' => { quantity: 1, unit: '個', unit_weight: 50.0 }, 'じゃがいも' => { quantity: 10, unit: '切', unit_weight: 80.0 }, 'パン粉' => { quantity: 1, unit: '杯', unit_weight: 10.0 }, 'パック容器小' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } },
+  { product: karaage_sozai, materials: { '鶏もも肉' => { quantity: 8, unit: '切', unit_weight: 100.0 }, '小麦粉' => { quantity: 1, unit: '杯', unit_weight: 10.0 }, '揚げ油' => { quantity: 1, unit: '杯', unit_weight: 50.0 }, 'パック容器小' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } },
+  { product: nikujaga_sozai, materials: { '豚バラ肉' => { quantity: 10, unit: '枚', unit_weight: 80.0 }, 'じゃがいも' => { quantity: 12, unit: '切', unit_weight: 100.0 }, '玉ねぎ' => { quantity: 1, unit: '個', unit_weight: 50.0 }, 'にんじん' => { quantity: 4, unit: '切', unit_weight: 30.0 }, 'しょうゆ' => { quantity: 1, unit: '杯', unit_weight: 15.0 }, '砂糖' => { quantity: 1, unit: '杯', unit_weight: 10.0 }, 'パック容器大' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } }
 ].each do |data|
   product = data[:product]
   data[:materials].each do |material_name, attrs|
@@ -796,9 +813,11 @@ if defined?(Management::MonthlyBudget)
       products = target_plan.plan_products.includes(:product).map do |pp|
         {
           'product_id' => pp.product_id,
+          'name' => pp.product.name,
           'product_name' => pp.product.name,
           'production_count' => pp.production_count,
-          'price' => pp.product.price
+          'price' => pp.product.price,
+          'subtotal' => pp.product.price * pp.production_count
         }
       end
 
@@ -835,9 +854,11 @@ if defined?(Management::MonthlyBudget)
       products = target_plan.plan_products.includes(:product).map do |pp|
         {
           'product_id' => pp.product_id,
+          'name' => pp.product.name,
           'product_name' => pp.product.name,
           'production_count' => pp.production_count,
-          'price' => pp.product.price
+          'price' => pp.product.price,
+          'subtotal' => pp.product.price * pp.production_count
         }
       end
 

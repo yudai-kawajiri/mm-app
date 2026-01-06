@@ -14,10 +14,17 @@ class Management::NumericalManagementsController < Management::BaseController
   before_action :require_store_user
 
   def index
-    year = params[:year].to_i
-    month = params[:month].to_i
-    year = Date.current.year if year.zero? || year < VALID_YEAR_MIN || year > VALID_YEAR_MAX
-    month = Date.current.month if month.zero? || month < VALID_MONTH_MIN || month > VALID_MONTH_MAX
+    year_param = params[:year].to_i
+    month_param = params[:month].to_i
+
+    if year_param.between?(VALID_YEAR_MIN, VALID_YEAR_MAX) &&
+      month_param.between?(VALID_MONTH_MIN, VALID_MONTH_MAX)
+      year = year_param
+      month = month_param
+    else
+      year = Date.current.year
+      month = Date.current.month
+    end
     @selected_date = Date.new(year, month, 1)
 
     @monthly_budget = scoped_monthly_budgets.find_or_initialize_by(

@@ -125,7 +125,7 @@ class Planning::PlanSchedule < ApplicationRecord
     end
 
     products_data = hash.map do |product_id, production_count|
-      { product_id: product_id.to_i, production_count: production_count.to_i }
+      { product_id: product_id, production_count: production_count.to_i }
     end
 
     update_products_snapshot(products_data)
@@ -135,7 +135,10 @@ class Planning::PlanSchedule < ApplicationRecord
     return [] unless has_snapshot?
 
     plan_products_snapshot["products"].map do |product_data|
-      product = Resources::Product.find(product_data["product_id"])
+      product = Resources::Product.find_by(id: product_data["product_id"])
+
+      next if product.nil?
+
       production_count = product_data["production_count"]
       price = product_data["price"]
       subtotal = product_data["subtotal"] || (production_count * price)
@@ -146,7 +149,7 @@ class Planning::PlanSchedule < ApplicationRecord
         price: price,
         subtotal: subtotal
       }
-    end
+    end.compact
   end
 
   def snapshot_products_for_json
@@ -166,7 +169,10 @@ class Planning::PlanSchedule < ApplicationRecord
     total_cost = 0
 
     products_data.each do |data|
-      product = Resources::Product.find(data[:product_id])
+      product = Resources::Product.find_by(id: data[:product_id])
+
+      next if product.nil?
+
       production_count = data[:production_count].to_i
       price = product.price
       subtotal = price * production_count
@@ -189,6 +195,7 @@ class Planning::PlanSchedule < ApplicationRecord
       "created_at" => Time.current.iso8601
     }
   end
+
   # company_id と store_id を plan から自動設定
   def set_company_and_store_id
     self.company_id ||= plan&.company_id
