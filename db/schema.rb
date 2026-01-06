@@ -10,25 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_06_011343) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pgcrypto"
 
-  create_table "active_storage_attachments", force: :cascade do |t|
-    t.bigint "blob_id", null: false
-    t.bigint "company_id"
+  create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "blob_id", null: false
+    t.uuid "company_id"
     t.datetime "created_at", null: false
     t.string "name", null: false
-    t.bigint "record_id", null: false
+    t.uuid "record_id", null: false
     t.string "record_type", null: false
-    t.bigint "store_id"
+    t.uuid "store_id"
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["company_id"], name: "index_active_storage_attachments_on_company_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
     t.index ["store_id"], name: "index_active_storage_attachments_on_store_id"
   end
 
-  create_table "active_storage_blobs", force: :cascade do |t|
+  create_table "active_storage_blobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "byte_size", null: false
     t.string "checksum"
     t.string "content_type"
@@ -40,24 +41,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "active_storage_variant_records", force: :cascade do |t|
-    t.bigint "blob_id", null: false
+  create_table "active_storage_variant_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "admin_requests", force: :cascade do |t|
+  create_table "admin_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "approved_at", comment: "承認日時"
-    t.bigint "approved_by_id", comment: "承認者のUser ID"
-    t.bigint "company_id", null: false
+    t.uuid "approved_by_id", comment: "承認者のUser ID"
+    t.uuid "company_id", null: false
     t.datetime "created_at", null: false
     t.text "message", comment: "リクエストメッセージ"
     t.text "rejection_reason", comment: "却下理由"
     t.integer "request_type", default: 0, null: false, comment: "0: store_admin_request"
     t.integer "status", default: 0, null: false, comment: "0: pending, 1: approved, 2: rejected"
-    t.bigint "store_id", comment: "対象店舗（店舗管理者リクエストの場合）"
+    t.uuid "store_id", comment: "対象店舗（店舗管理者リクエストの場合）"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false, comment: "リクエスト送信者"
+    t.uuid "user_id", null: false, comment: "リクエスト送信者"
     t.index ["approved_by_id"], name: "index_admin_requests_on_approved_by_id"
     t.index ["company_id", "status"], name: "index_admin_requests_on_company_id_and_status"
     t.index ["company_id"], name: "index_admin_requests_on_company_id"
@@ -66,7 +67,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["user_id"], name: "index_admin_requests_on_user_id"
   end
 
-  create_table "application_requests", force: :cascade do |t|
+  create_table "application_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "admin_email"
     t.string "admin_name"
     t.string "company_email"
@@ -79,19 +80,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.integer "status"
     t.string "temporary_password"
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.uuid "user_id"
   end
 
-  create_table "categories", force: :cascade do |t|
+  create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "category_type"
-    t.bigint "company_id"
+    t.uuid "company_id"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
     t.string "reading"
-    t.bigint "store_id"
+    t.uuid "store_id"
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.index ["company_id"], name: "index_categories_on_company_id"
     t.index ["name", "category_type", "store_id"], name: "index_categories_on_name_type_store", unique: true
     t.index ["reading", "category_type", "store_id"], name: "index_categories_on_reading_type_store", unique: true
@@ -99,7 +100,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
-  create_table "companies", force: :cascade do |t|
+  create_table "companies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
     t.string "invitation_token"
@@ -112,16 +113,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["slug"], name: "index_companies_on_slug", unique: true
   end
 
-  create_table "daily_targets", force: :cascade do |t|
-    t.bigint "company_id"
+  create_table "daily_targets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "company_id"
     t.datetime "created_at", null: false
     t.text "description"
-    t.bigint "monthly_budget_id", null: false
-    t.bigint "store_id"
+    t.uuid "monthly_budget_id", null: false
+    t.uuid "store_id"
     t.bigint "target_amount", null: false, comment: "目標金額"
     t.date "target_date", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.index ["company_id"], name: "index_daily_targets_on_company_id"
     t.index ["monthly_budget_id", "target_date"], name: "index_daily_targets_on_budget_and_date", unique: true
     t.index ["monthly_budget_id"], name: "index_daily_targets_on_monthly_budget_id"
@@ -130,15 +131,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["user_id"], name: "index_daily_targets_on_user_id"
   end
 
-  create_table "material_order_groups", force: :cascade do |t|
-    t.bigint "company_id"
+  create_table "material_order_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "company_id"
     t.datetime "created_at", null: false
     t.integer "materials_count", default: 0, null: false
     t.string "name", null: false
     t.string "reading"
-    t.bigint "store_id"
+    t.uuid "store_id"
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.index ["company_id"], name: "index_material_order_groups_on_company_id"
     t.index ["name", "store_id"], name: "index_material_order_groups_on_name_store", unique: true
     t.index ["reading", "store_id"], name: "index_material_order_groups_on_reading_store", unique: true
@@ -146,26 +147,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["user_id"], name: "index_material_order_groups_on_user_id"
   end
 
-  create_table "materials", force: :cascade do |t|
-    t.bigint "category_id", null: false
-    t.bigint "company_id"
+  create_table "materials", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "category_id", null: false
+    t.uuid "company_id"
     t.datetime "created_at", null: false
     t.decimal "default_unit_weight", precision: 10, scale: 3, comment: "デフォルトの1単位あたり重量（g）"
     t.text "description"
     t.integer "display_order"
     t.string "measurement_type", default: "weight", null: false
     t.string "name", null: false
-    t.bigint "order_group_id"
+    t.uuid "order_group_id"
     t.string "order_group_name"
     t.integer "pieces_per_order_unit", comment: "1発注単位あたりの個数（トレイなど）"
-    t.bigint "production_unit_id"
+    t.uuid "production_unit_id"
     t.string "reading"
-    t.bigint "store_id"
-    t.bigint "unit_for_order_id", null: false
-    t.bigint "unit_for_product_id", null: false
+    t.uuid "store_id"
+    t.uuid "unit_for_order_id", null: false
+    t.uuid "unit_for_product_id", null: false
     t.decimal "unit_weight_for_order", precision: 10, scale: 3
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.index ["category_id"], name: "index_materials_on_category_id"
     t.index ["company_id"], name: "index_materials_on_company_id"
     t.index ["measurement_type"], name: "index_materials_on_measurement_type"
@@ -179,28 +180,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["user_id"], name: "index_materials_on_user_id"
   end
 
-  create_table "monthly_budgets", force: :cascade do |t|
+  create_table "monthly_budgets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.date "budget_month", null: false, comment: "予算対象月（月初日を保存）"
-    t.bigint "company_id"
+    t.uuid "company_id"
     t.datetime "created_at", null: false
     t.text "description", comment: "説明"
     t.decimal "forecast_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "予測見切り率（%）"
-    t.bigint "store_id"
+    t.uuid "store_id"
     t.bigint "target_amount", null: false, comment: "目標金額"
     t.decimal "target_discount_rate", precision: 5, scale: 2, default: "0.0", null: false, comment: "目標見切り率（%）"
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.index ["budget_month", "store_id"], name: "index_monthly_budgets_on_budget_month_and_store_id", unique: true
     t.index ["company_id"], name: "index_monthly_budgets_on_company_id"
     t.index ["store_id"], name: "index_monthly_budgets_on_store_id"
     t.index ["user_id"], name: "index_monthly_budgets_on_user_id"
   end
 
-  create_table "plan_products", force: :cascade do |t|
-    t.bigint "company_id"
+  create_table "plan_products", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "company_id"
     t.datetime "created_at", null: false
-    t.bigint "plan_id", null: false
-    t.bigint "product_id", null: false
+    t.uuid "plan_id", null: false
+    t.uuid "product_id", null: false
     t.integer "production_count", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_plan_products_on_company_id"
@@ -209,18 +210,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["product_id"], name: "index_plan_products_on_product_id"
   end
 
-  create_table "plan_schedules", force: :cascade do |t|
+  create_table "plan_schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "actual_revenue", comment: "実績売上"
-    t.bigint "company_id"
+    t.uuid "company_id"
     t.datetime "created_at", null: false
     t.text "description", comment: "説明"
-    t.bigint "plan_id"
+    t.uuid "plan_id"
     t.jsonb "plan_products_snapshot", default: {}, null: false, comment: "計画商品のスナップショット（日別調整用）"
     t.date "scheduled_date", null: false, comment: "スケジュール実施日"
     t.integer "status", default: 0, null: false, comment: "ステータス"
-    t.bigint "store_id"
+    t.uuid "store_id"
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.index ["company_id"], name: "index_plan_schedules_on_company_id"
     t.index ["plan_id"], name: "index_plan_schedules_on_plan_id"
     t.index ["plan_products_snapshot"], name: "index_plan_schedules_on_plan_products_snapshot", using: :gin
@@ -230,17 +231,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["user_id"], name: "index_plan_schedules_on_user_id"
   end
 
-  create_table "plans", force: :cascade do |t|
-    t.bigint "category_id", null: false
-    t.bigint "company_id"
+  create_table "plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "category_id", null: false
+    t.uuid "company_id"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
     t.string "reading"
     t.integer "status"
-    t.bigint "store_id"
+    t.uuid "store_id"
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.index ["category_id"], name: "index_plans_on_category_id"
     t.index ["company_id"], name: "index_plans_on_company_id"
     t.index ["name", "category_id", "store_id"], name: "index_plans_on_name_category_store", unique: true
@@ -249,13 +250,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["user_id"], name: "index_plans_on_user_id"
   end
 
-  create_table "product_materials", force: :cascade do |t|
-    t.bigint "company_id"
+  create_table "product_materials", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "company_id"
     t.datetime "created_at", null: false
-    t.bigint "material_id", null: false
-    t.bigint "product_id", null: false
+    t.uuid "material_id", null: false
+    t.uuid "product_id", null: false
     t.decimal "quantity", precision: 10, scale: 3, null: false
-    t.bigint "unit_id", null: false
+    t.uuid "unit_id", null: false
     t.decimal "unit_weight", precision: 10, scale: 3, null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_product_materials_on_company_id"
@@ -265,9 +266,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["unit_id"], name: "index_product_materials_on_unit_id"
   end
 
-  create_table "products", force: :cascade do |t|
-    t.bigint "category_id", null: false
-    t.bigint "company_id"
+  create_table "products", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "category_id", null: false
+    t.uuid "company_id"
     t.datetime "created_at", null: false
     t.text "description"
     t.integer "display_order"
@@ -276,9 +277,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.integer "price", null: false
     t.string "reading"
     t.integer "status"
-    t.bigint "store_id"
+    t.uuid "store_id"
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["company_id"], name: "index_products_on_company_id"
     t.index ["item_number", "category_id", "store_id"], name: "index_products_on_item_number_category_store", unique: true
@@ -288,10 +289,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["user_id"], name: "index_products_on_user_id"
   end
 
-  create_table "stores", force: :cascade do |t|
+  create_table "stores", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.string "code"
-    t.bigint "company_id", null: false
+    t.uuid "company_id", null: false
     t.datetime "created_at", null: false
     t.string "invitation_code"
     t.string "name", null: false
@@ -300,16 +301,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["company_id"], name: "index_stores_on_company_id"
   end
 
-  create_table "units", force: :cascade do |t|
+  create_table "units", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "category"
-    t.bigint "company_id"
+    t.uuid "company_id"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
     t.string "reading"
-    t.bigint "store_id"
+    t.uuid "store_id"
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.index ["company_id"], name: "index_units_on_company_id"
     t.index ["name", "category", "store_id"], name: "index_units_on_name_category_store", unique: true
     t.index ["reading", "category", "store_id"], name: "index_units_on_reading_category_store", unique: true
@@ -317,9 +318,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["user_id"], name: "index_units_on_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "approved", default: false, null: false
-    t.bigint "company_id"
+    t.uuid "company_id"
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -329,7 +330,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
     t.integer "role", default: 0, null: false
-    t.bigint "store_id"
+    t.uuid "store_id"
     t.datetime "updated_at", null: false
     t.index ["approved"], name: "index_users_on_approved"
     t.index ["company_id"], name: "index_users_on_company_id"
@@ -339,14 +340,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_052430) do
     t.index ["store_id"], name: "index_users_on_store_id"
   end
 
-  create_table "versions", force: :cascade do |t|
-    t.bigint "company_id"
+  create_table "versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "company_id"
     t.datetime "created_at"
     t.string "event", null: false
     t.bigint "item_id", null: false
     t.string "item_type", null: false
     t.text "object"
-    t.bigint "store_id"
+    t.uuid "store_id"
     t.string "whodunnit"
     t.index ["company_id"], name: "index_versions_on_company_id"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
