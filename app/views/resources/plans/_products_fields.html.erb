@@ -80,7 +80,7 @@
              aria-labelledby="nav-0-tab"
              data-category-id="0">
           <%= render 'shared/components/tabs/category_tab_content',
-              category_id: 0,
+              category_id: '0',
               items: @plan.plan_products.reject(&:marked_for_destruction?),
               form_builder: f,
               association_name: :plan_products,
@@ -192,7 +192,7 @@
         <%= f.fields_for :plan_products,
             @plan.plan_products.build,
             child_index: 'NEW_RECORD' do |product_f| %>
-          <%= render 'product_fields', f: product_f, category_id: 0 %>
+          <%= render 'product_fields', f: product_f, category_id: '0' %>
         <% end %>
       </template>
 

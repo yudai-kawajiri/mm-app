@@ -86,7 +86,6 @@
         <% end %>
 
         <td>
-          <% Rails.logger.debug "DEBUG _resource_list: show_copy=#{show_copy}, copy_url_method=#{copy_url_method.inspect}" %>
           <%= render 'shared/actions/resource_action_links',
               resource: resource,
               resource_name: resource.class.model_name.human,

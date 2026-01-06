@@ -68,17 +68,11 @@
       <div class="tab-content pt-3" data-tabs--category-tabs-target="contentContainer">
         <div class="tab-pane fade show active"
               id="nav-0"
-<%# DEBUG: 全てタブの items を確認 %>
-<% Rails.logger.debug "====== ALL TAB ITEMS =======" %>
-<% @product.product_materials.reject(&:marked_for_destruction?).each_with_index do |pm, i| %>
-  <% Rails.logger.debug "Item #{i+1}: material=#{pm.material&.name}, category_id=#{pm.material&.category_id}" %>
-<% end %>
-<% Rails.logger.debug "============================" %>
               role="tabpanel"
               aria-labelledby="nav-0-tab"
               data-category-id="0">
           <%= render 'shared/components/tabs/category_tab_content',
-            category_id: 0,
+            category_id: '0',
             items: @product.product_materials.select { |pm| pm.marked_for_destruction? == false },
             form_builder: f,
             association_name: :product_materials,
@@ -183,9 +177,9 @@
       <%# 「全て」タブ用のテンプレート（category_id: 0） %>
       <template id="material_fields_template_0" data-form--nested-form-target="template">
         <%= f.fields_for :product_materials,
-            @product.product_materials.build(material: Resources::Material.new(category_id: 0)),
+            @product.product_materials.build(material: Resources::Material.new(category_id: '0')),
             child_index: 'NEW_RECORD' do |material_f| %>
-          <%= render 'material_fields', f: material_f, category_id: 0 %>
+          <%= render 'material_fields', f: material_f, category_id: '0' %>
         <% end %>
       </template>
 

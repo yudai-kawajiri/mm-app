@@ -14,10 +14,7 @@ class Resources::CategoriesController < AuthenticatedController
   before_action :require_store_user
 
   def index
-    Rails.logger.info "[DEBUG INDEX] @categories count before scoped: (calling scoped_categories now)"
     @categories = scoped_categories
-    Rails.logger.info "[DEBUG INDEX] @categories count after scoped: #{@categories.count}"
-
     @categories = apply_sort(@categories, default: "name")
 
     if params[:category_type].present?
@@ -51,15 +48,6 @@ class Resources::CategoriesController < AuthenticatedController
   end
 
   def update
-    Rails.logger.debug "=== UPDATE DEBUG ==="
-    Rails.logger.debug "Before assign: store_id = #{@category.store_id.inspect}"
-    @category.assign_attributes(category_params)
-    Rails.logger.debug "After assign: store_id = #{@category.store_id.inspect}"
-
-    # 強制的に store_id を設定（念のため）
-    @category.store_id ||= current_user.store_id
-    Rails.logger.debug "After force: store_id = #{@category.store_id.inspect}"
-    Rails.logger.debug "===================="
     respond_to_save(@category, success_path: -> { scoped_path(:resources_category_path, @category) })
   end
 
@@ -80,9 +68,6 @@ class Resources::CategoriesController < AuthenticatedController
 
 
   def scoped_categories
-    Rails.logger.info "[DEBUG CONTROLLER SCOPED] current_user.role = #{current_user.role}"
-    Rails.logger.info "[DEBUG CONTROLLER SCOPED] session[:current_store_id] = #{session[:current_store_id].inspect}"
-
     case current_user.role
     when "store_admin", "general"
       Resources::Category.where(store_id: current_user.store_id)

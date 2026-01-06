@@ -55,22 +55,10 @@ class Management::NumericalManagementsController < Management::BaseController
   end
 
   def update_daily_target
-    Rails.logger.debug "===== DEBUG: update_daily_target ====="
-    Rails.logger.debug "params: #{params.inspect}"
-    Rails.logger.debug "management_daily_target: #{params[:management_daily_target].inspect}"
-    Rails.logger.debug "daily_target: #{params[:daily_target].inspect}"
-
     key = params.key?(:management_daily_target) ? :management_daily_target : :daily_target
-
-    Rails.logger.debug "key: #{key}"
-    Rails.logger.debug "params[key]: #{params[key].inspect}"
 
     date_param = params[key][:target_date] || params[key][:date]
     target_param = params[key][:target_amount] || params[key][:target]
-
-    Rails.logger.debug "date_param: #{date_param}"
-    Rails.logger.debug "target_param: #{target_param}"
-
     date = Date.parse(date_param)
 
     monthly_budget = scoped_monthly_budgets.find_or_initialize_by(

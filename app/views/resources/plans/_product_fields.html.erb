@@ -8,21 +8,13 @@
     row_unique_id = "row_NEW_RECORD"
   end
 %>
-<%# local_assigns[:category_id] を使用して is_all_tab を判定 %>
-<% is_all_tab = (local_assigns[:category_id].to_i == 0) %>
-<% Rails.logger.debug "====== PRODUCT_FIELDS DEBUG ======" %>
-<% Rails.logger.debug "local_assigns[:category_id]: #{local_assigns[:category_id].inspect}" %>
-<% Rails.logger.debug "is_all_tab: #{is_all_tab.inspect}" %>
-<% Rails.logger.debug "persisted?: #{f.object.persisted?}" %>
-<% Rails.logger.debug "product: #{f.object.product&.name}" %>
-<% Rails.logger.debug "=================================" %>
-
+<% is_all_tab = (local_assigns[:category_id].to_s == '0' || local_assigns[:category_id].blank?) %>
 <tr data-controller="resources--plan-product--row resources--plan-product--sync form--nested-form-item"
     data-plan-product-price-value="<%= f.object.product&.price.to_f || 0.0 %>"
-    data-plan-product-category-id-value="<%= is_all_tab ? (f.object.product&.category_id || 0) :
-    (local_assigns[:category_id] || 0) %>"
+    data-plan-product-category-id-value="<%= is_all_tab ? (f.object.product&.category_id || '0') :
+    (local_assigns[:category_id] || '0') %>"
     data-row-unique-id="<%= row_unique_id %>"
-    data-category-id="<%= local_assigns[:category_id] || f.object.product&.category_id || 0 %>"
+    data-category-id="<%= local_assigns[:category_id] || f.object.product&.category_id || '0' %>"
     <%= raw("data-original-category-id=\"#{f.object.product&.category_id}\"") if is_all_tab && f.object.product&.category_id.present? %>
     data-product-id="<%= f.object.product_id %>">
 
@@ -48,11 +40,11 @@
       <%# カテゴリータブ: 通常のselect %>
       <% current_category_id = f.object.product&.category_id || local_assigns[:category_id] %>
       <%
-        products = if current_category_id && current_category_id != 0
+        products = if current_category_id && current_category_id.to_s != '0'
           Resources::Product.where(category_id: current_category_id)
-                            .where("id = ? OR status = ?", f.object.product_id || 0, Resources::Product.statuses[:selling])
+                            .where("id = ? OR status = ?", f.object.product_id, Resources::Product.statuses[:selling])
         else
-          Resources::Product.where("id = ? OR status = ?", f.object.product_id || 0, Resources::Product.statuses[:selling])
+          Resources::Product.where("id = ? OR status = ?", f.object.product_id, Resources::Product.statuses[:selling])
         end
       %>
       <%= f.collection_select(:product_id, products, :id, :name,
