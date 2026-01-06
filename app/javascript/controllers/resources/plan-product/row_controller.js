@@ -123,7 +123,7 @@ export default class extends Controller {
 
   static values = {
     price: Number,
-    categoryId: Number
+    categoryId: String
   }
 
   // ============================================================
@@ -471,21 +471,21 @@ export default class extends Controller {
     const price = this.priceValue || DEFAULT_VALUE.ZERO
     const subtotal = quantity * price
 
-    let effectiveCategoryId = DEFAULT_VALUE.ZERO
+    let effectiveCategoryId = '0'
 
     if (this.element.dataset.originalCategoryId) {
-      effectiveCategoryId = parseInt(this.element.dataset.originalCategoryId, 10)
+      effectiveCategoryId = this.element.dataset.originalCategoryId
     } else if (this.categoryIdValue) {
-      effectiveCategoryId = this.categoryIdValue
+      effectiveCategoryId = String(this.categoryIdValue)
     } else if (this.element.dataset.planProductCategoryIdValue) {
-      effectiveCategoryId = parseInt(this.element.dataset.planProductCategoryIdValue, 10)
+      effectiveCategoryId = this.element.dataset.planProductCategoryIdValue
     }
 
     return {
       quantity: quantity,
       price: price,
       subtotal: subtotal,
-      categoryId: effectiveCategoryId || DEFAULT_VALUE.ZERO
+      categoryId: effectiveCategoryId || '0'
     }
   }
 
@@ -601,17 +601,13 @@ export default class extends Controller {
         this.element.appendChild(destroyInput)
         Logger.log('_destroy field created and set to 1')
       } else {
-        // 既存の _destroy フィールドに 1 を設定
         destroyInput.value = '1'
         Logger.log('_destroy field updated to 1')
       }
     }
   }
-  // _destroy フィールドの name 属性を生成
-  // 例: plan[plan_products_attributes][0][product_id] → plan[plan_products_attributes][0][_destroy]
   getDestroyFieldName() {
     if (this.hasProductSelectTarget && this.productSelectTarget.name) {
-      // [product_id] を [_destroy] に置換
       return this.productSelectTarget.name.replace(/\[product_id\]$/, '[_destroy]')
     }
 

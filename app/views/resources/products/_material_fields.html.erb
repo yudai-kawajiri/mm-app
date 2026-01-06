@@ -9,15 +9,7 @@
   end
 %>
 <%# local_assigns[:category_id] を使用して is_all_tab を判定 %>
-<% is_all_tab = (local_assigns[:category_id].to_i == 0) %>
-<% Rails.logger.debug "====== MATERIAL_FIELDS DEBUG ======" %>
-<% Rails.logger.debug "local_assigns[:category_id]: #{local_assigns[:category_id].inspect}" %>
-<% Rails.logger.debug "is_all_tab: #{is_all_tab.inspect}" %>
-<% Rails.logger.debug "persisted?: #{f.object.persisted?}" %>
-<% Rails.logger.debug "material: #{f.object.material&.name}" %>
-<% Rails.logger.debug "=================================" %>
-
-<%
+<% is_all_tab = (local_assigns[:category_id].to_s == '0' || local_assigns[:category_id].blank?) %><%
   # materials のフィルタリング
   if is_all_tab
     # 全てタブでは、既存の原材料を表示するためだけに使用

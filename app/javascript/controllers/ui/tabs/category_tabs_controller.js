@@ -82,7 +82,7 @@ export default class extends Controller {
     const categoryId = tabButton.getAttribute('data-category-id')
     Logger.log(`Tab clicked: ${categoryId}`)
 
-    const tabPane = this.contentContainerTarget.querySelector(`#category-pane-${categoryId}`)
+    const tabPane = this.contentContainerTarget.querySelector(`#nav-${categoryId}`)
     if (!tabPane) {
       Logger.warn(`Tab pane not found for category: ${categoryId}`)
       return
@@ -138,9 +138,9 @@ export default class extends Controller {
 
     if (this.hasTabTarget) {
       const activeTab = this.tabTargets.find(t => {
-        const tabId = parseInt(t.dataset.categoryId, 10) || 0
-        return tabId === selectedCategoryId
-      })
+      const tabId = t.dataset.categoryId || '0'
+      return tabId === String(selectedCategoryId)
+    })
 
       if (activeTab) {
         activeTab.classList.add('active')
@@ -150,9 +150,9 @@ export default class extends Controller {
 
     if (this.hasCategoryTarget) {
       const activeContent = this.categoryTargets.find(c => {
-        const contentId = parseInt(c.dataset.categoryId, 10) || 0
-        return contentId === selectedCategoryId
-      })
+      const contentId = c.dataset.categoryId || '0'
+      return contentId === String(selectedCategoryId)
+    })
 
       if (activeContent) {
         activeContent.classList.add('show', 'active')
@@ -253,11 +253,11 @@ export default class extends Controller {
     button.className = 'nav-link position-relative category-tab-with-close'
     button.id = `category-tab-${categoryId}`
     button.setAttribute('data-bs-toggle', 'tab')
-    button.setAttribute('data-bs-target', `#category-pane-${categoryId}`)
+    button.setAttribute('data-bs-target', `#nav-${categoryId}`)
     button.setAttribute('data-category-id', categoryId)
     button.setAttribute('type', 'button')
     button.setAttribute('role', 'tab')
-    button.setAttribute('aria-controls', `category-pane-${categoryId}`)
+    button.setAttribute('aria-controls', `nav-${categoryId}`)
     button.setAttribute('aria-selected', 'false')
 
     button.innerHTML = `
@@ -530,7 +530,7 @@ export default class extends Controller {
       return null
     }
 
-    const paneId = `category-pane-${categoryId}`
+    const paneId = `nav-${categoryId}`
     element.id = paneId
     element.setAttribute('data-category-id', categoryId)
     element.setAttribute('aria-labelledby', `category-tab-${categoryId}`)
@@ -582,7 +582,7 @@ export default class extends Controller {
     })
 
     const selectedTab = this.tabNavTarget.querySelector(`[data-category-id="${categoryId}"]`)
-    const selectedPane = this.contentContainerTarget.querySelector(`#category-pane-${categoryId}`)
+    const selectedPane = this.contentContainerTarget.querySelector(`#nav-${categoryId}`)
 
     if (selectedTab && selectedPane) {
       selectedTab.classList.add('active')
