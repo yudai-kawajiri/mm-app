@@ -1,10 +1,50 @@
 ja:
   errors:
     messages:
-      invalid_credentials: "メールアドレスまたはパスワードが正しくありません"
-      unauthorized: "この操作は許可されていません"
+      invalid_credentials: メールアドレスまたはパスワードが正しくありません
+      unauthorized: この操作は許可されていません
+
+  admin:
+    users:
+      show:
+        title: "ユーザー詳細"
+        generated_password:
+          title: "一時パスワード"
+          note: "このパスワードは一度しか表示されません。必ず控えてから閉じてください。"
+      messages:
+        created: "ユーザーを作成しました。"
+        invited: "%{name} を招待しました"
+        updated: "%{name} を更新しました"
+        user_deleted: "%{name} を削除しました"
+        cannot_delete_self: "自分自身を削除することはできません"
+        user_not_found: "ユーザーが見つかりませんでした"
+    admin_requests:
+      messages:
+        created: リクエストを作成しました
+        approved: 承認しました。招待メールを送信しました。
+        approve_failed: 承認に失敗しました
+        rejected: 却下しました
+        reject_failed: 却下に失敗しました
+      default_reject_reason: "却下されました"
+    stores:
+      messages:
+        created: 店舗を登録しました
+        updated: 店舗を更新しました
+        deleted: 店舗を削除しました
+        invitation_code_regenerated: 招待コードを再発行しました
+        has_users: ユーザーが所属している店舗は削除できません
+        switch_success: "%{store_name}に切り替えました"
+        switch_all_stores: 全店舗表示に切り替えました
+        switch_not_found: 店舗が見つかりませんでした
+    companies:
+      messages:
+        switch_success: "%{company_name} に切り替えました"
+        switch_not_found: 会社が見つかりませんでした
+        switch_all_companies: "システム管理モード（全会社）に切り替えました"
 
   flash_messages:
+    title: 一時パスワード
+    note: このパスワードは一度しか表示されません。必ず控えてから閉じてください。
     create:
       success: "%{resource}を登録しました"
       failure: "%{resource}の登録に失敗しました"
@@ -22,38 +62,38 @@ ja:
       failure: "%{resource}のコピーに失敗しました"
     not_authorized: このアクションを実行する権限がありません
     require_store_selected: このアクションを実行するには店舗を選択してください。
-
     contacts:
       create:
         success: お問い合わせを受け付けました。
         error: 送信に失敗しました。もう一度お試しください。
-
     application_requests:
       create:
         success: 登録申請を受け付けました。承認されるまでお待ちください。
         error: 登録に失敗しました。入力内容をご確認ください。
         duplicate_phone: この電話番号は既に登録されています。
         duplicate_email: このメールアドレスは既に登録されています。
-
     admin:
       users:
+        show:
+          title: "ユーザー詳細"
+          generated_password:
+            title: "一時パスワード"
+            note: "このパスワードは一度しか表示されません。必ず控えてから閉じてください。"
         messages:
-          created: ユーザーを作成しました。
+          created: "ユーザーを作成しました。"
           invited: "%{name} を招待しました"
           updated: "%{name} を更新しました"
           user_deleted: "%{name} を削除しました"
-          cannot_delete_self: 自分自身を削除することはできません
-          user_not_found: ユーザーが見つかりませんでした
-
+          cannot_delete_self: "自分自身を削除することはできません"
+          user_not_found: "ユーザーが見つかりませんでした"
       admin_requests:
         messages:
           created: リクエストを作成しました
           approved: 承認しました。招待メールを送信しました。
           approve_failed: 承認に失敗しました
-          rejected: 却下しました
+          rejected: 1却下しました
           reject_failed: 却下に失敗しました
         default_reject_reason: "却下されました"
-
       stores:
         messages:
           created: 店舗を登録しました
@@ -64,20 +104,17 @@ ja:
           switch_success: "%{store_name}に切り替えました"
           switch_all_stores: 全店舗表示に切り替えました
           switch_not_found: 店舗が見つかりませんでした
-
       companies:
         messages:
           switch_success: "%{company_name} に切り替えました"
           switch_not_found: 会社が見つかりませんでした
           switch_all_companies: "システム管理モード（全会社）に切り替えました"
-
     plan_schedules:
       messages:
         plan_assigned: 計画を登録しました
         plan_updated: 計画を更新しました
         plan_schedule_save_failed: "計画の保存に失敗しました: %{errors}"
         plan_schedule_update_failed: "計画の更新に失敗しました: %{errors}"
-
     numerical_managements:
       messages:
         budget_created: 月間予算を登録しました
@@ -108,35 +145,29 @@ ja:
         budget_exceeded: "日別予算の合計（%{total}）が月間予算（%{budget}）を超過しています。予算内に収めてください。"
         discount_rates_updated: 見切率を更新しました
         discount_rates_update_failed: 見切率の更新に失敗しました
-
     sortable_table:
       messages:
         saved: 並び替えを保存しました
         not_found: 指定されたデータが見つかりませんでした。
         save_failed: 並び替えの保存に失敗しました
         error: "エラーが発生しました: %{message}"
-
     resources:
       units:
         messages:
           copy_success: "単位「%{original_name}」を「%{new_name}」としてコピーしました"
           copy_failed: "単位のコピーに失敗しました: %{error}"
-
       categories:
         messages:
           copy_success: "カテゴリー「%{original_name}」を「%{new_name}」としてコピーしました"
           copy_failed: "カテゴリーのコピーに失敗しました: %{error}"
-
       materials:
         messages:
           copy_success: "原材料「%{original_name}」を「%{new_name}」としてコピーしました"
           copy_failed: "原材料のコピーに失敗しました: %{error}"
-
       material_order_groups:
         messages:
           copy_success: "発注グループ「%{original_name}」を「%{new_name}」としてコピーしました"
           copy_failed: "発注グループのコピーに失敗しました: %{error}"
-
       products:
         messages:
           copy_success: "商品「%{original_name}」を「%{new_name}」としてコピーしました"
@@ -145,7 +176,6 @@ ja:
           image_delete_failed: 画像の削除に失敗しました
           confirm_delete_image: この画像を削除しますか?
           status_updated: "商品「%{name}」のステータスを「%{status}」に変更しました"
-
       plans:
         messages:
           copy_success: "計画「%{original_name}」を「%{new_name}」としてコピーしました"
@@ -157,3 +187,4 @@ ja:
   api:
     errors:
       invalid_date: 無効な日付形式です
+      missing_required_info: 必要な情報が不足しています
