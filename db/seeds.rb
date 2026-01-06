@@ -439,9 +439,11 @@ if defined?(Management::MonthlyBudget)
       products = target_plan.plan_products.includes(:product).map do |pp|
         {
           'product_id' => pp.product_id,
+          'name' => pp.product.name,
           'product_name' => pp.product.name,
           'production_count' => pp.production_count,
-          'price' => pp.product.price
+          'price' => pp.product.price,
+          'subtotal' => pp.product.price
         }
       end
 
@@ -811,9 +813,11 @@ if defined?(Management::MonthlyBudget)
       products = target_plan.plan_products.includes(:product).map do |pp|
         {
           'product_id' => pp.product_id,
+          'name' => pp.product.name,
           'product_name' => pp.product.name,
           'production_count' => pp.production_count,
-          'price' => pp.product.price
+          'price' => pp.product.price,
+          'subtotal' => pp.product.price * pp.production_count
         }
       end
 
@@ -850,9 +854,11 @@ if defined?(Management::MonthlyBudget)
       products = target_plan.plan_products.includes(:product).map do |pp|
         {
           'product_id' => pp.product_id,
+          'name' => pp.product.name,
           'product_name' => pp.product.name,
           'production_count' => pp.production_count,
-          'price' => pp.product.price
+          'price' => pp.product.price,
+          'subtotal' => pp.product.price * pp.production_count
         }
       end
 

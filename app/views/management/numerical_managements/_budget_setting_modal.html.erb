@@ -8,6 +8,8 @@
                       scope: :monthly_budget,
                       url: scoped_path(:management_monthly_budget_path, @monthly_budget),
                       method: :patch do |f| %>
+                      <%= hidden_field_tag :year, @selected_date.year %>
+                      <%= hidden_field_tag :month, @selected_date.month %>
           <div class="modal-header">
             <h5 class="modal-title" id="budgetSettingModalLabel"><%= t('numerical_managements.modals.budget_setting.title') %></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
