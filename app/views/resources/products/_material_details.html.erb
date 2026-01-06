@@ -17,16 +17,22 @@
       <% product_materials.each do |pm| %>
         <tr class="border-bottom">
           <td><%= pm.material.name %></td>
+
+          <!-- 数量 -->
           <td class="text-end">
             <%= number_with_precision(pm.quantity, precision: 1) %>
-            <span class="text-muted ms-1"><%= pm.material.unit_for_product&.name %></span>
           </td>
-          <td class="text-start"><%= pm.unit.name %></td>
+
+          <!-- 使用単位 -->
+          <td class="text-start"><%= pm.material.unit_for_product&.name %></td>
+
+          <!-- 分量 -->
           <td class="text-end">
             <%= number_with_precision(pm.unit_weight, precision: 1) %>
-            <span class="text-muted ms-1"><%= pm.unit.name %></span>
           </td>
-          <td class="text-start"><%= pm.unit.name %></td>
+
+          <!-- 製造単位 -->
+          <td class="text-start"><%= pm.material.production_unit&.name %></td>
         </tr>
       <% end %>
     </tbody>

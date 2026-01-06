@@ -2,48 +2,16 @@
 //
 // フロントエンド国際化対応
 //
-// 使用例:
-//   import i18n from "controllers/i18n"
-//   const message = i18n.t('products.confirm_delete_image')
-//
 // 機能:
 // - JavaScriptから翻訳キーに基づいてメッセージを取得
-// - 翻訳データは window.I18n → data-i18n 属性 → フォールバック翻訳 の順で取得
-// - フォールバック翻訳により、window.I18n が利用できない環境でも動作保証
-
-// グローバルオブジェクト名
-const GLOBAL_OBJECT = {
-  I18N: 'I18n'
-}
-
-// グローバルオブジェクトのメソッド名
-const METHOD_NAME = {
-  TRANSLATE: 't'
-}
-
-// 型名（typeof チェック用）
-const TYPE_NAME = {
-  UNDEFINED: 'undefined'
-}
-
-// データ属性名
-const DATA_ATTRIBUTES = {
-  I18N_KEY: 'i18nKey',
-  I18N_VALUE: 'i18nValue'
-}
-
-// セレクタ生成用
-const SELECTOR = {
-  dataI18nKey: (key) => `[data-i18n-key="${key}"]`
-}
+// - 修正内容: JS側の日本語 (FALLBACK_TRANSLATIONS) を最優先で見るように変更
 
 // 正規表現パターン
 const REGEX = {
-  INTERPOLATION: /%\{(\w+)\}/g  // 補間用パターン（例: %{status} → options.status）
+  INTERPOLATION: /%\{(\w+)\}/g  // 補間用パターン
 }
 
 // フォールバック翻訳（日本語デフォルト）
-// window.I18n が利用できない環境での最終的なフォールバック
 const FALLBACK_TRANSLATIONS = {
   'products.confirm_delete_image': '画像を削除しますか？',
   'products.image_deleted': '画像を削除しました',
@@ -57,37 +25,38 @@ const FALLBACK_TRANSLATIONS = {
   'product_material.unit_not_set': '未設定',
   'product_material.unit_error': 'エラー',
   'product_material.errors.unit_fetch_failed': '単位情報の取得に失敗しました',
-  'plans.errors.product_fetch_failed': '商品情報の取得に失敗しました。ページを再読み込みしてください。'
+  'plans.errors.product_fetch_failed': '商品情報の取得に失敗しました。ページを再読み込みしてください。',
+  'tabs.category_tabs.confirm_delete': 'このカテゴリーのタブを削除しますか？'
 }
 
 // i18n オブジェクト
 const i18n = {
   // 翻訳キーからメッセージを取得
-  // 翻訳データは以下の優先順位で取得:
-  // 1. window.I18n（rails-i18n-jsなど）
-  // 2. data-i18n 属性
-  // 3. フォールバック翻訳（FALLBACK_TRANSLATIONS）
   t(key, options = {}) {
-    // window.I18n が利用可能な場合（rails-i18n-jsなど）
-    if (typeof window[GLOBAL_OBJECT.I18N] !== TYPE_NAME.UNDEFINED &&
-        window[GLOBAL_OBJECT.I18N][METHOD_NAME.TRANSLATE]) {
-      return window[GLOBAL_OBJECT.I18N][METHOD_NAME.TRANSLATE](key, options)
+    // 【重要】優先順位を入れ替えました：
+    // 1. まず JS 側の FALLBACK_TRANSLATIONS をチェック（強制的に日本語を出す）
+    if (FALLBACK_TRANSLATIONS[key]) {
+      return this.interpolate(FALLBACK_TRANSLATIONS[key], options)
     }
 
-    // フォールバック: data-i18n 属性から取得
-    const i18nElement = document.querySelector(SELECTOR.dataI18nKey(key))
+    // 2. 次に window.I18n（Rails側のアセット）をチェック
+    if (typeof window['I18n'] !== 'undefined' && window['I18n']['t']) {
+      return window['I18n']['t'](key, options)
+    }
+
+    // 3. 次に HTML の data-i18n 属性をチェック
+    const i18nElement = document.querySelector(`[data-i18n-key="${key}"]`)
     if (i18nElement) {
-      return this.interpolate(i18nElement.dataset[DATA_ATTRIBUTES.I18N_VALUE], options)
+      return this.interpolate(i18nElement.dataset.i18nValue, options)
     }
 
-    // フォールバック翻訳（日本語デフォルト）
-    const message = FALLBACK_TRANSLATIONS[key] || key
-    return this.interpolate(message, options)
+    // 全て見つからなければキーをそのまま返す
+    return key
   },
 
   // メッセージ内の変数を補間
-  // 例: "エラー: %{message}" + { message: "失敗" } → "エラー: 失敗"
   interpolate(message, options) {
+    if (!message) return ""
     return message.replace(REGEX.INTERPOLATION, (match, key) => {
       return options[key] !== undefined ? options[key] : match
     })
