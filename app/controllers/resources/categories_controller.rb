@@ -44,10 +44,11 @@ class Resources::CategoriesController < AuthenticatedController
     respond_to_save(@category, success_path: -> { scoped_path(:resources_category_path, @category) })
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
+    @category.assign_attributes(category_params)
+    @category.store_id ||= current_user.store_id
     respond_to_save(@category, success_path: -> { scoped_path(:resources_category_path, @category) })
   end
 
