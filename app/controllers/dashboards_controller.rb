@@ -30,14 +30,14 @@ class DashboardsController < AuthenticatedController
         # 店舗選択時: その店舗のログのみ
         store = Store.find(session[:current_store_id])
         @recent_logs = PaperTrail::Version
-          .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+          .joins("LEFT JOIN users ON versions.whodunnit = CAST(users.id AS VARCHAR)")
           .where("users.store_id = ? OR versions.whodunnit IS NULL", store.id)
           .order("versions.created_at DESC")
           .limit(10)
       else
         # 全店舗選択時: 会社内の全ログ
         @recent_logs = PaperTrail::Version
-          .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+          .joins("LEFT JOIN users ON versions.whodunnit = CAST(users.id AS VARCHAR)")
           .where("users.company_id = ? OR versions.whodunnit IS NULL", company.id)
           .order("versions.created_at DESC")
           .limit(10)
@@ -68,14 +68,14 @@ class DashboardsController < AuthenticatedController
       # 特定店舗選択時: その店舗に関連するログのみ
       store = Store.find(session[:current_store_id])
       @recent_logs = PaperTrail::Version
-        .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+        .joins("LEFT JOIN users ON versions.whodunnit = CAST(users.id AS VARCHAR)")
         .where("users.store_id = ? OR versions.whodunnit IS NULL", store.id)
         .order("versions.created_at DESC")
         .limit(10)
     else
       # 全店舗選択時: テナント内の全ログ
       @recent_logs = PaperTrail::Version
-        .joins("LEFT JOIN users ON CAST(versions.whodunnit AS INTEGER) = users.id")
+        .joins("LEFT JOIN users ON versions.whodunnit = CAST(users.id AS VARCHAR)")
         .where("users.company_id = ? OR versions.whodunnit IS NULL", current_user.company_id)
         .order("versions.created_at DESC")
         .limit(10)
