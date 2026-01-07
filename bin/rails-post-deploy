@@ -1,6 +1,23 @@
 set -e
 
 echo "=========================================="
+echo "UUID移行チェック..."
+echo "=========================================="
+
+# companiesテーブルのIDカラムがbigintの場合、DB再作成
+if bundle exec rails runner "
+  if ActiveRecord::Base.connection.table_exists?('companies')
+    column = ActiveRecord::Base.connection.columns('companies').find { |c| c.name == 'id' }
+    exit(0) if column && column.sql_type == 'bigint'
+  end
+  exit(1)
+" 2>/dev/null; then
+  echo "bigint型のテーブルを検出。UUID移行のためDB再作成..."
+  DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rails db:drop db:create
+  echo "データベースを再作成しました"
+fi
+
+echo "=========================================="
 echo "マイグレーションを実行中..."
 echo "=========================================="
 bundle exec rails db:migrate
