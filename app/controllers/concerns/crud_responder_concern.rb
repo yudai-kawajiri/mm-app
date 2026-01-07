@@ -54,8 +54,10 @@ module CrudResponderConcern
 
       redirect_to success_path, status: :see_other, allow_other_host: true
     else
-      # 削除失敗 → エラー表示（翻訳ファイルのエラーメッセージをそのまま使用）
-      flash[:alert] = resource.errors.full_messages.to_sentence
+      flash[:alert] = resource.errors.full_messages.first ||
+                    t("flash_messages.destroy.failure",
+                      resource: resource_name,
+                      name: resource_display_name)
 
       redirect_to destroy_failure_path, status: :see_other, allow_other_host: true
     end

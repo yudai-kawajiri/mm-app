@@ -2,6 +2,7 @@
 
 class Users::SessionsController < Devise::SessionsController
   before_action :set_company_from_slug, only: [ :new, :create ]
+  skip_before_action :verify_signed_out_user, only: :destroy, raise: false
 
   # GET /resource/sign_in
   def new

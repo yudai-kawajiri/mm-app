@@ -49,11 +49,11 @@
       </label>
 
       <%= f.collection_select :unit_for_product_id,
-          @production_units,
-          :id,
-          :name,
-          { include_blank: t('helpers.prompt.select') },
-          { class: 'form-select form-select-lg', required: true, data: { 'form-validation-target': 'field' } } %>
+        @production_units,
+        :id,
+        :name,
+        { include_blank: t('helpers.prompt.select'), selected: f.object.unit_for_product_id },
+        { class: 'form-select form-select-lg', required: true, data: { 'form-validation-target': 'field' } } %>
     </div>
   </div>
 </div>
@@ -136,11 +136,11 @@
       </label>
 
       <%= f.collection_select :production_unit_id,
-          @manufacturing_units,
-          :id,
-          :name,
-          { include_blank: t('helpers.prompt.select') },
-          { class: 'form-select form-select-lg', required: true, data: { 'form-validation-target': 'field' } } %>
+        @manufacturing_units,
+        :id,
+        :name,
+        { include_blank: t('helpers.prompt.select'), selected: f.object.production_unit_id },
+        { class: 'form-select form-select-lg', required: true, data: { 'form-validation-target': 'field' } } %>
     </div>
   </div>
   <div class="col-md-6">
