@@ -148,6 +148,7 @@ class NumericalForecastService
       planned_amount: total_planned_amount,
       forecast_amount: forecast,
       achievement_rate: forecast_achievement_rate,
+      forecast_discount_rate: forecast_discount_rate,
       forecast_diff: diff,
 
       # 日別予算達成率（参考用）
