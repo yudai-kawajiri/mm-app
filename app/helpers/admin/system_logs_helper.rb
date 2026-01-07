@@ -73,7 +73,7 @@ module Admin
     def system_log_user_name(version)
       return t("admin.system_logs.index.system") if version.whodunnit.blank?
 
-      user = User.find_by(id: version.whodunnit.to_i)
+      user = User.find_by(id: version.whodunnit)
       user&.name || t("admin.system_logs.index.unknown_user")
     end
 
