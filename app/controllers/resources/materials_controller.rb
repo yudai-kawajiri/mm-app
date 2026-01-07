@@ -42,9 +42,9 @@ class Resources::MaterialsController < AuthenticatedController
   # user_id, company_id, store_id を自動設定
   def new
     @material_categories = scoped_categories.for_materials
-    @production_units = scoped_units.where(category: :manufacturing).ordered
+    @production_units = scoped_units.where(category: :production).ordered
     @order_units = scoped_units.where(category: :ordering).ordered
-    @manufacturing_units = scoped_units.where(category: :production).ordered
+    @manufacturing_units = scoped_units.where(category: :manufacturing).ordered
     @material_order_groups = scoped_material_order_groups.ordered
     @material = Resources::Material.new
     @material.user_id = current_user.id
@@ -58,9 +58,9 @@ class Resources::MaterialsController < AuthenticatedController
   # user_id, company_id, store_id を自動設定（store_id が空の場合のみ）
   def create
     @material_categories = scoped_categories.for_materials
-    @production_units = scoped_units.where(category: :manufacturing).ordered
+    @production_units = scoped_units.where(category: :production).ordered
     @order_units = scoped_units.where(category: :ordering).ordered
-    @manufacturing_units = scoped_units.where(category: :production).ordered
+    @manufacturing_units = scoped_units.where(category: :manufacturing).ordered
     @material_order_groups = scoped_material_order_groups.ordered
     @material = Resources::Material.new(material_params)
     @material.user_id = current_user.id
@@ -73,17 +73,17 @@ class Resources::MaterialsController < AuthenticatedController
 
   def edit
     @material_categories = scoped_categories.for_materials
-    @production_units = scoped_units.where(category: :manufacturing).ordered
+    @production_units = scoped_units.where(category: :production).ordered
     @order_units = scoped_units.where(category: :ordering).ordered
-    @manufacturing_units = scoped_units.where(category: :production).ordered
+    @manufacturing_units = scoped_units.where(category: :manufacturing).ordered
     @material_order_groups = scoped_material_order_groups.ordered
   end
 
   def update
     @material_categories = scoped_categories.for_materials
-    @production_units = scoped_units.where(category: :manufacturing).ordered
+    @production_units = scoped_units.where(category: :production).ordered
     @order_units = scoped_units.where(category: :ordering).ordered
-    @manufacturing_units = scoped_units.where(category: :production).ordered 
+    @manufacturing_units = scoped_units.where(category: :manufacturing).ordered
     @material_order_groups = scoped_material_order_groups.ordered
     @material.assign_attributes(material_params)
     respond_to_save(@material, success_path: -> { scoped_path(:resources_material_path, @material) })

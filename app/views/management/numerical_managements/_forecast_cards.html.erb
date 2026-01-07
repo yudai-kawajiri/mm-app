@@ -18,7 +18,7 @@
             <tr>
               <td class="py-1"><%= t('numerical_managements.index.target_discount_rate') %></td>
               <td class="py-1 text-end fw-bold">
-                <%= number_to_percentage(@monthly_budget&.target_discount_rate || 0, precision: 1) %>
+                <%= number_to_percentage(@monthly_budget&.forecast_discount_rate || 0, precision: 1) %>
               </td>
             </tr>
           </tbody>
