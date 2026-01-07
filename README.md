@@ -3,7 +3,7 @@
 ## デモ・テストアカウント
 
 **本番環境URL:**
-[https://mm-app-gpih.onrender.com/](https://mm-app-gpih.onrender.com/)
+[https://www.mm-app-system.com/](https://www.mm-app-system.com/)
 
 ### システム管理者（ポートフォリオ閲覧用）
 - **会社コード:** `system-admin`
@@ -423,7 +423,7 @@
 ### 13. マルチテナント対応（会社・店舗管理）
 - **会社単位でのデータ分離**
   - 各会社（company）が独立したデータを持つ
-  - `slug` による会社識別（URL: `https://your-company.mm-app.com`）
+  - `slug` による会社識別（URL: https://www.mm-app-system.com/c/your-company）
   - 会社ごとに複数の店舗（stores）を管理可能
 - **店舗単位でのデータ管理**
   - 各店舗が独立した商品、原材料、計画を持つ
@@ -506,4 +506,4 @@ MIT License
 
 - GitHub: [@yudai-kawajiri](https://github.com/yudai-kawajiri)
 - GitHub: [https://github.com/yudai-kawajiri/mm-app](https://github.com/yudai-kawajiri/mm-app)
-- 本番環境: [https://mm-app-gpih.onrender.com](https://mm-app-gpih.onrender.com)
+- 本番環境: [https://www.mm-app-system.com](https://www.mm-app-system.com)
