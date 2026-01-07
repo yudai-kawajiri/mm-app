@@ -44,6 +44,15 @@ class Users::SessionsController < Devise::SessionsController
 
   protected
 
+  # ログイン後のリダイレクト先
+  def after_sign_in_path_for(resource)
+    if params[:company_slug].present?
+      company_dashboards_path(company_slug: params[:company_slug])
+    else
+      root_path
+    end
+  end
+
   # システム管理者用のパスかチェック
   def admin_path?
     # システム管理者の会社スラッグでログインしている場合、または admin パス
