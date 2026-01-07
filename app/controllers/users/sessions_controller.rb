@@ -53,6 +53,14 @@ class Users::SessionsController < Devise::SessionsController
     end
   end
 
+  # ログアウト後のリダイレクト処理（Turbo対応）
+  def respond_to_on_destroy
+    respond_to do |format|
+      format.turbo_stream { redirect_to root_path, status: :see_other }
+      format.html { redirect_to root_path }
+    end
+  end
+
   # システム管理者用のパスかチェック
   def admin_path?
     # システム管理者の会社スラッグでログインしている場合、または admin パス
