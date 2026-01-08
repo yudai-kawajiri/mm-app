@@ -729,9 +729,9 @@ nikujaga_sozai.save!
 
 # 商品と原材料の紐付け（総菜）
 [
-  { product: korokke_sozai, materials: { 'ひき肉' => { quantity: 1, unit: '個', unit_weight: 50.0 }, 'じゃがいも' => { quantity: 10, unit: '切', unit_weight: 80.0 }, 'パン粉' => { quantity: 1, unit: '杯', unit_weight: 10.0 }, 'パック容器小' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } },
-  { product: karaage_sozai, materials: { '鶏もも肉' => { quantity: 8, unit: '切', unit_weight: 100.0 }, '小麦粉' => { quantity: 1, unit: '杯', unit_weight: 10.0 }, '揚げ油' => { quantity: 1, unit: '杯', unit_weight: 50.0 }, 'パック容器小' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } },
-  { product: nikujaga_sozai, materials: { '豚バラ肉' => { quantity: 10, unit: '枚', unit_weight: 80.0 }, 'じゃがいも' => { quantity: 12, unit: '切', unit_weight: 100.0 }, '玉ねぎ' => { quantity: 1, unit: '個', unit_weight: 50.0 }, 'にんじん' => { quantity: 4, unit: '切', unit_weight: 30.0 }, 'しょうゆ' => { quantity: 1, unit: '杯', unit_weight: 15.0 }, '砂糖' => { quantity: 1, unit: '杯', unit_weight: 10.0 }, 'パック容器大' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } }
+  { product: korokke_sozai, materials: { 'ひき肉' => { quantity: 1, unit: '個', unit_weight: 50.0 }, 'じゃがいも' => { quantity: 10, unit: '切', unit_weight: 8.0 }, 'パン粉' => { quantity: 1, unit: '杯', unit_weight: 10.0 }, 'パック容器小' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } },
+  { product: karaage_sozai, materials: { '鶏もも肉' => { quantity: 8, unit: '切', unit_weight: 12.0 }, '小麦粉' => { quantity: 1, unit: '杯', unit_weight: 10.0 }, '揚げ油' => { quantity: 1, unit: '杯', unit_weight: 1.0 }, 'パック容器小' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } },
+  { product: nikujaga_sozai, materials: { '豚バラ肉' => { quantity: 10, unit: '枚', unit_weight: 10.0 }, 'じゃがいも' => { quantity: 12, unit: '切', unit_weight: 8.0 }, '玉ねぎ' => { quantity: 1, unit: '個', unit_weight: 1.0 }, 'にんじん' => { quantity: 4, unit: '切', unit_weight: 30.0 }, 'しょうゆ' => { quantity: 1, unit: '杯', unit_weight: 15.0 }, '砂糖' => { quantity: 1, unit: '杯', unit_weight: 10.0 }, 'パック容器大' => { quantity: 1, unit: '枚', unit_weight: 1.0 } } }
 ].each do |data|
   product = data[:product]
   data[:materials].each do |material_name, attrs|
