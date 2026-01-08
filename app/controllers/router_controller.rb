@@ -4,7 +4,7 @@
 # 全ユーザーをダッシュボードにリダイレクト
 # 権限別の表示制御はDashboardsControllerで実施
 class RouterController < ApplicationController
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
 
   def index
     if current_company.present?
