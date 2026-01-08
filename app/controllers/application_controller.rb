@@ -72,8 +72,7 @@ class ApplicationController < ActionController::Base
     elsif current_user.store_id.present?
       session[:current_store_id] = current_user.store_id
     end
-
-    current_company ? company_dashboards_path(company_slug: current_company.slug) : company_dashboards_path(company_slug: current_user.company.slug)
+    current_company ? company_root_path(company_slug: current_company.slug) : company_root_path(company_slug: current_user.company.slug)
   end
 
   def layout_by_resource
