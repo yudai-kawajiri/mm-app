@@ -55,18 +55,16 @@ Rails.application.routes.draw do
 
     # ↓↓↓ ここに root を追加 ↓↓↓
     root to: "router#index", as: :root
+    resources :dashboards, only: [ :index ]
   end
 
   # 認証後のルーティング（会社スコープ）
   authenticated :user do
     # 会社スコープ内のルーティング
-    scope "/c/:company_slug", as: :company do
-      # root to: "router#index", as: :root  ← この行を削除
+    scope "/c/:company_slug" do
 
       post :switch_store, to: "stores#switch"
       post :switch_company, to: "companies#switch"
-
-      resources :dashboards, only: [ :index ]
 
       get :settings, to: "settings#index"
       get :help, to: "help#index"
