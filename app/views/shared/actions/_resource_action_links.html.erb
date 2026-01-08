@@ -63,7 +63,8 @@
       <%= link_to csv_url,
           class: 'btn btn-sm btn-success me-1',
           title: t('helpers.link.export_csv'),
-          target: '_blank' do %>
+          target: '_blank',
+          data: { turbo: false } do %>
         <i class="bi bi-filetype-csv"></i>
       <% end %>
     <% end %>
@@ -104,7 +105,7 @@
       <%= link_to t('helpers.link.print'), print_url, class: 'btn btn-sm btn-light me-1', target: '_blank' %>
     <% end %>
     <% if show_csv && csv_url.present? %>
-      <%= link_to t('helpers.link.export_csv'), csv_url, class: 'btn btn-sm btn-success me-1', target: '_blank' %>
+      <%= link_to t('helpers.link.export_csv'), csv_url, class: 'btn btn-sm btn-success me-1', target: '_blank', data: { turbo: false } %>
     <% end %>
     <% if destroy_link %>
       <%= link_to t('helpers.link.destroy'), resource_path_with_scope(resource, scope), 

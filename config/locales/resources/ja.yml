@@ -189,3 +189,4 @@ ja:
       total: 総合計
       filename_suffix: 発注数
       export_button: CSV出力
+      export_csv: CSVエクスポート
