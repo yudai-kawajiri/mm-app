@@ -52,7 +52,7 @@
         @production_units,
         :id,
         :name,
-        { include_blank: t('helpers.prompt.select'), selected: f.object.unit_for_product_id },
+        { prompt: t('helpers.prompt.select') },
         { class: 'form-select form-select-lg', required: true, data: { 'form-validation-target': 'field' } } %>
     </div>
   </div>
@@ -118,12 +118,13 @@
 
   <div class="col-md-6">
     <%= form_group_lg(f, :unit_for_order_id,
-        field_type: :collection_select,
-        collection: @order_units,
-        required: true,
-        label: raw([Resources::Material.human_attribute_name(:unit_for_order), t('helpers.required_mark')].join(' ')),
-        select_options: { include_blank: t('helpers.prompt.select') }
-    ) %>
+      field_type: :collection_select,
+      collection: @order_units,
+      required: true,
+      label: raw([Resources::Material.human_attribute_name(:unit_for_order), t('helpers.required_mark')].join(' ')),
+      select_options: { prompt: t('helpers.prompt.select') }
+  ) %>
+
   </div>
 </div>
 
@@ -139,7 +140,7 @@
         @manufacturing_units,
         :id,
         :name,
-        { include_blank: t('helpers.prompt.select'), selected: f.object.production_unit_id },
+        { prompt: t('helpers.prompt.select') },
         { class: 'form-select form-select-lg', required: true, data: { 'form-validation-target': 'field' } } %>
     </div>
   </div>
