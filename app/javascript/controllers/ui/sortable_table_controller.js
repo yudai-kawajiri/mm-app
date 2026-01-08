@@ -211,12 +211,13 @@ export default class extends Controller {
       el.classList.remove(CSS_CLASSES.D_NONE)
     })
 
-    // アクションボタンの中身のみを非表示（tdは残してテーブルの線を維持）
-    this.tbodyTarget.querySelectorAll(SELECTOR.TD_LAST_CHILD).forEach(td => {
-      // 子要素を非表示にする
-      Array.from(td.children).forEach(child => {
-        child.style[STYLE_PROPERTY.DISPLAY] = STYLE_VALUE.DISPLAY_NONE
-      })
+        // アクションボタンとステータスボタンを全て無効化
+    this.tbodyTarget.querySelectorAll('button, a.btn, a[data-turbo-method]').forEach(el => {
+      el.style[STYLE_PROPERTY.POINTER_EVENTS] = STYLE_VALUE.POINTER_EVENTS_NONE
+      el.style[STYLE_PROPERTY.OPACITY] = STYLE_VALUE.OPACITY_HALF
+      if (el.tagName === 'BUTTON') {
+        el.disabled = true
+      }
     })
 
     // Sortable.js を有効化
