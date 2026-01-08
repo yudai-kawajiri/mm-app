@@ -24,6 +24,11 @@ gem "solid_queue"
 # === Authentication ===
 gem "devise", "~> 4.9"
 
+# === Session Store ===
+gem "redis"
+gem "redis-actionpack"
+
+
 # === View Helpers ===
 gem "jbuilder"
 gem "kaminari", "~> 1.2.2"
