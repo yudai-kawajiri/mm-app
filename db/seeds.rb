@@ -215,23 +215,25 @@ Resources::MaterialOrderGroup.find_or_create_by!(
   production_unit = Resources::Unit.find_by(company: uoya_company, store: main_store, name: data[:production_unit])
   order_group = data[:order_group].present? ? Resources::MaterialOrderGroup.find_by(company: uoya_company, store: main_store, name: data[:order_group]) : nil
 
-  Resources::Material.find_or_create_by!(
+    material = Resources::Material.find_or_initialize_by(
     company: uoya_company,
     store_id: main_store.id,
     name: data[:name]
-  ) do |m|
-    m.reading = data[:reading]
-    m.description = data[:description]
-    m.category = category
-    m.unit_for_product = unit_for_product
-    m.unit_for_order = unit_for_order
-    m.production_unit = production_unit
-    m.order_group = order_group
-    m.measurement_type = data[:measurement_type]
-    m.unit_weight_for_order = data[:unit_weight_for_order]
-    m.pieces_per_order_unit = data[:pieces_per_order_unit]
-    m.default_unit_weight = data[:default_unit_weight]
-  end
+  )
+
+  material.reading = data[:reading]
+  material.description = data[:description]
+  material.category = category
+  material.unit_for_product = unit_for_product
+  material.unit_for_order = unit_for_order
+  material.production_unit = production_unit
+  material.order_group = order_group
+  material.measurement_type = data[:measurement_type]
+  material.unit_weight_for_order = data[:unit_weight_for_order]
+  material.pieces_per_order_unit = data[:pieces_per_order_unit]
+  material.default_unit_weight = data[:default_unit_weight]
+
+  material.save!
 end
 
 # 商品の作成
@@ -687,23 +689,25 @@ Resources::MaterialOrderGroup.find_or_create_by!(
   )
   order_group = data[:order_group].present? ? Resources::MaterialOrderGroup.find_by(company: sozai_company, store: main_store_sozai, name: data[:order_group]) : nil
 
-  Resources::Material.find_or_create_by!(
+    material = Resources::Material.find_or_initialize_by(
     company: sozai_company,
     store_id: main_store_sozai.id,
     name: data[:name]
-  ) do |m|
-    m.reading = data[:reading]
-    m.description = data[:description]
-    m.category = category
-    m.unit_for_product = unit_for_product
-    m.unit_for_order = unit_for_order
-    m.production_unit = production_unit
-    m.order_group = order_group
-    m.measurement_type = data[:measurement_type]
-    m.unit_weight_for_order = data[:unit_weight_for_order]
-    m.pieces_per_order_unit = data[:pieces_per_order_unit]
-    m.default_unit_weight = data[:default_unit_weight]
-  end
+  )
+
+  material.reading = data[:reading]
+  material.description = data[:description]
+  material.category = category
+  material.unit_for_product = unit_for_product
+  material.unit_for_order = unit_for_order
+  material.production_unit = production_unit
+  material.order_group = order_group
+  material.measurement_type = data[:measurement_type]
+  material.unit_weight_for_order = data[:unit_weight_for_order]
+  material.pieces_per_order_unit = data[:pieces_per_order_unit]
+  material.default_unit_weight = data[:default_unit_weight]
+  
+  material.save!
 end
 
 # 商品の作成（総菜）
