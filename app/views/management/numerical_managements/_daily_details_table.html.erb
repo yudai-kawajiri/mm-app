@@ -190,7 +190,7 @@
                       <% if day[:plan_schedules].count == 1 %>
                         <% plan = day[:plan_schedules].first.plan %>
                         <% if plan.present? %>
-                          <%= link_to print_company_resources_plan_path(plan, company_slug: current_company.slug, date: day[:date]),
+                          <%= link_to print_resources_plan_path(current_company.slug, plan, date: day[:date]),
                                       class: "btn btn-outline-primary",
                                       target: "_blank",
                                       title: t("numerical_managements.actions.print_plan") do %>
@@ -203,7 +203,7 @@
                           <% end %>
                         <% else %>
                           <% ps = day[:plan_schedules].first %>
-                          <%= link_to print_company_resources_plan_path("deleted", company_slug: current_company.slug, date: day[:date], plan_schedule_id: ps.id),
+                          <%= link_to print_resources_plan_path(current_company.slug, "deleted", date: day[:date], plan_schedule_id: ps.id),
                                       class: "btn btn-outline-primary",
                                       target: "_blank",
                                       title: t("common.deleted_plan") do %>
@@ -223,7 +223,7 @@
                             <% day[:plan_schedules].each do |ps| %>
                               <li>
                                 <% if ps.plan.present? %>
-                                  <%= link_to print_company_resources_plan_path(ps.plan, company_slug: current_company.slug, date: day[:date]),
+                                  <%= link_to print_resources_plan_path(current_company.slug, ps.plan, date: day[:date]),
                                               class: "dropdown-item",
                                               target: "_blank" do %>
                                     <%= ps.plan.name %>

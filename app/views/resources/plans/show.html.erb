@@ -9,7 +9,7 @@
     additional_actions: [
       {
         label: t('plans.actions.preview'),
-        path: print_company_resources_plan_path(company_slug: current_company.slug, id: @plan.id),
+        path: print_resources_plan_path(current_company.slug, @plan),
         class: 'btn-light',
         target: '_blank',
         icon: 'bi-printer'
