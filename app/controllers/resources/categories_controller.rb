@@ -42,7 +42,7 @@ class Resources::CategoriesController < AuthenticatedController
     @category.store_id = current_user.store_id || current_user.store_id
 
     respond_to_save(@category, success_path: -> {
-      company_resources_category_path(@company_from_path, @category)
+      resources_category_path(@company_from_path, @category)
     })
   end
 
