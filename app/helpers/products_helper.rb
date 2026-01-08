@@ -67,7 +67,7 @@ module ProductsHelper
           status_label = t("activerecord.enums.resources/product.status.#{status_key}")
           content_tag(:li) do
             button_to status_label,
-              update_status_company_resources_product_path(product, company_slug: current_company.slug, status: status_key),
+              update_status_resources_product_path(@company_from_path, product, status: status_key),
               method: :patch,
               class: "dropdown-item border-0 bg-transparent text-start w-100 p-2",
               form: { class: "d-inline" }
