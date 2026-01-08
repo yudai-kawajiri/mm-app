@@ -63,7 +63,6 @@ Rails.application.routes.draw do
       post :switch_store, to: "stores#switch"
       post :switch_company, to: "companies#switch"
 
-      # ダッシュボード
       resources :dashboards, only: [ :index ]
 
       get :settings, to: "settings#index"
