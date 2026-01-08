@@ -243,9 +243,9 @@ class Resources::PlansController < AuthenticatedController
         I18n.t('plans.csv.headers.material.order_group'),
         I18n.t('plans.csv.headers.material.name'),
         I18n.t('plans.csv.headers.material.total_quantity'),
-        I18n.t('plans.csv.headers.material.quantity_unit'),
+        I18n.t('plans.csv.headers.material.use_unit'),
         I18n.t('plans.csv.headers.material.total_weight'),
-        I18n.t('plans.csv.headers.material.weight_unit'),
+        I18n.t('plans.csv.headers.material.production_unit'),
         I18n.t('plans.csv.headers.material.order_quantity'),
         I18n.t('plans.csv.headers.material.order_unit')
       ]
@@ -257,7 +257,7 @@ class Resources::PlansController < AuthenticatedController
           material[:total_quantity],
           material[:unit_for_product_name] || "-",
           material[:total_weight] || 0,
-          I18n.t('plans.csv.units.gram'),
+          material[:production_unit_name] || '-',
           material[:required_order_quantity],
           material[:order_unit_name]
         ]

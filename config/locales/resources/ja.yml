@@ -178,9 +178,9 @@ ja:
           order_group: 発注グループ
           name: 原材料名
           total_quantity: 商品での使用量
-          quantity_unit: 単位
+          use_unit: 使用単位
           total_weight: 合計使用量
-          weight_unit: 単位
+          production_unit: 製造単位
           order_quantity: 発注数量
           order_unit: 発注単位
       units:
