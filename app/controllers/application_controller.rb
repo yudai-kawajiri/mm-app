@@ -18,8 +18,7 @@ class ApplicationController < ActionController::Base
     controller_name == "static_pages" ||
     controller_name == "contacts" ||
     controller_name == "help" ||
-    controller_name == "router" ||
-    controller_name == "dashboards"
+    controller_name == "router"
   end
 
     def set_current_company
