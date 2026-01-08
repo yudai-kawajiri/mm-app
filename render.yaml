@@ -5,7 +5,7 @@ services:
     plan: free
     buildCommand: bundle install && corepack enable && yarn install && bundle exec rails assets:precompile
     startCommand: ./bin/rails-post-deploy
-    preDeployCommand: bundle exec rails db:migrate && bundle exec rails db:seed
+    preDeployCommand: bundle exec rails db:drop db:create db:migrate db:seed DISABLE_DATABASE_ENVIRONMENT_CHECK=1
     envVars:
       - key: RAILS_ENV
         value: production
