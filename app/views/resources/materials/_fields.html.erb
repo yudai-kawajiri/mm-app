@@ -117,16 +117,19 @@
   </div>
 
   <div class="col-md-6">
-    <%= form_group_lg(f, :unit_for_order_id,
-      field_type: :collection_select,
-      collection: @order_units,
-      required: true,
-      label: raw([Resources::Material.human_attribute_name(:unit_for_order), t('helpers.required_mark')].join(' ')),
-      select_options: { prompt: t('helpers.prompt.select') }
-  ) %>
+    <div class="form-group mb-4">
+      <label class="form-label h5 text-muted mb-2">
+        <%= raw([Resources::Material.human_attribute_name(:unit_for_order), t('helpers.required_mark')].join(' ')) %>
+      </label>
 
+      <%= f.collection_select :unit_for_order_id,
+        @order_units,
+        :id,
+        :name,
+        { prompt: t('helpers.prompt.select') },
+        { class: 'form-select form-select-lg', required: true, data: { 'form-validation-target': 'field' } } %>
+    </div>
   </div>
-</div>
 
 <div class="row">
   <div class="col-md-6">
