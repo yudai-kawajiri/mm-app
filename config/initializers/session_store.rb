@@ -1,7 +1,7 @@
 if Rails.env.production?
   # 本番環境：Redis セッションストア
   Rails.application.config.session_store :redis_store,
-    servers: ENV.fetch("REDIS_URL", "redis://localhost:6379/0"),
+    servers: "redis://red-d5fiib24d50c73f6c7j0:6379",
     expire_after: 90.minutes,
     key: "_mm_app_session",
     threadsafe: true,
