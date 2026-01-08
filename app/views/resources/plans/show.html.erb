@@ -16,7 +16,7 @@
       },
       {
         label: t('plans.csv.export_button'),
-        path: export_csv_company_resources_plan_path(company_slug: current_company.slug, id: @plan.id),
+        path: export_csv_resources_plan_path(current_company.slug, @plan),
         class: 'btn-success',
         icon: 'bi-filetype-csv'
       }

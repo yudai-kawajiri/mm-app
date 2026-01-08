@@ -196,7 +196,7 @@
                                       title: t("numerical_managements.actions.print_plan") do %>
                             <i class="bi bi-printer"></i>
                           <% end %>
-                          <%= link_to export_csv_company_resources_plan_path(plan, company_slug: current_company.slug, date: day[:date]),
+                          <%= link_to export_csv_resources_plan_path(current_company.slug, plan, date: day[:date]),
                                       class: "btn btn-outline-success",
                                       title: t("plans.csv.export_button") do %>
                             <i class="bi bi-file-earmark-spreadsheet"></i>
