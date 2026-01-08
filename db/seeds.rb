@@ -687,7 +687,7 @@ nimono_cat_sozai = Resources::Category.find_by(company: sozai_company, store: ma
 korokke_sozai = Resources::Product.find_or_create_by!(
   company: sozai_company,
   store_id: main_store_sozai.id,
-  item_number: 'SZ01'
+  item_number: '0001'
 ) do |p|
   p.name = 'コロッケ'
   p.reading = 'ころっけ'
@@ -699,7 +699,7 @@ end
 karaage_sozai = Resources::Product.find_or_create_by!(
   company: sozai_company,
   store_id: main_store_sozai.id,
-  item_number: 'SZ02'
+  item_number: '0002'
 ) do |p|
   p.name = '唐揚げ'
   p.reading = 'からあげ'
@@ -711,7 +711,7 @@ end
 nikujaga_sozai = Resources::Product.find_or_create_by!(
   company: sozai_company,
   store_id: main_store_sozai.id,
-  item_number: 'SZ03'
+  item_number: '0003'
 ) do |p|
   p.name = '肉じゃが'
   p.reading = 'にくじゃが'

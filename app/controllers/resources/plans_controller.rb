@@ -255,7 +255,7 @@ class Resources::PlansController < AuthenticatedController
           material[:order_group_name] || "-",
           material[:material_name],
           material[:total_quantity],
-          I18n.t('plans.csv.units.piece'),
+          material[:unit_for_product_name] || "-",
           material[:total_weight] || 0,
           I18n.t('plans.csv.units.gram'),
           material[:required_order_quantity],
