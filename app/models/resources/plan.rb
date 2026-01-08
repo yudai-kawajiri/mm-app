@@ -195,7 +195,7 @@ class Resources::Plan < ApplicationRecord
 
   # 個数ベースの発注計算
   def calculate_count_based_summary(summary, material, quantity)
-    summary[:total_weight] = 0
+    summary[:total_weight] = quantity * (material.default_unit_weight || 1)
     if material.pieces_per_order_unit&.positive?
       summary[:required_order_quantity] = (quantity.to_f / material.pieces_per_order_unit).ceil
     else

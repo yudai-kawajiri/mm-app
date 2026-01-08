@@ -129,37 +129,37 @@ Resources::MaterialOrderGroup.find_or_create_by!(
 [
   {
     name: 'いくら', reading: 'いくら', description: '寿司ネタのいくら',
-    category: '生ねた', unit_for_product: 'g', unit_for_order: 'cs', production_unit: '個',
+    category: '生ねた', unit_for_product: '個', unit_for_order: 'cs', production_unit: 'g',
     order_group: nil, measurement_type: 'weight', unit_weight_for_order: 200.0,
     default_unit_weight: 10.0
   },
   {
     name: 'しゃり玉', reading: 'しゃりだま', description: 'にぎり用のしゃり',
-    category: 'その他原材料', unit_for_product: 'g', unit_for_order: 'kg', production_unit: '個',
+    category: 'その他原材料', unit_for_product: '個', unit_for_order: 'kg', production_unit: 'g',
     order_group: 'しゃり', measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 20.0
   },
   {
     name: 'ばらしゃり', reading: 'ばらしゃり', description: '巻物用のしゃり',
-    category: 'その他原材料', unit_for_product: 'g', unit_for_order: 'kg', production_unit: '個',
+    category: 'その他原材料', unit_for_product: '個', unit_for_order: 'kg', production_unit: 'g',
     order_group: 'しゃり', measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 150.0
   },
   {
     name: 'まぐろ中とろ', reading: 'まぐろちゅうとろ', description: 'まぐろの中とろ部位',
-    category: '生ねた', unit_for_product: 'g', unit_for_order: 'kg', production_unit: '枚',
+    category: '生ねた', unit_for_product: '枚', unit_for_order: 'kg', production_unit: 'g',
     order_group: '生まぐろ', measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 10.0
   },
   {
     name: 'まぐろ赤身', reading: 'まぐろあかみ', description: 'まぐろの赤身部位',
-    category: '生ねた', unit_for_product: 'g', unit_for_order: 'kg', production_unit: '枚',
+    category: '生ねた', unit_for_product: '枚', unit_for_order: 'kg', production_unit: 'g',
     order_group: '生まぐろ', measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 10.0
   },
   {
     name: 'サーモン', reading: 'さあもん', description: 'サーモンの切り身',
-    category: '生ねた', unit_for_product: 'g', unit_for_order: 'kg', production_unit: '枚',
+    category: '生ねた', unit_for_product: '枚', unit_for_order: 'kg', production_unit: 'g',
     order_group: nil, measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 10.0
   },
@@ -195,7 +195,7 @@ Resources::MaterialOrderGroup.find_or_create_by!(
   },
   {
     name: '鉄火芯', reading: 'てっかしん', description: '鉄火巻き用のまぐろ',
-    category: '生ねた', unit_for_product: '個', unit_for_order: 'kg', production_unit: 'g',
+    category: '生ねた', unit_for_product: 'g', unit_for_order: 'kg', production_unit: '個',
     order_group: '生まぐろ', measurement_type: 'weight', unit_weight_for_order: 1000.0,
     default_unit_weight: 15.0
   }
