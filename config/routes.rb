@@ -52,13 +52,16 @@ Rails.application.routes.draw do
       patch "/users/password", to: "users/passwords#update"
       put "/users/password", to: "users/passwords#update"
     end
+
+    # ↓↓↓ ここに root を追加 ↓↓↓
+    root to: "router#index", as: :root
   end
 
   # 認証後のルーティング（会社スコープ）
   authenticated :user do
     # 会社スコープ内のルーティング
     scope "/c/:company_slug", as: :company do
-      root to: "router#index", as: :root
+      # root to: "router#index", as: :root  ← この行を削除
 
       post :switch_store, to: "stores#switch"
       post :switch_company, to: "companies#switch"
@@ -139,7 +142,6 @@ Rails.application.routes.draw do
         end
 
         resources :plan_schedules, only: [ :create, :update ] do
-
           collection do
             patch :update, action: :bulk_update
           end
