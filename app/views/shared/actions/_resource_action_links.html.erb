@@ -3,6 +3,8 @@
 <% edit_link = local_assigns.fetch(:edit_link, true) %>
 <% destroy_link = local_assigns.fetch(:destroy_link, true) %>
 <% show_print = local_assigns.fetch(:show_print, false) %>
+<% show_csv = local_assigns.fetch(:show_csv, false) %>
+<% csv_url = local_assigns[:csv_url] %>
 <% print_url = local_assigns[:print_url] %>
 <% show_copy = local_assigns.fetch(:show_copy, false) %>
 <% copy_url = local_assigns[:copy_url] %>
@@ -57,6 +59,15 @@
       <% end %>
     <% end %>
 
+    <% if show_csv && csv_url.present? %>
+      <%= link_to csv_url,
+          class: 'btn btn-sm btn-success me-1',
+          title: t('helpers.link.export_csv'),
+          target: '_blank' do %>
+        <i class="bi bi-filetype-csv"></i>
+      <% end %>
+    <% end %>
+
     <% if destroy_link %>
       <%= link_to resource_path_with_scope(resource, scope),
           class: 'btn btn-sm btn-danger',
@@ -91,6 +102,9 @@
     <% end %>
     <% if show_print && print_url.present? %>
       <%= link_to t('helpers.link.print'), print_url, class: 'btn btn-sm btn-light me-1', target: '_blank' %>
+    <% end %>
+    <% if show_csv && csv_url.present? %>
+      <%= link_to t('helpers.link.export_csv'), csv_url, class: 'btn btn-sm btn-success me-1', target: '_blank' %>
     <% end %>
     <% if destroy_link %>
       <%= link_to t('helpers.link.destroy'), resource_path_with_scope(resource, scope), 
