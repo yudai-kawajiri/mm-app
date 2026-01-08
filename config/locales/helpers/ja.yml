@@ -29,6 +29,7 @@ ja:
       back_to_dashboard: ダッシュボードへ戻る
       add_item: "+ %{resource}を登録"
       print: 印刷
+      export_csv: CSVエクスポート
       delete_image: 画像削除
       cancel_new_image: 選択をキャンセル
     forms:
