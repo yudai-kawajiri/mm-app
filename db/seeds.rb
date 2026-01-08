@@ -656,9 +656,9 @@ Resources::MaterialOrderGroup.find_or_create_by!(
   }
 ].each do |data|
   category = Resources::Category.find_by(company: sozai_company, store: main_store_sozai, name: data[:category])
-  unit_for_product = Resources::Unit.find_by(company: sozai_company, store: main_store_sozai, name: data[:unit_for_product])
-  unit_for_order = Resources::Unit.find_by(company: sozai_company, store: main_store_sozai, name: data[:unit_for_order])
-  production_unit = Resources::Unit.find_by(company: sozai_company, store: main_store_sozai, name: data[:production_unit])
+  unit_for_product = Resources::Unit.find_by(company: sozai_company, store: main_store_sozai, name: data[:unit_for_product], category: :production)
+  unit_for_order = Resources::Unit.find_by(company: sozai_company, store: main_store_sozai, name: data[:unit_for_order], category: :ordering)
+  production_unit = Resources::Unit.find_by(company: sozai_company, store: main_store_sozai, name: data[:production_unit], category: :manufacturing)
   order_group = data[:order_group].present? ? Resources::MaterialOrderGroup.find_by(company: sozai_company, store: main_store_sozai, name: data[:order_group]) : nil
 
   Resources::Material.find_or_create_by!(
