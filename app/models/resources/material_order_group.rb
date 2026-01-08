@@ -24,6 +24,9 @@ class Resources::MaterialOrderGroup < ApplicationRecord
   # Copyable設定
   copyable_config(
     uniqueness_scope: [ :category, :store_id ],
-    uniqueness_check_attributes: [ :name ]
+    uniqueness_check_attributes: [ :name ],
+    additional_attributes: {
+      materials_count: 0 
+    }
   )
 end
