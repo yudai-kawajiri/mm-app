@@ -6,6 +6,8 @@
 <% copy_url_method = local_assigns[:copy_url_method] %>
 <% show_print = local_assigns.fetch(:show_print, false) %>
 <% print_url_method = local_assigns[:print_url_method] %>
+<% show_csv = local_assigns.fetch(:show_csv, false) %>
+<% csv_url_method = local_assigns[:csv_url_method] %>
 <% icon_mode = local_assigns.fetch(:icon_mode, false) %>
 <% edit_link = local_assigns.fetch(:edit_link, true) %>
 <% destroy_link = local_assigns.fetch(:destroy_link, true) %>
@@ -96,6 +98,9 @@
               show_print: show_print,
               print_url: show_print && print_url_method.present? ?
               scoped_path(print_url_method, resource) : nil,
+              show_csv: show_csv,
+              csv_url: show_csv && csv_url_method.present? ?
+              scoped_path(csv_url_method, resource) : nil,
               icon_mode: icon_mode,
               edit_link: edit_link,
               destroy_link: destroy_link,
