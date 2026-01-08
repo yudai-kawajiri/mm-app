@@ -44,15 +44,6 @@ class Users::SessionsController < Devise::SessionsController
 
   protected
 
-  # ログイン後のリダイレクト先
-  def after_sign_in_path_for(resource)
-    if params[:company_slug].present?
-      "/c/#{params[:company_slug]}/dashboards"
-    else
-      root_path
-    end
-  end
-
   # ログアウト後のリダイレクト処理（Turbo対応）
   def respond_to_on_destroy
     respond_to do |format|
