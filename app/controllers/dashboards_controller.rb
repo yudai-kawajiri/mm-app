@@ -4,6 +4,15 @@ class DashboardsController < AuthenticatedController
 
   layout "dashboard"
   def index
+
+    Rails.logger.info "=" * 80
+    Rails.logger.info "[DASHBOARD DEBUG] Session: #{session.to_hash.inspect}"
+    Rails.logger.info "[DASHBOARD DEBUG] Cookies: #{cookies.to_hash.keys.inspect}"
+    Rails.logger.info "[DASHBOARD DEBUG] user_signed_in?: #{user_signed_in?}"
+    Rails.logger.info "[DASHBOARD DEBUG] current_user: #{current_user.inspect}"
+    Rails.logger.info "[DASHBOARD DEBUG] warden.user: #{request.env['warden']&.user.inspect}"
+    Rails.logger.info "=" * 80
+
     @show_welcome_modal = session.delete(:first_login)
 
     # 権限別のダッシュボード表示
