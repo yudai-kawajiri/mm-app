@@ -550,7 +550,8 @@ end
   { name: '枚', reading: 'まい', category: :manufacturing },
   { name: '個', reading: 'こ', category: :manufacturing },
   { name: '切', reading: 'きれ', category: :manufacturing },
-  { name: '杯', reading: 'はい', category: :manufacturing }
+  { name: '杯', reading: 'はい', category: :manufacturing },
+  { name: '杯', reading: 'はい', category: :production }
 ].each do |data|
   Resources::Unit.find_or_create_by!(
     store: main_store_sozai,
