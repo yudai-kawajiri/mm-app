@@ -41,7 +41,9 @@ class Resources::CategoriesController < AuthenticatedController
     @category.company_id = current_company.id
     @category.store_id = current_user.store_id || current_user.store_id
 
-    respond_to_save(@category, success_path: -> { scoped_path(:resources_category_path, @category) })
+    respond_to_save(@category, success_path: -> {
+      company_resources_category_path(@company_from_path, @category)
+    })
   end
 
   def edit; end
@@ -49,7 +51,10 @@ class Resources::CategoriesController < AuthenticatedController
   def update
     @category.assign_attributes(category_params)
     @category.store_id ||= current_user.store_id
-    respond_to_save(@category, success_path: -> { scoped_path(:resources_category_path, @category) })
+
+    respond_to_save(@category, success_path: -> {
+      company_resources_category_path(@company_from_path, @category)
+    })
   end
 
   def destroy
