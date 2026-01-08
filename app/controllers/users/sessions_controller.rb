@@ -4,6 +4,8 @@ class Users::SessionsController < Devise::SessionsController
   before_action :set_company_from_slug, only: [ :new, :create ]
   skip_before_action :verify_signed_out_user, only: :destroy, raise: false
 
+  after_action :debug_session, only: [:create]
+
   # GET /resource/sign_in
   def new
     # ログイン画面表示前にチェック
@@ -69,4 +71,17 @@ class Users::SessionsController < Devise::SessionsController
     @company
   end
   helper_method :current_company
+
+  def debug_session
+    Rails.logger.info "=" * 80
+    Rails.logger.info "[SESSION DEBUG] After sign_in (create action)"
+    Rails.logger.info "[SESSION DEBUG] Response status: #{response.status}"
+    Rails.logger.info "[SESSION DEBUG] Session: #{session.to_hash.inspect}"
+    Rails.logger.info "[SESSION DEBUG] user_signed_in?: #{user_signed_in?}"
+    Rails.logger.info "[SESSION DEBUG] current_user: #{current_user.inspect}"
+    Rails.logger.info "[SESSION DEBUG] warden.user: #{request.env['warden']&.user.inspect}"
+    Rails.logger.info "[SESSION DEBUG] warden.authenticated?: #{request.env['warden']&.authenticated?}"
+    Rails.logger.info "=" * 80
+  end
+
 end
