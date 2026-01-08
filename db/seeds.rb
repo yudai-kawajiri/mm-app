@@ -684,41 +684,48 @@ end
 agemono_cat_sozai = Resources::Category.find_by(company: sozai_company, store: main_store_sozai, name: '揚げ物')
 nimono_cat_sozai = Resources::Category.find_by(company: sozai_company, store: main_store_sozai, name: '煮物')
 
-korokke_sozai = Resources::Product.find_or_create_by!(
+# 687行目から723行目までを置換
+korokke_sozai = Resources::Product.find_or_initialize_by(
   company: sozai_company,
   store_id: main_store_sozai.id,
-  item_number: '0001'
-) do |p|
-  p.name = 'コロッケ'
-  p.reading = 'ころっけ'
-  p.category = agemono_cat_sozai
-  p.price = 100
-  p.status = :selling
-end
+  name: 'コロッケ'
+)
+korokke_sozai.assign_attributes(
+  item_number: '0001',
+  reading: 'ころっけ',
+  category: agemono_cat_sozai,
+  price: 100,
+  status: :selling
+)
+korokke_sozai.save!
 
-karaage_sozai = Resources::Product.find_or_create_by!(
+karaage_sozai = Resources::Product.find_or_initialize_by(
   company: sozai_company,
   store_id: main_store_sozai.id,
-  item_number: '0002'
-) do |p|
-  p.name = '唐揚げ'
-  p.reading = 'からあげ'
-  p.category = agemono_cat_sozai
-  p.price = 200
-  p.status = :selling
-end
+  name: '唐揚げ'
+)
+karaage_sozai.assign_attributes(
+  item_number: '0002',
+  reading: 'からあげ',
+  category: agemono_cat_sozai,
+  price: 200,
+  status: :selling
+)
+karaage_sozai.save!
 
-nikujaga_sozai = Resources::Product.find_or_create_by!(
+nikujaga_sozai = Resources::Product.find_or_initialize_by(
   company: sozai_company,
   store_id: main_store_sozai.id,
-  item_number: '0003'
-) do |p|
-  p.name = '肉じゃが'
-  p.reading = 'にくじゃが'
-  p.category = nimono_cat_sozai
-  p.price = 350
-  p.status = :selling
-end
+  name: '肉じゃが'
+)
+nikujaga_sozai.assign_attributes(
+  item_number: '0003',
+  reading: 'にくじゃが',
+  category: nimono_cat_sozai,
+  price: 350,
+  status: :selling
+)
+nikujaga_sozai.save!
 
 # 商品と原材料の紐付け（総菜）
 [
