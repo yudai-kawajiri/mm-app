@@ -43,7 +43,7 @@ class Resources::UnitsController < AuthenticatedController
     @unit.user_id = current_user.id
     @unit.company_id = current_company.id
     @unit.store_id = current_user.store_id if @unit.store_id.blank?
-    respond_to_save(@unit, success_path: -> { scoped_path(:resources_unit_path, @unit) })
+    respond_to_save(@unit, success_path: -> { resources_unit_path(@company_from_path, @unit) })
   end
 
   def show; end
@@ -52,7 +52,7 @@ class Resources::UnitsController < AuthenticatedController
 
   def update
     @unit.assign_attributes(unit_params)
-    respond_to_save(@unit, success_path: -> { scoped_path(:resources_unit_path, @unit) })
+    respond_to_save(@unit, success_path: -> { resources_unit_path(@company_from_path, @unit) })
   end
 
   def destroy

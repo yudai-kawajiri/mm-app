@@ -66,7 +66,7 @@ class Resources::MaterialsController < AuthenticatedController
     @material.user_id = current_user.id
     @material.company_id = current_company.id
     @material.store_id = current_user.store_id if @material.store_id.blank?
-    respond_to_save(@material, success_path: -> { scoped_path(:resources_material_path, @material) })
+    respond_to_save(@material, success_path: -> { resources_material_path(@company_from_path, @material) })
   end
 
   def show; end
@@ -86,7 +86,7 @@ class Resources::MaterialsController < AuthenticatedController
     @manufacturing_units = scoped_units.where(category: :manufacturing).ordered
     @material_order_groups = scoped_material_order_groups.ordered
     @material.assign_attributes(material_params)
-    respond_to_save(@material, success_path: -> { scoped_path(:resources_material_path, @material) })
+    respond_to_save(@material, success_path: -> { resources_material_path(@company_from_path, @material) })
   end
 
   def destroy
