@@ -185,6 +185,7 @@ ja:
         code_placeholder: "例: STORE01"
         name: 店舗名
         name_placeholder: "例: 西葛西本店"
+        company_prompt: 選択してください
         submit_create: 登録
         submit_update: 更新
         cancel: キャンセル
@@ -214,3 +215,4 @@ ja:
         regenerate_code: 招待コードを再発行しますか？現在のコードは無効になります。
       store_id:
         blank: を選択してください
+

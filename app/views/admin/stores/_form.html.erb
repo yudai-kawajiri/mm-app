@@ -1,0 +1,41 @@
+<%# 店舗フォームフィールド %>
+
+<%# 会社選択（システム管理者のみ・新規作成時） %>
+<% if current_user.super_admin? %>
+  <% if resource.new_record? %>
+    <div class="mb-3">
+      <%= label_tag :company_id, "#{Company.human_attribute_name(:name)} <span class='text-danger'>*</span>".html_safe, class: 'form-label h5' %>
+      <%= f.collection_select :company_id, 
+          Company.order(:name), 
+          :id, 
+          :name, 
+          { prompt: t('admin.stores.form.company_prompt') },
+          { class: 'form-control', required: true } %>
+    </div>
+  <% elsif resource.company.present? %>
+    <%# 会社名（編集時は読み取り専用） %>
+    <div class="mb-3">
+      <%= label_tag :company_name, Company.human_attribute_name(:name), class: 'form-label h5 text-muted' %>
+      <div class="form-control-plaintext"><%= resource.company.name %></div>
+    </div>
+  <% end %>
+<% end %>
+
+<div class="row">
+  <div class="col-md-6">
+    <%= form_group_lg(f, :code,
+        field_type: :text_field,
+        label: "#{t('admin.stores.form.code')} <span class='text-danger'>*</span>".html_safe,
+        placeholder: t('admin.stores.form.code_placeholder'),
+        required: true
+    ) %>
+  </div>
+  <div class="col-md-6">
+    <%= form_group_lg(f, :name,
+        field_type: :text_field,
+        label: "#{t('admin.stores.form.name')} <span class='text-danger'>*</span>".html_safe,
+        placeholder: t('admin.stores.form.name_placeholder'),
+        required: true
+    ) %>
+  </div>
+</div>
