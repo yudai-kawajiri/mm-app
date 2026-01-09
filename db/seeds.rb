@@ -432,7 +432,7 @@ if defined?(Management::MonthlyBudget)
   end
 
   if defined?(Planning::PlanSchedule)
-    completed_until = Date.new(2026, 1, 15)
+    completed_until = Date.current
     (current_month_start..current_month_end).each do |date|
       target_plan = date.wday.in?([ 0, 6 ]) ? weekend_plan : weekday_plan
       target_amount = date.wday.in?([ 0, 6 ]) ? ENV.fetch('TEST_DAILY_TARGET_WEEKEND', '60000').to_i : ENV.fetch('TEST_DAILY_TARGET_WEEKDAY', '30000').to_i
@@ -444,7 +444,7 @@ if defined?(Management::MonthlyBudget)
           'product_name' => pp.product.name,
           'production_count' => pp.production_count,
           'price' => pp.product.price,
-          'subtotal' => pp.product.price
+          'subtotal' => pp.product.price * pp.production_count
         }
       end
 
@@ -844,7 +844,9 @@ if defined?(Management::MonthlyBudget)
   end
 
   if defined?(Planning::PlanSchedule)
-    (current_month_start..Date.new(2026, 1, 2)).each do |date|
+    completed_until = Date.current
+
+    (current_month_start..current_month_end).each do |date|
       target_plan = date.wday.in?([ 0, 6 ]) ? weekend_plan_sozai : weekday_plan_sozai
       target_amount = date.wday.in?([ 0, 6 ]) ? ENV.fetch('TEST_DAILY_TARGET_WEEKEND', '60000').to_i : ENV.fetch('TEST_DAILY_TARGET_WEEKDAY', '30000').to_i
 
@@ -862,8 +864,9 @@ if defined?(Management::MonthlyBudget)
       total_cost = products.sum { |p| p['production_count'] * p['price'] }
       achievement_rate = [ 0.85, 0.92, 0.98, 1.03, 1.12 ][(date.day - 1) % 5]
       actual_revenue = (target_amount * achievement_rate).round(-2)
-      discount_rate = 12.0
-      discount_amount = (actual_revenue * 0.12).round(-2)
+      status = date <= completed_until ? 'completed' : 'scheduled'
+      discount_rate = status == 'completed' ? 12.0 : 0.0
+      discount_amount = status == 'completed' ? (actual_revenue * 0.12).round(-2) : 0
 
       snapshot = {
         'products' => products,
@@ -881,45 +884,8 @@ if defined?(Management::MonthlyBudget)
 
       plan_schedule.update!(
         plan_products_snapshot: snapshot,
-        actual_revenue: actual_revenue,
-        status: 'completed'
-      )
-    end
-
-    (Date.new(2026, 1, 3)..current_month_end).each do |date|
-      target_plan = date.wday.in?([ 0, 6 ]) ? weekend_plan_sozai : weekday_plan_sozai
-
-      products = target_plan.plan_products.includes(:product).map do |pp|
-        {
-          'product_id' => pp.product_id,
-          'name' => pp.product.name,
-          'product_name' => pp.product.name,
-          'production_count' => pp.production_count,
-          'price' => pp.product.price,
-          'subtotal' => pp.product.price * pp.production_count
-        }
-      end
-
-      total_cost = products.sum { |p| p['production_count'] * p['price'] }
-
-      snapshot = {
-        'products' => products,
-        'total_cost' => total_cost,
-        'discount_rate' => 0.0,
-        'discount_amount' => 0
-      }
-
-      plan_schedule = Planning::PlanSchedule.find_or_create_by!(
-        company: sozai_company,
-        store_id: main_store_sozai.id,
-        plan: target_plan,
-        scheduled_date: date
-      )
-
-      plan_schedule.update!(
-        plan_products_snapshot: snapshot,
-        actual_revenue: nil,
-        status: 'scheduled'
+        actual_revenue: status == 'completed' ? actual_revenue : nil,
+        status: status
       )
     end
   end
