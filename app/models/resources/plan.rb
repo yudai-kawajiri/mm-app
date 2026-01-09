@@ -160,7 +160,7 @@ class Resources::Plan < ApplicationRecord
         summary[:material_id] = material.id
         summary[:material_name] = material.name
         summary[:unit_for_product_name] = pm.unit&.name
-        summary[:production_unit_name] = material.unit_for_product&.name
+        summary[:production_unit_name] = material.production_unit&.name
         summary[:total_quantity] += quantity
         summary[:order_group_name] = material.order_group&.name
         summary[:order_unit_name] = material.unit_for_order&.name
