@@ -44,7 +44,7 @@ class AdminRequest < ApplicationRecord
         user.update!(approved: true)
       end
 
-      ApplicationRequestMailer.approval_notification(self).deliver_later
+      ApplicationRequestMailer.approval_notification(self).deliver_now
     end
   end
 
@@ -65,7 +65,7 @@ class AdminRequest < ApplicationRecord
       end
 
       # 却下通知メールを送信
-      ApplicationRequestMailer.rejection_notification(self).deliver_later
+      ApplicationRequestMailer.rejection_notification(self).deliver_now
     end
   end
 

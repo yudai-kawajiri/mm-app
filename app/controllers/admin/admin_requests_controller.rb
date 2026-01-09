@@ -44,7 +44,7 @@ class Admin::AdminRequestsController < Admin::BaseController
     @admin_request.request_type = :store_admin_request
 
     if @admin_request.save
-      redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), notice: t("flash_messages.admin.admin_requests.messages.created")
+      redirect_to admin_admin_requests_path(params[:company_slug]), notice: t("flash_messages.admin.admin_requests.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -52,9 +52,9 @@ class Admin::AdminRequestsController < Admin::BaseController
 
   def approve
     if @admin_request.approve!(current_user)
-      redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), notice: t("flash_messages.admin.admin_requests.messages.approved")
+      redirect_to admin_admin_requests_path(params[:company_slug]), notice: t("flash_messages.admin.admin_requests.messages.approved")
     else
-      redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), alert: t("flash_messages.admin.admin_requests.messages.approve_failed")
+      redirect_to admin_admin_requests_path(params[:company_slug]), alert: t("flash_messages.admin.admin_requests.messages.approve_failed")
     end
   end
 
@@ -69,9 +69,9 @@ class Admin::AdminRequestsController < Admin::BaseController
         user.destroy
       end
 
-      redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), notice: t("flash_messages.admin.admin_requests.messages.rejected")
+      redirect_to admin_admin_requests_path(params[:company_slug]), notice: t("flash_messages.admin.admin_requests.messages.rejected")
     else
-      redirect_to company_admin_admin_requests_path(company_slug: params[:company_slug]), alert: t("flash_messages.admin.admin_requests.messages.reject_failed")
+      redirect_to admin_admin_requests_path(params[:company_slug]), alert: t("flash_messages.admin.admin_requests.messages.reject_failed")
     end
   end
 

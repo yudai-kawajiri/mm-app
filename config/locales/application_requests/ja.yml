@@ -47,6 +47,7 @@ ja:
     accept_confirm:
       approved: アカウントが承認されました。ログインしてください。
       approval_failed: "承認に失敗しました: %{error}"
+      company_not_found: 会社情報が見つかりませんでした。管理者にお問い合わせください。
 
     thanks:
       title: 利用申請完了

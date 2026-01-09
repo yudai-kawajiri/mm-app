@@ -255,7 +255,7 @@ class Resources::PlansController < AuthenticatedController
           material[:order_group_name] || "-",
           material[:material_name],
           material[:total_quantity],
-          material[:unit_for_product_name] || "-",
+          material[:production_unit_name] || "-",
           material[:total_weight] || 0,
           material[:production_unit_name] || '-',
           material[:required_order_quantity],

@@ -68,32 +68,32 @@ class DashboardsController < AuthenticatedController
   end
 
   # 会社管理者用ダッシュボード
+
   def render_company_admin_dashboard
     # 承認待ちユーザー数: 自テナントのみ (AdminRequest の pending のみ)
     @pending_users_count = AdminRequest.for_company(current_user.company).pending.count
     @stores_count = current_user.company.stores.count
 
-    # 会社管理者: テナント内のログをフィルタ
+    # 会社管理者: テナント内のログをフィルタ（システムログは除外）
     if session[:current_store_id].present?
       # 特定店舗選択時: その店舗に関連するログのみ
       store = Store.find(session[:current_store_id])
       @recent_logs = PaperTrail::Version
-        .joins("LEFT JOIN users ON versions.whodunnit = CAST(users.id AS VARCHAR)")
-        .where("users.store_id = ? OR versions.whodunnit IS NULL", store.id)
+        .joins("INNER JOIN users ON versions.whodunnit = CAST(users.id AS VARCHAR)")
+        .where("users.store_id = ?", store.id)
         .order("versions.created_at DESC")
         .limit(10)
     else
-      # 全店舗選択時: テナント内の全ログ
+      # 全店舗選択時: テナント内の全ログ（システムログは除外）
       @recent_logs = PaperTrail::Version
-        .joins("LEFT JOIN users ON versions.whodunnit = CAST(users.id AS VARCHAR)")
-        .where("users.company_id = ? OR versions.whodunnit IS NULL", current_user.company_id)
+        .joins("INNER JOIN users ON versions.whodunnit = CAST(users.id AS VARCHAR)")
+        .where("users.company_id = ?", current_user.company_id)
         .order("versions.created_at DESC")
         .limit(10)
     end
 
     render "dashboards/company_admin_dashboard"
   end
-
   # 店舗ユーザー用ダッシュボード（現在の数値管理）
   def render_store_user_dashboard
     @year = params[:year]&.to_i || Date.current.year

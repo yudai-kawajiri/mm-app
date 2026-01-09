@@ -5,6 +5,7 @@ class ApplicationRequestsController < ApplicationController
     @application_request = ApplicationRequest.new
   end
 
+
   def create
     @application_request = ApplicationRequest.new(
       company_name: application_request_params[:company_name],
@@ -17,13 +18,12 @@ class ApplicationRequestsController < ApplicationController
     ActiveRecord::Base.transaction do
       company = Company.create!(
         name: application_request_params[:company_name],
-        code: SecureRandom.alphanumeric(8).upcase,
         email: application_request_params[:company_email],
         phone: application_request_params[:company_phone],
         slug: SecureRandom.alphanumeric(6).downcase
       )
 
-      @application_request.company = company
+      @application_request.company_id = company.id
       @application_request.status = :pending
       @application_request.invitation_token = SecureRandom.urlsafe_base64(32)
       @application_request.save!
@@ -41,22 +41,17 @@ class ApplicationRequestsController < ApplicationController
       @application_request.update!(user: user)
 
       ApplicationRequestMailer.invitation_email(@application_request, company.slug).deliver_later
-      redirect_to thanks_application_requests_path
     end
+    
+    # トランザクション完了後にリダイレクト
+    redirect_to thanks_application_requests_path
   rescue ActiveRecord::RecordInvalid => e
-    # エラーの詳細をログに出力
     Rails.logger.error("ApplicationRequest creation failed: #{e.record.errors.full_messages}")
-
-    # エラーメッセージを @application_request に追加
     @application_request.errors.add(:base, e.record.errors.full_messages.join(", "))
-
     flash.now[:alert] = t("flash_messages.application_requests.create.error", error: e.record.errors.full_messages.join(", "))
     render :new, status: :unprocessable_entity
   rescue ActiveRecord::RecordNotUnique => e
-    # 重複キーエラーの処理
     Rails.logger.error("Duplicate key error: #{e.message}")
-
-    # エラーメッセージを判定
     if e.message.include?("index_companies_on_phone")
       error_message = t("flash_messages.application_requests.create.duplicate_phone")
     elsif e.message.include?("index_companies_on_email")
@@ -64,12 +59,10 @@ class ApplicationRequestsController < ApplicationController
     else
       error_message = t("flash_messages.application_requests.create.error")
     end
-
     @application_request.errors.add(:base, error_message)
     flash.now[:alert] = error_message
     render :new, status: :unprocessable_entity
   end
-
   def thanks
   end
 
@@ -81,7 +74,14 @@ class ApplicationRequestsController < ApplicationController
     end
   end
 
+
   def accept_confirm
+    # company が存在しない場合のエラーハンドリング
+    unless @application_request.company
+      flash[:alert] = t("application_requests.accept_confirm.company_not_found")
+      redirect_to root_path and return
+    end
+
     ActiveRecord::Base.transaction do
       # ユーザーを承認
       user = @application_request.user
@@ -96,7 +96,6 @@ class ApplicationRequestsController < ApplicationController
     flash[:alert] = t("application_requests.accept_confirm.approval_failed", error: e.record.errors.full_messages.join(", "))
     render :accept, status: :unprocessable_entity
   end
-
   private
 
   def application_request_params
@@ -112,6 +111,6 @@ class ApplicationRequestsController < ApplicationController
   end
 
   def find_application_request_by_token
-    @application_request = ApplicationRequest.find_by!(invitation_token: params[:token])
+    @application_request = ApplicationRequest.includes(:company, :user).find_by!(invitation_token: params[:token])
   end
 end
