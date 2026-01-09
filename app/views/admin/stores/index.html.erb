@@ -31,7 +31,7 @@
       { header: :code, data: Proc.new { |store| store.code } },
       { header: :name, data: Proc.new { |store| store.name } },
       { header: :invitation_code, data: Proc.new { |store| store.invitation_code } },
-      { header: :users_count, data: Proc.new { |store| AdminRequest.where(store: store).where.not(status: :rejected).count } },
+      { header: :users_count, data: Proc.new { |store| store.users.where(approved: true).count } },
       { header: :created_at, data: Proc.new { |store| l(store.created_at, format: :short) } }
     ]
   %>
