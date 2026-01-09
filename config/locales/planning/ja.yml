@@ -39,7 +39,7 @@ ja:
       no_image: 画像なし
       no_products: 商品が登録されていません
       material_name: 原材料名
-      product_usage: 商品での使用数量
+      product_usage: 合計使用数量
       total_usage: 合計使用量
       order_unit: 発注単位
       order_quantity: 発注数量
