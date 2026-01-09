@@ -48,7 +48,7 @@
   </div>
 
   <div class="card-body p-0">
-    <%= form_with url: bulk_update_management_numerical_managements_path(@company_from_path), method: :patch, data: { management__daily_details_target: "form", action: "submit->management--daily-details#beforeSubmit" } do |f| %>
+    <%= form_with url: bulk_update_management_numerical_managements_path(current_company.slug), method: :patch, data: { management__daily_details_target: "form", action: "submit->management--daily-details#beforeSubmit" } do |f| %>
       <%= hidden_field_tag :year, @selected_date.year %>
       <%= hidden_field_tag :month, @selected_date.month %>
 
