@@ -5,7 +5,7 @@
 
 module PathHelpers
   def scoped_path(path_method, *args, **options)
-    # 特殊なパスのマッピング
+    # 特殊なパスのマッピング（逆引き用: 実際のメソッド名 => company_付きメソッド名）
     path_mapping = {
       # Materials
       new_resources_material: :new_company_resources_material,
@@ -87,15 +87,24 @@ module PathHelpers
       revenue_api_v1_plan: :revenue_company_api_v1_plan
     }
 
-    # マッピングがあれば使用
-    mapped_method = path_mapping[path_method] || "company_#{path_method}".to_sym
-
     company_slug = options[:company_slug] ||
-                   @company&.slug ||
-                   company&.slug ||
-                   @user&.company&.slug ||
-                   @current_user&.company&.slug ||
-                   'test-company'
+                    @company&.slug ||
+                    company&.slug ||
+                    @user&.company&.slug ||
+                    @current_user&.company&.slug ||
+                    'test-company'
+
+    # company_ プレフィックスを削除して実際のメソッド名を取得
+    actual_method = if path_method.to_s.start_with?('company_')
+                      # company_ プレフィックスがある場合、逆引きして実際のメソッド名を取得
+                      path_mapping.key(path_method) || path_method.to_s.sub(/^company_/, '').to_sym
+                    else
+                      # company_ プレフィックスがない場合はそのまま
+                      path_method
+                    end
+
+    # マッピングがある場合は company_ 付きメソッドを使用
+    mapped_method = path_mapping[actual_method] || actual_method
 
     # パスまたはURLを生成
     method_name = mapped_method.to_s.end_with?('_url') ? mapped_method : "#{mapped_method}_path"

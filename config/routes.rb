@@ -62,7 +62,6 @@ Rails.application.routes.draw do
   authenticated :user do
     # 会社スコープ内のルーティング
     scope "/c/:company_slug" do
-
       post :switch_store, to: "stores#switch"
       post :switch_company, to: "companies#switch"
 

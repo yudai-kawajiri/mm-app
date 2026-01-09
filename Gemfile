@@ -63,6 +63,7 @@ end
 group :development do
   gem "web-console"
   gem "whenever", require: false
+  gem "rails-erd"
 
   # メール確認ツール(グローバルインストール推奨)
   # インストール: gem install mailcatcher
