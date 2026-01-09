@@ -24,14 +24,12 @@ class Management::MonthlyBudgetsController < Management::BaseController
     @monthly_budget.assign_attributes(sanitized_monthly_budget_params)
 
     if @monthly_budget.save
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: budget_month.year,
                     month: budget_month.month
                   ), notice: t("flash_messages.numerical_managements.messages.budget_created")
     else
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: budget_month.year,
                     month: budget_month.month
                   ), alert: @monthly_budget.errors.full_messages.to_sentence
@@ -41,14 +39,12 @@ class Management::MonthlyBudgetsController < Management::BaseController
   # 月次予算を更新
   def update
     if @monthly_budget.update(sanitized_monthly_budget_params)
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: @monthly_budget.budget_month.year,
                     month: @monthly_budget.budget_month.month
                   ), notice: t("flash_messages.numerical_managements.messages.budget_updated")
     else
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: @monthly_budget.budget_month.year,
                     month: @monthly_budget.budget_month.month
                   ), alert: @monthly_budget.errors.full_messages.to_sentence
@@ -72,16 +68,14 @@ class Management::MonthlyBudgetsController < Management::BaseController
       # 月次予算を削除
       @monthly_budget.destroy!
 
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: budget_month.year,
                     month: budget_month.month
                   ), notice: t("flash_messages.numerical_managements.messages.budget_deleted")
     end
   rescue ActiveRecord::RecordNotDestroyed, ActiveRecord::RecordInvalid => e
     Rails.logger.error "Monthly budget deletion failed: #{e.message}"
-    redirect_to company_management_numerical_managements_path(
-                  company_slug: current_company.slug,
+    redirect_to management_numerical_managements_path(
                   year: budget_month.year,
                   month: budget_month.month
                 ), alert: t("flash_messages.numerical_managements.messages.budget_delete_failed")
@@ -97,14 +91,12 @@ class Management::MonthlyBudgetsController < Management::BaseController
     cleaned_params.transform_values! { |value| value.present? ? value : 0.0 }
 
     if @monthly_budget.update(cleaned_params)
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: @monthly_budget.budget_month.year,
                     month: @monthly_budget.budget_month.month
                   ), notice: t("flash_messages.numerical_managements.messages.discount_rates_updated")
     else
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: @monthly_budget.budget_month.year,
                     month: @monthly_budget.budget_month.month
                   ), alert: @monthly_budget.errors.full_messages.join(", ")
