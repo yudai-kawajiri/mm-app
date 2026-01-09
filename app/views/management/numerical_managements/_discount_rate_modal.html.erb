@@ -12,7 +12,7 @@
 
         <%= form_with(
           model: [:management, @monthly_budget],
-          url: update_discount_rates_company_management_monthly_budget_path(@monthly_budget, company_slug: current_company.slug),
+          url: update_discount_rates_management_monthly_budget_path(id: @monthly_budget.id),
           method: :patch,
           data: { turbo: false }
         ) do |f| %>

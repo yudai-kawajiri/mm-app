@@ -22,7 +22,7 @@
     <div class="modal-content">
       <%= form_with model: Planning::PlanSchedule.new,
               scope: :plan_schedule,
-              url: company_management_plan_schedules_path,
+              url: management_plan_schedules_path,
               method: :post,
               local: true,
               id: "assignPlanForm",
