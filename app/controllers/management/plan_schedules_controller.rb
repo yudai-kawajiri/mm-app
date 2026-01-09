@@ -10,8 +10,7 @@ class Management::PlanSchedulesController < Management::BaseController
     return unless scheduled_date
 
     unless permitted[:plan_id].present?
-      redirect_to company_management_numerical_managements_path(
-        company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
         year: scheduled_date.year,
         month: scheduled_date.month
       ), alert: I18n.t("api.errors.missing_required_info")
@@ -47,15 +46,13 @@ class Management::PlanSchedulesController < Management::BaseController
       msg_key = is_new_record ? "plan_assigned" : "plan_updated"
       notice_message = I18n.t("flash_messages.plan_schedules.messages.#{msg_key}")
 
-      redirect_to company_management_numerical_managements_path(
-        company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
         year: scheduled_date.year,
         month: scheduled_date.month
       ), notice: notice_message
     else
       err_key = is_new_record ? "plan_schedule_save_failed" : "plan_schedule_update_failed"
-      redirect_to company_management_numerical_managements_path(
-        company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
         year: scheduled_date.year,
         month: scheduled_date.month
       ), alert: I18n.t("flash_messages.plan_schedules.messages.#{err_key}", errors: @plan_schedule.errors.full_messages.join(", "))
@@ -80,14 +77,12 @@ class Management::PlanSchedulesController < Management::BaseController
     if @plan_schedule.update(permitted.slice(:actual_revenue))
       @plan_schedule.create_snapshot_from_plan unless @plan_schedule.has_snapshot?
 
-      redirect_to company_management_numerical_managements_path(
-        company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
         year: @plan_schedule.scheduled_date.year,
         month: @plan_schedule.scheduled_date.month
       ), notice: t("flash_messages.numerical_managements.messages.actual_revenue_updated")
     else
-      redirect_to company_management_numerical_managements_path(
-        company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
         year: @plan_schedule.scheduled_date.year,
         month: @plan_schedule.scheduled_date.month
       ), alert: t("flash_messages.numerical_managements.messages.actual_revenue_update_failed")
@@ -112,8 +107,7 @@ class Management::PlanSchedulesController < Management::BaseController
     return nil unless date_string.present?
     Date.parse(date_string)
   rescue ArgumentError, TypeError
-    redirect_to company_management_numerical_managements_path(
-      company_slug: current_company.slug,
+    redirect_to management_numerical_managements_path(
       year: Date.current.year,
       month: Date.current.month
     ), alert: I18n.t("api.errors.invalid_date")

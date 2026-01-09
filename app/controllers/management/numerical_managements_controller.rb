@@ -96,8 +96,7 @@ class Management::NumericalManagementsController < Management::BaseController
       new_total = current_total + sanitized_value.to_i
 
       if new_total > monthly_budget.target_amount
-        redirect_to company_management_numerical_managements_path(
-                      company_slug: current_company.slug,
+        redirect_to management_numerical_managements_path(
                       year: date.year,
                       month: date.month
                     ),
@@ -110,16 +109,14 @@ class Management::NumericalManagementsController < Management::BaseController
     end
 
     if daily_target.update(target_amount: sanitized_value)
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: date.year,
                     month: date.month
                   ),
                   notice: t("flash_messages.numerical_managements.messages.daily_target_updated"),
                   turbo: false
     else
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: date.year,
                     month: date.month
                   ),
@@ -127,8 +124,7 @@ class Management::NumericalManagementsController < Management::BaseController
             turbo: false
     end
   rescue Date::Error
-    redirect_to company_management_numerical_managements_path(
-                  company_slug: current_company.slug,
+    redirect_to management_numerical_managements_path(
                   year: Date.current.year,
                   month: Date.current.month
                 ),
@@ -149,8 +145,7 @@ class Management::NumericalManagementsController < Management::BaseController
 
     budget_check_result = check_budget_before_bulk_update(year, month, sanitized_params)
     if budget_check_result[:exceeded]
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: year,
                     month: month
                   ),
@@ -162,16 +157,14 @@ class Management::NumericalManagementsController < Management::BaseController
     service = NumericalDataBulkUpdateService.new(current_user, sanitized_params, current_store&.id)
 
     if service.call
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: year,
                     month: month
                   ),
                   notice: t("flash_messages.numerical_managements.messages.daily_details_updated"),
                   turbo: false
     else
-      redirect_to company_management_numerical_managements_path(
-                    company_slug: current_company.slug,
+      redirect_to management_numerical_managements_path(
                     year: year,
                     month: month
                   ),
