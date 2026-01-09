@@ -18,7 +18,7 @@
       <% if current_user.super_admin? %>
         <%# システム管理者: 会社選択ドロップダウン %>
         <% company_slug_for_form = current_company&.slug || (session[:current_company_id].present? ? Company.find_by(id: session[:current_company_id])&.slug : nil) || 'admin' %>
-        <%= form_with url: company_switch_company_path(company_slug: company_slug_for_form), method: :post, local: true do |f| %>
+        <%= form_with url: switch_company_path(company_slug_for_form), method: :post, local: true do |f| %>
           <%= f.select :current_company_id,
               options_for_select(
                 [[t('dashboard.sidebar.system_admin_mode'), '']] + Company.order(:name).map { |c| [c.name, c.id] },
@@ -50,7 +50,7 @@
           <small class="text-muted d-block mb-1">
             <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
           </small>
-          <%= form_with url: company_switch_store_path(company_slug: current_company.slug), method: :post, local: true do |f| %>
+          <%= form_with url: switch_store_path(current_company.slug), method: :post, local: true do |f| %>
             <%= f.select :current_store_id,
                 options_for_select(
                   [[t('dashboard.sidebar.all_stores'), '']] + current_company.stores.map { |s| [s.name, s.id] },
@@ -78,7 +78,7 @@
         <small class="text-muted d-block mb-1">
           <i class="bi bi-shop"></i> <%= t('dashboard.sidebar.store') %>
         </small>
-        <%= form_with url: company_switch_store_path(company_slug: current_company.slug), method: :post, local: true do |f| %>
+        <%= form_with url: switch_store_path(current_company.slug), method: :post, local: true do |f| %>
           <%= f.select :current_store_id,
               options_for_select(
                 [[t('dashboard.sidebar.all_stores'), '']] + current_company.stores.map { |s| [s.name, s.id] },
