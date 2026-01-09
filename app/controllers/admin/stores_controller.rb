@@ -4,6 +4,7 @@ class Admin::StoresController < Admin::BaseController
   before_action :set_store, only: [ :show, :edit, :update, :destroy, :regenerate_invitation_code ]
   before_action :authorize_store_management, only: [ :new, :create, :edit, :update, :destroy, :regenerate_invitation_code ]
 
+
   def index
     # システム管理者の場合
     if current_user.super_admin?
@@ -48,9 +49,9 @@ class Admin::StoresController < Admin::BaseController
     @stores = @stores.left_joins(:company, :users)
               .select("stores.*, COUNT(DISTINCT CASE WHEN users.approved = true THEN users.id END) as users_count")
               .group("stores.id, companies.id")
+              .includes(:company)
               .page(params[:page]).per(20)
   end
-
   def show
     # 全ユーザーと承認済みユーザーを分けて取得
     @all_users = @store.users.order(created_at: :desc)
