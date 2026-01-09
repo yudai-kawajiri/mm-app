@@ -133,7 +133,7 @@
 
   <% if admin_request.can_be_approved? %>
     <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-      <%= button_to approve_company_admin_admin_request_path(admin_request, company_slug: params[:company_slug]),
+      <%= button_to approve_admin_admin_request_path(params[:company_slug], admin_request),
           method: :post,
           class: 'btn btn-success',
           data: { confirm: t('admin.admin_requests.confirm.approve', name: admin_request.user.name) } do %>
@@ -156,7 +156,7 @@
   <div class="modal fade" id="rejectModal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
-        <%= form_with url: reject_company_admin_admin_request_path(admin_request, company_slug: params[:company_slug]), method: :post do |f| %>
+        <%= form_with url: reject_admin_admin_request_path(params[:company_slug], admin_request), method: :post do |f| %>
           <div class="modal-header">
             <h5 class="modal-title">
               <i class="bi bi-x-circle me-2"></i>
