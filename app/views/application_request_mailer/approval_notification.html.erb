@@ -40,7 +40,7 @@
       <div class="login-steps">
         <p><strong><%= t('application_request_mailer.approval_notification.method_1_title') %></strong></p>
         <div style="text-align: center;">
-          <a href="<%= company_new_user_session_url(...) %>" class="button"><%= t('application_request_mailer.approval_notification.login_button') %></a>
+          <a href="<%= company_new_user_session_url(company_slug: @user.company.slug, host: ENV.fetch("APP_HOST", "localhost:3000"), protocol: ENV.fetch("APP_PROTOCOL", "http")) %>" class="button"><%= t('application_request_mailer.approval_notification.login_button') %></a>
         </div>
         <p style="font-size: 14px; color: #6c757d; text-align: center;">
           <%= company_new_user_session_url(company_slug: @user.company.slug, host: ENV.fetch('APP_HOST', 'localhost:3000'), protocol: ENV.fetch('APP_PROTOCOL', 'http')) %>

@@ -17,11 +17,6 @@ ja:
               taken: は既に使用されています
             slug:
               taken: は既に使用されています
-        contact:
-          name: お名前
-          email: メールアドレス
-          subject: 件名
-          message: お問い合わせ内容
         store:
           attributes:
             base:
@@ -362,3 +357,13 @@ ja:
           store_admin: 店舗管理者
           employee: 従業員
           general: 一般
+
+  activemodel:
+    attributes:
+      contact:
+        name: お名前
+        email: メールアドレス
+        subject: 件名
+        message: お問い合わせ内容
+    errors:
+      models:

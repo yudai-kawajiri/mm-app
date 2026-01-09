@@ -2,7 +2,7 @@ puts "シード処理を開始します..."
 
 # 1. 管理用会社の作成
 admin_company = Company.find_or_create_by!(slug: 'system-admin') do |c|
-  c.name = 'システム管理会社'
+  c.name = 'システム管理'
   c.email = ENV['ADMIN_COMPANY_EMAIL'] || 'admin@mm-app-manage.com'
 end
 

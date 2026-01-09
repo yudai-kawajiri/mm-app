@@ -74,7 +74,7 @@ class Admin::StoresController < Admin::BaseController
     end
 
     if @store.save
-      redirect_to scoped_path(:admin_stores_path), notice: t("flash_messages.admin.stores.messages.created")
+      redirect_to scoped_path(:admin_store_path, @store), notice: t("flash_messages.admin.stores.messages.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -93,12 +93,12 @@ class Admin::StoresController < Admin::BaseController
 
   def destroy
     if @store.users.exists?
-      redirect_to scoped_path(:admin_stores_path), alert: t("flash_messages.admin.stores.messages.has_users")
+      redirect_to scoped_path(:admin_store_path, @store), alert: t("flash_messages.admin.stores.messages.has_users")
       return
     end
 
     @store.destroy
-    redirect_to scoped_path(:admin_stores_path), notice: t("flash_messages.admin.stores.messages.deleted")
+    redirect_to scoped_path(:admin_store_path, @store), notice: t("flash_messages.admin.stores.messages.deleted")
   end
 
   def regenerate_invitation_code
