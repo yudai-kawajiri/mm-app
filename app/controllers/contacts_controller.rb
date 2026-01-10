@@ -45,4 +45,3 @@ class ContactsController < ApplicationController
     params.require(:contact).permit(:name, :email, :subject, :message)
   end
 end
-

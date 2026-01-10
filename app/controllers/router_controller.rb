@@ -7,7 +7,6 @@ class RouterController < ApplicationController
   # before_action :authenticate_user!
 
   def index
-
     Rails.logger.info "=" * 80
     Rails.logger.info "[ROUTER DEBUG] Session: #{session.to_hash.inspect}"
     Rails.logger.info "[ROUTER DEBUG] Cookies: #{cookies.to_hash.keys.inspect}"

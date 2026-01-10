@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 class DashboardsController < AuthenticatedController
-
   layout "dashboard"
   def index
-
     Rails.logger.info "=" * 80
     Rails.logger.info "[DASHBOARD DEBUG] Session: #{session.to_hash.inspect}"
     Rails.logger.info "[DASHBOARD DEBUG] Cookies: #{cookies.to_hash.keys.inspect}"

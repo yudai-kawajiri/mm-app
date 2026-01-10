@@ -195,31 +195,31 @@ class Resources::PlansController < AuthenticatedController
     total_revenue = plan_products.sum { |pp| pp.production_count * pp.product.price }
     achievement_rate = if from_daily && @budget && @budget > 0
                         ((total_revenue.to_f / @budget) * 100).round(1)
-                      else
+    else
                         nil
-                      end
+    end
 
     csv_data = CSV.generate(headers: true, encoding: Encoding::SJIS) do |csv|
       # ========== ヘッダー情報（数値管理からの場合） ==========
       if from_daily
-        csv << [encode_for_csv("#{I18n.t('plans.csv.info.plan_name')}: #{@plan.name}")]
-        csv << [encode_for_csv("#{I18n.t('plans.csv.info.scheduled_date')}: #{@scheduled_date ? I18n.l(@scheduled_date, format: :long) : '-'}")]
-        csv << [encode_for_csv("#{I18n.t('plans.csv.info.budget')}: #{@budget ? format_currency_for_csv(@budget.to_i) : '-'}")]
-        csv << [encode_for_csv("#{I18n.t('plans.csv.info.planned_revenue')}: #{format_currency_for_csv(total_revenue.to_i)}")]
-        csv << [encode_for_csv("#{I18n.t('plans.csv.info.achievement_rate')}: #{achievement_rate ? "#{achievement_rate}%" : '-'}")]
+        csv << [ encode_for_csv("#{I18n.t('plans.csv.info.plan_name')}: #{@plan.name}") ]
+        csv << [ encode_for_csv("#{I18n.t('plans.csv.info.scheduled_date')}: #{@scheduled_date ? I18n.l(@scheduled_date, format: :long) : '-'}") ]
+        csv << [ encode_for_csv("#{I18n.t('plans.csv.info.budget')}: #{@budget ? format_currency_for_csv(@budget.to_i) : '-'}") ]
+        csv << [ encode_for_csv("#{I18n.t('plans.csv.info.planned_revenue')}: #{format_currency_for_csv(total_revenue.to_i)}") ]
+        csv << [ encode_for_csv("#{I18n.t('plans.csv.info.achievement_rate')}: #{achievement_rate ? "#{achievement_rate}%" : '-'}") ]
         csv << []
       end
 
       # ========== 製造計画書（商品一覧） ==========
-      csv << [I18n.t('plans.csv.sections.product_list')]
+      csv << [ I18n.t("plans.csv.sections.product_list") ]
       csv << []
       csv << [
-        I18n.t('plans.csv.headers.product.category'),
-        I18n.t('plans.csv.headers.product.item_number'),
-        I18n.t('plans.csv.headers.product.name'),
-        I18n.t('plans.csv.headers.product.production_count'),
-        I18n.t('plans.csv.headers.product.unit_price'),
-        I18n.t('plans.csv.headers.product.subtotal')
+        I18n.t("plans.csv.headers.product.category"),
+        I18n.t("plans.csv.headers.product.item_number"),
+        I18n.t("plans.csv.headers.product.name"),
+        I18n.t("plans.csv.headers.product.production_count"),
+        I18n.t("plans.csv.headers.product.unit_price"),
+        I18n.t("plans.csv.headers.product.subtotal")
       ]
 
       plan_products.each do |pp|
@@ -234,20 +234,20 @@ class Resources::PlansController < AuthenticatedController
         ]
       end
 
-      csv << ["", "", I18n.t('plans.csv.total'), "", "", total_revenue]
+      csv << [ "", "", I18n.t("plans.csv.total"), "", "", total_revenue ]
       csv << []
       csv << []
-      csv << [I18n.t('plans.csv.sections.material_list')]
+      csv << [ I18n.t("plans.csv.sections.material_list") ]
       csv << []
       csv << [
-        I18n.t('plans.csv.headers.material.order_group'),
-        I18n.t('plans.csv.headers.material.name'),
-        I18n.t('plans.csv.headers.material.total_quantity'),
-        I18n.t('plans.csv.headers.material.use_unit'),
-        I18n.t('plans.csv.headers.material.total_weight'),
-        I18n.t('plans.csv.headers.material.production_unit'),
-        I18n.t('plans.csv.headers.material.order_quantity'),
-        I18n.t('plans.csv.headers.material.order_unit')
+        I18n.t("plans.csv.headers.material.order_group"),
+        I18n.t("plans.csv.headers.material.name"),
+        I18n.t("plans.csv.headers.material.total_quantity"),
+        I18n.t("plans.csv.headers.material.use_unit"),
+        I18n.t("plans.csv.headers.material.total_weight"),
+        I18n.t("plans.csv.headers.material.production_unit"),
+        I18n.t("plans.csv.headers.material.order_quantity"),
+        I18n.t("plans.csv.headers.material.order_unit")
       ]
 
       materials_summary.each do |material|
@@ -257,7 +257,7 @@ class Resources::PlansController < AuthenticatedController
           material[:total_quantity],
           material[:production_unit_name] || "-",
           material[:total_weight] || 0,
-          material[:production_unit_name] || '-',
+          material[:production_unit_name] || "-",
           material[:required_order_quantity],
           material[:order_unit_name]
         ]
@@ -314,7 +314,7 @@ class Resources::PlansController < AuthenticatedController
     end
 
     @plan = OpenStruct.new(
-      name: snapshot["plan_name"] || I18n.t('plans.deleted_plan_name'),
+      name: snapshot["plan_name"] || I18n.t("plans.deleted_plan_name"),
       category: OpenStruct.new(name: snapshot["category_name"] || "-")
     )
 
