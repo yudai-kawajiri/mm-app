@@ -23,7 +23,7 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
       t.timestamps
     end
     add_index :stores, :company_id
-    add_index :stores, [:company_id, :code], unique: true
+    add_index :stores, [ :company_id, :code ], unique: true
     add_foreign_key :stores, :companies, on_delete: :cascade
 
     # Users テーブル
@@ -64,8 +64,8 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :categories, :company_id
     add_index :categories, :store_id
     add_index :categories, :user_id
-    add_index :categories, [:name, :category_type, :store_id], unique: true, name: 'index_categories_on_name_type_store'
-    add_index :categories, [:reading, :category_type, :store_id], unique: true, name: 'index_categories_on_reading_type_store'
+    add_index :categories, [ :name, :category_type, :store_id ], unique: true, name: 'index_categories_on_name_type_store'
+    add_index :categories, [ :reading, :category_type, :store_id ], unique: true, name: 'index_categories_on_reading_type_store'
     add_foreign_key :categories, :companies, on_delete: :cascade
     add_foreign_key :categories, :stores, on_delete: :cascade
     add_foreign_key :categories, :users, on_delete: :cascade
@@ -84,8 +84,8 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :units, :company_id
     add_index :units, :store_id
     add_index :units, :user_id
-    add_index :units, [:name, :category, :store_id], unique: true, name: 'index_units_on_name_category_store'
-    add_index :units, [:reading, :category, :store_id], unique: true, name: 'index_units_on_reading_category_store'
+    add_index :units, [ :name, :category, :store_id ], unique: true, name: 'index_units_on_name_category_store'
+    add_index :units, [ :reading, :category, :store_id ], unique: true, name: 'index_units_on_reading_category_store'
     add_foreign_key :units, :companies, on_delete: :cascade
     add_foreign_key :units, :stores, on_delete: :cascade
     add_foreign_key :units, :users
@@ -103,8 +103,8 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :material_order_groups, :company_id
     add_index :material_order_groups, :store_id
     add_index :material_order_groups, :user_id
-    add_index :material_order_groups, [:name, :store_id], unique: true, name: 'index_material_order_groups_on_name_store'
-    add_index :material_order_groups, [:reading, :store_id], unique: true, name: 'index_material_order_groups_on_reading_store'
+    add_index :material_order_groups, [ :name, :store_id ], unique: true, name: 'index_material_order_groups_on_name_store'
+    add_index :material_order_groups, [ :reading, :store_id ], unique: true, name: 'index_material_order_groups_on_reading_store'
     add_foreign_key :material_order_groups, :companies, on_delete: :cascade
     add_foreign_key :material_order_groups, :stores, on_delete: :cascade
     add_foreign_key :material_order_groups, :users
@@ -139,8 +139,8 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :materials, :production_unit_id
     add_index :materials, :order_group_id
     add_index :materials, :measurement_type
-    add_index :materials, [:name, :category_id, :store_id], unique: true, name: 'index_materials_on_name_category_store'
-    add_index :materials, [:reading, :category_id, :store_id], unique: true, name: 'index_materials_on_reading_category_store'
+    add_index :materials, [ :name, :category_id, :store_id ], unique: true, name: 'index_materials_on_name_category_store'
+    add_index :materials, [ :reading, :category_id, :store_id ], unique: true, name: 'index_materials_on_reading_category_store'
     add_foreign_key :materials, :categories, on_delete: :cascade
     add_foreign_key :materials, :companies, on_delete: :cascade
     add_foreign_key :materials, :stores, on_delete: :cascade
@@ -169,9 +169,9 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :products, :company_id
     add_index :products, :store_id
     add_index :products, :user_id
-    add_index :products, [:name, :category_id, :store_id], unique: true, name: 'index_products_on_name_category_store'
-    add_index :products, [:item_number, :category_id, :store_id], unique: true, name: 'index_products_on_item_number_category_store'
-    add_index :products, [:reading, :category_id, :store_id], unique: true, name: 'index_products_on_reading_category_store'
+    add_index :products, [ :name, :category_id, :store_id ], unique: true, name: 'index_products_on_name_category_store'
+    add_index :products, [ :item_number, :category_id, :store_id ], unique: true, name: 'index_products_on_item_number_category_store'
+    add_index :products, [ :reading, :category_id, :store_id ], unique: true, name: 'index_products_on_reading_category_store'
     add_foreign_key :products, :categories, on_delete: :cascade
     add_foreign_key :products, :companies, on_delete: :cascade
     add_foreign_key :products, :stores, on_delete: :cascade
@@ -191,7 +191,7 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :product_materials, :material_id
     add_index :product_materials, :unit_id
     add_index :product_materials, :company_id
-    add_index :product_materials, [:product_id, :material_id], unique: true
+    add_index :product_materials, [ :product_id, :material_id ], unique: true
     add_foreign_key :product_materials, :products, on_delete: :cascade
     add_foreign_key :product_materials, :materials, on_delete: :cascade
     add_foreign_key :product_materials, :units
@@ -213,8 +213,8 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :plans, :company_id
     add_index :plans, :store_id
     add_index :plans, :user_id
-    add_index :plans, [:name, :category_id, :store_id], unique: true, name: 'index_plans_on_name_category_store'
-    add_index :plans, [:reading, :category_id, :store_id], unique: true, name: 'index_plans_on_reading_category_store'
+    add_index :plans, [ :name, :category_id, :store_id ], unique: true, name: 'index_plans_on_name_category_store'
+    add_index :plans, [ :reading, :category_id, :store_id ], unique: true, name: 'index_plans_on_reading_category_store'
     add_foreign_key :plans, :categories, on_delete: :cascade
     add_foreign_key :plans, :companies, on_delete: :cascade
     add_foreign_key :plans, :stores, on_delete: :cascade
@@ -231,7 +231,7 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :plan_products, :plan_id
     add_index :plan_products, :product_id
     add_index :plan_products, :company_id
-    add_index :plan_products, [:plan_id, :product_id], unique: true
+    add_index :plan_products, [ :plan_id, :product_id ], unique: true
     add_foreign_key :plan_products, :plans, on_delete: :cascade
     add_foreign_key :plan_products, :products, on_delete: :cascade
     add_foreign_key :plan_products, :companies, on_delete: :cascade
@@ -251,7 +251,7 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :monthly_budgets, :company_id
     add_index :monthly_budgets, :store_id
     add_index :monthly_budgets, :user_id
-    add_index :monthly_budgets, [:budget_month, :store_id], unique: true
+    add_index :monthly_budgets, [ :budget_month, :store_id ], unique: true
     add_foreign_key :monthly_budgets, :companies, on_delete: :cascade
     add_foreign_key :monthly_budgets, :stores, on_delete: :cascade
     add_foreign_key :monthly_budgets, :users
@@ -272,7 +272,7 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :daily_targets, :store_id
     add_index :daily_targets, :user_id
     add_index :daily_targets, :target_date
-    add_index :daily_targets, [:monthly_budget_id, :target_date], unique: true, name: 'index_daily_targets_on_budget_and_date'
+    add_index :daily_targets, [ :monthly_budget_id, :target_date ], unique: true, name: 'index_daily_targets_on_budget_and_date'
     add_foreign_key :daily_targets, :monthly_budgets, on_delete: :cascade
     add_foreign_key :daily_targets, :companies
     add_foreign_key :daily_targets, :stores, on_delete: :cascade
@@ -296,7 +296,7 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :plan_schedules, :store_id
     add_index :plan_schedules, :user_id
     add_index :plan_schedules, :scheduled_date
-    add_index :plan_schedules, [:store_id, :scheduled_date], unique: true
+    add_index :plan_schedules, [ :store_id, :scheduled_date ], unique: true
     add_index :plan_schedules, :plan_products_snapshot, using: :gin
     add_foreign_key :plan_schedules, :plans, on_delete: :cascade
     add_foreign_key :plan_schedules, :companies, on_delete: :cascade
@@ -336,8 +336,8 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :admin_requests, :company_id
     add_index :admin_requests, :store_id
     add_index :admin_requests, :approved_by_id
-    add_index :admin_requests, [:user_id, :status]
-    add_index :admin_requests, [:company_id, :status]
+    add_index :admin_requests, [ :user_id, :status ]
+    add_index :admin_requests, [ :company_id, :status ]
     add_foreign_key :admin_requests, :users, on_delete: :cascade
     add_foreign_key :admin_requests, :companies, on_delete: :cascade
     add_foreign_key :admin_requests, :stores
@@ -369,7 +369,7 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
     add_index :active_storage_attachments, :blob_id
     add_index :active_storage_attachments, :company_id
     add_index :active_storage_attachments, :store_id
-    add_index :active_storage_attachments, [:record_type, :record_id, :name, :blob_id], unique: true, name: 'index_active_storage_attachments_uniqueness'
+    add_index :active_storage_attachments, [ :record_type, :record_id, :name, :blob_id ], unique: true, name: 'index_active_storage_attachments_uniqueness'
     add_foreign_key :active_storage_attachments, :active_storage_blobs, column: :blob_id
     add_foreign_key :active_storage_attachments, :companies
     add_foreign_key :active_storage_attachments, :stores
@@ -379,7 +379,7 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
       t.uuid :blob_id, null: false
       t.string :variation_digest, null: false
     end
-    add_index :active_storage_variant_records, [:blob_id, :variation_digest], unique: true, name: 'index_active_storage_variant_records_uniqueness'
+    add_index :active_storage_variant_records, [ :blob_id, :variation_digest ], unique: true, name: 'index_active_storage_variant_records_uniqueness'
     add_foreign_key :active_storage_variant_records, :active_storage_blobs, column: :blob_id
 
     # Versions テーブル（PaperTrail）
@@ -393,7 +393,7 @@ class CreateAllTablesWithUuid < ActiveRecord::Migration[8.1]
       t.uuid :store_id
       t.datetime :created_at
     end
-    add_index :versions, [:item_type, :item_id]
+    add_index :versions, [ :item_type, :item_id ]
     add_index :versions, :company_id
     add_index :versions, :store_id
     add_foreign_key :versions, :companies
