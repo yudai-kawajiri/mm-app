@@ -4,7 +4,7 @@ class Users::SessionsController < Devise::SessionsController
   before_action :set_company_from_slug, only: [ :new, :create ]
   skip_before_action :verify_signed_out_user, only: :destroy, raise: false
 
-  after_action :debug_session, only: [:create]
+  after_action :debug_session, only: [ :create ]
 
   # GET /resource/sign_in
   def new
@@ -83,5 +83,4 @@ class Users::SessionsController < Devise::SessionsController
     Rails.logger.info "[SESSION DEBUG] warden.authenticated?: #{request.env['warden']&.authenticated?}"
     Rails.logger.info "=" * 80
   end
-
 end

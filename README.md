@@ -1,5 +1,12 @@
 # 製造計画自動計算アプリケーション（MM-App）
 
+[![Ruby](https://img.shields.io/badge/Ruby-3.3.6-red?logo=ruby)](https://www.ruby-lang.org/)
+[![Rails](https://img.shields.io/badge/Rails-8.1.1-red?logo=rubyonrails)](https://rubyonrails.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-latest-blue?logo=postgresql)](https://www.postgresql.org/)
+[![RSpec](https://img.shields.io/badge/Tests-637%20passing-green)](https://rspec.info/)
+[![Coverage](https://img.shields.io/badge/Coverage-62.76%25-yellow)](https://github.com/simplecov-ruby/simplecov)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 ## デモ・テストアカウント
 
 **本番環境URL:**
@@ -216,7 +223,7 @@
 
 ## ER図
 
-![ER図全体像](docs/images/er_diagram.png)
+![ER図全体像](docs/images/er_diagram.pdf)
 
 ### 主要テーブル
 
@@ -512,3 +519,4 @@ MIT License
 - GitHub: [@yudai-kawajiri](https://github.com/yudai-kawajiri)
 - GitHub: [https://github.com/yudai-kawajiri/mm-app](https://github.com/yudai-kawajiri/mm-app)
 - 本番環境: [https://www.mm-app-system.com](https://www.mm-app-system.com)
+- 企業とのコミュニケーション記録: [Notion](https://prism-violet-e3d.notion.site/23d747efb66f80ba842ad6c7d3be71cf?v=23d747efb66f81568d60000c17f3050e&p=275747efb66f805f8c22fcf5c0016103&pm=s)

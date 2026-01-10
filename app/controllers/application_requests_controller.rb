@@ -42,7 +42,7 @@ class ApplicationRequestsController < ApplicationController
 
       ApplicationRequestMailer.invitation_email(@application_request, company.slug).deliver_later
     end
-    
+
     # トランザクション完了後にリダイレクト
     redirect_to thanks_application_requests_path
   rescue ActiveRecord::RecordInvalid => e
