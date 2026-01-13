@@ -370,8 +370,8 @@ RSpec.describe 'Products', type: :request do
     context 'ログインしている場合' do
       before { sign_in general_user, scope: :user }
 
-      xit '商品がコピーされること' do
-              post copy_product_path(product)
+      it '商品がコピーされること' do
+              expect { post scoped_path(:copy_resources_product, product) }.to change(Resources::Product, :count).by(1)
               expect(response).to have_http_status(:redirect)
             end
 
@@ -385,9 +385,11 @@ RSpec.describe 'Products', type: :request do
         expect(response).to have_http_status(:redirect)
       end
 
-      xit 'コピーされた商品の名前に「コピー」が含まれること' do
-              post copy_product_path(product)
+      it 'コピーされた商品の名前に「コピー」が含まれること' do
+              post scoped_path(:copy_resources_product, product)
               expect(response).to have_http_status(:redirect)
+        copied_product = Resources::Product.order(created_at: :desc).first
+        expect(copied_product.name).to match(/コピー/)
             end
     end
 

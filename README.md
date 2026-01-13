@@ -508,7 +508,7 @@ rails server
 
 - **テスト結果:** 637 examples, 0 failures, 21 pending
 - **RuboCop:** 344 files inspected, no offenses detected
-- **カバレッジ:** 62.68% (2031 / 3238)
+- **カバレッジ:** 60.88% (2031 / 3238)
 
 ## ライセンス
 
