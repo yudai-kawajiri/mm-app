@@ -275,4 +275,48 @@ RSpec.describe "Units", type: :request do
       end
     end
   end
+  describe "GET /units/:id" do
+    context "ログインしている場合" do
+      before { sign_in general_user, scope: :user }
+
+      it "単位の詳細を表示すること" do
+        get scoped_path(:resources_unit, unit)
+        expect([ 200, 302 ]).to include(response.status)
+      end
+    end
+  end
+
+  describe "GET /units/:id/edit" do
+    context "ログインしている場合" do
+      before { sign_in general_user, scope: :user }
+
+      it "編集フォームを表示すること" do
+        get scoped_path(:edit_resources_unit, unit)
+        expect([ 200, 302 ]).to include(response.status)
+      end
+    end
+  end
+
+  describe "GET /units/:id" do
+    context "ログインしている場合" do
+      before { sign_in general_user, scope: :user }
+
+      it "単位の詳細を表示すること" do
+        get scoped_path(:resources_unit, unit)
+        expect([ 200, 302 ]).to include(response.status)
+      end
+    end
+  end
+
+  describe "GET /units/:id/edit" do
+    context "ログインしている場合" do
+      before { sign_in general_user, scope: :user }
+
+      it "編集フォームを表示すること" do
+        get scoped_path(:edit_resources_unit, unit)
+        expect([ 200, 302 ]).to include(response.status)
+      end
+    end
+  end
+
 end

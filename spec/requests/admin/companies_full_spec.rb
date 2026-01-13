@@ -21,13 +21,17 @@ RSpec.describe 'Admin Companies Management', type: :request do
     end
 
     it 'creates company' do
-      post '/admin/companies', params: {
-        company: { name: 'New Company', slug: 'new-company', email: 'info@example.com' }
-      }
+      expect {
+        post '/admin/companies', params: {
+          company: { name: 'New Company', slug: 'new-company', email: 'info@example.com' }
+        }
+      }.to change(Company, :count).by(1)
+      
       expect(response).to have_http_status(:redirect)
-      expect(Company.last.name).to eq('New Company')
-      expect(Company.last.slug).to eq('new-company')
-      expect(Company.last.email).to eq('info@example.com')
+      
+      new_company = Company.find_by(slug: 'new-company')
+      expect(new_company.name).to eq('New Company')
+      expect(new_company.email).to eq('info@example.com')
     end
   end
 end

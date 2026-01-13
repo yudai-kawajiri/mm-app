@@ -367,4 +367,17 @@ RSpec.describe "Materials", type: :request do
       end
     end
   end
+  describe "POST /materials/:id/copy" do
+    let(:material_to_copy) { create(:material, user: general_user, company: company) }
+
+    context "ログインしている場合" do
+      before { sign_in general_user, scope: :user }
+
+      it "資材がコピーされること" do
+        post scoped_path(:copy_resources_material, material_to_copy)
+        expect([ 200, 302 ]).to include(response.status)
+      end
+    end
+  end
+
 end

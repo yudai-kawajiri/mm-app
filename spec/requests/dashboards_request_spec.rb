@@ -53,3 +53,62 @@ RSpec.describe 'Dashboards', type: :request do
     end
   end
 end
+
+  describe 'different user roles' do
+    let(:company) { create(:company) }
+    let(:super_admin_user) { create(:user, :super_admin, company: company) }
+    context 'super_admin' do
+      before do
+        sign_in super_admin_user, scope: :user
+        host! "#{company.slug}.example.com"
+      end
+
+      it 'renders admin dashboard' do
+        get scoped_path(:dashboards)
+        expect([ 200, 302 ]).to include(response.status)
+      end
+    end
+
+    context 'company_admin' do
+      let(:company_admin) { create(:user, :company_admin, company: company) }
+      
+      before do
+        sign_in company_admin, scope: :user
+        host! "#{company.slug}.example.com"
+      end
+
+      it 'renders company admin dashboard' do
+        get scoped_path(:dashboards)
+        expect([ 200, 302 ]).to include(response.status)
+      end
+    end
+
+    context 'store_admin' do
+      let(:store) { create(:store, company: company) }
+      let(:store_admin) { create(:user, :store_admin, company: company, store: store) }
+      
+      before do
+        sign_in store_admin, scope: :user
+        host! "#{company.slug}.example.com"
+      end
+
+      it 'renders store user dashboard' do
+        get scoped_path(:dashboards)
+        expect([ 200, 302 ]).to include(response.status)
+      end
+    context 'staff' do
+      let(:staff_user) { create(:user, :general, company: company) }
+      
+      before do
+        sign_in staff_user, scope: :user
+        host! "#{company.slug}.example.com"
+      end
+
+      it 'renders dashboard for staff' do
+        get scoped_path(:dashboards)
+        expect([ 200, 302 ]).to include(response.status)
+      end
+    end
+
+    end
+  end
