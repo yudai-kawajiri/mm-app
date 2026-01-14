@@ -9,12 +9,12 @@ RSpec.describe 'Stores Switch', type: :request do
   describe 'POST /switch_store' do
     it 'route exists' do
       # ルートが認識されることを確認
-      expect { 
+      expect {
         post "/c/#{company.slug}/switch_store", params: { current_store_id: store2.id }
       }.not_to raise_error
-      
+
       # 未認証なので302リダイレクトまたは404
-      expect([302, 404]).to include(response.status)
+      expect([ 302, 404 ]).to include(response.status)
     end
   end
 end

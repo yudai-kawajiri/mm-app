@@ -26,9 +26,9 @@ RSpec.describe 'Admin Companies Management', type: :request do
           company: { name: 'New Company', slug: 'new-company', email: 'info@example.com' }
         }
       }.to change(Company, :count).by(1)
-      
+
       expect(response).to have_http_status(:redirect)
-      
+
       new_company = Company.find_by(slug: 'new-company')
       expect(new_company.name).to eq('New Company')
       expect(new_company.email).to eq('info@example.com')
