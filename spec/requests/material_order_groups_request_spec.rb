@@ -269,7 +269,7 @@ RSpec.describe "Resources::MaterialOrderGroups", type: :request do
         expect {
           post copy_scoped_path(:resources_material_order_group, material_order_group)
         }.to change(Resources::MaterialOrderGroup, :count).by(1)
-        
+
         copied_group = Resources::MaterialOrderGroup.order(created_at: :desc).first
         expect(copied_group.name).to include(material_order_group.name)
         expect(copied_group.name).to match(/\(コピー\d+\)/)

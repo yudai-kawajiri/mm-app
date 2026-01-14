@@ -10,7 +10,7 @@ end
 RSpec.configure do |config|
   config.include DeviseHelpers, type: :request
   config.include Warden::Test::Helpers, type: :request
-  
+
   config.after(:each, type: :request) do
     Warden.test_reset!
   end

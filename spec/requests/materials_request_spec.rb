@@ -379,5 +379,4 @@ RSpec.describe "Materials", type: :request do
       end
     end
   end
-
 end
