@@ -6,7 +6,7 @@ class Admin::CompaniesController < ApplicationController
   def index
     if current_user.super_admin?
       # ポートフォリオ閲覧者（採用担当者向け）はテストデータのみ
-      if current_user.email == 'admin@mm-app-manage.com'
+      if current_user.email == "admin@mm-app-manage.com"
         @companies = Company.where(portfolio_demo: true)
       elsif session[:current_company_id].present?
         # 特定の会社を選択している場合
@@ -18,7 +18,7 @@ class Admin::CompaniesController < ApplicationController
     else
       # 会社管理者以下は自分の会社のみ
       @companies = Company.where(id: current_user.company_id)
-  end
+    end
 
     # 検索処理
     if params[:q].present?
