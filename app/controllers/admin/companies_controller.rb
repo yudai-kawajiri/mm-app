@@ -4,19 +4,21 @@ class Admin::CompaniesController < ApplicationController
   before_action :set_company, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    # システム管理者の場合
     if current_user.super_admin?
-      if session[:current_company_id].present?
-        # 特定の会社を選択している場合、その会社のみ表示
+      # ポートフォリオ閲覧者（採用担当者向け）はテストデータのみ
+      if current_user.email == 'admin@mm-app-manage.com'
+        @companies = Company.where(portfolio_demo: true)
+      elsif session[:current_company_id].present?
+        # 特定の会社を選択している場合
         @companies = Company.where(id: session[:current_company_id])
       else
-        # 全会社モード
+        # 本番用システム管理者（あなた）は全データ閲覧可能
         @companies = Company.all
       end
     else
       # 会社管理者以下は自分の会社のみ
       @companies = Company.where(id: current_user.company_id)
-    end
+  end
 
     # 検索処理
     if params[:q].present?
