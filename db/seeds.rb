@@ -31,6 +31,7 @@ uoya_company = Company.find_or_create_by!(slug: ENV['TEST_COMPANY_SLUG'] || 'uoy
   c.name = ENV['TEST_COMPANY_NAME'] || '魚屋の寿司株式会社'
   c.email = ENV['TEST_COMPANY_EMAIL'] || 'info@uoya-sushi.test'
   c.phone = ENV['TEST_COMPANY_PHONE'] || '0312345678'
+  c.portfolio_demo = true
 end
 
 main_store = Store.find_or_create_by!(company: uoya_company, code: ENV['TEST_STORE_CODE'] || 'MAIN') do |s|
@@ -483,6 +484,7 @@ sozai_company = Company.find_or_create_by!(slug: ENV['TEST_COMPANY2_SLUG'] || 'h
   c.name = ENV['TEST_COMPANY2_NAME'] || 'ほっと総菜株式会社'
   c.email = ENV['TEST_COMPANY2_EMAIL'] || 'info@hot-sozai.test'
   c.phone = ENV['TEST_COMPANY2_PHONE'] || '0398765432'
+  c.portfolio_demo = true
 end
 
 main_store_sozai = Store.find_or_create_by!(company: sozai_company, code: ENV['TEST_COMPANY2_STORE_CODE'] || 'MAIN') do |s|
