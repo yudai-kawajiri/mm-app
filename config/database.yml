@@ -28,21 +28,29 @@ production:
     encoding: unicode
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
     url: <%= ENV['DATABASE_URL'] %>
+    ssl_params:
+      verify_mode: <%= OpenSSL::SSL::VERIFY_NONE %>
   cache:
     adapter: postgresql
     encoding: unicode
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
     url: <%= ENV['DATABASE_URL'] %>
     migrations_paths: db/cache_migrate
+    ssl_params:
+      verify_mode: <%= OpenSSL::SSL::VERIFY_NONE %>
   queue:
     adapter: postgresql
     encoding: unicode
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
     url: <%= ENV['DATABASE_URL'] %>
     migrations_paths: db/queue_migrate
+    ssl_params:
+      verify_mode: <%= OpenSSL::SSL::VERIFY_NONE %>
   cable:
     adapter: postgresql
     encoding: unicode
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
     url: <%= ENV['DATABASE_URL'] %>
     migrations_paths: db/cable_migrate
+    ssl_params:
+      verify_mode: <%= OpenSSL::SSL::VERIFY_NONE %>
