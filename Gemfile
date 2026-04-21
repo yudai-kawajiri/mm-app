@@ -22,7 +22,7 @@ gem "solid_cache"
 gem "solid_queue"
 
 # === Authentication ===
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 
 # === Session Store ===
 gem "redis"
